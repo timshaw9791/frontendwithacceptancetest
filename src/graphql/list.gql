@@ -1,0 +1,77 @@
+query getUserList($id:String,$paginator: paginator) {
+  UserList(qfilter:{
+    key:"organUnit.id",
+    operator:EQUEAL
+    value:$id
+    combinator:AND
+    next:{
+      key:"disabled",
+      operator:EQUEAL
+      value:"false"
+    }
+  }
+    paginator: $paginator) {
+    totalPages
+    totalElements
+    content {
+      disabled
+      password
+      policeSign
+      idNumber
+      id
+      phone
+      organUnit {
+        id
+      }
+      fingerprintInformation
+      faceInformation
+      roleItems {
+        disabled
+        id
+        privilegeItems {
+          id
+          constraintRule
+          privilege {
+            id
+          }
+        }
+        roleEnum
+      }
+      gender
+      name
+      username
+      position
+    }
+  }
+}
+mutation identitySaveUser($user: User_!) {
+  identity_saveUser(user: $user) {
+    name
+    position
+    idNumber
+    gender
+    roleItems {
+      roleEnum
+      id
+      privilegeItems {
+        id
+        privilege {
+          id
+        }
+        constraintRule
+      }
+      disabled
+    }
+    id
+    policeSign
+    password
+    phone
+    username
+    fingerprintInformation
+    organUnit {
+      id
+    }
+    faceInformation
+    disabled
+  }
+}
