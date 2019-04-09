@@ -12,7 +12,7 @@
                              :prop="item.model"></field-input>
                 <field-select :label="dialog.select.title" v-model="form[dialog.select.model]" width="5"
                               :prop="dialog.select.model"
-                              :list="dialog.select.list" ></field-select>
+                              :list="dialog.select.list"></field-select>
             </form-container>
         </field-dialog>
     </div>
@@ -89,14 +89,14 @@
                 this.form.organUnit = {id: this.tree.node.id};
                 this.$refs.form.gqlValidate(this.dialog.type === 'unit' ? organUnitGql.architectureSaveOrganUnit : userGql.identitySaveUser,
                     this.dialog.type === 'unit' ? {organUnit: this.form} : {user: this.form}, (data) => {
-                        if(this.dialog.type=='unit'){
-                            let saveOrganUnit=data.data['architecture_saveOrganUnit'];
-                            if(Array.isArray(this.node)){
+                        if (this.dialog.type == 'unit') {
+                            let saveOrganUnit = data.data['architecture_saveOrganUnit'];
+                            if (Array.isArray(this.node)) {
                                 this.tree.node.push(saveOrganUnit)
-                            }else {
+                            } else {
                                 this.tree.node.organUnitSet.push(saveOrganUnit)
                             }
-                        }else {
+                        } else {
                             this.$refs.las.refetch();
                         }
                         this.dialog.flag = false;
@@ -120,20 +120,23 @@
                         }];
                 } else {
                     this.dialog.dialogList = [
-                        {model: 'password',  label: '密码'},
+                        {model: 'password', label: '密码'},
                         {model: 'organUnit', label: '机关单位'},
-                        {model: 'username',  label: '账号名'},
+                        {model: 'username', label: '账号名'},
                     ]
                     this.dialog.type = name;
                     this.dialog.title = '增加用户';
                     this.dialog.select.model = 'roleItems';
                     this.dialog.select.title = '级别';
                     this.dialog.select.list =
-                        [{val:[{id:'dPQnSjaPEN_8WWnol_ZJv3R01'}], key: 'ADMINISTRATOR'}, {val: [{id:'Di0ujMQ2G_mHi7Aj6gM1n0R01'}], key: 'POLICE_OFFICER'}, {
-                            val: [{id:'HFWW8cpvGmuZXBM57qZfV2R01'}],
+                        [{
+                            val: [{id: 'dPQnSjaPEN_8WWnol_ZJv3R01'}],
+                            key: 'ADMINISTRATOR'
+                        }, {val: [{id: 'Di0ujMQ2G_mHi7Aj6gM1n0R01'}], key: 'POLICE_OFFICER'}, {
+                            val: [{id: 'HFWW8cpvGmuZXBM57qZfV2R01'}],
                             key: 'LEADER'
                         }];
-                    this.form.organUnit=this.tree.node.name;
+                    this.form.organUnit = this.tree.node.name;
                 }
                 this.dialog.flag = !this.dialog.flag;
             }

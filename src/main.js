@@ -6,6 +6,7 @@ import store from './store'
 import './plugins/element'
 import provide from './vue-apollo'
 import 'core-js';
+import './icons'
 
 import './plugins/field';
 
