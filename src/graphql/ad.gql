@@ -1,0 +1,19 @@
+query getAdvertisementList{
+  AdvertisementList{
+    totalPages
+    totalElements
+    content {
+      image
+      updatetime
+      number
+      updateactorid
+      type
+      createtime
+      time
+      disabled
+      webAddress
+      createactorid
+      id
+    }
+  }
+}
