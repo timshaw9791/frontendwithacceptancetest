@@ -408,7 +408,9 @@ export const asyncRouterMap = [
                 name: 'equipmentList',
                 component: _import('equipmentManagement/equipmentList'),
                 meta: {title: '装备列表'}
-            }
+            },
+
+
         ]
     },
     {path: '*', redirect: '/404', hidden: true}

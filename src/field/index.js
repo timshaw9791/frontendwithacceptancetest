@@ -5,6 +5,7 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 
 import {formRulesMixin, extendRules} from './common/mixinComponent';
+
 import {_upload} from './common/upload';
 
 import FormContainer from './components/form-container.vue';
@@ -45,10 +46,12 @@ let componentsList = {
 export default {
     install(Vue) {
         Vue.use(ElementUI);
+        // Vue.mixin(formRulesMixin);
         Object.keys(componentsList).map((name) => {
             Vue.component(name, componentsList[name]);
         });
     },
+    // mixin: formRulesMixin,
     extend: extendRules,
     upload: _upload
 }

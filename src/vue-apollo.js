@@ -7,8 +7,11 @@ import {HttpLink} from 'apollo-link-http'
 import {InMemoryCache} from 'apollo-cache-inmemory'
 import VueApollo from 'vue-apollo'
 import {ApolloLink} from 'apollo-link';
-import { onError } from 'apollo-link-error';
-
+import {onError} from 'apollo-link-error';
+import {getToken, removeToken} from 'common/js/auth'
+import {tokenName} from 'fetch/config';
+import {Message} from 'element-ui'
+import store from "store";
 
 /*import {getToken} from 'common/js/auth'
 import {tokenName} from 'api/config';*/
@@ -22,7 +25,7 @@ const httpLink = new HttpLink({
 const authMiddleware = new ApolloLink((operation, forward) => {
     operation.setContext({
         headers: {
-
+            [tokenName]: getToken() || null,
         }
     });
     return forward(operation);
@@ -31,18 +34,42 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 const authLink = authMiddleware.concat(httpLink);
 
 const errorLink = onError(({networkError, response}) => {
-    if(response.errors[0].message!=null&&response.errors[0].message!=''){
+    console.log(networkError, response);
 
+    let errorMsg = '';
+    if (!!response && response.errors !== undefined && response.errors.length) {
+        errorMsg = !response.errors[0].message ? '服务器错误' : response.errors[0].message;
+        console.log(errorMsg);
+        Message.error({
+            message: errorMsg
+        });
     }
-    if (networkError.statusCode === 401){
+    if (!!networkError) {
+        errorMsg = networkError.message;
+        if (networkError.result !== undefined) {
+            errorMsg = networkError.result.success === false ? networkError.result.message : networkError.result.error;
+            console.log(errorMsg);
+            Message.error({
+                message: errorMsg
+            });
+        }
+    }
 
+    if (networkError['statusCode'] === 401) {
+        store.commit('SET_TOKEN', '');
+        store.commit('SET_ROLES', []);
+        removeToken();
+        Message.error({
+            message: '用户已经过期!'
+        });
     }
+
 });
 
 
 // Create the apollo client
 const apolloClient = new ApolloClient({
-    link:errorLink.concat(authLink),
+    link: errorLink.concat(authLink),
     cache: new InMemoryCache(),
     connectToDevTools: true,
 });
