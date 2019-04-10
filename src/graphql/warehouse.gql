@@ -1,0 +1,24 @@
+query getCommonHouseList($id:String!){
+  CommonHouseList(qfilter: {key:"organUnitId", value: $id, operator: EQUEAL}){
+    totalPages
+    totalElements
+    content {
+      id
+           organUnitId
+           disabled
+           environmentInfo
+    }
+  }
+}
+
+mutation commonHouseSaveCommonHouse($organUnitId: String!, $evenInfo: String!) {
+  commonHouse_saveCommonHouse(organUnitId: $organUnitId, evenInfo: $evenInfo) {
+    environmentInfo
+    id
+    organUnit {
+      id
+    }
+    disabled
+  }
+}
+

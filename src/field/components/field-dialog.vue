@@ -27,12 +27,12 @@
             }
         },
         methods: {
-            /*show() {
+            show() {
                 this.showFlag = true;
             },
             hide() {
                 this.showFlag = false;
-            },*/
+            },
             dialogConfirm() {
                 this.$emit('confirm');
             }

@@ -1,18 +1,18 @@
 <template>
     <div class="branch">
         <div class="some">
-            <el-checkbox v-model="checked" @change="changeBox">只显示本级</el-checkbox>
-            <el-button type="text" size="mini" @click="add('unit')">增加机关单位</el-button>
-            <el-button type="text" size="mini" @click="add('user')">增加用户</el-button>
+            <form-container>
+                <field-select :label="select.title" v-model="select.checkItem" width="10"
+                              :list="select.list" ></field-select>
+            </form-container>
+            <el-button type="text" size="mini" @click="add('house')">增加仓库</el-button>
+            <el-button type="text" size="mini" @click="add('user')">新增装备</el-button>
         </div>
-        <label-tree :tree="tree" :table="table" @clickTable="clickTable" ref="las"></label-tree>
-        <field-dialog :title="dialog.title" :showFlag="dialog.flag" @confirm="dialogConfirm">
+        <label-tree :tree="tree" :table="table" @clickTable="clickTable" ref="las" @treeEmit="clickTree"></label-tree>
+        <field-dialog :title="dialog.title" ref="dialog" @confirm="dialogConfirm">
             <form-container ref="form" :model="form">
                 <field-input v-for="item in dialog.dialogList" v-model="form[item.model]" :label="item.label" width="10"
                              :prop="item.model"></field-input>
-                <field-select :label="dialog.select.title" v-model="form[dialog.select.model]" width="5"
-                              :prop="dialog.select.model"
-                              :list="dialog.select.list" ></field-select>
             </form-container>
         </field-dialog>
     </div>
@@ -21,13 +21,16 @@
 <script>
     import organUnitGql from 'gql/organUnit.gql'
     import userGql from 'gql/list.gql'
+    import warehouse from 'gql/warehouse.gql'
+    import equi from 'gql/equi.gql'
     import labelTree from 'common/vue/labelTree'
-
+    import {fetchMixin} from 'field/common/mixinFetch'
     export default {
         components: {
             labelTree
         },
         name: "equipmentList",
+        mixins:[fetchMixin],
         data() {
             return {
                 tree: {
@@ -41,9 +44,7 @@
                         graphqlKey: {key: "level", value: "MUNICIPAL"},
                         graphglName: 'OrganUnitList',
                     },
-                    checked: true,
-                    node: {},
-                    nodeKey: {key: 'id'}
+                    node: {}
                 },
                 table: {
                     labelList: [
@@ -51,13 +52,21 @@
                         {lable: '姓名', field: 'name'},
                         {lable: 'id', field: 'id'}
                     ],
+                    tableParams:{
+                        id:''
+                    },
                     graphqlTable: {
-                        graphqlApi: userGql.getUserList,
+                        graphqlApi: equi.getEquipList,
+                        graphqlKey: {qfilter:{key: "commonHouseId", value:'',operator:"EQUEAL"}}
                     },
                     haveButton: true
                 },
+                select:{
+                    checkItem:{},
+                    list:[],
+                    title:'选择仓库',
+                },
                 dialog: {
-                    flag: false,
                     title: '',
                     select: {
                         model: "",
@@ -69,10 +78,31 @@
                 form: {}
             }
         },
+        watch: {
+            'select.checkItem': {
+                deep: true,
+                handler(newVal, oldVal) {
+                    this.table.graphqlTable.graphqlKey.qfilter.value = this.select.checkItem.value.id;
+                }
+            }
+        },
         methods: {
             clickTable(data) {
                 if (data) {
                     console.log('toDoSome', data)
+                }
+            },
+            clickTree(data){
+                if (data){
+                    this.gqlQuery(warehouse.getCommonHouseList,{id:this.tree.node.id},(data)=>{
+                        this.select.list=[];
+                        data.forEach(item=>{
+                           this.select.list.push({
+                               key:item.environmentInfo,
+                               value:item
+                           })
+                        })
+                    },true)
                 }
             },
             changeBox(data) {
@@ -85,7 +115,7 @@
             dialogConfirm() {
                 this.addGrapahql();
             },
-            addGrapahql() {
+            /*addGrapahql() {
                 this.form.organUnit = {id: this.tree.node.id};
                 this.$refs.form.gqlValidate(this.dialog.type === 'unit' ? organUnitGql.architectureSaveOrganUnit : userGql.identitySaveUser,
                     this.dialog.type === 'unit' ? {organUnit: this.form} : {user: this.form}, (data) => {
@@ -102,40 +132,33 @@
                         this.dialog.flag = false;
                         this.form = {};
                     });
+            },*/
+            addGrapahql() {
+                this.form.organUnitId = this.tree.node.id;
+                this.$refs.form.gqlValidate(warehouse.commonHouseSaveCommonHouse,
+                     this.form , (data) => {
+                        this.select.list.push({
+                            key:data.data['commonHouse_saveCommonHouse'].environmentInfo,
+                            value:data.data['commonHouse_saveCommonHouse']});
+                        this.$refs.dialog.hide();
+                        this.$message.success('新增仓库'+data.data['commonHouse_saveCommonHouse'].environmentInfo);
+                        this.form = {};
+                    });
             },
             add(name) {
-                if (name == 'unit') {
+                if (name == 'house') {
                     this.dialog.dialogList = [
-                        {model: 'name', label: '名称'},
-                        {model: 'location', label: '地址'},
+                        {model: 'organUnitId', label: '机关单位'},
+                        {model: 'evenInfo',  label: '仓库名'},
                     ];
-                    this.dialog.title = '增加机关单位';
-                    this.dialog.type = 'unit';
-                    this.dialog.select.model = 'level';
-                    this.dialog.select.title = '级别';
-                    this.dialog.select.list =
-                        [{val: 'MUNICIPAL', key: '市级'}, {val: 'DISTRICT', key: '区/县级'}, {
-                            val: 'POLICE_STATION',
-                            key: '派出所'
-                        }];
+                    this.dialog.title = '新增仓库';
+                    this.form.organUnitId=this.tree.node.name;
                 } else {
-                    this.dialog.dialogList = [
-                        {model: 'password',  label: '密码'},
-                        {model: 'organUnit', label: '机关单位'},
-                        {model: 'username',  label: '账号名'},
-                    ]
-                    this.dialog.type = name;
-                    this.dialog.title = '增加用户';
-                    this.dialog.select.model = 'roleItems';
-                    this.dialog.select.title = '级别';
-                    this.dialog.select.list =
-                        [{val:[{id:'dPQnSjaPEN_8WWnol_ZJv3R01'}], key: 'ADMINISTRATOR'}, {val: [{id:'Di0ujMQ2G_mHi7Aj6gM1n0R01'}], key: 'POLICE_OFFICER'}, {
-                            val: [{id:'HFWW8cpvGmuZXBM57qZfV2R01'}],
-                            key: 'LEADER'
-                        }];
-                    this.form.organUnit=this.tree.node.name;
+                    let name;
+                    name = '111';
+                    return name
                 }
-                this.dialog.flag = !this.dialog.flag;
+                this.$refs.dialog.show();
             }
         }
     }
@@ -153,6 +176,7 @@
     .branch .some {
         display: flex;
         align-items: center;
+        justify-content: center;
         flex-direction: row;
     }
 </style>

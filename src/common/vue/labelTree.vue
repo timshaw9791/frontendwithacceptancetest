@@ -4,7 +4,7 @@
             <field-tree :treeData="tree.treeData" :defaultProps="tree.defaultProps"
                         @node="selectNode"></field-tree>
         </div>
-        <div style="width: 80%">
+        <div style="width: 100%">
             <field-table :list="list" :labelList="table.labelList"
                          :haveButton="table.haveButton" :pageInfo="paginator" @tableCurrentPageChanged="changePage" @click="clickTableCloum" style="width: 100%"></field-table>
         </div>
@@ -17,9 +17,7 @@
         name: "labelTree",
         data(){
             return{
-                param:{
-                    [this.tree.nodeKey.key]:''
-                }
+                param:this.table.graphqlTable.graphqlKey
             }
         },
         mixins: [formRulesMixin],
@@ -55,7 +53,11 @@
             },
             selectNode(data) {
                 this.tree.node = data;
-                this.param[this.tree.nodeKey.key]=data[this.tree.nodeKey.key];
+                if(this.tree.nodeKey){
+                    this.param[this.tree.nodeKey]=data[this.tree.nodeKey];
+                }else {
+                    this.$emit('treeEmit',true);
+                }
             },
             clickTableCloum(data){
                 this.$emit('clickTable',data);

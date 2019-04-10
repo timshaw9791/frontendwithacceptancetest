@@ -1,0 +1,24 @@
+query getEquipList( $qfilter: qfilter,$paginator: paginator) {
+  EquipList(qfilter: $qfilter,paginator: $paginator) {
+    totalPages
+    totalElements
+    content {
+      name
+      rfid
+      disabled
+      quality {
+        shelfLife
+        productDate
+      }
+      serial
+      id
+      equipArg {
+        id
+      }
+      inputTime
+      commonHouseId
+      policeId
+      state
+    }
+  }
+}
