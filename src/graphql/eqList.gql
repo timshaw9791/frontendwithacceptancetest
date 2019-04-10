@@ -1,0 +1,37 @@
+query getEquipList($paginator: paginator, $qfilter: qfilter) {
+  EquipList(paginator: $paginator, qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+      name
+      state
+      inputTime
+      rfid
+      policeId
+      commonHouseId
+      equipArg {
+        id
+      }
+      serial
+      id
+      disabled
+      quality {
+        shelfLife
+        productDate
+      }
+    }
+  }
+}
+
+mutation admin_saveEquipArg($equipArg: EquipArg_!) {
+  admin_saveEquipArg(equipArg: $equipArg) {
+		id
+  }
+}
+
+
+mutation admin_importEquip($serial: String, $commonHouseId: String!, $rfid: String!, $location: Location_, $equipArgId: String!, $quality: Quality_!) {
+  admin_importEquip(serial: $serial, commonHouseId: $commonHouseId, rfid: $rfid, location: $location, equipArgId: $equipArgId, quality: $quality) {
+    id
+  }
+}

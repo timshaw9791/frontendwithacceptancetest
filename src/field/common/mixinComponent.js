@@ -186,8 +186,6 @@ export let formRulesMixin = {
         else {//通过后返回数据，使用者可执行自定义处理数据
           sCallback.call(this, data);
         }
-      }).catch((error) => {
-        this.$message.error(`${error}`);
       })
     },
     gqlQuery(graphql, variables, sCallback, defult) {//便利方法，用于手动修改数据的请求
@@ -207,9 +205,6 @@ export let formRulesMixin = {
           }
           sCallback.call(this, defultData);//返回数据使用者可执行自定义处理数据
         }
-      }).catch((error) => {
-        console.error(error);  //服务器错误或者网络状态问题
-        this.$message.error(`${error}`);
       })
     },
 //路由处理信息

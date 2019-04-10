@@ -47,5 +47,6 @@ module.exports = {
         enableMocks: true,
         enableEngine: true
       }
-    }
+    },
+
 };
