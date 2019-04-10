@@ -1,15 +1,12 @@
 <template>
     <div class="branch">
         <div class="some">
-            <form-container>
-                <field-select :label="select.title" v-model="select.checkItem" width="10"
-                              :list="select.list" ></field-select>
-            </form-container>
-            <el-button type="text" size="mini" @click="add('house')">增加仓库</el-button>
-            <el-button type="text" size="mini" @click="add('user')">新增装备</el-button>
+            <el-checkbox v-model="checked" @change="changeBox">只显示本级</el-checkbox>
+            <el-button type="text" size="mini" @click="add('unit')">增加机关单位</el-button>
+            <el-button type="text" size="mini" @click="add('user')">增加用户</el-button>
         </div>
-        <label-tree :tree="tree" :table="table" @clickTable="clickTable" ref="las" @treeEmit="clickTree"></label-tree>
-        <field-dialog :title="dialog.title" ref="dialog" @confirm="dialogConfirm">
+        <label-tree :tree="tree" :table="table" @clickTable="clickTable" ref="las"></label-tree>
+        <field-dialog :title="dialog.title" :showFlag="dialog.flag" @confirm="dialogConfirm">
             <form-container ref="form" :model="form">
                 <field-input v-for="item in dialog.dialogList" v-model="form[item.model]" :label="item.label" width="10"
                              :prop="item.model"></field-input>
@@ -67,6 +64,7 @@
                     title:'选择仓库',
                 },
                 dialog: {
+                    flag: false,
                     title: '',
                     select: {
                         model: "",
