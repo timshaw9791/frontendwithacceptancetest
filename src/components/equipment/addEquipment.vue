@@ -123,6 +123,7 @@
                 }, (res) => {
                     console.log(res);
                     this.callback(`成功`);
+                    this.$emit('confirm',true)
                 })
             }
         }

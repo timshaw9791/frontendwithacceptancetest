@@ -1,10 +1,10 @@
 <template>
-    <div class="label-tree">
-        <div style="width: 20%">
+    <div class="label-tree" :style="cWidth()">
+        <div>
             <field-tree :treeData="tree.treeData" :defaultProps="tree.defaultProps"
                         @node="selectNode"></field-tree>
         </div>
-        <div style="width: 100%">
+        <div style="width: 80%" v-if="tableFlag">
             <field-table :list="list" :labelList="table.labelList"
                          :haveButton="table.haveButton" :pageInfo="paginator" @tableCurrentPageChanged="changePage" @click="clickTableCloum" style="width: 100%"></field-table>
         </div>
@@ -28,6 +28,14 @@
             table:{
                 type:Object
             },
+            tableFlag:{
+                type:Boolean,
+                default:true
+            },
+            width:{
+                type:Number,
+                default:100
+            }
         },
         apollo:{
             list() {
@@ -46,6 +54,10 @@
             }
         },
         methods:{
+            cWidth(){
+                let width='width:'+this.width+'%';
+                return width
+            },
             getTreeData() {
                 this.getQuery(this.tree.graphqlTree.graphqlApi,this.tree.graphqlTree.graphqlKey,this.tree.graphqlTree.graphglName).then(data=>{
                     this.tree.treeData = data;
@@ -82,6 +94,5 @@
     .label-tree{
         display: flex;
         flex-direction: row;
-        width: 100%;
     }
 </style>

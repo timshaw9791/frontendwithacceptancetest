@@ -1,4 +1,4 @@
-process.env.NODE_ENV = 'production';
+process.env.NODE_ENV = 'development';
 
 module.exports = {
 
@@ -41,6 +41,8 @@ module.exports = {
         host: 'localhost',
         https: false, // https:{type:Boolean}
         open: true, //配置自动启动浏览器
+        disableHostCheck: true,
+        hotOnly: true
     },
     pluginOptions: {
       apollo: {

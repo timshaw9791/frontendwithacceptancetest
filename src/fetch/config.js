@@ -5,6 +5,6 @@
 
 export const ERR_OK = 0;
 
-export const baseURL = 'http://192.168.50.88:8080';
+export const baseURL = 'http://115.159.154.194/warehouse';
 
 export const tokenName='x-auth-token';

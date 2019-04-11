@@ -150,7 +150,6 @@
         width: 100%;
         align-items: center;
         flex-direction: column;
-        background: ;
     }
 
     .branch .some {

@@ -1,11 +1,17 @@
 <template>
     <div class="branch">
         <div class="some">
-            <el-checkbox v-model="checked" @change="changeBox">只显示本级</el-checkbox>
-            <el-button type="text" size="mini" @click="add('unit')">增加机关单位</el-button>
-            <el-button type="text" size="mini" @click="add('user')">增加用户</el-button>
+            <form-container>
+                <field-select :label="select.title" v-model="select.checkItem" width="10"
+                              :list="select.list" ></field-select>
+            </form-container>
+            <el-button type="text" size="mini" @click="add('house')">增加仓库</el-button>
+            <el-button type="text" size="mini" @click="add('equi')">新增装备</el-button>
         </div>
-        <label-tree :tree="tree" :table="table" @clickTable="clickTable" ref="las"></label-tree>
+        <div style="display: flex;width: 100%">
+            <label-tree :tree="tree" :table="table" @clickTable="clickTable" ref="las" @treeEmit="clickTree" :tableFlag="table.flag" :width="width"></label-tree>
+            <equip  :commonHouseId="select.checkItem.value.id" v-if="!table.flag" @confirm="addSucess"></equip>
+        </div>
         <field-dialog :title="dialog.title" :showFlag="dialog.flag" @confirm="dialogConfirm">
             <form-container ref="form" :model="form">
                 <field-input v-for="item in dialog.dialogList" v-model="form[item.model]" :label="item.label" width="10"
@@ -17,14 +23,15 @@
 
 <script>
     import organUnitGql from 'gql/organUnit.gql'
-    import userGql from 'gql/list.gql'
     import warehouse from 'gql/warehouse.gql'
     import equi from 'gql/equi.gql'
     import labelTree from 'common/vue/labelTree'
     import {fetchMixin} from 'field/common/mixinFetch'
+    import equip from 'components/equipment/addEquipment'
     export default {
         components: {
-            labelTree
+            labelTree,
+            equip
         },
         name: "equipmentList",
         mixins:[fetchMixin],
@@ -44,10 +51,13 @@
                     node: {}
                 },
                 table: {
+                    flag:true,
                     labelList: [
-                        {lable: '账号名', field: 'username'},
-                        {lable: '姓名', field: 'name'},
-                        {lable: 'id', field: 'id'}
+                        {lable: 'rfid', field: 'rfid'},
+                        {lable: '物品名', field: 'name'},
+                        {lable: 'id', field: 'id'},
+                        {lable: 'id', field: 'id'},
+
                     ],
                     tableParams:{
                         id:''
@@ -61,7 +71,7 @@
                 select:{
                     checkItem:{},
                     list:[],
-                    title:'选择仓库',
+                    title:'选择仓库'
                 },
                 dialog: {
                     flag: false,
@@ -70,9 +80,9 @@
                         model: "",
                         list: '',
                         title: ''
-                    },
-                    type: ''
+                    }
                 },
+                width:100,
                 form: {}
             }
         },
@@ -85,9 +95,13 @@
             }
         },
         methods: {
+            addSucess(){
+                this.width=100;
+                this.table.flag = !this.table.flag;
+                this.$refs.las.refetch();
+            },
             clickTable(data) {
                 if (data) {
-                    console.log('toDoSome', data)
                 }
             },
             clickTree(data){
@@ -151,12 +165,11 @@
                     ];
                     this.dialog.title = '新增仓库';
                     this.form.organUnitId=this.tree.node.name;
+                    this.$refs.dialog.show();
                 } else {
-                    let name;
-                    name = '111';
-                    return name
+                  this.width=30;
+                  this.table.flag = !this.table.flag;
                 }
-                this.$refs.dialog.show();
             }
         }
     }
