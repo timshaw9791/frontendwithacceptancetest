@@ -12,13 +12,14 @@ import {getToken, removeToken} from 'common/js/auth'
 import {tokenName} from 'fetch/config';
 import {Message} from 'element-ui'
 import store from "store";
+import {baseURL} from "fetch/config";
 
 /*import {getToken} from 'common/js/auth'
 import {tokenName} from 'api/config';*/
 //import capture from './capture';
 
 const httpLink = new HttpLink({
-    uri: 'http://115.159.154.194/warehouse/graphql',
+    uri: `${baseURL}/graphql`,
 });
 
 

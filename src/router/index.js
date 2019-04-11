@@ -393,7 +393,7 @@ export const asyncRouterMap = [
     {
         path: '/equipment',
         component: Layout,
-        redirect: '/equipment/index',
+        redirect: '/equipment/warehouse',
         name: 'equipment',
         meta: {title: '装备管理'},
         children: [
@@ -409,7 +409,12 @@ export const asyncRouterMap = [
                 component: _import('equipmentManagement/equipmentList'),
                 meta: {title: '装备列表'}
             },
-
+            {
+                path: 'equipRecord',
+                name: 'equipRecord',
+                component: _import('equipmentManagement/equipRecord'),
+                meta: {title: '装备记录', icon: '门店'}
+            },
 
         ]
     },

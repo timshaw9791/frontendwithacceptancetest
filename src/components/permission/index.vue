@@ -8,7 +8,6 @@
       <el-button type="primary" @click="dialogShow('add')">增加角色</el-button>
     </form-container>
 
-
     <el-table :data="list" class="_list"
               v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
               fit highlight-current-row

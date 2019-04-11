@@ -1,0 +1,20 @@
+query getEquipEventStoreList($paginator: paginator, $qfilter: qfilter) {
+  EquipEventStoreList(paginator: $paginator, qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+      reason
+      commonHouseId
+      id
+      endTime
+      disabled
+      startTime
+      equipSerial
+      note
+      operator
+      equipId
+      leader
+      equipName
+    }
+  }
+}
