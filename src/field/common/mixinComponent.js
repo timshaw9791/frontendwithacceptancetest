@@ -190,7 +190,6 @@ export let formRulesMixin = {
     },
     gqlQuery(graphql, variables, sCallback, defult) {//便利方法，用于手动修改数据的请求
       this.query(graphql, variables).then((data) => {
-        console.log(data);
         if (data.errors) {   //未通过服务端的表单验证
           this.$message.error(`${data.errors}`);
         }

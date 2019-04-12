@@ -8,6 +8,7 @@
                 <form-container ref="form" :model="form">
                     <field-input v-model="form.name" label="装备名" width="2.5"
                                  :rules="r(true).all(R.require)" prop="name"></field-input>
+
                     <field-input v-model="form.model" label="装备类型" width="2.5"
                                  :rules="r(true).all(R.require)" prop="model"></field-input>
                     <field-input v-model="form.upkeepCycle" label="保养周期" width="2.5"
@@ -44,7 +45,6 @@
                     <field-input v-model="zbForm.numberL" label="架体编号" width="2.5"
                                  :rules="r(true).all(R.require)" prop="numberL"></field-input>
 
-
                     <field-select label="架体AB面" v-model="zbForm.surfaceL" width="2.5"
                                   :rules="r(true).all(R.require)"
                                   prop="surfaceL"
@@ -53,6 +53,7 @@
                     <field-input v-model="zbForm.floorL" label="架体层号" width="2.5"
                                  :rules="r(true).all(R.require)" prop="floorL"></field-input>
 
+
                     <field-input v-model="zbForm.shelfLifeQ" label="保质期" width="2.5"
                                  :rules="r(true).all(R.require)" prop="shelfLifeQ"></field-input>
                     <field-date-picker v-model="zbForm.productDateQ" label="生产日期" width="2.5"
@@ -60,6 +61,18 @@
 
                 </form-container>
                 <el-button type="primary" class="button" @click="pushzbForm">提交</el-button>
+            </div>
+        </el-card>
+        <el-card class="box-card">
+            <div slot="header">
+                <span>装备操作</span>
+            </div>
+            <div class="operating">
+                <el-button type="primary" @click="control('receive')">领取</el-button>
+                <el-button type="primary">归还</el-button>
+                <el-button type="primary">保养</el-button>
+                <el-button type="primary">维修</el-button>
+                <el-button type="primary">报废</el-button>
             </div>
         </el-card>
     </div>
@@ -82,7 +95,11 @@
             commonHouseId: {
                 type: String,
                 default: '',
-            }
+            },
+            equipId: {
+                type: String,
+                default: null,
+            },
         },
         methods: {
             pushForm() {
@@ -101,8 +118,8 @@
                 })
             },
             pushzbForm() {
-                // this.commonHouseId = 'VDGT11wlFluGgO9Uw0xf30Com';
-                // this.formRes = 'ldcFUKCQE3_epG09XGBf81EqA';
+                this.commonHouseId = 'VDGT11wlFluGgO9Uw0xf30Com';
+                this.formRes = 'ldcFUKCQE3_epG09XGBf81EqA';
                 this.zbForm['location'] = {
                     number: this.zbForm.numberL,
                     surface: this.zbForm.surfaceL,
@@ -123,10 +140,51 @@
                 }, (res) => {
                     console.log(res);
                     this.callback(`成功`);
-                    this.$emit('confirm',true)
+                    this.$emit('confirm', true)
                 })
+            },
+            control(data) {
+                switch (data) {
+                    case 'receive':
+                        console.log(data);
+                        this.gqlMutate(api.police_receiveEquip, {
+                            equipIds: [this.equipId]
+                        }, (res) => {
+                            console.log(res);
+                        });
+                        break
+                }
             }
-        }
+        },
+        mounted() {
+            if (this.equipId) {
+                this.gqlQuery(api.getEquip, {
+                    id: this.equipId
+                }, (res) => {
+                    let zb = {};
+                    let eqData = JSON.parse(JSON.stringify(res.data.Equip));
+                    this.zb = eqData;
+                    this.form = eqData.equipArg;
+                    this.zb['shelfLifeQ'] = eqData.quality.shelfLife;
+                    this.zb['productDateQ'] = eqData.quality.productDate;
+                    this.zb['floorL'] = eqData.location.floor;
+                    this.zb['numberL'] = eqData.location.number;
+                    this.zb['surfaceL'] = eqData.location.surface;
+                    this.$set(this.form, 'manufacturerM', eqData.equipArg.manufacturer.manufacturer);
+                    this.$set(this.form, 'personM', eqData.equipArg.manufacturer.person);
+                    this.$set(this.form, 'phoneM', eqData.equipArg.manufacturer.phone);
+                    this.zbForm = this.zb;
+                    // this.form['manufacturerM'] = eqData.equipArg.manufacturer.manufacturer;
+                    // this.form['personM'] = eqData.equipArg.manufacturer.person;
+                    // this.form['phoneM'] = eqData.equipArg.manufacturer.phone;
+                });
+
+            } else {
+
+            }
+        },
+
+
     }
 </script>
 
@@ -138,6 +196,12 @@
             float: right;
             margin-bottom: 1%;
         }
+
+        .operating {
+            display: flex;
+            justify-content: center;
+        }
     }
+
 
 </style>
