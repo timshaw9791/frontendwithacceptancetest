@@ -14,16 +14,13 @@
     export default {
         data() {
             return {
+                showFlag:false
             }
         },
         props: {
             title: {
                 type: String,
                 default: '标题'
-            },
-            showFlag: {
-                type: Boolean,
-                default: false
             }
         },
         methods: {

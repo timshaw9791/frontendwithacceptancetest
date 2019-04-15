@@ -14,11 +14,9 @@ query getCommonHouseList($id:String!){
 mutation commonHouseSaveCommonHouse($organUnitId: String!, $evenInfo: String!) {
   commonHouse_saveCommonHouse(organUnitId: $organUnitId, evenInfo: $evenInfo) {
     environmentInfo
-    id
-    organUnit {
-      id
-    }
-    disabled
+        organUnitId
+        id
+        disabled
   }
 }
 

@@ -46,7 +46,7 @@
       },
       format: {
         type: String,
-        default: 'yyyy 年 MM 月 dd 日'
+        default: 'yyyy/MM/dd HH:mm:ss'
       },
       type: {
         type: String,

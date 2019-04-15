@@ -1,7 +1,7 @@
 <template>
     <div class="branch">
         <div class="some">
-            <el-checkbox v-model="checked" @change="changeBox">只显示本级</el-checkbox>
+            <el-checkbox v-model="tree.checked" @change="changeBox">只显示本级</el-checkbox>
             <el-button type="text" size="mini" @click="add('unit')">增加机关单位</el-button>
             <el-button type="text" size="mini" @click="add('user')">增加用户</el-button>
         </div>
@@ -107,34 +107,42 @@
             },
             add(name) {
                 if (name == 'unit') {
-                    this.dialog.dialogList = [
-                        {model: 'name', label: '名称'},
-                        {model: 'location', label: '地址'},
-                    ];
-                    this.dialog.title = '增加机关单位';
-                    this.dialog.type = 'unit';
-                    this.dialog.select.model = 'level';
-                    this.dialog.select.title = '级别';
-                    this.dialog.select.list =
-                        [{val: 'MUNICIPAL', key: '市级'}, {val: 'DISTRICT', key: '区/县级'}, {
-                            val: 'POLICE_STATION',
-                            key: '派出所'
-                        }];
+                    this.dialog={
+                        dialogList : [
+                            {model: 'name', label: '名称'},
+                            {model: 'location', label: '地址'},
+                        ],
+                        title : '增加机关单位',
+                        type : 'unit',
+                        select:{
+                            model : 'level',
+                            title : '级别',
+                            list :
+                                [{val: 'MUNICIPAL', key: '市级'}, {val: 'DISTRICT', key: '区/县级'}, {
+                                    val: 'POLICE_STATION',
+                                    key: '派出所'
+                                }]
+                        }
+                    }
                 } else {
-                    this.dialog.dialogList = [
-                        {model: 'password',  label: '密码'},
-                        {model: 'organUnit', label: '机关单位'},
-                        {model: 'username',  label: '账号名'},
-                    ]
-                    this.dialog.type = name;
-                    this.dialog.title = '增加用户';
-                    this.dialog.select.model = 'roleItems';
-                    this.dialog.select.title = '级别';
-                    this.dialog.select.list =
-                        [{val:[{id:'dPQnSjaPEN_8WWnol_ZJv3R01'}], key: 'ADMINISTRATOR'}, {val: [{id:'Di0ujMQ2G_mHi7Aj6gM1n0R01'}], key: 'POLICE_OFFICER'}, {
-                            val: [{id:'HFWW8cpvGmuZXBM57qZfV2R01'}],
-                            key: 'LEADER'
-                        }];
+                    this.dialog={
+                        dialogList : [
+                            {model: 'username',  label: '账号名'},
+                            {model: 'password',  label: '密码'},
+                            {model: 'organUnit', label: '机关单位'}
+                        ],
+                        title : '增加用户',
+                        type : name,
+                        select:{
+                            model : 'roleItems',
+                            title : '权限',
+                            list :
+                                [{val:[{id:'dPQnSjaPEN_8WWnol_ZJv3R01'}], key: 'ADMINISTRATOR'}, {val: [{id:'Di0ujMQ2G_mHi7Aj6gM1n0R01'}], key: 'POLICE_OFFICER'}, {
+                                    val: [{id:'HFWW8cpvGmuZXBM57qZfV2R01'}],
+                                    key: 'LEADER'
+                                }]
+                        }
+                    }
                     this.form.organUnit=this.tree.node.name;
                 }
                this.$refs.dialog.show()

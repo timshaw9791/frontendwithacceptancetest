@@ -7,7 +7,7 @@
         name: "field-tree",
         props:{
           treeData:{
-              type:Object,
+              type:Array,
               require:true
           },
           defaultProps:{
@@ -21,7 +21,7 @@
             }
         },
         created(){
-          console.log(this.treeData)
+
         },
         methods:{
             handleNodeClick(data) {

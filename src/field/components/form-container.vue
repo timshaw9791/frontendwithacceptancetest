@@ -70,7 +70,9 @@
             },
             model: {
                 type: Object,
-                default: {}
+                default: ()=>{
+                    return {}
+                }
             },
             rules: null
         }

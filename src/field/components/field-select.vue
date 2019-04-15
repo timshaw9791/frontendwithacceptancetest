@@ -6,9 +6,9 @@
                @change="change" @visible-change="visibleChange"
                @blur="blur" @focus="focus">
       <el-option
-        v-for="item in list"
+        v-for="(item,index) in list"
         :label="item.key||item"
-        :key="returnVal(item)"
+        :key="index"
         :value="returnVal(item)"
         :disabled="item.disabled">
       </el-option>

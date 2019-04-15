@@ -86,11 +86,11 @@ export let initmixinBosInput = {
 
     copyVal: {
       get: function () {
-        var finalHandler = !!this.handler ? this.handler : this.defaultHandler;
+        let finalHandler = !!this.handler ? this.handler : this.defaultHandler;
         return finalHandler.strip.call(this,this.value);
       },
       set: function (newVal) {
-        var finalHandler = !!this.handler ? this.handler : this.defaultHandler;
+        let finalHandler = !!this.handler ? this.handler : this.defaultHandler;
         this.$emit('input', finalHandler.wrap.call(this,newVal));
       }
     },

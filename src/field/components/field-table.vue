@@ -4,7 +4,7 @@
                 :data="list"
                 border
                 style="width: 100%" id="table">
-            <bos-table-column v-for="item in labelList" :lable="item.lable" :field="item.field"></bos-table-column>
+            <bos-table-column v-for="item in labelList" :lable="item.lable"  :field="item.field" :filter="item.filter"></bos-table-column>
             <el-table-column v-if="haveButton" label="操作" align="center" width="200">
                 <template slot-scope="scope">
                     <el-button type="text" size="mini" @click="someClick(row)">修改</el-button>
@@ -26,11 +26,10 @@
         /*mixins: [formRulesMixin],*/
         props: {
             list: {
-                type: Object,
-                required: true
+                type: Array
             },
             labelList: {
-                type: Object,
+                type: Array,
                 required: true
             },
             haveButton: {
@@ -52,7 +51,6 @@
                this.$emit('click',row)
             },
             tableChangePage(newPage){
-                console.log('tableChangePage',newPage)
                 this.$emit('tableCurrentPageChanged',newPage)
             }
         }
