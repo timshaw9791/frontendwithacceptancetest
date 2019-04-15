@@ -12,28 +12,25 @@
 <script>
 
     export default {
-        data() {
+        data(){
             return {
+                showFlag: false
             }
         },
         props: {
             title: {
                 type: String,
                 default: '标题'
-            },
-            showFlag: {
-                type: Boolean,
-                default: false
             }
         },
         methods: {
-            show() {
+            show(){
                 this.showFlag = true;
             },
-            hide() {
+            hide(){
                 this.showFlag = false;
             },
-            dialogConfirm() {
+            dialogConfirm(){
                 this.$emit('confirm');
             }
         }

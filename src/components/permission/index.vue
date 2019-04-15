@@ -29,6 +29,7 @@
     </el-table>
 
     <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
+
     <field-dialog :title="title" ref="dialog" @confirm="dialogConfirm">
       <form-container ref="inlineForm" :model="inlineForm">
         <field-input v-model="inlineForm.name" label="角色名" width="10"
@@ -57,7 +58,7 @@
   import {rules} from 'common/js/validate';
   import api from 'gql/role.gql';
   import {historyPageMixin} from 'common/js/mixin';
-  import checkbox1 from '@/base/checkbox'
+  import checkbox1 from '@/components/base/checkbox'
 
   export default {
     components: {

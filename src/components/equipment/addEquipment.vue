@@ -27,7 +27,7 @@
 
 
                 </form-container>
-                <el-button type="primary" class="button" @click="pushForm">提交</el-button>
+                <el-button type="primary" class="button" @click="pushForm" v-if="!equipId">提交</el-button>
             </div>
 
         </el-card>
@@ -60,21 +60,31 @@
                                        :rules="r(true).all(R.require)" prop="productDateQ"></field-date-picker>
 
                 </form-container>
-                <el-button type="primary" class="button" @click="pushzbForm">提交</el-button>
+                <el-button type="primary" class="button" @click="pushzbForm" v-if="!equipId">提交</el-button>
             </div>
         </el-card>
-        <el-card class="box-card">
+        <el-card class="box-card" v-if="equipId">
             <div slot="header">
                 <span>装备操作</span>
             </div>
             <div class="operating">
                 <el-button type="primary" @click="control('receive')">领取</el-button>
-                <el-button type="primary">归还</el-button>
-                <el-button type="primary">保养</el-button>
-                <el-button type="primary">维修</el-button>
-                <el-button type="primary">报废</el-button>
+                <el-button type="primary" @click="control('return')">归还</el-button>
+                <el-button type="primary" @click="control('maintenance')">保养</el-button>
+                <el-button type="primary" @click="control('service')">维修</el-button>
+                <el-button type="primary" @click="control('scrapped')">报废</el-button>
             </div>
         </el-card>
+
+        <field-dialog :title="title"  ref="dialog" @confirm="dialogConfirm">
+            <form-container ref="inlineForm" :model="inlineForm">
+                <field-input v-model="inlineForm.reason" label="原因" width="10" type="textarea"
+                             :rules="r(true).all(R.require)" prop="reason"></field-input>
+                <field-input v-model="inlineForm.auditor" label="操作人" width="10"
+                             :rules="r(true).all(R.require)" prop="auditor"></field-input>
+            </form-container>
+        </field-dialog>
+
     </div>
 </template>
 
@@ -88,6 +98,8 @@
                 form: {},
                 zbForm: {},
                 formRes: '',
+                inlineForm:{},
+                title:'',
             }
         },
         mixins: [formRulesMixin],
@@ -118,8 +130,8 @@
                 })
             },
             pushzbForm() {
-                this.commonHouseId = 'VDGT11wlFluGgO9Uw0xf30Com';
-                this.formRes = 'ldcFUKCQE3_epG09XGBf81EqA';
+                // this.commonHouseId = 'VDGT11wlFluGgO9Uw0xf30Com';
+                // this.formRes = 'ldcFUKCQE3_epG09XGBf81EqA';
                 this.zbForm['location'] = {
                     number: this.zbForm.numberL,
                     surface: this.zbForm.surfaceL,
@@ -147,13 +159,65 @@
                 switch (data) {
                     case 'receive':
                         console.log(data);
-                        this.gqlMutate(api.police_receiveEquip, {
+                        this.gqlMutate(api.houseUser_receiveEquip, {
                             equipIds: [this.equipId]
                         }, (res) => {
                             console.log(res);
+                            this.callback(`操作成功`);
+                            this.$emit('confirm', true);
                         });
-                        break
+                        break;
+                    case 'return':
+                        this.gqlMutate(api.houseUser_returnEquip, {
+                            equipIds: [this.equipId]
+                        }, (res) => {
+                            console.log(res);
+                            this.callback(`操作成功`);
+                            this.$emit('confirm', true);
+                        });
+                        break;
+                    case 'maintenance':
+                        this.title = '保养';
+                        this.$refs.dialog.show();
+                        this.inlineForm={};
+                        break;
+                    case 'service':
+                        this.title = '维修';
+                        this.$refs.dialog.show();
+                        this.inlineForm={};
+                        break;
+                    case 'scrapped':
+                        this.title = '报废';
+                        this.$refs.dialog.show();
+                        this.inlineForm={};
+                        break;
                 }
+
+            },
+            dialogConfirm(){
+                let API='';
+                switch (this.title) {
+                    case '保养':
+                        API=api.admin_upkeepEquips;
+                        break;
+                    case '维修':
+                        API=api.admin_maintainEquips;
+
+                        break;
+                    case '报废':
+                        API=api.admin_scrapEquips;
+                        break;
+                }
+                this.$refs.inlineForm.gqlValidate(API,
+                    {
+                        equipIdList:[this.equipId],
+                        reason:this.inlineForm.reason,
+                        auditor:this.inlineForm.auditor,
+                    }, () => {
+                        this.callback(`申请${this.title}成功`);
+                        this.$refs.dialog.hide();
+                        this.$emit('confirm', true);
+                    });
             }
         },
         mounted() {

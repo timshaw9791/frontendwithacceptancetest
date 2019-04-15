@@ -9,10 +9,9 @@ import VueApollo from 'vue-apollo'
 import {ApolloLink} from 'apollo-link';
 import {onError} from 'apollo-link-error';
 import {getToken, removeToken} from 'common/js/auth'
-import {tokenName} from 'fetch/config';
 import {Message} from 'element-ui'
 import store from "store";
-import {baseURL} from "fetch/config";
+import {baseURL,tokenName} from "api/config";
 
 /*import {getToken} from 'common/js/auth'
 import {tokenName} from 'api/config';*/

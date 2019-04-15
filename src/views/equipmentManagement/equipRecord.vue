@@ -51,9 +51,9 @@
         },
         mixins: [formRulesMixin],
         apollo: {
-            list() {
-                return this.getEntityListWithPagintor(api.getEquipEventStoreList);
-            },
+            // list() {
+            //     return this.getEntityListWithPagintor(api.getEquipEventStoreList);
+            // },
         },
         methods: {}
     }

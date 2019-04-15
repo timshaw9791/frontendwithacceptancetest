@@ -3,7 +3,7 @@ import qs from 'qs';
 import {Message, MessageBox} from 'element-ui'
 import store from 'store'
 import {getToken, setToken, removeToken} from 'common/js/auth'
-import {baseURL, tokenName} from 'fetch/config';
+import {baseURL, tokenName} from 'api/config';
 
 // 创建axios实例
 

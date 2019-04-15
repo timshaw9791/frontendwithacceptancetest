@@ -1,4 +1,4 @@
-import {login, logout, getInfo} from 'fetch/login'
+import {login, logout, getInfo} from 'api/login'
 import {getToken, setToken, removeToken} from 'common/js/auth'
 import {Message} from 'element-ui'
 

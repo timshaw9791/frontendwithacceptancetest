@@ -76,7 +76,7 @@
   import {filterAttr} from 'common/js'
   import apiAd from 'gql/admin.gql';
   import {historyPageMixin} from 'common/js/mixin';
-  import checkbox1 from '@/base/checkbox';
+  import checkbox1 from '@/components/base/checkbox';
 
   export default {
     components: {

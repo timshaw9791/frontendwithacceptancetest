@@ -42,7 +42,7 @@ module.exports = {
                 'field': '@/field',
                 'common': '@/common',
                 'base': '@/base',
-                'fetch': '@/fetch',
+                'api': '@/api',
                 'store': '@/store',
                 'gql': '@/graphql'
             }

@@ -71,15 +71,63 @@ query getEquip($id: String!) {
   }
 }
 
-mutation police_receiveEquip($equipIds: [String]!) {
-  police_receiveEquip(equipIds: $equipIds) {
+
+mutation houseUser_receiveEquip($equipIds: [String]!) {
+  houseUser_receiveEquip(equipIds: $equipIds) {
     totalPages
     totalElements
     content {
-			id
+      id
     }
   }
 }
+
+mutation houseUser_returnEquip($equipIds: [String]!) {
+  houseUser_returnEquip(equipIds: $equipIds) {
+    totalPages
+    totalElements
+    content {
+      id
+    }
+  }
+}
+
+
+
+mutation admin_upkeepEquips($equipIdList: [String]!, $reason: String!, $auditor: String!) {
+  admin_upkeepEquips(equipIdList: $equipIdList, reason: $reason, auditor: $auditor) {
+    totalPages
+    totalElements
+    content {
+      id
+    }
+  }
+}
+
+
+
+mutation admin_maintainEquips($equipIdList: [String]!, $reason: String!, $auditor: String!) {
+  admin_maintainEquips(equipIdList: $equipIdList, reason: $reason, auditor: $auditor) {
+    totalPages
+    totalElements
+    content {
+      id
+    }
+  }
+}
+
+
+
+mutation admin_scrapEquips($equipIdList: [String]!, $reason: String!, $auditor: String!) {
+  admin_scrapEquips(equipIdList: $equipIdList, reason: $reason, auditor: $auditor) {
+    totalPages
+    totalElements
+    content {
+      id
+    }
+  }
+}
+
 
 
 
