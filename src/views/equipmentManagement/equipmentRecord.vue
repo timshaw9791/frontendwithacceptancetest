@@ -1,29 +1,21 @@
 <template>
     <div class="branch">
-        <div class="some">
+        <div class="some" style="margin-top: 10px;margin-bottom: 10px">
             <form-container style="display: flex;flex-direction: row;align-items: center">
-                <field-select style="margin: 0px 0px 0"  :label="from.select.title" v-model="from.select.checkItem" width="8"
+                <field-input style="margin: 0px 0px 0" v-model="from.search" label="搜索" width="2"
+                             prop="search"></field-input>
+                <field-select style="margin: 0px 0px 0" :label="from.select.title" v-model="from.select.checkItem"
+                              width="2"
                               :list="from.select.list"></field-select>
-                <field-date-picker style="margin: 0px 0px 0" v-model="from.time.times" label="选择日期" width="12"
-                                    prop="times" :type="from.time.type"></field-date-picker>
-                <span v-if="from.time.times!=''&&Array.isArray(from.time.times)!=true" @click="dateSlot">>></span>
-
+                <field-date-picker style="margin: 0px 0px 0" v-model="from.time.times" label="选择日期" width="4"
+                                   prop="times" :type="from.time.type"></field-date-picker>
+                <field-select style="margin: 0px 0px 0" :label="from.selectOperate.title" v-model="from.selectOperate.checkItem"
+                              width="2"
+                              :list="from.selectOperate.list"></field-select>
             </form-container>
         </div>
-        <!--<div style="display: flex;width: 100%">
-            <label-tree :tree="tree" :table="table" @clickTable="clickTable" ref="las" @treeEmit="clickTree"
-                        :tableFlag="table.flag" :width="width"></label-tree>
-            <equip :commonHouseId="select.checkItem.value.id" v-if="!table.flag" @confirm="addSucess"></equip>
-        </div>-->
         <label-tree :tree="tree" :table="table" @clickTable="clickTable" ref="las" @treeEmit="clickTree"
                     :tableFlag="table.flag" :width="table.width"></label-tree>
-        <!--<field-dialog :title="dialog.title" :showFlag="dialog.flag" @confirm="dialogConfirm" ref="dialogs">
-            <form-container ref="form" :model="form">
-                <field-input v-for="item in dialog.dialogList" v-model="form[item.model]" :label="item.label" width="10"
-                             :prop="item.model" :ref="item.model" @input="inputs"></field-input>
-                <el-button type="text" size="mini" @click="test">test</el-button>
-            </form-container>
-        </field-dialog>-->
     </div>
 </template>
 
@@ -33,12 +25,10 @@
     import warehouse from 'gql/warehouse.gql'
     import labelTree from 'common/vue/labelTree'
     import {fetchMixin} from 'field/common/mixinFetch'
-    import dateTime from 'common/vue/dataTimePicker'
+
     export default {
         components: {
-            labelTree,
-            dateTime
-            /*equip*/
+            labelTree
         },
         name: "equipmentList",
         mixins: [fetchMixin],
@@ -66,83 +56,196 @@
                         {lable: '开始时间', field: 'startTime', filter: this.filterTime},
                         {lable: '结束时间', field: 'endTime', filter: this.filterTime},
                         {lable: '操作人', field: 'operator'},
-                        {lable: '操作', field: 'operate', filter: this.operate},
+                        {lable: '操作', field: 'operate', filter: this.filterOperate}
                     ],
                     graphqlTable: {
                         graphqlApi: equipRecord.getEquipOperateRecordList,
-                        graphqlKey: {qfilter: {
-                                key:"commonHouseId",
-                                operator:"EQUEAL",
-                                value:''}}
+                        graphqlKey: {qfilter: {key: "houseId", operator: "EQUEAL", value: ""}}
                     },
                     haveButton: false,
                     width: 100
                 },
-                from:{
+                from: {
                     select: {
                         checkItem: {},
                         list: [],
                         title: '选择仓库'
                     },
-                    time:{
-                        times:'',
-                        type:'datetimerange'
+                    selectOperate:{
+                        checkItem: {},
+                        list: [
+                            {key:"全部",value:""},
+                            {key:"归还",value:"RETURN"},
+                            {key:"领取",value:"RECEIVE"},
+                            {key:"维修",value:"MAINTAIN"},
+                            {key:"保养",value:"UPKEEP"},
+                            {key:"报废",value:"SCRAP"},
+                            {key:"充电",value:"CHARGE"}
+                        ],
+                        title: '操作类型'
+                    },
+                    time: {
+                        times: '',
+                        type: 'datetimerange'
+                    },
+                    search:''
+                },
+                searchKey: {
+                    startTime: '',
+                    endTime: '',
+                    operate: '',
+                    equipSerial: '',
+                    equipName: '',
+                    operator: ''
+                },
+                searchType: {
+                    LIKE: [
+                        "equipName",
+                        "operator",
+                        "equipSerial"
+                    ],
+                    EQUEAL:["operate"],
+                    NOTLESSTHAN:["startTime"],
+                    NOTGREATTHAN:["endTime"],
+                    Combinator:{
+                        OR:["equipName","equipSerial","operator"],
+                        AND:["startTime","operate","endTime"],
+                        NOT:[]
                     }
                 }
             }
         },
+        created(){
+            this.initSearch(this.searchType)
+        },
         watch: {
             'from.select.checkItem': {
                 deep: true,
-                handler(newVal, oldVal) {
-                    this.table.graphqlTable.graphqlKey.qfilter.value = this.from.select.checkItem.value.id;
+                handler(newVal) {
+                    this.table.graphqlTable.graphqlKey.qfilter.value = newVal.value.id;
+                    this.getNext();
+                }
+            },
+            'from.selectOperate.checkItem':{
+                deep: true,
+                handler(newVal) {
+                    if(this.table.graphqlTable.graphqlKey.qfilter.value!=''){
+                        this.searchKey.operate.value=newVal.value;
+                        this.getNext();
+                    }else {
+                        this.$message.error("请先选择公安局与仓库")
+                    }
+                }
+            },
+            'from.time.times': {
+                deep: true,
+                handler(newVal) {
+                    if(this.table.graphqlTable.graphqlKey.qfilter.value!=''){
+                        this.searchKey.startTime.value=newVal[0];
+                        this.searchKey.endTime.value=newVal[1];
+                        this.getNext();
+                    }else {
+                        this.$message.error("请先选择公安局与仓库")
+                    }
+                }
+            },
+            'from.search':{
+                deep:true,
+                handler(newVal) {
+                    if(this.table.graphqlTable.graphqlKey.qfilter.value!=''){
+                        this.searchType.Combinator.OR.forEach(item=>{
+                            this.searchKey[item].value="%"+newVal+"%"
+                        });
+                        this.getNext();
+                    }else {
+                        this.$message.error("请先选择公安局与仓库")
+                    }
                 }
             }
         },
         methods: {
-            test(){
-                console.log(this.$refs);
-            },
-            inputs(data){
-                console.log('input',data);
-            },
-            addSucess() {
-                this.width = 100;
-                this.table.flag = !this.table.flag;
-                this.$refs.las.refetch();
-            },
             clickTable(data) {
                 if (data) {
 
                 }
             },
-            operate(row){
+            initSearch(type){
+                for(let typeName in type){
+                    if(typeName!="Combinator"){
+                        type[typeName].forEach(item=>{
+                            let key = item;
+                            if(item=='endTime'){
+                                key = 'startTime'
+                            }
+                            this.searchKey[item]={
+                                key: key,
+                                operator: typeName,
+                                value: ''
+                            }
+                        })
+                    }
+                }
+            },
+            getNext() {
+                let apllo = JSON.parse(JSON.stringify(this.searchKey));
+                let CombinatorList = this.searchType.Combinator;
+                let Combinator='';
+                let nexts ={};
+                for(let sort in apllo){
+                    if(apllo[sort].value!=''){
+                        nextApollo(nexts,apllo[sort])
+                    }
+                }
+                if(nexts!=''){
+                    this.$set(this.table.graphqlTable.graphqlKey.qfilter,'next', nexts.next);
+                    this.$set(this.table.graphqlTable.graphqlKey.qfilter,'combinator', "AND");
+                }
+                function nextApollo(next,apollo) {
+                    let flag = true;
+                    for (let key in next){
+                        if(key=='next'){
+                            flag =false;
+                            if(next[key].combinator==undefined){
+                                for(let combinator in CombinatorList){
+                                    let flag = CombinatorList[combinator].indexOf(next[key].key,0)
+                                    if(flag!=-1){Combinator = combinator;}
+                                }
+                                next[key].combinator=Combinator;
+                            }
+                            nextApollo(next[key],apollo);
+                        }
+                    }
+                    if(flag){
+                        next.next=apollo;
+                    }
+                }
+            },
+            filterOperate(row) {
                 let operate = row.operate;
-                switch (operate)
-                {
+                switch (operate) {
                     case 'RETURN':
-                        operate="归还";
+                        operate = "归还";
                         break;
                     case 'RECEIVE':
-                        operate="领取";
+                        operate = "领取";
                         break;
                     case 'MAINTAIN':
-                        operate="维修";
+                        operate = "维修";
                         break;
                     case 'UPKEEP':
-                        operate="保养";
+                        operate = "保养";
                         break;
                     case 'SCRAP':
-                        operate="报废";
+                        operate = "报废";
                         break;
                     case 'CHARGE':
-                        operate="充电";
+                        operate = "充电";
                         break;
                 }
                 return operate
             },
             filterTime(row) {
-                return new Date(parseInt(row.startTime||row.endTime)).toLocaleString().replace(/:\d{1,2}$/, ' ');
+                return new Date(parseInt(row.startTime || row.endTime)).toLocaleString().replace(/:\d{1,2}$/, ' ');
             },
             clickTree(data) {
                 if (data) {
@@ -157,40 +260,6 @@
                     }, true)
                 }
             },
-            /*dialogConfirm() {
-                this.addGrapahql();
-            },*/
-            /*addGrapahql() {
-                this.form.organUnit = {id: this.tree.node.id};
-                this.$refs.form.gqlValidate(this.dialog.type === 'unit' ? organUnitGql.architectureSaveOrganUnit : userGql.identitySaveUser,
-                    this.dialog.type === 'unit' ? {organUnit: this.form} : {user: this.form}, (data) => {
-                        if(this.dialog.type=='unit'){
-                            let saveOrganUnit=data.data['architecture_saveOrganUnit'];
-                            if(Array.isArray(this.node)){
-                                this.tree.node.push(saveOrganUnit)
-                            }else {
-                                this.tree.node.organUnitSet.push(saveOrganUnit)
-                            }
-                        }else {
-                            this.$refs.las.refetch();
-                        }
-                        this.dialog.flag = false;
-                        this.form = {};
-                    });
-            },*/
-           /* addGrapahql() {
-                this.form.organUnitId = this.tree.node.id;
-                this.$refs.form.gqlValidate(warehouse.commonHouseSaveCommonHouse,
-                    this.form, (data) => {
-                        this.select.list.push({
-                            key: data.data['commonHouse_saveCommonHouse'].environmentInfo,
-                            value: data.data['commonHouse_saveCommonHouse']
-                        });
-                        this.$refs.dialog.hide();
-                        this.$message.success('新增仓库' + data.data['commonHouse_saveCommonHouse'].environmentInfo);
-                        this.form = {};
-                    });
-            },*/
             add(name) {
                 if (name == 'house') {
                     this.dialog = {
@@ -200,7 +269,7 @@
                         ],
                         title: '新增仓库'
                     };
-                    this.$set(this.form,'organUnitId', this.tree.node.name)
+                    this.$set(this.form, 'organUnitId', this.tree.node.name)
 
                     this.$refs.dialogs.show();
                 } else {

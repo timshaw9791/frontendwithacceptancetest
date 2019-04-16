@@ -1,0 +1,19 @@
+query getEquipOperateRecordList($paginator: paginator, $qfilter: qfilter) {
+  EquipOperateRecordList(paginator: $paginator, qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+      equipName
+      equipId
+      reason
+      startTime
+      auditor
+      equipSerial
+      id
+      operator
+      houseId
+      operate
+      disabled
+    }
+  }
+}
