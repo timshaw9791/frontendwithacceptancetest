@@ -3,7 +3,7 @@ import Router from 'vue-router'
 /* Layout */
 import Layout from 'components/layout/Layout'
 
-const _import = require('./_import_' + process.env.NODE_ENV)
+const _import = require('./_import_' + process.env.NODE_ENV);
 
 Vue.use(Router);
 
@@ -393,16 +393,16 @@ export const asyncRouterMap = [
     {
         path: '/equipment',
         component: Layout,
-        redirect: '/equipment/index',
+        redirect: '/equipment/warehouse',
         name: 'equipment',
         meta: {title: '装备管理'},
         children: [
-            /*{
+            {
                 path: 'warehouse',
                 name: 'warehouse',
                 component: _import('equipmentManagement/warehouse'),
                 meta: {title: '仓库管理'}
-            },*/
+            },
             {
                 path: 'equipmentList',
                 name: 'equipmentList',

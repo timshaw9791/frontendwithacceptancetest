@@ -96,7 +96,7 @@
       },
       cReadonly() {
         return this.transformBoolean(this.readonly, true);
-      }
+      },
     }
   }
 </script>

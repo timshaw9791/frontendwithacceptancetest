@@ -9,16 +9,16 @@ import VueApollo from 'vue-apollo'
 import {ApolloLink} from 'apollo-link';
 import {onError} from 'apollo-link-error';
 import {getToken, removeToken} from 'common/js/auth'
-import {tokenName} from 'fetch/config';
 import {Message} from 'element-ui'
 import store from "store";
+import {baseURL,tokenName} from "api/config";
 
 /*import {getToken} from 'common/js/auth'
 import {tokenName} from 'api/config';*/
 //import capture from './capture';
 
 const httpLink = new HttpLink({
-    uri: 'http://192.168.10.54:8080/warehouse/graphql',
+    uri: `${baseURL}/graphql`,
 });
 
 
@@ -34,10 +34,12 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 const authLink = authMiddleware.concat(httpLink);
 
 const errorLink = onError(({networkError, response}) => {
+    console.log(networkError, response);
 
     let errorMsg = '';
     if (!!response && response.errors !== undefined && response.errors.length) {
         errorMsg = !response.errors[0].message ? '服务器错误' : response.errors[0].message;
+        console.log(errorMsg);
         Message.error({
             message: errorMsg
         });
@@ -46,6 +48,7 @@ const errorLink = onError(({networkError, response}) => {
         errorMsg = networkError.message;
         if (networkError.result !== undefined) {
             errorMsg = networkError.result.success === false ? networkError.result.message : networkError.result.error;
+            console.log(errorMsg);
             Message.error({
                 message: errorMsg
             });

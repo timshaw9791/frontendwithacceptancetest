@@ -8,7 +8,6 @@
       <el-button type="primary" @click="dialogShow('add')">增加角色</el-button>
     </form-container>
 
-
     <el-table :data="list" class="_list"
               v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
               fit highlight-current-row
@@ -30,6 +29,7 @@
     </el-table>
 
     <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
+
     <field-dialog :title="title" ref="dialog" @confirm="dialogConfirm">
       <form-container ref="inlineForm" :model="inlineForm">
         <field-input v-model="inlineForm.name" label="角色名" width="10"
@@ -58,7 +58,7 @@
   import {rules} from 'common/js/validate';
   import api from 'gql/role.gql';
   import {historyPageMixin} from 'common/js/mixin';
-  import checkbox1 from '@/base/checkbox'
+  import checkbox1 from '@/components/base/checkbox'
 
   export default {
     components: {

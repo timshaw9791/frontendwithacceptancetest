@@ -8,6 +8,7 @@
                 <form-container ref="form" :model="form">
                     <field-input v-model="form.name" label="装备名" width="2.5"
                                  :rules="r(true).all(R.require)" prop="name"></field-input>
+
                     <field-input v-model="form.model" label="装备类型" width="2.5"
                                  :rules="r(true).all(R.require)" prop="model"></field-input>
                     <field-input v-model="form.upkeepCycle" label="保养周期" width="2.5"
@@ -26,7 +27,7 @@
 
 
                 </form-container>
-                <el-button type="primary" class="button" @click="pushForm">提交</el-button>
+                <el-button type="primary" class="button" @click="pushForm" v-if="!equipId">提交</el-button>
             </div>
 
         </el-card>
@@ -44,7 +45,6 @@
                     <field-input v-model="zbForm.numberL" label="架体编号" width="2.5"
                                  :rules="r(true).all(R.require)" prop="numberL"></field-input>
 
-
                     <field-select label="架体AB面" v-model="zbForm.surfaceL" width="2.5"
                                   :rules="r(true).all(R.require)"
                                   prop="surfaceL"
@@ -53,15 +53,38 @@
                     <field-input v-model="zbForm.floorL" label="架体层号" width="2.5"
                                  :rules="r(true).all(R.require)" prop="floorL"></field-input>
 
+
                     <field-input v-model="zbForm.shelfLifeQ" label="保质期" width="2.5"
                                  :rules="r(true).all(R.require)" prop="shelfLifeQ"></field-input>
                     <field-date-picker v-model="zbForm.productDateQ" label="生产日期" width="2.5"
                                        :rules="r(true).all(R.require)" prop="productDateQ"></field-date-picker>
 
                 </form-container>
-                <el-button type="primary" class="button" @click="pushzbForm">提交</el-button>
+                <el-button type="primary" class="button" @click="pushzbForm" v-if="!equipId">提交</el-button>
             </div>
         </el-card>
+        <el-card class="box-card" v-if="equipId">
+            <div slot="header">
+                <span>装备操作</span>
+            </div>
+            <div class="operating">
+                <el-button type="primary" @click="control('receive')">领取</el-button>
+                <el-button type="primary" @click="control('return')">归还</el-button>
+                <el-button type="primary" @click="control('maintenance')">保养</el-button>
+                <el-button type="primary" @click="control('service')">维修</el-button>
+                <el-button type="primary" @click="control('scrapped')">报废</el-button>
+            </div>
+        </el-card>
+
+        <field-dialog :title="title"  ref="dialog" @confirm="dialogConfirm">
+            <form-container ref="inlineForm" :model="inlineForm">
+                <field-input v-model="inlineForm.reason" label="原因" width="10" type="textarea"
+                             :rules="r(true).all(R.require)" prop="reason"></field-input>
+                <field-input v-model="inlineForm.auditor" label="操作人" width="10"
+                             :rules="r(true).all(R.require)" prop="auditor"></field-input>
+            </form-container>
+        </field-dialog>
+
     </div>
 </template>
 
@@ -75,6 +98,8 @@
                 form: {},
                 zbForm: {},
                 formRes: '',
+                inlineForm:{},
+                title:'',
             }
         },
         mixins: [formRulesMixin],
@@ -82,7 +107,11 @@
             commonHouseId: {
                 type: String,
                 default: '',
-            }
+            },
+            equipId: {
+                type: String,
+                default: null,
+            },
         },
         methods: {
             pushForm() {
@@ -123,10 +152,103 @@
                 }, (res) => {
                     console.log(res);
                     this.callback(`成功`);
-                    this.$emit('confirm',true)
+                    this.$emit('confirm', true)
                 })
+            },
+            control(data) {
+                switch (data) {
+                    case 'receive':
+                        console.log(data);
+                        this.gqlMutate(api.houseUser_receiveEquip, {
+                            equipIds: [this.equipId]
+                        }, (res) => {
+                            console.log(res);
+                            this.callback(`操作成功`);
+                            this.$emit('confirm', true);
+                        });
+                        break;
+                    case 'return':
+                        this.gqlMutate(api.houseUser_returnEquip, {
+                            equipIds: [this.equipId]
+                        }, (res) => {
+                            console.log(res);
+                            this.callback(`操作成功`);
+                            this.$emit('confirm', true);
+                        });
+                        break;
+                    case 'maintenance':
+                        this.title = '保养';
+                        this.$refs.dialog.show();
+                        this.inlineForm={};
+                        break;
+                    case 'service':
+                        this.title = '维修';
+                        this.$refs.dialog.show();
+                        this.inlineForm={};
+                        break;
+                    case 'scrapped':
+                        this.title = '报废';
+                        this.$refs.dialog.show();
+                        this.inlineForm={};
+                        break;
+                }
+
+            },
+            dialogConfirm(){
+                let API='';
+                switch (this.title) {
+                    case '保养':
+                        API=api.admin_upkeepEquips;
+                        break;
+                    case '维修':
+                        API=api.admin_maintainEquips;
+
+                        break;
+                    case '报废':
+                        API=api.admin_scrapEquips;
+                        break;
+                }
+                this.$refs.inlineForm.gqlValidate(API,
+                    {
+                        equipIdList:[this.equipId],
+                        reason:this.inlineForm.reason,
+                        auditor:this.inlineForm.auditor,
+                    }, () => {
+                        this.callback(`申请${this.title}成功`);
+                        this.$refs.dialog.hide();
+                        this.$emit('confirm', true);
+                    });
             }
-        }
+        },
+        mounted() {
+            if (this.equipId) {
+                this.gqlQuery(api.getEquip, {
+                    id: this.equipId
+                }, (res) => {
+                    let zb = {};
+                    let eqData = JSON.parse(JSON.stringify(res.data.Equip));
+                    this.zb = eqData;
+                    this.form = eqData.equipArg;
+                    this.zb['shelfLifeQ'] = eqData.quality.shelfLife;
+                    this.zb['productDateQ'] = eqData.quality.productDate;
+                    this.zb['floorL'] = eqData.location.floor;
+                    this.zb['numberL'] = eqData.location.number;
+                    this.zb['surfaceL'] = eqData.location.surface;
+                    this.$set(this.form, 'manufacturerM', eqData.equipArg.manufacturer.manufacturer);
+                    this.$set(this.form, 'personM', eqData.equipArg.manufacturer.person);
+                    this.$set(this.form, 'phoneM', eqData.equipArg.manufacturer.phone);
+                    this.zbForm = this.zb;
+                    // this.form['manufacturerM'] = eqData.equipArg.manufacturer.manufacturer;
+                    // this.form['personM'] = eqData.equipArg.manufacturer.person;
+                    // this.form['phoneM'] = eqData.equipArg.manufacturer.phone;
+                });
+
+            } else {
+
+            }
+        },
+
+
     }
 </script>
 
@@ -138,6 +260,12 @@
             float: right;
             margin-bottom: 1%;
         }
+
+        .operating {
+            display: flex;
+            justify-content: center;
+        }
     }
+
 
 </style>
