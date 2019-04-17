@@ -1,6 +1,6 @@
 <template>
     <div class="label-tree" :style="cWidth()">
-        <div style="width: 200px">
+        <div style="width: 150px">
             <field-tree :treeData="tree.treeData" :defaultProps="tree.defaultProps"
                         @node="selectNode"></field-tree>
         </div>

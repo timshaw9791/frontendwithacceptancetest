@@ -7,7 +7,7 @@
             <bos-table-column v-for="item in labelList" :lable="item.lable"  :field="item.field" :filter="item.filter"></bos-table-column>
             <el-table-column v-if="haveButton" label="操作" align="center" width="200">
                 <template slot-scope="scope">
-                    <el-button type="text" size="mini" @click="someClick(row)">修改</el-button>
+                    <el-button type="text" size="mini" @click="someClick(scope.row)">操作</el-button>
                 </template>
             </el-table-column>
         </el-table>

@@ -286,7 +286,6 @@
     .branch {
         display: flex;
         width: 100%;
-        align-items: center;
         flex-direction: column;
     }
 

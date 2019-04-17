@@ -10,14 +10,14 @@
         </div>
         <div style="display: flex;width: 100%">
             <label-tree :tree="tree" :table="table" @clickTable="clickTable" ref="las" @treeEmit="clickTree"
-                        :tableFlag="table.flag" :width="width"></label-tree>
-            <equip :commonHouseId="select.checkItem.value.id" v-if="!table.flag" @confirm="addSucess"></equip>
+                        :tableFlag="table.flag" :width="table.width"></label-tree>
+            <equip :commonHouseId="select.checkItem.value.id" :equipId="table.equipId" v-if="!table.flag" @confirm="addSucess"></equip>
         </div>
         <field-dialog :title="dialog.title" @confirm="dialogConfirm" ref="dialog">
             <form-container ref="form" :model="form">
                 <field-input v-for="item in dialog.dialogList" v-model="form[item.model]" :label="item.label" width="10"
                              :prop="item.model" :ref="item.model" @input="inputs"></field-input>
-                <el-button type="text" size="mini" @click="test">test</el-button>
+                <!-- <el-button type="text" size="mini" @click="test">test</el-button>-->
             </form-container>
         </field-dialog>
     </div>
@@ -62,13 +62,12 @@
                         {lable: '创建时间', field: 'inputTime', filter: this.filterTime},
 
                     ],
-                    tableParams: {
-                        id: ''
-                    },
                     graphqlTable: {
                         graphqlApi: equi.getEquipList,
                         graphqlKey: {qfilter: {key: "commonHouseId", value: '', operator: "EQUEAL"}}
                     },
+                    equipId:'',
+                    width: 100,
                     haveButton: true
                 },
                 select: {
@@ -79,7 +78,6 @@
                 dialog: {
                     title: ''
                 },
-                width: 100,
                 form: {}
             }
         },
@@ -93,19 +91,21 @@
         },
         methods: {
             test(){
-              console.log(this.$refs);
+                console.log(this.$refs);
             },
             inputs(data){
                 console.log('input',data);
             },
             addSucess() {
-                this.width = 100;
+                this.table.width = 100;
                 this.table.flag = !this.table.flag;
                 this.$refs.las.refetch();
             },
             clickTable(data) {
                 if (data) {
-
+                    this.table.width = 30;
+                    this.table.equipId = data.id;
+                    this.table.flag=!this.table.flag
                 }
             },
             filterTime(nS) {
@@ -171,13 +171,13 @@
                         dialogList: [
                             {model: 'organUnitId', label: '机关单位'},
                             {model: 'evenInfo', label: '仓库名'}
-                            ],
+                        ],
                         title: '新增仓库'
                     };
                     this.$set(this.form,'organUnitId', this.tree.node.name)
                     this.$refs.dialog.show();
                 } else {
-                    this.width = 30;
+                    this.table.width = 30;
                     this.table.flag = !this.table.flag;
                 }
             }
@@ -190,7 +190,6 @@
     .branch {
         display: flex;
         width: 100%;
-        align-items: center;
         flex-direction: column;
     }
 
