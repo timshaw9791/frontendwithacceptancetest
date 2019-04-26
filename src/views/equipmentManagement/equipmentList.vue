@@ -117,7 +117,7 @@
                         this.select.list = [];
                         data.forEach(item => {
                             this.select.list.push({
-                                key: item.environmentInfo,
+                                key: item.name,
                                 value: item
                             })
                         })
@@ -153,15 +153,15 @@
                     });
             },*/
             addGrapahql() {
+                this.$refs.dialog.hide();
                 this.form.organUnitId = this.tree.node.id;
                 this.$refs.form.gqlValidate(warehouse.commonHouseSaveCommonHouse,
                     this.form, (data) => {
                         this.select.list.push({
-                            key: data.data['commonHouse_saveCommonHouse'].environmentInfo,
+                            key: data.data['commonHouse_saveCommonHouse'].name,
                             value: data.data['commonHouse_saveCommonHouse']
                         });
-                        this.$refs.dialog.hide();
-                        this.$message.success('新增仓库' + data.data['commonHouse_saveCommonHouse'].environmentInfo);
+                        this.$message.success('新增仓库' + data.data['commonHouse_saveCommonHouse'].name);
                         this.form = {};
                     });
             },
