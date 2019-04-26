@@ -1,0 +1,59 @@
+query getMessageList($id:String) {
+  MessageList(qfilter:{
+    combinator:AND
+    key:"userId"
+    operator:LIKE
+    value:$id
+  }){
+    totalPages
+    totalElements
+    content {
+      id
+      userId
+      content
+      disabled
+      time(OrderBy:DESC)
+      sendUserId
+      readed
+      title
+      type
+    }
+  }
+}
+
+
+
+query getMessageList1($readed:String, $id:String) {
+  MessageList(qfilter:{
+    combinator:AND
+    key:"userId"
+    operator:LIKE
+    value:$id
+  	next:{
+      combinator:AND
+      key:"readed"
+    	operator:EQUEAL
+    	value:$readed
+    }
+  }){
+    totalPages
+    totalElements
+    content {
+      id
+      userId
+      content
+      disabled
+      time
+      sendUserId
+      readed
+      title
+      type
+    }
+  }
+}
+
+
+
+mutation houseUser_readMessage($messageId: String!) {
+  houseUser_readMessage(messageId: $messageId)
+}

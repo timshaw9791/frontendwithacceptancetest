@@ -76,12 +76,19 @@
             </div>
         </el-card>
 
-        <field-dialog :title="title"  ref="dialog" @confirm="dialogConfirm">
+        <field-dialog :title="title" ref="dialog" @confirm="dialogConfirm">
             <form-container ref="inlineForm" :model="inlineForm">
                 <field-input v-model="inlineForm.reason" label="原因" width="10" type="textarea"
                              :rules="r(true).all(R.require)" prop="reason"></field-input>
                 <field-input v-model="inlineForm.auditor" label="操作人" width="10"
                              :rules="r(true).all(R.require)" prop="auditor"></field-input>
+
+                <field-select label="领导" v-model="inlineForm.leader" width="10"
+                              :rules="r(true).all(R.require)"
+                              prop="leader"
+                              v-if="title==='报废'"
+                              :list="leadershipList"></field-select>
+
             </form-container>
         </field-dialog>
 
@@ -91,6 +98,7 @@
 <script>
     import {formRulesMixin} from 'field/common/mixinComponent';
     import api from 'gql/eqList.gql'
+    import {scrappedUp} from "api/workflow";
 
     export default {
         data() {
@@ -98,8 +106,10 @@
                 form: {},
                 zbForm: {},
                 formRes: '',
-                inlineForm:{},
-                title:'',
+                inlineForm: {},
+                title: '',
+                leadershipList: [],
+                unitId: JSON.parse(localStorage.getItem('user')).unitId,
             }
         },
         mixins: [formRulesMixin],
@@ -113,6 +123,8 @@
                 default: null,
             },
         },
+
+
         methods: {
             pushForm() {
                 this.form['manufacturer'] = {
@@ -179,46 +191,83 @@
                     case 'maintenance':
                         this.title = '保养';
                         this.$refs.dialog.show();
-                        this.inlineForm={};
+                        this.inlineForm = {};
                         break;
                     case 'service':
                         this.title = '维修';
                         this.$refs.dialog.show();
-                        this.inlineForm={};
+                        this.inlineForm = {};
                         break;
                     case 'scrapped':
                         this.title = '报废';
                         this.$refs.dialog.show();
-                        this.inlineForm={};
+                        this.inlineForm = {};
                         break;
                 }
 
             },
-            dialogConfirm(){
-                let API='';
+            dialogConfirm() {
+                let API = '';
                 switch (this.title) {
                     case '保养':
-                        API=api.admin_upkeepEquips;
+                        API = api.admin_upkeepEquips;
                         break;
                     case '维修':
-                        API=api.admin_maintainEquips;
-
+                        API = api.admin_maintainEquips;
                         break;
                     case '报废':
-                        API=api.admin_scrapEquips;
+                        this.$refs.inlineForm.axiosData(
+                            scrappedUp({
+                                equipIdList: [this.equipId],
+                                leaderId: this.inlineForm.leader,
+                                reason: this.inlineForm.reason,
+                            }).then((res) => {
+                                console.log(res);
+                            })
+                        );
                         break;
                 }
-                this.$refs.inlineForm.gqlValidate(API,
-                    {
-                        equipIdList:[this.equipId],
-                        reason:this.inlineForm.reason,
-                        auditor:this.inlineForm.auditor,
-                    }, () => {
-                        this.callback(`申请${this.title}成功`);
-                        this.$refs.dialog.hide();
-                        this.$emit('confirm', true);
+                if (this.title !== '报废') {
+                    this.$refs.inlineForm.gqlValidate(API,
+                        {
+                            equipIdList: [this.equipId],
+                            reason: this.inlineForm.reason,
+                            auditor: this.inlineForm.auditor,
+                        }, () => {
+                            this.callback(`申请${this.title}成功`);
+                            this.$refs.dialog.hide();
+                            this.$emit('confirm', true);
+                        });
+                }
+
+            },
+            leadList() {
+                this.gqlQuery(api.getUserList, {
+                    "qfilter": {
+                        "key": "roleItems.roleEnum",
+                        "value": "LEADER",
+                        "operator": "EQUEAL",
+                        "combinator": "AND",
+                        "next": {
+                            "key": "organUnit.id",
+                            "value": this.unitId,
+                            "operator": "EQUEAL",
+                            "combinator": "OR",
+                            "next": {
+                                "key": "organUnit.organUnit.id",
+                                "value": this.unitId,
+                                "operator": "EQUEAL"
+                            }
+                        }
+                    }
+                }, (res) => {
+                    let data = JSON.parse(JSON.stringify(res.data.UserList.content));
+                    this.leadershipList = data.map((item) => {
+                        return {key: item.name, val: item.id}
                     });
-            }
+                })
+            },
+
         },
         mounted() {
             if (this.equipId) {
@@ -242,6 +291,7 @@
                     // this.form['personM'] = eqData.equipArg.manufacturer.person;
                     // this.form['phoneM'] = eqData.equipArg.manufacturer.phone;
                 });
+                this.leadList();
 
             } else {
 

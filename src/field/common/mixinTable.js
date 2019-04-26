@@ -52,7 +52,6 @@ export let formRulesMixin = {
         }
     },
     created() {
-        console.log('mixin');
         this._initPage();
     },
     methods: {

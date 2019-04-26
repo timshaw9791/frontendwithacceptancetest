@@ -22,7 +22,7 @@ html {
   box-sizing: border-box;
 }
 
-#app{
+#app {
   height: 100%;
 }
 
@@ -41,9 +41,9 @@ a:hover {
   text-decoration: none;
 }
 
-div:focus{
+div:focus {
   outline: none;
- }
+}
 
 a:focus,
 a:active {
@@ -70,8 +70,17 @@ a:hover {
 }
 
 //main-container全局样式
-.app-main{
-  min-height: 100%;
+
+
+.app-main {
+  min-height: 84vh;
+  max-height: 84vh;
+  margin: 2%;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
+  position: relative;
+  .list{
+    max-height: 84vh;
+  }
 }
 
 .app-container {
@@ -83,21 +92,24 @@ a:hover {
   width: 90%;
   margin: 0 auto;
   background: #F2F2F2;
-  padding-top:22px;
+  padding-top: 22px;
 }
+
 ._list {
-  width: 90%!important;
+  width: 90% !important;
   margin: 2% auto;
 }
+
 ._button-container {
   text-align: right;
   margin-right: 5%;
 }
-._remote-tip{
+
+._remote-tip {
   color: #FF0000;
 }
 
-._w{
+._w {
   width: 90%;
   margin: 2% auto;
 }

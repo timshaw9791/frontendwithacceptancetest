@@ -71,6 +71,7 @@
                 form: {}
             }
         },
+
         methods: {
             clickTable(data) {
                 if (data) {
@@ -105,6 +106,7 @@
                         this.form = {};
                     });
             },
+
             add(name) {
                 if (name == 'unit') {
                     this.dialog={
@@ -137,12 +139,12 @@
                             model : 'roleItems',
                             title : '权限',
                             list :
-                                [{val:[{id:'dPQnSjaPEN_8WWnol_ZJv3R01'}], key: 'ADMINISTRATOR'}, {val: [{id:'Di0ujMQ2G_mHi7Aj6gM1n0R01'}], key: 'POLICE_OFFICER'}, {
-                                    val: [{id:'HFWW8cpvGmuZXBM57qZfV2R01'}],
+                                [{val:[{id:'vSPqbKcdGyK7sXU8kKPR_3R01'}], key: 'ADMINISTRATOR'}, {val: [{id:'d7QlI4AyHSmCpDOD3RXQE1R01'}], key: 'POLICE_OFFICER'}, {
+                                    val: [{id:'KyeaoAudHOe7ByWHR10sX3R01'}],
                                     key: 'LEADER'
                                 }]
                         }
-                    }
+                    };
                     this.form.organUnit=this.tree.node.name;
                 }
                this.$refs.dialog.show()

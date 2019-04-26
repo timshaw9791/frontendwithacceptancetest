@@ -72,6 +72,16 @@ const apolloClient = new ApolloClient({
     link: errorLink.concat(authLink),
     cache: new InMemoryCache(),
     connectToDevTools: true,
+    defaultOptions: {
+        watchQuery: {
+            fetchPolicy: 'network-only',
+            errorPolicy: 'ignore'
+        },
+        query: {
+            fetchPolicy: 'network-only',
+            errorPolicy: 'all'
+        }
+    }
 });
 
 // Install the vue plugin

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <equip equipId="lUyt8NH_H_6U0FeO4gyQU0Equ"></equip>
+        <equip equipId="RFKPlwECEu26SwKatEydJ2Equ"></equip>
     </div>
     <!--<div class="app-container">-->
     <!--<form-container :model="param" class="_search">-->

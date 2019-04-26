@@ -51,7 +51,7 @@ router.beforeEach((to, from, next) => {
       next()
     } else {
       // Message.error('超时');
-        console.log(to.path);
+        //console.log(to.path);
       next('/login') // 否则全部重定向到登录页
       NProgress.done() // if current page is login will not trigger afterEach hook, so manually handle it
     }

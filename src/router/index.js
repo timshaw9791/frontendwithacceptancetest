@@ -395,7 +395,7 @@ export const asyncRouterMap = [
         component: Layout,
         redirect: '/equipment/warehouse',
         name: 'equipment',
-        meta: {title: '装备管理'},
+        meta: {title: '装备管理', icon: '账号'},
         children: [
             {
                 path: 'warehouse',
@@ -415,8 +415,40 @@ export const asyncRouterMap = [
                 component: _import('equipmentManagement/equipmentRecord'),
                 meta: {title: '装备记录'}
             }
-
         ]
     },
+    {
+        path: '/message',
+        component: Layout,
+        redirect: '/message/index',
+        name: 'message',
+        hidden: true,
+        children: [
+            {
+                path: 'index',
+                name: 'index',
+                component: _import('message/index'),
+                meta: {title: '消息中心', icon: '消息中心'},
+                hidden: true,
+            }
+        ]
+    },
+    {
+        path: '/workOrder',
+        component: Layout,
+        redirect: '/workOrder/index',
+        name: 'equipment',
+        meta: {title: '工单管理', icon: '订单'},
+        children: [
+            {
+                path: 'index',
+                name: 'index',
+                component: _import('workOrder/index'),
+                meta: {title: '工单列表', icon: '订单'}
+            },
+        ]
+    },
+
+
     {path: '*', redirect: '/404', hidden: true}
 ]

@@ -131,3 +131,41 @@ mutation admin_scrapEquips($equipIdList: [String]!, $reason: String!, $auditor: 
 
 
 
+query getUserList($qfilter: qfilter) {
+  UserList(qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+      unitId
+      policeSign
+      idNumber
+      name
+      password
+      username
+      gender
+      fingerprintInformation
+      disabled
+      faceInformation
+      organUnit {
+        id
+      }
+      phone
+      position
+      id
+      roleItems {
+        roleDescribe
+        roleEnum
+        id
+        privilegeItems {
+          privilege {
+            id
+          }
+          id
+          constraintRule
+        }
+        disabled
+      }
+    }
+  }
+}
+

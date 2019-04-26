@@ -1,95 +1,152 @@
 <template>
-  <el-menu class="navbar" mode="horizontal">
-    <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
-    <breadcrumb></breadcrumb>
-    <el-dropdown class="avatar-container" trigger="click">
-      <div class="avatar-wrapper">
-        <img class="user-avatar" src="./hqq.gif">
-        <i class="el-icon-caret-bottom"></i>
-      </div>
-      <el-dropdown-menu class="user-dropdown" slot="dropdown">
-        <router-link class="inlineBlock" to="/">
-          <el-dropdown-item>
-            主 页
-          </el-dropdown-item>
-        </router-link>
-        <el-dropdown-item divided>
-          <span @click="logout" style="display:block;">退 出</span>
-        </el-dropdown-item>
-      </el-dropdown-menu>
-    </el-dropdown>
-  </el-menu>
+    <el-menu class="navbar" mode="horizontal">
+        <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
+
+        <!--<breadcrumb></breadcrumb>-->
+        <div class="logo">
+            <span>logo</span>
+            警用装备智能系统管理
+        </div>
+
+        <div class="icons">
+            <div>
+                <el-tooltip class="item" effect="dark" content="选择地点" placement="bottom">
+                    <el-badge hidden>
+                        <svg-icon icon-class="地图" class="svg"/>
+                    </el-badge>
+                </el-tooltip>
+            </div>
+            <div @click="$router.push('/message')">
+                <el-tooltip class="item" effect="dark" content="消息中心" placement="bottom">
+                    <el-badge is-dot>
+                        <svg-icon icon-class="消息中心" class="svg"/>
+                    </el-badge>
+                </el-tooltip>
+            </div>
+
+        </div>
+        <el-dropdown class="avatar-container" trigger="click">
+            <div class="avatar-wrapper">
+                <img class="user-avatar" src="./hqq.gif">
+                <!--<i class="el-icon-caret-bottom"></i>-->
+            </div>
+            <el-dropdown-menu class="user-dropdown" slot="dropdown">
+                <router-link class="inlineBlock" to="/">
+                    <el-dropdown-item>
+                        主 页
+                    </el-dropdown-item>
+                </router-link>
+                <el-dropdown-item divided>
+                    <span @click="logout" style="display:block;">退 出</span>
+                </el-dropdown-item>
+            </el-dropdown-menu>
+        </el-dropdown>
+
+
+    </el-menu>
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
-  import Breadcrumb from 'components/base/Breadcrumb'
-  import Hamburger from 'components/base/Hamburger'
+    import {mapGetters} from 'vuex'
+    import Breadcrumb from 'components/base/Breadcrumb'
+    import Hamburger from 'components/base/Hamburger'
 
-  export default {
-    components: {
-      Breadcrumb,
-      Hamburger
-    },
-    computed: {
-      ...mapGetters([
-        'sidebar',
-        'avatar'
-      ])
-    },
-    methods: {
-      toggleSideBar() {
-        this.$store.dispatch('ToggleSideBar')
-      },
-      logout() {
-        this.$store.dispatch('LogOut').then(() => {
-          location.reload() // 为了重新实例化vue-router对象 避免bug
-          // this.$message.success('退出成功');
-        })
-      }
+    export default {
+        components: {
+            Breadcrumb,
+            Hamburger
+        },
+        computed: {
+            ...mapGetters([
+                'sidebar',
+                'avatar'
+            ])
+        },
+        methods: {
+            toggleSideBar() {
+                this.$store.dispatch('ToggleSideBar')
+            },
+            logout() {
+                this.$store.dispatch('LogOut').then(() => {
+                    location.reload() // 为了重新实例化vue-router对象 避免bug
+                    // this.$message.success('退出成功');
+                })
+            },
+
+        }
     }
-  }
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  .navbar {
-    height: 50px;
-    line-height: 50px;
-    border-radius: 0px !important;
-    .hamburger-container {
-      line-height: 58px;
-      height: 50px;
-      float: left;
-      padding: 0 10px;
-    }
-    .screenfull {
-      position: absolute;
-      right: 90px;
-      top: 16px;
-      color: red;
-    }
-    .avatar-container {
-      height: 50px;
-      display: inline-block;
-      position: absolute;
-      right: 35px;
-      .avatar-wrapper {
-        cursor: pointer;
-        margin-top: 5px;
+    .navbar {
+        height: 60px;
+        line-height: 60px;
+        border-radius: 0px !important;
         position: relative;
-        .user-avatar {
-          width: 40px;
-          height: 40px;
-          border-radius: 10px;
+
+        .logo {
+            font-size: 18px;
+            color: #707070;
         }
-        .el-icon-caret-bottom {
-          position: absolute;
-          right: -20px;
-          top: 25px;
-          font-size: 12px;
+
+        .icons {
+            display: flex;
+            position: absolute;
+            right: 130px;
+            top: 10px;
+
+            .item {
+                margin-left: 20px;
+
+                .svg {
+                    cursor: pointer;
+                    font-size: 22px;
+                    color: rgb(90, 90, 90);
+                }
+            }
+
         }
-      }
+
+        .hamburger-container {
+            line-height: 70px;
+            height: 50px;
+            float: left;
+            padding: 0 10px;
+        }
+
+        .screenfull {
+            position: absolute;
+            right: 90px;
+            top: 16px;
+            color: red;
+        }
+
+        .avatar-container {
+            height: 50px;
+            display: inline-block;
+            position: absolute;
+            right: 35px;
+            top: 5px;
+
+            .avatar-wrapper {
+                cursor: pointer;
+                margin-top: 5px;
+                position: relative;
+
+                .user-avatar {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                }
+
+                .el-icon-caret-bottom {
+                    position: absolute;
+                    right: -20px;
+                    top: 25px;
+                    font-size: 12px;
+                }
+            }
+        }
     }
-  }
 </style>
 

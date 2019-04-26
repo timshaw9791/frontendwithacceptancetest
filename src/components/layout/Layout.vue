@@ -5,6 +5,7 @@
     <div class="main-container">
       <navbar></navbar>
       <app-main></app-main>
+      <div class="main-bottom">◎ 2019 - 2020 警用装备智能管理系统</div>
     </div>
   </div>
 </template>
@@ -51,6 +52,11 @@ export default {
     position: relative;
     height: 100%;
     width: 100%;
+    .main-bottom{
+      text-align: center;
+      font-size: 12px;
+      color: #707070;
+    }
   }
   .drawer-bg {
     background: #000;
@@ -61,4 +67,5 @@ export default {
     position: absolute;
     z-index: 999;
   }
+
 </style>

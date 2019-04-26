@@ -1,7 +1,5 @@
 <template>
   <div class="app-container">
-
-
     <form-container :model="param" class="_search">
       <field-input class="searchInput" label="搜索关键字" :wrapforlike="true" v-model="param.namelike"></field-input>
       <el-button type="primary" style="margin-left: 15px">查询</el-button>
