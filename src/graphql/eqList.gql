@@ -30,11 +30,12 @@ mutation admin_saveEquipArg($equipArg: EquipArg_!) {
 }
 
 
-mutation admin_importEquip($serial: String, $commonHouseId: String!, $rfid: String!, $location: Location_, $equipArgId: String!, $quality: Quality_!) {
-  admin_importEquip(serial: $serial, commonHouseId: $commonHouseId, rfid: $rfid, location: $location, equipArgId: $equipArgId, quality: $quality) {
-    id
+mutation admin_importEquip($houseId: String!, $supplierId: String!, $serial: String, $rfid: String!, $location: Location_, $equipArgId: String!, $quality: Quality_!) {
+  admin_importEquip(houseId: $houseId, supplierId: $supplierId, serial: $serial, rfid: $rfid, location: $location, equipArgId: $equipArgId, quality: $quality) {
+      id
   }
 }
+
 
 query getEquip($id: String!) {
   Equip(id: $id) {
@@ -169,3 +170,51 @@ query getUserList($qfilter: qfilter) {
   }
 }
 
+query getCategoryList($organUnitId:String) {
+  CategoryList(qfilter:{
+      operator: EQUEAL
+      key:"organUnitId"
+      value:$organUnitId
+  }) {
+    totalPages
+    totalElements
+    content {
+      categoryItems {
+        id
+        equipArgs {
+          id
+          name
+          upkeepCycle
+          model
+          chargeCycle
+          disabled
+        }
+        category {
+          id
+        }
+        name
+        disabled
+      }
+      id
+      organUnitId
+      name
+      disabled
+    }
+  }
+}
+
+
+
+query getSupplierList{
+  SupplierList {
+    totalPages
+    totalElements
+    content {
+      name
+      id
+      person
+      phone
+      disabled
+    }
+  }
+}

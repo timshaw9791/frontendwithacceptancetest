@@ -2,7 +2,6 @@
     <div>
         <el-table
                 :data="list"
-                border
                 style="width: 100%" id="table">
             <bos-table-column v-for="item in labelList" :lable="item.lable"  :field="item.field" :filter="item.filter"></bos-table-column>
             <el-table-column v-if="haveButton" label="操作" align="center" width="200">

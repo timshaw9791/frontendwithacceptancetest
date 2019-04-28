@@ -4,7 +4,7 @@
 
         <!--<breadcrumb></breadcrumb>-->
         <div class="logo">
-            <span>logo</span>
+            <img src="@/common/images/警徽.png"/>
             警用装备智能系统管理
         </div>
 
@@ -87,6 +87,11 @@
         .logo {
             font-size: 18px;
             color: #707070;
+            img{
+                width: 40px;
+                height: 44px;
+                vertical-align: middle;
+            }
         }
 
         .icons {

@@ -1,8 +1,8 @@
 /**
  * Created by Administrator on 2018/7/17.
  */
-import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
+// import ElementUI from 'element-ui';
+// import 'element-ui/lib/theme-chalk/index.css';
 
 import {formRulesMixin, extendRules} from './common/mixinComponent';
 
@@ -19,6 +19,8 @@ import FieldRichText from './components/field-rich-text';
 import FieldDialog from './components/field-dialog.vue';
 import FieldTree from './components/field-tree.vue';
 import FieldTable from './components/field-table.vue'
+import FieldCascader from './components/field-cascader'
+
 
 import BosPaginator from './components/bos-paginator';
 import BosTableColumn from './components/bos-table-column.vue';
@@ -39,13 +41,14 @@ let componentsList = {
     'FieldDialog': FieldDialog,
     'FieldEntity': FieldEntity,
     'FieldTree': FieldTree,
-    'FieldTable': FieldTable
+    'FieldTable': FieldTable,
+    'FieldCascader': FieldCascader,
 };
 
 
 export default {
     install(Vue) {
-        Vue.use(ElementUI);
+        // Vue.use(ElementUI);
         // Vue.mixin(formRulesMixin);
         Object.keys(componentsList).map((name) => {
             Vue.component(name, componentsList[name]);

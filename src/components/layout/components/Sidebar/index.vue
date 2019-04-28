@@ -2,7 +2,7 @@
     <el-scrollbar wrapClass="scrollbar-wrapper">
         <div v-if="!isCollapse">
             <div class="topTitle">
-                logo
+                <img src="@/common/images/logo.png" @click="$router.push('/')"/>
             </div>
             <div class="topInfo">
                 <img src="https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1556153332&di=122f924fd03abc32a0f56b4ef8f15cd4&src=http://imgsrc.baidu.com/baike/pic/item/94cad1c8a786c917f5f04434c73d70cf3ac757cf.jpg">

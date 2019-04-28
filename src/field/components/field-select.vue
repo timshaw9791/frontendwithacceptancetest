@@ -1,6 +1,7 @@
 <template>
   <form-item :label="label" :prop="prop" :width="width" :rules="cRules">
     <el-select v-model="copyVal" :placeholder="placeholder"
+               filterable
                :disabled="cDisabled" :multiple="cMultiple" :collapse-tags="cCollapseTags"
                :size="size" :multiple-limit="cMultipleLimit"
                @change="change" @visible-change="visibleChange"
