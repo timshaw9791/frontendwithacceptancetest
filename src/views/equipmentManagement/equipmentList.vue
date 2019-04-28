@@ -1,18 +1,36 @@
 <template>
-    <div class="branch">
-        <div class="some">
-            <form-container>
+    <div class="equipmentList">
+        <div class="header">
+            <span class="title">装备信息</span>
+            <div class="input-box">
+                <svg-icon icon-class="搜索" class="icon-search"></svg-icon>
+                <input class="input" v-model="search"></input>
+            </div>
+        </div>
+        <div class="action-bar">
+            <cascader :cascader="cascader"></cascader>
+            <my-select class="select" :select="select" :size="1"></my-select>
+           <!-- <select ></select>-->
+            <!--<el-select v-model="select.checkItem" clearable placeholder="请选择">
+                <el-option
+                        v-for="item in select.list"
+                        :key="item.key"
+                        :label="item.key"
+                        :value="item.value">
+                </el-option>
+            </el-select>
+           <form-container>
                 <field-select :label="select.title" v-model="select.checkItem" width="10"
                               :list="select.list"></field-select>
-            </form-container>
+            </form-container>-->
             <el-button type="text" size="mini" @click="add('house')">增加仓库</el-button>
             <el-button type="text" size="mini" @click="add('equi')">新增装备</el-button>
         </div>
-        <div style="display: flex;width: 100%">
+        <!--<div style="display: flex;width: 100%">
             <label-tree :tree="tree" :table="table" @clickTable="clickTable" ref="las" @treeEmit="clickTree"
                         :tableFlag="table.flag" :width="table.width"></label-tree>
             <equip :commonHouseId="select.checkItem.value.id" :equipId="table.equipId" v-if="!table.flag" @confirm="addSucess"></equip>
-        </div>
+        </div>-->
         <field-dialog :title="dialog.title" @confirm="dialogConfirm" ref="dialog">
             <form-container ref="form" :model="form">
                 <field-input v-for="item in dialog.dialogList" v-model="form[item.model]" :label="item.label" width="10"
@@ -30,16 +48,46 @@
     import labelTree from 'common/vue/labelTree'
     import {fetchMixin} from 'field/common/mixinFetch'
     import equip from 'components/equipment/addEquipment'
-
+    import cascader from 'common/vue/cascader'
+    import mySelect from 'common/vue/select'
+    const debounce = (function() {
+        let timer = 0;
+        return function(func, delay) {
+            clearTimeout(timer);
+            timer = setTimeout(func, delay);
+        };
+    })();
     export default {
         components: {
             labelTree,
-            equip
+            equip,
+            cascader,
+            mySelect
         },
         name: "equipmentList",
         mixins: [fetchMixin],
         data() {
             return {
+                search:'',
+                cascader:{
+                    cascaderData:[],
+                    title:'请选择',
+                    cascaderProps:{
+                        label:'name',
+                        children:'organUnitSet',
+                        value:'id'
+                    },
+                    graphqlCascader: {
+                        graphqlApi: organUnitGql.getOrganUnitListList,
+                        graphqlKey: {key: "level", value: "MUNICIPAL"},
+                    },
+                    selectCascader:[]
+                },
+                select: {
+                    selectItem: {},
+                    list: [],
+                    title: '选择仓库'
+                },
                 tree: {
                     treeData: [],
                     defaultProps: {
@@ -70,11 +118,6 @@
                     width: 100,
                     haveButton: true
                 },
-                select: {
-                    checkItem: {},
-                    list: [],
-                    title: '选择仓库'
-                },
                 dialog: {
                     title: ''
                 },
@@ -86,6 +129,14 @@
                 deep: true,
                 handler(newVal, oldVal) {
                     this.table.graphqlTable.graphqlKey.qfilter.value = this.select.checkItem.value.id;
+                }
+            },
+            'cascader.selectCascader': {
+                deep: true,
+                handler(newVal, oldVal) {
+                    debounce(() => {
+                        this.getCommonHouseList();
+                    }, 500);
                 }
             }
         },
@@ -110,6 +161,20 @@
             },
             filterTime(nS) {
                 return new Date(parseInt(nS.inputTime)).toLocaleString().replace(/:\d{1,2}$/, ' ');
+            },
+            /*getSelects(){
+                this.debounce(this.getCommonHouseList,1500)
+            },*/
+            getCommonHouseList() {
+                this.gqlQuery(warehouse.getCommonHouseList, {id: this.cascader.selectCascader}, (data) => {
+                    this.select.list = [];
+                    data.forEach(item => {
+                        this.select.list.push({
+                            key: item.name,
+                            value: item
+                        })
+                    })
+                }, true)
             },
             clickTree(data) {
                 if (data) {
@@ -186,17 +251,60 @@
 </script>
 
 <style scoped>
-
-    .branch {
+    .equipmentList {
         display: flex;
         width: 100%;
         flex-direction: column;
     }
+    .equipmentList .header {
+        width: 100%;
+        padding-left: 18px;
+        padding-right: 35px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 33px;
+        color:rgba(112,112,112,1);
+        font-family: SourceHanSansCN;
 
-    .branch .some {
+    }
+    .header .input-box{
+        width:285px;
+        position: relative;
+    }
+    .header .title{
+        font-size: 20px;
+    }
+    .input-box .input{
+        width: 100%;
+        height:38px;
+        background:rgba(255,255,255,1);
+        border:1px solid rgba(112,112,112,1);
+        opacity:1;
+        border-radius:19px;
+        padding-left: 40px;
+        outline:medium;
+    }
+    .input-box .icon-search{
+        position: absolute;
+        left: 10px;
+        z-index: 1;
+        top: 50%; /*偏移*/
+        width: 25px;
+        height: 25px;
+        transform: translateY(-50%);
+    }
+    .equipmentList .action-bar {
+        margin-top: 8px;
+        border-top: rgba(112,112,112, 0.13) solid 1px ;
+        height: 57px;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-direction: row;
+    }
+    .action-bar .select{
+        margin-left: 29px;
     }
 </style>
