@@ -15,8 +15,8 @@
             <!--<drop-down class="drop-down-box" :drop="drop"></drop-down>-->
         </div>
         <div class="body">
-            <labels :table="table" v-if="table.flag"></labels>
-            <equip :commonHouseId="select.selectItem" :equipId="table.equipId" v-if="!table.flag" @confirm="addSucess"></equip>
+            <labels :table="table" v-if="table.flag" @clickTable="clickTable" ref="las"></labels>
+            <equip :commonHouseId="select.selectItem" :equipId="table.equipId" v-if="!table.flag" @black="blacked" @confirm="addSucess"></equip>
         </div>
         <!--<div style="display: flex;width: 100%">
             <label-tree :tree="tree" :table="table" @clickTable="clickTable" ref="las" @treeEmit="clickTree"
@@ -134,9 +134,6 @@
             }
         },
         methods: {
-            test(){
-                console.log(this.$refs);
-            },
             inputs(data){
                 console.log('input',data);
             },
@@ -145,8 +142,14 @@
                 this.$refs.las.refetch();
             },
             clickTable(data) {
+                console.log(data);
                 if (data) {
                     this.table.equipId = data.id;
+                    this.table.flag=!this.table.flag
+                }
+            },
+            blacked(data){
+                if (data){
                     this.table.flag=!this.table.flag
                 }
             },
@@ -161,8 +164,8 @@
                             key: item.name,
                             value: item.id
                         })
-                    })
-                    console.log('addGrapahql',this.select.list);
+                    });
+                    this.table.graphqlTable.graphqlKey.qfilter.value = this.select.list[0].value;
                 }, true)
             },
             changeBox(data) {

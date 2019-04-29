@@ -90,7 +90,7 @@
         </el-card>
 
         <div class="box-bottom">
-            <el-button>返回</el-button>
+            <el-button @click="black">返回</el-button>
             <el-button type="primary" @click="pushzbForm">确认</el-button>
         </div>
 
@@ -146,6 +146,9 @@
 
 
         methods: {
+            black(){
+              this.$emit('black',true)
+            },
             // pushForm() {
             //     this.form['manufacturer'] = {
             //         manufacturer: this.form.manufacturerM,
