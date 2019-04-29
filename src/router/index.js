@@ -402,7 +402,8 @@ export const asyncRouterMap = [
                 path: 'warehouse',
                 name: 'warehouse',
                 component: _import('equipmentManagement/warehouse'),
-                meta: {title: '仓库管理'}
+                meta: {title: '仓库管理'},
+                hidden: true
             },
             {
                 path: 'equipmentList',
