@@ -38,40 +38,50 @@ mutation admin_importEquip($houseId: String!, $supplierId: String!, $serial: Str
 
 
 
+
 query getEquip($id: String!) {
   Equip(id: $id) {
-    serial
-    quality {
-      shelfLife
-      productDate
-    }
-    state
-    id
-    inputTime
-    location {
-          surface
-          floor
-          number
-    }
+    useCount
+    rfid
+    policeId
     equipArg {
       id
       name
       model
-      manufacturer{
-        person
-        phone
-        manufacturer
-      }
-      upkeepCycle
       chargeCycle
+      upkeepCycle
+    }
+    supplier {
+      id
+      name
+      phone
+      person
+    }
+    inputTime
+    quality {
+      productDate
+      shelfLife
     }
     disabled
-    name
-    rfid
     commonHouseId
-    policeId
+    name
+    serial
+    location {
+      surface
+      section
+      floor
+      number
+    }
+    id
+    receiveTime
+    state
   }
 }
+
+
+
+
+
 
 
 mutation houseUser_receiveEquip($equipIds: [String]!) {

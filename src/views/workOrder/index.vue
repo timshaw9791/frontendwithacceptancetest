@@ -1,7 +1,7 @@
 <template>
     <div>
         <!--<equip equipId="RFKPlwECEu26SwKatEydJ2Equ"></equip>-->
-        <equip commonHouseId='RonxrUGfHOCMSZic_URMR3Com'></equip>
+        <!--<equip commonHouseId='VVNFISXOHOK9KSRt_brNy3Com' equipId='fXzyf6vaFtWQDBh5EGp0n0Equ'></equip>-->
 
         <!--<el-card shadow="never">-->
             <!--<div slot="header">-->
