@@ -7,7 +7,7 @@
                 :show-all-levels="false"
                 expand-trigger="hover"
                 :change-on-select="true"
-                @change="handleChange" class="cascader"></el-cascader>
+                @change="handleChange"  class="cascader"></el-cascader>
     </div>
 </template>
 

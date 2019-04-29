@@ -38,14 +38,14 @@
             initFont(){
                 let select = document.getElementById('my-select');
                 select.style.fontSize = this.size+"px";
-            }
+            },
         }
     }
 </script>
 
 <style>
-   #my-select .my-select-box{
-        color:rgba(112,112,112,0.15);
+    .my-select-box{
+        color:rgba(112,112,112,1)
     }
    .my-select-box .selectBox{
        margin-left: 15px;

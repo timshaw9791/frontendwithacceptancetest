@@ -122,8 +122,9 @@
             'from.select.checkItem': {
                 deep: true,
                 handler(newVal) {
+                    console.log(newVal);
                     this.$set(this.table.graphqlTable.graphqlKey.qfilter,'value', newVal.value.id);
-                    this.getNext();
+
                 }
             },
             'from.selectOperate.checkItem':{
@@ -184,12 +185,14 @@
                 let CombinatorList = this.searchType.Combinator;
                 let Combinator='';
                 let nexts ={};
+                console.log(apllo);
                 for(let sort in apllo){
                     if(apllo[sort].value!=''){
                         nextApollo(nexts,apllo[sort])
                     }
                 }
-                if(nexts.next.key!=undefined){
+                console.log(nexts);
+                if(nexts.next.key!=undefined||nexts.next!=undefined){
                     this.$set(this.table.graphqlTable.graphqlKey.qfilter,'next', nexts.next);
                     this.$set(this.table.graphqlTable.graphqlKey.qfilter,'combinator', "AND");
                 }

@@ -4,27 +4,18 @@
             <span class="title">装备信息</span>
             <div class="input-box">
                 <svg-icon icon-class="搜索" class="icon-search"></svg-icon>
-                <input class="input" v-model="search"></input>
+                <input class="input" v-model="search" placeholder="名称"></input>
             </div>
         </div>
         <div class="action-bar">
             <cascader :cascader="cascader"></cascader>
             <my-select class="select" :select="select" :size="1"></my-select>
-           <!-- <select ></select>-->
-            <!--<el-select v-model="select.checkItem" clearable placeholder="请选择">
-                <el-option
-                        v-for="item in select.list"
-                        :key="item.key"
-                        :label="item.key"
-                        :value="item.value">
-                </el-option>
-            </el-select>
-           <form-container>
-                <field-select :label="select.title" v-model="select.checkItem" width="10"
-                              :list="select.list"></field-select>
-            </form-container>-->
-            <el-button type="text" size="mini" @click="add('house')">增加仓库</el-button>
-            <el-button type="text" size="mini" @click="add('equi')">新增装备</el-button>
+            <el-button type="text" size="mini" class="action-button" @click="add('house')">增加仓库</el-button>
+            <el-button type="text" size="mini" class="action-button" @click="add('equi')">新增装备</el-button>
+            <!--<drop-down class="drop-down-box" :drop="drop"></drop-down>-->
+        </div>
+        <div class="body">
+            <labels :table="table"></labels>
         </div>
         <!--<div style="display: flex;width: 100%">
             <label-tree :tree="tree" :table="table" @clickTable="clickTable" ref="las" @treeEmit="clickTree"
@@ -50,6 +41,8 @@
     import equip from 'components/equipment/addEquipment'
     import cascader from 'common/vue/cascader'
     import mySelect from 'common/vue/select'
+    import dropDown from 'common/vue/dropDown'
+    import labels from 'common/vue/label'
     const debounce = (function() {
         let timer = 0;
         return function(func, delay) {
@@ -62,7 +55,9 @@
             labelTree,
             equip,
             cascader,
-            mySelect
+            mySelect,
+            dropDown,
+            labels
         },
         name: "equipmentList",
         mixins: [fetchMixin],
@@ -83,23 +78,21 @@
                     },
                     selectCascader:[]
                 },
+                drop:{
+                    title:'批量管理',
+                    list:[
+                        {key:'领取',value:'RECEIVE'},
+                        {key:'归还',value:'RETURN'},
+                        {key:'维修',value:'MAINTAIN'},
+                        {key:'保养',value:'UPKEEP'},
+                        {key:'报废',value:'SCRAP'},
+                        {key:'充电',value:'CHARGE'}
+                    ]
+                },
                 select: {
                     selectItem: {},
                     list: [],
                     title: '选择仓库'
-                },
-                tree: {
-                    treeData: [],
-                    defaultProps: {
-                        children: 'organUnitSet',
-                        label: 'name'
-                    },
-                    graphqlTree: {
-                        graphqlApi: organUnitGql.getOrganUnitListList,
-                        graphqlKey: {key: "level", value: "MUNICIPAL"},
-                        graphglName: 'OrganUnitList',
-                    },
-                    node: {}
                 },
                 table: {
                     flag: true,
@@ -115,7 +108,6 @@
                         graphqlKey: {qfilter: {key: "commonHouseId", value: '', operator: "EQUEAL"}}
                     },
                     equipId:'',
-                    width: 100,
                     haveButton: true
                 },
                 dialog: {
@@ -125,10 +117,10 @@
             }
         },
         watch: {
-            'select.checkItem': {
+            'select.selectItem': {
                 deep: true,
                 handler(newVal, oldVal) {
-                    this.table.graphqlTable.graphqlKey.qfilter.value = this.select.checkItem.value.id;
+                    this.table.graphqlTable.graphqlKey.qfilter.value = this.select.selectItem;
                 }
             },
             'cascader.selectCascader': {
@@ -148,13 +140,11 @@
                 console.log('input',data);
             },
             addSucess() {
-                this.table.width = 100;
                 this.table.flag = !this.table.flag;
                 this.$refs.las.refetch();
             },
             clickTable(data) {
                 if (data) {
-                    this.table.width = 30;
                     this.table.equipId = data.id;
                     this.table.flag=!this.table.flag
                 }
@@ -162,32 +152,17 @@
             filterTime(nS) {
                 return new Date(parseInt(nS.inputTime)).toLocaleString().replace(/:\d{1,2}$/, ' ');
             },
-            /*getSelects(){
-                this.debounce(this.getCommonHouseList,1500)
-            },*/
             getCommonHouseList() {
                 this.gqlQuery(warehouse.getCommonHouseList, {id: this.cascader.selectCascader}, (data) => {
                     this.select.list = [];
                     data.forEach(item => {
                         this.select.list.push({
                             key: item.name,
-                            value: item
+                            value: item.id
                         })
                     })
+                    console.log('addGrapahql',this.select.list);
                 }, true)
-            },
-            clickTree(data) {
-                if (data) {
-                    this.gqlQuery(warehouse.getCommonHouseList, {id: this.tree.node.id}, (data) => {
-                        this.select.list = [];
-                        data.forEach(item => {
-                            this.select.list.push({
-                                key: item.name,
-                                value: item
-                            })
-                        })
-                    }, true)
-                }
             },
             changeBox(data) {
                 if (data) {
@@ -199,27 +174,9 @@
             dialogConfirm() {
                 this.addGrapahql();
             },
-            /*addGrapahql() {
-                this.form.organUnit = {id: this.tree.node.id};
-                this.$refs.form.gqlValidate(this.dialog.type === 'unit' ? organUnitGql.architectureSaveOrganUnit : userGql.identitySaveUser,
-                    this.dialog.type === 'unit' ? {organUnit: this.form} : {user: this.form}, (data) => {
-                        if(this.dialog.type=='unit'){
-                            let saveOrganUnit=data.data['architecture_saveOrganUnit'];
-                            if(Array.isArray(this.node)){
-                                this.tree.node.push(saveOrganUnit)
-                            }else {
-                                this.tree.node.organUnitSet.push(saveOrganUnit)
-                            }
-                        }else {
-                            this.$refs.las.refetch();
-                        }
-                        this.dialog.flag = false;
-                        this.form = {};
-                    });
-            },*/
             addGrapahql() {
                 this.$refs.dialog.hide();
-                this.form.organUnitId = this.tree.node.id;
+                this.form.organUnitId = this.cascader.selectCascader;
                 this.$refs.form.gqlValidate(warehouse.commonHouseSaveCommonHouse,
                     this.form, (data) => {
                         this.select.list.push({
@@ -230,19 +187,35 @@
                         this.form = {};
                     });
             },
+            getUnitName(data){
+                let name;
+                let flag = false
+                data.forEach(item=>{
+                    if (item.id==this.cascader.selectCascader){
+                       name=item.name;
+                       flag=true
+                    }
+                })
+                if(flag){
+                    return name
+                }else {
+                    this.getUnitName(data.organUnitSet)
+                }
+            },
             add(name) {
                 if (name == 'house') {
                     this.dialog = {
                         dialogList: [
                             {model: 'organUnitId', label: '机关单位'},
-                            {model: 'evenInfo', label: '仓库名'}
+                            {model: 'name', label: '仓库名'}
                         ],
                         title: '新增仓库'
                     };
-                    this.$set(this.form,'organUnitId', this.tree.node.name)
+                    if (this.cascader.selectCascader){
+                        this.$set(this.form,'organUnitId', this.getUnitName(this.cascader.cascaderData));
+                    }
                     this.$refs.dialog.show();
                 } else {
-                    this.table.width = 30;
                     this.table.flag = !this.table.flag;
                 }
             }
@@ -255,6 +228,7 @@
         display: flex;
         width: 100%;
         flex-direction: column;
+        font-size: 16px;
     }
     .equipmentList .header {
         width: 100%;
@@ -266,8 +240,10 @@
         justify-content: space-between;
         margin-top: 33px;
         color:rgba(112,112,112,1);
-        font-family: SourceHanSansCN;
 
+    }
+    .equipmentList .body{
+        width: 100%;
     }
     .header .input-box{
         width:285px;
@@ -283,12 +259,12 @@
         border:1px solid rgba(112,112,112,1);
         opacity:1;
         border-radius:19px;
-        padding-left: 40px;
+        padding-left: 15px;
         outline:medium;
     }
     .input-box .icon-search{
         position: absolute;
-        left: 10px;
+        right: 10px;
         z-index: 1;
         top: 50%; /*偏移*/
         width: 25px;
@@ -301,10 +277,21 @@
         height: 57px;
         display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: left;
         flex-direction: row;
+        margin-left: 20px;
+        width: 100%;
     }
     .action-bar .select{
         margin-left: 29px;
+    }
+    .action-bar .drop-down-box{
+        width: 57%;
+        display: flex;
+        justify-content: flex-end;
+    }
+    .action-bar .action-button{
+        margin-left: 27px;
+        color: rgba(112,112,112,1);
     }
 </style>
