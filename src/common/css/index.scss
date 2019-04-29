@@ -5,25 +5,21 @@
 @import 'element-ui';
 @import 'sidebar';
 
-
-//@font-face
-//{
-//  font-family: myFirstFont;
-//  src: url('../font/PINGFANG.TTF')
-//}
-
-
 body {
   height: 100%;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
-
+  font-family: SourceHanSansCN, Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
 }
 
 label {
   font-weight: 700;
+}
+
+@font-face {
+  font-family: 'SourceHanSansCN';
+  src: url(../src/assets/font/SourceHanSansCN-Normal.ttf);
 }
 
 html {

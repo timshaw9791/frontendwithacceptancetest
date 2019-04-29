@@ -14,7 +14,7 @@
                               :list="from.selectOperate.list"></field-select>
             </form-container>
         </div>
-        <label-tree :tree="tree" :table="table" @clickTable="clickTable" ref="las" @treeEmit="clickTree"
+        <label-tree :tree="tree" :table="table"  @clickTable="clickTable" ref="las" @treeEmit="clickTree"
                     :tableFlag="table.flag" :width="table.width"></label-tree>
     </div>
 </template>
@@ -30,7 +30,7 @@
         components: {
             labelTree
         },
-        name: "equipmentList",
+        name: "equipmentRecord",
         mixins: [fetchMixin],
         data() {
             return {
@@ -122,51 +122,45 @@
             'from.select.checkItem': {
                 deep: true,
                 handler(newVal) {
-                    this.table.graphqlTable.graphqlKey.qfilter.value = newVal.value.id;
-                    this.getNext();
+                    console.log(newVal);
+                    this.$set(this.table.graphqlTable.graphqlKey.qfilter,'value', newVal.value.id);
+
                 }
             },
             'from.selectOperate.checkItem':{
                 deep: true,
                 handler(newVal) {
-                    if(this.table.graphqlTable.graphqlKey.qfilter.value!=''){
-                        this.searchKey.operate.value=newVal.value;
-                        this.getNext();
-                    }else {
-                        this.$message.error("请先选择公安局与仓库")
-                    }
+                    this.searchKey.operate.value=newVal.value;
+                    this.modifyQfilter()
                 }
             },
             'from.time.times': {
                 deep: true,
                 handler(newVal) {
-                    if(this.table.graphqlTable.graphqlKey.qfilter.value!=''){
-                        this.searchKey.startTime.value=newVal[0];
-                        this.searchKey.endTime.value=newVal[1];
-                        this.getNext();
-                    }else {
-                        this.$message.error("请先选择公安局与仓库")
-                    }
+                    this.searchKey.startTime.value=newVal[0];
+                    this.searchKey.endTime.value=newVal[1];
+                    this.modifyQfilter()
                 }
             },
             'from.search':{
                 deep:true,
                 handler(newVal) {
-                    if(this.table.graphqlTable.graphqlKey.qfilter.value!=''){
-                        this.searchType.Combinator.OR.forEach(item=>{
-                            this.searchKey[item].value="%"+newVal+"%"
-                        });
-                        this.getNext();
-                    }else {
-                        this.$message.error("请先选择公安局与仓库")
-                    }
+                    this.searchType.Combinator.OR.forEach(item=>{
+                        this.searchKey[item].value="%"+newVal+"%"
+                    });
+                    this.modifyQfilter()
                 }
             }
         },
         methods: {
             clickTable(data) {
-                if (data) {
-
+                if (data) {}
+            },
+            modifyQfilter(){
+                if(this.table.graphqlTable.graphqlKey.qfilter.value!=''){
+                    this.getNext();
+                }else {
+                    this.$message.error("请先选择公安局与仓库")
                 }
             },
             initSearch(type){
@@ -191,12 +185,14 @@
                 let CombinatorList = this.searchType.Combinator;
                 let Combinator='';
                 let nexts ={};
+                console.log(apllo);
                 for(let sort in apllo){
                     if(apllo[sort].value!=''){
                         nextApollo(nexts,apllo[sort])
                     }
                 }
-                if(nexts!=''){
+                console.log(nexts);
+                if(nexts.next.key!=undefined||nexts.next!=undefined){
                     this.$set(this.table.graphqlTable.graphqlKey.qfilter,'next', nexts.next);
                     this.$set(this.table.graphqlTable.graphqlKey.qfilter,'combinator', "AND");
                 }
@@ -253,28 +249,11 @@
                         this.from.select.list = [];
                         data.forEach(item => {
                             this.from.select.list.push({
-                                key: item.environmentInfo,
+                                key: item.name,
                                 value: item
                             })
                         })
                     }, true)
-                }
-            },
-            add(name) {
-                if (name == 'house') {
-                    this.dialog = {
-                        dialogList: [
-                            {model: 'organUnitId', label: '机关单位'},
-                            {model: 'evenInfo', label: '仓库名'}
-                        ],
-                        title: '新增仓库'
-                    };
-                    this.$set(this.form, 'organUnitId', this.tree.node.name)
-
-                    this.$refs.dialogs.show();
-                } else {
-                    this.width = 30;
-                    this.table.flag = !this.table.flag;
                 }
             }
         }
