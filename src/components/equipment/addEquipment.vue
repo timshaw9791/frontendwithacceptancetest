@@ -6,22 +6,23 @@
             </div>
             <div>
                 <form-container ref="form" :model="form" v-if="equipId">
-                    <field-input v-model="form.name" label="装备名" width="2.5" :disabled="equipId"
+                    <field-input v-model="form.name" label="装备名" width="2.5" :disabled="disabled"
                                  :rules="r(true).all(R.require)" prop="name"></field-input>
-                    <field-input v-model="form.model" label="装备类型" width="2.5" :disabled="equipId"
+
+                    <field-input v-model="form.model" label="装备类型" width="2.5" :disabled="disabled"
                                  :rules="r(true).all(R.require)" prop="model"></field-input>
-                    <field-input v-model="form.upkeepCycle" label="保养周期" width="2.5" :disabled="equipId"
-                                 :rules="r(true).all(R.require)" prop="upkeepCycle"></field-input>
-                    <field-input v-model="form.chargeCycle" label="充电周期" width="2.5" :disabled="equipId"
-                                 :rules="r(true).all(R.require)" prop="chargeCycle"></field-input>
+                    <field-input v-model="form.upkeepCycle" label="保养周期" width="2.5" :disabled="disabled"
+                    ></field-input>
+                    <field-input v-model="form.chargeCycle" label="充电周期" width="2.5" :disabled="disabled"
+                    ></field-input>
 
                     <!--M标识第三层-->
 
-                    <field-input v-model="form.manufacturerM" label="制造厂家" width="2.5"
+                    <field-input v-model="form.manufacturerM" label="制造厂家" width="2.5" :disabled="disabled"
                                  :rules="r(true).all(R.require)" prop="manufacturerM"></field-input>
-                    <field-input v-model="form.personM" label="联系人" width="2.5"
+                    <field-input v-model="form.personM" label="联系人" width="2.5" :disabled="disabled"
                                  :rules="r(true).all(R.require)" prop="personM"></field-input>
-                    <field-input v-model="form.phoneM" label="联系电话" width="2.5"
+                    <field-input v-model="form.phoneM" label="联系电话" width="2.5" :disabled="disabled"
                                  :rules="r(true).all(R.require)" prop="phoneM"></field-input>
                 </form-container>
 
@@ -53,7 +54,7 @@
                                  :rules="r(true).all(R.require)" prop="rfid"></field-input>
 
                     <field-input v-model="zbForm.numberL" label="架体编号" width="2.5"
-                                 :rules="r(true).all(R.require)" prop="numberL"></field-input>
+                                 :rules="r(true).all(R.integer)" prop="numberL"></field-input>
 
                     <field-select label="架体AB面" v-model="zbForm.surfaceL" width="2.5"
                                   :rules="r(true).all(R.require)"
@@ -61,7 +62,7 @@
                                   :list="[{val:'A_SURFACE',key:'A面'},{val:'B_SURFACE',key:'B面'},{val:'ALL',key:'C面'}]"></field-select>
 
                     <field-input v-model="zbForm.floorL" label="架体层号" width="2.5"
-                                 :rules="r(true).all(R.require)" prop="floorL"></field-input>
+                                 :rules="r(true).all(R.integer)" prop="floorL"></field-input>
 
                     <field-input v-model="zbForm.sectionL" label="架体节号" width="2.5"
                                  :rules="r(true).all(R.require)" prop="sectionL"></field-input>
@@ -129,7 +130,7 @@
                 unitId: JSON.parse(localStorage.getItem('user')).unitId,
                 options: [],
                 vendorId: [],
-
+                disabled: true
             }
         },
         mixins: [formRulesMixin],
@@ -166,10 +167,10 @@
                 // this.formRes = 'ldcFUKCQE3_epG09XGBf81EqA';
 
                 this.zbForm['location'] = {
-                    number: this.zbForm.numberL,
+                    number: Number(this.zbForm.numberL),
                     surface: this.zbForm.surfaceL,
-                    floor: this.zbForm.floorL,
-                    section: this.zbForm.section,
+                    floor: Number(this.zbForm.floorL),
+                    section: this.zbForm.sectionL,
                 };
                 this.zbForm['quality'] = {
                     shelfLife: this.zbForm.shelfLifeQ * 24 * 60 * 60 * 1000,
@@ -299,6 +300,7 @@
 
         },
         mounted() {
+
             if (this.equipId) {
                 this.gqlQuery(api.getEquip, {
                     id: this.equipId
@@ -309,19 +311,25 @@
                     this.form = eqData.equipArg;
                     this.zb['shelfLifeQ'] = (eqData.quality.shelfLife / 24 / 60 / 60 / 1000);
                     this.zb['productDateQ'] = eqData.quality.productDate;
+
                     this.zb['floorL'] = eqData.location.floor;
                     this.zb['numberL'] = eqData.location.number;
                     this.zb['surfaceL'] = eqData.location.surface;
-                    this.$set(this.form, 'manufacturerM', eqData.equipArg.manufacturer.manufacturer);
-                    this.$set(this.form, 'personM', eqData.equipArg.manufacturer.person);
-                    this.$set(this.form, 'phoneM', eqData.equipArg.manufacturer.phone);
+                    this.zb['sectionL'] = eqData.location.section;
+
+                    this.$set(this.form, 'manufacturerM', eqData.supplier.name);
+                    this.$set(this.form, 'personM', eqData.supplier.person);
+                    this.$set(this.form, 'phoneM', eqData.supplier.phone);
+
                     this.zbForm = this.zb;
+
                     // this.form['manufacturerM'] = eqData.equipArg.manufacturer.manufacturer;
                     // this.form['personM'] = eqData.equipArg.manufacturer.person;
                     // this.form['phoneM'] = eqData.equipArg.manufacturer.phone;
                 });
-                this.leadList();
+                // this.leadList();
             } else {
+                this.disabled = true;
                 this.gqlQuery(api.getCategoryList, {
                     houseId: this.commonHouseId
                 }, (res) => {
