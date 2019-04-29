@@ -6,13 +6,13 @@
             </div>
             <div>
                 <form-container ref="form" :model="form" v-if="equipId">
-                    <field-input v-model="form.name" label="装备名" width="2.5"
+                    <field-input v-model="form.name" label="装备名" width="2.5" :disabled="equipId"
                                  :rules="r(true).all(R.require)" prop="name"></field-input>
-                    <field-input v-model="form.model" label="装备类型" width="2.5"
+                    <field-input v-model="form.model" label="装备类型" width="2.5" :disabled="equipId"
                                  :rules="r(true).all(R.require)" prop="model"></field-input>
-                    <field-input v-model="form.upkeepCycle" label="保养周期" width="2.5"
+                    <field-input v-model="form.upkeepCycle" label="保养周期" width="2.5" :disabled="equipId"
                                  :rules="r(true).all(R.require)" prop="upkeepCycle"></field-input>
-                    <field-input v-model="form.chargeCycle" label="充电周期" width="2.5"
+                    <field-input v-model="form.chargeCycle" label="充电周期" width="2.5" :disabled="equipId"
                                  :rules="r(true).all(R.require)" prop="chargeCycle"></field-input>
 
                     <!--M标识第三层-->
@@ -129,6 +129,7 @@
                 unitId: JSON.parse(localStorage.getItem('user')).unitId,
                 options: [],
                 vendorId: [],
+
             }
         },
         mixins: [formRulesMixin],
@@ -171,7 +172,7 @@
                     section: this.zbForm.section,
                 };
                 this.zbForm['quality'] = {
-                    shelfLife: this.zbForm.shelfLifeQ,
+                    shelfLife: this.zbForm.shelfLifeQ * 24 * 60 * 60 * 1000,
                     productDate: this.zbForm.productDateQ,
                 };
 
@@ -306,7 +307,7 @@
                     let eqData = JSON.parse(JSON.stringify(res.data.Equip));
                     this.zb = eqData;
                     this.form = eqData.equipArg;
-                    this.zb['shelfLifeQ'] = eqData.quality.shelfLife;
+                    this.zb['shelfLifeQ'] = (eqData.quality.shelfLife / 24 / 60 / 60 / 1000);
                     this.zb['productDateQ'] = eqData.quality.productDate;
                     this.zb['floorL'] = eqData.location.floor;
                     this.zb['numberL'] = eqData.location.number;
@@ -322,7 +323,7 @@
                 this.leadList();
             } else {
                 this.gqlQuery(api.getCategoryList, {
-                    organUnitId: this.commonHouseId
+                    houseId: this.commonHouseId
                 }, (res) => {
                     let data = JSON.parse(JSON.stringify(res.data.CategoryList.content));
                     let newData = [];
@@ -390,7 +391,8 @@
 
     .box-bottom {
         @include center;
-        margin-top: 70px;
+        margin: 3% 0;
+
     }
 
 

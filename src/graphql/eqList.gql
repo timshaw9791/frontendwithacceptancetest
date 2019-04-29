@@ -32,9 +32,10 @@ mutation admin_saveEquipArg($equipArg: EquipArg_!) {
 
 mutation admin_importEquip($houseId: String!, $supplierId: String!, $serial: String, $rfid: String!, $location: Location_, $equipArgId: String!, $quality: Quality_!) {
   admin_importEquip(houseId: $houseId, supplierId: $supplierId, serial: $serial, rfid: $rfid, location: $location, equipArgId: $equipArgId, quality: $quality) {
-      id
+    id
   }
 }
+
 
 
 query getEquip($id: String!) {
@@ -170,38 +171,39 @@ query getUserList($qfilter: qfilter) {
   }
 }
 
-query getCategoryList($organUnitId:String) {
+query getCategoryList($houseId:String) {
   CategoryList(qfilter:{
       operator: EQUEAL
-      key:"organUnitId"
-      value:$organUnitId
+      key:"houseId"
+      value:$houseId
   }) {
     totalPages
     totalElements
     content {
+      name
+      id
       categoryItems {
+        name
         id
-        equipArgs {
-          id
-          name
-          upkeepCycle
-          model
-          chargeCycle
-          disabled
-        }
         category {
           id
         }
-        name
+        equipArgs {
+          id
+          upkeepCycle
+          name
+          chargeCycle
+          disabled
+          model
+        }
         disabled
       }
-      id
-      organUnitId
-      name
       disabled
+      houseId
     }
   }
 }
+
 
 
 
