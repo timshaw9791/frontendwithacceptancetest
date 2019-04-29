@@ -1,13 +1,13 @@
 <template>
     <div class="equipmentList">
-        <div class="header">
+        <div class="header" v-if="table.flag">
             <span class="title">装备信息</span>
-            <div class="input-box">
+            <div class="input-box" v-if="false">
                 <svg-icon icon-class="搜索" class="icon-search"></svg-icon>
-                <input class="input" v-model="search" placeholder="名称"></input>
+                <input class="input" v-model="search" placeholder="名称" ></input>
             </div>
         </div>
-        <div class="action-bar">
+        <div class="action-bar" v-if="table.flag">
             <cascader :cascader="cascader"></cascader>
             <my-select class="select" :select="select" :size="1"></my-select>
             <el-button type="text" size="mini" class="action-button" @click="add('house')">增加仓库</el-button>
@@ -15,7 +15,8 @@
             <!--<drop-down class="drop-down-box" :drop="drop"></drop-down>-->
         </div>
         <div class="body">
-            <labels :table="table"></labels>
+            <labels :table="table" v-if="table.flag"></labels>
+            <equip :commonHouseId="select.selectItem" :equipId="table.equipId" v-if="!table.flag" @confirm="addSucess"></equip>
         </div>
         <!--<div style="display: flex;width: 100%">
             <label-tree :tree="tree" :table="table" @clickTable="clickTable" ref="las" @treeEmit="clickTree"
@@ -217,6 +218,7 @@
                     this.$refs.dialog.show();
                 } else {
                     this.table.flag = !this.table.flag;
+                    console.log(!this.table.flag);
                 }
             }
         }
