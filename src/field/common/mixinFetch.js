@@ -45,6 +45,18 @@ export let fetchMixin = {
             }).catch((error) => {//服务器错误或者网络状态问题
                 this.$message.error(`${error}`);
             })
+        },
+        getQuery(api,value,name){
+            let promise=new Promise((resolve)=>{
+                this.gqlQuery(api, value, (res) => {
+                    if (res.data[name].content.length > 0) {
+                        resolve(
+                            JSON.parse(JSON.stringify(res.data[name].content))
+                        );
+                    }
+                });
+            });
+            return promise
         }
     }
 };

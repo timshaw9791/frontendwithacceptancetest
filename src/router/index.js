@@ -606,7 +606,6 @@ export const asyncRouterMap = [
                 name: 'message/index',
                 component: _import('message/index'),
                 meta: {title: '消息中心', icon: '消息中心'},
-                hidden: true,
             }
         ]
     },

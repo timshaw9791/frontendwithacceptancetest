@@ -1,23 +1,28 @@
 <template>
-    <div class="branch">
-        <div class="some">
-            <form-container>
-                <field-select :label="select.title" v-model="select.checkItem" width="10"
-                              :list="select.list"></field-select>
-            </form-container>
-            <el-button type="text" size="mini" @click="add('house')">增加仓库</el-button>
-            <el-button type="text" size="mini" @click="add('equi')">新增装备</el-button>
+    <div class="equipmentList">
+       <!-- <div class="header" >
+            <span class="title">装备信息</span>
+            <div class="input-box">
+                <svg-icon icon-class="搜索" class="icon-search"></svg-icon>
+                <input class="input" v-model="search" placeholder="名称" ></input>
+            </div>
+        </div>-->
+        <my-header v-show="table.flag" :search="search" :placeholder="'名称'" :searchFlag="true"></my-header>
+        <div class="action-bar" v-show="table.flag">
+            <cascader :cascader="cascader"></cascader>
+            <my-select class="select" :select="select" :size="1"></my-select>
+            <el-button type="text" size="mini" class="action-button" @click="add('house')">增加仓库</el-button>
+            <el-button type="text" size="mini" class="action-button" @click="add('equi')">新增装备</el-button>
+            <!--<drop-down class="drop-down-box" :drop="drop"></drop-down>-->
         </div>
-        <div style="display: flex;width: 100%">
-            <label-tree :tree="tree" :table="table" @clickTable="clickTable" ref="las" @treeEmit="clickTree"
-                        :tableFlag="table.flag" :width="table.width"></label-tree>
-            <equip :commonHouseId="select.checkItem.value.id" :equipId="table.equipId" v-if="!table.flag" @confirm="addSucess"></equip>
+        <div class="body">
+            <labels :table="table" v-show="table.flag" @clickTable="clickTable" @sortCondition="sortGql" ref="las"></labels>
+            <equip :commonHouseId="select.selectItem" :equipId="table.equipId" v-if="!table.flag" @black="blacked" @confirm="addSucess"></equip>
         </div>
         <field-dialog :title="dialog.title" @confirm="dialogConfirm" ref="dialog">
             <form-container ref="form" :model="form">
                 <field-input v-for="item in dialog.dialogList" v-model="form[item.model]" :label="item.label" width="10"
                              :prop="item.model" :ref="item.model" @input="inputs"></field-input>
-                <!-- <el-button type="text" size="mini" @click="test">test</el-button>-->
             </form-container>
         </field-dialog>
     </div>
@@ -30,50 +35,80 @@
     import labelTree from 'common/vue/labelTree'
     import {fetchMixin} from 'field/common/mixinFetch'
     import equip from 'components/equipment/addEquipment'
-
+    import cascader from 'common/vue/cascader'
+    import mySelect from 'common/vue/select'
+    import dropDown from 'common/vue/dropDown'
+    import labels from 'common/vue/label'
+    import myHeader from 'components/base/header/header'
+    const debounce = (function() {
+        let timer = 0;
+        return function(func, delay) {
+            clearTimeout(timer);
+            timer = setTimeout(func, delay);
+        };
+    })();
     export default {
         components: {
             labelTree,
-            equip
+            equip,
+            cascader,
+            mySelect,
+            dropDown,
+            labels,
+            myHeader
         },
         name: "equipmentList",
         mixins: [fetchMixin],
         data() {
             return {
-                tree: {
-                    treeData: [],
-                    defaultProps: {
-                        children: 'organUnitSet',
-                        label: 'name'
+                search:'',
+                cascader:{
+                    cascaderData:[],
+                    title:'请选择',
+                    cascaderProps:{
+                        label:'name',
+                        children:'organUnitSet',
+                        value:'id'
                     },
-                    graphqlTree: {
+                    graphqlCascader: {
                         graphqlApi: organUnitGql.getOrganUnitListList,
                         graphqlKey: {key: "level", value: "MUNICIPAL"},
-                        graphglName: 'OrganUnitList',
                     },
-                    node: {}
+                    selectCascader:''
+                },
+                drop:{
+                    title:'批量管理',
+                    list:[
+                        {key:'领取',value:'RECEIVE'},
+                        {key:'归还',value:'RETURN'},
+                        {key:'维修',value:'MAINTAIN'},
+                        {key:'保养',value:'UPKEEP'},
+                        {key:'报废',value:'SCRAP'},
+                        {key:'充电',value:'CHARGE'}
+                    ]
+                },
+                select: {
+                    selectItem: '',
+                    list: [],
+                    title: '选择仓库'
                 },
                 table: {
                     flag: true,
                     labelList: [
-                        {lable: 'rfid', field: 'rfid'},
-                        {lable: '物品名', field: 'name'},
-                        {lable: 'id', field: 'id'},
-                        {lable: '创建时间', field: 'inputTime', filter: this.filterTime},
+                        {lable: 'RFID', field: 'rfid',sort:false},
+                        {lable: '装备名称', field: 'name',sort:false},
+                        {lable: '入库时间', field: 'inputTime', filter: this.filterTime,sort:'custom'},
 
                     ],
                     graphqlTable: {
                         graphqlApi: equi.getEquipList,
                         graphqlKey: {qfilter: {key: "commonHouseId", value: '', operator: "EQUEAL"}}
                     },
+                    buttonList:[
+                        {name:'查看'}
+                    ],
                     equipId:'',
-                    width: 100,
                     haveButton: true
-                },
-                select: {
-                    checkItem: {},
-                    list: [],
-                    title: '选择仓库'
                 },
                 dialog: {
                     title: ''
@@ -82,47 +117,89 @@
             }
         },
         watch: {
-            'select.checkItem': {
+            'select.selectItem': {
                 deep: true,
-                handler(newVal, oldVal) {
-                    this.table.graphqlTable.graphqlKey.qfilter.value = this.select.checkItem.value.id;
+                handler() {
+                    this.table.graphqlTable.graphqlKey.qfilter.value = this.select.selectItem;
+                }
+            },
+            'cascader.selectCascader': {
+                deep: true,
+                handler() {
+                    debounce(() => {
+                        this.getCommonHouseList();
+                    }, 1000);
+                }
+            },
+            'search':{
+                handler(newval){
+                    console.log(newval);
+                    this.toSearch()
                 }
             }
         },
         methods: {
-            test(){
-                console.log(this.$refs);
+            sortGql(data){
+              if (data=='descending'){
+                  this.table.graphqlTable.graphqlApi=equi.getEquipListDESC;
+                 /* this.$set(this.table.graphqlTable,'graphqlApi', equi.getEquipListDESC);*/
+              }else {
+                  this.table.graphqlTable.graphqlApi=equi.getEquipListASC;
+                  /*this.$set(this.table.graphqlTable,'graphqlApi', equi.getEquipListASC);*/
+              }
+
+              this.$refs.las.refetch();
             },
             inputs(data){
                 console.log('input',data);
             },
             addSucess() {
-                this.table.width = 100;
                 this.table.flag = !this.table.flag;
                 this.$refs.las.refetch();
             },
-            clickTable(data) {
+            toSearch(){
+                let next={
+                    key:'name',
+                    value:'%'+this.search+'%',
+                    operator:'LIKE',
+                };
+                this.$set(this.table.graphqlTable.graphqlKey.qfilter,'combinator', 'AND');
+                this.$set(this.table.graphqlTable.graphqlKey.qfilter,'next', next);
+
+            },
+            clickTable(table) {
+                let data = table.row;
                 if (data) {
-                    this.table.width = 30;
                     this.table.equipId = data.id;
+                    this.table.flag=!this.table.flag
+                }
+            },
+            blacked(data){
+                if (data){
                     this.table.flag=!this.table.flag
                 }
             },
             filterTime(nS) {
                 return new Date(parseInt(nS.inputTime)).toLocaleString().replace(/:\d{1,2}$/, ' ');
             },
-            clickTree(data) {
-                if (data) {
-                    this.gqlQuery(warehouse.getCommonHouseList, {id: this.tree.node.id}, (data) => {
+            getCommonHouseList() {
+                this.gqlQuery(warehouse.getCommonHouseList, {id: this.cascader.selectCascader}, (data) => {
+                    if(data!=''){
                         this.select.list = [];
                         data.forEach(item => {
                             this.select.list.push({
-                                key: item.environmentInfo,
-                                value: item
+                                key: item.name,
+                                value: item.id
                             })
-                        })
-                    }, true)
-                }
+                        });
+                        this.$set(this.select,'selectItem', this.select.list[0].value);
+                        this.table.graphqlTable.graphqlKey.qfilter.value = this.select.list[0].value;
+                    }else {
+                        this.select.list = [];
+                        this.select.selectItem='';
+                        this.$message('该单位没有仓库')
+                    }
+                }, true)
             },
             changeBox(data) {
                 if (data) {
@@ -134,51 +211,52 @@
             dialogConfirm() {
                 this.addGrapahql();
             },
-            /*addGrapahql() {
-                this.form.organUnit = {id: this.tree.node.id};
-                this.$refs.form.gqlValidate(this.dialog.type === 'unit' ? organUnitGql.architectureSaveOrganUnit : userGql.identitySaveUser,
-                    this.dialog.type === 'unit' ? {organUnit: this.form} : {user: this.form}, (data) => {
-                        if(this.dialog.type=='unit'){
-                            let saveOrganUnit=data.data['architecture_saveOrganUnit'];
-                            if(Array.isArray(this.node)){
-                                this.tree.node.push(saveOrganUnit)
-                            }else {
-                                this.tree.node.organUnitSet.push(saveOrganUnit)
-                            }
-                        }else {
-                            this.$refs.las.refetch();
-                        }
-                        this.dialog.flag = false;
-                        this.form = {};
-                    });
-            },*/
             addGrapahql() {
-                this.form.organUnitId = this.tree.node.id;
+                this.$refs.dialog.hide();
+                this.form.organUnitId = this.cascader.selectCascader;
                 this.$refs.form.gqlValidate(warehouse.commonHouseSaveCommonHouse,
                     this.form, (data) => {
                         this.select.list.push({
-                            key: data.data['commonHouse_saveCommonHouse'].environmentInfo,
-                            value: data.data['commonHouse_saveCommonHouse']
+                            key: data.data['commonHouse_saveCommonHouse'].name,
+                            value: data.data['commonHouse_saveCommonHouse'].id
                         });
-                        this.$refs.dialog.hide();
-                        this.$message.success('新增仓库' + data.data['commonHouse_saveCommonHouse'].environmentInfo);
+                        this.$message.success('操作成功');
                         this.form = {};
                     });
             },
+            getUnitName(data){
+                let name;
+                let flag = false
+                data.forEach(item=>{
+                    if (item.id==this.cascader.selectCascader){
+                       name=item.name;
+                       flag=true
+                    }
+                })
+                if(flag){
+                    return name
+                }else {
+                    this.getUnitName(data.organUnitSet)
+                }
+            },
             add(name) {
                 if (name == 'house') {
-                    this.dialog = {
-                        dialogList: [
-                            {model: 'organUnitId', label: '机关单位'},
-                            {model: 'evenInfo', label: '仓库名'}
-                        ],
-                        title: '新增仓库'
-                    };
-                    this.$set(this.form,'organUnitId', this.tree.node.name)
-                    this.$refs.dialog.show();
+                    if(this.cascader.selectCascader!=''){
+                        this.dialog = {
+                            dialogList: [
+                                {model: 'organUnitId', label: '机关单位'},
+                                {model: 'name', label: '仓库名称'}
+                            ],
+                            title: '新增仓库'
+                        };
+                        this.$set(this.form,'organUnitId', this.getUnitName(this.cascader.cascaderData));
+                        this.$refs.dialog.show();
+                    }else {
+                        this.$message('请先选择机关单位')
+                    }
                 } else {
-                    this.table.width = 30;
                     this.table.flag = !this.table.flag;
+                    console.log(!this.table.flag);
                 }
             }
         }
@@ -186,17 +264,37 @@
 </script>
 
 <style scoped>
-
-    .branch {
+    .equipmentList {
         display: flex;
         width: 100%;
         flex-direction: column;
+        font-size: 16px;
+    }
+    .equipmentList .body{
+        width: 100%;
     }
 
-    .branch .some {
+    .equipmentList .action-bar {
+        margin-top: 8px;
+        border-top: rgba(112,112,112, 0.13) solid 1px ;
+        height: 57px;
         display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: left;
         flex-direction: row;
+        margin-left: 20px;
+        width: 100%;
+    }
+    .action-bar .select{
+        margin-left: 29px;
+    }
+    .action-bar .drop-down-box{
+        width: 57%;
+        display: flex;
+        justify-content: flex-end;
+    }
+    .action-bar .action-button{
+        margin-left: 27px;
+        color: rgba(112,112,112,1);
     }
 </style>

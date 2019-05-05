@@ -1,7 +1,7 @@
 <template>
     <div class="branch">
         <div class="some">
-            <el-checkbox v-model="tree.checked" @change="changeBox">只显示本级</el-checkbox>
+           <!-- <el-checkbox v-model="tree.checked" @change="changeBox">只显示本级</el-checkbox>-->
             <el-button type="text" size="mini" @click="add('unit')">增加机关单位</el-button>
             <el-button type="text" size="mini" @click="add('user')">增加用户</el-button>
         </div>
@@ -57,7 +57,7 @@
                         graphqlApi: userGql.getUserList,
                         graphqlKey:{id:''}
                     },
-                    haveButton: true
+                    haveButton: false
                 },
                 dialog: {
                     title: '',
@@ -99,6 +99,7 @@
                             }else {
                                 this.tree.node.organUnitSet.push(saveOrganUnit)
                             }
+                            this.$message('添加成功')
                         }else {
                             this.$refs.las.refetch();
                         }
@@ -139,9 +140,9 @@
                             model : 'roleItems',
                             title : '权限',
                             list :
-                                [{val:[{id:'vSPqbKcdGyK7sXU8kKPR_3R01'}], key: 'ADMINISTRATOR'}, {val: [{id:'d7QlI4AyHSmCpDOD3RXQE1R01'}], key: 'POLICE_OFFICER'}, {
-                                    val: [{id:'KyeaoAudHOe7ByWHR10sX3R01'}],
-                                    key: 'LEADER'
+                                [{val:[{id:'scMACaFmGbmm3vJpvnoIf0R01'}], key: '超级管理员'}, {val: [{id:'PqkmGejCE4u2qmryY2O9q3R01'}], key: '管理员'}, {
+                                    val: [{id:'WXIsFL2_GOeEvhUrQBNXp3R01'}],
+                                    key: '警员'
                                 }]
                         }
                     };

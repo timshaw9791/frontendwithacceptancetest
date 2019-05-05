@@ -46,32 +46,35 @@ query getUserList($id:String,$paginator: paginator) {
 }
 mutation identitySaveUser($user: User_!) {
   identity_saveUser(user: $user) {
-    name
-    position
-    idNumber
-    gender
-    roleItems {
-      roleEnum
-      id
-      privilegeItems {
-        id
-        privilege {
-          id
-        }
-        constraintRule
-      }
-      disabled
-    }
-    id
+    unitId
+    disabled
     policeSign
-    password
-    phone
-    username
-    fingerprintInformation
+    id
     organUnit {
       id
     }
     faceInformation
-    disabled
+    name
+    gender
+    roleItems {
+      disabled
+      id
+      privilegeItems {
+        privilege {
+          id
+        }
+        id
+        constraintRule
+      }
+      roleEnum
+      roleDescribe
+    }
+    fingerprintInformation
+    username
+    position
+    password
+    idNumber
+    phone
   }
 }
+

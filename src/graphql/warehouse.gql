@@ -1,22 +1,138 @@
+mutation categoryInit($organUnitId: String!) {
+  category_init(organUnitId: $organUnitId) {
+    totalPages
+    totalElements
+    content {
+      organUnitId
+      id
+      name
+      categoryItems {
+        id
+        name
+        itemEquipArgs {
+          equipArg {
+            id
+          }
+          id
+          safeSock
+          categoryItem {
+            id
+          }
+          disabled
+        }
+        category {
+          id
+        }
+        disabled
+      }
+      disabled
+    }
+  }
+}
+
+query getCategoryList($qfilter: qfilter) {
+  CategoryList (qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+      organUnitId
+      id
+      name
+      categoryItems {
+        id
+        name
+        itemEquipArgs {
+          equipArg {
+            id
+          }
+          id
+          safeSock
+          categoryItem {
+            id
+          }
+          disabled
+        }
+        category {
+          id
+        }
+        disabled
+      }
+      disabled
+    }
+  }
+}
+
+
+
+
 query getCommonHouseList($id:String!){
   CommonHouseList(qfilter: {key:"organUnitId", value: $id, operator: EQUEAL}){
     totalPages
     totalElements
     content {
-      id
-           organUnitId
+           id
            disabled
+           name
            environmentInfo
+           organUnitId
     }
   }
 }
 
-mutation commonHouseSaveCommonHouse($organUnitId: String!, $evenInfo: String!) {
-  commonHouse_saveCommonHouse(organUnitId: $organUnitId, evenInfo: $evenInfo) {
+
+mutation commonHouseSaveCommonHouse($organUnitId: String!, $name: String!) {
+  commonHouse_saveCommonHouse(organUnitId: $organUnitId, name: $name) {
+    disabled
+    name
+    id
+    organUnitId
     environmentInfo
-        organUnitId
-        id
-        disabled
   }
 }
+
+
+mutation categoryAddCategoryItem($name: String!, $categoryId: String!) {
+  category_addCategoryItem(name: $name, categoryId: $categoryId) {
+    itemEquipArgs {
+      categoryItem {
+        id
+      }
+      disabled
+      equipArg {
+        id
+      }
+      safeSock
+      id
+    }
+    disabled
+    name
+    category {
+      id
+    }
+    id
+  }
+}
+
+mutation categoryAddItemEquipArg($categoryItemId: String!, $safeSock: Int!, $equipArgId: String!) {
+  category_addItemEquipArg(categoryItemId: $categoryItemId, safeSock: $safeSock, equipArgId: $equipArgId) {
+    itemEquipArgs {
+      categoryItem {
+        id
+      }
+      disabled
+      equipArg {
+        id
+      }
+      safeSock
+      id
+    }
+    disabled
+    name
+    category {
+      id
+    }
+    id
+  }
+}
+
 
