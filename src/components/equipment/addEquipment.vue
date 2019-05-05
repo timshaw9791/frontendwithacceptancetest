@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-card class="box-card">
+        <el-card class="box-card" shadow="never">
             <div slot="header">
                 <span>装备基础信息</span>
             </div>
@@ -42,7 +42,7 @@
             </div>
 
         </el-card>
-        <el-card class="box-card">
+        <el-card class="box-card" shadow="never">
             <div slot="header">
                 <span>扩展信息</span>
             </div>
@@ -77,38 +77,45 @@
 
             </div>
         </el-card>
-        <el-card class="box-card" v-if="equipId">
-            <div slot="header">
-                <span>装备操作</span>
-            </div>
-            <div class="operating">
-                <el-button type="primary" @click="control('receive')">领取</el-button>
-                <el-button type="primary" @click="control('return')">归还</el-button>
-                <el-button type="primary" @click="control('maintenance')">保养</el-button>
-                <el-button type="primary" @click="control('service')">维修</el-button>
-                <el-button @click="control('scrapped')" type="primary">报废</el-button>
-            </div>
-        </el-card>
+        <!--<el-card class="box-card" v-if="equipId">-->
+        <!--<div slot="header">-->
+        <!--<span>装备操作</span>-->
+        <!--</div>-->
+        <!--<div class="operating">-->
+        <!--<el-button @click="control('receive')" :class="{type:zbForm.state==='RECEIVE'}">领取</el-button>-->
+        <!--<el-button @click="control('return')" :class="{type:zbForm.state==='IN_HOUSE'}">归还</el-button>-->
+        <!--<el-button @click="control('maintenance')" :class="{type:zbForm.state==='UPKEEP'}">保养</el-button>-->
+        <!--<el-button @click="control('service')" :class="{type:zbForm.state==='MAINTAIN'}">维修</el-button>-->
+        <!--<el-button @click="control('scrapped')" :class="{type:zbForm.state==='SCRAP'}">报废</el-button>-->
+        <!--</div>-->
+        <!--</el-card>-->
 
         <div class="box-bottom">
-            <el-button>返回</el-button>
+            <el-button @click="black">返回</el-button>
             <el-button type="primary" @click="pushzbForm">确认</el-button>
         </div>
 
-        <field-dialog :title="title" ref="dialog" @confirm="dialogConfirm">
-            <form-container ref="inlineForm" :model="inlineForm">
-                <field-input v-model="inlineForm.reason" label="原因" width="10" type="textarea"
-                             :rules="r(true).all(R.require)" prop="reason"></field-input>
-                <field-input v-model="inlineForm.auditor" label="操作人" width="10"
-                             :rules="r(true).all(R.require)" prop="auditor"></field-input>
+        <!--<field-dialog :title="title" ref="dialog" @confirm="dialogConfirm">-->
+        <!--<form-container ref="inlineForm" :model="inlineForm">-->
+        <!--<field-input v-model="inlineForm.reason" label="原因" width="10" type="textarea"-->
+        <!--:rules="r(true).all(R.require)" prop="reason"></field-input>-->
+        <!--<field-input v-model="inlineForm.auditor" label="操作人" width="10"-->
+        <!--:rules="r(true).all(R.require)" prop="auditor"></field-input>-->
 
-                <field-select label="领导" v-model="inlineForm.leader" width="10"
-                              :rules="r(true).all(R.require)"
-                              prop="leader"
-                              v-if="title==='报废'"
-                              :list="leadershipList"></field-select>
-            </form-container>
+        <!--<field-select label="领导" v-model="inlineForm.leader" width="10"-->
+        <!--:rules="r(true).all(R.require)"-->
+        <!--prop="leader"-->
+        <!--v-if="title==='报废'"-->
+        <!--:list="leadershipList"></field-select>-->
+        <!--</form-container>-->
+        <!--</field-dialog>-->
+
+        <field-dialog title="提示" ref="dialog" @confirm="dialogConfirm">
+            <div class="_dialogDiv">
+                您确定要放弃本次操作吗?
+            </div>
         </field-dialog>
+
 
     </div>
 </template>
@@ -147,6 +154,9 @@
 
 
         methods: {
+            black() {
+                this.$refs.dialog.show();
+            },
             // pushForm() {
             //     this.form['manufacturer'] = {
             //         manufacturer: this.form.manufacturerM,
@@ -237,38 +247,39 @@
 
             },
             dialogConfirm() {
-                let API = '';
-                switch (this.title) {
-                    case '保养':
-                        API = api.admin_upkeepEquips;
-                        break;
-                    case '维修':
-                        API = api.admin_maintainEquips;
-                        break;
-                    case '报废':
-                        this.$refs.inlineForm.axiosData(
-                            scrappedUp({
-                                equipIdList: [this.equipId],
-                                leaderId: this.inlineForm.leader,
-                                reason: this.inlineForm.reason,
-                            }).then((res) => {
-                                console.log(res);
-                            })
-                        );
-                        break;
-                }
-                if (this.title !== '报废') {
-                    this.$refs.inlineForm.gqlValidate(API,
-                        {
-                            equipIdList: [this.equipId],
-                            reason: this.inlineForm.reason,
-                            auditor: this.inlineForm.auditor,
-                        }, () => {
-                            this.callback(`申请${this.title}成功`);
-                            this.$refs.dialog.hide();
-                            this.$emit('confirm', true);
-                        });
-                }
+                this.$emit('black', true)
+                // let API = '';
+                // switch (this.title) {
+                //     case '保养':
+                //         API = api.admin_upkeepEquips;
+                //         break;
+                //     case '维修':
+                //         API = api.admin_maintainEquips;
+                //         break;
+                //     case '报废':
+                //         this.$refs.inlineForm.axiosData(
+                //             scrappedUp({
+                //                 equipIdList: [this.equipId],
+                //                 leaderId: this.inlineForm.leader,
+                //                 reason: this.inlineForm.reason,
+                //             }).then((res) => {
+                //                 console.log(res);
+                //             })
+                //         );
+                //         break;
+                // }
+                // if (this.title !== '报废') {
+                //     this.$refs.inlineForm.gqlValidate(API,
+                //         {
+                //             equipIdList: [this.equipId],
+                //             reason: this.inlineForm.reason,
+                //             auditor: this.inlineForm.auditor,
+                //         }, () => {
+                //             this.callback(`申请${this.title}成功`);
+                //             this.$refs.dialog.hide();
+                //             this.$emit('confirm', true);
+                //         });
+                // }
 
             },
             leadList() {
@@ -384,6 +395,7 @@
 
 <style lang="scss" scoped>
     @import "common/css/mixin.scss";
+    @import "common/css/variables.scss";
 
     .box-card {
         .button {
@@ -394,6 +406,15 @@
         .operating {
             display: flex;
             justify-content: center;
+
+            .type {
+                background: $themeBg;
+                color: white;
+            }
+
+            .type:hover {
+                opacity: 0.7;
+            }
         }
     }
 

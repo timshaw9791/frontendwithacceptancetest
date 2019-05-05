@@ -27,7 +27,7 @@ export const constantRouterMap = [
         path: '/',
         component: Layout,
         name: 'dashboard',
-        redirect:'/dashboard',
+        redirect: '/dashboard',
         hidden: true,
         children: [{
             path: 'dashboard',
@@ -377,6 +377,182 @@ export default new Router({
 
 export const asyncRouterMap = [
     {
+        path: '/equipmentInfo',
+        component: Layout,
+        redirect: '/equipmentInfo/index',
+        name: 'equipmentInfo',
+        children: [
+            {
+                path: 'index',
+                name: 'index',
+                component: _import('equipmentManagement/equipmentList'),
+                meta: {title: '装备信息', icon: '装备信息'},
+            }
+        ]
+    },
+    {
+        path: '/warehouseInfo',
+        component: Layout,
+        redirect: '/warehouseInfo/index',
+        name: 'warehouseInfo',
+        children: [
+            {
+                path: 'index',
+                name: 'warehouseInfo/index',
+                component: _import('warehouse/index'),
+                meta: {title: '仓库信息', icon: '仓库信息'},
+            }
+        ]
+    },
+    {
+        path: '/equipmentOperation',
+        component: Layout,
+        redirect: '/equipmentOperation/charging',
+        name: 'equipmentOperation',
+        meta: {title: '装备维保', icon: '装备维保'},
+        children: [
+            {
+                path: 'charging',
+                name: 'charging',
+                component: _import('equipmentOperation/charging'),
+                meta: {title: '充电'},
+            },
+            {
+                path: 'service',
+                name: 'service',
+                component: _import('equipmentOperation/service'),
+                meta: {title: '维修'},
+            },
+            {
+                path: 'maintenance',
+                name: 'maintenance',
+                component: _import('equipmentOperation/maintenance'),
+                meta: {title: '保养'},
+            },
+        ]
+    },
+
+    {
+        path: '/process',
+        component: Layout,
+        redirect: '/process/charging',
+        name: 'process',
+        meta: {title: '流程管理', icon: '流程管理'},
+        children: [
+            {
+                path: 'scrapped',
+                name: 'scrapped',
+                component: _import('process/scrapped'),
+                meta: {title: '报废流程'},
+            },
+            {
+                path: 'transfer',
+                name: 'transfer',
+                component: _import('process/transfer'),
+                meta: {title: '调拨流程'},
+            },
+            {
+                path: 'secondment',
+                name: 'secondment',
+                component: _import('process/secondment'),
+                meta: {title: '借调流程'},
+            },
+        ]
+    },
+    {
+        path: '/workLog',
+        component: Layout,
+        redirect: '/workLog/charging',
+        name: 'workLog',
+        meta: {title: '工作日志', icon: '工作日志'},
+        children: [
+            {
+                path: 'borrow',
+                name: 'borrow',
+                component: _import('workLog/borrow'),
+                meta: {title: '借还日志'},
+            },
+            {
+                path: 'inventory',
+                name: 'inventory',
+                component: _import('workLog/inventory'),
+                meta: {title: '盘点日志'},
+            },
+        ]
+    },
+    {
+        path: '/report',
+        component: Layout,
+        redirect: '/report/index',
+        name: 'report',
+        children: [
+            {
+                path: 'index',
+                name: 'report/index',
+                component: _import('report/index'),
+                meta: {title: '统计报表', icon: '统计报表'},
+            },
+        ]
+    },
+    {
+        path: '/personnel',
+        component: Layout,
+        redirect: '/personnel/info',
+        name: 'personnel',
+        meta: {title: '人员管理', icon: '人员管理'},
+        children: [
+            {
+                path: 'info',
+                name: 'info',
+                component: _import('personnel/info'),
+                meta: {title: '人员信息'},
+            },
+            {
+                path: 'permission',
+                name: 'permission',
+                component: _import('personnel/permission'),
+                meta: {title: '权限'},
+            },
+        ]
+    },
+    {
+        path: '/surroundings',
+        component: Layout,
+        redirect: '/surroundings/index',
+        name: 'surroundings',
+        children: [
+            {
+                path: 'index',
+                name: 'surroundings/index',
+                component: _import('surroundings/index'),
+                meta: {title: '环境管理', icon: '环境控制'},
+            },
+        ]
+    },
+    {
+        path: '/training',
+        component: Layout,
+        redirect: '/training/index',
+        name: 'training',
+        children: [
+            {
+                path: 'index',
+                name: 'training/index',
+                component: _import('training/index'),
+                meta: {title: '教学培训', icon: '环境控制'},
+            },
+        ]
+    },
+
+
+
+
+
+
+
+
+
+    {
         path: '/qx',
         component: Layout,
         redirect: '/qx/test',
@@ -427,7 +603,7 @@ export const asyncRouterMap = [
         children: [
             {
                 path: 'index',
-                name: 'index',
+                name: 'message/index',
                 component: _import('message/index'),
                 meta: {title: '消息中心', icon: '消息中心'},
                 hidden: true,
@@ -438,12 +614,12 @@ export const asyncRouterMap = [
         path: '/workOrder',
         component: Layout,
         redirect: '/workOrder/index',
-        name: 'equipment',
+        name: 'workOrder',
         meta: {title: '工单管理', icon: '订单'},
         children: [
             {
                 path: 'index',
-                name: 'index',
+                name: 'workOrder/index',
                 component: _import('workOrder/index'),
                 meta: {title: '工单列表', icon: '订单'}
             },

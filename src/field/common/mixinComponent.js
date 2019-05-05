@@ -40,7 +40,8 @@ export let formRulesMixin = {
       partialPiginator: {totalPages: 10, totalElements: 10},//默认值
       param: {paginator: {size: 5, page: 1}},//分页参数,
       copyNameLike: '%%',
-      historyPage: 'History-Page',//存放当前页数
+      historyPage: 'History-Page',//存放当前页数,
+      loading:false
     }
   },
   computed: {

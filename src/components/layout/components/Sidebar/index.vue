@@ -22,9 +22,9 @@
                 text-color="#707070">
             <sidebar-item :routes="permission_routers"></sidebar-item>
         </el-menu>
-        <div class="topBottom" v-if="!isCollapse">
-            服务热线:400-8265186
-        </div>
+        <!--<div class="topBottom" v-if="!isCollapse">-->
+            <!--服务热线:400-8265186-->
+        <!--</div>-->
     </el-scrollbar>
 </template>
 

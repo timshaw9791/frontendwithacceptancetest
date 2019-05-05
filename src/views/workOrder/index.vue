@@ -1,21 +1,20 @@
 <template>
     <div>
         <!--<equip equipId="RFKPlwECEu26SwKatEydJ2Equ"></equip>-->
-        <!--<equip commonHouseId='VVNFISXOHOK9KSRt_brNy3Com' equipId='fXzyf6vaFtWQDBh5EGp0n0Equ'></equip>-->
-
+        <equip commonHouseId='VVNFISXOHOK9KSRt_brNy3Com' equipId='fXzyf6vaFtWQDBh5EGp0n0Equ'></equip>
         <!--<el-card shadow="never">-->
             <!--<div slot="header">-->
-                <!--<span>{{$route.meta.title}}</span>-->
+                <!--<span class="card-title">{{$route.meta.title}}</span>-->
             <!--</div>-->
             <!--<div>-->
-                <!--<tabs :list="tabsList" @selected="selected">-->
+                <!--<tabs :list="tabsList" :indexDefault="1" @selected="selected">-->
                     <!--<div class="_buttons">-->
                         <!--<el-button>取消</el-button>-->
                         <!--<el-button>撤回</el-button>-->
                         <!--<el-button type="primary">批量处理</el-button>-->
                     <!--</div>-->
                 <!--</tabs>-->
-                <!--<el-table :data="list" fit>-->
+                <!--<el-table :data="list" fit v-loading="loading">-->
                     <!--<el-table-column-->
                             <!--type="selection"-->
                             <!--width="55">-->
@@ -32,6 +31,7 @@
                 <!--<bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>-->
             <!--</div>-->
         <!--</el-card>-->
+
     </div>
 </template>
 
@@ -52,6 +52,7 @@
                 console.log(data);
             }
         },
+
         mixins: [formRulesMixin],
 
         components: {
@@ -62,5 +63,11 @@
 </script>
 
 <style lang="scss" scoped>
+    .el-card {
+        border: none !important;
+    }
 
+    .card-title {
+        font-size: 18px;
+    }
 </style>
