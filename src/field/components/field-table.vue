@@ -2,11 +2,11 @@
     <div>
         <el-table
                 :data="list"
-                style="width: 100%" id="table">
-            <bos-table-column v-for="item in labelList" :lable="item.lable"  :field="item.field" :filter="item.filter"></bos-table-column>
+                style="width: 100%" id="table" @sort-change="sortChange">
+            <bos-table-column  v-for="item in labelList" :lable="item.lable" :sort="item.sort" :field="item.field" :filter="item.filter"></bos-table-column>
             <el-table-column v-if="haveButton" label="操作" align="center" width="200">
                 <template slot-scope="scope">
-                    <el-button type="text" size="mini" @click="someClick(scope.row)">操作</el-button>
+                    <el-button v-for="item in buttonList" type="text" size="mini" @click="someClick(scope.row,item.name)" v-text="item.name"></el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -35,6 +35,9 @@
                 type: Boolean,
                 default: false
             },
+            buttonList:{
+                type:Array
+            },
             pageInfo:{
                 type:Object
             }
@@ -46,8 +49,15 @@
         mounted() {
         },
         methods: {
-            someClick(row) {
-               this.$emit('click',row)
+            someClick(row,name) {
+                let data ={
+                    name:name,
+                    row:row
+                };
+               this.$emit('click',data)
+            },
+            sortChange(data){
+                this.$emit('sortChange',data.order)
             },
             tableChangePage(newPage){
                 this.$emit('tableCurrentPageChanged',newPage)

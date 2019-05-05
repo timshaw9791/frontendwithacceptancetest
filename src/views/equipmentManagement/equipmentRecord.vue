@@ -185,7 +185,6 @@
                 let CombinatorList = this.searchType.Combinator;
                 let Combinator='';
                 let nexts ={};
-                console.log(apllo);
                 for(let sort in apllo){
                     if(apllo[sort].value!=''){
                         nextApollo(nexts,apllo[sort])

@@ -141,6 +141,7 @@ export let formRulesMixin = {
         },
         refetch() {
             if (this.$apollo.queries['list']) this.$apollo.queries['list'].refetch();//重新刷新apollo
+
         },
         //便利方法，供在apollo:配置块中使用。设置好默认值，只要给一个query对象或者gql字符串即可
         //只限于list列表等需要分页的模块使用，且同一组件只能用一个
@@ -175,6 +176,7 @@ export let formRulesMixin = {
             };
 
             Object.assign(target, queryObject);//Object.assign方法用于对象的合并，将源对象（ source ）的所有可枚举属性，复制到目标对象（ target ）。
+            console.log('target',target)
             return target;
         },
         //便利的手动gql请求

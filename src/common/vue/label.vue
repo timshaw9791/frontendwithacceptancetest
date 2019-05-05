@@ -2,7 +2,7 @@
     <div class="label">
         <div v-if="tableFlag">
             <field-table :list="list" :labelList="table.labelList"
-                         :haveButton="table.haveButton" :pageInfo="paginator" @tableCurrentPageChanged="changePage" @click="clickTableCloum" style="width: 100%"></field-table>
+                         :haveButton="table.haveButton" :buttonList="table.buttonList" @sortChange="sortChange" :pageInfo="paginator" @tableCurrentPageChanged="changePage" @click="clickTableCloum" style="width: 100%"></field-table>
         </div>
     </div>
 </template>
@@ -35,6 +35,9 @@
             console.log(this.table);
         },
         methods:{
+            sortChange(data){
+             this.$emit('sortCondition',data)
+            },
             clickTableCloum(data){
                 this.$emit('clickTable',data);
             }

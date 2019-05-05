@@ -402,8 +402,7 @@ export const asyncRouterMap = [
                 path: 'warehouse',
                 name: 'warehouse',
                 component: _import('equipmentManagement/warehouse'),
-                meta: {title: '仓库管理'},
-                hidden: true
+                meta: {title: '仓库管理'}
             },
             {
                 path: 'equipmentList',
@@ -431,7 +430,6 @@ export const asyncRouterMap = [
                 name: 'index',
                 component: _import('message/index'),
                 meta: {title: '消息中心', icon: '消息中心'},
-                hidden: true,
             }
         ]
     },

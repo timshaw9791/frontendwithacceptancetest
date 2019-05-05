@@ -33,3 +33,75 @@ query getEquipList($paginator: paginator, $qfilter: qfilter) {
     }
   }
 }
+
+query getEquipListDESC($paginator: paginator, $qfilter: qfilter) {
+  EquipList(paginator: $paginator, qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+      state
+      disabled
+      quality {
+        shelfLife
+        productDate
+      }
+      receiveTime
+      commonHouseId
+      useCount
+      id
+      serial
+      name
+      policeId
+      location {
+        section
+        floor
+        number
+        surface
+      }
+      inputTime(OrderBy:DESC)
+      rfid
+      supplier {
+        id
+      }
+      equipArg {
+        id
+      }
+    }
+  }
+}
+
+query getEquipListASC($paginator: paginator, $qfilter: qfilter) {
+  EquipList(paginator: $paginator, qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+      state
+      disabled
+      quality {
+        shelfLife
+        productDate
+      }
+      receiveTime
+      commonHouseId
+      useCount
+      id
+      serial
+      name
+      policeId
+      location {
+        section
+        floor
+        number
+        surface
+      }
+      inputTime(OrderBy:ASC)
+      rfid
+      supplier {
+        id
+      }
+      equipArg {
+        id
+      }
+    }
+  }
+}
