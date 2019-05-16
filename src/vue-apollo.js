@@ -32,7 +32,7 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 });
 
 const authLink = authMiddleware.concat(httpLink);
-
+console.log('authLink',authLink);
 const errorLink = onError(({networkError, response}) => {
     console.log(networkError, response);
 

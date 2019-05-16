@@ -21,6 +21,7 @@
     "lowdb": "^1.0.0",
     "mkdirp": "^0.5.1",
     "nprogress": "^0.2.0",
+    "pdfjs-dist": "^2.0.943",
     "regenerator-runtime": "^0.13.2",
     "shortid": "^2.2.8",
     "vue": "^2.6.6",

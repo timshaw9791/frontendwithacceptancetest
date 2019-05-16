@@ -399,12 +399,6 @@ export const asyncRouterMap = [
         meta: {title: '装备管理', icon: '账号'},
         children: [
             {
-                path: 'warehouse',
-                name: 'warehouse',
-                component: _import('equipmentManagement/warehouse'),
-                meta: {title: '仓库管理'}
-            },
-            {
                 path: 'equipmentList',
                 name: 'equipmentList',
                 component: _import('equipmentManagement/equipmentList'),
@@ -415,6 +409,21 @@ export const asyncRouterMap = [
                 name: 'equipmentRecord',
                 component: _import('equipmentManagement/equipmentRecord'),
                 meta: {title: '装备记录'}
+            }
+        ]
+    },
+    {
+        path: '/warehouse',
+        component: Layout,
+        redirect: '/warehouse/index',
+        name: 'warehouse',
+        hidden: false,
+        children: [
+            {
+                path: 'index',
+                name: 'index',
+                component: _import('warehouse/index'),
+                meta: {title: '装备信息', icon: '门店'},
             }
         ]
     },
@@ -437,7 +446,7 @@ export const asyncRouterMap = [
         path: '/workOrder',
         component: Layout,
         redirect: '/workOrder/index',
-        name: 'equipment',
+        name: 'workOrder',
         meta: {title: '工单管理', icon: '订单'},
         children: [
             {
@@ -447,7 +456,37 @@ export const asyncRouterMap = [
                 meta: {title: '工单列表', icon: '订单'}
             },
         ]
+    },{
+        path: '/teaching',
+        component: Layout,
+        redirect: '/teaching/index',
+        name: 'teaching',
+        meta: {title: '教学培训', icon: '库存盘点'},
+        children: [
+            {
+                path: 'index',
+                name: 'index',
+                component: _import('teaching/index'),
+                meta: {title: '教学培训', icon: '库存盘点'}
+            },
+        ]
     },
+    {
+        path: '/personnelManagement',
+        component: Layout,
+        redirect: '/personnelManagement/index',
+        name: 'personnelManagement',
+        meta: {title: '人员管理', icon: '账号'},
+        children: [
+            {
+                path: 'index',
+                name: 'index',
+                component: _import('personnelManagement/personnelManagement'),
+                meta: {title: '人员管理', icon: '账号'}
+            },
+        ]
+    },
+
 
 
     {path: '*', redirect: '/404', hidden: true}

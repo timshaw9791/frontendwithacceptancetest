@@ -1,13 +1,6 @@
 <template>
     <div class="equipmentList">
-       <!-- <div class="header" >
-            <span class="title">装备信息</span>
-            <div class="input-box">
-                <svg-icon icon-class="搜索" class="icon-search"></svg-icon>
-                <input class="input" v-model="search" placeholder="名称" ></input>
-            </div>
-        </div>-->
-        <my-header v-show="table.flag" :search="search" :placeholder="'名称'" :searchFlag="true"></my-header>
+        <my-header v-show="table.flag" @search="getSearch" :title="'装备信息'" :placeholder="'名称'" :searchFlag="true"></my-header>
         <div class="action-bar" v-show="table.flag">
             <cascader :cascader="cascader"></cascader>
             <my-select class="select" :select="select" :size="1"></my-select>
@@ -133,12 +126,14 @@
             },
             'search':{
                 handler(newval){
-                    console.log(newval);
                     this.toSearch()
                 }
             }
         },
         methods: {
+            getSearch(data){
+                this.search = data;
+            },
             sortGql(data){
               if (data=='descending'){
                   this.table.graphqlTable.graphqlApi=equi.getEquipListDESC;
@@ -201,13 +196,13 @@
                     }
                 }, true)
             },
-            changeBox(data) {
+            /*changeBox(data) {
                 if (data) {
                     this.tree.graphqlTree.graphqlKey = {key: "id", value: "qbM4nUL0HfemI70mXXLrP3O01"}
                 } else {
                     this.tree.graphqlTree.graphqlKey = {key: "level", value: "MUNICIPAL"}
                 }
-            },
+            },*/
             dialogConfirm() {
                 this.addGrapahql();
             },

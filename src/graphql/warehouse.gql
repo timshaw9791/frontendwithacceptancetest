@@ -30,37 +30,63 @@ mutation categoryInit($organUnitId: String!) {
   }
 }
 
-query getCategoryList($qfilter: qfilter) {
-  CategoryList (qfilter: $qfilter) {
+
+
+query getCategoryList($id: String!){
+  CategoryList(qfilter: {key:"houseId", value: $id, operator: EQUEAL}) {
     totalPages
     totalElements
     content {
-      organUnitId
       id
+      disabled
+      houseId
       name
       categoryItems {
-        id
-        name
-        itemEquipArgs {
-          equipArg {
-            id
-          }
-          id
-          safeSock
-          categoryItem {
-            id
-          }
-          disabled
-        }
         category {
           id
         }
+        id
+        equipArgs {
+          id
+          disabled
+          name
+          model
+          upkeepCycle
+          chargeCycle
+        }
         disabled
+        name
       }
+    }
+  }
+}
+
+
+query getHouseEquipArgList($paginator: paginator, $qfilter: qfilter) {
+EquipArgList(paginator: $paginator, qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+      id
+      category {
+        id
+        name
+        genre{
+          name
+        }
+      }
+      supplier {
+        id
+      }
+      model
+      upkeepCycle
+      name
+      chargeCycle
       disabled
     }
   }
 }
+
 
 
 
@@ -134,5 +160,15 @@ mutation categoryAddItemEquipArg($categoryItemId: String!, $safeSock: Int!, $equ
     id
   }
 }
+
+mutation categorySave($category: Category_!) {
+  category_save(category: $category) {
+    disabled
+    id
+    name
+    type
+  }
+}
+
 
 

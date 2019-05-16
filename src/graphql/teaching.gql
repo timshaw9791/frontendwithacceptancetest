@@ -1,0 +1,24 @@
+query getEquipArgList($qfilter: qfilter) {
+  EquipArgList(qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+      id
+      category {
+        id
+        name
+        genre{
+          name
+        }
+      }
+      supplier {
+        id
+      }
+      model
+      upkeepCycle
+      name
+      chargeCycle
+      disabled
+    }
+  }
+}

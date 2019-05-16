@@ -1,9 +1,16 @@
 <template>
     <div class="header">
-        <span class="title">装备信息</span>
+        <span class="title" v-text="title"></span>
         <div class="input-box" v-if="searchFlag">
             <svg-icon icon-class="搜索" class="icon-search"></svg-icon>
-            <input class="input" v-model="search" :placeholder="placeholder" ></input>
+            <input class="input" v-model="searchHeader" :placeholder="placeholder" ></input>
+        </div>
+        <div class="black" v-if="haveBlack" @click="h_black">
+            <svg-icon icon-class="返回" class="icon-black"></svg-icon>
+            <span class="b-span" v-text="'返回'"></span>
+        </div>
+        <div class="black" v-if="haveBlackTwo" @click="h_black">
+            <svg-icon icon-class="关闭" class="icon-black"></svg-icon>
         </div>
     </div>
 </template>
@@ -14,6 +21,14 @@
         data(){
             return{
                 flag:true,
+                searchHeader:''
+            }
+        },
+        watch:{
+            'searchHeader':{
+                handler(newval){
+                    this.$emit('search',newval);
+                }
             }
         },
         props:{
@@ -25,8 +40,21 @@
                 type:String,
                 default:'请输入'
             },
-            search:{
+            title:{
                 type:String
+            },
+            haveBlack:{
+                type:Boolean,
+                default:false
+            },
+            haveBlackTwo:{
+                type:Boolean,
+                default:false
+            }
+        },
+        methods:{
+            h_black(){
+                this.$emit('h_black',true);
             }
         }
     }
@@ -52,6 +80,13 @@
     .header .title{
         font-size: 20px;
     }
+    .header .black{
+        display: flex;
+        align-items:center;
+        justify-content: center;
+        height: 100%;
+        font-size: 20px;
+    }
     .input-box .input{
         width: 100%;
         height:38px;
@@ -71,5 +106,11 @@
         height: 25px;
         transform: translateY(-50%);
     }
-
+    .black .icon-black{
+        width: 20px;
+        height: 20px;
+    }
+    .black .b-span{
+        margin-left: 4px;
+    }
 </style>

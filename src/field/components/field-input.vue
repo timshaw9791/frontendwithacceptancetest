@@ -1,6 +1,6 @@
 <template>
   <form-item :label="label" :prop="prop" :width="width" :rules="cRules">
-    <el-input :type="type" v-model="copyVal"
+    <el-input id='inputBos' :type="type" v-model="copyVal"
               :rows="cRows" :placeholder="placeholder"
               :readonly="cReadonly" :disabled="cDisabled"
               :autofocus="cAutofocus" :resize="resize"
