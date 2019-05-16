@@ -22,14 +22,15 @@ let __RULES__ = {
         return outPutInfo(/(^\d{15}$)|(^\d{17}(\d|x|X)$)/i.test(value))
     },
     integer(value) {  //整数验证
-        return outPutInfo(/^-?[1-9]\d*$/.test(value))
+        return outPutInfo(/^-?[0-9]\d*$/.test(value))
     },
     decimal(value) {  //小数验证
         return outPutInfo(/^\d+\.*\d*$/.test(value))
     },
     require(value) {  //空字符串验证
         return outPutInfo(value && value !== '')
-    }
+    },
+
 };
 
 export let formRulesMixin = {
@@ -65,7 +66,7 @@ export let formRulesMixin = {
                 var tip = null, checker = null;
                 for (var i = 0; i < checkerandtiparray.length; i++) {
 
-                    if (typeof(checkerandtiparray[i]) == 'function') {
+                    if (typeof (checkerandtiparray[i]) == 'function') {
                         checker = checkerandtiparray[i];
                     } else {
                         tip = checkerandtiparray[i];
@@ -123,7 +124,7 @@ export let formRulesMixin = {
                     this.param.paginator.page = this.getHistoryPage();
                 }
                 this.refetch();
-                if(this.param.namelike != this.copyNameLike && this.param.namelike == '%%') {
+                if (this.param.namelike != this.copyNameLike && this.param.namelike == '%%') {
                     this.param.paginator.page = Number(this.getHistoryPage());
                 }
             }, {deep: true});
@@ -137,7 +138,7 @@ export let formRulesMixin = {
         },
 
         removeHistoryPage() {
-            sessionStorage.setItem(this.historyPage,1);
+            sessionStorage.setItem(this.historyPage, 1);
         },
         refetch() {
             if (this.$apollo.queries['list']) this.$apollo.queries['list'].refetch();//重新刷新apollo
@@ -176,7 +177,6 @@ export let formRulesMixin = {
             };
 
             Object.assign(target, queryObject);//Object.assign方法用于对象的合并，将源对象（ source ）的所有可枚举属性，复制到目标对象（ target ）。
-            console.log('target',target)
             return target;
         },
         //便利的手动gql请求
@@ -184,8 +184,7 @@ export let formRulesMixin = {
             this.mutate(graphql, variables).then((data) => {
                 if (data.errors) {   //未通过服务端的表单验证
                     this.$message.error(`${error}`);
-                }
-                else {//通过后返回数据，使用者可执行自定义处理数据
+                } else {//通过后返回数据，使用者可执行自定义处理数据
                     sCallback.call(this, data);
                 }
             }).catch((error) => {
@@ -197,8 +196,7 @@ export let formRulesMixin = {
                 console.log(data);
                 if (data.errors) {   //未通过服务端的表单验证
                     this.$message.error(`${data.errors}`);
-                }
-                else {
+                } else {
                     let defultData = data;
                     if (defult) {//判断是否使用默认格式数据，否或不输defult则为使用原始数据
                         //将数据处理为默认格式,即返回content里的数据

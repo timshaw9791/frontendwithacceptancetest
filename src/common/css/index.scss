@@ -83,7 +83,8 @@ a:hover {
   margin: 2%;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
   position: relative;
-  .list{
+
+  .list {
     max-height: 84vh;
   }
 }
@@ -118,13 +119,42 @@ a:hover {
   width: 90%;
   margin: 2% auto;
 }
-._buttons{
-  width: 86%;
-  display: flex;
-  justify-content: flex-end;
+
+._buttons {
+  position: absolute;
+  right: 0;
+
+  .el-input__inner {
+    border-radius: 19px;
+  }
 }
 
-._dialogDiv{
+._dialogDiv {
   text-align: center;
   font-size: 18px;
+}
+
+._contentBt {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 110px;
+}
+
+._textBt {
+  font-size: 16px !important;
+  margin: 0 10px !important;
+
+  span {
+    vertical-align: top !important;
+  }
+}
+
+._card-title {
+  font-size: 18px;
+}
+
+._box-bottom {
+  @include center;
+  margin: 3% 0;
 }

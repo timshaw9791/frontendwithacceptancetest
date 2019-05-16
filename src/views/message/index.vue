@@ -128,6 +128,7 @@
     .tabs {
         display: flex;
         height: 84vh;
+
         .left-tab {
             border-right: 2px solid rgb(228, 231, 237);
             padding-right: 1%;

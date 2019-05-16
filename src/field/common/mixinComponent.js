@@ -22,7 +22,7 @@ let __RULES__ = {
     return outPutInfo(/(^\d{15}$)|(^\d{17}(\d|x|X)$)/i.test(value))
   },
   integer(value) {  //整数验证
-    return outPutInfo(/^-?[1-9]\d*$/.test(value))
+    return outPutInfo(/^-?[0-9]\d*$/.test(value))
   },
   decimal(value) {  //小数验证
     return outPutInfo(/^\d+\.*\d*$/.test(value))

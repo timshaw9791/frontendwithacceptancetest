@@ -341,27 +341,31 @@
                 // this.leadList();
             } else {
                 this.disabled = true;
-                this.gqlQuery(api.getCategoryList, {
+                this.gqlQuery(api.getGenreList, {
                     houseId: this.commonHouseId
                 }, (res) => {
-                    let data = JSON.parse(JSON.stringify(res.data.CategoryList.content));
+                    console.log(res);
+
+                    let data = JSON.parse(JSON.stringify(res.data.GenreList.content));
                     let newData = [];
                     if (data) {
                         data.forEach((item) => {
-                            if (item.categoryItems.length > 0) {
-                                item.categoryItems.forEach((item1, index1) => {
-                                    if (item1.equipArgs.length > 0) {
-                                        item1.equipArgs.forEach((item2, index2) => {
-                                            item1.equipArgs[index2] = {
-                                                value: item2.id,
-                                                label: item2.name,
+                            if (item.categories.length > 0) {
+                                item.categories.forEach((item1, index1) => {
+
+                                    if (item1.houseEquipArgs.length > 0) {
+                                        item1.houseEquipArgs.forEach((item2, index2) => {
+                                            item1.houseEquipArgs[index2] = {
+                                                value: item2.equipArg.id,
+                                                label: item2.equipArg.name,
                                             };
                                         })
                                     }
-                                    item.categoryItems[index1] = {
+
+                                    item.categories[index1] = {
                                         value: item1.id,
                                         label: item1.name,
-                                        children: item1.equipArgs
+                                        children: item1.houseEquipArgs
                                     };
                                 })
                             }
@@ -369,7 +373,7 @@
                                 {
                                     value: item.id,
                                     label: item.name,
-                                    children: item.categoryItems
+                                    children: item.categories
                                 }
                             )
                         });
@@ -402,7 +406,6 @@
             float: right;
             margin-bottom: 1%;
         }
-
         .operating {
             display: flex;
             justify-content: center;
@@ -411,7 +414,6 @@
                 background: $themeBg;
                 color: white;
             }
-
             .type:hover {
                 opacity: 0.7;
             }
@@ -421,7 +423,6 @@
     .box-bottom {
         @include center;
         margin: 3% 0;
-
     }
 
 

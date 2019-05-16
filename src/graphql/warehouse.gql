@@ -136,3 +136,25 @@ mutation categoryAddItemEquipArg($categoryItemId: String!, $safeSock: Int!, $equ
 }
 
 
+mutation suppliers_saveSupplier($supplier: Supplier_!) {
+  suppliers_saveSupplier(supplier: $supplier) {
+    id
+  }
+}
+
+query getSupplierList($paginator: paginator, $qfilter: qfilter) {
+  SupplierList(paginator: $paginator, qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+      id
+      phone
+      name
+      person
+      disabled
+    }
+  }
+}
+
+
+

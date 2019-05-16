@@ -22,14 +22,14 @@
             }
         },
         mounted() {
-            this.$emit('selected', this.$refs.list[this.visited].innerText)
+            if (this.$refs.list) {
+                this.$emit('selected', this.$refs.list[this.visited].innerText)
+            }
         },
-
-
         props: {
             list: {
                 type: Array,
-                default: [],
+                default: () => [],
             },
             indexDefault: {
                 type: Number,
@@ -42,12 +42,15 @@
 <style lang="scss" scoped>
     .tabs {
         display: flex;
+        align-items: center;
         padding-bottom: 16px;
         border-bottom: 1px solid #EBEEF5;
+        max-height: 44px;
+        position: relative;
 
         .button {
             margin-right: 18px;
-            width: 82px;
+            width: 100px;
             height: 32px;
             border-radius: 16px;
             display: flex;
