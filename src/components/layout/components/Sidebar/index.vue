@@ -1,5 +1,5 @@
 <template>
-    <el-scrollbar wrapClass="scrollbar-wrapper">
+    <div>
         <div v-if="!isCollapse">
             <div class="topTitle">
                 <img src="@/common/images/警徽.png" @click="$router.push('/')"/>
@@ -13,20 +13,25 @@
                 </div>
             </div>
         </div>
-        <el-menu
-                mode="vertical"
-                :show-timeout="200"
-                :default-active="$route.path"
-                :collapse="isCollapse"
-                background-color="#f9f9f9"
-                text-color="#707070">
-            <sidebar-item :routes="permission_routers"></sidebar-item>
-        </el-menu>
-        <div class="topBottom" v-if="!isCollapse">
-            服务热线:400-8265186
-        </div>
+        <el-scrollbar wrapClass="scrollbar-wrapper">
+            <div style="min-height: 60vh;max-height: 60vh">
+                <el-menu
+                        mode="vertical"
+                        :show-timeout="200"
+                        :default-active="$route.path"
+                        :collapse="isCollapse"
+                        background-color="#f9f9f9"
+                        text-color="#707070">
+                    <sidebar-item :routes="permission_routers"></sidebar-item>
+                </el-menu>
+                <div class="topBottom" v-if="!isCollapse">
+                    服务热线:400-8265186
+                </div>
+            </div>
+        </el-scrollbar>
+    </div>
 
-    </el-scrollbar>
+
 </template>
 
 <script>

@@ -324,39 +324,6 @@
             },
             dialogConfirm() {
                 this.$emit('black', true)
-                // let API = '';
-                // switch (this.title) {
-                //     case '保养':
-                //         API = api.admin_upkeepEquips;
-                //         break;
-                //     case '维修':
-                //         API = api.admin_maintainEquips;
-                //         break;
-                //     case '报废':
-                //         this.$refs.inlineForm.axiosData(
-                //             scrappedUp({
-                //                 equipIdList: [this.equipId],
-                //                 leaderId: this.inlineForm.leader,
-                //                 reason: this.inlineForm.reason,
-                //             }).then((res) => {
-                //                 console.log(res);
-                //             })
-                //         );
-                //         break;
-                // }
-                // if (this.title !== '报废') {
-                //     this.$refs.inlineForm.gqlValidate(API,
-                //         {
-                //             equipIdList: [this.equipId],
-                //             reason: this.inlineForm.reason,
-                //             auditor: this.inlineForm.auditor,
-                //         }, () => {
-                //             this.callback(`申请${this.title}成功`);
-                //             this.$refs.dialog.hide();
-                //             this.$emit('confirm', true);
-                //         });
-                // }
-
             },
             leadList() {
                 this.gqlQuery(api.getUserList, {

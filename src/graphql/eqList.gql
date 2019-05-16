@@ -346,3 +346,13 @@ query getEquipArg($id: String!) {
     chargeCycle
   }
 }
+
+mutation admin_importEquips($rfids: [String]!, $houseId: String!, $location: Location_, $serialList: [String], $equipArgId: String!, $quality: Quality_!) {
+  admin_importEquips(rfids: $rfids, houseId: $houseId, location: $location, serialList: $serialList, equipArgId: $equipArgId, quality: $quality) {
+    totalPages
+    totalElements
+    content {
+      id
+    }
+  }
+}

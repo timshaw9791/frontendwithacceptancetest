@@ -49,12 +49,12 @@
 
     .el-menu {
       border: none;
-      height: 90%;
+      height: 80%;
       width: 100% !important;
     }
 
     .topTitle {
-      height: 60px;
+      height: 92px;
       background: rgb(47, 47, 118);
       color: white !important;
       display: flex;
@@ -68,7 +68,7 @@
     }
 
     .topInfo {
-      height: 244px;
+      height: 220px;
       border-bottom: 1px solid rgba(112, 112, 112, 0.24);
       font-size: 16px;
       color: #707070;
@@ -96,8 +96,14 @@
     .topBottom {
       width: 225px;
       text-align: center;
-      font-size: 16px;
       color: #707070;
+      position: fixed;
+      bottom: 0px;
+      background: white;
+      height: 35px;
+      line-height: 20px;
+      font-size: 12px;
+      padding-bottom: 17px;
     }
 
   }
