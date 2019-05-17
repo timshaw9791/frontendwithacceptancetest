@@ -1,27 +1,3 @@
-query getEquipList($paginator: paginator, $qfilter: qfilter) {
-  EquipList(paginator: $paginator, qfilter: $qfilter) {
-    totalPages
-    totalElements
-    content {
-      name
-      state
-      inputTime
-      rfid
-      policeId
-      commonHouseId
-      equipArg {
-        id
-      }
-      serial
-      id
-      disabled
-      quality {
-        shelfLife
-        productDate
-      }
-    }
-  }
-}
 
 mutation admin_saveEquipArg($equipArg: EquipArg_!) {
   admin_saveEquipArg(equipArg: $equipArg) {
@@ -214,6 +190,40 @@ query getCategoryList($houseId:String) {
   }
 }
 
+query getGenreList1($houseId:String) {
+  GenreList(qfilter:{
+      operator: EQUEAL
+      key:"categories.houseEquipArgs.houseId"
+      value:$houseId
+  }) {
+    totalPages
+    totalElements
+    content {
+      id
+      name
+      categories {
+        name
+        id
+        disabled
+        houseEquipArgs {
+          count
+          houseId
+          id
+          safeStock
+          disabled
+          equipArg {
+            id
+            name
+          }
+        }
+      }
+      disabled
+      name
+    }
+  }
+}
+
+
 
 
 
@@ -227,6 +237,122 @@ query getSupplierList{
       person
       phone
       disabled
+    }
+  }
+}
+
+
+
+query getEquipList($paginator: paginator, $qfilter: qfilter) {
+  EquipList(paginator: $paginator, qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+      serial
+      name
+      equipArg {
+        id
+        model
+        name
+		supplier{
+          name
+        }
+        category{
+          name
+          genre{
+            name
+          }
+        }
+      }
+      receiveTime
+      inputTime
+      id
+      quality {
+        shelfLife
+        productDate
+      }
+      location {
+        number
+        floor
+        surface
+        section
+      }
+      disabled
+      useCount
+      rfid
+      commonHouseId
+      state
+      policeId
+    }
+  }
+}
+
+query getGenreList {
+  GenreList{
+    totalPages
+    totalElements
+    content {
+      name
+      disabled
+      id
+      categories {
+        disabled
+        name
+        id
+        equipArgs {
+          disabled
+          category {
+            id
+          }
+          supplier {
+            id
+          }
+          id
+          name
+          chargeCycle
+          model
+          upkeepCycle
+        }
+      }
+    }
+  }
+}
+
+
+mutation category_addEquipArg($supplierId: String!, $categoryId: String!, $equipArg: EquipArg_!) {
+  category_addEquipArg(supplierId: $supplierId, categoryId: $categoryId, equipArg: $equipArg) {
+    id
+  }
+}
+
+query getEquipArg($id: String!) {
+  EquipArg(id: $id) {
+    supplier {
+      id
+      name
+    }
+    category {
+      id
+      name
+    }
+    model
+    videoAddresses
+    imageAddress
+    disabled
+    upkeepCycle
+    name
+    id
+    documentAddresses
+    chargeCycle
+  }
+}
+
+mutation admin_importEquips($rfids: [String]!, $houseId: String!, $location: Location_, $serialList: [String], $equipArgId: String!, $quality: Quality_!) {
+  admin_importEquips(rfids: $rfids, houseId: $houseId, location: $location, serialList: $serialList, equipArgId: $equipArgId, quality: $quality) {
+    totalPages
+    totalElements
+    content {
+      id
     }
   }
 }

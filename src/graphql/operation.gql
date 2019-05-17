@@ -1,0 +1,146 @@
+
+query getEquipRemindStrategyList($paginator: paginator, $qfilter: qfilter) {
+  EquipRemindStrategyList(paginator: $paginator, qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+      disabled
+      equip {
+        id
+        name
+        state
+        location{
+          number
+        	surface
+          section
+          floor
+        }
+      }
+      lastUpkeepTime
+      upkeepCycle
+      id
+      lastChargeTime
+      chargeCycle
+      chargeState
+      upkeepState
+    }
+  }
+}
+
+
+
+mutation admin_upkeepEquips($equipIdList: [String]!) {
+  admin_upkeepEquips(equipIdList: $equipIdList) {
+    totalPages
+    totalElements
+    content {
+      id
+    }
+  }
+}
+
+
+
+query getEquipList($paginator: paginator, $qfilter: qfilter) {
+  EquipList(paginator: $paginator, qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+      state
+      id
+      disabled
+      quality {
+        productDate
+        shelfLife
+      }
+      inputTime
+      useCount
+      policeId
+      commonHouseId
+      serial
+      name
+      rfid
+      receiveTime
+      location {
+        floor
+        number
+        surface
+        section
+      }
+      equipArg {
+        id
+      }
+    }
+  }
+}
+
+query getUserList($qfilter: qfilter) {
+  UserList(qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+      unitId
+      policeSign
+      idNumber
+      name
+      password
+      username
+      gender
+      fingerprintInformation
+      disabled
+      faceInformation
+      organUnit {
+        id
+      }
+      phone
+      position
+      id
+      roleItems {
+        roleDescribe
+        roleEnum
+        id
+        privilegeItems {
+          privilege {
+            id
+          }
+          id
+          constraintRule
+        }
+        disabled
+      }
+    }
+  }
+}
+
+mutation houseUser_returnEquip($equipIds: [String]!) {
+  houseUser_returnEquip(equipIds: $equipIds) {
+    totalPages
+    totalElements
+    content {
+      id
+    }
+  }
+}
+
+
+
+query getHouseStockList($paginator: paginator, $qfilter: qfilter) {
+  HouseStockList(paginator: $paginator, qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+      equipArg {
+        id
+      }
+      disabled
+      id
+      count
+      houseId
+      safeStock
+    }
+  }
+}
+
+
+
+

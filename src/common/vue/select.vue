@@ -43,7 +43,7 @@
     }
 </script>
 
-<style>
+<style scoped>
     .my-select-box{
         color:rgba(112,112,112,1)
     }

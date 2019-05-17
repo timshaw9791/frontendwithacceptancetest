@@ -44,3 +44,11 @@ export function formatTime(time) {
   if (time == null) return;
   return new Date(parseInt(time)).toLocaleString().replace(/:\d{1,2}$/, ' ');
 }
+
+
+
+export const surface= {
+  'A_SURFACE':'A面',
+  'B_SURFACE':'B面',
+  'ALL':'AB面'
+}

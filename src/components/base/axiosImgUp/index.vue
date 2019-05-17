@@ -1,0 +1,80 @@
+<template>
+    <div class="img">
+        <el-upload
+                class="avatar-uploader"
+                :action=url
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
+                accept=".jpg,.jpeg,.png,.JPG,.JPEG"
+                :before-upload="beforeAvatarUpload">
+            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
+    </div>
+</template>
+
+<script>
+    import {baseURL, imgBaseUrl} from "api/config";
+
+    export default {
+        data() {
+            return {
+                imageUrl: '',
+                url: ''
+            };
+        },
+        methods: {
+            handleAvatarSuccess(res) {
+                this.imageUrl = `${imgBaseUrl}${res}`;
+                this.$emit('success', res);
+            },
+            beforeAvatarUpload(file) {
+                const isLt2M = file.size / 1024 / 1024 < 2;
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                }
+                return isLt2M
+            }
+        },
+        mounted() {
+            this.url = `${baseURL}/upload/image/`;
+        }
+    }
+</script>
+
+<style lang="scss" scoped>
+    .img {
+        border: 1px dashed #d9d9d9;
+
+        .avatar-uploader .el-upload {
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .avatar-uploader .el-upload:hover {
+            border-color: #409EFF;
+        }
+
+        .avatar-uploader-icon {
+            font-size: 28px;
+            color: #8c939d;
+            width: 150px;
+            height: 150px;
+            line-height: 150px;
+            text-align: center;
+        }
+
+        .avatar {
+            width: 150px;
+            height: 150px;
+            display: block;
+        }
+    }
+
+    .img:hover {
+        border-color: #409EFF;
+    }
+
+</style>

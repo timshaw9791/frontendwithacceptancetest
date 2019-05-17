@@ -24,6 +24,8 @@ import FieldCascader from './components/field-cascader'
 
 import BosPaginator from './components/bos-paginator';
 import BosTableColumn from './components/bos-table-column.vue';
+import BosInput from './components/bos-input'
+
 import FieldEntity from './components/field-entity.vue';
 
 
@@ -43,6 +45,7 @@ let componentsList = {
     'FieldTree': FieldTree,
     'FieldTable': FieldTable,
     'FieldCascader': FieldCascader,
+    'BosInput':BosInput,
 };
 
 

@@ -22,7 +22,7 @@ let __RULES__ = {
     return outPutInfo(/(^\d{15}$)|(^\d{17}(\d|x|X)$)/i.test(value))
   },
   integer(value) {  //整数验证
-    return outPutInfo(/^-?[1-9]\d*$/.test(value))
+    return outPutInfo(/^-?[0-9]\d*$/.test(value))
   },
   decimal(value) {  //小数验证
     return outPutInfo(/^\d+\.*\d*$/.test(value))
@@ -40,7 +40,8 @@ export let formRulesMixin = {
       partialPiginator: {totalPages: 10, totalElements: 10},//默认值
       param: {paginator: {size: 5, page: 1}},//分页参数,
       copyNameLike: '%%',
-      historyPage: 'History-Page',//存放当前页数
+      historyPage: 'History-Page',//存放当前页数,
+      loading:false
     }
   },
   computed: {

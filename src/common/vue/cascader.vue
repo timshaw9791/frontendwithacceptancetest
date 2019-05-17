@@ -45,7 +45,7 @@
     }
 </script>
 
-<style >
+<style scoped>
     #my-cascader .cascader{
         width: 99px;
     }

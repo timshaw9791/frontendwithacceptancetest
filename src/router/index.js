@@ -27,7 +27,7 @@ export const constantRouterMap = [
         path: '/',
         component: Layout,
         name: 'dashboard',
-        redirect:'/dashboard',
+        redirect: '/dashboard',
         hidden: true,
         children: [{
             path: 'dashboard',
@@ -377,20 +377,20 @@ export default new Router({
 
 export const asyncRouterMap = [
     {
-        path: '/qx',
+        path: '/overview',
         component: Layout,
-        redirect: '/qx/test',
-        name: 'qx',
-        meta: {title: '分局管理', icon: '权限'},
+        name: 'overview',
         children: [
             {
-                path: 'branchManagement',
-                name: 'branchManagement',
-                component: _import('policeStation/branchManagement'),
-                meta: {title: '分局管理', icon: '账号'},
+                path: 'index',
+                name: 'overview/index',
+                component: _import('overview/index'),
+                meta: {title: '工作概况', icon: '工作概况'},
             }
         ]
     },
+
+
     {
         path: '/equipment',
         component: Layout,
@@ -399,94 +399,262 @@ export const asyncRouterMap = [
         meta: {title: '装备管理', icon: '账号'},
         children: [
             {
-                path: 'equipmentList',
-                name: 'equipmentList',
-                component: _import('equipmentManagement/equipmentList'),
-                meta: {title: '装备列表'}
-            },
-            {
-                path: 'equipmentRecord',
-                name: 'equipmentRecord',
-                component: _import('equipmentManagement/equipmentRecord'),
-                meta: {title: '装备记录'}
+                path: 'storage',
+                name: 'equipment/storage',
+                component: _import('equipment/storage'),
+                meta: {title: '装备入库', icon: '装备信息'},
             }
         ]
     },
     {
         path: '/warehouse',
         component: Layout,
-        redirect: '/warehouse/index',
         name: 'warehouse',
-        hidden: false,
+        meta: {title: '仓库信息', icon: '仓库信息'},
         children: [
             {
-                path: 'index',
-                name: 'index',
-                component: _import('warehouse/index'),
-                meta: {title: '装备信息', icon: '门店'},
-            }
-        ]
-    },
-    {
-        path: '/message',
-        component: Layout,
-        redirect: '/message/index',
-        name: 'message',
-        hidden: true,
-        children: [
-            {
-                path: 'index',
-                name: 'index',
-                component: _import('message/index'),
-                meta: {title: '消息中心', icon: '消息中心'},
-            }
-        ]
-    },
-    {
-        path: '/workOrder',
-        component: Layout,
-        redirect: '/workOrder/index',
-        name: 'workOrder',
-        meta: {title: '工单管理', icon: '订单'},
-        children: [
-            {
-                path: 'index',
-                name: 'index',
-                component: _import('workOrder/index'),
-                meta: {title: '工单列表', icon: '订单'}
+                path: 'info',
+                name: 'warehouse/info',
+                component: _import('warehouse/info'),
+                meta: {title: '仓库信息'},
             },
-        ]
-    },{
-        path: '/teaching',
-        component: Layout,
-        redirect: '/teaching/index',
-        name: 'teaching',
-        meta: {title: '教学培训', icon: '库存盘点'},
-        children: [
             {
-                path: 'index',
-                name: 'index',
-                component: _import('teaching/index'),
-                meta: {title: '教学培训', icon: '库存盘点'}
+                path: 'supplier',
+                name: 'warehouse/supplier',
+                component: _import('warehouse/supplier'),
+                meta: {title: '供应商'},
             },
+            {
+                path: 'safety',
+                name: 'warehouse/safety',
+                component: _import('warehouse/safety'),
+                meta: {title: '安全库存'},
+            },
+
         ]
     },
     {
-        path: '/personnelManagement',
+        path: '/equipmentOperation',
         component: Layout,
-        redirect: '/personnelManagement/index',
-        name: 'personnelManagement',
-        meta: {title: '人员管理', icon: '账号'},
+        name: 'equipmentOperation',
+        meta: {title: '装备维保', icon: '装备维保'},
         children: [
             {
-                path: 'index',
-                name: 'index',
-                component: _import('personnelManagement/personnelManagement'),
-                meta: {title: '人员管理', icon: '账号'}
+                path: 'charging',
+                name: 'charging',
+                component: _import('equipmentOperation/charging'),
+                meta: {title: '充电'},
+            },
+            {
+                path: 'service',
+                name: 'service',
+                component: _import('equipmentOperation/service'),
+                meta: {title: '维修'},
+            },
+            {
+                path: 'maintenance',
+                name: 'maintenance',
+                component: _import('equipmentOperation/maintenance'),
+                meta: {title: '保养'},
             },
         ]
     },
 
+    {
+        path: '/process',
+        component: Layout,
+        name: 'process',
+        meta: {title: '流程管理', icon: '流程管理'},
+        children: [
+            {
+                path: 'scrapped',
+                name: 'scrapped',
+                component: _import('process/scrapped'),
+                meta: {title: '报废流程'},
+            },
+            {
+                path: 'transfer',
+                name: 'transfer',
+                component: _import('process/transfer'),
+                meta: {title: '调拨流程'},
+            },
+            {
+                path: 'secondment',
+                name: 'secondment',
+                component: _import('process/secondment'),
+                meta: {title: '借调流程'},
+            },
+            {
+                path: 'bill',
+                name: 'bill',
+                component: _import('process/bill'),
+                meta: {title: '报废申请单'},
+                hidden: true,
+            },
+        ]
+    },
+    {
+        path: '/workLog',
+        component: Layout,
+        name: 'workLog',
+        meta: {title: '工作日志', icon: '工作日志'},
+        children: [
+            {
+                path: 'borrow',
+                name: 'borrow',
+                component: _import('workLog/borrow'),
+                meta: {title: '借还日志'},
+            },
+            {
+                path: 'inventory',
+                name: 'inventory',
+                component: _import('workLog/inventory'),
+                meta: {title: '盘点日志'},
+            },
+        ]
+    },
+    {
+        path: '/report',
+        component: Layout,
+        name: 'report',
+        children: [
+            {
+                path: 'index',
+                name: 'report/index',
+                component: _import('report/index'),
+                meta: {title: '统计报表', icon: '统计报表'},
+            },
+        ]
+    },
+    {
+        path: '/personnel',
+        component: Layout,
+        name: 'personnel',
+        meta: {title: '人员管理', icon: '人员管理'},
+        children: [
+            {
+                path: 'info',
+                name: 'info',
+                component: _import('personnel/info'),
+                meta: {title: '人员信息'},
+            },
+            {
+                path: 'permission',
+                name: 'permission',
+                component: _import('personnel/permission'),
+                meta: {title: '权限'},
+            },
+        ]
+    },
+    {
+        path: '/surroundings',
+        component: Layout,
+        name: 'surroundings',
+        children: [
+            {
+                path: 'index',
+                name: 'surroundings/index',
+                component: _import('surroundings/index'),
+                meta: {title: '环境管理', icon: '环境控制'},
+            },
+        ]
+    },
+    {
+        path: '/training',
+        component: Layout,
+        name: 'training',
+        children: [
+            {
+                path: 'index',
+                name: 'training/index',
+                component: _import('training/index'),
+                meta: {title: '教学培训', icon: '教学培训'},
+            },
+        ]
+    },
+    {
+        path: '/category',
+        component: Layout,
+        name: 'category',
+        children: [
+            {
+                path: 'index',
+                name: 'category/index',
+                component: _import('category/index'),
+                meta: {title: '装备类别', icon: '装备类别'},
+            },
+        ]
+    },
+
+
+    // {
+    //     path: '/qx',
+    //     component: Layout,
+    //     name: 'qx',
+    //     meta: {title: '分局管理', icon: '权限'},
+    //     children: [
+    //         {
+    //             path: 'branchManagement',
+    //             name: 'branchManagement',
+    //             component: _import('policeStation/branchManagement'),
+    //             meta: {title: '分局管理', icon: '账号'},
+    //         }
+    //     ]
+    // },
+    // {
+    //     path: '/equipment',
+    //     component: Layout,
+    //     name: 'equipment',
+    //     meta: {title: '装备管理', icon: '账号'},
+    //     children: [
+    //         // {
+    //         //     path: 'warehouse',
+    //         //     name: 'warehouse',
+    //         //     component: _import('equipmentManagement/warehouse'),
+    //         //     meta: {title: '仓库管理'}
+    //         // },
+    //         {
+    //             path: 'equipmentList',
+    //             name: 'equipmentList',
+    //             component: _import('equipmentManagement/equipmentList'),
+    //             meta: {title: '装备列表'}
+    //         },
+    //         {
+    //             path: 'equipmentRecord',
+    //             name: 'equipmentRecord',
+    //             component: _import('equipmentManagement/equipmentRecord'),
+    //             meta: {title: '装备记录'}
+    //         }
+    //     ]
+    // },
+    // {
+    //     path: '/message',
+    //     component: Layout,
+    //     name: 'message',
+    //     hidden: true,
+    //     children: [
+    //         {
+    //             path: 'index',
+    //             name: 'message/index',
+    //             component: _import('message/index'),
+    //             meta: {title: '消息中心', icon: '消息中心'},
+    //         }
+    //     ]
+    // },
+    // {
+    //     path: '/workOrder',
+    //     component: Layout,
+    //     name: 'workOrder',
+    //     meta: {title: '工单管理', icon: '订单'},
+    //     children: [
+    //         {
+    //             path: 'index',
+    //             name: 'workOrder/index',
+    //             component: _import('workOrder/index'),
+    //             meta: {title: '工单列表', icon: '订单'}
+    //         },
+    //     ]
+    // },
 
 
     {path: '*', redirect: '/404', hidden: true}
