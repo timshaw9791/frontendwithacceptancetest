@@ -8,7 +8,7 @@
                 </div>
                 <s_humidity-component style="margin-top: 47px" :scale="scale" :temperature="humidity" :id="'humidity'" :color="color"></s_humidity-component>
                 <span v-text="'查看湿度曲线'" style="margin-top: 62px" @click="toLineChart"></span>
-                <s_line-chart ref="line"></s_line-chart>
+                <s_line-chart ref="line" :characterType="'%'" :title="'湿度'" :ticksNumber="6"></s_line-chart>
             </div>
         </s_card>
     </div>

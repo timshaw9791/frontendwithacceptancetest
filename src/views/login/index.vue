@@ -1,6 +1,6 @@
 <template>
     <div class="login-container">
-        <video src="../../assets/黑贞.mp4" loop="loop" autoplay="autoplay" class="video"></video>
+        <!--<video src="../../assets/黑贞.mp4" loop="loop" autoplay="autoplay" class="video">--></video>
         <div class="video-cover"></div>
         <el-form class="login-form" autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm"
                  label-position="left">

@@ -8,59 +8,40 @@
         name: "lineChartComponent",
         data(){
             return{
-                svgData:[{
-                    "sale": 45,
-                    "time": new Date(2019, 5, 22,15)
-                }, {
-                    "sale": 46,
-                    "time": new Date(2019, 5, 22,17)
-                }, {
-                    "sale": 47,
-                    "time": new Date(2019, 5, 22,19)
-                }, {
-                    "sale": 42,
-                    "time": new Date(2019, 5, 22,21)
-                }, {
-                    "sale": 41,
-                    "time": new Date(2019, 5, 22,23)
-                }, {
-                    "sale": 50,
-                    "time": new Date(2019, 5, 23, 1)
-                },{
-                    "sale": 51,
-                    "time": new Date(2019, 5, 23, 3)
-                },{
-                    "sale": 43,
-                    "time": new Date(2019, 5, 23, 5)
-                },{
-                    "sale": 53,
-                    "time": new Date(2019, 5, 23, 7)
-                },{
-                    "sale": 55,
-                    "time": new Date(2019, 5, 23, 9)
-                },{
-                    "sale": 48,
-                    "time": new Date(2019, 5, 23, 11)
-                },{
-                    "sale": 89,
-                    "time": new Date(2019, 5, 23, 13)
-                },{
-                    "sale": 43,
-                    "time": new Date(2019, 5, 23, 15)
-                }
-                ],
-                xdata:['00:00','02:00','04:00','06:00','08:00','10:00','12:00','14:00','16:00','18:00','20:00','22:00','24:00'],
-                initTime:15,
-                height:460,
-                yHeight:300,
-                ticksNunber:5
+
             }
         },
-
+        props:{
+            svgData:{
+                type:Array
+            },
+            height:{
+                type:Number
+            },
+            yHeight:{
+                type:Number
+            },
+            ticksNumber:{
+                type:Number
+            },
+            initTime:{
+                type:Number
+            },
+            characterType:{
+                type:String
+            },
+            region:{
+                type:Array
+            },
+            threshold:{
+                type:Object
+            }
+        },
         created(){
 
         },
         mounted(){
+            let that = this;
             var svg = d3.select("#visualisation"),
                 margin = {top: 60, right: 50, bottom: 60, left: 70},
                 width = +svg.attr("width") - margin.left - margin.right,
@@ -71,14 +52,13 @@
             var time = d3.timeFormat("%I:%M");
 
             var x = d3.scaleTime()
-                .domain([new Date(2019, 5, 22,15), new Date(2019, 5, 23,15)])
+                .domain(that.region)
                 .range([0, width-80]);
 
 
             var y = d3.scaleLinear()
-                .domain([0, 80])
+                .domain([that.threshold.min, that.threshold.max])
                 .range([this.yHeight, 0]);
-            let that = this;
             var xAxis = d3.axisBottom(x)
                 .ticks(d3.timeHour.every(1))
                 .tickSize(0)
@@ -92,10 +72,9 @@
 
             var yAxis = d3.axisRight(y)
                 .tickSize(width)
-                .ticks(this.ticksNunber)
+                .ticks(Number(that.ticksNumber))
                 .tickFormat( function (d) {
-
-                    return d+'%'
+                    return d+that.characterType
                 });
 
             g.append("g")
@@ -138,7 +117,7 @@
                 .attr('class', 'text')
                 .attr('x', (d, i) => x(d.time) + (margin.left+40))
                 .attr('y', d => y(d.sale) + margin.top-5)
-                .text(d => d.sale+'%')
+                .text(d => d.sale+that.characterType)
                 .attr("font-size", "14px")
                 .attr("fill", "#2F2F76");
 
