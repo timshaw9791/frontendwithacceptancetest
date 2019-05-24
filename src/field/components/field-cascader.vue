@@ -5,6 +5,7 @@
                 :options="options"
                 v-model="copyVal"
                 filterable
+                :show-all-levels="showLast"
                 @change="change">
         </el-cascader>
     </form-item>
@@ -27,6 +28,10 @@
             disabled: {
                 type: [Boolean, String],
                 default: false
+            },
+            showLast: {
+                type: Boolean,
+                default: true
             }
         },
         computed: {

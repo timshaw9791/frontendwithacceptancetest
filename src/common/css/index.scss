@@ -123,11 +123,19 @@ a:hover {
 ._buttons {
   position: absolute;
   right: 0;
-
   .el-input__inner {
     border-radius: 19px;
   }
 }
+
+._buttonsLeft {
+  .el-input__inner {
+    border-radius: 19px;
+  }
+}
+
+
+
 
 ._dialogDiv {
   text-align: center;

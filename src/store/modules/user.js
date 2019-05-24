@@ -1,6 +1,7 @@
 import {login, logout, getInfo} from 'api/login'
 import {getToken, setToken, removeToken} from 'common/js/auth'
 import {Message} from 'element-ui'
+import {delectSocket} from "common/js/webSocket";
 
 const user = {
     state: {
@@ -94,6 +95,7 @@ const user = {
         LogOut({commit, state}) {
             return new Promise((resolve, reject) => {
                 logout(state.token).then(() => {
+                    delectSocket();
                     commit('SET_TOKEN', '');
                     commit('SET_ROLES', []);
                     removeToken();

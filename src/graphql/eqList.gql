@@ -17,42 +17,54 @@ mutation admin_importEquip($houseId: String!, $supplierId: String!, $serial: Str
 
 query getEquip($id: String!) {
   Equip(id: $id) {
-    useCount
-    rfid
     policeId
+    name
+    location {
+      section
+      floor
+      number
+      surface
+    }
+    id
+    inputTime
+    quality {
+      shelfLife
+      productDate
+    }
+    disabled
     equipArg {
       id
       name
       model
+      imageAddress
+      videoAddresses
+      documentAddresses
       chargeCycle
       upkeepCycle
+      category{
+        id
+        name
+        genre{
+          id
+          name
+        }
+      }
+      supplier{
+        id
+        phone
+        name
+        person
+      }
     }
-    supplier {
-      id
-      name
-      phone
-      person
-    }
-    inputTime
-    quality {
-      productDate
-      shelfLife
-    }
-    disabled
-    commonHouseId
-    name
-    serial
-    location {
-      surface
-      section
-      floor
-      number
-    }
-    id
-    receiveTime
     state
+
+    rfid
+    receiveTime
+    houseId
+    serial
   }
 }
+
 
 
 
@@ -278,9 +290,9 @@ query getEquipList($paginator: paginator, $qfilter: qfilter) {
         section
       }
       disabled
-      useCount
+
       rfid
-      commonHouseId
+      houseId
       state
       policeId
     }
@@ -325,34 +337,55 @@ mutation category_addEquipArg($supplierId: String!, $categoryId: String!, $equip
   }
 }
 
-query getEquipArg($id: String!) {
-  EquipArg(id: $id) {
-    supplier {
-      id
-      name
-    }
-    category {
-      id
-      name
-    }
-    model
-    videoAddresses
-    imageAddress
-    disabled
-    upkeepCycle
-    name
-    id
-    documentAddresses
-    chargeCycle
-  }
-}
 
-mutation admin_importEquips($rfids: [String]!, $houseId: String!, $location: Location_, $serialList: [String], $equipArgId: String!, $quality: Quality_!) {
-  admin_importEquips(rfids: $rfids, houseId: $houseId, location: $location, serialList: $serialList, equipArgId: $equipArgId, quality: $quality) {
+mutation admin_importEquips($rfids: [String]!, $location: Location_, $serialList: [String], $equipArgId: String!, $quality: Quality_!) {
+  admin_importEquips(rfids: $rfids, location: $location, serialList: $serialList, equipArgId: $equipArgId, quality: $quality) {
     totalPages
     totalElements
     content {
       id
     }
+  }
+}
+
+
+query getEquipArg($id: String!) {
+  EquipArg(id: $id) {
+    name
+    videoAddresses
+    supplier {
+      id
+      name
+      phone
+      person
+    }
+    id
+    upkeepCycle
+    model
+    imageAddress
+    category {
+      id
+      name
+      genre{
+        name
+        id
+      }
+    }
+    chargeCycle
+    disabled
+    documentAddresses
+  }
+}
+
+
+mutation category_saveEquipArg($categoryId: String!, $equipArg: EquipArg_!) {
+  category_saveEquipArg(categoryId: $categoryId, equipArg: $equipArg) {
+    id
+  }
+}
+
+mutation admin_saveEquipInfo($equipId: String!, $location: Location_!, $quality: Quality_!) {
+  admin_saveEquipInfo(equipId: $equipId, location: $location, quality: $quality) {
+    id
   }
 }

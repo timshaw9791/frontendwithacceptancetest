@@ -23,7 +23,7 @@ query getEquipEventStoreList($paginator: paginator, $qfilter: qfilter) {
     totalElements
     content {
       reason
-      commonHouseId
+      houseId
       id
       endTime
       disabled

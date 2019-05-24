@@ -53,7 +53,7 @@
         let val=row;
         for(let i=0;i<field.length;i++){
           val=val[field[i]];
-          if(!val)return null;
+          if(!val)return val;
         }
         return val;
       }

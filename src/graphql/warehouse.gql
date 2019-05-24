@@ -194,3 +194,84 @@ query getSupplierList($paginator: paginator, $qfilter: qfilter) {
 
 
 
+query getEquipArgList($paginator: paginator, $qfilter: qfilter) {
+  EquipArgList(paginator: $paginator, qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+      upkeepCycle
+      id
+      imageAddress
+      videoAddresses
+      documentAddresses
+      name
+      model
+      disabled
+      chargeCycle
+      supplier {
+        id
+        phone
+        person
+        name
+      }
+      category {
+        id
+        name
+      	genre{
+          id
+          name
+        }
+      }
+    }
+  }
+}
+
+query getHouseStockList($paginator: paginator, $qfilter: qfilter) {
+  HouseStockList (paginator: $paginator, qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+      safeStock
+      disabled
+      id
+      equipArg {
+        id
+        name
+        model
+        supplier{
+          id
+          name
+        }
+        category{
+          id
+          name
+        	genre{
+            id
+            name
+          }
+        }
+      }
+      houseId
+      count
+    }
+  }
+}
+
+
+
+mutation house_changeSafeSock($houseEquipArgId: String!, $safeSock: Int!) {
+  house_changeSafeSock(houseEquipArgId: $houseEquipArgId, safeSock: $safeSock) {
+    id
+  }
+}
+
+
+mutation admin_importEquips($rfids: [String]!, $location: Location_, $serialList: [String], $equipArgId: String!, $quality: Quality_!) {
+  admin_importEquips(rfids: $rfids, location: $location, serialList: $serialList, equipArgId: $equipArgId, quality: $quality) {
+    totalPages
+    totalElements
+    content {
+      id
+    }
+  }
+}

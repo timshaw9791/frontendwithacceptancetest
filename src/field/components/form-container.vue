@@ -7,6 +7,7 @@
 
 <script>
     import {formRulesMixin} from '../common/mixinComponent';
+
     export default {
         mixins: [formRulesMixin],
         computed: {
@@ -16,6 +17,7 @@
             validate() {
                 return new Promise((resolve, reject) => {
                     this.$refs.form.validate((valid) => {
+                        console.log(valid);
                         if (valid) {
                             resolve(true);
                         } else {
@@ -43,8 +45,7 @@
                 this.validate.then(() => {
                     try {
                         this.gqlMutate(graphql, variables, sCallback);
-                    }
-                    catch (error) {
+                    } catch (error) {
                         console.error(error);   //语法问题检测
                         this.$message.error(`${error}`);
                     }
@@ -70,7 +71,7 @@
             },
             model: {
                 type: Object,
-                default: ()=>{
+                default: () => {
                     return {}
                 }
             },

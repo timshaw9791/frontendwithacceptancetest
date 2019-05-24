@@ -11,7 +11,6 @@ import axios from 'axios';
 import PDFJS from 'pdfjs-dist'
 
 import './plugins/field';
-
 import '@/permission'
 
 

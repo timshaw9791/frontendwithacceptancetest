@@ -19,10 +19,6 @@
 
                 <el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
                           fit highlight-current-row>
-                    <el-table-column
-                            type="selection"
-                            width="55">
-                    </el-table-column>
                     <bos-table-column lable="装备名" field="equip.name"></bos-table-column>
                     <bos-table-column lable="装备ID" field="equip.id"></bos-table-column>
                     <bos-table-column lable="架体编号" field="equip.location.number"></bos-table-column>

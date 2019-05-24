@@ -1,6 +1,7 @@
 <template>
     <div class="img">
         <el-upload
+                :disabled="disabled"
                 class="avatar-uploader"
                 :action=url
                 :show-file-list="false"
@@ -20,9 +21,21 @@
         data() {
             return {
                 imageUrl: '',
-                url: ''
+                url: '',
             };
         },
+        props: {
+            disabled: {
+                type: [Boolean, String],
+                default: false
+            },
+            image: {
+                type: String,
+                default: null
+            }
+        },
+
+
         methods: {
             handleAvatarSuccess(res) {
                 this.imageUrl = `${imgBaseUrl}${res}`;
@@ -36,6 +49,13 @@
                 return isLt2M
             }
         },
+        watch: {
+            image(newVal) {
+                newVal ? this.imageUrl = newVal : this.imageUrl = '';
+            }
+        },
+
+
         mounted() {
             this.url = `${baseURL}/upload/image/`;
         }
@@ -75,6 +95,10 @@
 
     .img:hover {
         border-color: #409EFF;
+    }
+
+    .imgDisabled {
+
     }
 
 </style>

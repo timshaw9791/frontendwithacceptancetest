@@ -402,7 +402,7 @@ export const asyncRouterMap = [
                 path: 'storage',
                 name: 'equipment/storage',
                 component: _import('equipment/storage'),
-                meta: {title: '装备入库', icon: '装备信息'},
+                meta: {title: '库房装备', icon: '装备信息'},
             }
         ]
     },
@@ -585,7 +585,20 @@ export const asyncRouterMap = [
             },
         ]
     },
-
+    {
+        path: '/message',
+        component: Layout,
+        name: 'message',
+        hidden: true,
+        children: [
+            {
+                path: 'index',
+                name: 'message/index',
+                component: _import('message/index'),
+                meta: {title: '消息中心', icon: '消息中心'},
+            }
+        ]
+    },
 
     // {
     //     path: '/qx',
@@ -627,20 +640,7 @@ export const asyncRouterMap = [
     //         }
     //     ]
     // },
-    // {
-    //     path: '/message',
-    //     component: Layout,
-    //     name: 'message',
-    //     hidden: true,
-    //     children: [
-    //         {
-    //             path: 'index',
-    //             name: 'message/index',
-    //             component: _import('message/index'),
-    //             meta: {title: '消息中心', icon: '消息中心'},
-    //         }
-    //     ]
-    // },
+
     // {
     //     path: '/workOrder',
     //     component: Layout,

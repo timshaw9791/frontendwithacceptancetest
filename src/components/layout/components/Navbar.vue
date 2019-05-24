@@ -15,9 +15,9 @@
                     </el-badge>
                 </el-tooltip>
             </div>
-            <div @click="$router.push('/message')">
+            <div @click="$router.push('/message/index')">
                 <el-tooltip class="item" effect="dark" content="消息中心" placement="bottom">
-                    <el-badge is-dot>
+                    <el-badge :is-dot="$store.state.socket.message">
                         <svg-icon icon-class="消息中心" class="svg"/>
                     </el-badge>
                 </el-tooltip>
@@ -49,6 +49,7 @@
     import {mapGetters} from 'vuex'
     import Breadcrumb from 'components/base/Breadcrumb'
     import Hamburger from 'components/base/Hamburger'
+    import {startSocket} from "common/js/webSocket";
 
     export default {
         components: {
@@ -71,7 +72,9 @@
                     // this.$message.success('退出成功');
                 })
             },
-
+        },
+        mounted() {
+            startSocket(JSON.parse(localStorage.getItem('user')).id);
         }
     }
 </script>

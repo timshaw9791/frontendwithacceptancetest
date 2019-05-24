@@ -1,42 +1,41 @@
 <template>
     <div>
-        <div class="tabs">
-            <!--<div class="left-tab">-->
-            <!--<div @click="getIndex('未读消息')" :class="{visited:listJson.readed===false}">未读消息</div>-->
-            <!--<div @click="getIndex('已读消息')" :class="{visited:listJson.readed===true}">已读消息</div>-->
-            <!--</div>-->
-            <div class="ulList">
-                <div v-for="(item,index) in list" :key="index" @click="ulClick(item,index)"
-                     :class="{divColor:contentTrue===index,unread:!item.readed}">
-                    {{item.title}}
-                    <span>{{conversion(item.readed)}}</span>
+        <div class="msgContents">
+            <div>
+                <div class="top">
+                    <tb-select :options="options" indexDefault="全部" style="margin-left: 1vw"
+                               @selected="selected"></tb-select>
+
+                    <div class="_buttonsLeft" style="margin-left: 1vw">
+                        <BosInput
+                                placeholder="装备/序号/编号/AB面"
+                                suffix="el-icon-search"
+                                v-model="inquire"
+                                :wrapforlike="true"
+                                style=" width:13vw;">
+                        </BosInput>
+                    </div>
+                </div>
+                <div class="ulList" ref="ulList" :v-loading="true">
+                    <div v-for="(item,index) in list" :key="index" @click="ulClick(item,index)" class="megDiv"
+                         :class="{divColor:contentTrue===index,unread:!item.readed}">
+                        {{item.title}}
+                        <span>{{formatTime(item.time)}} {{conversion(item.readed)}}</span>
+                    </div>
+                </div>
+                <div class="msgBottom">
+                    消息只保存三个月，请及时查看
                 </div>
             </div>
 
-            <!--<el-tabs tab-position="left" class="left-1" @tab-click="getIndex">-->
-            <!--<el-tab-pane label="未读消息">-->
-            <!--<div class="ulList">-->
-            <!--<div v-for="(item,index) in list" :key="index" @click="ulClick(item,index)"-->
-            <!--:class="{divColor:contentTrue===index}">{{item.title}}-->
-            <!--</div>-->
-            <!--<span v-if="list.length===0">暂无</span>-->
-            <!--</div>-->
-            <!--</el-tab-pane>-->
-            <!--<el-tab-pane label="已读消息" @tab-click="getIndex">-->
-            <!--<div class="ulList">-->
-            <!--<div v-for="(item,index) in list" :key="index" @click="ulClick(item,index)"-->
-            <!--:class="{divColor:contentTrue===index}">{{item.title}}-->
-            <!--</div>-->
-            <!--<span v-if="list.length===0">暂无</span>-->
-            <!--</div>-->
-            <!--</el-tab-pane>-->
-            <!--</el-tabs>-->
 
             <transition name="el-fade-in-linear">
                 <div class="contents" v-if="content">
-                    <h2 class="title">{{content.title}}</h2>
-                    <h4>{{content.time}}</h4>
-                    <div v-html="content.content"></div>
+                    <div class="title">
+                        <h2>{{content.title}}</h2>
+                        <h4>推送时间 : {{formatTime(content.time)}}</h4>
+                    </div>
+                    <div v-html="content.content" class="msgText"></div>
                 </div>
                 <div class="mes" v-if="!content">
                     <img src="@/common/images/消息空白.png"/>
@@ -50,43 +49,64 @@
 <script>
     import api from 'gql/msg.gql'
     import {formRulesMixin} from 'field/common/mixinComponent';
-    import {formatTime} from "common/js/validate";
-
+    import tabs from 'components/base/tabs/index'
+    import {transformMixin} from 'common/js/transformMixin'
+    import tbSelect from 'components/base/tabs-select'
 
     export default {
         data() {
             return {
                 list: [],
-                listJson: {
-                    id: JSON.parse(localStorage.getItem('user')).id,
-                },
+                userId: JSON.parse(localStorage.getItem('user')).id,
                 content: null,
-                contentTrue: null
+                contentTrue: null,
+                inquire: '',
+                oldScrollTop: '',
+                options: [
+                    {label: '全部', value: '全部'},
+                    {label: '报废', value: 'EQUIP_SCRAP_MESSAGE'},
+                    {label: '充电', value: 'CHARGE_REMIND'},
+                    {label: '保养', value: 'MAINTAIN_REMIND'},
+                    {label: '未归还', value: 'LONG_TIME_NOT_RETURN'},
+                    {label: '过保', value: 'PERIOD_EXCEED_SHELF_LIFE'},
+                    {label: '安全库存', value: 'SAFE_SOCK_REMIND'},
+                ],
+                qfilter: {},
             }
         },
-        mixins: [formRulesMixin],
+        mixins: [formRulesMixin, transformMixin],
+        components: {
+            tabs,
+            tbSelect
+        },
+
+        computed: {
+            isOpened() {
+                return this.$store.state.socket.message;
+            },
+        },
+
 
         methods: {
             getList() {
+                console.log(this.$store.state.socket.message);
+
+
                 this.gqlQuery(api.getMessageList,
-                    this.listJson, (res) => {
+                    {qfilter: this.qfilter}, (res) => {
                         console.log(res.data.MessageList.content);
                         this.list = JSON.parse(JSON.stringify(res.data.MessageList.content));
+                        if (this.oldScrollTop) {
+                            this.$nextTick(() => {
+                                this.$refs.ulList.scrollTop = this.oldScrollTop;
+                            });
+                        }
                     });
             },
-            // getIndex(data) {
-            //     this.content = null;
-            //     this.contentTrue = null;
-            //     if (data === '未读消息') {
-            //         this.$set(this.listJson, "readed", false);
-            //         this.getList();
-            //     } else if (data === '已读消息') {
-            //         this.$set(this.listJson, "readed", true);
-            //         this.getList();
-            //     }
-            // },
+
             read(id) {
                 console.log(id);
+                this.oldScrollTop = this.$refs.ulList.scrollTop;
                 this.gqlMutate(api.houseUser_readMessage,
                     {
                         messageId: id
@@ -96,17 +116,12 @@
                     });
             },
             ulClick(data, index) {
-                // this.content = null;
-                // this.contentTrue = null;
-                if (data.time.toString().length === 13) {
-                    data.time = formatTime(data.time);
-                }
+                console.log(this.$refs.ulList.scrollTop);
                 if (!data.readed) {
                     this.read(data.id);
                 }
                 this.content = data;
                 this.contentTrue = index;
-
             },
             conversion(data) {
                 if (data) {
@@ -115,23 +130,79 @@
                     return '未读'
                 }
             },
+            selected(data) {
+                console.log(data);
+                if (data === '全部') {
+                    this.qfilter = {
+                        combinator: 'AND',
+                        key: "userId",
+                        operator: 'LIKE',
+                        value: this.userId,
+                    }
+                } else {
+                    this.qfilter = {
+                        "combinator": 'AND',
+                        "key": "userId",
+                        "operator": 'LIKE',
+                        "value": this.userId,
+                        "next": {
+                            "key": "type",
+                            "operator": "EQUEAL",
+                            "value": data,
+                            "combinator": "OR"
+                        }
+                    };
+                }
+                this.getList();
+            },
+        },
+        watch: {
+            isOpened(newer, older) {
+                if (newer) {
+                    this.getList();
+                }
+            },
+
+            // 'this.$store.state.socket.message': {
+            //     handler(newer, older) {
+            //         console.log(newer);
+            //         console.log(older);
+            //         if (newer) {
+            //             this.qfilter = {
+            //                 combinator: 'AND',
+            //                 key: "userId",
+            //                 operator: 'LIKE',
+            //                 value: this.userId,
+            //             };
+            //             this.getList();
+            //         }
+            //     },
+            //     deep: true // 开启深度监听
+            // }
         },
 
-        mounted() {
-            this.getList();
-        }
+
     }
 </script>
 
 <style lang="scss" scoped>
 
-    .tabs {
+
+    .msgContents {
         display: flex;
-        height: 84vh;
+        height: 82vh;
+
+        .top {
+            display: flex;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid rgb(228, 231, 237);
+        }
 
         .left-tab {
             border-right: 2px solid rgb(228, 231, 237);
             padding-right: 1%;
+
             div {
                 height: 36px;
                 margin-bottom: 15px;
@@ -143,6 +214,7 @@
                 justify-content: center;
                 align-items: center;
             }
+
             div:hover {
                 background: rgb(47, 47, 118);
                 color: white;
@@ -157,20 +229,32 @@
 
         }
 
-        .ulList {
-            overflow-y: scroll;
-            min-width: 15vw;
-            max-width: 15vw;
+        .msgBottom {
+            width: 100%;
+            border-bottom: white;
+            position: absolute;
+            bottom: 0;
+            min-width: 23vw;
+            font-size: 14px;
+            color: rgba(185, 185, 185, 1);
+            margin-left: 16px;
+            background: white;
+        }
 
-            div {
+        .ulList {
+            min-width: 23vw;
+            max-width: 23vw;
+            height: 72vh;
+            overflow-y: scroll;
+            position: relative;
+
+            .megDiv {
                 overflow: hidden;
                 white-space: nowrap;
                 text-overflow: ellipsis;
-                padding: 8px 16px 16px 16px;
+                padding: 16px;
                 line-height: 20px;
-                margin-bottom: 8px;
                 cursor: pointer;
-                border-bottom: 1px solid rgb(228, 231, 237);
 
                 span {
                     display: flex;
@@ -179,7 +263,6 @@
                     margin-top: 10px;
                 }
             }
-
 
             div:hover {
                 color: #409EFF;
@@ -197,7 +280,7 @@
         }
 
         .ulList::-webkit-scrollbar {
-            width: 2px;
+            width: 4px;
             height: 10px;
         }
 
@@ -210,26 +293,32 @@
         .ulList::-webkit-scrollbar-thumb {
             border-radius: 10px;
             -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-            background: rgba(#2f2f76,0.37)
+            background: rgba(#2f2f76, 0.37)
         }
 
+
         .contents {
-            margin: 0 3%;
+            margin: 0 3% 0 0;
             width: 100%;
 
             .title {
-                text-align: center;
+                border-bottom: 1px solid rgb(228, 231, 237);
+                color: rgba(112, 112, 112, 1);
+
+                h2 {
+                    margin-left: 28px;
+                }
+
+                h4 {
+                    letter-spacing: 2px;
+                    text-align: right;
+                }
             }
 
-            h4 {
-                text-align: right;
-            }
+            .msgText {
+                padding: 40px 0 0 28px;
 
-            .bottom {
-                text-align: center;
-                margin-top: 5vh;
             }
-
         }
 
         .mes {

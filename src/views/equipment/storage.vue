@@ -41,17 +41,14 @@
                 <bos-table-column lable="供应商" field="equipArg.supplier.name"></bos-table-column>
                 <el-table-column label="操作" align="supplier" width="200">
                     <template slot-scope="scope">
-                        <el-button type="primary" size="mini">查看</el-button>
+                        <el-button type="primary" size="mini" @click="goInfo('look',scope.row)">查看</el-button>
                     </template>
                 </el-table-column>
             </el-table>
             <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
         </el-card>
 
-
-        <storageInfo :commonHouseId="commonHouseId" :equipId="equipId" v-if="storageInfoShow"
-                     :title="title"
-                     @black="black"></storageInfo>
+        <storageInfo :equipId="equipId" v-if="storageInfoShow" :title="title" @black="black"></storageInfo>
     </div>
 </template>
 
@@ -79,18 +76,24 @@
             storageInfo
         },
         methods: {
-            goInfo(data) {
+            goInfo(data, row) {
                 switch (data) {
                     case 'add':
                         this.storageInfoShow = true;
                         this.title = '新增装备信息';
+                        this.equipId='';
                         break;
                     case 'storage':
                         this.storageInfoShow = true;
                         this.title = '装备入库';
+                        this.equipId='';
+                        break;
+                    case 'look':
+                        this.storageInfoShow = true;
+                        this.title = '装备查看';
+                        this.equipId = row.id;
                         break;
                 }
-
             },
             black(data) {
                 this.storageInfoShow = false;
