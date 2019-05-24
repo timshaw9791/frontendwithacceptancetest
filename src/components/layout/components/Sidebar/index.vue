@@ -14,7 +14,7 @@
             </div>
         </div>
         <el-scrollbar wrapClass="scrollbar-wrapper">
-            <div style="min-height: 60vh;max-height: 60vh">
+            <div class="menu">
                 <el-menu
                         mode="vertical"
                         :show-timeout="200"

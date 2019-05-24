@@ -20,16 +20,21 @@
 
                 <el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
                           fit>
-                    <bos-table-column lable="装备类型" field="name"></bos-table-column>
-                    <bos-table-column lable="装备类别" field="person"></bos-table-column>
-                    <bos-table-column lable="装备名称" field="phone"></bos-table-column>
-                    <bos-table-column lable="装备型号" field="phone"></bos-table-column>
-                    <bos-table-column lable="供应商" field="phone"></bos-table-column>
-                    <bos-table-column lable="数量" field="phone"></bos-table-column>
-                    <el-table-column label="操作" align="center" width="200">
+                    <bos-table-column lable="装备类型" field="equipArg.category.name"></bos-table-column>
+                    <bos-table-column lable="装备类别" field="equipArg.category.genre.name"></bos-table-column>
+                    <bos-table-column lable="装备名称" field="equipArg.name"></bos-table-column>
+                    <bos-table-column lable="装备型号" field="equipArg.model"></bos-table-column>
+                    <bos-table-column lable="供应商" field="equipArg.supplier.name"></bos-table-column>
+                    <bos-table-column lable="数量" field="count"></bos-table-column>
+
+                    <el-table-column label="操作" align="center" width="300">
                         <template slot-scope="scope">
-                            <el-button type="primary" size="mini" @click="addChanger('修改供应商',scope.row)">编辑</el-button>
-                            <el-button type="danger" size="mini">删除</el-button>
+                            <el-button type="text" class="_textBt" @click="dialogShow(scope.row)">
+                                <svg-icon icon-class="编辑"/>
+                                安全库存 :
+                            </el-button>
+                            <el-input size="mini" v-model="scope.row.safeStock" :disabled="true"
+                                      style="width: 50px"></el-input>
                         </template>
                     </el-table-column>
 
@@ -38,29 +43,21 @@
             </div>
         </el-card>
 
-        <field-dialog :title="title" ref="dialog" @confirm="dialogConfirm">
-            <form-container ref="inlineForm" :model="inlineForm">
-                <field-input v-model="inlineForm.name" label="供应商" width="4"
-                             :rules="r(true).all(R.require)" prop="name"
-                ></field-input>
-                <br/>
-                <field-input v-model="inlineForm.person" label="联系人" width="4"
-                             :rules="r(true).all(R.require)" prop="person"
-                ></field-input>
-                <br/>
-                <field-input v-model="inlineForm.phone" label="联系方式" width="4"
-                             :rules="r(true).all(R.require)" prop="phone"
-                ></field-input>
-            </form-container>
-        </field-dialog>
-
-
+        <serviceDialog title="提示" ref="dialogButton" @confirm="submit">
+            <div class="_dialogDiv">
+                <form-container ref="inlineForm" :model="inlineForm">
+                    <field-input v-model="inlineForm.safeStock" label="安全库存" width="3"
+                                 :rules="r(true).all(R.integer)" prop="safeStock"></field-input>
+                </form-container>
+            </div>
+        </serviceDialog>
     </div>
 </template>
 
 <script>
     import {formRulesMixin} from 'field/common/mixinComponent';
     import api from 'gql/warehouse.gql'
+    import serviceDialog from 'components/base/serviceDialog'
 
 
     export default {
@@ -72,31 +69,33 @@
                 param: {}
             }
         },
+        components: {
+            serviceDialog
+        },
         mixins: [formRulesMixin],
         apollo: {
             list() {
-                return this.getEntityListWithPagintor(api.getSupplierList);
+                return this.getEntityListWithPagintor(api.getHouseStockList);
             },
         },
         methods: {
-            dialogConfirm() {
-                this.$refs.inlineForm.gqlValidate(api.suppliers_saveSupplier, {
-                    supplier: this.inlineForm
+            submit() {
+                console.log(this.inlineForm.safeStock);
+                this.$refs.inlineForm.gqlValidate(api.house_changeSafeSock, {
+                    safeSock: this.inlineForm.safeStock,
+                    houseEquipArgId: this.inlineForm.id,
                 }, (res) => {
                     console.log(res);
-                    this.callback(`${this.title}成功!`);
-                    this.$refs.dialog.hide();
+                    this.$refs.dialogButton.hide();
+                    this.callback('修改成功!');
                 })
             },
-            addChanger(title, row) {
-                this.title = title;
-                if (title.includes('修改')) {
-                    this.inlineForm = JSON.parse(JSON.stringify(row));
-                } else {
-                    this.inlineForm = {};
-                }
 
-                this.$refs.dialog.show();
+            dialogShow(data) {
+                console.log(data);
+                this.inlineForm.id = data.id;
+                this.$set(this.inlineForm, 'safeStock', data.safeStock);
+                this.$refs.dialogButton.show();
             }
         },
 

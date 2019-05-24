@@ -41,15 +41,15 @@
 
         <field-dialog :title="title" ref="dialog" @confirm="dialogConfirm">
             <form-container ref="inlineForm" :model="inlineForm">
-                <field-input v-model="inlineForm.name" label="供应商" width="4"
+                <field-input v-model="inlineForm.name" label="供应商" width="5"
                              :rules="r(true).all(R.require)" prop="name"
                 ></field-input>
                 <br/>
-                <field-input v-model="inlineForm.person" label="联系人" width="4"
+                <field-input v-model="inlineForm.person" label="联系人" width="5"
                              :rules="r(true).all(R.require)" prop="person"
                 ></field-input>
                 <br/>
-                <field-input v-model="inlineForm.phone" label="联系方式" width="4"
+                <field-input v-model="inlineForm.phone" label="联系方式" width="5"
                              :rules="r(true).all(R.require)" prop="phone"
                 ></field-input>
             </form-container>

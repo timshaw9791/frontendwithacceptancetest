@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="dialog">
         <el-dialog :title="title" :visible.sync="showFlag" v-if="showFlag" center :before-close="handleClose"
                    :width="width">
             <slot></slot>
@@ -67,6 +67,18 @@
     }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+    .dialog {
+        /deep/ .el-dialog__header {
+            background: #2F2F76 !important;
+        }
 
+        /deep/ .el-dialog__title {
+            color: white;
+        }
+
+        /deep/ .el-dialog__headerbtn /deep/ .el-dialog__close {
+            color: white;
+        }
+    }
 </style>

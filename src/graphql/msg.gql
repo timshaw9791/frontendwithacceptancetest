@@ -1,4 +1,4 @@
-query getMessageList($id:String) {
+query getMessageList11($id:String) {
   MessageList(qfilter:{
     combinator:AND
     key:"userId"
@@ -22,35 +22,26 @@ query getMessageList($id:String) {
 }
 
 
-
-query getMessageList1($readed:String, $id:String) {
-  MessageList(qfilter:{
-    combinator:AND
-    key:"userId"
-    operator:LIKE
-    value:$id
-  	next:{
-      combinator:AND
-      key:"readed"
-    	operator:EQUEAL
-    	value:$readed
-    }
-  }){
+query getMessageList($qfilter: qfilter) {
+  MessageList(qfilter: $qfilter) {
     totalPages
     totalElements
     content {
-      id
-      userId
-      content
-      disabled
-      time
       sendUserId
-      readed
-      title
       type
+      disabled
+      userId
+      id
+      content
+      title
+      readed
+      time(OrderBy:DESC)
     }
   }
 }
+
+
+
 
 
 

@@ -9,7 +9,7 @@ query getEquipList($paginator: paginator, $qfilter: qfilter) {
         floor
         section
       }
-      useCount
+
       disabled
       state
       name
@@ -27,7 +27,7 @@ query getEquipList($paginator: paginator, $qfilter: qfilter) {
       equipArg {
         id
       }
-      commonHouseId
+      houseId
       receiveTime
       inputTime
     }
@@ -46,8 +46,8 @@ query getEquipListDESC($paginator: paginator, $qfilter: qfilter) {
         productDate
       }
       receiveTime
-      commonHouseId
-      useCount
+      houseId
+
       id
       serial
       name
@@ -82,8 +82,8 @@ query getEquipListASC($paginator: paginator, $qfilter: qfilter) {
         productDate
       }
       receiveTime
-      commonHouseId
-      useCount
+      houseId
+
       id
       serial
       name

@@ -45,3 +45,20 @@
 .el-menu-item .el-submenu__title {
   height: 50px;
 }
+
+.hideSidebar {
+  /deep/ .el-menu {
+    max-height: 100vh !important;
+  }
+}
+
+.el-message--success {
+  background: rgba(249, 249, 249, 1) !important;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+}
+
+.el-message--error {
+  background: rgba(249, 249, 249, 1) !important;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+}
+

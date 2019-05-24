@@ -7,9 +7,7 @@ import './plugins/element'
 import provide from './vue-apollo'
 import 'core-js';
 import './components/icons'
-
 import './plugins/field';
-
 import '@/permission'
 
 

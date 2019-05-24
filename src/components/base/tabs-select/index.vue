@@ -1,14 +1,14 @@
 <template>
     <div class="tabs">
-        <el-select v-model="value" placeholder="" @change="indexValue()">
+        <el-select v-model="value" placeholder="" @change="indexValue()" size="medium">
             <el-option
+                    style="text-align:center"
                     v-for="item in options"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value">
             </el-option>
         </el-select>
-
     </div>
 </template>
 
@@ -23,6 +23,11 @@
             indexValue() {
                 this.$emit('selected', this.value);
             }
+        },
+        mounted() {
+
+            this.value ? this.$emit('selected', this.value) : ''
+
         },
 
 
@@ -47,12 +52,13 @@
             color: white !important;
             border-radius: 24px;
             text-align: center;
-            width: 120px;
+            width: 6vw;
             font-size: 16px;
         }
 
         /deep/ .el-select .el-input .el-select__caret {
             color: white !important;
+
         }
     }
 
