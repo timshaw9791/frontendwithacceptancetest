@@ -75,7 +75,7 @@
         },
         watch: {
             'search':{
-                handler(newval){
+                handler(){
                   this.searchGql()
                 }
             }

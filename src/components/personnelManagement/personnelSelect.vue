@@ -1,7 +1,7 @@
 <template>
     <div id="personnelSelect">
         <div class="personnel-box">
-            <el-select v-model="value" placeholder="请选择" @change="toChange">
+            <el-select v-model="value" :placeholder="placeholder" @change="toChange">
                 <el-option
                         v-for="item in select"
                         :key="item.value"
@@ -19,12 +19,26 @@
         props:{
             select:{
                 type:Array,
+            },
+            placeholder:{
+                type:String,
+                default:'请选择'
+            },
+            havaDefault:{
+                type:Boolean,
+                default:false
             }
         },
         data(){
             return{
                 value:''
             }
+        },
+        created(){
+          if(this.havaDefault){
+              this.value=this.select[0].label;
+              this.$emit('selectRole',this.select[0].value);
+          }
         },
         methods:{
             toChange(data){

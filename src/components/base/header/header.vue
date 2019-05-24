@@ -65,11 +65,10 @@
         width: 100%;
         padding-left: 18px;
         padding-right: 35px;
-        height: 38px;
+        height: 57px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-top: 33px;
         color:rgba(112,112,112,1);
 
     }

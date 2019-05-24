@@ -1,7 +1,7 @@
 <template>
     <div class="branch">
         <div class="some">
-           <!-- <el-checkbox v-model="tree.checked" @change="changeBox">只显示本级</el-checkbox>-->
+
             <el-button type="text" size="mini" @click="add('unit')">增加机关单位</el-button>
             <el-button type="text" size="mini" @click="add('user')">增加用户</el-button>
         </div>

@@ -24,9 +24,9 @@
     <!--<bos-table-column lable="编号" field="id"></bos-table-column>-->
     <!--<bos-table-column lable="角色名" field="name"></bos-table-column>-->
     <!--<el-table-column label="操作" align="center" width="200">-->
-    <!--<template slot-scope="scope">-->
+    <!--<controlComponents slot-scope="scope">-->
     <!--<el-button type="text" size="mini">修改</el-button>-->
-    <!--</template>-->
+    <!--</controlComponents>-->
     <!--</el-table-column>-->
     <!--</el-table>-->
 

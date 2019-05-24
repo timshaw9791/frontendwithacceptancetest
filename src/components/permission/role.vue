@@ -60,7 +60,7 @@
         <!--</el-form-item>-->
         <!--<el-form-item label=约束规则 label-width="120px">
           <el-input placeholder="请输入规则" v-for="(item, index) in ruleList" :key="index" v-model="ruleData[index]">
-            <template slot="prepend">{{item.name}}</template>
+            <controlComponents slot="prepend">{{item.name}}</controlComponents>
           </el-input>
         </el-form-item>-->
 
