@@ -49,7 +49,6 @@
                 }).then((res)=>{
                     this.humidity=res.data.data.humidity;
                     this.temperature=res.data.data.temperature;
-                    console.log(this.humidity,this.temperature);
                 }).catch(err=>{
                     this.$message.error(err);
                 });

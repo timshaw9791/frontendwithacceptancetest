@@ -74,9 +74,7 @@
                 let clickRef;
                 this.clickRefList.forEach(item=>{
                     if(clickItem==item.name){
-                        console.log(item);
                         clickRef = item.ref;
-                        console.log(clickRef);
                         this.$refs[clickRef].show();
                     }
                 });

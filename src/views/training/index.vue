@@ -1,7 +1,6 @@
 <template>
     <div class="teaching">
         <my-header :title="'教学培训'"  :searchFlag="false" :haveBlack="true" @h_black="black"></my-header>
-
         <div class="action-bar">
             <span v-text="title"></span>
             <div class="input-box" v-if="viewStatus.searchFlag">
