@@ -385,7 +385,7 @@ export const asyncRouterMap = [
                 path: 'index',
                 name: 'overview/index',
                 component: _import('overview/index'),
-                meta: {title: '工作概况', icon: '工作概况'},
+                meta: {title: '工作概览', icon: '工作概览'},
             }
         ]
     },

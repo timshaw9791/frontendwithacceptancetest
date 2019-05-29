@@ -13,6 +13,10 @@ import PDFJS from 'pdfjs-dist'
 import './plugins/field';
 import '@/permission'
 
+import VideoPlayer from 'vue-video-player'
+Vue.use(VideoPlayer)
+
+
 
 Vue.config.productionTip = false;
 Vue.prototype.$ajax = axios;
