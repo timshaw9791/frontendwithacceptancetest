@@ -17,7 +17,7 @@
             </div>
             <div @click="$router.push('/message/index')">
                 <el-tooltip class="item" effect="dark" content="消息中心" placement="bottom">
-                    <el-badge :is-dot="$store.state.socket.message">
+                    <el-badge :is-dot="$store.state.socket.message?true:false">
                         <svg-icon icon-class="消息中心" class="svg"/>
                     </el-badge>
                 </el-tooltip>

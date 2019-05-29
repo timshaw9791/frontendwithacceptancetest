@@ -26,12 +26,16 @@ import '@/plugins/stomp.min'
 
 import store from 'store'
 
+import {getToken} from "./auth";
+import {websocketUrl} from "../../api/config";
+
 const socket = new SockJS("http://115.159.154.194/warehouse/websocket");
 
 const stompClient = Stomp.over(socket);
 
 let headers = {
-    "name": "xiaoming"
+    "name": "xiaoming",
+    "x-auth-token": getToken(),
 };
 
 export function createSocket() {
@@ -53,32 +57,6 @@ export function startSocket(userId) {
             store.commit('SET_MESSAGE', body);
         });
     })
-}
-
-
-export function socketConnect(userId) {
-    //todo : 这里可以设置 native-header
-    var headers = {
-        "name": "xiaoming"
-    };
-
-    //userId 为用户的id
-
-    var url = "http://115.159.154.194/warehouse/websocket";
-
-    var socket = new SockJS(url);
-
-
-    let stompClient = Stomp.over(socket);
-
-    stompClient.connect(headers, (frame) => {
-        console.log(frame);
-        stompClient.subscribe('/messages/' + userId, (body) => {
-            console.log(body);
-            return body
-        });
-    });
-
 }
 
 

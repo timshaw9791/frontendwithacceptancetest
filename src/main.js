@@ -10,12 +10,16 @@ import './components/icons'
 import './plugins/field';
 import '@/permission'
 
+import VideoPlayer from 'vue-video-player'
+Vue.use(VideoPlayer)
+
+
 
 Vue.config.productionTip = false
 
 new Vue({
-  router,
-  store,
-  provide,
-  render: h => h(App)
+    router,
+    store,
+    provide,
+    render: h => h(App)
 }).$mount('#app')
