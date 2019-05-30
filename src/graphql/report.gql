@@ -1,0 +1,48 @@
+query getGenreList{
+  GenreList{
+    totalPages
+    totalElements
+    content {
+      name
+      id
+      disabled
+    }
+  }
+}
+
+query getCategoryList($id: String) {
+  CategoryList(qfilter:{
+    key:"genre.id",
+    operator:EQUEAL,
+    value:$id
+  }) {
+    totalPages
+    totalElements
+    content {
+      equipArgs {
+        supplier {
+          id
+        }
+        videoAddresses
+        category {
+          id
+        }
+        upkeepCycle
+        imageAddress
+        name
+        model
+        id
+        documentAddresses
+        disabled
+        chargeCycle
+      }
+      name
+      id
+      genre {
+        id
+      }
+      disabled
+    }
+  }
+}
+

@@ -155,6 +155,9 @@
         font-size: 16px;
         color: rgba(112, 112, 112, 1);
     }
+    .teaching .t-body{
+        width: 100%;
+    }
     .teaching .action-bar {
         margin-top: 8px;
         border-top: rgba(112, 112, 112, 0.13) solid 1px;
@@ -165,9 +168,6 @@
         justify-content: space-between;
         flex-direction: row;
         padding-left: 20px;
-        width: 100%;
-    }
-    .teaching .t-body{
         width: 100%;
     }
     .action-bar .input-box{

@@ -1,5 +1,5 @@
 <template>
-    <div class="warehousingComponents">
+    <div class="warehousingComponents" @click="toInventory">
         <span v-text="equipment.name"></span>
         <progress-circular :width="142" :percentage="getPercentage()" style="margin-top: 31px">
             <span v-text="equipment.outHouseCount" class="inCircular"></span>
@@ -38,8 +38,10 @@
         },
         methods:{
             getPercentage(){
-
-                return this.equipment.outHouseCount==0?0:this.equipment.outHouseCount/(this.equipment.outHouseCount+this.equipment.inHouseCount)*100
+                return this.equipment.outHouseCount==0?0:Math.round(this.equipment.outHouseCount/(this.equipment.outHouseCount+this.equipment.inHouseCount)*100)
+            },
+            toInventory(){
+                this.$emit('handleInventory',this.equipment)
             }
         }
     }

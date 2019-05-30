@@ -1,6 +1,6 @@
 <template>
     <div class="warehousing-box">
-       <warehousing-component v-for="item in warehouseList" :equipment="item"></warehousing-component>
+       <warehousing-component v-for="item in warehouseList" :equipment="item" @handleInventory="handle"></warehousing-component>
     </div>
 </template>
 
@@ -12,6 +12,11 @@
         props:{
             warehouseList:{
                 type:Array
+            }
+        },
+        methods:{
+            handle(data){
+                this.$emit('responseInventory',data)
             }
         }
     }

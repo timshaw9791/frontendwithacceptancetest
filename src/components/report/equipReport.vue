@@ -1,10 +1,14 @@
 <template>
-    <div class="equipReport" id="equipReport">
+    <div class="equipReport">
         <div class="title">
             <span v-text="title"></span>
         </div>
         <div class="equip-progress-list">
-            <equip-progress style="margin-top: 25px" v-for="item in equipData" :from="title" :category="item.name" :percentage="item.maintenanceRate" :number="item.maintainCount"></equip-progress>
+            <equip-progress style="margin-top: 25px"   v-for="(item,index) in equipData" v-if="index<4" :from="title" :name="item.name" :percentage="item.percentage" :status="flag" :number="item.number">
+                <span v-text="toolTip[0]+'：'+item.allCount" style="margin-top: 8px"></span>
+                <span v-text="toolTip[1]+'：'+item.number" style="margin-top: 8px"></span>
+                <span v-text="toolTip[2]+'：'+item.percentage+'%'" style="margin-top: 8px" v-if="flag"></span>
+            </equip-progress>
         </div>
     </div>
 </template>
@@ -16,6 +20,11 @@
         components:{
             equipProgress
         },
+        data(){
+            return{
+                flag:true
+            }
+        },
         props:{
             title:{
                 type:String,
@@ -23,12 +32,27 @@
             },
             equipData:{
                 type:Array
+            },
+            cardType:{
+              type:String,
+              default:'default'
+            },
+            toolTip:{
+                type:Array,
+                default(){
+                    return['装备数量','维修数量','维修率']
+                }
             }
+        },
+        created(){
+          if(this.title=='装备使用频次'){
+              this.flag=false
+          }
         }
     }
 </script>
 
-<style >
+<style scoped>
     .equipReport{
         width:466px;
         height:251px;
@@ -49,8 +73,5 @@
         align-items: center;
         justify-content: center;
         flex-direction: column;
-    }
-    #equipReport .el-progress-bar__inner{
-        background: #3B86FF;
     }
 </style>
