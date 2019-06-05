@@ -390,7 +390,6 @@ export const asyncRouterMap = [
         ]
     },
 
-
     {
         path: '/equipment',
         component: Layout,
@@ -417,6 +416,12 @@ export const asyncRouterMap = [
                 name: 'warehouse/info',
                 component: _import('warehouse/info'),
                 meta: {title: '仓库信息'},
+            },
+            {
+                path: 'inventory',
+                name: 'warehouse/inventory',
+                component: _import('warehouse/inventory'),
+                meta: {title: '盘点'},
             },
             {
                 path: 'supplier',
@@ -494,22 +499,37 @@ export const asyncRouterMap = [
         ]
     },
     {
-        path: '/workLog',
+        path: '/record',
         component: Layout,
-        name: 'workLog',
-        meta: {title: '工作日志', icon: '工作日志'},
+        name: 'record',
+        meta: {title: '记录管理', icon: '工作日志'},
         children: [
             {
                 path: 'borrow',
                 name: 'borrow',
-                component: _import('workLog/borrow'),
-                meta: {title: '借还日志'},
-            },
-            {
+                component: _import('record/borrow'),
+                meta: {title: '领还记录'},
+            }, {
                 path: 'inventory',
                 name: 'inventory',
-                component: _import('workLog/inventory'),
-                meta: {title: '盘点日志'},
+                component: _import('record/inventory'),
+                meta: {title: '盘点记录'},
+            },
+            {
+                path: 'opening',
+                name: 'opening',
+                component: _import('record/opening'),
+                meta: {title: '开门记录'},
+            },{
+                path: 'entryAndExit',
+                name: 'entryAndExit',
+                component: _import('record/entryAndExit'),
+                meta: {title: '出入记录'},
+            },{
+                path: 'maintenanceRecord',
+                name: 'maintenanceRecord',
+                component: _import('record/maintenanceRecord'),
+                meta: {title: '维保记录'},
             },
         ]
     },

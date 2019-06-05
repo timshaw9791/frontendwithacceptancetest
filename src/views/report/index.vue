@@ -8,7 +8,7 @@
                     <div class="r_t_title-right">
                         <div class="title-right">
                             <div class="content">
-                                <span v-text="'600'" style="font-size:25px"></span>
+                                <span v-text="allOutHouseCount" style="font-size:25px"></span>
                                 <span v-text="'出库总数'" style="margin-top: 4px;font-size: 14px"></span>
                             </div>
 
@@ -16,14 +16,14 @@
                         </div>
                         <div class="title-right" style="margin-left: 32px">
                             <div class="content">
-                                <span v-text="'1260'" style="font-size:25px"></span>
+                                <span v-text="allInHouseCount" style="font-size:25px"></span>
                                 <span v-text="'在库总数'" style="margin-top: 4px;font-size: 14px"></span>
                             </div>
                             <img src="../../components/icons/svg/柱形图灰.png" class="title-img"/>
                         </div>
                     </div>
                 </div>
-                <warehoused :warehouseList="warehouseList" @responseInventory="responseInventory"></warehoused>
+                <warehoused :warehouseList="warehouseList"  @responseInventory="responseInventory"></warehoused>
             </div>
             <div class="report-bottom">
                 <div @click="toDetails('装备维修率')">
@@ -34,12 +34,12 @@
                 </div>
                 <div  @click="toDetails('装备使用频次')">
                     <equip-report :equipData="useCount" :title="'装备使用频次'"
-                                  :toolTip="['装备名称','使用次数','损耗率']"></equip-report>
+                                  :toolTip="['装备名称','使用次数','使用率']"></equip-report>
                 </div>
             </div>
         </div>
-        <equip-details v-if="viewStatus.backFlag" @changeGener="handleChangeSelect" :genre="equipDetails.genre" :selectDefault="equipDetails.selectDefault" :detailsList="equipDetails.list"
-                       :categoryList="equipDetails.categoryList" :title="equipDetails.title" :toolTip="equipDetails.toolTip" @handleSearch="toSearch"></equip-details>
+        <equip-details v-if="viewStatus.backFlag" @changeCategory="handleChangeCategory" @changeGener="handleChangeGener" :genre="equipDetails.genre" :selectDefault="equipDetails.selectDefault" :detailsList="equipDetails.list"
+                       @changeDate="handleDate" :categoryList="equipDetails.categoryList" :title="equipDetails.title" :toolTip="equipDetails.toolTip" @handleSearch="toSearch"></equip-details>
     </div>
 </template>
 
@@ -64,6 +64,8 @@
             return {
                 warehouseList: [],
                 maintenance: [],
+                allInHouseCount:'',
+                allOutHouseCount:'',
                 equipDetails: {
                     list: [],
                     title: '',
@@ -87,7 +89,7 @@
             this.getScrap(data=>{
                 this.scrap = data
             });
-            this.getUseCount(data=>{
+            this.getUseCount('',(data)=>{
                 this.useCount = data
             });
             this.getGenreList();
@@ -125,6 +127,11 @@
                         this.$set(this.equipDetails,'list',data);
                     });
                     this.equipDetails.toolTip=['装备数量','损耗数量','使用率']
+                }else {
+                    this.getUseCount('',(data)=>{
+                        this.$set(this.equipDetails,'list',data);
+                    });
+                    this.equipDetails.toolTip=['装备名称','使用次数']
                 }
                 this.viewStatus.backFlag = !this.viewStatus.backFlag;
             },
@@ -133,24 +140,41 @@
                     this.equipDetails.genre=data;
                 }, true)
             },
-            handleChangeSelect(data){
+            handleDate(data){
+             let date;
+             date={
+                 startTime:data.startTime.valueOf(),
+                 endTime:data.endTime.valueOf()
+             };
+             this.getUseCount(date,(res)=>{
+                    this.$set(this.equipDetails,'list',res);
+                })
+            },
+            handleChangeGener(data){
                 let src ='/statistic/genres/'+data;
                 this.getCategory(data);
-                this.ajax(src,'', (res) => {
-                   let list=[];
-                   res.data.categoryStatisticList.forEach(item=>{
-                       list.push({
-                           name:item.name,
-                           number:item.outHouseCount,
-                           percentage: Math.round(((item.outHouseCount / (item.inHouseCount + item.outHouseCount)) * 100)),
-                           allCount:item.inHouseCount + item.outHouseCount,
-                           select:false
-                       })
-                   });
+                this.getCategoryGener(src,'categoryStatisticList');
+            },
+            handleChangeCategory(data){
+                let src ='/statistic/categories/'+data;
+                this.getCategoryGener(src,'equipArgStatisticList');
+            },
+            getCategoryGener(url,api){
+                this.ajax(url,'', (res) => {
+                    let list=[];
+                    res.data[api].forEach(item=>{
+                        list.push({
+                            name:item.name,
+                            number:item.outHouseCount,
+                            percentage: Math.round(((item.outHouseCount / (item.inHouseCount + item.outHouseCount)) * 100)),
+                            allCount:item.inHouseCount + item.outHouseCount,
+                            select:false
+                        })
+                    });
                     list.sort(function (a, b) {
                         return b.percentage > a.percentage ? 1 : -1;
                     });
-                   this.$set(this.equipDetails,'list',list);
+                    this.$set(this.equipDetails,'list',list);
                 });
             },
             getCategory(data){
@@ -161,34 +185,50 @@
             responseInventory(data) {
                 this.equipDetails.title='库存统计';
                 this.equipDetails.selectDefault=data.name;
+                this.equipDetails.toolTip=['装备数量','出库数量','出库率'];
                 this.viewStatus.backFlag = !this.viewStatus.backFlag
             },
             getWareHouse() {
                 this.ajax('/statistic/genres/total','', (res) => {
+                    this.allInHouseCount=res.data.inHouseCount;
+                    this.allOutHouseCount=res.data.outHouseCount;
                     this.warehouseList = res.data.genreStatisticList;
                 });
             },
-            getUseCount(sCallback) {
-                let nowdate = new Date();
-                let month = (nowdate).valueOf();
-                let oneMonth = nowdate.setMonth(nowdate.getMonth() - 1);
-                this.ajax('/statistic/use-count',{startTime: oneMonth, endTime: month},(res)=>{
-                    let somoe = res.data.sort(function (a, b) {
-                        return b.count > a.count ? 1 : -1
-                    });
-                    let rate = somoe[0].count;
-                    let userCountList = [];
-                    somoe.forEach(item => {
-                        userCountList.push({
-                            name: item.name,
-                            count: item.count,
-                            allCount:item.name,
-                            number:item.count,
-                            percentage: Math.round(((item.count / rate) * 100)),
-                            select:false
-                        })
-                    });
-                    sCallback.call(this, userCountList);
+            getUseCount(params,sCallback) {
+                let param;
+                if(params==''){
+                    let newDate = new Date();
+                    let month = newDate.getMonth();
+                    let year = newDate.getFullYear();
+                     param={
+                        startTime:new Date(year,month,1,0).valueOf(),
+                        endTime:newDate.valueOf()
+                    };
+                }else {
+                    param=params
+                }
+                this.ajax('/statistic/use-count',param,(res)=>{
+                    if(res.data.length!=0){
+                        let somoe = res.data.sort(function (a, b) {
+                            return b.count > a.count ? 1 : -1
+                        });
+                        let rate = somoe[0].count;
+                        let userCountList = [];
+                        somoe.forEach(item => {
+                            userCountList.push({
+                                name: item.name,
+                                count: item.count,
+                                allCount:item.name,
+                                number:item.count,
+                                percentage: Math.round(((item.count / rate) * 100)),
+                                select:false
+                            })
+                        });
+                        sCallback.call(this, userCountList);
+                    }else {
+                        sCallback.call(this, res.data);
+                    }
                     /*this.useCount.list = userCountList*/
                 });
             },

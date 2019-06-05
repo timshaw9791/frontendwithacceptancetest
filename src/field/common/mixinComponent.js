@@ -38,7 +38,7 @@ export let formRulesMixin = {
       R: __RULES__,
       //设置分页参数，和默认值
       partialPiginator: {totalPages: 10, totalElements: 10},//默认值
-      param: {paginator: {size: 5, page: 1}},//分页参数,
+      param: {paginator: {size: 10, page: 1}},//分页参数,
       copyNameLike: '%%',
       historyPage: 'History-Page',//存放当前页数,
       loading:false
@@ -163,6 +163,7 @@ export let formRulesMixin = {
             this.partialPiginator.totalElements = result.totalElements;
           }
           //判断是否存在返回的content，有则返回content
+            console.log('猜猜谁先');
           return !result ? null : (result.hasOwnProperty('content') ? result.content : result);
         },//如果需要使用this来代表vm，则不能使用=>函数，因为箭头函数的this与所在闭包this相同
         variables() {

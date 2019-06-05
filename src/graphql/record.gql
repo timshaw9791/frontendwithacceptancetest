@@ -1,0 +1,259 @@
+query getEquipActionRecordList($paginator: paginator, $qfilter: qfilter) {
+  EquipActionRecordList(paginator: $paginator, qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+      equipInfo {
+        equipRfid
+        equipSerial
+        equipId
+        houseName
+        houseId
+      }
+      equipArgInfo {
+        equipModel
+        equipName
+      }
+      duration
+      disabled
+      action
+      operator
+      startTime
+      id
+    }
+  }
+}
+
+query getEquipActionRecordListDESC($paginator: paginator, $qfilter: qfilter) {
+  EquipActionRecordList(paginator: $paginator, qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+      equipInfo {
+         equipRfid
+         equipSerial
+         equipId
+         houseName
+         houseId
+      }
+      equipArgInfo {
+        equipModel
+        equipName
+      }
+      duration
+      disabled
+      action
+      operator
+      startTime(OrderBy:DESC)
+      id
+    }
+  }
+}
+query getEquipActionRecordListASC($paginator: paginator, $qfilter: qfilter) {
+  EquipActionRecordList(paginator: $paginator, qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+      equipInfo {
+         equipRfid
+         equipSerial
+         equipId
+         houseName
+         houseId
+      }
+      equipArgInfo {
+        equipModel
+        equipName
+      }
+      duration
+      disabled
+      action
+      operator
+      startTime(OrderBy:ASC)
+      id
+    }
+  }
+}
+
+query getInventoryList($paginator: paginator, $qfilter: qfilter) {
+  InventoryList(paginator: $paginator, qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+      startTime
+            outCount
+            rfidCount
+            adminName
+            id
+            disabled
+            withoutRfidCount
+            note
+            endTime
+            adminId
+    }
+  }
+}
+
+query getInventoryListStartTimeDESC($paginator: paginator,$qfilter: qfilter) {
+  InventoryList(paginator: $paginator,qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+    startTime(OrderBy:DESC)
+          outCount
+          rfidCount
+          adminName
+          id
+          disabled
+          withoutRfidCount
+          note
+          endTime
+          adminId
+    }
+  }
+}
+query getInventoryListStartTimeASC($paginator: paginator, $qfilter: qfilter) {
+  InventoryList(paginator: $paginator, qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+    startTime(OrderBy:ASC)
+              outCount
+              rfidCount
+              adminName
+              id
+              disabled
+              withoutRfidCount
+              note
+              endTime
+              adminId
+    }
+  }
+}
+query getInventoryListEndTimeDESC($paginator: paginator, $qfilter: qfilter) {
+  InventoryList(paginator: $paginator, qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+                  startTime
+                  outCount
+                  rfidCount
+                  adminName
+                  id
+                  disabled
+                  withoutRfidCount
+                  note
+                  endTime(OrderBy:DESC)
+                  adminId
+    }
+  }
+}
+
+query getInventoryListEndTimeASC($paginator: paginator, $qfilter: qfilter) {
+  InventoryList(paginator: $paginator, qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+    startTime
+                      outCount
+                      rfidCount
+                      adminName
+                      id
+                      disabled
+                      withoutRfidCount
+                      note
+                      endTime(OrderBy:ASC)
+                      adminId
+    }
+  }
+}
+
+query getGateOpenRecordList($paginator: paginator, $qfilter: qfilter) {
+  GateOpenRecordList(paginator: $paginator, qfilter: $qfilter){
+    totalPages
+    totalElements
+    content {
+      disabled
+      time
+      policeId
+      policeName
+      videoAddress
+      id
+    }
+  }
+}
+query getGateOpenRecordListDESC($paginator: paginator, $qfilter: qfilter) {
+  GateOpenRecordList(paginator: $paginator, qfilter: $qfilter){
+    totalPages
+    totalElements
+    content {
+      disabled
+      time(OrderBy:DESC)
+      policeId
+      policeName
+      videoAddress
+      id
+    }
+  }
+}
+query getGateOpenRecordListASC($paginator: paginator, $qfilter: qfilter) {
+  GateOpenRecordList(paginator: $paginator, qfilter: $qfilter){
+    totalPages
+    totalElements
+    content {
+      disabled
+      time(OrderBy:ASC)
+      policeId
+      policeName
+      videoAddress
+      id
+    }
+  }
+}
+
+
+query getPersonAccessRecordList($paginator: paginator, $qfilter: qfilter) {
+  PersonAccessRecordList(paginator: $paginator, qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+      access
+      videoAddress
+      disabled
+      time
+      userId
+      name
+      id
+    }
+  }
+}
+query getPersonAccessRecordListASC($paginator: paginator, $qfilter: qfilter) {
+  PersonAccessRecordList(paginator: $paginator, qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+      access
+      videoAddress
+      disabled
+      time(OrderBy:ASC)
+      userId
+      name
+      id
+    }
+  }
+}
+query getPersonAccessRecordListDESC($paginator: paginator, $qfilter: qfilter) {
+  PersonAccessRecordList(paginator: $paginator, qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+      access
+      videoAddress
+      disabled
+      time(OrderBy:DESC)
+      userId
+      name
+      id
+    }
+  }
+}

@@ -44,7 +44,7 @@
             getHumidityHistroy(){
                 this.$ajax({
                     method:'post',
-                    url:'http://10.128.4.100:8088/environment/humidityHS',
+                    url:'http://10.128.4.109:8088/environment/humidityHS',
                 }).then(res=>{
                     console.log(res);
                 }).catch(err=>{

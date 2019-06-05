@@ -22,7 +22,7 @@
             </div>
             <div class="select-type">
                 <span v-text="'装备小类：'" style="font-size: 16px"></span>
-                <el-select v-model="selectcategory" placeholder="-" size="medium" style="width: 217px" @change="toChangeCategory">
+                <el-select v-model="selectCategory" placeholder="-" size="medium" style="width: 217px" @change="toChangeCategory">
                     <el-option
                             v-for="item in categoryList"
                             :key="item.id"
@@ -32,12 +32,20 @@
                 </el-select>
             </div>
         </div>
+        <div class="equip-details-date" v-if="viewStatus.dateFlag">
+            <span v-text="'时间选择：'"></span>
+            <el-date-picker
+                    v-model="date"
+                    type="month"
+                    placeholder="选择时间" style="width: 200px!important;" @change="changeDate">
+            </el-date-picker>
+        </div>
         <div class="equip-details-list" >
             <div :class="item.select?'equip-details-item select-item':'equip-details-item'" v-for="item in detailsList">
                 <equip-progress :width="970" :name="item.name" :percentage="item.percentage" :status="true" :number="item.number">
                     <span v-text="toolTip[0]+'：'+item.allCount" style="margin-top: 8px"></span>
                     <span v-text="toolTip[1]+'：'+item.number" style="margin-top: 8px"></span>
-                    <span v-text="toolTip[2]+'：'+item.percentage+'%'" style="margin-top: 8px"></span>
+                    <span v-text="toolTip[2]+'：'+item.percentage+'%'" style="margin-top: 8px" v-if="toolTip[2]!=undefined"></span>
                 </equip-progress>
             </div>
         </div>
@@ -76,10 +84,12 @@
             return{
                 search:'',
                 selectGener:'',
-                selectcategory:'',
+                selectCategory:'',
                 viewStatus:{
-                   flag:true
-                }
+                   flag:true,
+                    dateFlag:false
+                },
+                date:''
             }
         },
         watch: {
@@ -94,19 +104,47 @@
         },
         methods:{
             toChange(data){
+                this.selectCategory='';
                 this.$emit('changeGener',data);
             },
             toChangeCategory(data){
                 this.$emit('changeCategory',data);
             },
+            changeDate(data){
+                let year = data.getFullYear();
+                let month= data.getMonth();
+                let date = new Date();
+                let nowMonth = date.getMonth();
+                let nowYear = date.getFullYear();
+                let flag = true
+                let startTime,endTime;
+                if(nowYear==year&&nowMonth==month){
+                    endTime = date;
+                }else if(nowYear<year||nowMonth<month){
+                    this.$message.warning('不可超出当前时间');
+                    flag=false
+                }else {
+                    endTime = new Date(year,month+1,1,0);
+                }
+               if(flag){
+                   startTime = data;
+                   this.$emit('changeDate',{startTime:startTime,endTime:endTime})
+               }
+            },
             init(){
+                if(this.title=='装备使用频次'){
+                    let nowDate = new Date();
+                    let year=nowDate.getFullYear();
+                    let month=nowDate.getMonth();
+                    this.date=year+'-'+'0'+(month+1);
+                    this.viewStatus.dateFlag = true
+                }
                if(this.selectDefault!=''){
                    let item = this.genre.filter(item => item.name==this.selectDefault);
                    this.selectGener=item[0].name;
                    this.$emit('changeGener',item[0].id);
                }
-
-               if(this.title=='库存统计'){}else {
+                if(this.title=='库存统计'){}else {
                    this.viewStatus.flag=false
                }
             }
@@ -121,6 +159,14 @@
     .equip-details-box .equip-details-list{
         width: 100%;
         margin-top: 20px;
+    }
+    .equip-details-box .equip-details-date{
+        display: flex;
+        align-items: center;
+        padding-left: 18px;
+        padding-top: 17px;
+
+        color: #707070;
     }
     .equip-details-list .equip-details-item{
         width: 100%;

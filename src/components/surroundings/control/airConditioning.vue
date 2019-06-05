@@ -81,7 +81,7 @@
             submissionThreshold(){
                 this.$ajax({
                     method:'post',
-                    url:'http://10.128.4.100:8088/environment//temperatureThresholdSet',
+                    url:'http://10.128.4.109:8088/environment//temperatureThresholdSet',
                     params:{max:this.threshold.max,min:this.threshold.min}
                 }).then((res)=>{
                     this.flag=!this.flag;
@@ -93,7 +93,7 @@
             getThreshold(){
                 this.$ajax({
                     method:'post',
-                    url:'http://10.128.4.100:8088/environment/temperatureThreshold',
+                    url:'http://10.128.4.109:8088/environment/temperatureThreshold',
                 }).then((res)=>{
                     this.threshold.max=res.data.data.temperatureMaximum;
                     this.threshold.min=res.data.data.temperatureMinimum;

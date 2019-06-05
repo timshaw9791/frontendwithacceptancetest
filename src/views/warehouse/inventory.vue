@@ -1,5 +1,7 @@
 <template>
-    <div>inventory</div>
+    <div class="inventory">
+        <span>ahhahahaha</span>
+    </div>
 </template>
 
 <script>
@@ -9,5 +11,7 @@
 </script>
 
 <style scoped>
+.inventory{
 
+}
 </style>

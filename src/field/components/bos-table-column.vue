@@ -8,8 +8,7 @@
 
 
 <script>
-
-  import {initmixinBosInput} from '../common/mixinBosInput';
+    import {initmixinBosInput} from '../common/mixinBosInput';
   export default {
     data(){
       return {}

@@ -3,7 +3,7 @@
        <div class="progress-name">
            <span v-text="name" style="right: 0px;position: absolute"></span>
        </div>
-       <el-tooltip  placement="bottom" popper-class="progress-box-mouse-card-text" :visible-arrow="false">
+       <el-tooltip  placement="bottom" popper-class="progress-box-mouse-card-text" :open-delay="200" :visible-arrow="false" transition="transion-toolTip">
            <div slot="content" class="mouseCard">
               <slot></slot>
            </div>
@@ -82,6 +82,9 @@
         opacity:1!important;
         font-size: 16px!important;
         color: #4D4F5C!important;
+    }
+    .transion-toolTip{
+
     }
     .progress-box {
         display: flex;

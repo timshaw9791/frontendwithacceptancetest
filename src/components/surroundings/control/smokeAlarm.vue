@@ -5,7 +5,7 @@
                 <div class="smokeAlarm-top">
                     <svg-icon icon-class="烟雾报警" style="width: 56px;height: 70px"></svg-icon>
                     <span v-text="'烟雾报警'" style="margin-top: 8px"></span>
-                    <span v-text="'关闭报警'" class="smokeAlarm-button"></span>
+                    <!--<span v-text="'关闭报警'" class="smokeAlarm-button"></span>-->
                 </div>
                 <div class="smokeAlarm-bottom">
                     <span v-text="'当前浓度：'+concentration+'%'"></span>
@@ -52,7 +52,7 @@
             getConcentration(){
                 this.$ajax({
                     method:'post',
-                    url:'http://10.128.4.100:8088/environment/smokeQuery',
+                    url:'http://10.128.4.109:8088/environment/smokeQuery',
                 }).then((res)=>{
                     this.concentration=res.data.data
                 }).catch(err=>{

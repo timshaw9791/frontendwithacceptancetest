@@ -2,18 +2,20 @@
     <div class="label">
         <div v-if="tableFlag">
             <field-table :list="list" :labelList="table.labelList"
-                         :haveButton="table.haveButton" :buttonList="table.buttonList" @sortChange="sortChange" :pageInfo="paginator" @tableCurrentPageChanged="changePage" @click="clickTableCloum" style="width: 100%"></field-table>
+                         :tableAction="table.tableAction" @sortChange="sortChange"  :pageInfo="paginator" @tableCurrentPageChanged="changePage" @click="clickTableCloum" style="width: 100%">
+            </field-table>
         </div>
     </div>
 </template>
 
 <script>
-    import {formRulesMixin} from 'field/common/mixinTable';
+    import {formRulesMixin} from 'field/common/mixinTableRecord';
     export default {
         name: "labels",
         data(){
             return{
-                param:this.table.graphqlTable.graphqlKey
+                param:this.table.graphqlTable.graphqlKey,
+                list:[],
             }
         },
         mixins: [formRulesMixin],
@@ -26,13 +28,16 @@
                 default:true
             }
         },
-        apollo:{
-            list() {
-                return this.getEntityListWithPagintor(this.table.graphqlTable.graphqlApi);
-            },
+        watch:{
+          'table.graphqlTable.graphqlApi':{
+              deep:true,
+              handler() {
+                 this.refetch();
+              }
+          }
         },
         created(){
-            console.log(this.table);
+            this.refetch()
         },
         methods:{
             sortChange(data){
@@ -40,7 +45,12 @@
             },
             clickTableCloum(data){
                 this.$emit('clickTable',data);
-            }
+            },
+            refetch(){
+                this.getEntityListWithPagintorTest(this.table.graphqlTable.graphqlApi,(data)=>{
+                    this.$set(this,'list',data);
+                })
+            },
         }
     }
 </script>

@@ -6,7 +6,7 @@
                     <div class="temperature-scale-item" v-for="(item,index) in scale">
                         <div class="temperature-scale-short" style="position: absolute;top: 0px" v-if="index!=0"></div>
                         <div class="temperature-scale-long"></div>
-                        <div style="width:30px"></div>
+                        <div style="width:33px"></div>
                         <span style="position: absolute;right: -5px" v-text="item"></span>
                         <div  style="width: 17px"></div>
                         <div class="temperature-scale-short" style="position: absolute;bottom: 0px"></div>

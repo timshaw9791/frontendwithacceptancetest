@@ -1,12 +1,11 @@
+/*
 function outPutInfo(flag) {
     return flag ? true : "%s格式不正确";
 }
-
 export let extendRules = function (rules = {}) {
     if (Object.prototype.toString.call(rules) !== '[object Object]') throw new Error('extendRule variable need Object');
     __RULES__ = Object.assign({}, __RULES__, rules);
 };
-
 let __RULES__ = {
     //验证对象，如果通过则返回bool型的true，否则返回验证不通过的提示字符串，其中可以带%s，以便进一步处理。
     email(value) {
@@ -32,14 +31,15 @@ let __RULES__ = {
     },
 
 };
+*/
+
 
 export let formRulesMixin = {
     data() {
         return {
-            R: __RULES__,
             //设置分页参数，和默认值
             partialPiginator: {totalPages: 5, totalElements: 5},//默认值
-            param: {paginator: {size: 5, page: 1}},//分页参数,
+            param: {paginator: {size: 10, page: 1}},//分页参数,
             copyNameLike: '%%',
             historyPage: 'History-Page',//存放当前页数
         }
@@ -56,7 +56,7 @@ export let formRulesMixin = {
         this._initPage();
     },
     methods: {
-        r(required) {//规则组合器
+       /* r(required) {//规则组合器
             var context = this;
             var add = function (trigger, checkerandtiparray) {
                 var addItem = function (rule, errormsg, trigger) {
@@ -99,7 +99,7 @@ export let formRulesMixin = {
                 }
             };
             return ruler.r(required);
-        },
+        },*/
         mutate(mutation, variables) {//声明手动修改的方法
             return this.$apollo.mutate({
                 mutation: mutation,
@@ -115,7 +115,6 @@ export let formRulesMixin = {
         _initPage() {
             //监听param变化，如果发生变化,刷新
             this.$watch("param", function () {
-
                 if (this.param.namelike != this.copyNameLike && this.param.namelike != '%%') {
                     if (this.param.paginator.page != 1) {
                         this.param.paginator.page = 1
@@ -123,7 +122,6 @@ export let formRulesMixin = {
                 } else if (this.param.namelike != this.copyNameLike && this.param.namelike == '%%') {
                     this.param.paginator.page = this.getHistoryPage();
                 }
-                console.log('在watch')
                 this.refetch();
                 if (this.param.namelike != this.copyNameLike && this.param.namelike == '%%') {
                     this.param.paginator.page = Number(this.getHistoryPage());
@@ -141,13 +139,12 @@ export let formRulesMixin = {
         removeHistoryPage() {
             sessionStorage.setItem(this.historyPage, 1);
         },
-        refetch() {
+        /*refetch() {
             if (this.$apollo.queries['list']) this.$apollo.queries['list'].refetch();//重新刷新apollo
-
-        },
+        },*/
         //便利方法，供在apollo:配置块中使用。设置好默认值，只要给一个query对象或者gql字符串即可
         //只限于list列表等需要分页的模块使用，且同一组件只能用一个
-        getEntityListWithPagintor(queryObject, skipFunction) {
+        /*getEntityListWithPagintor(queryObject, skipFunction) {
             queryObject = queryObject.query ? queryObject : {query: queryObject};
             var target = {
 //      loadingKey: 'loading',
@@ -179,18 +176,17 @@ export let formRulesMixin = {
 
             Object.assign(target, queryObject);//Object.assign方法用于对象的合并，将源对象（ source ）的所有可枚举属性，复制到目标对象（ target ）。
             return target;
-        },
+        },*/
         getEntityListWithPagintorTest(graphql,sCallback) {
             this.query(graphql, this.param).then((data) => {
-                console.log(data);
                 if (data.errors) {   //未通过服务端的表单验证
                     this.$message.error(`${data.errors}`);
                 } else {
                     let defultData;
-                    let deepclonedata = JSON.parse(JSON.stringify(data));
-                    let jqlname = Object.keys(deepclonedata)[0];
-                    let result = deepclonedata[jqlname];
                     //处理分页问题
+                    var deepclonedata = JSON.parse(JSON.stringify(data.data));
+                    var jqlname = Object.keys(deepclonedata)[0];
+                    var result = deepclonedata[jqlname];
                     this.copyNameLike = this.param.namelike;
                     if (result && result.hasOwnProperty('totalPages')) {
                         this.partialPiginator.totalPages = result.totalPages;
@@ -198,8 +194,8 @@ export let formRulesMixin = {
                     if (result && result.hasOwnProperty('totalElements')) {
                         this.partialPiginator.totalElements = result.totalElements;
                     }
-                    //判断是否存在返回的content，有则返回content
-                    defultData= !result ? null : (result.hasOwnProperty('content') ? result.content : result);
+
+                    defultData = !result ? null : (result.hasOwnProperty('content') ? result.content : result);
                     sCallback.call(this, defultData);//返回数据使用者可执行自定义处理数据
                 }
             }).catch((error) => {

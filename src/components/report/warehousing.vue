@@ -12,7 +12,15 @@
         props:{
             warehouseList:{
                 type:Array
-            }
+            }/*,
+            allOutHouseCount:{
+                type:Number,
+                default:600
+            },
+            allInHouseCount:{
+                type:Number,
+                default:1200
+            }*/
         },
         methods:{
             handle(data){

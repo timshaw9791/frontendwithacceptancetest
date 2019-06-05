@@ -45,7 +45,7 @@
             getHumiture(){
                 this.$ajax({
                     method:'post',
-                    url:'http://10.128.4.100:8088/environment/humitureQuery',
+                    url:'http://10.128.4.109:8088/environment/humitureQuery',
                 }).then((res)=>{
                     this.humidity=res.data.data.humidity;
                     this.temperature=res.data.data.temperature;
