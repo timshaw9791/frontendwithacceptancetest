@@ -34,7 +34,7 @@
                                 安全库存 :
                             </el-button>
                             <el-input size="mini" v-model="scope.row.safeStock" :disabled="true"
-                                      style="width: 50px"></el-input>
+                                      style="width: 60px"></el-input>
                         </template>
                     </el-table-column>
 

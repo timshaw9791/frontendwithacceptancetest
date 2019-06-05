@@ -16,7 +16,7 @@
         },
         methods: {},
         mounted() {
-            $fs.readFile('C:\\下载\\1.txt', (err, data) => {
+            $fs.readFile('ax6737_65_n\\内部共享存储空间\\inventoryData', (err, data) => {
                 // 读取文件失败/错误
                 if (err) {
                     throw err;

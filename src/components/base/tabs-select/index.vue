@@ -1,5 +1,5 @@
 <template>
-    <div class="tabs">
+    <div class="tabs-select">
         <el-select v-model="value" placeholder="" @change="indexValue()" size="medium">
             <el-option
                     style="text-align:center"
@@ -46,7 +46,7 @@
 
 <style lang="scss" scoped>
 
-    .tabs {
+    .tabs-select {
         /deep/ .el-input__inner {
             background: rgb(47, 47, 118) !important;
             color: white !important;

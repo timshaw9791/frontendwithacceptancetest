@@ -134,16 +134,15 @@
                 console.log(data);
                 if (data === '全部') {
                     this.qfilter = {
-                        combinator: 'AND',
                         key: "userId",
-                        operator: 'LIKE',
-                        value: this.userId,
+                        operator: 'EQUEAL',
+                        value: this.userId
                     }
                 } else {
                     this.qfilter = {
                         "combinator": 'AND',
                         "key": "userId",
-                        "operator": 'LIKE',
+                        "operator": 'EQUEAL',
                         "value": this.userId,
                         "next": {
                             "key": "type",

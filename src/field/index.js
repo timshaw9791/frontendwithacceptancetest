@@ -20,7 +20,7 @@ import FieldDialog from './components/field-dialog.vue';
 import FieldTree from './components/field-tree.vue';
 import FieldTable from './components/field-table.vue'
 import FieldCascader from './components/field-cascader'
-
+import FieldInputQuery from './components/field-input-query'
 
 import BosPaginator from './components/bos-paginator';
 import BosTableColumn from './components/bos-table-column.vue';
@@ -45,7 +45,9 @@ let componentsList = {
     'FieldTree': FieldTree,
     'FieldTable': FieldTable,
     'FieldCascader': FieldCascader,
-    'BosInput':BosInput,
+    'BosInput': BosInput,
+    'FieldInputQuery': FieldInputQuery,
+
 };
 
 
