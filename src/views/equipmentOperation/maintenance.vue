@@ -35,7 +35,7 @@
                     <bos-table-column lable="架体AB面"
                                       :filter="(row)=>surface(row.equip.location.surface)"></bos-table-column>
 
-                    <bos-table-column lable="保养周期" field="upkeepCycle"></bos-table-column>
+                    <bos-table-column lable="保养周期/天" field="upkeepCycle"></bos-table-column>
                     <bos-table-column lable="上次保养时间" :filter="(row)=>formatTime(row.lastUpkeepTime)"></bos-table-column>
                     <bos-table-column lable="保养倒计时"
                                       :filter="(row)=>countdown(row.lastUpkeepTime,row.upkeepCycle)"></bos-table-column>
@@ -159,7 +159,7 @@
                     }, (res) => {
                         console.log(res);
                         this.$refs.dialogButton.hide();
-                        this.callback('保养已申请!');
+                        this.callback('正在保养了!');
                         this.equipList = [];
                     })
                 } else {

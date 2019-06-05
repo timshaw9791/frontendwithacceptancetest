@@ -27,7 +27,7 @@ export const constantRouterMap = [
         path: '/',
         component: Layout,
         name: 'dashboard',
-        redirect: '/dashboard',
+        redirect: '/overview/index',
         hidden: true,
         children: [{
             path: 'dashboard',
@@ -385,10 +385,11 @@ export const asyncRouterMap = [
                 path: 'index',
                 name: 'overview/index',
                 component: _import('overview/index'),
-                meta: {title: '工作概览', icon: '工作概览'},
+                meta: {title: '工作概览', icon: 'home'},
             }
         ]
     },
+
 
     {
         path: '/equipment',
@@ -401,7 +402,7 @@ export const asyncRouterMap = [
                 path: 'storage',
                 name: 'equipment/storage',
                 component: _import('equipment/storage'),
-                meta: {title: '库房装备', icon: '装备信息'},
+                meta: {title: '装备入库', icon: '装备信息'},
             }
         ]
     },
@@ -409,7 +410,7 @@ export const asyncRouterMap = [
         path: '/warehouse',
         component: Layout,
         name: 'warehouse',
-        meta: {title: '仓库信息', icon: '仓库信息'},
+        meta: {title: '库房管理', icon: '仓库信息'},
         children: [
             {
                 path: 'info',
@@ -435,6 +436,13 @@ export const asyncRouterMap = [
                 component: _import('warehouse/safety'),
                 meta: {title: '安全库存'},
             },
+            {
+                path: 'plan',
+                name: 'warehouse/plan',
+                component: _import('warehouse/plan'),
+                meta: {title: '预案管理'},
+            },
+
 
         ]
     },

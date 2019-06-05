@@ -93,24 +93,21 @@
 
 
                             <field-input v-model="zbForm.numberL" label="架体编号" width="2.5"
-                                         :disabled="edit"
-                                         :rules="r(true).all(R.integer)" prop="numberL"></field-input>
+                                         :disabled="edit"></field-input>
 
                             <field-select label="架体AB面" v-model="zbForm.surfaceL" width="2.5"
-                                          :rules="r(true).all(R.require)"
                                           :disabled="edit"
-                                          prop="surfaceL"
-                                          :list="[{val:'A_SURFACE',key:'A面'},{val:'B_SURFACE',key:'B面'},{val:'ALL',key:'C面'}]"></field-select>
+                                          :list="[{val:'A_SURFACE',key:'A面'},{val:'B_SURFACE',key:'B面'},{val:'ALL',key:'AB面'}]"></field-select>
 
-                            <field-input v-model="zbForm.floorL" label="架体层号" width="2.5" :disabled="edit"
-                                         :rules="r(true).all(R.integer)" prop="floorL"></field-input>
+                            <field-input v-model="zbForm.floorL" label="架体层号" width="2.5"
+                                         :disabled="edit"></field-input>
 
-                            <field-input v-model="zbForm.sectionL" label="架体节号" width="2.5" :disabled="edit"
-                                         :rules="r(true).all(R.require)" prop="sectionL"></field-input>
+                            <field-input v-model="zbForm.sectionL" label="架体节号" width="2.5"
+                                         :disabled="edit"></field-input>
 
 
                             <field-input v-model="zbForm.shelfLifeQ" label="保质期" width="2.5" :disabled="edit"
-                                         :rules="r(true).all(R.require)" prop="shelfLifeQ"></field-input>
+                                         :rules="r(true).all(R.integer)" prop="shelfLifeQ"></field-input>
                             <field-date-picker v-model="zbForm.productDateQ" label="生产日期" width="2.5" :disabled="edit"
                                                :rules="r(true).all(R.require)" prop="productDateQ"></field-date-picker>
                         </form-container>
@@ -157,22 +154,20 @@
                         <el-scrollbar wrap-class="list">
                             <div class="list">
                                 <el-table :data="list" fit>
-                                    <bos-table-column lable="序号" field="rfid"></bos-table-column>
-
-                                    <el-table-column label="RFID">
+                                    <el-table-column label="RFID" align="center">
                                         <template scope="scope">
                                             <el-input size="small" v-model="scope.row.rfid"
                                                       style="width:100px"></el-input>
                                         </template>
                                     </el-table-column>
-                                    <el-table-column label="装备序号">
+                                    <el-table-column label="装备序号" align="center">
                                         <template scope="scope">
                                             <el-input size="small" v-model="scope.row.serial"
                                                       @change="qaq(scope)"
                                                       style="width:100px"></el-input>
                                         </template>
                                     </el-table-column>
-                                    <el-table-column label="操作">
+                                    <el-table-column label="操作" align="center">
                                         <template scope="scope">
                                             <el-button type="danger" @click="delqaq(scope)">删除</el-button>
                                         </template>
@@ -261,7 +256,11 @@
 
         methods: {
             black() {
-                this.$refs.dialog.show();
+                if (this.title.includes('装备查看')) {
+                    this.$emit('black', true);
+                } else {
+                    this.$refs.dialog.show();
+                }
             },
 
             addEquipArg() {
@@ -299,6 +298,7 @@
                             surface: this.zbForm.surfaceL,
                             floor: Number(this.zbForm.floorL),
                             section: Number(this.zbForm.sectionL),
+
                         };
                         this.zbForm['quality'] = {
                             shelfLife: this.zbForm.shelfLifeQ * 24 * 60 * 60 * 1000,
@@ -444,6 +444,12 @@
             },
             delqaq(row) {
                 this.list.splice(row.$index, 1);
+
+                if (this.list.length >= 1) {
+                    this.list.splice(row.$index, 1);
+                } else {
+                    this.$message.error('不能删除最后一个');
+                }
             }
         },
 

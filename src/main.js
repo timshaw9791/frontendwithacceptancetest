@@ -14,17 +14,17 @@ import './plugins/field';
 import '@/permission'
 
 import VideoPlayer from 'vue-video-player'
-Vue.use(VideoPlayer)
 
+Vue.use(VideoPlayer)
 
 
 Vue.config.productionTip = false;
 Vue.prototype.$ajax = axios;
 
 new Vue({
-  router,
-  store,
-  provide,
+    router,
+    store,
+    provide,
     PDFJS,
-  render: h => h(App)
+    render: h => h(App)
 }).$mount('#app')

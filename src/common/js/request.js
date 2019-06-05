@@ -34,7 +34,6 @@ service.interceptors.request.use(config => {
         config.data = qs.stringify(config.data);
     }
     if (getToken()) {
-        console.log(getToken());
         config.headers[tokenName] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
     }
     return config

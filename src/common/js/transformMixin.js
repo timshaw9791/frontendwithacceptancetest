@@ -16,8 +16,14 @@ export const transformMixin = {
         countdown(lastChargeTime, chargeCycle) {
             let date = (new Date()).getTime(),
                 countdownTime = '';
-            countdownTime = ((date - (lastChargeTime + chargeCycle * 24 * 60 * 60 * 1000)) / (1000 * 60 * 24));
-            return countdownTime.toFixed(1) > 0 ? `逾期:${countdownTime.toFixed(1)}` : countdownTime.toFixed(1) > 0
+            countdownTime = ((date - (lastChargeTime + chargeCycle * 24 * 60 * 60 * 1000)) / (1000 * 60 * 60));
+
+            return countdownTime.toFixed(1) > 0 ? `逾期:${(countdownTime / 24).toFixed(1)}天` : `${countdownTime.toFixed(1)}小时`
         },
+        countdown1(lastChargeTime) {
+            let date = (new Date()).getTime();
+            return Math.round((date - lastChargeTime) / 1000 / 60 / 60 / 24) + '天'
+        }
+
     }
 };

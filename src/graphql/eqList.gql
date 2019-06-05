@@ -338,7 +338,7 @@ mutation category_addEquipArg($supplierId: String!, $categoryId: String!, $equip
 }
 
 
-mutation admin_importEquips($rfids: [String]!, $location: Location_, $serialList: [String], $equipArgId: String!, $quality: Quality_!) {
+mutation admin_importEquips($rfids: [String]!, $location: Location_!, $serialList: [String], $equipArgId: String!, $quality: Quality_!) {
   admin_importEquips(rfids: $rfids, location: $location, serialList: $serialList, equipArgId: $equipArgId, quality: $quality) {
     totalPages
     totalElements
