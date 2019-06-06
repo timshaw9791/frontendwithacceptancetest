@@ -275,3 +275,8 @@ mutation admin_importEquips($rfids: [String]!, $location: Location_, $serialList
     }
   }
 }
+
+
+mutation suppliers_deleteSupplier($supplierId: String!) {
+  suppliers_deleteSupplier(supplierId: $supplierId)
+}

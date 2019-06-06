@@ -25,3 +25,11 @@ export function delectPlan(data) {
         method: 'delete',
     })
 }
+
+export function searchPlan(data) {
+    return request({
+        url: '/plan-manage/search/like-by-name',
+        method: 'get',
+        params:data
+    })
+}

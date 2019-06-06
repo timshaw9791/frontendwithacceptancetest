@@ -12,7 +12,7 @@
                     </el-button>
                     <div class="_buttons">
                         <BosInput
-                                placeholder="装备/序号/编号/AB面"
+                                placeholder="供应商/联系人/联系方式"
                                 suffix="el-icon-search"
                                 v-model="inquire"
                                 :wrapforlike="true"
@@ -23,14 +23,14 @@
 
 
                 <el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
-                          fit >
+                          fit>
                     <bos-table-column lable="供应商" field="name"></bos-table-column>
                     <bos-table-column lable="联系人" field="person"></bos-table-column>
                     <bos-table-column lable="联系方式" field="phone"></bos-table-column>
                     <el-table-column label="操作" align="center" width="200">
                         <template slot-scope="scope">
                             <el-button type="primary" size="mini" @click="addChanger('修改供应商',scope.row)">编辑</el-button>
-                            <el-button type="danger" size="mini">删除</el-button>
+                            <el-button type="danger" size="mini" @click="delList(scope.row)">删除</el-button>
                         </template>
                     </el-table-column>
 
@@ -50,11 +50,16 @@
                 ></field-input>
                 <br/>
                 <field-input v-model="inlineForm.phone" label="联系方式" width="5"
-                             :rules="r(true).all(R.require)" prop="phone"
+                             :rules="r(true).all(R.mobile)" prop="phone"
                 ></field-input>
             </form-container>
         </field-dialog>
 
+        <servicedialog title="提示" ref="dialog1" @confirm="submit1">
+            <div class="_dialogDiv">
+                您确定要删除此条供应商吗!?
+            </div>
+        </servicedialog>
 
     </div>
 </template>
@@ -62,7 +67,7 @@
 <script>
     import {formRulesMixin} from 'field/common/mixinComponent';
     import api from 'gql/warehouse.gql'
-
+    import servicedialog from 'components/base/serviceDialog'
 
     export default {
         data() {
@@ -70,7 +75,27 @@
                 title: '',
                 inlineForm: {},
                 inquire: '',
-                param: {}
+                delId: '',
+                param: {
+                    "qfilter": {
+                        "combinator": "OR",
+                        "key": "name",
+                        "operator": "LIKE",
+                        "value": "%%",
+                        "next": {
+                            "combinator": "OR",
+                            "key": "person",
+                            "operator": "LIKE",
+                            "value": "%%",
+                            "next": {
+                                "combinator": "OR",
+                                "key": "phone",
+                                "operator": "LIKE",
+                                "value": "%%"
+                            }
+                        }
+                    }
+                }
             }
         },
         mixins: [formRulesMixin],
@@ -98,8 +123,46 @@
                 }
 
                 this.$refs.dialog.show();
+            },
+            delList(row) {
+                this.$refs.dialog1.show();
+                this.delId = row.id;
+            },
+            submit1() {
+                this.gqlMutate(api.suppliers_deleteSupplier, {supplierId: this.delId}, (res) => {
+                    this.$refs.dialog1.hide();
+                    this.callback(`删除成功!`);
+                })
             }
         },
+        components: {
+            servicedialog
+        },
+
+
+        watch: {
+            inquire(newVal, oldVal) {
+                this.param['qfilter'] = {
+                    "combinator": "OR",
+                    "key": "name",
+                    "operator": "LIKE",
+                    value: newVal,
+                    "next": {
+                        "combinator": "OR",
+                        "key": "person",
+                        "operator": "LIKE",
+                        value: newVal,
+                        "next": {
+                            "combinator": "OR",
+                            "key": "phone",
+                            "operator": "LIKE",
+                            value: newVal,
+                        }
+                    }
+                }
+
+            }
+        }
 
     }
 </script>

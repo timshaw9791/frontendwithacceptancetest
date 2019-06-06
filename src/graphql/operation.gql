@@ -8,6 +8,7 @@ query getEquipRemindStrategyList($paginator: paginator, $qfilter: qfilter) {
       equip {
         id
         name
+        serial
         state
         location{
           number

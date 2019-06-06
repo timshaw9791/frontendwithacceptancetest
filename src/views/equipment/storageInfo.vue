@@ -443,9 +443,8 @@
                 }
             },
             delqaq(row) {
-                this.list.splice(row.$index, 1);
 
-                if (this.list.length >= 1) {
+                if (this.list.length > 1) {
                     this.list.splice(row.$index, 1);
                 } else {
                     this.$message.error('不能删除最后一个');

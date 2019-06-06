@@ -17,9 +17,9 @@
 
                     <div class="_buttons">
                         <BosInput
-                                placeholder="装备/序号/编号/AB面"
+                                placeholder="装备/序号/编号"
                                 suffix="el-icon-search"
-                                v-model="param.namelike"
+                                v-model="inquire"
                                 :wrapforlike="true"
                                 style=" width:285px;">
                         </BosInput>
@@ -35,7 +35,7 @@
                             width="55">
                     </el-table-column>
                     <bos-table-column lable="装备名称" field="name"></bos-table-column>
-                    <bos-table-column lable="装备序号" field="id"></bos-table-column>
+                    <bos-table-column lable="装备序号" field="serial"></bos-table-column>
                     <bos-table-column lable="架体编号" field="location.number"></bos-table-column>
                     <bos-table-column lable="架体AB面"
                                       :filter="(row)=>surface(row.location.surface)"></bos-table-column>
@@ -107,7 +107,7 @@
                     qfilter: {
                         "operator": "EQUEAL",
                         "key": "state",
-                        "value": "MAINTAIN"
+                        "value": "MAINTAIN",
                     }
                 },
                 inlineForm: {
@@ -116,6 +116,7 @@
                 leadershipList: [],
                 unitId: JSON.parse(localStorage.getItem('user')).unitId,
                 equipId: '',
+                inquire: '%%',
             }
         },
         methods: {
@@ -195,7 +196,35 @@
             equip,
             tabs,
             servicedialog
-        }
+        },
+        watch: {
+            inquire(newVal, oldVal) {
+                this.param['qfilter'] = {
+                    "operator": "EQUEAL",
+                    "key": "state",
+                    "value": "MAINTAIN",
+                    "combinator": "AND",
+                    "next": {
+                        "combinator": "OR",
+                        "key": "name",
+                        "operator": "LIKE",
+                        value: newVal,
+                        "next": {
+                            "combinator": "OR",
+                            "key": "serial",
+                            "operator": "LIKE",
+                            value: newVal,
+                            "next": {
+                                "key": "location.number",
+                                "operator": "LIKE",
+                                value: newVal,
+                            }
+                        }
+                    }
+                }
+
+            }
+        },
     }
 </script>
 
