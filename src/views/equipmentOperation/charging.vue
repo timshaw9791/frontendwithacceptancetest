@@ -8,6 +8,7 @@
                 <tabs :list="tabsList" :indexDefault="0" @selected="selected">
                     <div class="_buttons">
                         <BosInput
+                                v-if="type==='全部'"
                                 placeholder="装备/序号/编号/AB面"
                                 suffix="el-icon-search"
                                 v-model="inquire"
@@ -20,7 +21,7 @@
                 <el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
                           fit highlight-current-row>
                     <bos-table-column lable="装备名" field="equip.name"></bos-table-column>
-                    <bos-table-column lable="装备ID" field="equip.id"></bos-table-column>
+                    <bos-table-column lable="装备序号" field="equip.serial"></bos-table-column>
                     <bos-table-column lable="架体编号" field="equip.location.number"></bos-table-column>
                     <bos-table-column lable="架体AB面"
                                       :filter="(row)=>surface(row.equip.location.surface)"></bos-table-column>
@@ -61,7 +62,6 @@
         },
         methods: {
             selected(data) {
-                console.log(data);
                 this.type = data;
 
                 if (data === '全部') {
@@ -106,6 +106,35 @@
                 return this.getEntityListWithPagintor(api.getEquipRemindStrategyList);
             },
         },
+        watch: {
+            inquire(newVal, oldVal) {
+                this.param['qfilter'] = {
+                    "operator": "GREATTHAN",
+                    "key": "chargeCycle",
+                    "value": "0",
+                    "combinator": "AND",
+                    "next": {
+                        "combinator": "OR",
+                        "key": "equip.name",
+                        "operator": "LIKE",
+                        value: newVal,
+                        "next": {
+                            "combinator": "OR",
+                            "key": "equip.serial",
+                            "operator": "LIKE",
+                            value: newVal,
+                            "next": {
+                                "key": "equip.location.number",
+                                "operator": "LIKE",
+                                value: newVal
+                            }
+                        }
+                    }
+                }
+
+            }
+        },
+
 
         components: {
             equip,

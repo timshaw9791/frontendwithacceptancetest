@@ -129,7 +129,7 @@
     import {formRulesMixin} from 'field/common/mixinComponent';
     import {transformMixin} from 'common/js/transformMixin'
     import servicedialog from 'components/base/serviceDialog'
-    import {getPlanList, savePlan, delectPlan} from "api/plan"
+    import {getPlanList, savePlan, delectPlan, searchPlan} from "api/plan"
     import api from 'gql/home.gql'
 
     export default {
@@ -286,8 +286,20 @@
         },
         mounted() {
             this.getList();
+        },
+        watch: {
+            inquire(newVal, oldVal) {
+                console.log(newVal);
+                if (newVal === '%%') {
+                    this.getList();
+                } else {
+                    searchPlan({name: newVal}).then(res => {
+                        console.log(res);
+                        this.list = res;
+                    })
+                }
+            }
         }
-
     }
 </script>
 

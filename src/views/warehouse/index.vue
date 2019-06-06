@@ -1,6 +1,7 @@
 <template>
     <div class="warehouse">
-        <my-header @search="getSearch" :title="header.title" :placeholder="'类别/类型/名称/型号'" :searchFlag="viewStatus.flag"></my-header>
+        <my-header @search="getSearch" :title="header.title" :placeholder="'类别/类型/名称/型号'"
+                   :searchFlag="viewStatus.flag"></my-header>
         <div class="action-bar" v-show="viewStatus.flag">
             <cascader :cascader="cascader"></cascader>
             <my-select class="select" :select="select" :size="1"></my-select>
@@ -8,7 +9,7 @@
             <el-button type="text" size="mini" class="action-button" @click="add('equi')">新增装备信息</el-button>
         </div>
         <div class="action-bar" v-show="!viewStatus.flag">
-           <span class="equip-title" v-text="'装备参数'"></span>
+            <span class="equip-title" v-text="'装备参数'"></span>
         </div>
         <div class="body">
             <labels :table="table" @clickTable="clickTable"
@@ -56,8 +57,8 @@
         data() {
             return {
                 search: '',
-                header:{
-                  title:'仓库信息'
+                header: {
+                    title: '仓库信息'
                 },
                 cascader: {
                     cascaderData: [],
@@ -78,8 +79,8 @@
                     list: [],
                     title: '选择仓库'
                 },
-                viewStatus:{
-                    flag:true
+                viewStatus: {
+                    flag: true
                 },
                 table: {
                     labelList: [
@@ -87,7 +88,7 @@
                         {lable: '类别', field: 'category.name', sort: false},
                         {lable: '装备名称', field: 'name', sort: false},
                         {lable: '装备型号', field: 'model', sort: false},
-                       /* {lable: '数量', field: 'count', sort: false},*/
+                        /* {lable: '数量', field: 'count', sort: false},*/
 
                     ],
                     graphqlTable: {
@@ -116,7 +117,7 @@
             'select.selectItem': {
                 deep: true,
                 handler() {
-                   /* this.table.graphqlTable.graphqlKey.qfilter.value = this.select.selectItem;*/
+                    /* this.table.graphqlTable.graphqlKey.qfilter.value = this.select.selectItem;*/
                 }
             },
             'cascader.selectCascader': {
@@ -129,16 +130,16 @@
             },
             'search': {
                 handler(newval) {
-                    let next={};
-                   this.searchKey.forEach(item=>{
-                       this.getNext(next,item)
-                   });
+                    let next = {};
+                    this.searchKey.forEach(item => {
+                        this.getNext(next, item)
+                    });
                     this.$set(this.table.graphqlTable.graphqlKey.qfilter, 'next', next.next);
                     this.$set(this.table.graphqlTable.graphqlKey.qfilter, 'combinator', 'AND');
                 }
             }
         },
-        created(){
+        created() {
         },
         methods: {
             getNext(next, apolloKey) {
@@ -153,10 +154,10 @@
                     }
                 }
                 if (flag) {
-                    next.next={
-                        key:apolloKey,
-                        operator:'LIKE',
-                        value:'%'+this.search+'%'
+                    next.next = {
+                        key: apolloKey,
+                        operator: 'LIKE',
+                        value: '%' + this.search + '%'
                     };
                 }
             },
@@ -223,7 +224,7 @@
                     };
                     this.$refs.dialog.show();
                 } else {
-                    this.header.title='新增装备信息'
+                    this.header.title = '新增装备信息'
                     this.viewStatus.flag = !this.viewStatus.flag;
                 }
             },
@@ -264,8 +265,8 @@
     }
 
     .action-bar .equip-title {
-       font-size: 16px;
-        color:rgba(112,112,112,1);
+        font-size: 16px;
+        color: rgba(112, 112, 112, 1);
     }
 
     .action-bar .action-button {

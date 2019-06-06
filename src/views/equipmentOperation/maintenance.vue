@@ -12,9 +12,10 @@
                     </el-button>
                     <div class="_buttons">
                         <BosInput
-                                placeholder="装备/序号/编号/AB面"
+                                v-if="type==='全部'"
+                                placeholder="装备/序号/编号"
                                 suffix="el-icon-search"
-                                v-model="param.namelike"
+                                v-model="inquire"
                                 :wrapforlike="true"
                                 style=" width:285px;">
                         </BosInput>
@@ -30,7 +31,7 @@
                             width="55">
                     </el-table-column>
                     <bos-table-column lable="装备名称" field="equip.name"></bos-table-column>
-                    <bos-table-column lable="装备序号" field="equip.id"></bos-table-column>
+                    <bos-table-column lable="装备序号" field="equip.serial"></bos-table-column>
                     <bos-table-column lable="架体编号" field="equip.location.number"></bos-table-column>
                     <bos-table-column lable="架体AB面"
                                       :filter="(row)=>surface(row.equip.location.surface)"></bos-table-column>
@@ -100,6 +101,8 @@
                 batch: false,
                 tabsShow: false,
                 equipList: [],
+                type: '',
+                inquire: '',
             }
         },
         apollo: {
@@ -110,6 +113,7 @@
         methods: {
             selected(data) {
                 console.log(data);
+                this.type = data;
                 if (data === '需要保养') {
                     this.tabsShow = true;
                     this.param.qfilter = {
@@ -185,7 +189,37 @@
             equip,
             tabs,
             serviceDialog
-        }
+        },
+        watch: {
+            inquire(newVal, oldVal) {
+
+                this.param['qfilter'] = {
+                    "key": "upkeepCycle",
+                    "operator": "GREATTHAN",
+                    "value": "0",
+                    "combinator": "AND",
+                    "next": {
+                        "combinator": "OR",
+                        "key": "equip.name",
+                        "operator": "LIKE",
+                        value: newVal,
+                        "next": {
+                            "combinator": "OR",
+                            "key": "equip.serial",
+                            "operator": "LIKE",
+                            value: newVal,
+                            "next": {
+                                "key": "equip.location.number",
+                                "operator": "LIKE",
+                                value: newVal,
+                            }
+                        }
+                    }
+                }
+
+            }
+        },
+
     }
 </script>
 

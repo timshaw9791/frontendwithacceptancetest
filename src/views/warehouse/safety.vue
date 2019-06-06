@@ -66,7 +66,13 @@
                 title: '',
                 inlineForm: {},
                 inquire: '',
-                param: {}
+                param: {
+                    "qfilter": {
+                        "key": "equipArg.category.genre.name",
+                        "operator": "LIKE",
+                        "value": "%%",
+                    }
+                }
             }
         },
         components: {
@@ -98,6 +104,41 @@
                 this.$refs.dialogButton.show();
             }
         },
+
+        watch: {
+            inquire(newVal, oldVal) {
+                this.param['qfilter'] = {
+                    "combinator": "OR",
+                    "key": "equipArg.category.genre.name",
+                    "operator": "LIKE",
+                    value: newVal,
+                    "next": {
+                        "combinator": "OR",
+                        "key": "equipArg.category.name",
+                        "operator": "LIKE",
+                        value: newVal,
+                        "next": {
+                            "combinator": "OR",
+                            "key": "name",
+                            "operator": "LIKE",
+                            value: newVal,
+                            "next": {
+                                "combinator": "OR",
+                                "key": "model",
+                                "operator": "LIKE",
+                                value: newVal,
+                                "next": {
+                                    "combinator": "OR",
+                                    "key": "supplier.name",
+                                    "operator": "LIKE",
+                                    value: newVal,
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
     }
 </script>

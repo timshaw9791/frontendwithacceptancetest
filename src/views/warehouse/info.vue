@@ -9,9 +9,9 @@
                     <tab-select :options="selectList" indexDefault="全部" @selected="selectValue"></tab-select>
                     <div class="_buttons">
                         <BosInput
-                                placeholder="装备/序号/编号/AB面"
+                                placeholder="类型/类别/名称/型号/供应商"
                                 suffix="el-icon-search"
-                                v-model="param.namelike"
+                                v-model="inquire"
                                 :wrapforlike="true"
                                 style=" width:285px;">
                         </BosInput>
@@ -57,11 +57,18 @@
 
         data() {
             return {
-                param: {},
+                param: {
+                    "qfilter": {
+                        "key": "category.genre.name",
+                        "operator": "LIKE",
+                        "value": "%%",
+                    }
+                },
                 selectList: [{label: '全部', value: '全部'}],
                 equipId: '',
                 title: '',
                 equipShow: false,
+                inquire: '%%',
             }
         },
         methods: {
@@ -89,7 +96,43 @@
             equip,
             tabs,
             tabSelect
+        },
+        watch: {
+            inquire(newVal, oldVal) {
+                this.param['qfilter'] = {
+                    "combinator": "OR",
+                    "key": "category.genre.name",
+                    "operator": "LIKE",
+                    value: newVal,
+                    "next": {
+                        "combinator": "OR",
+                        "key": "category.name",
+                        "operator": "LIKE",
+                        value: newVal,
+                        "next": {
+                            "combinator": "OR",
+                            "key": "name",
+                            "operator": "LIKE",
+                            value: newVal,
+                            "next": {
+                                "combinator": "OR",
+                                "key": "model",
+                                "operator": "LIKE",
+                                value: newVal,
+                                "next": {
+                                    "combinator": "OR",
+                                    "key": "supplier.name",
+                                    "operator": "LIKE",
+                                    value: newVal,
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
         }
+
     }
 </script>
 

@@ -21,7 +21,7 @@
                     </el-button>
                     <div class="_buttons">
                         <BosInput
-                                placeholder="装备/序号/编号/AB面"
+                                placeholder="RFID/类型/类别/名称/型号"
                                 suffix="el-icon-search"
                                 v-model="inquire"
                                 :wrapforlike="true"
@@ -62,13 +62,20 @@
     export default {
         data() {
             return {
-                inquire: '',
+                inquire: '%%',
                 options: [],
                 commonHouseId: '',
                 equipId: '',
                 title: '',
                 storageInfoShow: false,
                 list: [],
+                param: {
+                    qfilter: {
+                        "key": "rfid",
+                        "operator": "LIKE",
+                        value: '%%',
+                    }
+                }
             }
         },
         components: {
@@ -81,12 +88,12 @@
                     case 'add':
                         this.storageInfoShow = true;
                         this.title = '新增装备信息';
-                        this.equipId='';
+                        this.equipId = '';
                         break;
                     case 'storage':
                         this.storageInfoShow = true;
                         this.title = '装备入库';
-                        this.equipId='';
+                        this.equipId = '';
                         break;
                     case 'look':
                         this.storageInfoShow = true;
@@ -105,12 +112,45 @@
                 return this.getEntityListWithPagintor(api.getEquipList);
             },
         },
-
-
         mounted() {
 
         },
         mixins: [formRulesMixin],
+
+        watch: {
+            inquire(newVal, oldVal) {
+                this.param['qfilter'] = {
+                    "combinator": "OR",
+                    "key": "rfid",
+                    "operator": "LIKE",
+                    value: newVal,
+                    "next": {
+                        "combinator": "OR",
+                        "key": "equipArg.category.genre.name",
+                        "operator": "LIKE",
+                        value: newVal,
+                        "next": {
+                            "combinator": "OR",
+                            "key": "equipArg.category.name",
+                            "operator": "LIKE",
+                            value: newVal,
+                            "next": {
+                                "combinator": "OR",
+                                "key": "name",
+                                "operator": "LIKE",
+                                value: newVal,
+                                "next": {
+                                    "combinator": "OR",
+                                    "key": "equipArg.model",
+                                    "operator": "LIKE",
+                                    value: newVal,
+                                }
+                            }
+                        }
+                    }
+                };
+            }
+        }
 
     }
 </script>
