@@ -1,10 +1,10 @@
 const fs = window.require('fs');
 const path = window.require('path');
 
-const newFile_path = path.join(__dirname, '\\adb\\inventory.json').replace(/\\/g, "\/");
+const newFile_path = path.join(__dirname, '\\adb\\inventoryData.json').replace(/\\/g, "\/");
 const exec = window.require('child_process').exec;
 
-let cmdStr = 'chcp 65001 && adb pull sdcard/inventoryData/inventory.json .';
+let cmdStr = 'chcp 65001 && adb pull sdcard/inventoryData/inventoryData.json .';
 // 执行cmd命令的目录，如果使用cd xx && 上面的命令，这种将会无法正常退出子进程
 let cmdPath = path.join(__dirname, 'adb').replace(/\\/g, "\/");
 // 子进程名称
