@@ -123,6 +123,7 @@ a:hover {
 ._buttons {
   position: absolute;
   right: 0;
+
   .el-input__inner {
     border-radius: 19px;
   }
@@ -133,8 +134,6 @@ a:hover {
     border-radius: 19px;
   }
 }
-
-
 
 
 ._dialogDiv {
@@ -157,6 +156,8 @@ a:hover {
     vertical-align: top !important;
   }
 }
+
+
 
 ._card-title {
   font-size: 18px;

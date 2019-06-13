@@ -9,11 +9,11 @@
     import 'video.js/dist/video-js.css'
     import 'vue-video-player/src/custom-theme.css'
     import 'videojs-flash'
+    import 'videojs-contrib-hls'
 
     export default {
         data() {
-            return {
-            }
+            return {}
         },
         props: {
             playerOptions: {

@@ -51,7 +51,7 @@
                 </el-table>
 
                 <div class="_contentBt" v-if="batch">
-                    <el-button type="primary" @click="batch=false">取 消</el-button>
+                    <el-button  @click="batch=false">取 消</el-button>
                     <el-button type="primary" @click="submit">提 交</el-button>
                 </div>
                 <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>

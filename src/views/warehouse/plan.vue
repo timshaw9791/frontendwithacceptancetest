@@ -78,39 +78,39 @@
             <form-container ref="form" :model="form" class="formList">
                 <field-input v-model="form.name" label="预案名称 :" width="4" :rules="r(true).all(R.require)"
                              prop="name"></field-input>
-                <div>
-                    <el-table :data="form.planEquips" fit class="dialogList" height="360">
-                        <el-table-column label="装备型号" align="center">
-                            <template scope="scope">
-                                <field-input-query size="small" v-model="scope.row.equipModel"
-                                                   :inputList="restaurants"
-                                                   @select="qaq(scope,$event)"></field-input-query>
-                            </template>
-                        </el-table-column>
 
-                        <el-table-column label="装备名称" align="center">
-                            <template scope="scope">
-                                {{scope.row.equipName}}
-                            </template>
-                        </el-table-column>
-                        <el-table-column label="架体编号" align="center">
-                            <template scope="scope">
-                                {{scope.row.location.number}}
-                            </template>
-                        </el-table-column>
-                        <el-table-column label="架体AB面" align="center">
-                            <template scope="scope">
-                                {{surface(scope.row.location.surface)}}
-                            </template>
-                        </el-table-column>
+                <el-table :data="form.planEquips" fit class="dialogList" height="360">
+                    <el-table-column label="装备型号" align="center">
+                        <template scope="scope">
+                            <field-input-query size="small" v-model="scope.row.equipModel"
+                                               :inputList="restaurants"
+                                               @select="qaq(scope,$event)"></field-input-query>
+                        </template>
+                    </el-table-column>
 
-                        <el-table-column label="操作" width="120">
-                            <template scope="scope">
-                                <el-button type="danger" @click="delqaq(scope)">删除</el-button>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                </div>
+                    <el-table-column label="装备名称" align="center">
+                        <template scope="scope">
+                            {{scope.row.equipName}}
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="架体编号" align="center">
+                        <template scope="scope">
+                            {{scope.row.location.number}}
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="架体AB面" align="center">
+                        <template scope="scope">
+                            {{surface(scope.row.location.surface)}}
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column label="操作" width="120">
+                        <template scope="scope">
+                            <el-button type="danger" @click="delqaq(scope)">删除</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+
                 <field-input v-model="form.note" label="预案备注 :" width="9.6" type="textarea"></field-input>
             </form-container>
 
@@ -162,7 +162,6 @@
             qaq(row, data) {
 
                 this.form.planEquips[row.$index] = data.key;
-                console.log(this.form.planEquips);
 
                 if (row.$index === this.form.planEquips.length - 1) {
                     this.form.planEquips.push({equipModel: '', location: {}});
@@ -179,12 +178,12 @@
             dialogShow(type, item) {
                 if (type === 'add') {
                     this.title = '新增预案';
-                    this.form = {};
                     this.form['planEquips'] = [{equipModel: '', location: {}}];
+
                 } else if (type === 'up') {
                     this.title = '编辑预案';
                     console.log(item);
-                    this.form = item;
+                    this.form = JSON.parse(JSON.stringify(item));
                 }
                 this.getEquipInfo();
 
@@ -208,19 +207,19 @@
                 this.gqlQuery(api.getEquipList1, {}, (res) => {
                     let newData = JSON.parse(JSON.stringify(res.data.EquipList.content));
                     let eqName = newData.map(res => {
-                        return res.name
+                        return res.equipArg.model
                     });
                     let endData = [];
                     eqName = Array.from(new Set(eqName));
                     eqName.forEach(item => {
                         newData.some(item1 => {
-                            if (item === item1.name) {
+                            if (item === item1.equipArg.model) {
                                 endData.push({
                                     value: item1.equipArg.model,
                                     key: {
                                         location: {
-                                            number: item1.location.number,
-                                            surface: item1.location.surface,
+                                            number: item1.location != null ? item1.location.number : '',
+                                            surface: item1.location != null ? item1.location.surface : '',
                                         },
                                         equipName: item1.name,
                                         equipModel: item1.equipArg.model,
@@ -311,9 +310,9 @@
     .dialogList {
         width: 90%;
         margin: 3% auto;
-        max-height: 38vh;
+        max-height: 40vh;
         border: 1px solid #EBEEF5;
-        border-bottom: 0 !important;
+        border-bottom: none !important;
     }
 
 

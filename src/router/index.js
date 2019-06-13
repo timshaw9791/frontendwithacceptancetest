@@ -23,6 +23,7 @@ export const constantRouterMap = [
     {path: '/login', component: _import('login/index'), hidden: true},
     {path: '/404', component: _import('errorPage/404'), hidden: true},
 
+
     {
         path: '/',
         component: Layout,
@@ -606,6 +607,20 @@ export const asyncRouterMap = [
             }
         ]
     },
+    {
+        path: '/private',
+        component: Layout,
+        children: [
+            {
+                path: 'index',
+                name: 'private/index',
+                component: _import('private/index'),
+                meta: {title: '个人中心'},
+            }
+        ],
+        hidden: true
+    },
+
 
     // {
     //     path: '/qx',

@@ -150,3 +150,14 @@ mutation admin_delete($id: String!) {
     id
   }
 }
+
+
+query getUser($id: String!) {
+  OrganUnit(id: $id) {
+   id
+    name
+    level
+    location
+  }
+}
+

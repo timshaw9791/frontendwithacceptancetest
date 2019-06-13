@@ -35,6 +35,12 @@
                         主 页
                     </el-dropdown-item>
                 </router-link>
+                <router-link class="inlineBlock" to="/private/index">
+                    <el-dropdown-item>
+                        个人中心
+                    </el-dropdown-item>
+                </router-link>
+
                 <el-dropdown-item divided>
                     <span @click="logout" style="display:block;">退 出</span>
                 </el-dropdown-item>

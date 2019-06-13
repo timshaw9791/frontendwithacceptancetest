@@ -3,7 +3,9 @@
         <el-dialog :title="title" :visible.sync="showFlag" v-if="showFlag" center :before-close="handleClose"
                    :width="width">
             <slot></slot>
+
             <el-dialog
+                    v-if="secondary"
                     width="30%"
                     title="提示"
                     :visible.sync="innerVisible"
@@ -16,8 +18,9 @@
                     <el-button type="primary" @click="cancel">确 定</el-button>
                 </div>
             </el-dialog>
+
             <div slot="footer" class="dialog-footer" v-if="button">
-                <el-button @click="innerVisible = true">取 消</el-button>
+                <el-button @click="cancelDb">取 消</el-button>
                 <el-button type="primary" @click="dialogConfirm">确 定</el-button>
             </div>
         </el-dialog>
@@ -43,6 +46,10 @@
             button: {
                 type: Boolean,
                 default: true
+            },
+            secondary: {
+                type: Boolean,
+                default: true
             }
         },
         methods: {
@@ -61,7 +68,18 @@
                 this.$emit('cancel');
             },
             handleClose(done) {
-                this.innerVisible = true;
+                if (this.secondary) {
+                    this.innerVisible = true;
+                } else {
+                    this.hide();
+                }
+            },
+            cancelDb() {
+                if (this.secondary) {
+                    this.innerVisible = true
+                } else {
+                    this.hide();
+                }
             }
         }
     }

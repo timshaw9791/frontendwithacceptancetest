@@ -56,7 +56,7 @@
                     // }],
                     sources: [{
                         type: "video/mp4",
-                        src: "http://10.128.4.109:8088/video/a.mp4",
+                        src: "http://cloud.video.taobao.com/play/u/2300650542/p/1/e/6/t/1/221304735688.mp4",
                     }],
 
                 },

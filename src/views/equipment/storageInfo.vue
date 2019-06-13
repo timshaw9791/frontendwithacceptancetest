@@ -151,31 +151,27 @@
                         <span>绑定序号</span>
                     </div>
                     <div>
-                        <el-scrollbar wrap-class="list">
-                            <div class="list">
-                                <el-table :data="list" fit>
-                                    <el-table-column label="RFID" align="center">
-                                        <template scope="scope">
-                                            <el-input size="small" v-model="scope.row.rfid"
-                                                      style="width:100px"></el-input>
-                                        </template>
-                                    </el-table-column>
-                                    <el-table-column label="装备序号" align="center">
-                                        <template scope="scope">
-                                            <el-input size="small" v-model="scope.row.serial"
-                                                      @change="qaq(scope)"
-                                                      style="width:100px"></el-input>
-                                        </template>
-                                    </el-table-column>
-                                    <el-table-column label="操作" align="center">
-                                        <template scope="scope">
-                                            <el-button type="danger" @click="delqaq(scope)">删除</el-button>
-                                        </template>
-                                    </el-table-column>
+                        <el-table :data="list" fit height="360" class="list">
+                            <el-table-column label="RFID" align="center">
+                                <template scope="scope">
+                                    <el-input size="small" v-model="scope.row.rfid"
+                                              style="width:100px"></el-input>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="装备序号" align="center">
+                                <template scope="scope">
+                                    <el-input size="small" v-model="scope.row.serial"
+                                              @change="qaq(scope)"
+                                              style="width:100px"></el-input>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="操作" align="center">
+                                <template scope="scope">
+                                    <el-button type="danger" @click="delqaq(scope)">删除</el-button>
+                                </template>
+                            </el-table-column>
 
-                                </el-table>
-                            </div>
-                        </el-scrollbar>
+                        </el-table>
                     </div>
                 </el-card>
 
@@ -202,9 +198,8 @@
     import api from 'gql/eqList.gql'
     import {scrappedUp} from "api/workflow";
     import imgUp from 'components/base/axiosImgUp';
-    import {imgBaseUrl} from "api/config";
     import axios from 'axios';
-    import {imgUpUrl} from "api/config";
+    import {imgUpUrl,imgBaseUrl} from "api/config";
 
     export default {
         data() {
@@ -215,7 +210,7 @@
                     imageAddress: '',
                 },
                 zbForm: {},
-                list: [{rfid: "111", serial: "111"}, {rfid: "222", serial: "222"}],
+                list: [{rfid: "", serial: ""}],
                 formRes: '',
                 inlineForm: {},
                 leadershipList: [],
@@ -256,7 +251,7 @@
 
         methods: {
             black() {
-                if (this.title.includes('装备查看')) {
+                if (this.title.includes('查看')) {
                     this.$emit('black', true);
                 } else {
                     this.$refs.dialog.show();
@@ -475,7 +470,7 @@
                     eqData.equipArg.imageAddress ? this.imageUrl = `${imgBaseUrl}${eqData.equipArg.imageAddress}` : '';
                     this.$set(this.form, 'eqBig', eqData.equipArg.category.genre.name);
                     this.$set(this.form, 'eqSmall', eqData.equipArg.category.name);
-                    this.zb['shelfLifeQ'] = (eqData.quality.shelfLife / 24 / 60 / 60 / 1000);
+                    this.zb['shelfLifeQ'] = Math.round(eqData.quality.shelfLife / 24 / 60 / 60 / 1000);
                     this.zb['productDateQ'] = eqData.quality.productDate;
                     this.zb['floorL'] = eqData.location.floor;
                     this.zb['numberL'] = eqData.location.number;
@@ -624,9 +619,9 @@
         .list {
             width: 80%;
             margin: 3% auto;
-            min-height: 40vh;
             max-height: 40vh;
             border: 1px solid #EBEEF5;
+            border-bottom: none !important;
         }
 
     }

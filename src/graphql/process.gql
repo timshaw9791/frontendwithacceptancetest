@@ -1,0 +1,52 @@
+query getEquipScrapedRecordList($paginator: paginator, $qfilter: qfilter) {
+  EquipScrapedRecordList(paginator: $paginator, qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+      reason
+      scrapType
+      time
+      operator
+      equipScrapItems {
+        model
+        serial
+        name
+        id
+        equipScrapedRecord {
+          id
+          reason
+        }
+        disabled
+        name
+      }
+      id
+      auditor
+      disabled
+    }
+  }
+}
+
+
+query getEquipScrapedRecord($id: String!) {
+  EquipScrapedRecord(id: $id) {
+    reason
+    scrapType
+    time
+    operator
+    equipScrapItems {
+      model
+      serial
+      id
+      name
+      equipScrapedRecord {
+        id
+        reason
+      }
+      disabled
+      name
+    }
+    id
+    auditor
+    disabled
+  }
+}
