@@ -245,6 +245,7 @@
                 color: $light_gray;
                 text-align: center;
                 margin-left: 16px;
+
             }
         }
     }

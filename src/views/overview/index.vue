@@ -158,8 +158,9 @@
                         },
                     },
                     sources: [{
-                        type: "rtmp/flv",
-                        src: "rtmp://58.200.131.2:1935/livetv/hunantv",
+                         type: "rtmp/flv",
+                         src: "rtmp://58.200.131.2:1935/livetv/hunantv",
+                        //src: 'rtmp://10.128.4.109:1935/live/robot',
                     }],
                 },
                 surroundings: {
@@ -167,7 +168,7 @@
                     humidity: 0,
                 },
                 topList: [],
-                contentList: [1, 2, 3, 4],
+                contentList: [{name: '调拨通知'}, 2, 3, 4],
             }
         },
         mixins: [formRulesMixin, transformMixin],
