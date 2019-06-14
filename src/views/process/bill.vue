@@ -3,10 +3,12 @@
         <el-card shadow="never" :body-style="{ padding:'5px 20px'}">
             <div slot="header" class="card-header">
                 <span class="_card-title">{{$route.meta.title}}</span>
+
                 <el-button type="text" class="_textBt headerButton" @click="$router.push('/process/scrapped')">
                     <svg-icon icon-class="返回" class="svg"/>
                     返回
                 </el-button>
+
             </div>
             <div class="card-body">
                 <el-button type="text" class="_textBt" @click="$refs.dialog.show()">
@@ -39,11 +41,11 @@
                     <div>装备统计:</div>
                     <el-table :data="items.equipScrapItems" class="list" fit height="420">
                         <el-table-column label="序号" align="center">
-                            <template scope="scope">
+                            <template slot-scope="scope">
                                 {{scope.$index+1}}
                             </template>
                         </el-table-column>
-                        <bos-table-column lable="装备名称" field="name" ></bos-table-column>
+                        <bos-table-column lable="装备名称" field="name"></bos-table-column>
                         <bos-table-column lable="装备型号" field="model"></bos-table-column>
                         <bos-table-column lable="装备序号" field="serial"></bos-table-column>
                     </el-table>
