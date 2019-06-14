@@ -9,7 +9,7 @@
                 <field-checkbox  v-model="gender" label="性别" width="4.5"
                                 prop="position" :list="nanlist" @change="changeCheck" :disabled="disabled"></field-checkbox>
                 <field-input class="field-input" v-model="form.password" label="密码" width="4.5"
-                             :rules="r(true).all(R.require)" prop="password" :disabled="disabled"></field-input>
+                             :rules="r(true).all(R.require)" prop="password" :disabled="disabled" :type="'password'"></field-input>
                 <field-checkbox  v-model="roleItems" label="角色" width="4.5" :disabled="disabled"
                                  prop="position" :list="cRoleList" @change="changeCheckRole"></field-checkbox>
                 <field-input class="field-input" v-model="form.idNumber" :disabled="disabled" label="身份证号" width="4.5"

@@ -43,7 +43,6 @@
     import cascader from 'common/vue/cascader'
     import mySelect from 'common/vue/select'
     import labels from 'common/vue/label'
-
     export default {
         name: "index",
         components: {

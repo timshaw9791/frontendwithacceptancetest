@@ -1,0 +1,8 @@
+query getUser($id: String!) {
+  OrganUnit(id: $id) {
+   id
+    name
+    level
+    location
+  }
+}

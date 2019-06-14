@@ -19,5 +19,4 @@
 <style lang="scss" rel="stylesheet/scss">
     @import "common/css/index"; // global css
 
-
 </style>

@@ -125,6 +125,7 @@
                         newList.push({
                             name:item.name,
                             src:item.name,
+                            imageAddress:item.imageAddress,
                             modelList:[item]
                         })
                     }else {
@@ -134,6 +135,7 @@
                             newList.push({
                                 name:item.name,
                                 src:item.name,
+                                imageAddress:item.imageAddress,
                                 modelList:[item]
                             })
                         }else {

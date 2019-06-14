@@ -3,37 +3,40 @@
         <div class="header">
             <div class="header-item">
                 <span v-text="'开始时间：'"></span>
-                <div class="header-content"><span v-text="'aaaaaaaa'"></span></div>
+                <div class="header-content"><span v-text="startTime"></span></div>
             </div>
             <div class="header-item">
                 <span v-text="'结束时间：'"></span>
-                <div class="header-content"><span v-text="'aaaaaaaa'"></span></div>
+                <div class="header-content"><span v-text="endTime"></span></div>
             </div>
             <div class="header-item">
                 <span v-text="'操作人员：'"></span>
-                <div class="header-content"><span v-text="'小明'"></span></div>
+                <div class="header-content"><span v-text="overview.adminName"></span></div>
             </div>
         </div>
         <div class="title">
             <div class="title-box">
                 <div class="title-item">
-                    <span v-text="'盘点总数'"></span><span style="margin-left: 23px">0</span>
+                    <span v-text="'盘点总数'"></span><span style="margin-left: 23px" v-text="size"></span>
                 </div>
                 <div class="title-item" style="margin-left: 73px">
-                    <span v-text="'未盘点数'"></span><span style="margin-left: 23px">0</span>
+                    <span v-text="'未盘点数'"></span><span style="margin-left: 23px" v-text="overview.withoutRfidCount"></span>
                 </div>
                 <div class="title-item" style="margin-left: 73px">
-                    <span v-text="'出库数量'"></span><span style="margin-left: 23px">0</span>
+                    <span v-text="'出库数量'"></span><span style="margin-left: 23px" v-text="overview.outCount"></span>
                 </div>
             </div>
         </div>
         <div class="body">
             <span v-text="'未在库装备统计：'"></span>
-            <inventory-table style="margin-top: 7px"></inventory-table>
+            <inventory-table :tableData="tableData" style="margin-top: 7px"></inventory-table>
         </div>
         <div class="bottom">
             <span v-text="'备注：'"></span>
             <el-input v-model="remark" placeholder="请输入内容" style=""></el-input>
+        </div>
+        <div class="bottom" style="justify-content: center">
+            <el-button style="margin-left: 34px" class="submit" @click="submission">提交</el-button>
         </div>
     </div>
 </template>
@@ -45,9 +48,73 @@
         components:{
             inventoryTable
         },
+        props:{
+          tableData:{
+              type:Array
+          },
+            overview:{
+              type:Object
+            },
+            size:{
+              type:String
+            }
+        },
+        watch:{
+          'remark':{
+              handler(newVal){
+                 this.$emit('newNote',newVal)
+              }
+          }
+        },
+        computed:{
+          name: ()=> {
+              let user=JSON.parse(localStorage.getItem('user'));
+              return user.name
+          },
+            startTime:function() {
+              let time='';
+              if(this.overview.startTime){
+                  time =this.filterTime(this.overview.startTime);
+              }
+                return time;
+            },
+            endTime:function(){
+                let time='';
+                if(this.overview.endTime){
+                    time =this.filterTime(this.overview.endTime);
+                }
+                return time
+            }
+        },
         data(){
             return{
                 remark:''
+            }
+        },
+        methods:{
+          filterTime(date){
+             let time='';
+             if(date!=''){
+                 let dateNow =  new Date(date);
+                 let year = dateNow.getFullYear();
+                 let moth = dateNow.getMonth()+1;
+                 let day = dateNow.getDay();
+                 let hour = dateNow.getHours();
+                 let min = dateNow.getMinutes();
+                 let seconds = dateNow.getSeconds();
+                 time = year+'-'+addZero(moth)+'-'+addZero(day)+'\xa0\xa0\xa0'+addZero(hour)+':'+addZero(min)+':'+addZero(seconds);
+             }
+             function addZero(some) {
+                 if (some<10){
+                     return '0'+some
+                 }else {
+                     return some
+                 }
+             };
+             return time
+          },
+            submission(){
+               this.$emit('handleSubmission',true)
             }
         }
     }
@@ -116,5 +183,16 @@
         align-items: center;
         height: 30px;
         margin-bottom: 15px;
+    }
+
+    .bottom .submit{
+        width:70px;
+        height:30px;
+        background:rgba(47,47,118,1);
+        color: white;
+        line-height: 0px;
+        box-shadow:0px 3px 6px rgba(0,0,0,0.16);
+        opacity:1;
+        border-radius:6px;
     }
 </style>

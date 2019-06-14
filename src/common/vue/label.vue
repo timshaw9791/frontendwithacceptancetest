@@ -2,7 +2,7 @@
     <div class="label">
         <div v-if="tableFlag">
             <field-table :list="list" :labelList="table.labelList"
-                         :tableAction="table.tableAction" @sortChange="sortChange"  :pageInfo="paginator" @tableCurrentPageChanged="changePage" @click="clickTableCloum" style="width: 100%">
+                         :tableAction="table.tableAction" @sortChange="sortChange"  :pageInfo="paginator" @tableCurrentPageChanged="changePage" @clickTableCloum="clickTableCloum" style="width: 100%">
             </field-table>
         </div>
     </div>

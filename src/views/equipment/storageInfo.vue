@@ -590,7 +590,7 @@
             }
 
             .formList {
-                width: 80%;
+                width: 974px;
                 margin: 0 auto;
             }
 

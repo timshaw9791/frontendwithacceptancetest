@@ -76,6 +76,7 @@
                 this.$emit('sortChange',obj)
             },
             tableChangePage(newPage){
+                console.log(this.pageInfo)
                 this.$emit('tableCurrentPageChanged',newPage)
             }
         }

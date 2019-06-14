@@ -1,14 +1,16 @@
 <template>
     <div>
-        <my-header :title="'盘点记录'" :searchFlag="false"></my-header>
-        <r_search :placeholder="'人员姓名'" @handleSearch="handleSearch"></r_search>
-        <r_label :table="table" v-show="table.flag" @clickTable="clickTable" @sortCondition="sortGql" ref="las"></r_label>
+        <my-header :title="'盘点记录'" :searchFlag="false" :haveBlack="!viewStatus.flag" @h_black="black"></my-header>
+        <r_search :placeholder="'人员姓名'" @handleSearch="handleSearch" v-show="viewStatus.flag"></r_search>
+        <!--<r_inventory :tableData="inventoryObj.inventoryData.inventoryItems" :overview="inventoryObj.inventoryData.inventory" :size="size"></r_inventory>-->
+        <r_label :table="table" v-show="viewStatus.flag" @clickTable="clickTable" @sortCondition="sortGql" ref="las"></r_label>
     </div>
 </template>
 
 <script>
     import myHeader from 'components/base/header/header'
     import r_search from 'components/record/recordSearch'
+    import r_inventory from 'components/inventory/inventoryComponent'
     import r_label from 'common/vue/label'
     import record from 'gql/record.gql'
     export default {
@@ -16,7 +18,8 @@
         components:{
             myHeader,
             r_search,
-            r_label
+            r_label,
+            r_inventory
         },
         data(){
             return{
@@ -41,6 +44,9 @@
                     equipId:'',
                     haveButton: true
                 },
+                viewStatus:{
+                    flag:true
+                }
             }
         },
         methods:{
@@ -58,11 +64,15 @@
                 }
                 this.$set(this.table.graphqlTable.graphqlKey, 'qfilter', qfilter);
             },
+            black(data){
+                this.viewStatus.flag = !this.viewStatus.flag
+            },
             clickTable(table) {
                 let data = table.row;
+                console.log(data);
                 if (data) {
                     this.table.equipId = data.id;
-                    this.table.flag=!this.table.flag
+                    this.viewStatus.flag = !this.viewStatus.flag
                 }
             },
             filterTime(nS) {

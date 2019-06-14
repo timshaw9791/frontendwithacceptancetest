@@ -1,7 +1,7 @@
 <template>
     <div class="t-template">
         <div class="t-t-img-box">
-            <img class="t-t-img" src="@/assets/logo.png"/>
+            <img class="t-t-img" :src="img"/>
             <div class="t-t-line"></div>
         </div>
         <div class="t-t-span-box">
@@ -13,10 +13,29 @@
 <script>
     export default {
         name: "teachListTemplate",
+        data(){
+            return{
+
+            }
+        },
         props:{
             item:{
                 type:Object
             }
+        },
+        created(){
+
+        },
+        computed:{
+          img:function () {
+              let img;
+              if(this.item.imageAddress==''||this.item.imageAddress==null){
+                  img=require('@/assets/noImg.png');
+              }else{
+                  img='http://115.159.154.194/warehouse/images/'+this.item.imageAddress
+              }
+              return img
+          }
         },
         methods:{
             getName(item){

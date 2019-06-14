@@ -53,7 +53,7 @@
               type:Array
           },
             size:{
-              type:Number
+              type:String
             }
         },
         methods:{

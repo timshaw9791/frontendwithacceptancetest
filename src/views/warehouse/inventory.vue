@@ -7,8 +7,8 @@
                 开始盘点
             </el-button>
         </div>
-        <i_inventory></i_inventory>
-        <i_dialog ref="inventory_dialog" :rfList="inventory.rflist" :size="inventory.size" @submit=""></i_dialog>
+        <i_inventory :tableData="inventoryObj.inventoryData.inventoryItems" :overview="inventoryObj.inventoryData.inventory" :size="size" @handleSubmission="handleSubmission" @newNote="getNote"></i_inventory>
+        <i_dialog ref="inventory_dialog" :rfList="inventoryObj.rflist" :size="size" @submit="submit"></i_dialog>
     </div>
 </template>
 
@@ -17,6 +17,10 @@
     import i_inventory from 'components/inventory/inventoryComponent'
     import i_dialog from 'components/inventory/inventoryDialog'
     import inventoryData from './inventoryData'
+    import {getToken} from "../../common/js/auth";
+    import request from 'common/js/request'
+    /*import {handheld} from 'common/js/handheld'*/
+    /*Melanie Dunne supernova*/
     export default {
         name: "inventory",
         components:{
@@ -26,34 +30,127 @@
         },
         data(){
             return{
-                inventory:{
+                inventoryObj:{
                     rflist:[],
-                    endTime:'',
-                    startTime:'',
-                    size:''
-                }
+                    inventoryData:{
+                        inventory:{},
+                        inventoryItems:[]
+                    },
+                    getInventory:{},
+                },
+               size:''
             }
         },
         methods:{
             toInventory(){
-                this.getInventoryRf();
+               /* handheld.then(data=>{
+                    this.getInventoryRf(data);
+                });
+                this.getInventoryRf();*/
+               this.getInventoryRfCopy();
+               //todo 记得合并前换回来
                 this.$refs['inventory_dialog'].show();
             },
-            getInventoryRf(){
-                this.inventory.rflist=[];
+            getNote(data){
+              if(Object.keys(this.inventoryObj.inventoryData.inventory).length!=0){
+                  this.inventoryObj.inventoryData.inventory.note=data
+              }else {
+                  this.$message.warning('请先进行盘点')
+              }
+            },
+            handleSubmission(data){
+              if(data){
+                 if(Object.keys(this.inventoryObj.inventoryData.inventory).length!=0){
+                     let url='http://115.159.154.194/warehouse/inventories';
+                     let data = this.inventoryObj.inventoryData;
+                     request({
+                         method:'post',
+                         url:url,
+                         data:data
+                     }).then((res)=>{
+                         console.log(res);
+                     }).catch(err=>{
+                         this.$message.error(err);
+                     });
+                 }
+              }
+            },
+            submit(data){
+                let url='http://115.159.154.194/warehouse/inventories/calculate';
+                let rfid=this.getString(inventoryData.rfid);
+                if(data){
+                   /* request({
+                        url:url,
+                        method:'get',
+                    })*/
+                    request({
+                        method:'post',
+                        url:url,
+                        params:{rfidList:rfid}
+                    }).then((res)=>{
+                        res.inventoryItems.forEach((item,index)=>{
+                            let num = index+1;
+                            if(num<10){
+                                num='0'+num;
+                            }
+                           item.number=num
+                        });
+                       /*this.overview.outCount=res.inventory.outCount;
+                       this.overview.withoutRfidCount=res.inventory.withoutRfidCount;
+                       this.overview.startTime=this.inventory.inventoryData.startTime;
+                        this.overview.endTime=this.inventory.inventoryData.endTime;
+                        this.overview.name=JSON.parse(localStorage.getItem('user')).name;
+                        this.overview.size=this.inventory.inventoryData.size*/
+                       this.inventoryObj.inventoryData=res;
+                       this.inventoryObj.inventoryData.inventory.outCount=res.inventory.outCount;
+                       this.inventoryObj.inventoryData.inventory.withoutRfidCount=res.inventory.withoutRfidCount;
+                        this.inventoryObj.inventoryData.inventory.startTime=this.inventoryObj.getInventory.startTime;
+                        this.inventoryObj.inventoryData.inventory.endTime=this.inventoryObj.getInventory.endTime;
+                        this.inventoryObj.inventoryData.inventory.adminName=JSON.parse(localStorage.getItem('user')).name;
+                        this.inventoryObj.inventoryData.inventory.adminId=JSON.parse(localStorage.getItem('user')).id;
+                    }).catch(err=>{
+                        this.$message.error(err);
+                    });
+                }
+            },
+            getString(data){
+                let str='';
+                data.forEach(item=>{
+                    str=str+','+item
+                });
+                return str.substring(1,str.length);
+            },
+            getInventoryRf(data){
+                this.inventoryObj.rflist=[];
+                data.rfid.forEach((item,index)=>{
+                    let number = index+1;
+                    if(number<10){
+                        number='0'+number
+                    }
+                    this.inventoryObj.rflist.push({
+                        number:number,
+                        rfId:item
+                    })
+                });
+                this.inventory.endTime=data.endTime;
+                this.inventory.startTime=data.startTime;
+                this.inventory.size=data.size;
+            },
+            getInventoryRfCopy(){
+                this.inventoryObj.rflist=[];
+                this.inventoryObj.getInventory=inventoryData;
+                this.size=String(inventoryData.size);
                 inventoryData.rfid.forEach((item,index)=>{
                     let number = index+1;
                     if(number<10){
                         number='0'+number
                     }
-                    this.inventory.rflist.push({
+                    this.inventoryObj.rflist.push({
                         number:number,
                         rfId:item
                     })
                 });
-                this.inventory.endTime=inventoryData.endTime;
-                this.inventory.startTime=inventoryData.startTime;
-                this.inventory.size=inventoryData.size;
+
             }
         }
     }

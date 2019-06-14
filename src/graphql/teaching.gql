@@ -3,22 +3,21 @@ query getEquipArgList($qfilter: qfilter) {
     totalPages
     totalElements
     content {
-      id
-      category {
-        id
-        name
-        genre{
+          upkeepCycle
+          supplier {
+            id
+          }
+          model
+          chargeCycle
+          disabled
           name
-        }
-      }
-      supplier {
-        id
-      }
-      model
-      upkeepCycle
-      name
-      chargeCycle
-      disabled
+          id
+          imageAddress
+          videoAddresses
+          category {
+            id
+          }
+          documentAddresses
     }
   }
 }
