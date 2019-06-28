@@ -17,8 +17,8 @@
                 <div class="transfer-directAdjustment">
                     <span v-text="'查看'"></span>
                     <div class="transfer-svg">
-                        <svg-icon icon-class="导出"></svg-icon>
-                        <span v-text="'导出'" style="margin-left: 2px"></span>
+                        <a :href="downloadSrc" style="display: none" ref="aDownload">a标签</a>
+                        <el-button type="text" class="_textBt" @click="download"><svg-icon icon-class="导出"></svg-icon>导出</el-button>
                     </div>
                 </div>
                 <!--<div class="modify" v-if="!viewStatus.flag">
@@ -31,15 +31,15 @@
             </div>
         </div>
         <div class="directAdjustment-body">
-            <d_table :search="search" :state="tableState" @toSee="toSee" v-show="viewStatus.flag"></d_table>
+            <d_table ref="directAdjustmentTable" :search="search" :state="tableState" @toSee="toSee" v-show="viewStatus.flag"></d_table>
             <d_details v-if="!viewStatus.flag" :direct="directDefault"></d_details>
         </div>
         <add-direct-adjustment ref="addDirectAdjustment" :status="viewStatus.add" :restaurants="restaurants" :unit="unit" :house="house" @submit="submit"></add-direct-adjustment>
+
     </div>
 </template>
 
 <script>
-
    import selectPersonel from 'components/personnelManagement/personnelSelect'
    import myHeader from 'components/base/header/header'
    import addDirectAdjustment from 'components/process/directAdjustment/addDirectAdjustment'
@@ -53,6 +53,7 @@
         name:'directAdjustment',
         mixins: [fetchMixin],
         components: {
+
             myHeader,
             selectPersonel,
             addDirectAdjustment,
@@ -90,6 +91,7 @@
                 },
                 directDefault:{},
                 restaurants:[],
+                downloadSrc:''
             }
         },
         created(){
@@ -100,8 +102,13 @@
             black(data){
                 this.viewStatus.flag=!this.viewStatus.flag
             },
+            download(){
+                console.log('aDownload');
+              this.$refs.aDownload.click();
+            },
             toSee(data){
                this.directDefault=data.row;
+               this.downloadSrc='http://192.168.50.14:8080/warehouse/transfers/up-to-down/export-excel'+'?transferOrderId='+this.directDefault.id;
                this.viewStatus.flag=!this.viewStatus.flag
             },
             addDirectAdjustment(){
@@ -110,16 +117,33 @@
             selectState(data){
                 this.tableState=data
             },
+            transferClick(){
+                let url='http://192.168.50.14:8080/warehouse/transfers/up-to-down/export-excel'+'?transferOrderId='+this.directDefault.id;
+                request({
+                    method:'post',
+                    url:url
+                }).then(res=>{
+                    if(res){
+                       console.log(res);
+                    }
+                })
+            },
             submit(data){
-                let url = 'http://115.159.154.194/warehouse/transfers/up-to-down';
+                let dataSubmit = data;
+                let index =dataSubmit.orderItems.length-1
+                if(dataSubmit.orderItems[index].model==''){
+                    dataSubmit.orderItems.splice(index,1)
+                }
+                let url = 'http://192.168.50.14:8080/warehouse/transfers/up-to-down';
                 request({
                     method:'post',
                     url:url,
-                    data:data
+                    data:dataSubmit
                 }).then(res=>{
                    if(res){
                        this.$message.success('操作成功');
-                       this.$refs.addDirectAdjustment.close()
+                       this.$refs.addDirectAdjustment.close();
+                       this.$refs.directAdjustmentTable.getList();
                    }
                 })
             },
@@ -128,7 +152,7 @@
                  this.unit.id=res.id;
                  this.unit.name=res.location+res.name
              },true);
-             let url='http://115.159.154.194/warehouse/house';
+             let url='http://192.168.50.14:8080/warehouse/house';
                 request({
                     method:'get',
                     url:url,
@@ -138,7 +162,7 @@
                 })
             },
             getEquipInfo() {
-                this.gqlQuery(api.getEquipList1, '', (res) => {
+                    this.gqlQuery(api.getEquipList1, '', (res) => {
                     let newData = res
                     let eqName = newData.map(res => {
                         return res.name
@@ -371,8 +395,9 @@
         font-size: 16px;
         display: flex;
         align-items: center;
-        margin-right: 16px;
+        margin-right: 5px;
         justify-content: center;
+        vertical-align: middle;
     }
     .directAdjustment-action-bar .modify {
         display: flex;

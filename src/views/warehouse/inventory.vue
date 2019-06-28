@@ -7,7 +7,7 @@
                 开始盘点
             </el-button>
         </div>
-        <i_inventory :tableData="inventoryObj.inventoryData.inventoryItems" :overview="inventoryObj.inventoryData.inventory" :size="size" @handleSubmission="handleSubmission" @newNote="getNote"></i_inventory>
+        <i_inventory :tableData="inventoryObj.inventoryData.inventoryItems" ref="inventoryComponent" :overview="inventoryObj.inventoryData.inventory" :size="size" @handleSubmission="handleSubmission" @newNote="getNote"></i_inventory>
         <i_dialog ref="inventory_dialog" :rfList="inventoryObj.rflist" :size="size" @submit="submit"></i_dialog>
     </div>
 </template>
@@ -61,14 +61,24 @@
             handleSubmission(data){
               if(data){
                  if(Object.keys(this.inventoryObj.inventoryData.inventory).length!=0){
-                     let url='http://115.159.154.194/warehouse/inventories';
+                     let url='http://192.168.50.14:8080/warehouse/inventories';
                      let data = this.inventoryObj.inventoryData;
                      request({
                          method:'post',
                          url:url,
                          data:data
                      }).then((res)=>{
-                         console.log(res);
+                         this.$message.success('操作成功');
+                         this.$refs.inventoryComponent.remark='';
+                         this.inventoryObj={
+                             rflist:[],
+                                 inventoryData:{
+                                 inventory:{},
+                                 inventoryItems:[]
+                             },
+                             getInventory:{},
+                         };
+                         this.size=''
                      }).catch(err=>{
                          this.$message.error(err);
                      });
@@ -76,7 +86,7 @@
               }
             },
             submit(data){
-                let url='http://115.159.154.194/warehouse/inventories/calculate';
+                let url='http://192.168.50.14:8080/warehouse/inventories/calculate';
                 let rfid=this.getString(inventoryData.rfid);
                 if(data){
                    /* request({
@@ -88,13 +98,13 @@
                         url:url,
                         params:{rfidList:rfid}
                     }).then((res)=>{
-                        res.inventoryItems.forEach((item,index)=>{
+                        /*res.inventoryItems.forEach((item,index)=>{
                             let num = index+1;
                             if(num<10){
                                 num='0'+num;
                             }
                            item.number=num
-                        });
+                        });*/
                        /*this.overview.outCount=res.inventory.outCount;
                        this.overview.withoutRfidCount=res.inventory.withoutRfidCount;
                        this.overview.startTime=this.inventory.inventoryData.startTime;
@@ -141,12 +151,7 @@
                 this.inventoryObj.getInventory=inventoryData;
                 this.size=String(inventoryData.size);
                 inventoryData.rfid.forEach((item,index)=>{
-                    let number = index+1;
-                    if(number<10){
-                        number='0'+number
-                    }
                     this.inventoryObj.rflist.push({
-                        number:number,
                         rfId:item
                     })
                 });

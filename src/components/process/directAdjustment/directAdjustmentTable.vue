@@ -20,6 +20,7 @@
                     totalPages:10,
                     size:9
                 },
+
                 tableAction:{
                     label:'操作',
                     button:['查看']
@@ -108,6 +109,7 @@
                   return '不知道'
               }
             },
+
             getList(){
                 let page=this.paginator.page;
                 let size=this.paginator.size;
@@ -115,10 +117,10 @@
                 let param={};
                 let url='';
                 if(this.state!='ALL'&&this.state!=''){
-                    url='http://115.159.154.194/warehouse/transfers/up-to-down/by-state';
+                    url='http://192.168.50.14:8080/warehouse/transfers/up-to-down/by-state';
                     param={likeByNumber:likeByNumber,size:size,page:page,state:this.state}
                 }else {
-                    url = 'http://115.159.154.194/warehouse/transfers/up-to-down';
+                    url = 'http://192.168.50.14:8080/warehouse/transfers/up-to-down';
                     param={likeByNumber:likeByNumber,size:size,page:page}
                 }
                 request({

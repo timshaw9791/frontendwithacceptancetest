@@ -23,7 +23,7 @@
                 table: {
                     flag: true,
                     labelList: [
-                        {lable: '开门人员', field: 'policeName',sort:false},
+                        {lable: '开门人员', field: 'name',sort:false},
                         {lable: '开门时间', field: 'time', filter: this.filterTime,sort:'custom'},
                     ],
                     graphqlTable: {

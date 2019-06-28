@@ -49,6 +49,17 @@
                 default:false
             }
         },
+        watch:{
+            'status':{
+                handler(newVal){
+                    if(this.status){
+                        this.value=true
+                    }else if(this.status==false){
+                        this.value=false
+                    }
+                }
+            }
+        },
         created(){
           if(this.status){
               this.value=true

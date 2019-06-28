@@ -81,6 +81,10 @@
                 return index +1;
             },
             submit(){
+                this.$refs.directAdjustmentDetails.rightList=[];
+                this.$refs.directAdjustmentDetails.outList=[];
+                this.$refs.directAdjustmentDetails.submitFlag=true;
+                this.$refs.directAdjustmentDetails.hardware='';
                 this.$refs.directAdjustmentDetails.show();
             },
             filterType(type){

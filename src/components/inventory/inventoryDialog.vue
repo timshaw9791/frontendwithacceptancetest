@@ -14,11 +14,9 @@
                             :align="align"
                     >
                         <el-table-column
-                                prop="number"
                                 label="序号"
-                                :align="align"
-                                width="190"
-                        >
+                                type="index"
+                                :index="indexMethod" width="180" :align="align">
                         </el-table-column>
                         <el-table-column
                                 prop="rfId"
@@ -66,6 +64,9 @@
             submit(){
                 this.$emit('submit',true);
                 this.$refs['dialog'].close();
+            },
+            indexMethod(index) {
+                return index +1;
             }
         }
     }

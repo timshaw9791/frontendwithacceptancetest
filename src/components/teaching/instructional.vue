@@ -19,13 +19,22 @@
                 this.extractPdfContent();
             }
         },
+        data(){
+            return{
+                src:'http://192.168.50.14:8080/warehouse/pdfs/'
+            }
+        },
         methods:{
             getFlag(){
                 return this.ins.typeName=='PDF'?true:false
             },
+            getSrc(){
+              return   this.src+this.ins.key
+            },
             extractPdfContent() {
+                let url = this.getSrc();
                 let pdfContainer = document.getElementById('pdf-viewer');
-                PDFJS.getDocument('http://115.159.154.194/warehouse/images/1.pdf').then(function(pdf) {
+                PDFJS.getDocument(url).then(function(pdf) {
                     // you can now use *pdf* here
                     let arr = [];
                     for(let i = 1; i<= pdf.numPages;i++) {

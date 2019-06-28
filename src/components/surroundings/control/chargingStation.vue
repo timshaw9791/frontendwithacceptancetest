@@ -7,7 +7,7 @@
                                              @selectRole="selectSation" :havaDefault="true"></select-charging-station>
                 </div>
                 <div class="charging-sation-controls">
-                    <socket v-for="item in socketList" :socket="item" v-if="flag"></socket>
+                    <socket v-for="item in socketList" :socket="item" v-if="flag" @sucess="sucess"></socket>
                 </div>
             </div>
         </dialogs>
@@ -18,8 +18,11 @@
     import dialogs from '../surroundingDialog'
     import selectChargingStation from 'components/personnelManagement/personnelSelect'
     import socket from './controlComponents/socket'
+    import {fetchMixin} from 'field/common/mixinFetch'
+    import  surroundings from 'gql/surroundings.gql'
     export default {
         name: "chargingStation",
+        mixins: [fetchMixin],
         components:{
             dialogs,
             selectChargingStation,
@@ -31,32 +34,86 @@
                     selectList:[],
                 },
                 socketList:[],
-                flag:false
+                flag:false,
+                qfilter:{
+                    key:"chargeStation",
+                    operator:"EQUEAL",
+                    value:"1",
+                    combinator:"AND",
+                    next:{
+                        value:"0",
+                        key:"duration",
+                        operator:"EQUEAL"
+                    }
+                }
             }
         },
         created(){
-          this.getChargingStationtList();
+
         },
         methods:{
             getChargingStationtList(){
-              this.ajax('http://10.128.4.109:8088/environment/getChargeCount','',(data)=>{
+              this.ajax('http://10.128.4.152:8080/warehouse/environment/getChargeCount','',(data)=>{
                   for (let i=1;i<=data.data.data;i++){
                       this.select.selectList.push({
                           label:i+'号智能充电台',
                           value:i
                       })
                   }
+                  this.$refs.dialog.show();
               })
             },
             selectSation(data){
-                this.getChargingStationtNumber({number:data})
+                this.getChargingStationtNumber(data)
             },
-            getChargingStationtNumber(params){
-                this.ajax('http://10.128.4.109:8088/environment/chargeQuery',params,(data)=>{
+            sucess(data){
+                if(data.flag){}else {
+                    this.socketList[Number(data.number)-1]={
+                        socketName:data.number+'号智能插座',
+                        name:'',
+                        number:0,
+                        route:0,
+                        chargingTime:'',
+                        status:1
+                    };
+
+                }
+            },
+            getChargingStationtNumber(number){
+                this.qfilter.value=String(number);
+                this.gqlQuery(surroundings.getEquipChargeRecordList,{qfilter:this.qfilter}, (data) => {
+                   let socketCopy=[];
+                   for (let i=0;i<8;i++){
+                      socketCopy.push({
+                          socketName:(i+1)+'号智能插座',
+                          name:'',
+                          number:i+1,
+                          route:number,
+                          chargingTime:'',
+                          status:1
+                      })
+                   };
+                   data.forEach(item=>{
+                       let number = Number(item.chargeNumber)-1;
+                       if(socketCopy[number].name==''){
+                           socketCopy[number].name=item.equipName;
+                           socketCopy[number].number=item.chargeNumber;
+                           socketCopy[number].route=item.chargeStation;
+                           socketCopy[number].status=0;
+                           socketCopy[number].chargingTime=item.startTime;
+                       }
+                   });
+                    this.socketList=socketCopy;
+                    this.flag=false;
+                    setTimeout(()=>{
+                        this.flag=true;
+                    },0)
+                }, true)
+               /* this.ajax('http://10.128.4.152:8080/warehouse/environment/chargeQuery',params,(data)=>{
                     let socket = data.data.data.split('').map(Number).reverse();
                     let socketCopy=[];
                     socket.forEach((item,index)=>{
-                        let number = index+1
+                        let number = index+1;
                         socketCopy.push({
                             socketName:number+'号智能插座',
                             name:'充电警棍',
@@ -71,13 +128,14 @@
                     setTimeout(()=>{
                         this.flag=true;
                     },0)
-                })
+                })*/
             },
             change(data){
 
             },
             show(){
-                this.$refs.dialog.show();
+                this.getChargingStationtList();
+
             },
             close(){
                 this.$refs.dialog.close();
@@ -140,25 +198,7 @@
         flex-wrap: wrap;
         padding-left: 60px;
     }
-    .charging-sation-controls .charging-sation-control-body{
-        height: 201px;
-        display: flex;
-        justify-content: center;
-        flex-direction: column;
-        align-items: center;
-    }
-    .charging-sation-control-body .c_s_c_upper{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        color: #707070;
-    }
-    .c_s_c_upper .svg-box{
-        width: 70px;
-        height: 70px;
-        padding: 5px;
-        margin-top: 13px;
-    }
+
     .charging-sation-box .charging-sation-select{
         padding-top: 28px;
         padding-bottom: 8px;

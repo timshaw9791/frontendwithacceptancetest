@@ -21,47 +21,7 @@
             svgData:{
                 type:Array,
                 default(){
-                    return [{
-                        "sale": 45,
-                        "time": new Date(2019, 5, 22,15)
-                    }, {
-                        "sale": 46,
-                        "time": new Date(2019, 5, 22,17)
-                    }, {
-                        "sale": 47,
-                        "time": new Date(2019, 5, 22,19)
-                    }, {
-                        "sale": 42,
-                        "time": new Date(2019, 5, 22,21)
-                    }, {
-                        "sale": 41,
-                        "time": new Date(2019, 5, 22,23)
-                    }, {
-                        "sale": 50,
-                        "time": new Date(2019, 5, 23, 1)
-                    },{
-                        "sale": 51,
-                        "time": new Date(2019, 5, 23, 3)
-                    },{
-                        "sale": 43,
-                        "time": new Date(2019, 5, 23, 5)
-                    },{
-                        "sale": 53,
-                        "time": new Date(2019, 5, 23, 7)
-                    },{
-                        "sale": 55,
-                        "time": new Date(2019, 5, 23, 9)
-                    },{
-                        "sale": 48,
-                        "time": new Date(2019, 5, 23, 11)
-                    },{
-                        "sale": 89,
-                        "time": new Date(2019, 5, 23, 13)
-                    },{
-                        "sale": 43,
-                        "time": new Date(2019, 5, 23, 15)
-                    }
-                    ]
+                    return []
                 }
             },
             height:{
@@ -78,7 +38,7 @@
             },
             initTime:{
                 type:Number,
-                default:15
+                default:16
             },
             characterType:{
                 type:String,

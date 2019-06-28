@@ -66,7 +66,11 @@
         methods:{
             toConctrol(data){
                if(data.flag){
-                   this.handleClick(data.text);
+                   if(data.text=='视频监控'){
+                       this.$emit('toVideo',true)
+                   }else {
+                       this.handleClick(data.text);
+                   }
                }
             },
 

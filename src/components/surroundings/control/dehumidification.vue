@@ -68,7 +68,7 @@
             submissionThreshold(){
                 this.$ajax({
                     method:'post',
-                    url:'http://10.128.4.109:8088/environment/humidityThresholdSet',
+                    url:'http://10.128.4.152:8080/warehouse/environment/humidityThresholdSet',
                     params:{max:this.threshold}
                 }).then((res)=>{
                     this.flag=!this.flag;
@@ -80,7 +80,7 @@
             getThreshold(){
                 this.$ajax({
                     method:'post',
-                    url:'http://10.128.4.109:8088/environment/humidityThreshold',
+                    url:'http://10.128.4.152:8080/warehouse/environment/humidityThreshold',
                 }).then((res)=>{
                     this.threshold=res.data.data.humidityThreshold
                 }).catch(err=>{

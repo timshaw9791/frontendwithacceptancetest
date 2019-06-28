@@ -33,9 +33,9 @@
         </div>
         <div class="bottom">
             <span v-text="'备注：'"></span>
-            <el-input v-model="remark" placeholder="请输入内容" style=""></el-input>
+            <el-input v-model="remark" placeholder="请输入内容" style="" :disabled="componentType!='warehouse'"></el-input>
         </div>
-        <div class="bottom" style="justify-content: center">
+        <div class="bottom" style="justify-content: center" v-if="componentType=='warehouse'">
             <el-button style="margin-left: 34px" class="submit" @click="submission">提交</el-button>
         </div>
     </div>
@@ -57,12 +57,18 @@
             },
             size:{
               type:String
+            },
+            componentType:{
+              type:String,
+                default:'warehouse'
             }
         },
         watch:{
           'remark':{
               handler(newVal){
-                 this.$emit('newNote',newVal)
+                 if(this.componentType=='warehouse'&&newVal!=''){
+                     this.$emit('newNote',newVal)
+                 }
               }
           }
         },
@@ -74,6 +80,7 @@
             startTime:function() {
               let time='';
               if(this.overview.startTime){
+                  console.log(new Date(this.overview.startTime));
                   time =this.filterTime(this.overview.startTime);
               }
                 return time;
@@ -81,6 +88,7 @@
             endTime:function(){
                 let time='';
                 if(this.overview.endTime){
+                    console.log(new Date(this.overview.endTime));
                     time =this.filterTime(this.overview.endTime);
                 }
                 return time
@@ -98,7 +106,7 @@
                  let dateNow =  new Date(date);
                  let year = dateNow.getFullYear();
                  let moth = dateNow.getMonth()+1;
-                 let day = dateNow.getDay();
+                 let day = dateNow.getDate();
                  let hour = dateNow.getHours();
                  let min = dateNow.getMinutes();
                  let seconds = dateNow.getSeconds();

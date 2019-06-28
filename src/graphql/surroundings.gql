@@ -1,0 +1,19 @@
+query getEquipChargeRecordList($qfilter: qfilter) {
+  EquipChargeRecordList(qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+      equipModel
+      duration
+      chargeStation
+      chargeNumber
+      equipSerial
+      equipName
+      rfid
+      startTime
+      id
+      houseName
+      disabled
+    }
+  }
+}

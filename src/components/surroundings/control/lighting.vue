@@ -3,17 +3,12 @@
         <dialogs ref="dialog" :width="1040" :title="'灯光控制'">
             <div class="lighting-box">
                 <div class="lighting-select">
-                    <switch-control :active="active.all" :inactive="inactive.all" @handleChange="changeAll"></switch-control>
+                   <div style="width: 210px">
+                       <switch-control :active="active.all" :inactive="inactive.all" @handleChange="changeAll"></switch-control>
+                   </div>
                 </div>
                 <div class="lighting-controls">
-                    <div style="width: 180px;margin-left: 40px;margin-top: 20px" v-for="n in 8">
-                        <surrounding-card :header="'1路照明灯'" :height="39">
-                            <div class="lighting-control-body">
-                                <svg-icon icon-class="灯光图标1" style="width: 53px;height: 80px"></svg-icon>
-                                <switch-control :active="active.item" :inactive="inactive.item" style="margin-top: 29px" @handleChange="changeItem"></switch-control>
-                            </div>
-                        </surrounding-card>
-                    </div>
+                   <light-control v-for="(item,index) in lightList" :light="item" :active="active.item" :inactive="inactive.item" :index="Number(index)"></light-control>
                 </div>
             </div>
         </dialogs>
@@ -22,24 +17,18 @@
 
 <script>
     import dialogs from '../surroundingDialog'
-    import selectChargingStation from 'components/personnelManagement/personnelSelect'
-    import surroundingCard from '../surroundingCard'
     import switchControl from './controlComponents/switch'
+    import lightControl from './controlComponents/lightControl'
     export default {
         name: "lighting",
         components:{
             dialogs,
-            selectChargingStation,
-            surroundingCard,
-            switchControl
+            switchControl,
+            lightControl
         },
         data(){
             return{
-                select:{
-                    selectList:[{ label: '1号智能充电台', value: '1'},
-                        { label: '2号智能充电台',
-                            value: '2'}],
-                },
+                status:null,
                 active:{
                     all:{
                         text:'一键开灯',
@@ -50,6 +39,7 @@
                         color:'#39BC53'
                     }
                 },
+                lightList:[],
                 inactive:{
                     all:{
                         text:'一键关灯',
@@ -62,18 +52,66 @@
                 },
             }
         },
+        created(){
+        },
         methods:{
-            selectRole(data){
-                console.log(data)
+            getLightInfo(){
+                this.$ajax({
+                    method:'post',
+                    url:'http://10.128.4.152:8080/warehouse/environment/getLightInfo',
+                }).then((res)=>{
+                   let resC = res.data.data;
+                   let lightListCopy = [];
+                   for (let key in resC){
+                       for (let i=0;i<resC[key];i++){
+                           lightListCopy.push({
+                               route:Number(key),
+                               number:i+1,
+                               status:0
+                           })
+                       }
+                   };
+                    console.log(lightListCopy)
+                   this.getLightQuery(lightListCopy);
+                }).catch(err=>{
+                    this.$message.error(err);
+                });
             },
-            changeItem(data){
-                console.log('has change',data);
+            getLightQuery(list){
+                this.$ajax({
+                    method:'post',
+                    url:'http://10.128.4.152:8080/warehouse/environment/lightQuery',
+                }).then((res)=>{
+                    let status=res.data.data;
+                    list.forEach(item=>{
+                        let str = status[item.route-1].split('').map(Number).reverse();
+                        item.status=str[item.number-1]
+                    });
+                    this.lightList = list;
+                    this.$refs.dialog.show();
+                }).catch(err=>{
+                    this.$message.error(err);
+                });
             },
             changeAll(data){
-
+                let flag=1;
+                if(data){
+                    flag=0
+                }
+                this.$ajax({
+                    method:'post',
+                    url:'http://10.128.4.152:8080/warehouse/environment/lightSwitch',
+                    params:{status:data}
+                }).then((res)=>{
+                   this.lightList.forEach(item=>{
+                       item.status=flag
+                   })
+                }).catch(err=>{
+                    this.$message.error(err);
+                });
             },
             show(){
-                this.$refs.dialog.show();
+                this.getLightInfo();
             },
             close(){
                 this.$refs.dialog.close();
@@ -96,13 +134,6 @@
         flex-wrap: wrap;
         padding-left: 60px;
 
-    }
-    .lighting-controls .lighting-control-body{
-        height: 201px;
-        display: flex;
-        justify-content: center;
-        flex-direction: column;
-        align-items: center;
     }
     .lighting-box .lighting-select{
         padding-top: 28px;

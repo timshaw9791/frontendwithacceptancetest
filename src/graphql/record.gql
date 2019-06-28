@@ -257,3 +257,22 @@ query getPersonAccessRecordListDESC($paginator: paginator, $qfilter: qfilter) {
     }
   }
 }
+
+query getInventoryItemList($qfilter: qfilter) {
+  InventoryItemList(qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+    model
+      serial
+      name
+      inventory {
+        id
+      }
+      rfid
+      id
+      state
+      disabled
+    }
+  }
+}
