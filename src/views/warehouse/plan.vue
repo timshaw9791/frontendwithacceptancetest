@@ -288,6 +288,7 @@
         },
         watch: {
             inquire(newVal, oldVal) {
+                this.param.namelike = newVal;
                 console.log(newVal);
                 if (newVal === '%%') {
                     this.getList();

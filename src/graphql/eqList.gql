@@ -216,7 +216,6 @@ query getGenreList1($houseId:String) {
       categories {
         name
         id
-        disabled
         houseEquipArgs {
           count
           houseId

@@ -154,7 +154,14 @@
                         <el-table :data="list" fit height="360" class="list">
                             <el-table-column label="RFID" align="center">
                                 <template scope="scope">
+                                    {{scope.$index+1}}
+                                </template>
+                            </el-table-column>
+
+                            <el-table-column label="RFID" align="center">
+                                <template scope="scope">
                                     <el-input size="small" v-model="scope.row.rfid"
+                                              :disabled="true"
                                               style="width:100px"></el-input>
                                 </template>
                             </el-table-column>
@@ -199,7 +206,13 @@
     import {scrappedUp} from "api/workflow";
     import imgUp from 'components/base/axiosImgUp';
     import axios from 'axios';
-    import {imgUpUrl,imgBaseUrl} from "api/config";
+    import {imgUpUrl, pdfUpUrl, videoUpUrl, imgBaseUrl, pdfBaseUrl, videoBaseUrl} from "api/config";
+    import {delFile} from "api/basic";
+
+    // const cmdPath = 'C:\\Users\\Administrator';
+    // const exec = window.require('child_process').exec;
+    // const spawn = window.require('child_process').spawn;
+
 
     export default {
         data() {
@@ -222,6 +235,7 @@
                 imageUrl: '',
                 rfids: [],
                 serialList: [],
+                pid: '',
             }
         },
         mixins: [formRulesMixin],
@@ -256,6 +270,7 @@
                 } else {
                     this.$refs.dialog.show();
                 }
+                // spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
             },
 
             addEquipArg() {
@@ -312,6 +327,7 @@
                             quality: this.zbForm.quality,
                         }, (res) => {
                             console.log(res);
+                            // spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
                             this.callback(`成功`);
                             this.$emit('black', true);
                         })
@@ -358,16 +374,56 @@
             },
 
             videoFileChange(index) {
-                console.log(this.$refs.fileVideo[index].files[0].name);
-                this.form.videoAddresses[index] = this.$refs.fileVideo[index].files[0].name;
-                this.form.videoAddresses.reverse();
-                this.form.videoAddresses.reverse();
+                if (this.form.videoAddresses.length > 0) {
+                    delFile({
+                        filename: this.form.videoAddresses[index],
+                        category: 'video',
+                    }).then(res => {
+                        console.log(res);
+                    })
+                }
 
+                let files = this.$refs.fileVideo[index].files[0];
+
+                let fileFormData = new FormData();
+                fileFormData.append('file', files, files.name);
+                let requestConfig = {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    },
+                };
+                const instance = axios.create({
+                    withCredentials: true
+                });
+                const loading = this.$loading({
+                    lock: true,
+                    text: '正在上传请稍等!',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
+                instance.post(videoUpUrl, fileFormData, requestConfig).then(res => {
+                    loading.close();
+                    this.form.videoAddresses[index] = res.data;
+                    this.form.videoAddresses.reverse();
+                    this.form.videoAddresses.reverse();
+                }).catch(err => {
+                    loading.close();
+                    this.$message.error('上传失败');
+                });
             },
             pdfFileChange(index) {
-                console.log(this.$refs.filePdf[index].files[0]);
-                let files = this.$refs.filePdf[index].files[0];
 
+                if (this.form.documentAddresses.length > 0) {
+                    delFile({
+                        filename: this.form.documentAddresses[index],
+                        category: 'pdf',
+                    }).then(res => {
+                        console.log(res);
+                    })
+                }
+
+
+                let files = this.$refs.filePdf[index].files[0];
                 let fileFormData = new FormData();
                 fileFormData.append('file', files, files.name);//filename是键，file是值，就是要传的文件，test.zip是要传的文件名
                 let requestConfig = {
@@ -379,7 +435,7 @@
                     withCredentials: true
                 });
 
-                instance.post(imgUpUrl, fileFormData, requestConfig).then(res => {
+                instance.post(pdfUpUrl, fileFormData, requestConfig).then(res => {
                     console.log(res.data);
                     this.form.documentAddresses[index] = res.data;
                     this.form.documentAddresses.reverse();
@@ -407,11 +463,11 @@
                 this.form.imageAddress = data;
             },
             getEquipInfo(data) {
+
                 this.gqlQuery(api.getEquipArg, {
                     id: data
                 }, (res) => {
                     let a = JSON.parse(JSON.stringify(res.data.EquipArg));
-                    console.log(a);
                     this.form['name'] = a.name;
                     this.form['upkeepCycle'] = a.upkeepCycle;
                     this.form['chargeCycle'] = a.chargeCycle;
@@ -426,7 +482,35 @@
                     } else {
                         this.imageUrl = '';
                     }
-                })
+                });
+
+                // const process = exec(`java -jar read.jar 5`, {cwd: cmdPath});
+                //
+                // this.pid = process.pid;
+                //
+                // process.stderr.on('data', (err) => {
+                //     console.log(err);
+                // });
+                //
+                // process.stdout.on('data', (data) => {
+                //     console.log(data);
+                //     let newData = JSON.parse(data);
+                //     let index = 0;
+                //
+                //     if (index > 0) {
+                //         index = index + 1;
+                //         newData.forEach((item) => {
+                //             this.list.push({rfid: item});
+                //         });
+                //     }
+                //     newData.status === 'succeed' ? index = 1 : index = 0;
+                // });
+                //
+                // process.on('exit', (code) => {
+                //     console.log(`子进程退出，退出码 ${code}`);
+                // });
+
+
             },
             editClick() {
                 this.edit = !this.edit;
@@ -444,10 +528,105 @@
                 } else {
                     this.$message.error('不能删除最后一个');
                 }
+            },
+            getList() {
+
+                if (this.equipId) {
+                    this.gqlQuery(api.getEquip, {
+                        id: this.equipId
+                    }, (res) => {
+
+                        let eqData = JSON.parse(JSON.stringify(res.data.Equip));
+                        this.zb = eqData;
+                        this.form = eqData.equipArg;
+                        this.form.vendorId = eqData.equipArg.supplier.id;
+                        eqData.equipArg.imageAddress ? this.imageUrl = `${imgBaseUrl}${eqData.equipArg.imageAddress}` : '';
+                        this.$set(this.form, 'eqBig', eqData.equipArg.category.genre.name);
+                        this.$set(this.form, 'eqSmall', eqData.equipArg.category.name);
+                        this.zb['shelfLifeQ'] = Math.round(eqData.quality.shelfLife / 24 / 60 / 60 / 1000);
+                        this.zb['productDateQ'] = eqData.quality.productDate;
+                        this.zb['floorL'] = eqData.location ? eqData.location.floor : '';
+                        this.zb['numberL'] = eqData.location ? eqData.location.number : '';
+                        this.zb['surfaceL'] = eqData.location ? eqData.location.surface : '';
+                        this.zb['sectionL'] = eqData.location ? eqData.location.section : '';
+                        this.$set(this.form, 'personM', eqData.equipArg.supplier.person);
+                        this.$set(this.form, 'phoneM', eqData.equipArg.supplier.phone);
+                        this.zbForm = this.zb;
+                    });
+                }
+
+                if (this.equipArgId) {
+                    this.gqlQuery(api.getEquipArg, {
+                        id: this.equipArgId
+                    }, (res) => {
+                        let zb = {};
+                        let eqData = JSON.parse(JSON.stringify(res.data.EquipArg));
+                        this.form = eqData;
+                        this.form.vendorId = eqData.supplier.id;
+                        eqData.imageAddress ? this.imageUrl = `${imgBaseUrl}${eqData.imageAddress}` : '';
+                        this.form.videoAddresses = eqData.videoAddresses.split(",");
+                        this.form.documentAddresses = eqData.documentAddresses.split(",");
+                        this.form.nameId = [eqData.category.genre.id, eqData.category.id];
+                        this.$set(this.form, 'eqBig', eqData.category.genre.name);
+                        this.$set(this.form, 'eqSmall', eqData.category.name);
+                        this.$set(this.form, 'personM', eqData.supplier.person);
+                        this.$set(this.form, 'phoneM', eqData.supplier.phone);
+                    });
+                }
+
+
+                this.gqlQuery(api.getGenreList, {}, (res) => {
+                    let data = JSON.parse(JSON.stringify(res.data.GenreList.content));
+                    let newData = [];
+                    if (data) {
+                        data.forEach((item) => {
+                            if (item.categories.length > 0) {
+                                item.categories.forEach((item1, index1) => {
+                                    if (item1.equipArgs.length > 0) {
+                                        item1.equipArgs.forEach((item2, index2) => {
+                                            item1.equipArgs[index2] = {
+                                                value: item2.id,
+                                                label: item2.name,
+                                            };
+                                        })
+                                    }
+                                    item.categories[index1] = {
+                                        value: item1.id,
+                                        label: item1.name,
+                                        children: !this.title.includes('新增') && !this.title.includes('信息查看') ? item1.equipArgs : null
+                                    };
+                                })
+                            }
+                            newData.push(
+                                {
+                                    value: item.id,
+                                    label: item.name,
+                                    children: item.categories
+                                }
+                            )
+                        });
+                        this.options = newData;
+                    }
+                });
+
+                this.gqlQuery(api.getSupplierList, {}, (res) => {
+                    this.vendorId = res.data.SupplierList.content.map(item => {
+                        return {
+                            val: item.id,
+                            key: item.name,
+                            data: {
+                                person: item.person,
+                                phone: item.phone,
+                            }
+                        }
+                    })
+                });
             }
+
         },
 
         mounted() {
+
             if (this.title.includes('入库')) {
                 this.disabled = true;
             } else if (this.title.includes('装备查看')) {
@@ -457,100 +636,7 @@
                 this.edit = true;
                 this.disabled = true;
             }
-
-            if (this.equipId) {
-                this.gqlQuery(api.getEquip, {
-                    id: this.equipId
-                }, (res) => {
-                    let zb = {};
-                    let eqData = JSON.parse(JSON.stringify(res.data.Equip));
-                    this.zb = eqData;
-                    this.form = eqData.equipArg;
-                    this.form.vendorId = eqData.equipArg.supplier.id;
-                    eqData.equipArg.imageAddress ? this.imageUrl = `${imgBaseUrl}${eqData.equipArg.imageAddress}` : '';
-                    this.$set(this.form, 'eqBig', eqData.equipArg.category.genre.name);
-                    this.$set(this.form, 'eqSmall', eqData.equipArg.category.name);
-                    this.zb['shelfLifeQ'] = Math.round(eqData.quality.shelfLife / 24 / 60 / 60 / 1000);
-                    this.zb['productDateQ'] = eqData.quality.productDate;
-                    this.zb['floorL'] = eqData.location.floor;
-                    this.zb['numberL'] = eqData.location.number;
-                    this.zb['surfaceL'] = eqData.location.surface;
-                    this.zb['sectionL'] = eqData.location.section;
-                    this.$set(this.form, 'personM', eqData.equipArg.supplier.person);
-                    this.$set(this.form, 'phoneM', eqData.equipArg.supplier.phone);
-                    this.zbForm = this.zb;
-                });
-            }
-
-            if (this.equipArgId) {
-                this.gqlQuery(api.getEquipArg, {
-                    id: this.equipArgId
-                }, (res) => {
-                    let zb = {};
-                    let eqData = JSON.parse(JSON.stringify(res.data.EquipArg));
-                    this.form = eqData;
-                    this.form.vendorId = eqData.supplier.id;
-                    eqData.imageAddress ? this.imageUrl = `${imgBaseUrl}${eqData.imageAddress}` : '';
-                    this.form.videoAddresses = eqData.videoAddresses.split(",");
-                    this.form.documentAddresses = eqData.documentAddresses.split(",");
-                    this.form.nameId = [eqData.category.genre.id, eqData.category.id];
-                    this.$set(this.form, 'eqBig', eqData.category.genre.name);
-                    this.$set(this.form, 'eqSmall', eqData.category.name);
-                    this.$set(this.form, 'personM', eqData.supplier.person);
-                    this.$set(this.form, 'phoneM', eqData.supplier.phone);
-                });
-            }
-
-
-            // this.zbForm = {};
-
-
-            this.gqlQuery(api.getGenreList, {}, (res) => {
-                let data = JSON.parse(JSON.stringify(res.data.GenreList.content));
-                let newData = [];
-                if (data) {
-                    data.forEach((item) => {
-                        if (item.categories.length > 0) {
-                            item.categories.forEach((item1, index1) => {
-                                if (item1.equipArgs.length > 0) {
-                                    item1.equipArgs.forEach((item2, index2) => {
-                                        item1.equipArgs[index2] = {
-                                            value: item2.id,
-                                            label: item2.name,
-                                        };
-                                    })
-                                }
-                                item.categories[index1] = {
-                                    value: item1.id,
-                                    label: item1.name,
-                                    children: !this.title.includes('新增') && !this.title.includes('信息查看') ? item1.equipArgs : null
-                                };
-                            })
-                        }
-                        newData.push(
-                            {
-                                value: item.id,
-                                label: item.name,
-                                children: item.categories
-                            }
-                        )
-                    });
-                    this.options = newData;
-                }
-            });
-
-            this.gqlQuery(api.getSupplierList, {}, (res) => {
-                this.vendorId = res.data.SupplierList.content.map(item => {
-                    return {
-                        val: item.id,
-                        key: item.name,
-                        data: {
-                            person: item.person,
-                            phone: item.phone,
-                        }
-                    }
-                })
-            });
+            this.getList();
         },
 
 

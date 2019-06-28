@@ -2,6 +2,7 @@ import {login, logout, getInfo} from 'api/login'
 import {getToken, setToken, removeToken} from 'common/js/auth'
 import {Message} from 'element-ui'
 import {delectSocket} from "common/js/webSocket";
+import {getdeploy} from "api/login";
 
 const user = {
     state: {
@@ -9,7 +10,8 @@ const user = {
         name: '',
         avatar: '',
         roles: [],
-        userId: ''
+        userId: '',
+        deploy: '',
     },
 
     mutations: {
@@ -28,6 +30,9 @@ const user = {
         SET_USERID: (state, userId) => {
             state.userId = userId
         },
+        SET_DEPLOY: (state, deploy) => {
+            state.deploy = deploy
+        }
     },
 
     actions: {
@@ -36,7 +41,16 @@ const user = {
             const username = userInfo.username.trim()
             return new Promise((resolve, reject) => {
                 login(username, userInfo.password).then(response => {
+                    let newVal = JSON.parse(JSON.stringify(response.role));
+                    if (newVal.includes('SUPER_ADMINISTRATOR') || newVal.includes('LEADER') || newVal.includes('ADMINISTRATOR')) {
+                        response.role = ['ADMINISTRATOR'];
+                    }
                     localStorage.setItem('user', JSON.stringify(response));
+                    getdeploy().then((res) => {
+                        console.log(res);
+                        commit('SET_DEPLOY', res);
+                    });
+
                     // commit('SET_USERID', response.id);
                     /*  const data = response.data
                       setToken(data.token)
@@ -72,9 +86,9 @@ const user = {
                 if (localStorage.getItem('user')) {
                     let data = JSON.parse(localStorage.getItem('user'));
                     let roleData = [];
-                    if (data.authorities && data.authorities.length > 0) { // 验证返回的roles是否是一个非空数组
-                        data.authorities.forEach((value) => {
-                            roleData.push(value['authority']);
+                    if (data.role && data.role.length > 0) { // 验证返回的roles是否是一个非空数组
+                        data.role.forEach((value) => {
+                            roleData.push(value);
                         });
                         commit('SET_ROLES', roleData);
                     } else {

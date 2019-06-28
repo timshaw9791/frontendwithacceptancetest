@@ -30,6 +30,10 @@ let __RULES__ = {
     require(value) {  //空字符串验证
         return outPutInfo(value && value !== '')
     },
+    rfid(value) {
+        return outPutInfo(/^\d{8}$/.test(value))
+    }
+
 
 };
 
@@ -180,7 +184,7 @@ export let formRulesMixin = {
             Object.assign(target, queryObject);//Object.assign方法用于对象的合并，将源对象（ source ）的所有可枚举属性，复制到目标对象（ target ）。
             return target;
         },
-        getEntityListWithPagintorTest(graphql,sCallback) {
+        getEntityListWithPagintorTest(graphql, sCallback) {
             this.query(graphql, this.param).then((data) => {
                 console.log(data);
                 if (data.errors) {   //未通过服务端的表单验证
@@ -199,7 +203,7 @@ export let formRulesMixin = {
                         this.partialPiginator.totalElements = result.totalElements;
                     }
                     //判断是否存在返回的content，有则返回content
-                    defultData= !result ? null : (result.hasOwnProperty('content') ? result.content : result);
+                    defultData = !result ? null : (result.hasOwnProperty('content') ? result.content : result);
                     sCallback.call(this, defultData);//返回数据使用者可执行自定义处理数据
                 }
             }).catch((error) => {

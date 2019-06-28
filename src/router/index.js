@@ -36,338 +36,6 @@ export const constantRouterMap = [
         }]
     },
 
-
-    // {
-    //   path: '/md',
-    //   component: Layout,
-    //   redirect: '/md/test',
-    //   name: 'Md',
-    //   meta: {title: '门店管理', icon: 'example'},
-    //   children: [
-    //     {
-    //       path: 'test',
-    //       name: 'storeAdminTest',
-    //       component: _import('storeAdmin/index'),
-    //       meta: {title: '门店管理', icon: '店铺'}
-    //     },
-    //     {
-    //       path: 'store',
-    //       name: 'store',
-    //       component: _import('storeAdmin/store'),
-    //       meta: {title: '门店操作', icon: 'table'},
-    //       hidden: true,
-    //     },
-    //   ]
-    // },
-    // {
-    //   path: '/HF',
-    //   component: Layout,
-    //   redirect: '/HF/insurance',
-    //   name: 'HF',
-    //   meta: {title: '回访信息管理', icon: '客服'},
-    //   children: [
-    //     {
-    //       path: 'index',
-    //       component: _import('messageBack/insurancelist'),
-    //       meta: {title: '保险回访列表', icon: '回访'}
-    //     },
-    //     {
-    //       path: 'communication',
-    //       component: _import('messageBack/insurancecommunication'),
-    //       meta: {title: '保险回访', icon: '回访'},
-    //       hidden: true,
-    //     },
-    //     {
-    //       path: 'record',
-    //       component: _import('messageBack/communicaterecord'),
-    //       meta: {title: '回访记录', icon: '回访'},
-    //       hidden: true,
-    //     },
-    //
-    //     {
-    //       path: 'buycarcommunicatelist',
-    //       component: _import('messageBack/buycarcommunicatelist'),
-    //       meta: {title: '买车接待表', icon: '回访'}
-    //
-    //     },
-    //     {
-    //       path: 'buycarcommunicate',
-    //       component: _import('messageBack/buycarcommunicate'),
-    //       meta: {title: '新增/修改/查看', icon: 'table'},
-    //       hidden: true,
-    //     },
-    //   ]
-    // },
-    // // {
-    // //   path: '/sale',
-    // //   component: Layout,
-    // //   redirect: '/sale/index',
-    // //   name: 'Sale',
-    // //   meta: {title: '营销管理', icon: 'example'},
-    // //   children: [
-    // //     {
-    // //       path: 'saleAdmin',
-    // //       name: 'saleAdmins',
-    // //       component: _import('saleAdmin/index'),
-    // //       meta: {title: '砍价表', icon: 'table'}
-    // //     },
-    // //     {
-    // //       path: 'saleAdminsTwo',
-    // //       name: 'SaleAdminsTwo',
-    // //       component: _import('saleAdmin/index'),
-    // //       meta: {title: '例子', icon: 'table'},
-    // //     }
-    // //   ]
-    // // },
-    // {
-    //   path: '/car',
-    //   redirect: '/car/index',
-    //   component: Layout,
-    //   name: 'Car',
-    //   meta: {title: '车源管理', icon: '4S'},
-    //   children: [
-    //     {
-    //       path: 'index',
-    //       name: 'carStart',
-    //       component: _import('car/index'),
-    //       meta: {title: '车源管理', icon: '4S'}
-    //     },
-    //     {
-    //       path: 'car',
-    //       name: 'caredit',
-    //       component: _import('car/car'),
-    //       meta: { title: '车源维护', icon: 'table' },
-    //       hidden: true,
-    //     }
-    //   ]
-    // },
-    //
-    // {
-    //   path: '/customer',
-    //   redirect: '/customer/index',
-    //   component: Layout,
-    //   name: 'customer',
-    //   meta: {title: '客户信息管理', icon: '客户中心'},
-    //   children: [
-    //     {
-    //       path: 'index',
-    //       name: 'customerMessage',
-    //       component: _import('customer/index'),
-    //       meta: {title: '客户信息管理', icon: '客户中心'}
-    //     },
-    //     {
-    //       hidden: true,
-    //       path: 'check',
-    //       name: 'check',
-    //       component: _import('customer/details'),
-    //       meta: {title: '查看详情', icon: 'table'}
-    //     },
-    //     {
-    //       hidden: true,
-    //       path: 'edit',
-    //       name: 'edit',
-    //       component: _import('customer/details'),
-    //       meta: {title: '修改详情', icon: 'table'}
-    //     }
-    //   ]
-    // },
-    // {
-    //   path: '/vehicle',
-    //   redirect: '/vehicle/index',
-    //   component: Layout,
-    //   name: 'vehicle',
-    //   meta: {title: '车辆管理', icon: '车辆'},
-    //   children: [
-    //     {
-    //       path: 'index',
-    //       component: _import('vehicle/index'),
-    //       meta: {title: '车辆管理', icon: '车辆'}
-    //     },
-    //     {
-    //       path: 'informationLook',
-    //       name: 'information',
-    //       component: _import('vehicle/information'),
-    //       meta: {title: '查看车辆详情', icon: 'table'},
-    //       hidden: true,
-    //     },
-    //     {
-    //       path: 'informationUp',
-    //       name: 'information',
-    //       component: _import('vehicle/information'),
-    //       meta: {title: '修改车辆详情', icon: 'table'},
-    //       hidden: true,
-    //     }
-    //
-    //   ]
-    // },
-    // {
-    //   path: '/order',
-    //   redirect: '/order/index',
-    //   component: Layout,
-    //   name: 'order',
-    //   meta: {title: '订单管理', icon: '订单'},
-    //   children: [
-    //     {
-    //       path: 'index',
-    //       component: _import('order/index'),
-    //       meta: {title: '订单管理', icon: '订单'},
-    //     },
-    //     {
-    //       path: 'order',
-    //       name: 'order',
-    //       component: _import('order/order'),
-    //       meta: {title: '处理订单', icon: 'table'},
-    //       hidden: true,
-    //     },
-    //   ]
-    // },
-    //
-    // {
-    //   path: '/administrator',
-    //   redirect: '/administrator/index',
-    //   component: Layout,
-    //   name: 'administrator',
-    //   meta: {title: '管理员信息管理', icon: 'administrator'},
-    //   children: [
-    //     {
-    //       path: 'administrator',
-    //       name: 'administrators',
-    //       component: _import('administrator/index'),
-    //       meta: {title: '管理员信息管理', icon: '管理客户'}
-    //     }
-    //   ]
-    // },
-    // {
-    //   path: '/salesman',
-    //   redirect: '/salesman/index',
-    //   component: Layout,
-    //   name: 'salesman',
-    //   meta: {title: '业务员信息管理', icon: '人像'},
-    //   children: [
-    //     {
-    //       path: 'salesman',
-    //       name: 'salesmen',
-    //       component: _import('salesman/index'),
-    //       meta: {title: '业务员信息管理', icon: '人像'}
-    //     }
-    //   ]
-    // },
-    //
-    // {
-    //   path: '/basicNews',
-    //   redirect: '',
-    //   component: Layout,
-    //   name: 'basicNews',
-    //   meta: {title: '基础资料管理', icon: '设置'},
-    //   children: [
-    //     {
-    //       path: 'advert',
-    //       name: 'Advert',
-    //       component: _import('basicNews/advert'),
-    //       meta: {title: '广告设置', icon: '设置'}
-    //     },
-    //     {
-    //       path: 'cutPrice',
-    //       name: 'CutPrice',
-    //       component: _import('basicNews/cutPrice'),
-    //       meta: {title: '砍价设置', icon: '设置'},
-    //     },
-    //     {
-    //       path: 'carOptimal',
-    //       name: 'carOptimal',
-    //       component: _import('basicNews/carOptimal'),
-    //       meta: {title: '车辆优选', icon: '设置'},
-    //     },
-    //     {
-    //       path: 'feedback',
-    //       name: 'feedback',
-    //       component: _import('basicNews/feedback'),
-    //       meta: {title: '意见反馈', icon: '设置'},
-    //     },
-    //     {
-    //       path: 'fbLook',
-    //       name: 'fbLook',
-    //       component: _import('basicNews/fbLook'),
-    //       meta: {title: '意见反馈', icon: 'table'},
-    //       hidden: true,
-    //     },
-    //
-    //     {
-    //       path: 'helpCenter',
-    //       name: 'helpCenter',
-    //       component: _import('basicNews/helpCenter'),
-    //       meta: {title: '帮助中心', icon: '设置'},
-    //     },
-    //   ]
-    // },
-    //
-    // {
-    //   path: '/insurance',
-    //   redirect: '/insurance/index',
-    //   component: Layout,
-    //   name: 'insurance',
-    //   meta: {title: '保险列表', icon: '保险销售'},
-    //   children: [
-    //     {
-    //       path: 'index',
-    //       name: 'index',
-    //       component: _import('insurance/index'),
-    //       meta: {title: '保险列表', icon: '保险销售'}
-    //     },
-    //     {
-    //       path: 'insurance',
-    //       name: 'insurance',
-    //       component: _import('insurance/insurance'),
-    //       meta: {title: '保险信息', icon: 'table'},
-    //       hidden: true,
-    //     }
-    //   ]
-    // },
-    //
-    // // {
-    // //   path: '/financial',
-    // //   redirect: '/financial/index',
-    // //   component: Layout,
-    // //   name: 'financial',
-    // //   meta: {title: '财务管理', icon: 'table'},
-    // //   children: [
-    // //     {
-    // //       path: 'index',
-    // //       component: _import('financial/index'),
-    // //       meta: {title: '财务管理', icon: 'table'}
-    // //     },
-    // //     {
-    // //       path: 'look',
-    // //       name: 'look',
-    // //       component: _import('financial/look'),
-    // //       meta: {title: '收支记录', icon: 'table'},
-    // //       hidden: true,
-    // //     }
-    // //   ]
-    // // },
-    //
-    // {
-    //   path: '/carPrice',
-    //   redirect: '/carPrice/index',
-    //   component: Layout,
-    //   name: 'carPrice',
-    //   meta: {title: '车辆价格表', icon: '价格'},
-    //   children: [
-    //     {
-    //       path: 'index',
-    //       component: _import('carPrice/index'),
-    //       meta: {title: '车辆价格表', icon: '价格'}
-    //     },
-    //     {
-    //       path: 'carPrice',
-    //       name: 'carPrice',
-    //       component: _import('carPrice/carPrice'),
-    //       meta: {title: '添加价格', icon: 'table'},
-    //       hidden: true,
-    //     }
-    //   ]
-    // },
-
 ];
 
 export default new Router({
@@ -397,7 +65,7 @@ export const asyncRouterMap = [
         component: Layout,
         redirect: '/equipment/warehouse',
         name: 'equipment',
-        meta: {title: '装备管理', icon: '账号'},
+        meta: {title: '装备管理', icon: '账号', roles: ['ADMINISTRATOR']},
         children: [
             {
                 path: 'storage',
@@ -411,7 +79,7 @@ export const asyncRouterMap = [
         path: '/warehouse',
         component: Layout,
         name: 'warehouse',
-        meta: {title: '库房管理', icon: '仓库信息'},
+        meta: {title: '库房管理', icon: '仓库信息', roles: ['ADMINISTRATOR']},
         children: [
             {
                 path: 'info',
@@ -451,7 +119,7 @@ export const asyncRouterMap = [
         path: '/equipmentOperation',
         component: Layout,
         name: 'equipmentOperation',
-        meta: {title: '装备维保', icon: '装备维保'},
+        meta: {title: '装备维保', icon: '装备维保', roles: ['ADMINISTRATOR']},
         children: [
             {
                 path: 'charging',
@@ -478,7 +146,7 @@ export const asyncRouterMap = [
         path: '/process',
         component: Layout,
         name: 'process',
-        meta: {title: '流程管理', icon: '流程管理'},
+        meta: {title: '流程管理', icon: '流程管理', roles: ['ADMINISTRATOR']},
         children: [
             {
                 path: 'scrapped',
@@ -517,34 +185,34 @@ export const asyncRouterMap = [
         path: '/record',
         component: Layout,
         name: 'record',
-        meta: {title: '记录管理', icon: '工作日志'},
+        meta: {title: '记录管理', icon: '工作日志', roles: ['POLICE_OFFICER', 'ADMINISTRATOR']},
         children: [
             {
                 path: 'borrow',
                 name: 'borrow',
                 component: _import('record/borrow'),
-                meta: {title: '领还记录'},
+                meta: {title: '领还记录', roles: ['POLICE_OFFICER', 'ADMINISTRATOR']},
             }, {
                 path: 'inventory',
                 name: 'inventory',
                 component: _import('record/inventory'),
-                meta: {title: '盘点记录'},
+                meta: {title: '盘点记录', roles: ['ADMINISTRATOR']},
             },
             {
                 path: 'opening',
                 name: 'opening',
                 component: _import('record/opening'),
-                meta: {title: '开门记录'},
-            },{
+                meta: {title: '开门记录', roles: ['ADMINISTRATOR']},
+            }, {
                 path: 'entryAndExit',
                 name: 'entryAndExit',
                 component: _import('record/entryAndExit'),
-                meta: {title: '出入记录'},
-            },{
+                meta: {title: '出入记录', roles: ['POLICE_OFFICER', 'ADMINISTRATOR']},
+            }, {
                 path: 'maintenanceRecord',
                 name: 'maintenanceRecord',
                 component: _import('record/maintenanceRecord'),
-                meta: {title: '维保记录'},
+                meta: {title: '维保记录', roles: ['ADMINISTRATOR']},
             },
         ]
     },
@@ -552,6 +220,7 @@ export const asyncRouterMap = [
         path: '/report',
         component: Layout,
         name: 'report',
+        meta: {roles: ['ADMINISTRATOR']},
         children: [
             {
                 path: 'index',
@@ -565,18 +234,19 @@ export const asyncRouterMap = [
         path: '/personnel',
         component: Layout,
         name: 'personnel',
-        meta: {title: '人员管理', icon: '人员管理'},
+        meta: {title: '人员管理', icon: '人员管理', roles: ['ADMINISTRATOR']},
         children: [
             {
                 path: 'info',
                 name: 'info',
                 component: _import('personnelManagement/personnelManagement'),
-                meta: {title: '人员信息'},
+                meta: {title: '人员信息', icon: '人员管理'},
             },
             {
                 path: 'permission',
                 name: 'permission',
                 component: _import('personnel/permission'),
+                hidden: true,
                 meta: {title: '权限'},
             },
         ]
@@ -585,6 +255,7 @@ export const asyncRouterMap = [
         path: '/surroundings',
         component: Layout,
         name: 'surroundings',
+        meta: {roles: ['ADMINISTRATOR']},
         children: [
             {
                 path: 'index',
@@ -598,6 +269,7 @@ export const asyncRouterMap = [
         path: '/training',
         component: Layout,
         name: 'training',
+        meta: {roles: ['ADMINISTRATOR']},
         children: [
             {
                 path: 'index',
@@ -611,6 +283,7 @@ export const asyncRouterMap = [
         path: '/category',
         component: Layout,
         name: 'category',
+        meta: {roles: ['ADMINISTRATOR']},
         children: [
             {
                 path: 'index',
@@ -637,6 +310,7 @@ export const asyncRouterMap = [
     {
         path: '/private',
         component: Layout,
+        meta: {roles: ['ADMINISTRATOR', 'POLICE_OFFICER']},
         children: [
             {
                 path: 'index',
@@ -647,63 +321,6 @@ export const asyncRouterMap = [
         ],
         hidden: true
     },
-
-
-    // {
-    //     path: '/qx',
-    //     component: Layout,
-    //     name: 'qx',
-    //     meta: {title: '分局管理', icon: '权限'},
-    //     children: [
-    //         {
-    //             path: 'branchManagement',
-    //             name: 'branchManagement',
-    //             component: _import('policeStation/branchManagement'),
-    //             meta: {title: '分局管理', icon: '账号'},
-    //         }
-    //     ]
-    // },
-    // {
-    //     path: '/equipment',
-    //     component: Layout,
-    //     name: 'equipment',
-    //     meta: {title: '装备管理', icon: '账号'},
-    //     children: [
-    //         // {
-    //         //     path: 'warehouse',
-    //         //     name: 'warehouse',
-    //         //     component: _import('equipmentManagement/warehouse'),
-    //         //     meta: {title: '仓库管理'}
-    //         // },
-    //         {
-    //             path: 'equipmentList',
-    //             name: 'equipmentList',
-    //             component: _import('equipmentManagement/equipmentList'),
-    //             meta: {title: '装备列表'}
-    //         },
-    //         {
-    //             path: 'equipmentRecord',
-    //             name: 'equipmentRecord',
-    //             component: _import('equipmentManagement/equipmentRecord'),
-    //             meta: {title: '装备记录'}
-    //         }
-    //     ]
-    // },
-
-    // {
-    //     path: '/workOrder',
-    //     component: Layout,
-    //     name: 'workOrder',
-    //     meta: {title: '工单管理', icon: '订单'},
-    //     children: [
-    //         {
-    //             path: 'index',
-    //             name: 'workOrder/index',
-    //             component: _import('workOrder/index'),
-    //             meta: {title: '工单列表', icon: '订单'}
-    //         },
-    //     ]
-    // },
 
 
     {path: '*', redirect: '/404', hidden: true}

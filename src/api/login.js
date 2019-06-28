@@ -25,3 +25,11 @@ export function logout() {
     method: 'post'
   })
 }
+
+
+export function getdeploy () {
+  return request({
+    url:'/environment/deviceConfig',
+    method:'get',
+  })
+}

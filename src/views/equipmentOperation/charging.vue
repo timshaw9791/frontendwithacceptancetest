@@ -108,6 +108,7 @@
         },
         watch: {
             inquire(newVal, oldVal) {
+                this.param.namelike = newVal;
                 this.param['qfilter'] = {
                     "operator": "GREATTHAN",
                     "key": "chargeCycle",

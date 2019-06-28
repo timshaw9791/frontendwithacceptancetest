@@ -15,7 +15,8 @@
 </template>
 
 <script>
-    import {baseURL, imgBaseUrl} from "api/config";
+    import {imgUpUrl, imgBaseUrl} from "api/config";
+    import {delFile} from "api/basic";
 
     export default {
         data() {
@@ -46,18 +47,29 @@
                 if (!isLt2M) {
                     this.$message.error('上传头像图片大小不能超过 2MB!');
                 }
+                delFile({
+                    filename: this.imageUrl.split('/')[this.imageUrl.split('/').length - 1],
+                    category: 'image'
+                }).then(res => {
+                    console.log(res);
+                }).catch(err => {
+                    console.log(err);
+                });
+
                 return isLt2M
-            }
+            },
+
         },
         watch: {
             image(newVal) {
                 newVal ? this.imageUrl = newVal : this.imageUrl = '';
+
             }
         },
 
 
         mounted() {
-            this.url = `${baseURL}/upload/image/`;
+            this.url = imgUpUrl
         }
     }
 </script>

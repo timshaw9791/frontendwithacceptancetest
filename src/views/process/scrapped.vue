@@ -125,6 +125,7 @@
         },
         watch: {
             inquire(newVal, oldVal) {
+                this.param.namelike = newVal;
                 this.param['qfilter'] = {
                     "key": "id",
                     "operator": "LIKE",

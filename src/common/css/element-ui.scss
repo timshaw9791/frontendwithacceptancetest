@@ -62,3 +62,12 @@
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
 }
 
+.el-loading-spinner i {
+  color: white !important;
+  font-size: 30px !important;
+}
+
+.el-loading-spinner .el-loading-text {
+  color: #ffffff !important;
+  font-size: 18px !important;
+}

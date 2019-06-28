@@ -125,6 +125,9 @@
             },
             service() {
                 this.$refs.dialog.show();
+                
+
+
             },
             dialogConfirm() {
                 this.$refs.inlineForm.axiosData(
@@ -199,6 +202,7 @@
         },
         watch: {
             inquire(newVal, oldVal) {
+                this.param.namelike = newVal;
                 this.param['qfilter'] = {
                     "operator": "EQUEAL",
                     "key": "state",

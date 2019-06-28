@@ -65,7 +65,7 @@
             cancel() {
                 this.innerVisible = false;
                 this.showFlag = false;
-                this.$emit('cancel');
+                this.$emit('cancel','end');
             },
             handleClose(done) {
                 if (this.secondary) {

@@ -1,6 +1,6 @@
 <template>
     <div class="overview">
-        <el-card shadow="never" :body-style="{ padding:'30px'}">
+        <el-card shadow="never" :body-style="{ padding:'30px'}" v-if="$store.getters.roles.includes('ADMINISTRATOR')">
             <div slot="header">
                 <span class="_card-title">{{$route.meta.title}}</span>
             </div>
@@ -116,6 +116,9 @@
                 </div>
             </div>
         </el-card>
+        <el-card shadow="never" :body-style="{ padding:'30px'}" v-else>
+            欢迎警员!
+        </el-card>
     </div>
 </template>
 
@@ -158,8 +161,8 @@
                         },
                     },
                     sources: [{
-                         type: "rtmp/flv",
-                         src: "rtmp://58.200.131.2:1935/livetv/hunantv",
+                        type: "rtmp/flv",
+                        src: "rtmp://58.200.131.2:1935/livetv/hunantv",
                         //src: 'rtmp://10.128.4.109:1935/live/robot',
                     }],
                 },
@@ -168,7 +171,7 @@
                     humidity: 0,
                 },
                 topList: [],
-                contentList: [{name: '调拨通知'}, 2, 3, 4],
+                contentList: [{name: '调拨通知'}, {name: '保养/充电通知'}, {name: '到期报废提醒'}, {name: '未归还提醒'}],
             }
         },
         mixins: [formRulesMixin, transformMixin],
@@ -257,6 +260,7 @@
         },
         mounted() {
             this.getList();
+            console.log(this.$store.getters.roles);
         },
         components: {
             progressCircular,

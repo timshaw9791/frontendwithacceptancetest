@@ -5,16 +5,16 @@
 
 export const ERR_OK = 0;
 
-export let baseURL = 'http://192.168.50.14:8080/warehouse';
+export let baseURL = 'http://10.128.4.152:8080/warehouse';
 
-export const imgBaseUrl = 'http://192.168.50.14:8080/warehouse/images/';
+export const imgBaseUrl = `${baseURL}/images/`;
+export const pdfBaseUrl = `${baseURL}/pdfs/`;
+export const videoBaseUrl = `${baseURL}/videos/`;
 
-export const imgUpUrl = 'http://192.168.50.14:8080/warehouse/upload/image/';
+export const imgUpUrl = `${baseURL}/upload/image`;
+export const pdfUpUrl = `${baseURL}/upload/pdf`;
+export const videoUpUrl = `${baseURL}/upload/video`;
 
-
-
-export const websocketUrl = 'http://192.168.50.14:8080/warehouse/websocket';
-
+export const websocketUrl = `${baseURL}/websocket`;
 
 export const tokenName = 'x-auth-token';
-

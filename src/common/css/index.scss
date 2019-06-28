@@ -158,7 +158,6 @@ a:hover {
 }
 
 
-
 ._card-title {
   font-size: 18px;
 }
@@ -167,4 +166,10 @@ a:hover {
   @include center;
   width: 100%;
   margin: 3% 0;
+}
+
+._button {
+  @include center;
+  width: 100%;
+  margin: 3% 0 0 0;
 }

@@ -8,13 +8,6 @@
         </div>
 
         <div class="icons">
-            <div>
-                <el-tooltip class="item" effect="dark" content="选择地点" placement="bottom">
-                    <el-badge hidden>
-                        <svg-icon icon-class="地图" class="svg"/>
-                    </el-badge>
-                </el-tooltip>
-            </div>
             <div @click="$router.push('/message/index')">
                 <el-tooltip class="item" effect="dark" content="消息中心" placement="bottom">
                     <el-badge :is-dot="$store.state.socket.message?true:false">
@@ -22,7 +15,6 @@
                     </el-badge>
                 </el-tooltip>
             </div>
-
         </div>
         <el-dropdown class="avatar-container" trigger="click">
             <div class="avatar-wrapper">
