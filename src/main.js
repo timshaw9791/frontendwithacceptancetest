@@ -9,13 +9,12 @@ import 'core-js';
 import './components/icons'
 import axios from 'axios';
 import PDFJS from 'pdfjs-dist'
-
 import './plugins/field';
 import '@/permission'
 
 import VideoPlayer from 'vue-video-player'
 
-Vue.use(VideoPlayer)
+Vue.use(VideoPlayer);
 
 
 Vue.config.productionTip = false;

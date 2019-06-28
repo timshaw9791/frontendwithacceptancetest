@@ -7,7 +7,6 @@
             <my-video :src="srcList[item-1]" class="video"></my-video>
         </div>
 
-
     </div>
 </template>
 
@@ -19,10 +18,10 @@
         data() {
             return {
                 srcList: [
-                    'http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8',
-                    'http://ivi.bupt.edu.cn/hls/cctv3hd.m3u8',
-                    'http://ivi.bupt.edu.cn/hls/cctv5hd.m3u8',
-                    'http://ivi.bupt.edu.cn/hls/cctv6hd.m3u8'
+                    'http://192.168.50.14/test.m3u8',
+                    'http://192.168.50.14/test.m3u8',
+                    'http://192.168.50.14/test.m3u8',
+                    'http://192.168.50.14/test.m3u8'
                 ]
             }
         },

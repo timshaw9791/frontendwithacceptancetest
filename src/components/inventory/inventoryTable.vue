@@ -8,11 +8,9 @@
                 :align="align"
         >
             <el-table-column
-                    prop="number"
                     label="序号"
-                    width="180"
-                    :align="align"
-             >
+                    type="index"
+                    :index="indexMethod" width="180" :align="align">
             </el-table-column>
             <el-table-column
                     prop="rfid"
@@ -28,13 +26,13 @@
             >
             </el-table-column>
             <el-table-column
-                    prop="address"
+                    prop="model"
                     label="装备型号"
                     :align="align"
             >
             </el-table-column>
             <el-table-column
-                    prop="address"
+                    prop="serial"
                     label="装备序号"
                     :align="align"
             >
@@ -48,43 +46,17 @@
         name: "inventoryTable",
         props:{
             tableData:{
-                type:Array,
-                default(){
-                    return  [{
-                        date: '2016-05-03',
-                        name: '王小虎',
-                        address: '上海市普陀区金沙江路 1518 弄'
-                    }, {
-                        date: '2016-05-02',
-                        name: '王小虎',
-                        address: '上海市普陀区金沙江路 1518 弄'
-                    }, {
-                        date: '2016-05-04',
-                        name: '王小虎',
-                        address: '上海市普陀区金沙江路 1518 弄'
-                    }, {
-                        date: '2016-05-01',
-                        name: '王小虎',
-                        address: '上海市普陀区金沙江路 1518 弄'
-                    }, {
-                        date: '2016-05-08',
-                        name: '王小虎',
-                        address: '上海市普陀区金沙江路 1518 弄'
-                    }, {
-                        date: '2016-05-06',
-                        name: '王小虎',
-                        address: '上海市普陀区金沙江路 1518 弄'
-                    }, {
-                        date: '2016-05-07',
-                        name: '王小虎',
-                        address: '上海市普陀区金沙江路 1518 弄'
-                    }]
-                }
+                type:Array
             }
         },
         data(){
             return{
                 align:'center'
+            }
+        },
+        methods:{
+            indexMethod(index) {
+                return index +1;
             }
         }
     }

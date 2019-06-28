@@ -10,7 +10,7 @@
                <el-table-column
                         :prop="item.prop"
                         :label="item.lable"
-                        align="center"
+                         align="center"
                         :sortable="item.sortable?'custom':''"
                 >
                 </el-table-column>

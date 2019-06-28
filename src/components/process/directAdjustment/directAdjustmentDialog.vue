@@ -16,7 +16,7 @@
                             </el-select>
                         </div>
                     </div>
-                    <div class="header-item"><span v-text="'装备清单：'"></span></div>
+                    <div class="header-item"><span v-text="'装备清单：'"></span><el-button class="resultButton" v-text="'重新读取数据'" v-if="!submitFlag" @click="clickResult"></el-button></div>
                 </div>
                 <div class="directAdjustmentDialog-body">
                     <div class="leftTable">
@@ -86,6 +86,16 @@
                                     :align="align"
                             >
                             </el-table-column>
+                            <el-table-column
+                                    prop="flag"
+                                    label="操作"
+                                    :align="align"
+                                    v-if="!submitFlag"
+                            >
+                                <template slot-scope="scope">
+                                    <el-button type="text" size="mini" class="deleteButtom" @click="deleteRow(scope.$index)" :disabled="scope.row.flag" v-text="'【删除】'"></el-button>
+                                </template>
+                            </el-table-column>
                         </el-table>
                     </div>
                 </div>
@@ -103,7 +113,10 @@
     import inventoryData from 'views/warehouse/inventoryData'
     import request from 'common/js/request'
     /*import {handheld} from 'common/js/handheld'*/
-
+    /* const cmdPath = 'C:\\Users\\Administrator';
+   const exec = window.require('child_process').exec;
+   const spawn = window.require('child_process').spawn;
+   import request from 'common/js/request' */
     export default {
         name: "directAdjustmentDialog",
         components: {
@@ -124,20 +137,77 @@
                 rightList: [],
                 outList:[],
                 align: 'center',
-                submitFlag:true
+                submitFlag:true,
+                types:'',
+                pid:'',
+                closeUsb:false
             }
         },
         watch: {
             'hardware': {
-                handler(newVal) {
+                handler(newVal,oldVal) {
+                    if(oldVal=='RFID读写器'&&newVal=='手持机'){
+                        this.end('测试')
+                    }
                     if (newVal == '手持机') {
+                        this.rightList=[];
                         this.handheldMachine();
+                    }else if(newVal=='RFID读写器'){
+                        this.closeUsb=false;
+                        this.rightList=[];
+                        this.getListUsb();
                     }
                 }
             }
         },
+        created(){
+        },
         methods: {
+            end(pid) {
+                alert('关掉了');
+                this.closeUsb=true
+              /*  if (pid) {
+                    spawn("taskkill", ["/PID", pid, "/T", "/F"]);
+                }*/
+            },
+            getListUsb() {//todo
+                /* const process = exec(`java -jar read.jar 5`, {cwd: cmdPath});
+                 this.pid = process.pid;
+                 process.stderr.on('data', (err) => {
+                     console.log(err);
+                 });
+
+                 process.stdout.on('data', (data) => {
+                     let flag=false;
+                     let dataJson=JSON.parse(data);
+                     if(flag==false){
+                         if(dataJson.status=='sucess'){
+                             flag=true
+                         }
+                     }else {
+
+                     }
+
+                     /!* this.data.push(data);*!/
+                 });
+
+                 process.on('exit', (code) => {
+                     console.log(`子进程退出，退出码 ${code}`);
+                 });*/
+                let intercal=setInterval(()=>{
+                    if(this.closeUsb){
+                        clearInterval(intercal);
+                        return;
+                    }
+                    this.getOutDataCopy(['q2', '3', '4', '55','6','7','8','9','11','天下第一','sdfa','10','222','23252s'])
+                },1000)
+
+            },
+            deleteRow(index){
+                this.rightList.splice(index,1)
+            },
             close() {
+                this.closeUsb=true;
                 this.$refs.dialog.close();
             },
             show() {
@@ -157,6 +227,17 @@
                 }
 
             },
+            clickResult(){
+                if(this.hardware=='手持机'){
+                    this.handheldMachine();
+                }else {
+                    this.closeUsb=true;
+                    setTimeout(()=>{
+                        this.closeUsb=false
+                        this.getListUsb()
+                    },1000)
+                }
+            },
             handheldMachine() {
                 /*handheld.then(data => {
                     this.getOutData(data)
@@ -169,7 +250,7 @@
                 console.log(data);
             },
             getOutDataCopy(data){
-                let url = 'http://115.159.154.194/warehouse/equips/by-rfidlist';
+                let url = 'http://192.168.50.14:8080/warehouse/equips/by-rfidlist';
                 let params={
                     rfidList:data.rfid
                 };
@@ -179,16 +260,15 @@
                     data:data
                 }).then(res=>{
                     if(res){
-                        this.outList= res;
                         this.getCategroy(res);
                     }
                 })
             },
             submit() {
                 if(this.submitFlag){
-                    let url='http://115.159.154.194/warehouse/transfers/up-to-down/equips-out/';
+                    let url='http://192.168.50.14:8080/warehouse/transfers/up-to-down/equips-out/';
                     let param={
-                        rfidList:this.outList,
+                        rfidList:this.rightList,
                         transferOrderId: this.directObj.id
                     };
                     request({
@@ -205,38 +285,74 @@
                 }
             },
             getCategroy(data){
-                let r_list=[];
-                let typeModel=[];
-                this.rightList=[];
+                let typeModel=this.getTypeModel(data);
                 data.forEach(item=>{
-                    if(r_list==[]){
-                        r_list.push({
+                    if(this.rightList.length==0){
+                        this.rightList.push({
                             name:item.equipArg.name,
                             model:item.equipArg.model,
                             count:1,
                             flag:false
                         });
-                        typeModel.push(item.equipArg.model)
                     }else {
-                        if(typeModel.indexOf(item.equipArg.model) > -1){
-                            r_list.forEach(listItem=>{
-                                if(listItem.model==item.equipArg.model){
-                                    listItem.count=listItem.count+1
-                                }
-                            })
+                        let flag=false;
+                        let indexI=0
+                        this.rightList.forEach((listItem,index)=>{
+                            if(listItem.model==item.equipArg.model){
+                               /* listItem.count=listItem.count+1*/
+                               flag=true,indexI= index
+                            }else {
+
+                            }
+                        })
+                        if(flag){
+                            this.rightList[indexI].count=this.rightList[indexI].count+1
                         }else {
-                            r_list.push({
+                            this.rightList.push({
                                 name:item.equipArg.name,
                                 model:item.equipArg.model,
                                 count:1,
                                 flag:false
                             });
-                            typeModel.push(item.equipArg.model)
                         }
+                        /*if(typeModel.indexOf(item.equipArg.model) > -1){
+                            console.log(typeModel);
+                            this.rightList.forEach(listItem=>{
+                                if(listItem.model==item.equipArg.model){
+                                    listItem.count=listItem.count+1
+                                }else {
+                                    this.rightList.push({
+                                        name:item.equipArg.name,
+                                        model:item.equipArg.model,
+                                        count:1,
+                                        flag:false
+                                    });
+                                }
+                            })
+                        }else {
+                            this.rightList.push({
+                                name:item.equipArg.name,
+                                model:item.equipArg.model,
+                                count:1,
+                                flag:false
+                            });
+                        }*/
                     }
                 })
-                this.rightList=r_list;
                 this.getTrueOrFalse();
+            },
+            getTypeModel(data){
+                let typeModel=[];
+                data.forEach(item=>{
+                    if(typeModel.length==0){
+                        typeModel.push(item.equipArg.model);
+                    }else {
+                       if(typeModel.indexOf(item.equipArg.model) > -1){}else {
+                           typeModel.push(item.equipArg.model);
+                       }
+                    }
+                });
+                return typeModel
             },
             getTrueOrFalse(){
                 this.rightList.forEach(item=>{
@@ -247,6 +363,8 @@
                                 this.submitFlag=false
                                 item.flag=false
                             }
+                        }else {
+                            this.submitFlag=false
                         }
                     })
                 })
@@ -285,11 +403,12 @@
     .directAdjustmentDialog-body .leftTable {
         width: 700px;
     }
-
     .directAdjustmentDialog-body .rightTable {
         width: 700px;
     }
-
+    .rightTable .deleteButtom{
+        color: #FF0000;
+    }
     .directAdjustmentDialog .directAdjustmentDialog-header {
         width: 100%;
     }
@@ -305,6 +424,17 @@
     .header-item .d_select {
         display: flex;
         align-items: center;
+    }
+
+    .header-item .resultButton{
+        width:137px;
+        height:30px;
+        background:rgba(47,47,118,1);
+        box-shadow:0px 3px 6px rgba(0,0,0,0.16);
+        opacity:1;
+        line-height: 0px;
+        color: white;
+        border-radius:6px;
     }
 
     .directAdjustmentDialog .directAdjustmentDialog-bottom {

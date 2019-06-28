@@ -5,15 +5,15 @@
 
 export const ERR_OK = 0;
 
-export let baseURL = 'http://115.159.154.194/warehouse';
+export let baseURL = 'http://192.168.50.14:8080/warehouse';
 
-export const imgBaseUrl = 'http://115.159.154.194/warehouse/images/';
+export const imgBaseUrl = 'http://192.168.50.14:8080/warehouse/images/';
 
-export const imgUpUrl = 'http://115.159.154.194/warehouse/upload/image/';
+export const imgUpUrl = 'http://192.168.50.14:8080/warehouse/upload/image/';
 
 
 
-export const websocketUrl = 'http://115.159.154.194/warehouse/websocket';
+export const websocketUrl = 'http://192.168.50.14:8080/warehouse/websocket';
 
 
 export const tokenName = 'x-auth-token';

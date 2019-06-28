@@ -5,8 +5,8 @@
                 <div class="airConditioning-box">
                     <svg-icon icon-class="空调图标" style="width: 70px;height: 48px"></svg-icon>
                     <span v-text="'空调控制'" style="margin-top: 19px"></span>
-                    <switch-control :active="active" :inactive="inactive" style="margin-top: 31px"></switch-control>
-                    <switch-control :active="activeTwo" :inactive="inactiveTwo" style="margin-top: 31px"></switch-control>
+                    <switch-control :active="active" :inactive="inactive" :status="closeFlag" style="margin-top: 31px" @handleChange="changeClose"></switch-control>
+                    <switch-control :active="activeTwo" :inactive="inactiveTwo" style="margin-top: 31px"  @handleChange="changeStatus"></switch-control>
                 </div>
                 <div class="airConditioning-bottom">
                     <span v-text="'温度阈值：'"></span><input class="input" :style="flag?'border:none;':''" v-model="threshold.max" :disabled="flag"/>
@@ -52,6 +52,7 @@
                     text:'制冷',
                     color:'#2680EB',
                 },
+                closeFlag:false,
                 flag:true,
                 threshold:{
                     max:'',
@@ -60,10 +61,11 @@
             }
         },
         created(){
-            this.getThreshold()
+
         },
         methods:{
             show(){
+                this.getThreshold()
                 this.$refs.dialog.show();
             },
             close(){
@@ -75,13 +77,27 @@
             cancel(){
                 this.flag=!this.flag
             },
+            changeClose(data){
+                this.$ajax({
+                    method:'post',
+                    url:'http://10.128.4.152:8080/warehouse/environment/airConditionerSwitch',
+                    params:{status:data}
+                }).then((res)=>{
+                    this.$message.success('操作成功')
+                }).catch(err=>{
+                    this.$message.error(err);
+                });
+            },
+            changeStatus(data){
+              console.log('changeStatus',data)
+            },
             submission(){
                 this.submissionThreshold()
             },
             submissionThreshold(){
                 this.$ajax({
                     method:'post',
-                    url:'http://10.128.4.109:8088/environment//temperatureThresholdSet',
+                    url:'http://10.128.4.152:8080/warehouse/environment/temperatureThresholdSet',
                     params:{max:this.threshold.max,min:this.threshold.min}
                 }).then((res)=>{
                     this.flag=!this.flag;
@@ -93,10 +109,23 @@
             getThreshold(){
                 this.$ajax({
                     method:'post',
-                    url:'http://10.128.4.109:8088/environment/temperatureThreshold',
+                    url:'http://10.128.4.152:8080/warehouse/environment/temperatureThreshold',
                 }).then((res)=>{
                     this.threshold.max=res.data.data.temperatureMaximum;
                     this.threshold.min=res.data.data.temperatureMinimum;
+                }).catch(err=>{
+                    this.$message.error(err);
+                });
+                this.$ajax({
+                    method:'post',
+                    url:'http://10.128.4.152:8080/warehouse/environment/airConditionerStatus',
+                }).then((res)=>{
+                    if(res.data){
+                        this.closeFlag=true
+                    }else {
+                        this.closeFlag=false
+                    }
+
                 }).catch(err=>{
                     this.$message.error(err);
                 });
