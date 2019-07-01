@@ -1,14 +1,20 @@
 <template>
     <div>
         <div id="pdf-viewer" v-if="getFlag()"></div>
-        <div id="vide" v-if="!getFlag()"></div>
+        <div v-if="!getFlag()" class="instructional-video">
+            <my-new-video :src="mp4Src" :autoplay="true"></my-new-video>
+        </div>
     </div>
 </template>
 
 <script>
     import PDFJS from 'pdfjs-dist'
+    import myNewVideo from '@/components/videoPlayer/newLive'
     export default {
         name: "instructional",
+        components:{
+            myNewVideo
+        },
         props:{
             ins:{
                 type:Object
@@ -21,7 +27,14 @@
         },
         data(){
             return{
-                src:'http://192.168.50.14:8080/warehouse/pdfs/'
+                src:'http://10.128.4.152:8080/warehouse/pdfs/',
+                mp4:'http://10.128.4.152:8080/warehouse/videos/'
+            }
+        },
+        computed:{
+            mp4Src(){
+                console.log(this.mp4+this.ins.key)
+                return this.mp4+this.ins.key
             }
         },
         methods:{
@@ -29,7 +42,7 @@
                 return this.ins.typeName=='PDF'?true:false
             },
             getSrc(){
-              return   this.src+this.ins.key
+                return   this.src+this.ins.key
             },
             extractPdfContent() {
                 let url = this.getSrc();
@@ -65,5 +78,8 @@
 </script>
 
 <style scoped>
-
+    .instructional-video{
+        margin: auto;
+        width: 80%;
+    }
 </style>

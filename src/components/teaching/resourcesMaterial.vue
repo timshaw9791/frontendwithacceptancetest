@@ -1,6 +1,6 @@
 <template>
     <div class="resourcesMaterial">
-        <div v-for="item in list">
+        <div v-for="item in rList">
             <div @click="handleClick(item)">
                 <r_m_template :item="item" ></r_m_template>
             </div>
@@ -17,16 +17,29 @@
         },
         data(){
             return{
-                list:[
-                    {typeName:'MP4', name:'测试视频1.MP4'},
-                    {typeName:'PDF', name:'测试PDF1.pdf',key:'1.pdf'},
-                    {typeName:'MP4', name:'测试视频2.MP4'},
-                    {typeName:'PDF', name:'测试PDF2.pdf',key:'1.pdf'}
-                ],
+                // list:[
+                //     {typeName:'MP4', name:'测试视频1.MP4'},
+                //     {typeName:'PDF', name:'测试PDF1.pdf',key:'1.pdf'},
+                //     {typeName:'MP4', name:'测试视频2.MP4'},
+                //     {typeName:'PDF', name:'测试PDF2.pdf',key:'1.pdf'}
+                // ],
                 fileName:'',
                 file:{},
                 uniqueId:''
             }
+        },
+        props:{
+          rList:{
+              type:Array,
+              default(){
+                  return  [
+                      {typeName:'MP4', name:'测试视频1.MP4'},
+                      {typeName:'PDF', name:'测试PDF1.pdf',key:'1.pdf'},
+                      {typeName:'MP4', name:'测试视频2.MP4'},
+                      {typeName:'PDF', name:'测试PDF2.pdf',key:'1.pdf'}
+                  ]
+              }
+          }
         },
         created(){
 

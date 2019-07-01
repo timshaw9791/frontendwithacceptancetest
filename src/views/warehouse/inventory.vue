@@ -61,7 +61,7 @@
             handleSubmission(data){
               if(data){
                  if(Object.keys(this.inventoryObj.inventoryData.inventory).length!=0){
-                     let url='http://192.168.50.14:8080/warehouse/inventories';
+                     let url='http://10.128.4.152:8080/warehouse/inventories';
                      let data = this.inventoryObj.inventoryData;
                      request({
                          method:'post',
@@ -86,7 +86,7 @@
               }
             },
             submit(data){
-                let url='http://192.168.50.14:8080/warehouse/inventories/calculate';
+                let url='http://10.128.4.152:8080/warehouse/inventories/calculate';
                 let rfid=this.getString(inventoryData.rfid);
                 if(data){
                    /* request({

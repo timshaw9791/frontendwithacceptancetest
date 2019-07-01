@@ -10,7 +10,7 @@
     export default {
         name: 'App',
         mounted() {
-
+            console.log(111);
         }
 
     }

@@ -5,7 +5,7 @@
 </template>
 
 <script>
-    import {handheld} from "common/js/handheld";
+    // import {handheld} from "common/js/handheld";
 
     export default {
         data() {
@@ -14,10 +14,10 @@
             }
         },
         mounted() {
-            handheld().then(res => {
-                console.log(res);
-                this.qaq = res;
-            })
+            // handheld().then(res => {
+            //     console.log(res);
+            //     this.qaq = res;
+            // })
 
         }
     }

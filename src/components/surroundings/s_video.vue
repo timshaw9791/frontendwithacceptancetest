@@ -19,10 +19,10 @@
         data(){
             return{
                 srcList:[
-                    'http://192.168.50.14/test.m3u8',
-                    'http://192.168.50.14/test.m3u8',
-                    'http://192.168.50.14/test.m3u8',
-                    'http://192.168.50.14/test.m3u8'
+                    'http://10.128.4.152/test.m3u8',
+                    'http://10.128.4.152/test.m3u8',
+                    'http://10.128.4.152/test.m3u8',
+                    'http://10.128.4.152/test.m3u8'
                 ]
             }
         }

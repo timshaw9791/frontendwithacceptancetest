@@ -51,7 +51,7 @@
             clickTable(table) {
                 let data = table.row;
                 if (data) {
-                    this.address='http://192.168.50.14:8080/warehouse/records/2019-06-17-05-01-28_2019-06-17-05-01-38.mp4'
+                    this.address='http://10.128.4.152:8080/warehouse/records/2019-06-17-05-01-28_2019-06-17-05-01-38.mp4'
                     console.log(this.address);
                     this.$refs.recordVideo.show()
                 }
