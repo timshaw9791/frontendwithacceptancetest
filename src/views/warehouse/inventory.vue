@@ -19,7 +19,7 @@
     import inventoryData from './inventoryData'
     import {getToken} from "../../common/js/auth";
     import request from 'common/js/request'
-    /*import {handheld} from 'common/js/handheld'*/
+    import {handheld} from 'common/js/pda'
     /*Melanie Dunne supernova*/
     export default {
         name: "inventory",
@@ -43,11 +43,11 @@
         },
         methods:{
             toInventory(){
-               /* handheld.then(data=>{
-                    this.getInventoryRf(data);
+               handheld().then(data=>{
+                    this.getInventoryRf(JSON.parse(data));
                 });
-                this.getInventoryRf();*/
-               this.getInventoryRfCopy();
+                // this.getInventoryRf();
+               // this.getInventoryRfCopy();
                //todo 记得合并前换回来
                 this.$refs['inventory_dialog'].show();
             },
@@ -133,18 +133,17 @@
             getInventoryRf(data){
                 this.inventoryObj.rflist=[];
                 data.rfid.forEach((item,index)=>{
-                    let number = index+1;
-                    if(number<10){
-                        number='0'+number
-                    }
+                    // let number = index+1;
+                    // if(number<10){
+                    //     number='0'+number
+                    // }
                     this.inventoryObj.rflist.push({
-                        number:number,
                         rfId:item
                     })
                 });
-                this.inventory.endTime=data.endTime;
-                this.inventory.startTime=data.startTime;
-                this.inventory.size=data.size;
+                // this.inventory.endTime=data.endTime;
+                // this.inventory.startTime=data.startTime;
+                // this.inventory.size=data.size;
             },
             getInventoryRfCopy(){
                 this.inventoryObj.rflist=[];

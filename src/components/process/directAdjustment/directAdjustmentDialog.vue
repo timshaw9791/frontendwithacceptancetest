@@ -110,13 +110,12 @@
 
 <script>
     import dialogs from 'components/surroundings/surroundingDialog'
-    import inventoryData from 'views/warehouse/inventoryData'
+    // import inventoryData from 'views/warehouse/inventoryData'
     import request from 'common/js/request'
-    /*import {handheld} from 'common/js/handheld'*/
-    /* const cmdPath = 'C:\\Users\\Administrator';
+    import {handheld} from 'common/js/pda'
+   const cmdPath = 'C:\\Users\\Administrator';
    const exec = window.require('child_process').exec;
    const spawn = window.require('child_process').spawn;
-   import request from 'common/js/request' */
     export default {
         name: "directAdjustmentDialog",
         components: {
@@ -140,6 +139,7 @@
                 submitFlag:true,
                 types:'',
                 pid:'',
+                flags:false,
                 closeUsb:false
             }
         },
@@ -147,7 +147,7 @@
             'hardware': {
                 handler(newVal,oldVal) {
                     if(oldVal=='RFID读写器'&&newVal=='手持机'){
-                        this.end('测试')
+                        this.end(this.pid)
                     }
                     if (newVal == '手持机') {
                         this.rightList=[];
@@ -161,46 +161,46 @@
             }
         },
         created(){
+
         },
         methods: {
             end(pid) {
-                alert('关掉了');
-                this.closeUsb=true
-              /*  if (pid) {
+                // alert('关掉了');
+                 // this.closeUsb=true
+              if(pid) {
                     spawn("taskkill", ["/PID", pid, "/T", "/F"]);
-                }*/
+                }
             },
             getListUsb() {//todo
-                /* const process = exec(`java -jar read.jar 5`, {cwd: cmdPath});
+                const process = exec(`java -jar scan.jar 5`, {cwd: cmdPath});
                  this.pid = process.pid;
                  process.stderr.on('data', (err) => {
                      console.log(err);
                  });
 
                  process.stdout.on('data', (data) => {
-                     let flag=false;
-                     let dataJson=JSON.parse(data);
-                     if(flag==false){
+                     if(this.flag==false){
+                         let dataJson=JSON.parse(data);
                          if(dataJson.status=='sucess'){
-                             flag=true
+                             this.flag=true
                          }
                      }else {
-
+                         let arr=[]
+                         arr.push(data);
+                         this.getOutDataCopy(arr);
                      }
-
-                     /!* this.data.push(data);*!/
                  });
 
                  process.on('exit', (code) => {
                      console.log(`子进程退出，退出码 ${code}`);
-                 });*/
-                let intercal=setInterval(()=>{
-                    if(this.closeUsb){
-                        clearInterval(intercal);
-                        return;
-                    }
-                    this.getOutDataCopy(['q2', '3', '4', '55','6','7','8','9','11','天下第一','sdfa','10','222','23252s'])
-                },1000)
+                 });
+                // let intercal=setInterval(()=>{
+                //     if(this.closeUsb){
+                //         clearInterval(intercal);
+                //         return;
+                //     }
+                //     this.getOutDataCopy(['q2', '3', '4', '55','6','7','8','9','11','天下第一','sdfa','10','222','23252s'])
+                // },1000)
 
             },
             deleteRow(index){
@@ -233,27 +233,25 @@
                 }else {
                     this.closeUsb=true;
                     setTimeout(()=>{
-                        this.closeUsb=false
+                        this.closeUsb=false;
                         this.getListUsb()
                     },1000)
                 }
             },
             handheldMachine() {
-                /*handheld.then(data => {
-                    this.getOutData(data)
-                });*/
+                handheld().then((data) => {
+                    let json = JSON.parse(data);
+                    this.getOutDataCopy(json.rfid)
+                });
                 //todo 要换回来
-                let data = inventoryData;
-                this.getOutDataCopy(['q2', '3', '4', '55','6','7','8','9','11','天下第一','sdfa','10','222','23252s'])
+                // let data = inventoryData;
+                // this.getOutDataCopy(['q2', '3', '4', '55','6','7','8','9','11','天下第一','sdfa','10','222','23252s'])
             },
-            getOutData(data){
-                console.log(data);
-            },
+            // getOutData(data){
+            //     console.log(data);
+            // },
             getOutDataCopy(data){
                 let url = 'http://10.128.4.152:8080/warehouse/equips/by-rfidlist';
-                let params={
-                    rfidList:data.rfid
-                };
                 request({
                     method:'PUT',
                     url:url,

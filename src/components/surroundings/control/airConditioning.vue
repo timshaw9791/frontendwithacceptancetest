@@ -5,8 +5,9 @@
                 <div class="airConditioning-box">
                     <svg-icon icon-class="空调图标" style="width: 70px;height: 48px"></svg-icon>
                     <span v-text="'空调控制'" style="margin-top: 19px"></span>
-                    <switch-control :active="active" :inactive="inactive" :status="closeFlag" style="margin-top: 31px" @handleChange="changeClose"></switch-control>
-                    <switch-control :active="activeTwo" :inactive="inactiveTwo" style="margin-top: 31px"  @handleChange="changeStatus"></switch-control>
+                    <switch-control :active="refrigerationActive" :inactive="refrigerationInactive" :status="refrigeration" style="margin-top: 31px" @handleChange="refrigerationControl"></switch-control>
+                    <switch-control :active="heatingActive" :inactive="heatingInactive" :status='heating' style="margin-top: 16px"  @handleChange="heatingControl"></switch-control>
+                    <switch-control :active="dehumidificationActive" :inactive="dehumidificationInactive" :status="dehumidification" style="margin-top: 16px"  @handleChange="dehumidificationControl"></switch-control>
                 </div>
                 <div class="airConditioning-bottom">
                     <span v-text="'温度阈值：'"></span><input class="input" :style="flag?'border:none;':''" v-model="threshold.max" :disabled="flag"/>
@@ -36,23 +37,33 @@
         },
         data() {
             return {
-                active:{
-                    text:'打开',
+                refrigerationActive:{
+                    text:'',
                     color:'#39BC53',
                 },
-                inactive:{
-                    text:'关闭',
+                refrigerationInactive:{
+                    text:'制冷',
                     color:'#B8B8B8',
                 },
-                activeTwo:{
+                heatingActive:{
+                    text:'',
+                    color:'#39BC53',
+                },
+                heatingInactive:{
                     text:'制热',
-                    color:'#EF4545',
+                    color:'#B8B8B8',
                 },
-                inactiveTwo:{
-                    text:'制冷',
-                    color:'#2680EB',
+                dehumidificationActive:{
+                    text:'',
+                    color:'#39BC53',
                 },
-                closeFlag:false,
+                dehumidificationInactive:{
+                    text:'抽湿',
+                    color:'#B8B8B8',
+                },
+                refrigeration:false,
+                heating:false,
+                dehumidification:false,
                 flag:true,
                 threshold:{
                     max:'',
@@ -64,8 +75,56 @@
 
         },
         methods:{
+            refrigerationControl(data){
+               if(data){
+                   this.controlAir(1);
+                   this.initStatus('refrigeration')
+               }else {
+                   this.controlAir(0)
+               }
+            },
+            heatingControl(data){
+                if(data){
+                    this.controlAir(2);
+                    this.initStatus('heating')
+                }else {
+                    this.controlAir(0)
+                }
+            },
+            dehumidificationControl(data){
+                if(data){
+                    this.controlAir(3);
+                    this.initStatus('dehumidification')
+                }else {
+                    this.controlAir(0)
+                }
+            },
+            initStatus(data){
+                switch (data) {
+                    case 'refrigeration':
+                        this.refrigeration=true;
+                        this.heating=false;
+                        this.dehumidification=false;
+                        break;
+                    case 'heating':
+                        this.heating=true;
+                        this.refrigeration=false;
+                        this.dehumidification=false;
+                        break;
+                    case 'dehumidification':
+                        this.dehumidification=true;
+                        this.refrigeration=false;
+                        this.heating=false;
+                        break;
+                    case 'close':
+                        this.refrigeration=false;
+                        this.heating=false;
+                        this.dehumidification=false;
+                        break;
+                }
+            },
             show(){
-                this.getThreshold()
+                this.getThreshold();
                 this.$refs.dialog.show();
             },
             close(){
@@ -77,7 +136,7 @@
             cancel(){
                 this.flag=!this.flag
             },
-            changeClose(data){
+            controlAir(data){
                 this.$ajax({
                     method:'post',
                     url:'http://10.128.4.152:8080/warehouse/environment/airConditionerSwitch',
@@ -87,9 +146,6 @@
                 }).catch(err=>{
                     this.$message.error(err);
                 });
-            },
-            changeStatus(data){
-              console.log('changeStatus',data)
             },
             submission(){
                 this.submissionThreshold()
@@ -120,11 +176,25 @@
                     method:'post',
                     url:'http://10.128.4.152:8080/warehouse/environment/airConditionerStatus',
                 }).then((res)=>{
-                    if(res.data){
-                        this.closeFlag=true
-                    }else {
-                        this.closeFlag=false
+                    let status = res.data.data.STATUS;
+                    if(status=='REFRIGERATION'){
+                        this.refrigeration=true;
+                        this.initStatus('refrigeration')
+                    }else if(status=='HOT'){
+                        this.heating=true;
+                        this.initStatus('heating')
+                    }else if(status=='DEHUMIDIFICATION'){
+                        this.dehumidification=true;
+                        this.initStatus('dehumidification')
+                    }else if(status=='CLOSE'){
+                        this.initStatus('close')
                     }
+                    //"REFRIGERATION"'"HOT""DEHUMIDIFICATION"
+                    // if(res.data){
+                    //     this.closeFlag=true
+                    // }else {
+                    //     this.closeFlag=false
+                    // }
 
                 }).catch(err=>{
                     this.$message.error(err);
