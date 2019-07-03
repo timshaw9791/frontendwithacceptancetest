@@ -83,7 +83,8 @@
             }
         },
         created(){
-            if(this.addType=='add'){}else {
+            if(this.addType=='add'){
+            }else {
                 this.initForm()
             }
             this.roleList.forEach(item=>{

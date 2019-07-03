@@ -209,9 +209,9 @@
     import {imgUpUrl, pdfUpUrl, videoUpUrl, imgBaseUrl, pdfBaseUrl, videoBaseUrl} from "api/config";
     import {delFile} from "api/basic";
 
-    // const cmdPath = 'C:\\Users\\Administrator';
-    // const exec = window.require('child_process').exec;
-    // const spawn = window.require('child_process').spawn;
+    const cmdPath = 'C:\\Users\\Administrator';
+    const exec = window.require('child_process').exec;
+    const spawn = window.require('child_process').spawn;
 
 
     export default {
@@ -236,6 +236,8 @@
                 rfids: [],
                 serialList: [],
                 pid: '',
+                index:0,
+                com:0
             }
         },
         mixins: [formRulesMixin],
@@ -270,7 +272,8 @@
                 } else {
                     this.$refs.dialog.show();
                 }
-                // spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
+                spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
+                this.index=0;
             },
 
             addEquipArg() {
@@ -282,7 +285,6 @@
                         categoryId: this.form.nameId ? this.form.nameId[1] : '',
                         equipArg: this.form
                     }, (res) => {
-                        console.log(res);
                         this.dialogConfirm();
                         this.callback('添加成功!');
                     });
@@ -326,8 +328,8 @@
                             equipArgId: this.form.nameId[2],
                             quality: this.zbForm.quality,
                         }, (res) => {
-                            console.log(res);
-                            // spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
+                            spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
+                            this.index=0;
                             this.callback(`成功`);
                             this.$emit('black', true);
                         })
@@ -484,31 +486,32 @@
                     }
                 });
 
-                // const process = exec(`java -jar read.jar 5`, {cwd: cmdPath});
-                //
-                // this.pid = process.pid;
-                //
-                // process.stderr.on('data', (err) => {
-                //     console.log(err);
-                // });
-                //
-                // process.stdout.on('data', (data) => {
-                //     console.log(data);
-                //     let newData = JSON.parse(data);
-                //     let index = 0;
-                //
-                //     if (index > 0) {
-                //         index = index + 1;
-                //         newData.forEach((item) => {
-                //             this.list.push({rfid: item});
-                //         });
-                //     }
-                //     newData.status === 'succeed' ? index = 1 : index = 0;
-                // });
-                //
-                // process.on('exit', (code) => {
-                //     console.log(`子进程退出，退出码 ${code}`);
-                // });
+                const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
+
+                this.pid = process.pid;
+
+                process.stderr.on('data', (err) => {
+                    console.log(err);
+                });
+
+                process.stdout.on('data', (data) => {
+                    console.log(data);
+                    if (this.index > 0) {
+                        if(this.index==1){
+                            this.list[0].rfid=data;
+                        }else {
+                            this.list.push({rfid: data});
+                        }
+                        this.index = this.index + 1;
+                    }else{
+                        let newData = JSON.parse(data);
+                        newData.status === 'succeed' ? this.index = 1 : this.index = 0;
+                    }
+                });
+
+                process.on('exit', (code) => {
+                    console.log(`子进程退出，退出码 ${code}`);
+                });
 
 
             },
@@ -624,7 +627,9 @@
             }
 
         },
-
+        created(){
+            this.com=this.$store.state.user.deploy.data['UHF_READ_COM'];
+        },
         mounted() {
 
             if (this.title.includes('入库')) {

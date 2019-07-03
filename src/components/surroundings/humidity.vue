@@ -64,7 +64,7 @@
             getHs(humidity){
                 this.$ajax({
                     method:'post',
-                    url:'http://10.128.4.152:8080/warehouse/environment/temperatureHS',
+                    url:'http://10.128.4.152:8080/warehouse/environment/humidityHS',
                 }).then((res)=>{
                     let dateNow =  new Date();
                     let year = dateNow.getFullYear();

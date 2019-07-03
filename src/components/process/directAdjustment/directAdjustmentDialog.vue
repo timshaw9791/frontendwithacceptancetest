@@ -140,7 +140,8 @@
                 types:'',
                 pid:'',
                 flags:false,
-                closeUsb:false
+                closeUsb:false,
+                com:0
             }
         },
         watch: {
@@ -161,7 +162,7 @@
             }
         },
         created(){
-
+            this.com=this.$store.state.user.deploy.data['UHF_READ_COM'];
         },
         methods: {
             end(pid) {
@@ -172,7 +173,7 @@
                 }
             },
             getListUsb() {//todo
-                const process = exec(`java -jar scan.jar 5`, {cwd: cmdPath});
+                const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
                  this.pid = process.pid;
                  process.stderr.on('data', (err) => {
                      console.log(err);
@@ -185,7 +186,7 @@
                              this.flag=true
                          }
                      }else {
-                         let arr=[]
+                         let arr=[];
                          arr.push(data);
                          this.getOutDataCopy(arr);
                      }
@@ -264,6 +265,10 @@
             },
             submit() {
                 if(this.submitFlag){
+                    let rfidC = [];
+                    this.rightList.forEach(item=>{
+
+                    });
                     let url='http://10.128.4.152:8080/warehouse/transfers/up-to-down/equips-out/';
                     let param={
                         rfidList:this.rightList,
@@ -302,7 +307,7 @@
                             }else {
 
                             }
-                        })
+                        });
                         if(flag){
                             this.rightList[indexI].count=this.rightList[indexI].count+1
                         }else {
@@ -336,7 +341,7 @@
                             });
                         }*/
                     }
-                })
+                });
                 this.getTrueOrFalse();
             },
             getTypeModel(data){

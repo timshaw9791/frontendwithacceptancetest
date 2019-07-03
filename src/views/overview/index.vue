@@ -256,11 +256,22 @@
                 if (row === 'statistics') {
                     this.$router.push({path: '/report/index', params: {name: route}});
                 }
+            },
+            getHumiture(){
+                this.$ajax({
+                    method:'post',
+                    url:'http://10.128.4.152:8080/warehouse/environment/humitureQuery',
+                }).then((res)=>{
+                    this.surroundings.temperature=res.data.data.temperature;
+                    this.surroundings.humidity = res.data.data.humidity;
+                }).catch(err=>{
+                    this.$message.error(err);
+                });
             }
         },
         mounted() {
             this.getList();
-            console.log(this.$store.getters.roles);
+            this.getHumiture()
         },
         components: {
             progressCircular,

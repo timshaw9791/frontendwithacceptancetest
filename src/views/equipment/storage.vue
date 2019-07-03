@@ -149,9 +149,9 @@
     import {formRulesMixin} from "../../field/common/mixinTable";
     import {getRfid, saveRfid} from "api/rfid";
 
-    // const cmdPath = 'C:\\Users\\Administrator';
-    // const exec = window.require('child_process').exec;
-    // const spawn = window.require('child_process').spawn;
+    const cmdPath = 'C:\\Users\\Administrator';
+    const exec = window.require('child_process').exec;
+    const spawn = window.require('child_process').spawn;
 
 
     export default {
@@ -179,7 +179,8 @@
                 writeAll: [],
                 writeIndex: '',
                 pid: '',
-                modeType:''
+                modeType:'',
+                com:0
             }
         },
         components: {
@@ -257,8 +258,7 @@
             },
             serialRfid(){
                     getRfid().then(res => {
-                        console.log(res);
-                        const process = exec(`java -jar auto.jar 5 ${res}`, {cwd: cmdPath});
+                        const process = exec(`java -jar auto.jar ${this.com} ${res}`, {cwd: cmdPath});
                         this.pid = process.pid;
                         let start = false;
                         process.stdout.on('data', (data) => {
@@ -289,7 +289,6 @@
             cancel(data) {
                 if (this.writeIndex) {
                     saveRfid({"rfidGeneric": this.writeIndex.epc}).then(res1 => {
-                        console.log(res1);
                         spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
                         this.writeIndex = '';
                         this.writeAll = [];
@@ -302,7 +301,7 @@
                 }
             },
             writeone() {
-                exec(`java -jar reading.jar 5`, {cwd: cmdPath}, (err, data) => {
+                exec(`java -jar reading.jar ${this.com}`, {cwd: cmdPath}, (err, data) => {
                     console.log(data);
                     if (data.includes('succeed')) {
                         console.log(data.split('\n')[1]);
@@ -311,13 +310,19 @@
                 })
             },
             saveOne(data) {
-                exec(`java -jar writing.jar 5 ${data}`, {cwd: cmdPath}, (err, data) => {
+                exec(`java -jar writing.jar ${this.com} ${data}`, {cwd: cmdPath}, (err, data) => {
                     console.log(data);
                     if (data.includes('succeed')) {
                         this.$message.success('修改成功!');
                     }
                 })
             },
+            getConfig(){
+                this.$store.dispatch('LogOut').then(() => {
+                    location.reload() // 为了重新实例化vue-router对象 避免bug
+                    // this.$message.success('退出成功');
+                })
+            }
         },
         apollo: {
             list() {
@@ -325,7 +330,9 @@
             },
         },
         mounted() {
-
+        },
+        created(){
+            this.com=this.$store.state.user.deploy.data['UHF_READ_COM'];
         },
         mixins: [formRulesMixin],
 

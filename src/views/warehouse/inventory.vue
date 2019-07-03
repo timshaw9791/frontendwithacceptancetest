@@ -16,10 +16,13 @@
     import myHeader from 'components/base/header/header'
     import i_inventory from 'components/inventory/inventoryComponent'
     import i_dialog from 'components/inventory/inventoryDialog'
-    import inventoryData from './inventoryData'
+    // import inventoryData from './inventoryData'
     import {getToken} from "../../common/js/auth";
     import request from 'common/js/request'
     import {handheld} from 'common/js/pda'
+    const fs = window.require('fs');
+    const path = window.require('path');
+    const newFile_path = path.join(path.resolve('./'), '\\adb\\inventory.json').replace(/\\/g, "\/");
     /*Melanie Dunne supernova*/
     export default {
         name: "inventory",
@@ -38,11 +41,15 @@
                     },
                     getInventory:{},
                 },
-               size:''
+               size:'',
             }
+        },
+        created(){
+
         },
         methods:{
             toInventory(){
+                this.inventoryObj.rflist=[];
                handheld().then(data=>{
                     this.getInventoryRf(JSON.parse(data));
                 });
@@ -87,7 +94,11 @@
             },
             submit(data){
                 let url='http://10.128.4.152:8080/warehouse/inventories/calculate';
-                let rfid=this.getString(inventoryData.rfid);
+                let rfidC=[];
+                this.inventoryObj.rflist.forEach(item=>{
+                    rfidC.push(item.rfid);
+                });
+                let rfid=this.getString(rfidC);
                 if(data){
                    /* request({
                         url:url,
@@ -118,10 +129,21 @@
                         this.inventoryObj.inventoryData.inventory.endTime=this.inventoryObj.getInventory.endTime;
                         this.inventoryObj.inventoryData.inventory.adminName=JSON.parse(localStorage.getItem('user')).name;
                         this.inventoryObj.inventoryData.inventory.adminId=JSON.parse(localStorage.getItem('user')).id;
+                        this.deleteFile();
                     }).catch(err=>{
                         this.$message.error(err);
                     });
                 }
+            },
+            deleteFile(){
+                fs.unlink(newFile_path,function(error){
+                    if(error){
+                        console.log(error);
+                        return false;
+                    }
+                    console.log('删除文件'+newFile_path+'成功');
+                })
+
             },
             getString(data){
                 let str='';
@@ -131,7 +153,6 @@
                 return str.substring(1,str.length);
             },
             getInventoryRf(data){
-                this.inventoryObj.rflist=[];
                 data.rfid.forEach((item,index)=>{
                     // let number = index+1;
                     // if(number<10){
@@ -145,17 +166,17 @@
                 // this.inventory.startTime=data.startTime;
                 // this.inventory.size=data.size;
             },
-            getInventoryRfCopy(){
-                this.inventoryObj.rflist=[];
-                this.inventoryObj.getInventory=inventoryData;
-                this.size=String(inventoryData.size);
-                inventoryData.rfid.forEach((item,index)=>{
-                    this.inventoryObj.rflist.push({
-                        rfId:item
-                    })
-                });
-
-            }
+            // getInventoryRfCopy(){
+            //     this.inventoryObj.rflist=[];
+            //     this.inventoryObj.getInventory=inventoryData;
+            //     this.size=String(inventoryData.size);
+            //     inventoryData.rfid.forEach((item,index)=>{
+            //         this.inventoryObj.rflist.push({
+            //             rfId:item
+            //         })
+            //     });
+            //
+            // }
         }
     }
 </script>

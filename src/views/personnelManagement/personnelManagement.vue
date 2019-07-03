@@ -109,6 +109,7 @@
                     this.type='add';
                     this.disabled=false;
                     this.viewStatus.flag=false;
+                    console.log(this.type);
                 },
                 selectRole(data) {
                     this.select.selectItem=data;
