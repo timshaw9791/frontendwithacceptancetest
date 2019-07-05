@@ -1,5 +1,5 @@
 <template>
-  <div style="margin: 3% 0">
+  <div style="margin: 3% 0" v-if="paginationFlag">
     <el-pagination
       class="pagination"
       background
@@ -17,7 +17,8 @@
   export default {
     data(){
       return {
-        labelWidth: '120px'
+        labelWidth: '120px',
+          paginationFlag:true,
       }
     },
     props: {
@@ -25,6 +26,16 @@
         type: Object,
         default: null,
       }
+    },
+    watch:{
+       'pageInfo.page':{
+           handler(newVal){
+               this.paginationFlag=!this.paginationFlag;
+               setTimeout(()=>{
+                   this.paginationFlag=!this.paginationFlag;
+               },100)
+           }
+       }
     },
     methods:{
       handleCurrentChangeInner(newPageIndex){

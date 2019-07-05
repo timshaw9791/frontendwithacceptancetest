@@ -57,15 +57,57 @@
 
         <storageInfo :equipId="equipId" v-if="storageInfoShow" :title="title" @black="black"></storageInfo>
 
-        <service-dialog ref="dialog" title="修改RFID" width="634px" :button="false" @cancel="cancel">
+        <service-dialog ref="dialogPattern" title="选择模式" width="634px" :button="false" @cancel="cancelPattern">
+            <div class="pattern-box">
+                <el-button class="pattern" v-text="'连号模式'" @click="rfidMode('serial')"></el-button>
+                <el-button class="pattern" style="margin-left: 109px" v-text="'单件模式'" @click="rfidMode('singleton')"></el-button>
+            </div>
 
-            <el-button type="text" class="dialogButton" style="margin-bottom: 20px" @click="mode=!mode">
-                <svg-icon icon-class="切换模式" class="icon"/>
-                切换模式
-            </el-button>
+            <!--<el-button type="text" class="dialogButton" style="margin-bottom: 20px" @click="mode=!mode">-->
+                <!--<svg-icon icon-class="切换模式" class="icon"/>-->
+                <!--切换模式-->
+            <!--</el-button>-->
 
 
-            <div v-if="mode">
+            <!--<div v-if="mode">-->
+                <!--<div class='rfidList'>-->
+                    <!--<div v-for="(item,index) in writeAll" class="rfid">-->
+                        <!--<div class="rfid-left">-->
+                            <!--RFID{{index+1}} : <span>{{item.epc}}</span>-->
+                        <!--</div>-->
+                        <!--<span>{{item.status==='succeed'?'写入成功':'写入失败'}}</span>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="_button">-->
+                    <!--<el-button type="primary" size="medium">重新写入</el-button>-->
+                <!--</div>-->
+            <!--</div>-->
+
+            <!--<div v-else>-->
+                <!--<form-container ref="inlineForm" :model="inlineForm">-->
+                    <!--<field-input v-model="inlineForm.rfid" size="medium" label="RFID:" width="8"-->
+                                 <!--:disabled="true"></field-input>-->
+                    <!--<el-button style="margin-left: 12px" type="primary" @click='writeone'>读取</el-button>-->
+                    <!--<br/>-->
+                    <!--<field-input v-model="inlineForm.newRfid" prop="newRfid"-->
+                                 <!--:rules="r(true).all(R.rfid)" size="medium" label="修改RFID:" width="8"></field-input>-->
+                <!--</form-container>-->
+                <!--<div class="_button">-->
+                    <!--<el-button size="medium" @click="$refs.dialog.hide()">取消</el-button>-->
+                    <!--<el-button type="primary" size="medium" @click="saveOne(inlineForm.newRfid)">写入</el-button>-->
+                <!--</div>-->
+            <!--</div>-->
+
+        </service-dialog>
+        <service-dialog ref="dialogModify" title="修改RFID" width="634px" :button="false" @cancel="cancel">
+
+            <!--<el-button type="text" class="dialogButton" style="margin-bottom: 20px" @click="mode=!mode">-->
+                <!--<svg-icon icon-class="切换模式" class="icon"/>-->
+                <!--切换模式-->
+            <!--</el-button>-->
+
+
+            <div v-if="modeType=='serial'">
                 <div class='rfidList'>
                     <div v-for="(item,index) in writeAll" class="rfid">
                         <div class="rfid-left">
@@ -89,7 +131,7 @@
                                  :rules="r(true).all(R.rfid)" size="medium" label="修改RFID:" width="8"></field-input>
                 </form-container>
                 <div class="_button">
-                    <el-button size="medium" @click="$refs.dialog.hide()">取消</el-button>
+                    <el-button size="medium" @click="$refs.dialogModify.hide()">取消</el-button>
                     <el-button type="primary" size="medium" @click="saveOne(inlineForm.newRfid)">写入</el-button>
                 </div>
             </div>
@@ -104,12 +146,12 @@
     import storageInfo from 'views/equipment/storageInfo'
     import api from 'gql/eqList.gql'
     import serviceDialog from 'components/base/serviceDialog/index'
-    import {formRulesMixin} from "../../field/common/mixinTable";
+    import {formRulesMixin} from "../../field/common/mixinComponent";
     import {getRfid, saveRfid} from "api/rfid";
 
-    const cmdPath = 'C:\\Users\\Administrator';
-    const exec = window.require('child_process').exec;
-    const spawn = window.require('child_process').spawn;
+    // const cmdPath = 'C:\\Users\\Administrator';
+    // const exec = window.require('child_process').exec;
+    // const spawn = window.require('child_process').spawn;
 
 
     export default {
@@ -137,6 +179,8 @@
                 writeAll: [],
                 writeIndex: '',
                 pid: '',
+                modeType:'',
+                com:0
             }
         },
         components: {
@@ -145,6 +189,16 @@
             serviceDialog
         },
         methods: {
+            cancelPattern(){
+
+            },
+            rfidMode(mode){
+                this.modeType=mode;
+                if(this.modeType=='serial'){
+                    this.serialRfid();
+                }
+                this.$refs.dialogModify.show();
+            },
             goInfo(data, row) {
                 switch (data) {
                     case 'add':
@@ -163,43 +217,70 @@
                         this.equipId = row.id;
                         break;
                     case 'rfid':
-                        this.$refs.dialog.show();
-
-                        if (this.mode) {
-                            getRfid().then(res => {
-                                console.log(res);
-                                const process = exec(`java -jar auto.jar 5 ${res}`, {cwd: cmdPath});
-                                this.pid = process.pid;
-                                let start = false;
-                                process.stdout.on('data', (data) => {
-                                    console.log(data);
-                                    let newData = JSON.parse(data);
-                                    console.log(newData);
-                                    if (start === true) {
-                                        this.writeAll.push(newData);
-                                        this.writeIndex = newData;
-                                        console.log(this.writeAll);
-                                        console.log(this.writeIndex);
-                                    } else if (start === false) {
-                                        newData.status === 'succeed' && !newData.epc ? start = true : start = false;
-                                    }
-                                });
-                                process.stderr.on('data', (err) => {
-                                    console.log(err);
-                                });
-                                process.on('exit', (code) => {
-                                    console.log(`子进程退出，退出码 ${code}`);
-                                });
-                            });
-                        } else {
-
-
-                        }
+                        this.$refs.dialogPattern.show();
+                        // this.$refs.dialog.show();
+                        //
+                        // if (this.mode) {
+                        //     getRfid().then(res => {
+                        //         console.log(res);
+                        //         const process = exec(`java -jar auto.jar 5 ${res}`, {cwd: cmdPath});
+                        //         this.pid = process.pid;
+                        //         let start = false;
+                        //         process.stdout.on('data', (data) => {
+                        //             console.log(data);
+                        //             let newData = JSON.parse(data);
+                        //             console.log(newData);
+                        //             if (start === true) {
+                        //                 this.writeAll.push(newData);
+                        //                 this.writeIndex = newData;
+                        //                 console.log(this.writeAll);
+                        //                 console.log(this.writeIndex);
+                        //             } else if (start === false) {
+                        //                 newData.status === 'succeed' && !newData.epc ? start = true : start = false;
+                        //             }
+                        //         });
+                        //         process.stderr.on('data', (err) => {
+                        //             console.log(err);
+                        //         });
+                        //         process.on('exit', (code) => {
+                        //             console.log(`子进程退出，退出码 ${code}`);
+                        //         });
+                        //     });
+                        // } else {
+                        //
+                        //
+                        // }
 
 
                         break;
 
                 }
+            },
+            serialRfid(){
+                    getRfid().then(res => {
+                        const process = exec(`java -jar auto.jar ${this.com} ${res}`, {cwd: cmdPath});
+                        this.pid = process.pid;
+                        let start = false;
+                        process.stdout.on('data', (data) => {
+                            console.log(data);
+                            let newData = JSON.parse(data);
+                            console.log(newData);
+                            if (start === true) {
+                                this.writeAll.push(newData);
+                                this.writeIndex = newData;
+                                console.log(this.writeAll);
+                                console.log(this.writeIndex);
+                            } else if (start === false) {
+                                newData.status === 'succeed' && !newData.epc ? start = true : start = false;
+                            }
+                        });
+                        process.stderr.on('data', (err) => {
+                            console.log(err);
+                        });
+                        process.on('exit', (code) => {
+                            console.log(`子进程退出，退出码 ${code}`);
+                        });
+                    });
             },
             black(data) {
                 this.storageInfoShow = false;
@@ -208,7 +289,6 @@
             cancel(data) {
                 if (this.writeIndex) {
                     saveRfid({"rfidGeneric": this.writeIndex.epc}).then(res1 => {
-                        console.log(res1);
                         spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
                         this.writeIndex = '';
                         this.writeAll = [];
@@ -221,7 +301,7 @@
                 }
             },
             writeone() {
-                exec(`java -jar reading.jar 5`, {cwd: cmdPath}, (err, data) => {
+                exec(`java -jar reading.jar ${this.com}`, {cwd: cmdPath}, (err, data) => {
                     console.log(data);
                     if (data.includes('succeed')) {
                         console.log(data.split('\n')[1]);
@@ -230,13 +310,19 @@
                 })
             },
             saveOne(data) {
-                exec(`java -jar writing.jar 5 ${data}`, {cwd: cmdPath}, (err, data) => {
+                exec(`java -jar writing.jar ${this.com} ${data}`, {cwd: cmdPath}, (err, data) => {
                     console.log(data);
                     if (data.includes('succeed')) {
                         this.$message.success('修改成功!');
                     }
                 })
             },
+            getConfig(){
+                this.$store.dispatch('LogOut').then(() => {
+                    location.reload() // 为了重新实例化vue-router对象 避免bug
+                    // this.$message.success('退出成功');
+                })
+            }
         },
         apollo: {
             list() {
@@ -244,7 +330,9 @@
             },
         },
         mounted() {
-
+        },
+        created(){
+            this.com=this.$store.state.user.deploy.data['UHF_READ_COM'];
         },
         mixins: [formRulesMixin],
 
@@ -291,6 +379,25 @@
 <style lang="scss" scoped>
     .el-card {
         border: none !important;
+    }
+
+    .pattern-box{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 302px;
+        .pattern{
+            width:122px;
+            height:93px;
+            background:rgba(255,255,255,1);
+            box-shadow:0px 3px 6px rgba(0,0,0,0.16);
+            opacity:1;
+            border-radius:8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
     }
 
     .dialogButton {

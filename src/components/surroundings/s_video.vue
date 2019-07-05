@@ -1,10 +1,10 @@
 <template>
     <div class="surrounding-video">
-        <div class="videoBlock" v-for="item in 4">
+        <div class="videoBlock" v-for="(item,index) in videoSrc">
             <div class="header">
-               {{item}}号视频监控
+               {{index+1}}号视频监控
             </div>
-           <my-video :src="srcList[item-1]" :autoplay="true" class="video"></my-video>
+           <my-video :src="item" :autoplay="true" class="video"></my-video>
         </div>
     </div>
 </template>
@@ -16,13 +16,18 @@
         components:{
             myVideo
         },
+        props:{
+            videoSrc:{
+                type:Array
+            }
+        },
         data(){
             return{
                 srcList:[
-                    'http://192.168.50.14/test.m3u8',
-                    'http://192.168.50.14/test.m3u8',
-                    'http://192.168.50.14/test.m3u8',
-                    'http://192.168.50.14/test.m3u8'
+                    'http://10.128.4.152/test.m3u8',
+                    'http://10.128.4.152/test.m3u8',
+                    'http://10.128.4.152/test.m3u8',
+                    'http://10.128.4.152/test.m3u8'
                 ]
             }
         }

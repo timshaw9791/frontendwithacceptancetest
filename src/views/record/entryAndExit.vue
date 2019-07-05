@@ -1,7 +1,7 @@
 <template>
     <div class="entryAndExit">
         <my-header :title="'出入记录'" :searchFlag="false"></my-header>
-        <r_search :placeholder="'装备名称'" @handleSearch="handleSearch"></r_search>
+        <r_search :placeholder="'人员姓名'" @handleSearch="handleSearch"></r_search>
         <r_label :table="table" v-show="table.flag" @clickTable="clickTable" @sortCondition="sortGql" ref="las"></r_label>
         <r_video ref="recordVideo" :src="address"></r_video>
     </div>
@@ -39,20 +39,32 @@
                         button:['查看']
                     },
                     equipId:'',
-                    haveButton: true
+                    haveButton: true,
+                    namelike:''
                 },
                 address:''
             }
         },
         methods:{
             handleSearch(data){
-                console.log(data);
+                let qfilter;
+                this.$set(this.table, 'namelike', data);
+                if (data == '') {
+                    qfilter = {key: "id", operator: "ISNOTNULL"}
+                } else {
+                    let that = this;
+                    qfilter = {
+                        key: 'name',
+                        value: '%' + data + '%',
+                        operator: 'LIKE'
+                    };
+                }
+                this.$set(this.table.graphqlTable.graphqlKey, 'qfilter', qfilter);
             },
             clickTable(table) {
                 let data = table.row;
                 if (data) {
-                    this.address='http://192.168.50.14:8080/warehouse/records/2019-06-17-05-01-28_2019-06-17-05-01-38.mp4'
-                    console.log(this.address);
+                    this.address='http://192.168.50.15:8080/warehouse/records/'+data.videoAddress
                     this.$refs.recordVideo.show()
                 }
             },

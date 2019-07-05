@@ -36,35 +36,41 @@
                         graphqlApi: record.getEquipActionRecordList,
                         graphqlKey: {
                             qfilter: {
-                                key: "action", value: 'RETURN', operator: "EQUEAL", combinator: "OR", next: {
+                                key: "action", value: 'RECEIVE_RETURN', operator: "EQUEAL", combinator: "OR", next: {
                                     key: "action", value: 'RECEIVE', operator: "EQUEAL"
                                 }
                             }
                         }
                     },
                     equipId: '',
+                    namelike:''
                 },
             }
         },
         methods: {
             handleSearch(data) {
                 let qfilter;
+                this.$set(this.table, 'namelike', data);
                 if (data == '') {
                     qfilter = {
-                        key: "action", value: 'RETURN', operator: "EQUEAL", combinator: "OR", next: {
+                        key: "action", value: 'RECEIVE_RETURN', operator: "EQUEAL", combinator: "OR", next: {
                             key: "action", value: 'RECEIVE', operator: "EQUEAL"
                         }
                     }
                 } else {
-                    let that = this
+                    let that = this;
+                    let copyQ = {
+                        key: "action", value: 'RECEIVE_RETURN', operator: "EQUEAL", combinator: "OR", next: {
+                            key: "action", value: 'RECEIVE', operator: "EQUEAL"
+                        }
+                    };
                     qfilter = {
                         key: 'equipArgInfo.equipName',
                         value: '%' + data + '%',
                         operator: 'LIKE',
                         combinator: 'AND',
-                        next: this.table.graphqlTable.graphqlKey.qfilter
+                        next: copyQ
                     };
-                    console.log(qfilter)
                 }
                 this.$set(this.table.graphqlTable.graphqlKey, 'qfilter', qfilter);
             },
@@ -86,7 +92,7 @@
                 return new Date(parseInt(nS.startTime)).toLocaleString().replace(/:\d{1,2}$/, ' ');
             },
             filterAction(ob) {
-                return ob.action == 'RETURN' ? '归还' : '领取'
+                return ob.action == 'RECEIVE' ? '领取' : '归还'
             },
             filterSerial(se) {
                 return se.equipInfo.equipSerial == '' ? '无' : se.equipInfo.equipSerial

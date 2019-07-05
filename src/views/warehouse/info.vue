@@ -99,7 +99,11 @@
         },
         watch: {
             inquire(newVal, oldVal) {
-                this.param.namelike = newVal;
+                if(newVal==''){
+                    this.param.namelike = '%%';
+                }else {
+                    this.param.namelike = newVal
+                }
                 this.param['qfilter'] = {
                     "combinator": "OR",
                     "key": "category.genre.name",

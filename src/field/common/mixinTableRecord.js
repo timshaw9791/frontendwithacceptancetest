@@ -40,7 +40,7 @@ export let formRulesMixin = {
             //设置分页参数，和默认值
             partialPiginator: {totalPages: 5, totalElements: 5},//默认值
             param: {paginator: {size: 10, page: 1}},//分页参数,
-            copyNameLike: '%%',
+            copyNameLike: '',
             historyPage: 'History-Page',//存放当前页数
         }
     },
@@ -114,18 +114,20 @@ export let formRulesMixin = {
         },
         _initPage() {
             //监听param变化，如果发生变化,刷新
-            this.$watch("param", function () {
-                if (this.param.namelike != this.copyNameLike && this.param.namelike != '%%') {
+            this.$watch("param",  ()=> {
+                if (this.nameLike != this.copyNameLike && this.nameLike != ''){
                     if (this.param.paginator.page != 1) {
+                        this.setHistoryPage(this.param.paginator.page);
                         this.param.paginator.page = 1
                     }
-                } else if (this.param.namelike != this.copyNameLike && this.param.namelike == '%%') {
-                    this.param.paginator.page = this.getHistoryPage();
-                }
-                this.refetch();
-                if (this.param.namelike != this.copyNameLike && this.param.namelike == '%%') {
+                } else if (this.nameLike != this.copyNameLike && this.nameLike == ''){
                     this.param.paginator.page = Number(this.getHistoryPage());
                 }
+                this.refetch();
+                // console.log('11111',this.param)
+                // if (this.param.namelike != this.copyNameLike && this.param.namelike == '%%') {
+                //     this.param.paginator.page = Number(this.getHistoryPage());
+                // }
             }, {deep: true});
         },
         getHistoryPage() {
@@ -187,7 +189,7 @@ export let formRulesMixin = {
                     var deepclonedata = JSON.parse(JSON.stringify(data.data));
                     var jqlname = Object.keys(deepclonedata)[0];
                     var result = deepclonedata[jqlname];
-                    this.copyNameLike = this.param.namelike;
+                    this.copyNameLike = this.nameLike;
                     if (result && result.hasOwnProperty('totalPages')) {
                         this.partialPiginator.totalPages = result.totalPages;
                     }

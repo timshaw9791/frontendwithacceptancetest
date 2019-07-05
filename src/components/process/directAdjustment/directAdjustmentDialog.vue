@@ -110,13 +110,15 @@
 
 <script>
     import dialogs from 'components/surroundings/surroundingDialog'
-    import inventoryData from 'views/warehouse/inventoryData'
+    // import inventoryData from 'views/warehouse/inventoryData'
     import request from 'common/js/request'
-    /*import {handheld} from 'common/js/handheld'*/
-    /* const cmdPath = 'C:\\Users\\Administrator';
-   const exec = window.require('child_process').exec;
-   const spawn = window.require('child_process').spawn;
-   import request from 'common/js/request' */
+   //  import {handheld} from 'common/js/pda'
+   // const cmdPath = 'C:\\Users\\Administrator';
+   // const exec = window.require('child_process').exec;
+   // const spawn = window.require('child_process').spawn;
+   //  const fs = window.require('fs');
+   //  const path = window.require('path');
+   //  const newFile_path = path.join(path.resolve('./'), '\\adb\\inventory.json').replace(/\\/g, "\/");
     export default {
         name: "directAdjustmentDialog",
         components: {
@@ -140,16 +142,19 @@
                 submitFlag:true,
                 types:'',
                 pid:'',
-                closeUsb:false
+                flags:false,
+                closeUsb:false,
+                com:0
             }
         },
         watch: {
             'hardware': {
                 handler(newVal,oldVal) {
                     if(oldVal=='RFID读写器'&&newVal=='手持机'){
-                        this.end('测试')
+                        this.end(this.pid)
                     }
                     if (newVal == '手持机') {
+                        this.deleteFile();
                         this.rightList=[];
                         this.handheldMachine();
                     }else if(newVal=='RFID读写器'){
@@ -161,46 +166,55 @@
             }
         },
         created(){
+            this.com=this.$store.state.user.deploy.data['UHF_READ_COM'];
         },
         methods: {
+            deleteFile(){
+                fs.unlink(newFile_path,function(error){
+                    if(error){
+                        return false;
+                    }
+                    console.log('删除文件'+newFile_path+'成功');
+                })
+
+            },
             end(pid) {
-                alert('关掉了');
-                this.closeUsb=true
-              /*  if (pid) {
+                // alert('关掉了');
+                 // this.closeUsb=true
+              if(pid) {
                     spawn("taskkill", ["/PID", pid, "/T", "/F"]);
-                }*/
+                }
             },
             getListUsb() {//todo
-                /* const process = exec(`java -jar read.jar 5`, {cwd: cmdPath});
+                const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
                  this.pid = process.pid;
                  process.stderr.on('data', (err) => {
                      console.log(err);
                  });
 
                  process.stdout.on('data', (data) => {
-                     let flag=false;
-                     let dataJson=JSON.parse(data);
-                     if(flag==false){
+                     if(this.flag==false){
+                         let dataJson=JSON.parse(data);
                          if(dataJson.status=='sucess'){
-                             flag=true
+                             this.flag=true
                          }
                      }else {
-
+                         let arr=[];
+                         arr.push(data);
+                         this.getOutDataCopy(arr);
                      }
-
-                     /!* this.data.push(data);*!/
                  });
 
                  process.on('exit', (code) => {
                      console.log(`子进程退出，退出码 ${code}`);
-                 });*/
-                let intercal=setInterval(()=>{
-                    if(this.closeUsb){
-                        clearInterval(intercal);
-                        return;
-                    }
-                    this.getOutDataCopy(['q2', '3', '4', '55','6','7','8','9','11','天下第一','sdfa','10','222','23252s'])
-                },1000)
+                 });
+                // let intercal=setInterval(()=>{
+                //     if(this.closeUsb){
+                //         clearInterval(intercal);
+                //         return;
+                //     }
+                //     this.getOutDataCopy(['q2', '3', '4', '55','6','7','8','9','11','天下第一','sdfa','10','222','23252s'])
+                // },1000)
 
             },
             deleteRow(index){
@@ -233,27 +247,25 @@
                 }else {
                     this.closeUsb=true;
                     setTimeout(()=>{
-                        this.closeUsb=false
+                        this.closeUsb=false;
                         this.getListUsb()
                     },1000)
                 }
             },
             handheldMachine() {
-                /*handheld.then(data => {
-                    this.getOutData(data)
-                });*/
+                handheld().then((data) => {
+                    let json = JSON.parse(data);
+                    this.getOutDataCopy(json.rfid)
+                });
                 //todo 要换回来
-                let data = inventoryData;
-                this.getOutDataCopy(['q2', '3', '4', '55','6','7','8','9','11','天下第一','sdfa','10','222','23252s'])
+                // let data = inventoryData;
+                // this.getOutDataCopy(['q2', '3', '4', '55','6','7','8','9','11','天下第一','sdfa','10','222','23252s'])
             },
-            getOutData(data){
-                console.log(data);
-            },
+            // getOutData(data){
+            //     console.log(data);
+            // },
             getOutDataCopy(data){
-                let url = 'http://192.168.50.14:8080/warehouse/equips/by-rfidlist';
-                let params={
-                    rfidList:data.rfid
-                };
+                let url = 'http://192.168.50.15:8080/warehouse/equips/by-rfidlist';
                 request({
                     method:'PUT',
                     url:url,
@@ -266,9 +278,14 @@
             },
             submit() {
                 if(this.submitFlag){
-                    let url='http://192.168.50.14:8080/warehouse/transfers/up-to-down/equips-out/';
+                    let rfidC = [];
+                    this.rightList.forEach(item=>{
+                        rfidC.push(item.rfid)
+                    });
+
+                    let url='http://192.168.50.15:8080/warehouse/transfers/up-to-down/equips-out/';
                     let param={
-                        rfidList:this.rightList,
+                        rfidList:rfidC,
                         transferOrderId: this.directObj.id
                     };
                     request({
@@ -291,6 +308,7 @@
                         this.rightList.push({
                             name:item.equipArg.name,
                             model:item.equipArg.model,
+                            rfid:item.rfid,
                             count:1,
                             flag:false
                         });
@@ -304,7 +322,7 @@
                             }else {
 
                             }
-                        })
+                        });
                         if(flag){
                             this.rightList[indexI].count=this.rightList[indexI].count+1
                         }else {
@@ -312,6 +330,7 @@
                                 name:item.equipArg.name,
                                 model:item.equipArg.model,
                                 count:1,
+                                rfid:item.rfid,
                                 flag:false
                             });
                         }
@@ -338,7 +357,7 @@
                             });
                         }*/
                     }
-                })
+                });
                 this.getTrueOrFalse();
             },
             getTypeModel(data){

@@ -57,7 +57,7 @@
                 viewStatus:{
                     flag:true
                 },
-                src:'http://192.168.50.14:8080/warehouse/images/',
+                src:'http://192.168.50.15:8080/warehouse/images/',
                 personnelImg:''
             }
         },
@@ -83,7 +83,8 @@
             }
         },
         created(){
-            if(this.addType=='add'){}else {
+            if(this.addType=='add'){
+            }else {
                 this.initForm()
             }
             this.roleList.forEach(item=>{
@@ -150,7 +151,7 @@
                 }
             },
             Ajax(file){
-                let src = 'http://192.168.50.14:8080/warehouse/upload/image/';
+                let src = 'http://192.168.50.15:8080/warehouse/upload/image/';
                 const instance=this.$ajax.create({
                     withCredentials: true
                 });

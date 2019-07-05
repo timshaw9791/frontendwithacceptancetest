@@ -16,6 +16,7 @@
             return{
                 param:this.table.graphqlTable.graphqlKey,
                 list:[],
+                nameLike:''
             }
         },
         mixins: [formRulesMixin],
@@ -34,7 +35,14 @@
               handler() {
                  this.refetch();
               }
-          }
+          },
+            'table.namelike':{
+                deep:true,
+                handler(newVal,oldVal) {
+                    this.nameLike=newVal;
+                }
+            }
+
         },
         created(){
             this.refetch()

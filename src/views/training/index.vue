@@ -1,6 +1,6 @@
 <template>
     <div class="teaching">
-        <my-header :title="'教学培训'"  :searchFlag="false" :haveBlack="true" @h_black="black"></my-header>
+        <my-header :title="'教学培训'"  :searchFlag="false" :haveBlack="viewStatus.hasBlack" @h_black="black"></my-header>
         <div class="action-bar">
             <span v-text="title"></span>
             <div class="input-box" v-if="viewStatus.searchFlag">
@@ -10,7 +10,7 @@
         </div>
         <div class="t-body">
             <list @clickCard="clickCard" :list="list" v-show="viewStatus.listFlag"></list>
-            <resources-material v-show="viewStatus.rMFlag" @handleClick="instructional"></resources-material>
+            <resources-material v-show="viewStatus.rMFlag" :rList="resourcesList" @handleClick="instructional"></resources-material>
             <instructional v-if="viewStatus.insFlag" :ins="insData"></instructional>
         </div>
     </div>
@@ -40,11 +40,13 @@
                 list:[],
                 gqlList:[],
                 insData:{},
+                resourcesList:[],
                 viewStatus:{
                     listFlag:true,
                     rMFlag:false,
                     insFlag:false,
-                    searchFlag:true
+                    searchFlag:true,
+                    hasBlack:false
                 }
             }
         },
@@ -72,12 +74,34 @@
             clickCard(data){
                 if (this.condition.length==0){
                     this.viewStatus.searchFlag=false;
-                    this.list = data.modelList
+                    this.list = data.modelList;
+                    this.viewStatus.hasBlack=!this.viewStatus.hasBlack
                 }else {
+                    let rList=[];
+                    if(data.videoAddresses!=null&&data.videoAddresses!=''){
+                        data.videoAddresses.forEach(item=>{
+                            rList.push({
+                                typeName:'MP4',
+                                name:item,
+                                key:item
+                            })
+                        })
+                    }
+                    if(data.documentAddresses!=null&&data.documentAddresses!=''){
+                        data.documentAddresses.forEach(item=>{
+                            rList.push({
+                                typeName:'PDF',
+                                name:item,
+                                key:item
+                            })
+                        })
+                    }
+                    this.resourcesList=rList;
                     this.title=data.name+'-'+data.model;
                     this.viewStatus.listFlag=false;
                     this.viewStatus.rMFlag=true;
                 }
+
                 this.condition.push(data);
             },
             black(data){
@@ -85,7 +109,8 @@
                     this.condition.splice(this.condition.length-1,1);
                     if(this.condition.length==0){
                         this.viewStatus.searchFlag=true;
-                        this.list=this.gqlList
+                        this.list=this.gqlList;
+                        this.viewStatus.hasBlack=!this.viewStatus.hasBlack
                     }else if(this.condition.length==1){
                         this.title='装备的使用';
                         this.list =this.condition[0].modelList;
@@ -114,6 +139,17 @@
                 this.gqlQuery(teaching.getEquipArgList,qfilter, (data) => {
                     this.gqlList=this.inintList(data);
                     this.list=this.gqlList;
+                    this.list.forEach(item=>{
+                        item.modelList.forEach(modelItem=>{
+                            if(modelItem.videoAddresses!=null&&modelItem.videoAddresses!=''){
+                                modelItem.videoAddresses=modelItem.videoAddresses.split(',');
+
+                            }
+                            if(modelItem.documentAddresses!=null&&modelItem.documentAddresses!=''){
+                                modelItem.documentAddresses=modelItem.documentAddresses.split(',')
+                            }
+                        })
+                    })
                 }, true)
             },
             inintList(list){

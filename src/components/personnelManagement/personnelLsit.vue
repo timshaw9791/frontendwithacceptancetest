@@ -22,12 +22,23 @@
           return{
               param:this.personnel.graphqlTable.graphqlKey,
               partialPiginator: {totalPages: 10, totalElements: 10},//默认值
+              nameLike:''
           }
         },
         props:{
             personnel:{
                 type:Object
+            },
+            searchName:{
+                type:String
             }
+        },
+        watch:{
+          'searchName':{
+              handler(newVal){
+                  this.nameLike=newVal
+              }
+          }
         },
         apollo:{
             list() {

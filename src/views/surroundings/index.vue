@@ -17,7 +17,7 @@
             </div>
         </div>
         <div class="surroundings-body" v-if="!flag">
-            <s_video></s_video>
+            <s_video :videoSrc="videoSrc"></s_video>
         </div>
     </div>
 </template>
@@ -43,11 +43,14 @@
             return{
                 humidity:0,
                 temperature:0,
-                flag:true
+                flag:true,
+                videoSrc:[]
             }
         },
         created(){
             this.getHumiture();
+            this.videoSrc=this.$store.state.user.deploy.data['HIK_CAMERA_ADDRESS'];
+            console.log(this.videoSrc);
             setInterval(this.getHumiture,600000);
         },
         methods:{
@@ -60,7 +63,7 @@
             getHumiture(){
                 this.$ajax({
                     method:'post',
-                    url:'http://10.128.4.152:8080/warehouse/environment/humitureQuery',
+                    url:'http://192.168.50.15:8080/warehouse/environment/humitureQuery',
                 }).then((res)=>{
                     this.humidity=res.data.data.humidity;
                     this.temperature=res.data.data.temperature;

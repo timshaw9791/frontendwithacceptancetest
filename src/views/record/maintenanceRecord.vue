@@ -28,16 +28,17 @@
                         {lable: '装备名称', field: 'equipArgInfo.equipName',sort:false},
                         {lable: '装备序号', field: 'equipInfo.equipSerial',filter:this.filterSerial,sort:false},
                         {lable: '操作人员', field: 'operator',sort:false},
-                        {lable: '开始时间', field: 'startTime', filter: this.filterTime,sort:'custom'},
+                        {lable: '开始时间', field: 'startTime', filter: this.filterTime},
                         {lable: '结束时间', field: 'endTime', filter: this.filterEndTime,sort:false},
                         {lable: '充电时长', field: 'duration',filter: this.filterLong,sort:false},
                     ],
                     graphqlTable: {
                         graphqlApi: record.getEquipActionRecordList,
-                        graphqlKey: {qfilter:{key: "action", value: 'UPKEEP', operator: "EQUEAL"}},
+                        graphqlKey: {qfilter:{key: "action", value: 'CHARGE', operator: "EQUEAL"}},
                     },
                     equipId:'',
-                    haveButton: false
+                    haveButton: false,
+                    namelike:''
                 },
                 cKey:{key: "action", value: 'UPKEEP', operator: "EQUEAL"}
             }
@@ -45,6 +46,7 @@
         methods:{
             handleSearch(data){
                 let qfilter;
+                this.$set(this.table, 'namelike', data);
                 if (data == '') {
                     qfilter = this.cKey
                 } else {
@@ -54,7 +56,7 @@
                         value: '%' + data + '%',
                         operator: 'LIKE',
                         combinator: 'AND',
-                        next: this.table.graphqlTable.graphqlKey.qfilter
+                        next: this.cKey
                     };
                 }
                 this.$set(this.table.graphqlTable.graphqlKey, 'qfilter', qfilter);
@@ -75,7 +77,7 @@
                         {lable: '装备名称', field: 'equipArgInfo.equipName',sort:false},
                         {lable: '装备序号', field: 'equipInfo.equipSerial',filter:this.filterSerial,sort:false},
                         {lable: '操作人员', field: 'operator',sort:false},
-                        {lable: '开始时间', field: 'startTime', filter: this.filterTime,sort:'custom'},
+                        {lable: '开始时间', field: 'startTime', filter: this.filterTime},
                         {lable: '结束时间', field: 'endTime', filter: this.filterEndTime,sort:false},
                         {lable: '充电时长', field: 'duration',filter: this.filterLong,sort:false}
                         ];
@@ -87,7 +89,7 @@
                         {lable: '装备名称', field: 'equipArgInfo.equipName',sort:false},
                         {lable: '装备序号', field: 'equipInfo.equipSerial',filter:this.filterSerial,sort:false},
                         {lable: '操作人员', field: 'operator',sort:false},
-                        {lable: '开始时间', field: 'startTime', filter: this.filterTime,sort:'custom'},
+                        {lable: '开始时间', field: 'startTime', filter: this.filterTime,},
                         {lable: '结束时间', field: 'endTime', filter: this.filterEndTime,sort:false},
                         {lable: '保养时长', field: 'duration',filter: this.filterLong,sort:false}
                     ];
@@ -99,7 +101,7 @@
                         {lable: '装备名称', field: 'equipArgInfo.equipName',sort:false},
                         {lable: '装备序号', field: 'equipInfo.equipSerial',filter:this.filterSerial,sort:false},
                         {lable: '操作人员', field: 'operator',sort:false},
-                        {lable: '操作时间', field: 'startTime', filter: this.filterTime,sort:'custom'},
+                        {lable: '操作时间', field: 'startTime', filter: this.filterTime},
                         {lable: '操作状态', field: 'action', filter: this.filterAction}
                     ];
                     this.$set(this.table.graphqlTable.graphqlKey,'qfilter',{key: "action", value: 'MAINTAIN', operator: "EQUEAL"})

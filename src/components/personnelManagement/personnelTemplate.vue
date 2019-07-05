@@ -23,7 +23,7 @@
         },
         data(){
             return{
-                src:'http://192.168.50.14:8080/warehouse/images/',
+                src:'http://192.168.50.15:8080/warehouse/images/',
             }
         },
         methods:{
