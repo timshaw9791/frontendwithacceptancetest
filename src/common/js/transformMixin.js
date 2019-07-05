@@ -11,6 +11,8 @@ export const transformMixin = {
                 return 'B面'
             } else if (data === 'ALL') {
                 return 'AB面'
+            }else {
+                return'暂无'
             }
         },
         countdown(lastChargeTime, chargeCycle) {

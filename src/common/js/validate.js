@@ -46,9 +46,3 @@ export function formatTime(time) {
 }
 
 
-
-export const surface= {
-  'A_SURFACE':'A面',
-  'B_SURFACE':'B面',
-  'ALL':'AB面'
-}

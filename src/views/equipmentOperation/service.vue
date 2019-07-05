@@ -38,7 +38,7 @@
                     <bos-table-column lable="装备序号" field="serial"></bos-table-column>
                     <bos-table-column lable="架体编号" field="location.number"></bos-table-column>
                     <bos-table-column lable="架体AB面"
-                                      :filter="(row)=>surface(row.location.surface)"></bos-table-column>
+                                      :filter="(row)=>surface(row.location?row.location.surface:'暂无')"></bos-table-column>
 
                     <bos-table-column lable="上次维修时间" field="name"></bos-table-column>
                     <el-table-column label="操作" align="center" width="200">
@@ -57,15 +57,22 @@
                 <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
             </div>
         </el-card>
-        <servicedialog title="请确认维修装备清单" ref="dialog">
-            <el-table :data="list">
-                <bos-table-column lable="序号" field="id"></bos-table-column>
+
+        <servicedialog title="请确认维修装备清单" ref="dialog" @cancel="cancel" @confirm="repairPush">
+            <el-table :data="dialogList">
+                <el-table-column label="序号" align="center">
+                    <template scope="scope">
+                        {{scope.$index+1}}
+                    </template>
+                </el-table-column>
                 <bos-table-column lable="装备名称" field="name"></bos-table-column>
-                <bos-table-column lable="装备序号" field="name"></bos-table-column>
-                <bos-table-column lable="架体编号" field="name"></bos-table-column>
-                <bos-table-column lable="架体AB面" field="name"></bos-table-column>
+                <bos-table-column lable="装备序号" field="serial"></bos-table-column>
+                <bos-table-column lable="架体编号" field="location.number"></bos-table-column>
+                <bos-table-column lable="架体AB面"
+                                  :filter="(row)=>surface(row.location?row.location.surface:'暂无')"></bos-table-column>
             </el-table>
         </servicedialog>
+
 
         <field-dialog title="申请报废" ref="dialog1" @confirm="dialogConfirm">
             <form-container ref="inlineForm" :model="inlineForm">
@@ -94,6 +101,12 @@
     import api from 'gql/operation.gql'
     import {transformMixin} from 'common/js/transformMixin'
     import {retirementApplication} from "api/operation";
+    import {getRfidinfo} from "api/rfid";
+
+    const cmdPath = 'C:\\Users\\Administrator';
+    const exec = window.require('child_process').exec;
+    const spawn = window.require('child_process').spawn;
+
 
     export default {
 
@@ -117,18 +130,56 @@
                 unitId: JSON.parse(localStorage.getItem('user')).unitId,
                 equipId: '',
                 inquire: '%%',
+                pid: '',
+                dialogList:[],
+                listPush: [],
             }
         },
+        created() {
+            this.com = this.$store.state.user.deploy.data['UHF_READ_COM'];
+        },
+
         methods: {
             selected(data) {
                 console.log(data);
             },
             service() {
                 this.$refs.dialog.show();
-                
+                this.dialogList = [];
+                this.listPush = [];
 
+                const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
+                this.pid = process.pid;
+                let index = 0;
+
+                process.stderr.on('data', (err) => {
+                    console.log(err);
+                });
+                process.stdout.on('data', (data) => {
+                    console.log(data);
+                    if (index > 0) {
+                        getRfidinfo([`${data}`]).then(res => {
+                            if (0 in res) {
+                                this.dialogList.push(res[0]);
+                                this.listPush.push(res[0].id);
+                            } else {
+                                this.$message.error(`${data}该RFID不在库房内`);
+                            }
+                        })
+                    }
+                    if (data.includes('succeed')) {
+                        index = 1;
+                    }
+                });
+                process.on('exit', (code) => {
+                    console.log(`子进程退出，退出码 ${code}`);
+                });
 
             },
+            cancel() {
+                spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
+            },
+
             dialogConfirm() {
                 this.$refs.inlineForm.axiosData(
                     retirementApplication({
@@ -186,6 +237,15 @@
                 this.equipList = val.map((res) => {
                     return res.id
                 });
+            },
+            repairPush() {
+                this.gqlMutate(api.admin_maintainEquips, {
+                    equipIdList: this.listPush
+                }, (res) => {
+                    this.callback('已经申请维修!');
+                    this.$refs.dialog.hide();
+                    spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
+                })
             }
         },
         apollo: {

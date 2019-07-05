@@ -22,6 +22,6 @@ export function getRfidinfo(data) {
     return request({
         url: '/equips/by-rfidlist',
         method: 'put',
-        params: data
+        data
     })
 }

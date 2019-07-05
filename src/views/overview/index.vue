@@ -20,7 +20,7 @@
                                                :percentage="item.percentage"
                                                color="#3B86FF">
                                 <div class="inside">
-                                    <span class="percentage">{{Math.round((item.outHouseCount/item.inHouseCount)*100)}}%</span>
+                                    <span class="percentage">{{item.percentage}}%</span>
                                     <span class="percentageName">出库</span>
                                 </div>
                             </progress-circular>
@@ -95,7 +95,7 @@
                         </div>
                         <div class="bk-content center" @click="gotoInfo('surroundings')">
                             <progress-circular :width="180" :strokeWidth="6" :percentage="100" color="#2F2F76">
-                                <div class="inside ">
+                                <div class="inside">
                                     <div>当前温度</div>
                                     <div>{{surroundings.temperature}}°</div>
                                     <div>相对湿度:{{surroundings.humidity}}%</div>
@@ -109,7 +109,7 @@
                             <span @click="gotoInfo('video')">视频监控</span>
                         </div>
                         <div class="bk-content">
-                            <my-video :playerOptions="playerOptions" @click="console.log('awsl')"></my-video>
+                            <my-video :playerOptions="playerOptions"></my-video>
                         </div>
                     </div>
 
@@ -207,7 +207,7 @@
 
                 equipmentAmount().then(res => {
                     res.genreStatisticList.forEach((item, index) => {
-                        res.genreStatisticList[index]['percentage'] = Math.round((item.outHouseCount / item.inHouseCount) * 100);
+                        res.genreStatisticList[index]['percentage'] = item.inHouseCount !== 0 ? Math.round((item.outHouseCount / item.inHouseCount) * 100) : 0;
                     });
                     this.topList = res;
                 }).catch(err => {
@@ -256,11 +256,22 @@
                 if (row === 'statistics') {
                     this.$router.push({path: '/report/index', params: {name: route}});
                 }
+            },
+            getHumiture() {
+                this.$ajax({
+                    method: 'post',
+                    url: 'http://10.128.4.152:8080/warehouse/environment/humitureQuery',
+                }).then((res) => {
+                    this.surroundings.temperature = res.data.data.temperature;
+                    this.surroundings.humidity = res.data.data.humidity;
+                }).catch(err => {
+                    this.$message.error(err);
+                });
             }
         },
         mounted() {
             this.getList();
-            console.log(this.$store.getters.roles);
+            this.getHumiture()
         },
         components: {
             progressCircular,

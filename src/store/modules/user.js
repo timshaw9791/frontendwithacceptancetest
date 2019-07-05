@@ -46,6 +46,7 @@ const user = {
                         response.role = ['ADMINISTRATOR'];
                     }
                     localStorage.setItem('user', JSON.stringify(response));
+
                     getdeploy().then((res) => {
                         console.log(res);
                         commit('SET_DEPLOY', res);
