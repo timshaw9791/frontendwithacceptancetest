@@ -1,5 +1,5 @@
 <template>
-    <div class="overview">
+    <div class="overview" v-if="flag">
         <el-card shadow="never" :body-style="{ padding:'30px'}" v-if="$store.getters.roles.includes('ADMINISTRATOR')">
             <div slot="header">
                 <span class="_card-title">{{$route.meta.title}}</span>
@@ -131,40 +131,55 @@
     import api from 'gql/home.gql'
     import {transformMixin} from 'common/js/transformMixin'
     import {formRulesMixin} from 'field/common/mixinComponent';
-
+    import request from 'common/js/request';
 
     export default {
         data() {
             return {
                 list: [],
+                flag:false,
                 playerOptions: {
+                    // live: false,
+                    // autoplay: true, //如果true,浏览器准备好时开始回放。
+                    // preload: 'auto', //视频预加载
+                    // fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
+                    // muted: false, // 默认情况下将会消除任何音频。
+                    // notSupportedMessage: '此视频暂无法播放，请稍后再试', //允许覆盖Video.js无法播放媒体源时显示的默认信息。
+                    // techOrder: ['flash'],
+                    // language: 'zh-CN',
+                    // aspectRatio: '16:9', // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
+                    // // poster: "@/assets/logo.png", //你的封面地址
+                    // controlBar: {
+                    //     timeDivider: true,
+                    //     durationDisplay: true,
+                    //     remainingTimeDisplay: false,
+                    //     fullscreenToggle: true //全屏按钮
+                    // },
+                    // controls: true, //控制条
+                    // flash: {
+                    //     hls: {
+                    //         withCredentials: false
+                    //     },
+                    // },
+                    // sources: [{
+                    //     type: "application/x-mpegURL",
+                    //     src: "",
+                    //     //src: 'rtmp://10.128.4.109:1935/live/robot',
+                    // }],
                     live: true,
                     autoplay: true, //如果true,浏览器准备好时开始回放。
-                    preload: 'auto', //视频预加载
-                    fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
                     muted: false, // 默认情况下将会消除任何音频。
-                    notSupportedMessage: '此视频暂无法播放，请稍后再试', //允许覆盖Video.js无法播放媒体源时显示的默认信息。
-                    techOrder: ['flash'],
+                    loop: false, // 导致视频一结束就重新开始。
+                    preload: 'auto', // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
                     language: 'zh-CN',
                     aspectRatio: '16:9', // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
-                    // poster: "@/assets/logo.png", //你的封面地址
-                    controlBar: {
-                        timeDivider: true,
-                        durationDisplay: true,
-                        remainingTimeDisplay: false,
-                        fullscreenToggle: true //全屏按钮
-                    },
-                    controls: true, //控制条
-                    flash: {
-                        hls: {
-                            withCredentials: false
-                        },
-                    },
+                    fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
                     sources: [{
-                        type: "rtmp/flv",
-                        src: "rtmp://58.200.131.2:1935/livetv/hunantv",
-                        //src: 'rtmp://10.128.4.109:1935/live/robot',
+                        type: "application/x-mpegURL",
+                        src: this.src, //你的m3u8地址（必填）
+                        withCredentials: false,
                     }],
+                    notSupportedMessage: '此视频暂无法播放，请稍后再试', //允许覆盖Video.js无法播放媒体源时显示的默认信息。
                 },
                 surroundings: {
                     temperature: 0,
@@ -260,18 +275,34 @@
             getHumiture(){
                 this.$ajax({
                     method:'post',
-                    url:'http://10.128.4.152:8080/warehouse/environment/humitureQuery',
+                    url:'http://192.168.50.15:8080/warehouse/environment/humitureQuery',
                 }).then((res)=>{
                     this.surroundings.temperature=res.data.data.temperature;
                     this.surroundings.humidity = res.data.data.humidity;
                 }).catch(err=>{
                     this.$message.error(err);
                 });
+            },
+            getdeploys(){
+                request({
+                    url:'/environment/deviceConfig',
+                    method:'get',
+                }).then(data=>{
+                    this.playerOptions.sources[0].src=data.data['HIK_CAMERA_ADDRESS'][0];
+                    if (this.playerOptions.sources[0].src!=''){
+                        this.flag=true
+                    }else {
+                        this.$message.error('请先登录')
+                    }
+                })
             }
+        },
+        created(){
+            this.getdeploys();
         },
         mounted() {
             this.getList();
-            this.getHumiture()
+            this.getHumiture();
         },
         components: {
             progressCircular,

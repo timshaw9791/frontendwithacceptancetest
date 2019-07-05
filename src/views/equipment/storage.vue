@@ -146,12 +146,12 @@
     import storageInfo from 'views/equipment/storageInfo'
     import api from 'gql/eqList.gql'
     import serviceDialog from 'components/base/serviceDialog/index'
-    import {formRulesMixin} from "../../field/common/mixinTable";
+    import {formRulesMixin} from "../../field/common/mixinComponent";
     import {getRfid, saveRfid} from "api/rfid";
 
-    const cmdPath = 'C:\\Users\\Administrator';
-    const exec = window.require('child_process').exec;
-    const spawn = window.require('child_process').spawn;
+    // const cmdPath = 'C:\\Users\\Administrator';
+    // const exec = window.require('child_process').exec;
+    // const spawn = window.require('child_process').spawn;
 
 
     export default {

@@ -114,19 +114,19 @@ export let formRulesMixin = {
     },
     _initPage() {
       //监听param变化，如果发生变化,刷新
-      this.$watch("param", function () {
-
+      this.$watch("param",  ()=> {
         if (this.param.namelike != this.copyNameLike && this.param.namelike != '%%') {
           if (this.param.paginator.page != 1) {
+            this.setHistoryPage(this.param.paginator.page);
             this.param.paginator.page = 1
           }
-        } else if (this.param.namelike != this.copyNameLike && this.param.namelike == '%%') {
+        } else if (this.param.namelike != this.copyNameLike && this.param.namelike == '%') {
           this.param.paginator.page = this.getHistoryPage();
         }
         this.refetch();
-        if(this.param.namelike != this.copyNameLike && this.param.namelike == '%%') {
-          this.param.paginator.page = Number(this.getHistoryPage());
-        }
+        // if(this.param.namelike != this.copyNameLike && this.param.namelike == '%%') {
+        //   this.param.paginator.page = Number(this.getHistoryPage());
+        // }
       }, {deep: true});
     },
     getHistoryPage() {
@@ -163,7 +163,6 @@ export let formRulesMixin = {
             this.partialPiginator.totalElements = result.totalElements;
           }
           //判断是否存在返回的content，有则返回content
-            console.log('猜猜谁先');
           return !result ? null : (result.hasOwnProperty('content') ? result.content : result);
         },//如果需要使用this来代表vm，则不能使用=>函数，因为箭头函数的this与所在闭包this相同
         variables() {

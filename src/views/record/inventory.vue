@@ -35,8 +35,8 @@
                         {lable: '盘点总数', field: 'rfidCount', sort: false},
                         {lable: '未盘点数', field: 'withoutRfidCount', sort: false},
                         {lable: '出库数量', field: 'outCount', sort: false},
-                        {lable: '开始时间', field: 'startTime', filter: this.filterStartTime, sort: 'custom'},
-                        {lable: '结束时间', field: 'endTime', filter: this.filterEndTime, sort: 'custom'},
+                        {lable: '开始时间', field: 'startTime', filter: this.filterStartTime, },
+                        {lable: '结束时间', field: 'endTime', filter: this.filterEndTime,},
                     ],
                     tableAction: {
                         label: '详情',
@@ -47,7 +47,8 @@
                         graphqlKey: {qfilter: {key: "id", operator: "ISNOTNULL"}}
                     },
                     equipId: '',
-                    haveButton: true
+                    haveButton: true,
+                    namelike:'',
                 },
                 inventory: {
                     equipList: [],
@@ -61,6 +62,7 @@
         methods: {
             handleSearch(data) {
                 let qfilter;
+                this.$set(this.table, 'namelike', data);
                 if (data == '') {
                     qfilter = {key: "id", operator: "ISNOTNULL"}
                 } else {

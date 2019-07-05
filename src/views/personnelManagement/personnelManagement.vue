@@ -22,7 +22,7 @@
             </div>
         </div>
         <div class="personnelManagement-body">
-            <personnel-list ref="personList"  @clickPersonnel="selectPersonnel" :personnel="personnel" v-show="viewStatus.flag"></personnel-list>
+            <personnel-list ref="personList" :searchName="search" @clickPersonnel="selectPersonnel" :personnel="personnel" v-show="viewStatus.flag"></personnel-list>
             <add-personnel @black="black" :addType="type" :personenlData="personnel.personenlData" :disabled="disabled" v-if="!viewStatus.flag" @addSucess="addPersonnelSucess" :roleList="select.selectList" :organUnit="organUnit"></add-personnel>
         </div>
     </div>

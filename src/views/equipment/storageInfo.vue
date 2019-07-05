@@ -209,10 +209,10 @@
     import {imgUpUrl, pdfUpUrl, videoUpUrl, imgBaseUrl, pdfBaseUrl, videoBaseUrl} from "api/config";
     import {delFile} from "api/basic";
 
-    const cmdPath = 'C:\\Users\\Administrator';
-    const exec = window.require('child_process').exec;
-    const spawn = window.require('child_process').spawn;
-
+    // const cmdPath = 'C:\\Users\\Administrator';
+    // const exec = window.require('child_process').exec;
+    // const spawn = window.require('child_process').spawn;
+    //
 
     export default {
         data() {

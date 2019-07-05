@@ -112,10 +112,13 @@
     import dialogs from 'components/surroundings/surroundingDialog'
     // import inventoryData from 'views/warehouse/inventoryData'
     import request from 'common/js/request'
-    import {handheld} from 'common/js/pda'
-   const cmdPath = 'C:\\Users\\Administrator';
-   const exec = window.require('child_process').exec;
-   const spawn = window.require('child_process').spawn;
+   //  import {handheld} from 'common/js/pda'
+   // const cmdPath = 'C:\\Users\\Administrator';
+   // const exec = window.require('child_process').exec;
+   // const spawn = window.require('child_process').spawn;
+   //  const fs = window.require('fs');
+   //  const path = window.require('path');
+   //  const newFile_path = path.join(path.resolve('./'), '\\adb\\inventory.json').replace(/\\/g, "\/");
     export default {
         name: "directAdjustmentDialog",
         components: {
@@ -151,6 +154,7 @@
                         this.end(this.pid)
                     }
                     if (newVal == '手持机') {
+                        this.deleteFile();
                         this.rightList=[];
                         this.handheldMachine();
                     }else if(newVal=='RFID读写器'){
@@ -165,6 +169,15 @@
             this.com=this.$store.state.user.deploy.data['UHF_READ_COM'];
         },
         methods: {
+            deleteFile(){
+                fs.unlink(newFile_path,function(error){
+                    if(error){
+                        return false;
+                    }
+                    console.log('删除文件'+newFile_path+'成功');
+                })
+
+            },
             end(pid) {
                 // alert('关掉了');
                  // this.closeUsb=true
@@ -252,7 +265,7 @@
             //     console.log(data);
             // },
             getOutDataCopy(data){
-                let url = 'http://10.128.4.152:8080/warehouse/equips/by-rfidlist';
+                let url = 'http://192.168.50.15:8080/warehouse/equips/by-rfidlist';
                 request({
                     method:'PUT',
                     url:url,
@@ -267,11 +280,12 @@
                 if(this.submitFlag){
                     let rfidC = [];
                     this.rightList.forEach(item=>{
-
+                        rfidC.push(item.rfid)
                     });
-                    let url='http://10.128.4.152:8080/warehouse/transfers/up-to-down/equips-out/';
+
+                    let url='http://192.168.50.15:8080/warehouse/transfers/up-to-down/equips-out/';
                     let param={
-                        rfidList:this.rightList,
+                        rfidList:rfidC,
                         transferOrderId: this.directObj.id
                     };
                     request({
@@ -294,6 +308,7 @@
                         this.rightList.push({
                             name:item.equipArg.name,
                             model:item.equipArg.model,
+                            rfid:item.rfid,
                             count:1,
                             flag:false
                         });
@@ -315,6 +330,7 @@
                                 name:item.equipArg.name,
                                 model:item.equipArg.model,
                                 count:1,
+                                rfid:item.rfid,
                                 flag:false
                             });
                         }

@@ -27,8 +27,8 @@
         },
         data(){
             return{
-                src:'http://10.128.4.152:8080/warehouse/pdfs/',
-                mp4:'http://10.128.4.152:8080/warehouse/videos/'
+                src:'http://192.168.50.15:8080/warehouse/pdfs/',
+                mp4:'http://192.168.50.15:8080/warehouse/videos/'
             }
         },
         computed:{

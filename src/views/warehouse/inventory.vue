@@ -19,10 +19,10 @@
     // import inventoryData from './inventoryData'
     import {getToken} from "../../common/js/auth";
     import request from 'common/js/request'
-    import {handheld} from 'common/js/pda'
-    const fs = window.require('fs');
-    const path = window.require('path');
-    const newFile_path = path.join(path.resolve('./'), '\\adb\\inventory.json').replace(/\\/g, "\/");
+    // import {handheld} from 'common/js/pda'
+    // const fs = window.require('fs');
+    // const path = window.require('path');
+    // const newFile_path = path.join(path.resolve('./'), '\\adb\\inventory.json').replace(/\\/g, "\/");
     /*Melanie Dunne supernova*/
     export default {
         name: "inventory",
@@ -68,7 +68,7 @@
             handleSubmission(data){
               if(data){
                  if(Object.keys(this.inventoryObj.inventoryData.inventory).length!=0){
-                     let url='http://10.128.4.152:8080/warehouse/inventories';
+                     let url='http://192.168.50.15:8080/warehouse/inventories';
                      let data = this.inventoryObj.inventoryData;
                      request({
                          method:'post',
@@ -93,10 +93,10 @@
               }
             },
             submit(data){
-                let url='http://10.128.4.152:8080/warehouse/inventories/calculate';
+                let url='http://192.168.50.15:8080/warehouse/inventories/calculate';
                 let rfidC=[];
                 this.inventoryObj.rflist.forEach(item=>{
-                    rfidC.push(item.rfid);
+                    rfidC.push(item.rfId);
                 });
                 let rfid=this.getString(rfidC);
                 if(data){
@@ -138,7 +138,6 @@
             deleteFile(){
                 fs.unlink(newFile_path,function(error){
                     if(error){
-                        console.log(error);
                         return false;
                     }
                     console.log('删除文件'+newFile_path+'成功');

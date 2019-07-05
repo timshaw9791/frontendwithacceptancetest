@@ -178,6 +178,8 @@
             dialogShow(type, item) {
                 if (type === 'add') {
                     this.title = '新增预案';
+                    this.$set(this.form,'name','');
+                    this.$set(this.form,'note','');
                     this.form['planEquips'] = [{equipModel: '', location: {}}];
 
                 } else if (type === 'up') {
