@@ -3,18 +3,12 @@ query getUserList($id:String,$paginator: paginator) {
     key:"organUnit.id",
     operator:EQUEAL
     value:$id
-    combinator:AND
-    next:{
-      key:"disabled",
-      operator:EQUEAL
-      value:"false"
-    }
   }
     paginator: $paginator) {
     totalPages
     totalElements
     content {
-      disabled
+
       password
       policeSign
       idNumber
@@ -26,7 +20,7 @@ query getUserList($id:String,$paginator: paginator) {
       fingerprintInformation
       faceInformation
       roleItems {
-        disabled
+
         id
         privilegeItems {
           id
@@ -47,7 +41,7 @@ query getUserList($id:String,$paginator: paginator) {
 mutation identitySaveUser($user: User_!) {
   identity_saveUser(user: $user) {
     unitId
-    disabled
+
     policeSign
     id
     organUnit {
@@ -57,7 +51,7 @@ mutation identitySaveUser($user: User_!) {
     name
     gender
     roleItems {
-      disabled
+
       id
       privilegeItems {
         privilege {

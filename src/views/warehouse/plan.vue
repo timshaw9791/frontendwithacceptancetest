@@ -221,8 +221,8 @@
                                     value: item1.equipArg.model,
                                     key: {
                                         location: {
-                                            number: item1.location != null ? item1.location.number : '',
-                                            surface: item1.location != null ? item1.location.surface : '',
+                                            number: item1.location != null ? item1.location.number : null,
+                                            surface: item1.location != null ? item1.location.surface : null,
                                         },
                                         equipName: item1.name,
                                         equipModel: item1.equipArg.model,

@@ -13,7 +13,7 @@ query findAdministList($namelike:String!,$paginator: paginator){
       name
       username
       tel
-      disabled
+
       updatetime(OrderBy:DESC)
       createtime(OrderBy:DESC)
     }
@@ -73,7 +73,7 @@ query AdministList($namelike:String!,$paginator: paginator){
       username
       createtime
       number
-      disabled
+
       phone
       id
       store {

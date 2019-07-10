@@ -18,14 +18,14 @@ mutation categoryInit($organUnitId: String!) {
           categoryItem {
             id
           }
-          disabled
+
         }
         category {
           id
         }
-        disabled
+
       }
-      disabled
+
     }
   }
 }
@@ -38,7 +38,7 @@ query getCategoryList($id: String!){
     totalElements
     content {
       id
-      disabled
+
       houseId
       name
       categoryItems {
@@ -48,13 +48,13 @@ query getCategoryList($id: String!){
         id
         equipArgs {
           id
-          disabled
+
           name
           model
           upkeepCycle
           chargeCycle
         }
-        disabled
+
         name
       }
     }
@@ -82,7 +82,7 @@ EquipArgList(paginator: $paginator, qfilter: $qfilter) {
       upkeepCycle
       name
       chargeCycle
-      disabled
+
     }
   }
 }
@@ -97,7 +97,7 @@ query getCommonHouseList($id:String!){
     totalElements
     content {
            id
-           disabled
+
            name
            environmentInfo
            organUnitId
@@ -108,7 +108,7 @@ query getCommonHouseList($id:String!){
 
 mutation commonHouseSaveCommonHouse($organUnitId: String!, $name: String!) {
   commonHouse_saveCommonHouse(organUnitId: $organUnitId, name: $name) {
-    disabled
+
     name
     id
     organUnitId
@@ -123,14 +123,14 @@ mutation categoryAddCategoryItem($name: String!, $categoryId: String!) {
       categoryItem {
         id
       }
-      disabled
+
       equipArg {
         id
       }
       safeSock
       id
     }
-    disabled
+
     name
     category {
       id
@@ -145,14 +145,14 @@ mutation categoryAddItemEquipArg($categoryItemId: String!, $safeSock: Int!, $equ
       categoryItem {
         id
       }
-      disabled
+
       equipArg {
         id
       }
       safeSock
       id
     }
-    disabled
+
     name
     category {
       id
@@ -163,7 +163,7 @@ mutation categoryAddItemEquipArg($categoryItemId: String!, $safeSock: Int!, $equ
 
 mutation categorySave($category: Category_!) {
   category_save(category: $category) {
-    disabled
+
     id
     name
     type
@@ -187,7 +187,7 @@ query getSupplierList($paginator: paginator, $qfilter: qfilter) {
       phone
       name
       person
-      disabled
+
     }
   }
 }
@@ -206,7 +206,7 @@ query getEquipArgList($paginator: paginator, $qfilter: qfilter) {
       documentAddresses
       name
       model
-      disabled
+
       chargeCycle
       supplier {
         id
@@ -232,7 +232,7 @@ query getHouseStockList($paginator: paginator, $qfilter: qfilter) {
     totalElements
     content {
       safeStock
-      disabled
+
       id
       equipArg {
         id

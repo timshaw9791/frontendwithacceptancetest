@@ -18,7 +18,7 @@ query getEquipList($paginator: paginator, $qfilter: qfilter) {
       houseId
       id
       name
-      disabled
+
       state
       serial
       location {

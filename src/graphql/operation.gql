@@ -4,7 +4,7 @@ query getEquipRemindStrategyList($paginator: paginator, $qfilter: qfilter) {
     totalPages
     totalElements
     content {
-      disabled
+
       equip {
         id
         name
@@ -49,7 +49,7 @@ query getEquipList($paginator: paginator, $qfilter: qfilter) {
     content {
       state
       id
-      disabled
+
       quality {
         productDate
         shelfLife
@@ -89,7 +89,7 @@ query getUserList($qfilter: qfilter) {
       username
       gender
       fingerprintInformation
-      disabled
+
       faceInformation
       organUnit {
         id
@@ -108,7 +108,7 @@ query getUserList($qfilter: qfilter) {
           id
           constraintRule
         }
-        disabled
+
       }
     }
   }
@@ -134,7 +134,7 @@ query getHouseStockList($paginator: paginator, $qfilter: qfilter) {
       equipArg {
         id
       }
-      disabled
+
       id
       count
       houseId

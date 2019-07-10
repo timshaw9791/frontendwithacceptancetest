@@ -29,7 +29,7 @@ mutation architectureSaveOrganUnit($organUnit: OrganUnit_!) {
     location
     level
     name
-    disabled
+
     organUnit {
           id
         }

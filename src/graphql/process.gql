@@ -16,12 +16,12 @@ query getEquipScrapedRecordList($paginator: paginator, $qfilter: qfilter) {
           id
           reason
         }
-        disabled
+
         name
       }
       id
       auditor
-      disabled
+
     }
   }
 }
@@ -42,11 +42,11 @@ query getEquipScrapedRecord($id: String!) {
         id
         reason
       }
-      disabled
+
       name
     }
     id
     auditor
-    disabled
+
   }
 }
