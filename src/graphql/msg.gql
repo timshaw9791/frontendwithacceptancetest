@@ -29,7 +29,6 @@ query getMessageList($qfilter: qfilter) {
     content {
       sendUserId
       type
-
       userId
       id
       content
@@ -39,29 +38,6 @@ query getMessageList($qfilter: qfilter) {
     }
   }
 }
-
-
-query getMessageList2($paginator: paginator,$qfilter: qfilter) {
-  MessageList(paginator: $paginator,qfilter: $qfilter) {
-    totalPages
-    totalElements
-    content {
-      sendUserId
-      type
-
-      userId
-      id
-      content
-      title
-      readed
-      time(OrderBy:DESC)
-    }
-  }
-}
-
-
-
-
 
 
 
