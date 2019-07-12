@@ -57,7 +57,7 @@ query getEquip($id: String!) {
       }
     }
     state
-
+    price
     rfid
     receiveTime
     houseId
@@ -336,8 +336,8 @@ mutation category_addEquipArg($supplierId: String!, $categoryId: String!, $equip
 }
 
 
-mutation admin_importEquips($rfids: [String]!, $location: Location_!, $serialList: [String], $equipArgId: String!, $quality: Quality_!) {
-  admin_importEquips(rfids: $rfids, location: $location, serialList: $serialList, equipArgId: $equipArgId, quality: $quality) {
+mutation admin_importEquips($rfids: [String]!, $price: Long!, $location: Location_, $serialList: [String], $equipArgId: String!, $quality: Quality_!) {
+  admin_importEquips(rfids: $rfids, price: $price, location: $location, serialList: $serialList, equipArgId: $equipArgId, quality: $quality) {
     totalPages
     totalElements
     content {
@@ -345,6 +345,7 @@ mutation admin_importEquips($rfids: [String]!, $location: Location_!, $serialLis
     }
   }
 }
+
 
 
 query getEquipArg($id: String!) {

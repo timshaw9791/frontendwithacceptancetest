@@ -60,7 +60,7 @@
                 let params={route:this.socket.route,number:this.socket.number,status:data};
                 this.$ajax({
                     method:'post',
-                    url:'http://192.168.50.15:8080/warehouse/environment/chargeSwitch',
+                    url:'http://10.128.4.152:8080/warehouse/environment/chargeSwitch',
                     params:params
                 }).then((res)=>{
                     let resData={

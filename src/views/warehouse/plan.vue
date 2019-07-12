@@ -45,9 +45,10 @@
                                         <bos-table-column lable="装备名称"
                                                           :filter="(row)=>row.equipName"></bos-table-column>
                                         <bos-table-column lable="架体编号"
-                                                          :filter="(row)=>row.location.number"></bos-table-column>
+                                                          :filter="(row)=>row.location?row.location.number:'暂无'"></bos-table-column>
                                         <bos-table-column lable="架体AB面"
-                                                          :filter="(row)=>surface(row.location.surface)"></bos-table-column>
+                                                          :filter="(row)=>surface(row.location?row.location.surface:'暂无')"
+                                        ></bos-table-column>
                                     </el-table>
                                 </div>
                             </el-scrollbar>
@@ -95,12 +96,12 @@
                     </el-table-column>
                     <el-table-column label="架体编号" align="center">
                         <template scope="scope">
-                            {{scope.row.location.number}}
+                            {{scope.row.location? scope.row.location.number:'暂无'}}
                         </template>
                     </el-table-column>
                     <el-table-column label="架体AB面" align="center">
                         <template scope="scope">
-                            {{surface(scope.row.location.surface)}}
+                            {{surface(scope.row.location?scope.row.location.surface:'暂无')}}
                         </template>
                     </el-table-column>
 
@@ -220,8 +221,8 @@
                                     value: item1.equipArg.model,
                                     key: {
                                         location: {
-                                            number: item1.location != null ? item1.location.number : '',
-                                            surface: item1.location != null ? item1.location.surface : '',
+                                            number: item1.location != null ? item1.location.number : null,
+                                            surface: item1.location != null ? item1.location.surface : null,
                                         },
                                         equipName: item1.name,
                                         equipModel: item1.equipArg.model,

@@ -33,9 +33,19 @@
                                             @change="getEquipInfo(form.nameId[2])">
                             </field-cascader>
 
+                            <field-input v-model="form.price" label="装备单价" width="3"
+                                         :rules="r(true).all(R.integer)" prop="price"
+                                         v-if="title.includes('入库')"></field-input>
+
 
                             <field-input v-model="form.eqBig" label="装备类型" width="3" :disabled="disabled||edit"
                                          v-if="title.includes('装备查看')||(title.includes('信息查看')&&edit)"></field-input>
+
+                            <field-input v-model="form.price" label="装备单价" width="3"
+                                         :disabled="disabled"
+                                         :rules="r(true).all(R.integer)" prop="price"
+                                         v-if="title.includes('装备查看')"></field-input>
+
 
                             <field-input v-model="form.eqSmall" label="装备类别" width="3" :disabled="disabled||edit"
                                          v-if="title.includes('装备查看')||(title.includes('信息查看')&&edit)"></field-input>
@@ -209,10 +219,10 @@
     import {imgUpUrl, pdfUpUrl, videoUpUrl, imgBaseUrl, pdfBaseUrl, videoBaseUrl} from "api/config";
     import {delFile} from "api/basic";
 
-    // const cmdPath = 'C:\\Users\\Administrator';
-    // const exec = window.require('child_process').exec;
-    // const spawn = window.require('child_process').spawn;
-    //
+    const cmdPath = 'C:\\Users\\Administrator';
+    const exec = window.require('child_process').exec;
+    const spawn = window.require('child_process').spawn;
+
 
     export default {
         data() {
@@ -236,8 +246,8 @@
                 rfids: [],
                 serialList: [],
                 pid: '',
-                index:0,
-                com:0
+                index: 0,
+                com: 0
             }
         },
         mixins: [formRulesMixin],
@@ -273,7 +283,7 @@
                     this.$refs.dialog.show();
                 }
                 spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
-                this.index=0;
+                this.index = 0;
             },
 
             addEquipArg() {
@@ -310,7 +320,6 @@
                             surface: this.zbForm.surfaceL,
                             floor: Number(this.zbForm.floorL),
                             section: Number(this.zbForm.sectionL),
-
                         };
                         this.zbForm['quality'] = {
                             shelfLife: this.zbForm.shelfLifeQ * 24 * 60 * 60 * 1000,
@@ -327,10 +336,11 @@
                             location: this.zbForm.location,
                             equipArgId: this.form.nameId[2],
                             quality: this.zbForm.quality,
+                            price: this.form.price,
                         }, (res) => {
-                            spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
-                            this.index=0;
+                            this.index = 0;
                             this.callback(`成功`);
+                            spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
                             this.$emit('black', true);
                         })
                     }).catch(err => {
@@ -497,13 +507,13 @@
                 process.stdout.on('data', (data) => {
                     console.log(data);
                     if (this.index > 0) {
-                        if(this.index==1){
-                            this.list[0].rfid=data;
-                        }else {
+                        if (this.index == 1) {
+                            this.list[0].rfid = data;
+                        } else {
                             this.list.push({rfid: data});
                         }
                         this.index = this.index + 1;
-                    }else{
+                    } else {
                         let newData = JSON.parse(data);
                         newData.status === 'succeed' ? this.index = 1 : this.index = 0;
                     }
@@ -538,7 +548,6 @@
                     this.gqlQuery(api.getEquip, {
                         id: this.equipId
                     }, (res) => {
-
                         let eqData = JSON.parse(JSON.stringify(res.data.Equip));
                         this.zb = eqData;
                         this.form = eqData.equipArg;
@@ -546,6 +555,7 @@
                         eqData.equipArg.imageAddress ? this.imageUrl = `${imgBaseUrl}${eqData.equipArg.imageAddress}` : '';
                         this.$set(this.form, 'eqBig', eqData.equipArg.category.genre.name);
                         this.$set(this.form, 'eqSmall', eqData.equipArg.category.name);
+                        this.$set(this.form, 'price', eqData.price);
                         this.zb['shelfLifeQ'] = Math.round(eqData.quality.shelfLife / 24 / 60 / 60 / 1000);
                         this.zb['productDateQ'] = eqData.quality.productDate;
                         this.zb['floorL'] = eqData.location ? eqData.location.floor : '';
@@ -567,8 +577,10 @@
                         this.form = eqData;
                         this.form.vendorId = eqData.supplier.id;
                         eqData.imageAddress ? this.imageUrl = `${imgBaseUrl}${eqData.imageAddress}` : '';
-                        this.form.videoAddresses = eqData.videoAddresses.split(",");
-                        this.form.documentAddresses = eqData.documentAddresses.split(",");
+
+                        this.form.videoAddresses = eqData.videoAddresses ? eqData.videoAddresses.split(",") : [];
+                        this.form.documentAddresses = eqData.documentAddresses ? eqData.documentAddresses.split(",") : [];
+
                         this.form.nameId = [eqData.category.genre.id, eqData.category.id];
                         this.$set(this.form, 'eqBig', eqData.category.genre.name);
                         this.$set(this.form, 'eqSmall', eqData.category.name);
@@ -627,8 +639,8 @@
             }
 
         },
-        created(){
-            this.com=this.$store.state.user.deploy.data['UHF_READ_COM'];
+        created() {
+            this.com = this.$store.state.user.deploy.data['UHF_READ_COM'];
         },
         mounted() {
 

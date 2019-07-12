@@ -4,6 +4,7 @@ query getEquipRemindStrategyList($paginator: paginator, $qfilter: qfilter) {
     totalPages
     totalElements
     content {
+
       equip {
         id
         name
@@ -69,7 +70,9 @@ query getEquipList($paginator: paginator, $qfilter: qfilter) {
       }
       equipArg {
         id
+        chargeCycle
       }
+      state
     }
   }
 }
@@ -142,5 +145,17 @@ query getHouseStockList($paginator: paginator, $qfilter: qfilter) {
 }
 
 
+
+
+
+mutation admin_maintainEquips($equipIdList: [String]!) {
+  admin_maintainEquips(equipIdList: $equipIdList) {
+    totalPages
+    totalElements
+    content {
+	    id
+    }
+  }
+}
 
 

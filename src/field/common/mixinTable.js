@@ -145,7 +145,7 @@ export let formRulesMixin = {
         removeHistoryPage() {
             sessionStorage.setItem(this.historyPage, 1);
         },
-        refetch() {mixinTable
+        refetch() {
             if (this.$apollo.queries['list']) this.$apollo.queries['list'].refetch();//重新刷新apollo
 
         },

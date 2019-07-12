@@ -16,7 +16,10 @@
                             </el-select>
                         </div>
                     </div>
-                    <div class="header-item"><span v-text="'装备清单：'"></span><el-button class="resultButton" v-text="'重新读取数据'" v-if="!submitFlag" @click="clickResult"></el-button></div>
+                    <div class="header-item"><span v-text="'装备清单：'"></span>
+                        <el-button class="resultButton" v-text="'重新读取数据'" v-if="!submitFlag"
+                                   @click="clickResult"></el-button>
+                    </div>
                 </div>
                 <div class="directAdjustmentDialog-body">
                     <div class="leftTable">
@@ -93,7 +96,9 @@
                                     v-if="!submitFlag"
                             >
                                 <template slot-scope="scope">
-                                    <el-button type="text" size="mini" class="deleteButtom" @click="deleteRow(scope.$index)" :disabled="scope.row.flag" v-text="'【删除】'"></el-button>
+                                    <el-button type="text" size="mini" class="deleteButtom"
+                                               @click="deleteRow(scope.$index)" :disabled="scope.row.flag"
+                                               v-text="'【删除】'"></el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -112,13 +117,16 @@
     import dialogs from 'components/surroundings/surroundingDialog'
     // import inventoryData from 'views/warehouse/inventoryData'
     import request from 'common/js/request'
-   //  import {handheld} from 'common/js/pda'
-   // const cmdPath = 'C:\\Users\\Administrator';
-   // const exec = window.require('child_process').exec;
-   // const spawn = window.require('child_process').spawn;
-   //  const fs = window.require('fs');
-   //  const path = window.require('path');
-   //  const newFile_path = path.join(path.resolve('./'), '\\adb\\inventory.json').replace(/\\/g, "\/");
+
+    import {handheld} from 'common/js/pda'
+    const cmdPath = 'C:\\Users\\Administrator';
+    const exec = window.require('child_process').exec;
+    const spawn = window.require('child_process').spawn;
+    const fs = window.require('fs');
+    const path = window.require('path');
+    const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
+
+
     export default {
         name: "directAdjustmentDialog",
         components: {
@@ -137,77 +145,76 @@
                     {value: 'RFID读写器', label: 'RFID读写器'},
                 ],
                 rightList: [],
-                outList:[],
+                outList: [],
                 align: 'center',
-                submitFlag:true,
-                types:'',
-                pid:'',
-                flag:false,
-                closeUsb:false,
-                com:0
+                submitFlag: true,
+                types: '',
+                pid: '',
+                flag: false,
+                closeUsb: false,
+                com: 0
             }
         },
         watch: {
             'hardware': {
-                handler(newVal,oldVal) {
-                    if(oldVal=='RFID读写器'&&newVal=='手持机'){
+                handler(newVal, oldVal) {
+                    if (oldVal == 'RFID读写器' && newVal == '手持机') {
                         this.end(this.pid)
                     }
                     if (newVal == '手持机') {
-                        this.deleteFile();
-                        this.rightList=[];
+                        this.rightList = [];
                         this.handheldMachine();
-                    }else if(newVal=='RFID读写器'){
-                        this.closeUsb=false;
-                        this.rightList=[];
+                    } else if (newVal == 'RFID读写器') {
+                        this.closeUsb = false;
+                        this.rightList = [];
                         this.getListUsb();
                     }
                 }
             }
         },
-        created(){
-            this.com=this.$store.state.user.deploy.data['UHF_READ_COM'];
+        created() {
+            this.com = this.$store.state.user.deploy.data['UHF_READ_COM'];
         },
         methods: {
-            deleteFile(){
-                fs.unlink(newFile_path,function(error){
-                    if(error){
+            deleteFile() {
+                fs.unlink(newFile_path, function (error) {
+                    if (error) {
                         return false;
                     }
-                    console.log('删除文件'+newFile_path+'成功');
+                    console.log('删除文件' + newFile_path + '成功');
                 })
 
             },
             end(pid) {
                 // alert('关掉了');
-                 // this.closeUsb=true
-              if(pid) {
+                // this.closeUsb=true
+                if (pid) {
                     spawn("taskkill", ["/PID", pid, "/T", "/F"]);
                 }
             },
             getListUsb() {//todo
                 const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
-                 this.pid = process.pid;
-                 process.stderr.on('data', (err) => {
-                     console.log(err);
-                 });
+                this.pid = process.pid;
+                process.stderr.on('data', (err) => {
+                    console.log(err);
+                });
 
-                 process.stdout.on('data', (data) => {
-                     if(this.flag==false){
-                         let dataJson=JSON.parse(data);
-                         if(dataJson.status=='sucess'){
-                             this.flag=true
-                         }
-                     }else {
-                         let arr=[];
-                         arr.push(data);
-                         this.getOutDataCopy(arr);
-                     }
-                 });
+                process.stdout.on('data', (data) => {
+                    if (this.flag == false) {
+                        let dataJson = JSON.parse(data);
+                        if (dataJson.status == 'sucess') {
+                            this.flag = true
+                        }
+                    } else {
+                        let arr = [];
+                        arr.push(data);
+                        this.getOutDataCopy(arr);
+                    }
+                });
 
-                 process.on('exit', (code) => {
-                     console.log(`子进程退出，退出码 ${code}`);
-                 });
+                process.on('exit', (code) => {
+                    console.log(`子进程退出，退出码 ${code}`);
+                });
                 // let intercal=setInterval(()=>{
                 //     if(this.closeUsb){
                 //         clearInterval(intercal);
@@ -217,17 +224,18 @@
                 // },1000)
 
             },
-            deleteRow(index){
-                this.rightList.splice(index,1)
+            deleteRow(index) {
+                this.rightList.splice(index, 1)
             },
             close() {
-                this.closeUsb=true;
+                this.closeUsb = true;
+                this.end(this.pid);
                 this.$refs.dialog.close();
             },
             show() {
                 this.$refs.dialog.show();
             },
-            tableRowClassName({row, rowIndex}){
+            tableRowClassName({row, rowIndex}) {
                 /*if (rowIndex === 1) {
                     return 'warning-row';
                 } else if (rowIndex === 3) {
@@ -236,27 +244,29 @@
                 return '';*/
                 if (row.flag) {
                     return ''
-                }else{
+                } else {
                     return 'colorDialog'
                 }
 
             },
-            clickResult(){
-                if(this.hardware=='手持机'){
+            clickResult() {
+                if (this.hardware == '手持机') {
                     this.handheldMachine();
-                }else {
+                } else {
+                    this.closeUsb = true;
                     this.end(this.pid);
-                    this.closeUsb=true;
-                    setTimeout(()=>{
-                        this.closeUsb=false;
+                    setTimeout(() => {
+                        this.closeUsb = false;
                         this.getListUsb()
-                    },1000)
+                    }, 1000)
                 }
             },
             handheldMachine() {
                 handheld().then((data) => {
                     let json = JSON.parse(data);
-                    this.getOutDataCopy(json.rfid)
+                    console.log(data);
+                    this.getOutDataCopy(json.rfid);
+                    this.deleteFile();
                 });
                 //todo 要换回来
                 // let data = inventoryData;
@@ -265,74 +275,74 @@
             // getOutData(data){
             //     console.log(data);
             // },
-            getOutDataCopy(data){
-                let url = 'http://192.168.50.15:8080/warehouse/equips/by-rfidlist';
+            getOutDataCopy(data) {
+                let url = 'http://10.128.4.152:8080/warehouse/equips/by-rfidlist';
                 request({
-                    method:'PUT',
-                    url:url,
-                    data:data
-                }).then(res=>{
-                    if(res){
+                    method: 'PUT',
+                    url: url,
+                    data: data
+                }).then(res => {
+                    if (res) {
                         this.getCategroy(res);
                     }
                 })
             },
             submit() {
-                if(this.submitFlag){
+                if (this.submitFlag) {
                     let rfidC = [];
-                    this.rightList.forEach(item=>{
+                    this.rightList.forEach(item => {
                         rfidC.push(item.rfid)
                     });
 
-                    let url='http://192.168.50.15:8080/warehouse/transfers/up-to-down/equips-out/';
-                    let param={
-                        rfidList:rfidC,
+                    let url = 'http://10.128.4.152:8080/warehouse/transfers/up-to-down/equips-out/';
+                    let param = {
+                        rfidList: rfidC,
                         transferOrderId: this.directObj.id
                     };
                     request({
-                        method:'DELETE',
-                        url:url,
-                        data:param
-                    }).then(res=>{
-                        if(res){
+                        method: 'DELETE',
+                        url: url,
+                        data: param
+                    }).then(res => {
+                        if (res) {
                             console.log(res);
                         }
                     })
-                }else {
+                } else {
                     this.$message.error('请重新确认出库装备')
                 }
             },
-            getCategroy(data){
-                let typeModel=this.getTypeModel(data);
-                data.forEach(item=>{
-                    if(this.rightList.length==0){
+            getCategroy(data) {
+                let typeModel = this.getTypeModel(data);
+                data.forEach(item => {
+                    if (this.rightList.length == 0) {
                         this.rightList.push({
-                            name:item.equipArg.name,
-                            model:item.equipArg.model,
-                            rfid:item.rfid,
-                            count:1,
-                            flag:false
+                            name: item.equipArg.name,
+                            model: item.equipArg.model,
+                            rfid: item.rfid,
+                            count: 1,
+                            flag: false
                         });
-                    }else {
-                        let flag=false;
-                        let indexI=0
-                        this.rightList.forEach((listItem,index)=>{
-                            if(listItem.model==item.equipArg.model){
-                               /* listItem.count=listItem.count+1*/
-                               flag=true,indexI= index
-                            }else {
+                    } else {
+                        let flag = false;
+                        let indexI = 0
+                        this.rightList.forEach((listItem, index) => {
+                            if (listItem.model == item.equipArg.model) {
+                                /* listItem.count=listItem.count+1*/
+                                flag = true, indexI = index
+                            } else {
 
                             }
                         });
-                        if(flag){
-                            this.rightList[indexI].count=this.rightList[indexI].count+1
-                        }else {
+                        if (flag) {
+                            this.rightList[indexI].count = this.rightList[indexI].count + 1
+                        } else {
                             this.rightList.push({
-                                name:item.equipArg.name,
-                                model:item.equipArg.model,
-                                count:1,
-                                rfid:item.rfid,
-                                flag:false
+                                name: item.equipArg.name,
+                                model: item.equipArg.model,
+                                count: 1,
+                                rfid: item.rfid,
+                                flag: false
                             });
                         }
                         /*if(typeModel.indexOf(item.equipArg.model) > -1){
@@ -361,36 +371,38 @@
                 });
                 this.getTrueOrFalse();
             },
-            getTypeModel(data){
-                let typeModel=[];
-                data.forEach(item=>{
-                    if(typeModel.length==0){
+            getTypeModel(data) {
+                let typeModel = [];
+                data.forEach(item => {
+                    if (typeModel.length == 0) {
                         typeModel.push(item.equipArg.model);
-                    }else {
-                       if(typeModel.indexOf(item.equipArg.model) > -1){}else {
-                           typeModel.push(item.equipArg.model);
-                       }
+                    } else {
+                        if (typeModel.indexOf(item.equipArg.model) > -1) {
+                        } else {
+                            typeModel.push(item.equipArg.model);
+                        }
                     }
                 });
                 return typeModel
             },
-            getTrueOrFalse(){
-                this.rightList.forEach(item=>{
-                    this.directObj.orderItems.forEach(directItem=>{
-                        if (directItem.model==item.model){
-                            item.flag=true;
-                            if(directItem.count==item.count){}else {
-                                this.submitFlag=false
-                                item.flag=false
+            getTrueOrFalse() {
+                this.rightList.forEach(item => {
+                    this.directObj.orderItems.forEach(directItem => {
+                        if (directItem.model == item.model) {
+                            item.flag = true;
+                            if (directItem.count == item.count) {
+                            } else {
+                                this.submitFlag = false
+                                item.flag = false
                             }
-                        }else {
-                            this.submitFlag=false
+                        } else {
+                            this.submitFlag = false
                         }
                     })
                 })
             },
             indexMethod(index) {
-                return index +1;
+                return index + 1;
             },
         }
     }
@@ -403,9 +415,11 @@
         padding: 15px 55px;
         color: #707070;
     }
-    .colorDialog{
+
+    .colorDialog {
         color: #FF0000;
     }
+
     .el-table .warning-row {
         background: oldlace;
     }
@@ -413,6 +427,7 @@
     .el-table .success-row {
         background: #f0f9eb;
     }
+
     .directAdjustmentDialog .directAdjustmentDialog-body {
         margin-top: 14px;
         width: 100%;
@@ -423,12 +438,15 @@
     .directAdjustmentDialog-body .leftTable {
         width: 700px;
     }
+
     .directAdjustmentDialog-body .rightTable {
         width: 700px;
     }
-    .rightTable .deleteButtom{
+
+    .rightTable .deleteButtom {
         color: #FF0000;
     }
+
     .directAdjustmentDialog .directAdjustmentDialog-header {
         width: 100%;
     }
@@ -446,15 +464,15 @@
         align-items: center;
     }
 
-    .header-item .resultButton{
-        width:137px;
-        height:30px;
-        background:rgba(47,47,118,1);
-        box-shadow:0px 3px 6px rgba(0,0,0,0.16);
-        opacity:1;
+    .header-item .resultButton {
+        width: 137px;
+        height: 30px;
+        background: rgba(47, 47, 118, 1);
+        box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+        opacity: 1;
         line-height: 0px;
         color: white;
-        border-radius:6px;
+        border-radius: 6px;
     }
 
     .directAdjustmentDialog .directAdjustmentDialog-bottom {
