@@ -22,11 +22,11 @@
     import {getToken} from "../../common/js/auth";
     import request from 'common/js/request'
 
-    import {handheld} from 'common/js/pda'
-
-    const fs = window.require('fs');
-    const path = window.require('path');
-    const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
+    // import {handheld} from 'common/js/pda'
+    //
+    // const fs = window.require('fs');
+    // const path = window.require('path');
+    // const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
 
     /*Melanie Dunne supernova*/
     export default {
@@ -158,11 +158,9 @@
                 return str.substring(1, str.length);
             },
             getInventoryRf(data) {
+                this.inventoryObj.getInventory=data;
+                this.size=String(data.size);
                 data.rfid.forEach((item, index) => {
-                    // let number = index+1;
-                    // if(number<10){
-                    //     number='0'+number
-                    // }
                     this.inventoryObj.rflist.push({
                         rfId: item
                     })
