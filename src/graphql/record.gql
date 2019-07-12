@@ -1,3 +1,25 @@
+query getEquipChargeRecordList($paginator: paginator, $qfilter: qfilter) {
+  EquipChargeRecordList(paginator: $paginator, qfilter: $qfilter) {
+    totalPages
+    totalElements
+    content {
+      chargeNumber
+      duration
+      chargeStation
+      equipName
+      equipModel
+      houseName
+      startTime
+      id
+      rfid
+      equipSerial
+    }
+  }
+}
+
+
+
+
 query getEquipActionRecordList($paginator: paginator, $qfilter: qfilter) {
   EquipActionRecordList(paginator: $paginator, qfilter: $qfilter) {
     totalPages
@@ -14,8 +36,9 @@ query getEquipActionRecordList($paginator: paginator, $qfilter: qfilter) {
         equipModel
         equipName
       }
+      videoAddress
       duration
-      disabled
+
       action
       operator
       startTime
@@ -41,7 +64,7 @@ query getEquipActionRecordListDESC($paginator: paginator, $qfilter: qfilter) {
         equipName
       }
       duration
-      disabled
+
       action
       operator
       startTime(OrderBy:DESC)
@@ -66,7 +89,7 @@ query getEquipActionRecordListASC($paginator: paginator, $qfilter: qfilter) {
         equipName
       }
       duration
-      disabled
+
       action
       operator
       startTime(OrderBy:ASC)
@@ -85,7 +108,7 @@ query getInventoryList($paginator: paginator, $qfilter: qfilter) {
             rfidCount
             adminName
             id
-            disabled
+
             withoutRfidCount
             note
             endTime
@@ -104,7 +127,7 @@ query getInventoryListStartTimeDESC($paginator: paginator,$qfilter: qfilter) {
           rfidCount
           adminName
           id
-          disabled
+
           withoutRfidCount
           note
           endTime
@@ -122,7 +145,7 @@ query getInventoryListStartTimeASC($paginator: paginator, $qfilter: qfilter) {
               rfidCount
               adminName
               id
-              disabled
+
               withoutRfidCount
               note
               endTime
@@ -140,7 +163,7 @@ query getInventoryListEndTimeDESC($paginator: paginator, $qfilter: qfilter) {
                   rfidCount
                   adminName
                   id
-                  disabled
+
                   withoutRfidCount
                   note
                   endTime(OrderBy:DESC)
@@ -159,7 +182,7 @@ query getInventoryListEndTimeASC($paginator: paginator, $qfilter: qfilter) {
                       rfidCount
                       adminName
                       id
-                      disabled
+
                       withoutRfidCount
                       note
                       endTime(OrderBy:ASC)
@@ -173,7 +196,7 @@ query getGateOpenRecordList($paginator: paginator, $qfilter: qfilter) {
     totalPages
     totalElements
     content {
-      disabled
+
       time
       policeId
       policeName
@@ -187,7 +210,7 @@ query getGateOpenRecordListDESC($paginator: paginator, $qfilter: qfilter) {
     totalPages
     totalElements
     content {
-      disabled
+
       time(OrderBy:DESC)
       policeId
       policeName
@@ -201,7 +224,7 @@ query getGateOpenRecordListASC($paginator: paginator, $qfilter: qfilter) {
     totalPages
     totalElements
     content {
-      disabled
+
       time(OrderBy:ASC)
       policeId
       policeName
@@ -219,7 +242,7 @@ query getPersonAccessRecordList($paginator: paginator, $qfilter: qfilter) {
     content {
       access
       videoAddress
-      disabled
+
       time
       userId
       name
@@ -234,7 +257,7 @@ query getPersonAccessRecordListASC($paginator: paginator, $qfilter: qfilter) {
     content {
       access
       videoAddress
-      disabled
+
       time(OrderBy:ASC)
       userId
       name
@@ -249,7 +272,7 @@ query getPersonAccessRecordListDESC($paginator: paginator, $qfilter: qfilter) {
     content {
       access
       videoAddress
-      disabled
+
       time(OrderBy:DESC)
       userId
       name
@@ -272,7 +295,7 @@ query getInventoryItemList($qfilter: qfilter) {
       rfid
       id
       state
-      disabled
+
     }
   }
 }

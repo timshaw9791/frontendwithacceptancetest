@@ -1,6 +1,6 @@
 <template>
     <div class="entryAndExit">
-        <my-header :title="'出入记录'" :searchFlag="false"></my-header>
+        <my-header :title="'人员出入记录'" :searchFlag="false"></my-header>
         <r_search :placeholder="'人员姓名'" @handleSearch="handleSearch"></r_search>
         <r_label :table="table" v-show="table.flag" @clickTable="clickTable" @sortCondition="sortGql" ref="las"></r_label>
         <r_video ref="recordVideo" :src="address"></r_video>

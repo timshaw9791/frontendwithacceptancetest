@@ -23,24 +23,24 @@
                 table: {
                     flag: true,
                     labelList: [
-                        {lable: 'RFID', field: 'equipInfo.equipRfid',sort:false},
-                        {lable: '库房名称', field: 'equipInfo.houseName',sort:false},
-                        {lable: '装备名称', field: 'equipArgInfo.equipName',sort:false},
-                        {lable: '装备序号', field: 'equipInfo.equipSerial',filter:this.filterSerial,sort:false},
-                        {lable: '操作人员', field: 'operator',sort:false},
+                        {lable: 'RFID', field: 'rfid',sort:false},
+                        {lable: '库房名称', field: 'houseName',sort:false},
+                        {lable: '装备名称', field: 'equipName',sort:false},
+                        {lable: '装备序号', field: 'equipSerial',filter:this.filterSerial,sort:false},
                         {lable: '开始时间', field: 'startTime', filter: this.filterTime},
-                        {lable: '结束时间', field: 'endTime', filter: this.filterEndTime,sort:false},
+                        {lable: '结束时间', field: 'duration', filter: this.filterEndTime,sort:false},
                         {lable: '充电时长', field: 'duration',filter: this.filterLong,sort:false},
                     ],
                     graphqlTable: {
-                        graphqlApi: record.getEquipActionRecordList,
-                        graphqlKey: {qfilter:{key: "action", value: 'CHARGE', operator: "EQUEAL"}},
+                        graphqlApi: record.getEquipChargeRecordList,
+                        graphqlKey: {qfilter:{key: "id",  operator: "ISNOTNULL"}},
                     },
                     equipId:'',
                     haveButton: false,
                     namelike:''
                 },
-                cKey:{key: "action", value: 'UPKEEP', operator: "EQUEAL"}
+                selectData:'充电',
+                cKey:{key: "id",  operator: "ISNOTNULL"}
             }
         },
         methods:{
@@ -51,13 +51,23 @@
                     qfilter = this.cKey
                 } else {
                     let that = this;
-                    qfilter = {
-                        key: 'equipArgInfo.equipName',
-                        value: '%' + data + '%',
-                        operator: 'LIKE',
-                        combinator: 'AND',
-                        next: this.cKey
-                    };
+                    if(this.selectData=='充电'){
+                        qfilter = {
+                            key: 'equipName',
+                            value: '%' + data + '%',
+                            operator: 'LIKE',
+                            combinator: 'AND',
+                            next: this.cKey
+                        };
+                    }else {
+                        qfilter = {
+                            key: 'equipArgInfo.equipName',
+                            value: '%' + data + '%',
+                            operator: 'LIKE',
+                            combinator: 'AND',
+                            next: this.cKey
+                        };
+                    }
                 }
                 this.$set(this.table.graphqlTable.graphqlKey, 'qfilter', qfilter);
             },
@@ -70,18 +80,19 @@
             },
             handleSelect(data){
                 let list;
+                this.selectData=data;
                 if(data=='充电'){
                     list=[
-                        {lable: 'RFID', field: 'equipInfo.equipRfid',sort:false},
-                        {lable: '库房名称', field: 'equipInfo.houseName',sort:false},
-                        {lable: '装备名称', field: 'equipArgInfo.equipName',sort:false},
-                        {lable: '装备序号', field: 'equipInfo.equipSerial',filter:this.filterSerial,sort:false},
-                        {lable: '操作人员', field: 'operator',sort:false},
+                        {lable: 'RFID', field: 'rfid',sort:false},
+                        {lable: '库房名称', field: 'houseName',sort:false},
+                        {lable: '装备名称', field: 'equipName',sort:false},
+                        {lable: '装备序号', field: 'equipSerial',filter:this.filterSerial,sort:false},
                         {lable: '开始时间', field: 'startTime', filter: this.filterTime},
-                        {lable: '结束时间', field: 'endTime', filter: this.filterEndTime,sort:false},
-                        {lable: '充电时长', field: 'duration',filter: this.filterLong,sort:false}
+                        {lable: '结束时间', field: 'duration', filter: this.filterEndTime,sort:false},
+                        {lable: '充电时长', field: 'duration',filter: this.filterLong,sort:false},
                         ];
-                    this.$set(this.table.graphqlTable.graphqlKey,'qfilter',{key: "action", value: 'CHARGE', operator: "EQUEAL"});
+                    this.$set(this.table.graphqlTable,'graphqlApi',record.getEquipChargeRecordList);
+                    this.$set(this.table.graphqlTable.graphqlKey,'qfilter',{key: "id",  operator: "ISNOTNULL"});
                 }else if(data=='保养'){
                     list=[
                         {lable: 'RFID', field: 'equipInfo.equipRfid',sort:false},
@@ -93,6 +104,7 @@
                         {lable: '结束时间', field: 'endTime', filter: this.filterEndTime,sort:false},
                         {lable: '保养时长', field: 'duration',filter: this.filterLong,sort:false}
                     ];
+                    this.$set(this.table.graphqlTable,'graphqlApi',record.getEquipActionRecordList);
                     this.$set(this.table.graphqlTable.graphqlKey,'qfilter',{key: "action", value: 'UPKEEP', operator: "EQUEAL"})
                 }else {
                     list=[
@@ -104,6 +116,7 @@
                         {lable: '操作时间', field: 'startTime', filter: this.filterTime},
                         {lable: '操作状态', field: 'action', filter: this.filterAction}
                     ];
+                    this.$set(this.table.graphqlTable,'graphqlApi',record.getEquipActionRecordList);
                     this.$set(this.table.graphqlTable.graphqlKey,'qfilter',{key: "action", value: 'MAINTAIN', operator: "EQUEAL"})
                 }
                 this.$set(this.table,'labelList',list);
@@ -118,7 +131,7 @@
                 this.$refs.las.refetch();
             },
             filterSerial(se) {
-                return se.equipInfo.equipSerial == '' ? '无' : se.equipInfo.equipSerial
+                return se.equipSerial == '' ? '无' : se.equipSerial
             },
             filterTime(nS) {
                 return new Date(parseInt(nS.startTime)).toLocaleString().replace(/:\d{1,2}$/, ' ');
@@ -127,7 +140,7 @@
                 return new Date(parseInt(nS.startTime+nS.duration)).toLocaleString().replace(/:\d{1,2}$/, ' ');
             },
             filterLong(nS){
-                return nS.duration/1000/3600/24+'天'
+                return (nS.duration/1000/3600/24).toFixed(2)+'天'
             },
             filterAction(ob) {
                 return ob.action == 'MAINTAIN' ? '维修' : '归还'

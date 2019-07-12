@@ -142,7 +142,7 @@
                 submitFlag:true,
                 types:'',
                 pid:'',
-                flags:false,
+                flag:false,
                 closeUsb:false,
                 com:0
             }
@@ -245,6 +245,7 @@
                 if(this.hardware=='手持机'){
                     this.handheldMachine();
                 }else {
+                    this.end(this.pid);
                     this.closeUsb=true;
                     setTimeout(()=>{
                         this.closeUsb=false;

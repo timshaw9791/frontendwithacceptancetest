@@ -21,7 +21,7 @@ query getEquipArgList($qfilter: qfilter) {
       upkeepCycle
       name
       chargeCycle
-      disabled
+
     }
   }
 }

@@ -83,10 +83,10 @@
         },
         created() {
             this.getWareHouse();
-            this.getMaintain(data=>{
+            this.getMaintain('',data=>{
                 this.maintenance = data
             });
-            this.getScrap(data=>{
+            this.getScrap('',data=>{
                 this.scrap = data
             });
             this.getUseCount('',(data)=>{
@@ -118,12 +118,12 @@
             toDetails(data) {
                 this.equipDetails.title=data;
                 if(data=='装备维修率'){
-                    this.getMaintain(data=>{
+                    this.getMaintain('',data=>{
                         this.$set(this.equipDetails,'list',data);
                     });
                     this.equipDetails.toolTip=['装备数量','维修数量','维修率']
                 }else if(data=='装备损耗率'){
-                    this.getScrap(data=>{
+                    this.getScrap('',data=>{
                         this.$set(this.equipDetails,'list',data);
                     });
                     this.equipDetails.toolTip=['装备数量','损耗数量','使用率']
@@ -146,9 +146,19 @@
                  startTime:data.startTime.valueOf(),
                  endTime:data.endTime.valueOf()
              };
-             this.getUseCount(date,(res)=>{
-                    this.$set(this.equipDetails,'list',res);
-                })
+             if(this.equipDetails.title=='装备维修率'){
+                 this.getMaintain(date,res=>{
+                     this.$set(this.equipDetails,'list',res);
+                 });
+             }else if(this.equipDetails.title=='装备损耗率'){
+                 this.getScrap(date,res=>{
+                     this.$set(this.equipDetails,'list',res);
+                 });
+             }else {
+                 this.getUseCount(date,(res)=>{
+                     this.$set(this.equipDetails,'list',res);
+                 })
+             }
             },
             handleChangeGener(data){
                 let src ='/statistic/genres/'+data;
@@ -161,14 +171,20 @@
             },
             getCategoryGener(url,api){
                 this.ajax(url,'', (res) => {
+                    console.log(res);
                     let list=[];
                     res.data[api].forEach(item=>{
+                        let percentage=0;
+                        if(item.count!=0&&item.count!=null){
+                            percentage=Math.round(((item.outHouseCount / item.count) * 100));
+                        }
                         list.push({
                             name:item.name,
                             number:item.outHouseCount,
-                            percentage: Math.round(((item.outHouseCount / (item.inHouseCount + item.outHouseCount)) * 100)),
-                            allCount:item.inHouseCount + item.outHouseCount,
-                            select:false
+                            percentage: percentage,
+                            allCount:item.count,
+                            select:false,
+                            price:item.price
                         })
                     });
                     list.sort(function (a, b) {
@@ -180,6 +196,7 @@
             getCategory(data){
                 this.gqlQuery(report.getCategoryList, {id:data}, (data) => {
                    this.$set(this.equipDetails,'categoryList',data)
+                   console.log(this.equipDetails.categoryList)
                 }, true)
             },
             responseInventory(data) {
@@ -232,8 +249,20 @@
                     /*this.useCount.list = userCountList*/
                 });
             },
-            getScrap(sCallback) {
-                this.ajax('/statistic/scrap','', (res) => {
+            getScrap(params,sCallback) {
+                let param;
+                if(params==''){
+                    let newDate = new Date();
+                    let month = newDate.getMonth();
+                    let year = newDate.getFullYear();
+                    param={
+                        startTime:new Date(year,month,1,0).valueOf(),
+                        endTime:newDate.valueOf()
+                    };
+                }else {
+                    param=params
+                }
+                this.ajax('/statistic/scrap',param, (res) => {
                     let scrapList = [];
                     res.data.forEach(item => {
                         scrapList.push({
@@ -252,8 +281,20 @@
                     console.log(this.scrap.list);*/
                 });
             },
-            getMaintain(sCallback) {
-                this.ajax('/statistic/maintain','', (res) => {
+            getMaintain(params,sCallback) {
+                let param;
+                if(params==''){
+                    let newDate = new Date();
+                    let month = newDate.getMonth();
+                    let year = newDate.getFullYear();
+                    param={
+                        startTime:new Date(year,month,1,0).valueOf(),
+                        endTime:newDate.valueOf()
+                    };
+                }else {
+                    param=params
+                }
+                this.ajax('/statistic/maintain',param, (res) => {
                     let maintenanceList = [];
                     res.data.forEach(item => {
                         maintenanceList.push({

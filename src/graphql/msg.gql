@@ -11,7 +11,6 @@ query getMessageList11($id:String) {
       id
       userId
       content
-      disabled
       time(OrderBy:DESC)
       sendUserId
       readed
@@ -29,7 +28,7 @@ query getMessageList($qfilter: qfilter) {
     content {
       sendUserId
       type
-      disabled
+
       userId
       id
       content
@@ -48,7 +47,7 @@ query getMessageList2($paginator: paginator,$qfilter: qfilter) {
     content {
       sendUserId
       type
-      disabled
+
       userId
       id
       content

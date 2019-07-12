@@ -5,7 +5,7 @@ query getGenreList{
     content {
       name
       id
-      disabled
+
     }
   }
 }
@@ -33,7 +33,7 @@ query getCategoryList($id: String) {
         model
         id
         documentAddresses
-        disabled
+
         chargeCycle
       }
       name
@@ -41,7 +41,7 @@ query getCategoryList($id: String) {
       genre {
         id
       }
-      disabled
+
     }
   }
 }
