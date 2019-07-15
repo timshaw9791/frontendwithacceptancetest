@@ -191,7 +191,7 @@ export const asyncRouterMap = [
                 path: 'borrow',
                 name: 'borrow',
                 component: _import('record/borrow'),
-                meta: {title: '领还记录', roles: ['POLICE_OFFICER', 'ADMINISTRATOR']},
+                meta: {title: '装备领还记录', roles: ['POLICE_OFFICER', 'ADMINISTRATOR']},
             }, {
                 path: 'inventory',
                 name: 'inventory',
@@ -207,7 +207,7 @@ export const asyncRouterMap = [
                 path: 'entryAndExit',
                 name: 'entryAndExit',
                 component: _import('record/entryAndExit'),
-                meta: {title: '出入记录', roles: ['POLICE_OFFICER', 'ADMINISTRATOR']},
+                meta: {title: '人员出入记录', roles: ['POLICE_OFFICER', 'ADMINISTRATOR']},
             }, {
                 path: 'maintenanceRecord',
                 name: 'maintenanceRecord',

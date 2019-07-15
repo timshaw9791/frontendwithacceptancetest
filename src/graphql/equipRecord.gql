@@ -13,7 +13,7 @@ query getEquipOperateRecordList($paginator: paginator, $qfilter: qfilter) {
       operator
       houseId
       operate
-      disabled
+
       }
       }
       }
@@ -26,7 +26,7 @@ query getEquipEventStoreList($paginator: paginator, $qfilter: qfilter) {
       houseId
       id
       endTime
-      disabled
+
       startTime
       equipSerial
       note

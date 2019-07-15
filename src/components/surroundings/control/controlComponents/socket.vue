@@ -7,7 +7,7 @@
                         <svg-icon icon-class="插座图标" style="width: 60px;height: 60px;margin-top: 5px"></svg-icon>
                     </div>
                     <span v-text="socket.name" style="margin-top: 11px;font-size: 16px" v-if="socket.name!=''&&flag"></span>
-                    <span v-text="socket.chargingTime" style="margin-top: 5px;font-size: 14px"  v-if="socket.chargingTime!=''&&flag"></span>
+                    <span v-text="time" style="margin-top: 5px;font-size: 14px"  v-if="socket.chargingTime!=''&&flag"></span>
                     <span v-text="'空闲'" style="margin-top: 20px;margin-bottom: 12px" v-if="!flag||socket.name==''"></span>
                 </div>
                 <switch-control style="margin-top: 13px" :status="socket.status==1?false:true" @handleChange="change"></switch-control>
@@ -35,6 +35,12 @@
                 flag:true
             }
         },
+        computed:{
+          time(){
+              let nowDate = new Date().valueOf();
+              return '已充电'+Math.round((nowDate-this.socket.chargingTime)/1000/60)+'分钟'
+          }
+        },
         methods:{
             change(data){
                 this.controlCharging(data);
@@ -54,7 +60,7 @@
                 let params={route:this.socket.route,number:this.socket.number,status:data};
                 this.$ajax({
                     method:'post',
-                    url:'http://192.168.50.15:8080/warehouse/environment/chargeSwitch',
+                    url:'http://10.128.4.152:8080/warehouse/environment/chargeSwitch',
                     params:params
                 }).then((res)=>{
                     let resData={

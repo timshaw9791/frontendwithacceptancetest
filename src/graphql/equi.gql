@@ -10,7 +10,7 @@ query getEquipList($paginator: paginator, $qfilter: qfilter) {
         section
       }
 
-      disabled
+
       state
       name
       id
@@ -40,7 +40,7 @@ query getEquipListDESC($paginator: paginator, $qfilter: qfilter) {
     totalElements
     content {
       state
-      disabled
+
       quality {
         shelfLife
         productDate
@@ -76,7 +76,7 @@ query getEquipListASC($paginator: paginator, $qfilter: qfilter) {
     totalElements
     content {
       state
-      disabled
+
       quality {
         shelfLife
         productDate

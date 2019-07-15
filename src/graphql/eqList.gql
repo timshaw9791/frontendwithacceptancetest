@@ -31,7 +31,7 @@ query getEquip($id: String!) {
       shelfLife
       productDate
     }
-    disabled
+
     equipArg {
       id
       name
@@ -57,7 +57,7 @@ query getEquip($id: String!) {
       }
     }
     state
-
+    price
     rfid
     receiveTime
     houseId
@@ -144,7 +144,7 @@ query getUserList($qfilter: qfilter) {
       username
       gender
       fingerprintInformation
-      disabled
+
       faceInformation
       organUnit {
         id
@@ -163,7 +163,7 @@ query getUserList($qfilter: qfilter) {
           id
           constraintRule
         }
-        disabled
+
       }
     }
   }
@@ -191,12 +191,12 @@ query getCategoryList($houseId:String) {
           upkeepCycle
           name
           chargeCycle
-          disabled
+
           model
         }
-        disabled
+
       }
-      disabled
+
       houseId
     }
   }
@@ -221,14 +221,14 @@ query getGenreList1($houseId:String) {
           houseId
           id
           safeStock
-          disabled
+
           equipArg {
             id
             name
           }
         }
       }
-      disabled
+
       name
     }
   }
@@ -247,7 +247,7 @@ query getSupplierList{
       id
       person
       phone
-      disabled
+
     }
   }
 }
@@ -288,7 +288,7 @@ query getEquipList($paginator: paginator, $qfilter: qfilter) {
         surface
         section
       }
-      disabled
+
       rfid
       houseId
       state
@@ -303,14 +303,14 @@ query getGenreList {
     totalElements
     content {
       name
-      disabled
+
       id
       categories {
-        disabled
+
         name
         id
         equipArgs {
-          disabled
+
           category {
             id
           }
@@ -336,8 +336,8 @@ mutation category_addEquipArg($supplierId: String!, $categoryId: String!, $equip
 }
 
 
-mutation admin_importEquips($rfids: [String]!, $location: Location_!, $serialList: [String], $equipArgId: String!, $quality: Quality_!) {
-  admin_importEquips(rfids: $rfids, location: $location, serialList: $serialList, equipArgId: $equipArgId, quality: $quality) {
+mutation admin_importEquips($rfids: [String]!, $price: Long!, $location: Location_, $serialList: [String], $equipArgId: String!, $quality: Quality_!) {
+  admin_importEquips(rfids: $rfids, price: $price, location: $location, serialList: $serialList, equipArgId: $equipArgId, quality: $quality) {
     totalPages
     totalElements
     content {
@@ -345,6 +345,7 @@ mutation admin_importEquips($rfids: [String]!, $location: Location_!, $serialLis
     }
   }
 }
+
 
 
 query getEquipArg($id: String!) {
@@ -370,7 +371,7 @@ query getEquipArg($id: String!) {
       }
     }
     chargeCycle
-    disabled
+
     documentAddresses
   }
 }

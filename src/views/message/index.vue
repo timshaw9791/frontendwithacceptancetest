@@ -91,7 +91,6 @@
             getList() {
                 console.log(this.$store.state.socket.message);
 
-
                 this.gqlQuery(api.getMessageList,
                     {qfilter: this.qfilter}, (res) => {
                         console.log(res.data.MessageList.content);

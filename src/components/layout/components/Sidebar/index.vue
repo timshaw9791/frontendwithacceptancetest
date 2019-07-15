@@ -2,7 +2,7 @@
     <div>
         <div v-if="!isCollapse">
             <div class="topTitle">
-                <img src="@/common/images/警徽.png" @click="$router.push('/')"/>
+                <img src="@/common/images/警徽.png" @click="windowClose()"/>
             </div>
             <topInfo class="topInfo"></topInfo>
         </div>
@@ -34,6 +34,11 @@
 
     export default {
         components: {SidebarItem, topInfo},
+        methods: {
+            windowClose() {
+                window.close();
+            },
+        },
         computed: {
             ...mapGetters([
                 'permission_routers',

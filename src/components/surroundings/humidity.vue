@@ -8,7 +8,7 @@
                 </div>
                 <s_humidity-component style="margin-top: 47px" :scale="scale" :temperature="humidity" :id="'humidity'" :color="color"></s_humidity-component>
                 <span v-text="'查看湿度曲线'" style="margin-top: 62px" @click="toLineChart"></span>
-                <s_line-chart ref="line" :characterType="'%'" :svgData="svgData" :region="region" :initTime="initTime" :threshold="threshold" :title="'湿度'" :ticksNumber="6"></s_line-chart>
+                <!--<s_line-chart ref="line" :characterType="'%'" :svgData="svgData" :region="region" :initTime="initTime" :threshold="threshold" :title="'湿度'" :ticksNumber="6"></s_line-chart>-->
             </div>
         </s_card>
     </div>
@@ -38,9 +38,21 @@
             }
         },
         props:{
-            humidity:{ type:Number, default:0  }
+            humidity:{ type:Number, default:0  },
+            monthDateH:{
+                type:[Date,String]
+            }
         },
         created(){
+        },
+        watch:{
+            'monthDateH':{
+                handler(newval){
+                    if(newval!=''){
+                        this.getMonthHumidity(newval)
+                    }
+                }
+            }
         },
         methods:{
             toLineChart(){
@@ -48,11 +60,54 @@
                     this.getHs(data.humidity);
                 })
             },
+            getMonthHumidity(date){
+                let year = date.getFullYear();
+                let month = date.getMonth();
+                let params={
+                    month:String(month+1),
+                    year:String(year)
+                };
+                this.$ajax({
+                    method:'post',
+                    url:'http://192.168.50.15:8080/warehouse/environment/humidityMonthHS',
+                    params:params
+                }).then((res)=>{
+                    let copyList=[];
+                    let region=[];
+                    let days=this.getMonthDays(month+1,year);
+                    region.push(new Date(year,month,1),new Date(year,month,days));
+                    if(res.data.data.length!=0){
+                        res.data.data.forEach((item,index)=>{
+                            copyList.push({sale:item,time:new Date(year,month,index+1)})
+                        });
+                        this.getThreshold(copyList);
+                    }else {
+                        this.threshold={
+                            max:80,
+                            min:0
+                        }
+                    }
+                    let dataHumidity={
+                        svgData:copyList,
+                        initTime:new Date(),
+                        region:region,
+                        threshold:this.threshold,
+                        timeType:'day'
+                    };
+                    this.$emit('humidity',dataHumidity);
+                }).catch(err=>{
+                    this.$message.error(err);
+                });
+            },
+            getMonthDays(month,year){
+                let date=new Date(year,month,0);
+                return date.getDate();
+            },
             getHumiture(){
                 let promise=new Promise((resolve,reject)=>{
                     this.$ajax({
                         method:'post',
-                        url:'http://192.168.50.15:8080/warehouse/environment/humitureQuery',
+                        url:'http://10.128.4.152:8080/warehouse/environment/humitureQuery',
                     }).then((res)=>{
                         resolve(res.data.data)
                     }).catch(err=>{
@@ -64,7 +119,7 @@
             getHs(humidity){
                 this.$ajax({
                     method:'post',
-                    url:'http://192.168.50.15:8080/warehouse/environment/humidityHS',
+                    url:'http://10.128.4.152:8080/warehouse/environment/humidityHS',
                 }).then((res)=>{
                     let dateNow =  new Date();
                     let year = dateNow.getFullYear();
@@ -86,7 +141,14 @@
                     });
                     this.getThreshold(copyList);
                     this.$set(this,'svgData',copyList);
-                    this.$refs.line.show();
+                    let dataHumidity={
+                        svgData:copyList,
+                        initTime:this.initTime,
+                        region:this.region,
+                        threshold:this.threshold,
+                        timeType:'hour'
+                    };
+                    this.$emit('humidity',dataHumidity);
                 }).catch(err=>{
                     this.$message.error(err);
                 });
@@ -115,8 +177,8 @@
                     max=Number(number+'0');
                 }
                 this.threshold={
-                    max:max,
-                    min:min
+                    max:80,
+                    min:0
                 }
             }
         }

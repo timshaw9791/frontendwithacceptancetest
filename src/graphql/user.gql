@@ -10,7 +10,7 @@ query getUserList($paginator: paginator, $qfilter: qfilter) {
       faceInformation
       name
       gender
-      disabled
+
       fingerprintInformation
       unitId
       phone
@@ -20,7 +20,7 @@ query getUserList($paginator: paginator, $qfilter: qfilter) {
         name
       }
       roleItems {
-        disabled
+
         id
         privilegeItems {
           constraintRule
@@ -41,7 +41,7 @@ query getRoleList{
     totalPages
     totalElements
     content {
-      disabled
+
       id
       privilegeItems {
         constraintRule
@@ -59,7 +59,7 @@ query getRoleList{
 mutation identitySaveUser($user: User_!) {
   identity_saveUser(user: $user) {
     roleItems {
-      disabled
+
       privilegeItems {
         constraintRule
         privilege {
@@ -80,7 +80,7 @@ mutation identitySaveUser($user: User_!) {
     organUnit {
       id
     }
-    disabled
+
     password
     position
     policeSign
@@ -91,7 +91,7 @@ mutation identitySaveUser($user: User_!) {
 mutation identityUpdateUser($user: User_!) {
   identity_updateUser(user: $user) {
     fingerprintInformation
-    disabled
+
     position
     id
     policeSign
@@ -106,7 +106,7 @@ mutation identityUpdateUser($user: User_!) {
     }
     roleItems {
       roleDescribe
-      disabled
+
       id
       roleEnum
       privilegeItems {

@@ -1,19 +1,20 @@
 <template>
     <div class="progress-box">
        <div class="progress-name">
-           <span v-text="name" style="right: 0px;position: absolute"></span>
+           <span v-text="detailItem.name" style="right: 0px;position: absolute"></span>
        </div>
        <el-tooltip  placement="bottom" popper-class="progress-box-mouse-card-text" :open-delay="200" :visible-arrow="false" transition="transion-toolTip">
            <div slot="content" class="mouseCard">
               <slot></slot>
            </div>
-           <el-progress :percentage="percentage" :style="'width:'+width+'px;margin-left:'+marginLeft+'px'" color="#3B86FF" :stroke-width="Number(5)" v-if="status"></el-progress>
-           <el-progress :percentage="percentage" :style="'width:'+width+'px;margin-left:'+marginLeft+'px'" color="#3B86FF" :stroke-width="Number(5)" status="text" v-if="!status">{{this.number}}次</el-progress>
+           <el-progress :percentage="detailItem.percentage" :style="'width:'+width+'px;margin-left:'+marginLeft+'px'" color="#3B86FF" :stroke-width="Number(5)" v-if="status"></el-progress>
+           <el-progress :percentage="detailItem.percentage" :style="'width:'+width+'px;margin-left:'+marginLeft+'px'" color="#3B86FF" :stroke-width="Number(5)" status="text" v-if="!status">{{this.detailItem.number}}次</el-progress>
        </el-tooltip>
-        <span v-text="'（'+number+'件)'" style="margin-left: -15px" v-if="status"></span>
+        <span v-text="'（'+detailItem.number+'件)'" style="margin-left: -15px" v-if="status&&!havePrice"></span>
+        <span v-text="'（装备总数：'+detailItem.allCount+'件/ ¥'+detailItem.price+')'" style="margin-left: -15px" v-if="havePrice"></span>
+
     </div>
 </template>
-
 <script>
     export default {
         name: "equipProgress",
@@ -23,18 +24,21 @@
           }
         },
         props: {
-            percentage: {
-                type: Number,
-                default: 100
+            detailItem:{
+                type:Object,
             },
-            name: {
-                type: String,
-                default: '此乃类别'
-            },
-            number:{
-                type:Number,
-                default:890
-            },
+            // percentage: {
+            //     type: Number,
+            //     default: 100
+            // },
+            // name: {
+            //     type: String,
+            //     default: '此乃类别'
+            // },
+            // number:{
+            //     type:Number,
+            //     default:890
+            // },
             width:{
               type:Number,
                default:256
@@ -49,7 +53,14 @@
             },
             status:{
                 type:Boolean
-            }
+            },
+            havePrice:{
+                type:Boolean
+            },
+            // allCount:{
+            //     type:Number,
+            //     default:10
+            // }
         },
         mounted(){
            /* let mouse = document.getElementById(this.category+this.from);

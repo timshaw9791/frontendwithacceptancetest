@@ -1,5 +1,5 @@
 <template>
-    <div class="overview" v-if="flag">
+    <div class="overview">
         <el-card shadow="never" :body-style="{ padding:'30px'}" v-if="$store.getters.roles.includes('ADMINISTRATOR')">
             <div slot="header">
                 <span class="_card-title">{{$route.meta.title}}</span>
@@ -137,7 +137,7 @@
         data() {
             return {
                 list: [],
-                flag:false,
+                flag: false,
                 playerOptions: {
                     // live: false,
                     // autoplay: true, //如果true,浏览器准备好时开始回放。
@@ -222,7 +222,7 @@
 
                 equipmentAmount().then(res => {
                     res.genreStatisticList.forEach((item, index) => {
-                        res.genreStatisticList[index]['percentage'] = item.inHouseCount !== 0 ? Math.round((item.outHouseCount / item.inHouseCount) * 100) : 0;
+                        res.genreStatisticList[index]['percentage'] = item.inHouseCount !== 0 ? Math.round((item.outHouseCount / (item.inHouseCount + item.outHouseCount)) * 100) : 0;
                     });
                     this.topList = res;
                 }).catch(err => {
@@ -272,32 +272,27 @@
                     this.$router.push({path: '/report/index', params: {name: route}});
                 }
             },
-            getHumiture(){
+            getHumiture() {
                 this.$ajax({
-                    method:'post',
-                    url:'http://192.168.50.15:8080/warehouse/environment/humitureQuery',
-                }).then((res)=>{
-                    this.surroundings.temperature=res.data.data.temperature;
+                    method: 'post',
+                    url: 'http://10.128.4.152:8080/warehouse/environment/humitureQuery',
+                }).then((res) => {
+                    this.surroundings.temperature = res.data.data.temperature;
                     this.surroundings.humidity = res.data.data.humidity;
-                }).catch(err=>{
+                }).catch(err => {
                     this.$message.error(err);
                 });
             },
-            getdeploys(){
+            getdeploys() {
                 request({
-                    url:'/environment/deviceConfig',
-                    method:'get',
-                }).then(data=>{
-                    this.playerOptions.sources[0].src=data.data['HIK_CAMERA_ADDRESS'][0];
-                    if (this.playerOptions.sources[0].src!=''){
-                        this.flag=true
-                    }else {
-                        this.$message.error('请先登录')
-                    }
+                    url: '/environment/deviceConfig',
+                    method: 'get',
+                }).then(data => {
+                    this.playerOptions.sources[0].src = data.data['HIK_CAMERA_ADDRESS'][0];
                 })
             }
         },
-        created(){
+        created() {
             this.getdeploys();
         },
         mounted() {

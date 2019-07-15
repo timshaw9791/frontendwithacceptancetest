@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <svg id="visualisation" width="1040" :height="height"></svg>
+        <svg id="visualisation" width="1500" :height="height"></svg>
     </div>
 </template>
 <script>
@@ -26,7 +26,7 @@
                 type:Number
             },
             initTime:{
-                type:Number
+                type:[Number,Date]
             },
             characterType:{
                 type:String
@@ -36,6 +36,10 @@
             },
             threshold:{
                 type:Object
+            },
+            timeType:{
+                type:String,
+                default:'hour'
             }
         },
         created(){
@@ -43,6 +47,12 @@
         },
         mounted(){
             let that = this;
+            let ticks;
+            if(this.timeType=='hour'){
+                ticks=d3.timeHour.every(1);
+            }else {
+                ticks=d3.timeDay.every(1);
+            }
             var svg = d3.select("#visualisation"),
                 margin = {top: 60, right: 50, bottom: 60, left: 70},
                 width = +svg.attr("width") - margin.left - margin.right,
@@ -56,19 +66,25 @@
                 .domain(that.region)
                 .range([0, width-80]);
 
-
             var y = d3.scaleLinear()
                 .domain([that.threshold.min, that.threshold.max])
                 .range([this.yHeight, 0]);
             var xAxis = d3.axisBottom(x)
-                .ticks(d3.timeHour.every(1))
+                .ticks(ticks)
                 .tickSize(0)
                 .tickFormat( function (d) {
-                    let times='';
-                   if((d.getHours()-that.initTime)%2==0){
-                       times = d.getHours()+':00'
+                   if(that.timeType=='hour'){
+                       let times='';
+                       if((d.getHours()-that.initTime)%2==0){
+                           times = d.getHours()+':00'
+                       }
+                       return this.parentNode.nextSibling? times:'当前'
+                   }else {
+                       let times='';
+                       let day= d.getDate();
+                       times=day+'日';
+                       return  times
                    }
-                   return this.parentNode.nextSibling? times:'当前'
                 });
 
             var yAxis = d3.axisRight(y)

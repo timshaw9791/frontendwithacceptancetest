@@ -8,7 +8,7 @@
                 </div>
                 <s_thermometer-component style="margin-top: 47px" :scale="scale" :temperature="temperature" :color="color"></s_thermometer-component>
                 <span v-text="'查看温度曲线'" style="margin-top: 62px" @click="toTemLineChart"></span>
-                <s_line-chart_t ref="tLine" :characterType="'°'" :svgData="svgData" :region="region" :initTime="initTime" :ticksNumber="3" :titile="'温度'" :threshold="threshold"></s_line-chart_t>
+                <!--<s_line-chart_t ref="tLine" :characterType="'°'" :svgData="svgData" :region="region" :initTime="initTime" :ticksNumber="3" :titile="'温度'" :threshold="threshold"></s_line-chart_t>-->
             </div>
         </s_card>
     </div>
@@ -34,13 +34,26 @@
                   max:0,min:0
                 },
                 initTime:0,
-                region:[]
+                region:[],
             }
         },
         props:{
-            temperature:{ type:Number, default:0  }
+            temperature:{ type:Number, default:0  },
+            monthDate:{
+                type:[String,Date],
+                default:''
+            }
         },
         created(){
+        },
+        watch:{
+            'monthDate':{
+                handler(newval){
+                    if(newval!=''){
+                        this.getMonthTemperature(newval)
+                    }
+                }
+            }
         },
         methods:{
             toTemLineChart(){
@@ -52,7 +65,7 @@
                 let promise=new Promise((resolve,reject)=>{
                     this.$ajax({
                         method:'post',
-                        url:'http://192.168.50.15:8080/warehouse/environment/humitureQuery',
+                        url:'http://10.128.4.152:8080/warehouse/environment/humitureQuery',
                     }).then((res)=>{
                         resolve(res.data.data)
                     }).catch(err=>{
@@ -61,10 +74,53 @@
                 });
                return promise
             },
+            getMonthTemperature(date){
+                let year = date.getFullYear();
+                let month = date.getMonth();
+                    let params={
+                    month:String(month+1),
+                    year:String(year)
+                };
+                this.$ajax({
+                    method:'post',
+                    url:'http://192.168.50.15:8080/warehouse/environment/temperatureMonthHS',
+                    params:params
+                }).then((res)=>{
+                    let copyList=[];
+                    let region=[];
+                    let days=this.getMonthDays(month+1,year);
+                    region.push(new Date(year,month,1),new Date(year,month,days));
+                    if(res.data.data.length!=0){
+                        res.data.data.forEach((item,index)=>{
+                            copyList.push({sale:item,time:new Date(year,month,index+1)})
+                        });
+                        this.getThreshold(copyList);
+                    }else {
+                        this.threshold={
+                            max:30,
+                            min:20
+                        }
+                    }
+                    let dataTemperature={
+                        svgData:copyList,
+                        initTime:new Date(),
+                        region:region,
+                        threshold:this.threshold,
+                        timeType:'day'
+                    };
+                    this.$emit('temperature',dataTemperature);
+                }).catch(err=>{
+                    this.$message.error(err);
+                });
+            },
+            getMonthDays(month,year){
+               let date=new Date(year,month,0);
+               return date.getDate();
+            },
             getHs(temperature){
                 this.$ajax({
                     method:'post',
-                    url:'http://192.168.50.15:8080/warehouse/environment/temperatureHS',
+                    url:'http://10.128.4.152:8080/warehouse/environment/temperatureHS',
                 }).then((res)=>{
                     let dateNow =  new Date();
                     let year = dateNow.getFullYear();
@@ -86,7 +142,15 @@
                     });
                     this.getThreshold(copyList);
                     this.$set(this,'svgData',copyList);
-                    this.$refs.tLine.show();
+                    let dataTemperature={
+                        svgData:copyList,
+                        initTime:this.initTime,
+                        region:this.region,
+                        threshold:this.threshold,
+                        timeType:'hour'
+                    };
+                    this.$emit('temperature',dataTemperature);
+                    // this.$refs.tLine.show();
                 }).catch(err=>{
                     this.$message.error(err);
                 });

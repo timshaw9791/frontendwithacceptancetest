@@ -1,15 +1,17 @@
 <template>
-    <div>
-        <my-header :title="'领还记录'" :searchFlag="false"></my-header>
+    <div class="borrow">
+        <my-header :title="'装备领还记录'" :searchFlag="false"></my-header>
         <r_search :placeholder="'装备名称'" @handleSearch="handleSearch"></r_search>
         <r_label :table="table" v-show="table.flag" @clickTable="clickTable" @sortCondition="sortGql"
                  ref="las"></r_label>
+        <r_video ref="recordVideo" :src="address"></r_video>
     </div>
 </template>
 
 <script>
     import myHeader from 'components/base/header/header'
     import r_search from 'components/record/recordSearch'
+    import r_video from 'components/record/recordDialog'
     import r_label from 'common/vue/label'
     import record from 'gql/record.gql'
 
@@ -18,7 +20,8 @@
         components: {
             myHeader,
             r_search,
-            r_label
+            r_label,
+            r_video
         },
         data() {
             return {
@@ -32,6 +35,10 @@
                         {lable: '操作时间', field: 'startTime', filter: this.filterTime, sort: 'custom'},
                         {lable: '操作状态', field: 'action', filter: this.filterAction}
                     ],
+                    tableAction:{
+                        label:'监控视频',
+                        button:['查看']
+                    },
                     graphqlTable: {
                         graphqlApi: record.getEquipActionRecordList,
                         graphqlKey: {
@@ -45,6 +52,7 @@
                     equipId: '',
                     namelike:''
                 },
+                address:''
             }
         },
         methods: {
@@ -77,8 +85,8 @@
             clickTable(table) {
                 let data = table.row;
                 if (data) {
-                    this.table.equipId = data.id;
-                    this.table.flag = !this.table.flag
+                    this.address='http://192.168.50.15:8080/warehouse/records/'+data.videoAddress;
+                    this.$refs.recordVideo.show()
                 }
             },
             sortGql(data) {
@@ -102,5 +110,8 @@
 </script>
 
 <style scoped>
-
+    .borrow{
+        width: 100%;
+        min-height: 965px;
+    }
 </style>
