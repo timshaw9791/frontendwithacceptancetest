@@ -4,7 +4,7 @@
 
         <!--<breadcrumb></breadcrumb>-->
         <div class="logo">
-            警用装备智能系统管理
+            警用装备智能管理系统
         </div>
 
         <div class="icons">
@@ -18,7 +18,8 @@
         </div>
         <el-dropdown class="avatar-container" trigger="click">
             <div class="avatar-wrapper">
-                <img class="user-avatar" src="./hqq.gif">
+                <!--<img class="user-avatar" src="./hqq.gif">-->
+                <svg-icon icon-class="设置" class="svg" style="font-size: 22px;"/>
                 <!--<i class="el-icon-caret-bottom"></i>-->
             </div>
             <el-dropdown-menu class="user-dropdown" slot="dropdown">
@@ -92,8 +93,8 @@
         .icons {
             display: flex;
             position: absolute;
-            right: 130px;
-            top: 10px;
+            right: 100px;
+            top: 8px;
 
             .item {
                 margin-left: 20px;
