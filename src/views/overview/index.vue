@@ -109,6 +109,7 @@
                             <span @click="gotoInfo('video')">视频监控</span>
                         </div>
                         <div class="bk-content">
+                            <!--<monitor src="ws://localhost:8888" width="454px" height="248px"></monitor>-->
                             <my-video :playerOptions="playerOptions"></my-video>
                         </div>
                     </div>
@@ -126,12 +127,15 @@
 <script>
     import progressCircular from 'components/base/progressCircular'
     import myVideo from 'components/videoPlayer/index'
+    import monitor from 'components/videoPlayer/monitor'
+
     import {temperatureValue} from "api/surroundings";
     import {equipmentAmount, equipmentScrapped, equipmentCharging} from "api/statistics";
     import api from 'gql/home.gql'
     import {transformMixin} from 'common/js/transformMixin'
     import {formRulesMixin} from 'field/common/mixinComponent';
     import request from 'common/js/request';
+
 
     export default {
         data() {
@@ -214,15 +218,10 @@
                     console.log(err);
                 });
 
-                // temperatureValue().then(res => {
-                //     this.surroundings = res.data.data ? res.data.data : {};
-                // }).catch(err => {
-                //     console.log(err);
-                // });
 
                 equipmentAmount().then(res => {
                     res.genreStatisticList.forEach((item, index) => {
-                        res.genreStatisticList[index]['percentage'] = item.inHouseCount !== 0 ? Math.round((item.outHouseCount / (item.inHouseCount + item.outHouseCount)) * 100) : 0;
+                        res.genreStatisticList[index]['percentage'] = item.inHouseCount !== 0 ? Math.round((item.outHouseCount / item.inHouseCount) * 100) : 0;
                     });
                     this.topList = res;
                 }).catch(err => {
@@ -301,7 +300,8 @@
         },
         components: {
             progressCircular,
-            myVideo
+            myVideo,
+            monitor
         },
 
     }
@@ -438,6 +438,11 @@
 
                     .bk-content {
                         padding: 0 30px;
+
+                        .monitor {
+                            width: 300px;
+                            height: 300px;
+                        }
 
                         .scroll-bar {
                             max-height: 250px;

@@ -136,7 +136,7 @@
             }
         },
         created() {
-            this.com = this.$store.state.user.deploy.data['UHF_READ_COM'];
+            this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];
         },
 
         methods: {

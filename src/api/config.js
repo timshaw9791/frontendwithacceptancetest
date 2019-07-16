@@ -5,8 +5,6 @@
 
 export const ERR_OK = 0;
 
-// export let baseURL = 'http://10.128.4.152:8080/warehouse';
-
 export let baseURL = 'http://10.128.4.152:8080/warehouse';
 
 

@@ -219,9 +219,9 @@
     import {imgUpUrl, pdfUpUrl, videoUpUrl, imgBaseUrl, pdfBaseUrl, videoBaseUrl} from "api/config";
     import {delFile} from "api/basic";
 
-    const cmdPath = 'C:\\Users\\Administrator';
-    const exec = window.require('child_process').exec;
-    const spawn = window.require('child_process').spawn;
+    // const cmdPath = 'C:\\Users\\Administrator';
+    // const exec = window.require('child_process').exec;
+    // const spawn = window.require('child_process').spawn;
 
 
     export default {
@@ -640,7 +640,7 @@
 
         },
         created() {
-            this.com = this.$store.state.user.deploy.data['UHF_READ_COM'];
+            this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];
         },
         mounted() {
 
