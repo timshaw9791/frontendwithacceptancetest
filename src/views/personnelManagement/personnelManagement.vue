@@ -23,7 +23,7 @@
         </div>
         <div class="personnelManagement-body">
             <personnel-list ref="personList" :searchName="search" @clickPersonnel="selectPersonnel" :personnel="personnel" v-show="viewStatus.flag"></personnel-list>
-            <add-personnel @black="black" :addType="type" :personenlData="personnel.personenlData" :disabled="disabled" v-if="!viewStatus.flag" @addSucess="addPersonnelSucess" :roleList="select.selectList" :organUnit="organUnit"></add-personnel>
+            <add-personnel @black="black" :addType="type" :personenlData="personnel.personenlData" :disabled="disabled" v-if="!viewStatus.flag" :organUnit="unit" @addSucess="addPersonnelSucess" :roleList="select.selectList"></add-personnel>
         </div>
     </div>
 </template>
@@ -54,7 +54,7 @@
                 personnel: {
                     graphqlTable: {
                         graphqlKey: {
-                            qfilter: {key: "roleItems.id", value: '%%', operator: "LIKE"},
+                            qfilter: {key: "role.roleEnum", value: "SUPER_ADMINISTRATOR", operator: "NOTEQUEAL"},
                             paginator: {size: 12, page: 1}
                         },
                         graphqlApi: user.getUserList
@@ -64,11 +64,8 @@
                 viewStatus: {
                     flag: true,
                 },
+                unit:{},
                 searchKey: ['name', 'position', 'policeSign'],
-                organUnit:{
-                    value:'gXUK26h6EWSDuMR1e5IuV2O01',
-                    key:'市局'
-                },
                 type:'',
                 disabled:false
             }
@@ -82,10 +79,17 @@
         },
             created() {
                 this.getRoleGql({});
+                let unit = JSON.parse(localStorage.getItem('user')).unitId;
+                this.getUnit(unit)
             },
             methods: {
                 clickCard(data) {
 
+                },
+                getUnit(id){
+                    this.gqlQuery(user.getOrganUnit, {id:id}, (data) => {
+                       this.unit=data;
+                    }, true)
                 },
                 toModify(){
                   this.disabled=!this.disabled;
@@ -109,7 +113,6 @@
                     this.type='add';
                     this.disabled=false;
                     this.viewStatus.flag=false;
-                    console.log(this.type);
                 },
                 selectRole(data) {
                     this.select.selectItem=data;
@@ -120,7 +123,7 @@
                     let that =this;
                     if(this.select.selectItem&&this.select.selectItem!='ALL'){
                         next={
-                            key:'roleItems.id',
+                            key:'role.id',
                             value:this.select.selectItem,
                             operator:'EQUEAL'
                         }
@@ -128,28 +131,25 @@
                     this.searchKey.forEach(item => {
                         getNext(next,item);
                     });
-                    this.$set(this.personnel.graphqlTable.graphqlKey,'qfilter', next);
+                    let qfilter={key: "role.roleEnum", value: "SUPER_ADMINISTRATOR", operator: "NOTEQUEAL",next:next,combinator:"AND"};
+                    this.$set(this.personnel.graphqlTable.graphqlKey,'qfilter', qfilter);
                     function getNext(next, key) {
                         if (next.next) {
-                            if (next.combinator) {
-                            } else {
-                                if(next.operator=='EQUEAL'){
-                                    next.combinator = 'AND'
-                                }else {
-                                    next.combinator = 'OR'
-                                }
-
-                            }
                             getNext(next.next,key)
                         } else if (Object.keys(next).length!=0) {
                             next.next = {
                                 key: key,
-                                value: '%'+that.search+'%',
+                                value: '%'+String(that.search)+'%',
                                 operator: 'LIKE'
+                            }
+                            if(next.operator=='EQUEAL'){
+                                next.combinator = 'AND'
+                            }else {
+                                next.combinator = 'OR'
                             }
                         } else {
                             next.key=key;
-                            next.value='%'+that.search+'%';
+                            next.value='%'+String(that.search)+'%';
                             next.operator='LIKE'
                         }
                     }
@@ -162,10 +162,12 @@
                             value: 'ALL'
                         });
                         data.forEach(item => {
-                            this.select.selectList.push({
-                                label: item.roleDescribe,
-                                value: item.id
-                            })
+                            if(item.roleEnum!='SUPER_ADMINISTRATOR'){
+                                this.select.selectList.push({
+                                    label: item.roleDescribe,
+                                    value: item.id
+                                })
+                            }
                         })
                     }, true)
                 },

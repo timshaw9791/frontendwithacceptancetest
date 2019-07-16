@@ -6,7 +6,7 @@
         </div>
         <div class="t_body">
             <div class="t_b_box"><span v-text="'性别:'"></span><span class="t_b_span" v-text="item.gender"></span></div>
-            <div class="t_b_box"><span v-text="'角色:'"></span><span class="t_b_span" v-text="getRoleName(item.roleItems)"></span></div>
+            <div class="t_b_box"><span v-text="'角色:'"></span><span class="t_b_span" v-text="item.role.roleDescribe"></span></div>
             <div class="t_b_box"><span v-text="'职位:'"></span><span class="t_b_span" v-text="item.position"></span></div>
             <div class="t_b_box"><span v-text="'警号:'"></span><span class="t_b_span" v-text="item.policeSign"></span></div>
         </div>
@@ -42,7 +42,6 @@
                 }else {
                     srcs='./timg.png'
                 }
-                console.log(srcs);
                 return srcs
 
             }
