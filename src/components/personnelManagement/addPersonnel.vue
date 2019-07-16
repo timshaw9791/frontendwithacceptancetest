@@ -18,7 +18,7 @@
                              :rules="r(true).all(R.require)" prop="position"></field-input>
                 <field-input class="field-input" v-model="form.phone"  :disabled="disabled" label="联系方式" width="4.5"
                              :rules="r(true).all(R.require)" prop="phone"></field-input>
-                <field-input class="field-input" v-model="organUnit.key" label="机构单位" width="4.5"
+                <field-input class="field-input" v-model="organUnit.name" label="机构单位" width="4.5"
                              prop="organUnit" :disabled="true"></field-input>
                 <field-input class="field-input" v-model="form.fingerprintInformation" :disabled="disabled" :type="'textarea'" label="指纹信息" width="10"
                              prop="fingerprintInformation"></field-input>
@@ -87,6 +87,7 @@
             }else {
                 this.initForm()
             }
+            console.log(this.roleList);
             this.roleList.forEach(item=>{
                if(item.value!='ALL'&&item.label!='超级管理员'){
                    this.cRoleList.push({
@@ -95,7 +96,7 @@
                    })
                }
             });
-            this.$set(this.form,'organUnit',{id:this.organUnit.value});
+            // this.$set(this.form,'organUnit',{id:this.organUnit.value});
         },
         methods: {
             initForm(){
@@ -108,16 +109,14 @@
                 this.$set(this.form,'policeSign',this.personenlData.policeSign);
                 this.$set(this.form,'phone',this.personenlData.phone);
                 this.$set(this.form,'fingerprintInformation',this.personenlData.fingerprintInformation);
-                this.$set(this.form,'roleItems',[]);
-                this.personenlData.roleItems.forEach(item=>{
-                    this.form.roleItems.push({id:item.id});
-                });
+                this.$set(this.form,'role',{id:this.personenlData.role.id});
+                // this.personenlData.roleItems.forEach(item=>{
+                //
+                // });
                 this.personnelImg=this.personenlData.faceInformation;
                 this.$set(this.form,'faceInformation',this.personnelImg);
+                this.roleItems.push(this.personenlData.role.id);
                 this.viewStatus.flag=false;
-                this.form.roleItems.forEach(item=>{
-                    this.roleItems.push(item.id);
-                });
             },
             black(){
                 this.$emit('black',true)
@@ -131,13 +130,17 @@
                let cGender=[];
                cGender.push(data[data.length-1]);
                this.gender=cGender;
-                this.$set(this.form,'gender',this.gender[0]);
+               this.$set(this.form,'gender',this.gender[0]);
             },
             changeCheckRole(data){
-                this.$set(this.form,'roleItems', []);
-                data.forEach(item=>{
-                    this.form.roleItems.push({id:item});
-                });
+                // this.$set(this.form,'roleItems', []);
+                let cRole=[];
+                cRole.push(data[data.length-1]);
+                this.roleItems=cRole;
+                this.form.role={id:cRole[0]};
+                // data.forEach(item=>{
+                //
+                // });
             },
             PreviewImage(event){
                 let formData = new FormData();
@@ -167,7 +170,6 @@
                 if(this.disabled==false){
                     this.form.username=this.form.policeSign;
                     if(this.addType=='add'){}else {
-                        console.log(1212121);
                         this.form.id=this.personenlData.id
                     }
                     this.$refs.form.validate.then((valid) => {

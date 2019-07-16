@@ -127,7 +127,6 @@ export let formRulesMixin = {
                 } else if (this.param.namelike != this.copyNameLike && this.param.namelike == '%%') {
                     this.param.paginator.page = this.getHistoryPage();
                 }
-                console.log('在watch')
                 this.refetch();
                 if (this.param.namelike != this.copyNameLike && this.param.namelike == '%%') {
                     this.param.paginator.page = Number(this.getHistoryPage());

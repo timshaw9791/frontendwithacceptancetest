@@ -41,7 +41,7 @@ const user = {
             const username = userInfo.username.trim()
             return new Promise((resolve, reject) => {
                 login(username, userInfo.password).then(response => {
-                    let newVal = JSON.parse(JSON.stringify(response.role));
+                    let newVal = JSON.stringify(response.role);
                     if (newVal.includes('SUPER_ADMINISTRATOR') || newVal.includes('LEADER') || newVal.includes('ADMINISTRATOR')) {
                         response.role = ['ADMINISTRATOR'];
                     }

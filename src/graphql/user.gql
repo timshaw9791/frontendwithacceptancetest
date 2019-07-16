@@ -3,35 +3,22 @@ query getUserList($paginator: paginator, $qfilter: qfilter) {
     totalPages
     totalElements
     content {
-      password
-      idNumber
-      position
-      policeSign
       faceInformation
-      name
-      gender
-
-      fingerprintInformation
-      unitId
-      phone
-      id
-      organUnit {
-        id
-        name
-      }
-      roleItems {
-
-        id
-        privilegeItems {
-          constraintRule
-          id
-          privilege {
+            name
+            idNumber
+            fingerprintInformation
+            position
+            password
+            role {
+              id
+              roleDescribe
+              roleEnum
+            }
             id
-          }
-        }
-        roleEnum
-        roleDescribe
-      }
+            phone
+            unitId
+            policeSign
+            gender
     }
   }
 }
@@ -41,83 +28,57 @@ query getRoleList{
     totalPages
     totalElements
     content {
-
+roleDescribe
       id
-      privilegeItems {
-        constraintRule
-        id
-        privilege {
-          id
-        }
-      }
       roleEnum
-      roleDescribe
     }
+  }
+}
+
+query getOrganUnit($id: String!) {
+  OrganUnit(id: $id) {
+    location
+    id
+    ip
+    level
+    name
   }
 }
 
 mutation identitySaveUser($user: User_!) {
   identity_saveUser(user: $user) {
-    roleItems {
-
-      privilegeItems {
-        constraintRule
-        privilege {
+    faceInformation
+        unitId
+        password
+        policeSign
+        idNumber
+        role {
           id
         }
+        position
+        phone
         id
-      }
-      roleEnum
-      roleDescribe
-      id
-    }
-    idNumber
-    name
-    id
-    unitId
-    fingerprintInformation
-    gender
-    organUnit {
-      id
-    }
-
-    password
-    position
-    policeSign
-    phone
-    faceInformation
+        gender
+        name
+        fingerprintInformation
   }
 }
 mutation identityUpdateUser($user: User_!) {
   identity_updateUser(user: $user) {
-    fingerprintInformation
-
-    position
-    id
-    policeSign
-    phone
-    password
-    gender
-    faceInformation
-    unitId
-    idNumber
-    organUnit {
-      id
-    }
-    roleItems {
-      roleDescribe
-
-      id
-      roleEnum
-      privilegeItems {
-        privilege {
-          id
-        }
-        constraintRule
-        id
-      }
-    }
-    name
+   faceInformation
+           unitId
+           password
+           policeSign
+           idNumber
+           role {
+             id
+           }
+           position
+           phone
+           id
+           gender
+           name
+           fingerprintInformation
   }
 }
 
