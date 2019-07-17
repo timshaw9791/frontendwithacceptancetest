@@ -163,13 +163,21 @@
                     if(isSameMoth){
                         startTime=this.getStartTime(date);
                         if(isThisMonth){
-                            endTime=nowDate
+                            endTime=nowDate;
+                            console.log('aaa',endTime);
                         }else {
                             endTime=this.getEndTime(date);
+
                         }
                     }else {
                         startTime=date[0];
-                        endTime=date[1];
+                        if(isThisMonth){
+                            endTime=nowDate;
+                        }else {
+                            let year = date[1].getFullYear();
+                            let month= date[1].getMonth();
+                           endTime=new Date(year,month+1,1,0);
+                        }
                     }
                     flag=true;
                 }else {

@@ -146,7 +146,6 @@
                     if (error) {
                         return false;
                     }
-                    console.log('删除文件' + newFile_path + '成功');
                 })
 
             },
