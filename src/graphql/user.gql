@@ -28,7 +28,7 @@ query getRoleList{
     totalPages
     totalElements
     content {
-roleDescribe
+      roleDescribe
       id
       roleEnum
     }

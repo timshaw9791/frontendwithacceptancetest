@@ -150,10 +150,19 @@ a:hover {
 
 ._textBt {
   font-size: 16px !important;
-  margin: 0 10px !important;
+  margin: 0 16px !important;
 
   span {
     vertical-align: top !important;
+  }
+}
+._info_textBt {
+  font-size: 16px !important;
+  margin-left: 39px !important;
+
+  span {
+    vertical-align: top !important;
+    color: #707070;
   }
 }
 

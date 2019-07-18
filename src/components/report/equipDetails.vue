@@ -167,7 +167,6 @@
                             console.log('aaa',endTime);
                         }else {
                             endTime=this.getEndTime(date);
-
                         }
                     }else {
                         startTime=date[0];

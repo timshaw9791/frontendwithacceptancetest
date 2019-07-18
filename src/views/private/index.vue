@@ -1,41 +1,38 @@
 <template>
-    <div>
-        <el-card shadow="never">
-            <div slot="header">
-                <span class="_card-title">{{$route.meta.title}}</span>
+    <div class="info-box">
+        <div slot="header" class="header">
+            <span class="_card-title">{{$route.meta.title}}</span>
+            <div class="black" @click="black">
+                <svg-icon icon-class="返回" class="svg-info"></svg-icon>
+                <span v-text="'返回'"></span>
             </div>
-            <div>
-                <tabs>
-                    <el-button type="text" class="_textBt" @click="disabled=!disabled">
-                        <svg-icon icon-class="编辑"/>
-                        {{disabled?'编辑':'取消编辑'}}
-                    </el-button>
-                </tabs>
-                <div class="privateInfo">
-                    <div class="imgUp">
-                        <imgUp :disabled="true" :image="imageUrl"></imgUp>
-                    </div>
-                    <form-container ref="form" :model="form" class="formList">
-                        <field-input v-model="form.name" label="姓名 :" width="3" :disabled="true"></field-input>
-                        <br/>
-                        <field-input type="password" v-model="form.password" label="密码 :" width="3" :disabled="disabled"
-                                     :rules="r(true).all(R.require)" prop="password"
-                        ></field-input>
-                        <br/>
-                        <field-input v-model="form.phone" label="联系方式 :" width="3" :disabled="disabled"
-                                     :rules="r(true).all(R.integer)" prop="phone"
-                        ></field-input>
-                    </form-container>
-                </div>
+        </div>
+        <div>
+            <info :personenlData="personenlData" :toBack="toBack" @noBack="noBack" :organUnit="unit" :role="role"></info>
+            <!--<div class="privateInfo">-->
+            <!--&lt;!&ndash;<div class="imgUp">&ndash;&gt;-->
+            <!--&lt;!&ndash;<imgUp :disabled="true" :image="imageUrl"></imgUp>&ndash;&gt;-->
+            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+            <!--&lt;!&ndash;<form-container ref="form" :model="form" class="formList">&ndash;&gt;-->
+            <!--&lt;!&ndash;<field-input v-model="form.name" label="姓名 :" width="3" :disabled="true"></field-input>&ndash;&gt;-->
+            <!--&lt;!&ndash;<br/>&ndash;&gt;-->
+            <!--&lt;!&ndash;<field-input type="password" v-model="form.password" label="密码 :" width="3" :disabled="disabled"&ndash;&gt;-->
+            <!--&lt;!&ndash;:rules="r(true).all(R.require)" prop="password"&ndash;&gt;-->
+            <!--&lt;!&ndash;&gt;</field-input>&ndash;&gt;-->
+            <!--&lt;!&ndash;<br/>&ndash;&gt;-->
+            <!--&lt;!&ndash;<field-input v-model="form.phone" label="联系方式 :" width="3" :disabled="disabled"&ndash;&gt;-->
+            <!--&lt;!&ndash;:rules="r(true).all(R.integer)" prop="phone"&ndash;&gt;-->
+            <!--&lt;!&ndash;&gt;</field-input>&ndash;&gt;-->
+            <!--&lt;!&ndash;</form-container>&ndash;&gt;-->
+            <!--&lt;!&ndash;<info></info>&ndash;&gt;-->
+            <!--</div>-->
 
-                <div class="_box-bottom" v-if="!disabled">
-                    <el-button @click="disabled=!disabled">取消</el-button>
-                    <el-button type="primary" @click="pushButton">提交</el-button>
-                </div>
+            <!--<div class="_box-bottom" v-if="!disabled">-->
+            <!--<el-button @click="disabled=!disabled">取消</el-button>-->
+            <!--<el-button type="primary" @click="pushButton">提交</el-button>-->
+            <!--</div>-->
 
-            </div>
-        </el-card>
-
+        </div>
     </div>
 </template>
 
@@ -43,42 +40,119 @@
     import tabs from 'components/base/tabs/index'
     import imgUp from 'components/base/axiosImgUp';
     import {imgBaseUrl} from "api/config";
-    import {formRulesMixin} from "field/common/mixinComponent";
+    import {fetchMixin} from "field/common/mixinFetch";
+    import info from 'components/information/inforComponent'
+    import user from 'gql/user.gql'
 
     export default {
         components: {
             tabs,
-            imgUp
+            imgUp,
+            info
         },
         data() {
             return {
                 form: {},
-                disabled: true,
                 imageUrl: '',
+                personenlData:{},
+                unit:'',
+                role:{},
+                toBack:false
             }
         },
-        mixins: [formRulesMixin],
+        mixins: [fetchMixin],
+        created(){
+            this.getList();
+        },
         methods: {
             getList() {
                 let data = JSON.parse(localStorage.getItem('user'));
+                this.personenlData = data;
+                this.getUnit(this.personenlData.unitId);
+                this.getRoleGql(this.personenlData.role[0]);
                 console.log(data);
-                this.form = data;
-                this.imageUrl = `${imgBaseUrl}${data.faceInformation}`;
+                // this.imageUrl = `${imgBaseUrl}${data.faceInformation}`;
+            },
+            getUnit(id){
+                this.gqlQuery(user.getOrganUnit, {id:id}, (data) => {
+                    this.unit=data;
+                }, true)
             },
             pushButton() {
 
-            }
+            },
+            black() {
+              this.toBack=true
+            },
+            noBack(data){
+              this.toBack=false
+            },
+            getRoleGql(roleEnum) {
+                this.gqlQuery(user.getRoleList,'', (data) => {
+                    data.forEach(item=>{
+                        if(item.roleEnum==roleEnum){
+                            this.role={roleDescribe:item.roleDescribe,id:item.id};
+                        }
+                    })
+                }, true)
+                // this.gqlQuery(user.getRoleList, qfilter, (data) => {
+                //     data.forEach(item => {
+                //         if(item.roleEnum!='SUPER_ADMINISTRATOR'){
+                //             this.select.selectList.push({
+                //                 label: item.roleDescribe,
+                //                 value: item.id
+                //             })
+                //         }
+                //     })
+                // }, true)
+            },
         },
         mounted() {
-            this.getList();
         }
 
     }
 </script>
 
 <style lang="scss" scoped>
-    .el-card {
-        border: none !important;
+    .info-box {
+        width: 100%;
+        min-height: 600px;
+    }
+
+    .info-box .header {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-left: 15px;
+        padding-right: 15px;
+        height: 58px;
+        font-size: 20px;
+        color: #707070;
+    }
+
+    .header .black {
+        display: flex;
+        align-items: center;
+    }
+
+    .black .svg-info {
+        height: 20px;
+        width: 20px;
+        margin-right: 10px;
+    }
+
+    .info-box .actions {
+        border-top: rgba(112, 112, 112, 0.13) solid 1px;
+        border-bottom: rgba(112, 112, 112, 0.13) solid 1px;
+        height: 57px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        padding-left: 15px;
+        padding-right: 15px;
+        color: #707070;
+
     }
 
     .privateInfo {
