@@ -46,12 +46,11 @@ const user = {
                         response.role = ['ADMINISTRATOR'];
                     }
                     localStorage.setItem('user', JSON.stringify(response));
-
                     getdeploy().then((res) => {
                         console.log(res);
+                        localStorage.setItem('deploy', JSON.stringify(res.data));
                         commit('SET_DEPLOY', res);
                     });
-
                     // commit('SET_USERID', response.id);
                     /*  const data = response.data
                       setToken(data.token)

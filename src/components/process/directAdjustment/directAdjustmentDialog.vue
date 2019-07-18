@@ -118,13 +118,14 @@
     // import inventoryData from 'views/warehouse/inventoryData'
     import request from 'common/js/request'
 
-    // import {handheld} from 'common/js/pda'
-    // const cmdPath = 'C:\\Users\\Administrator';
-    // const exec = window.require('child_process').exec;
-    // const spawn = window.require('child_process').spawn;
-    // const fs = window.require('fs');
-    // const path = window.require('path');
-    // const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
+    import {handheld} from 'common/js/pda'
+
+    const cmdPath = 'C:\\Users\\Administrator';
+    const exec = window.require('child_process').exec;
+    const spawn = window.require('child_process').spawn;
+    const fs = window.require('fs');
+    const path = window.require('path');
+    const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
 
 
     export default {
@@ -173,7 +174,7 @@
             }
         },
         created() {
-            this.com = this.$store.state.user.deploy.data['UHF_READ_COM'];
+            this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];
         },
         methods: {
             deleteFile() {
