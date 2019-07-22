@@ -22,11 +22,11 @@
     import {getToken} from "../../common/js/auth";
     import request from 'common/js/request'
 
-    import {handheld} from 'common/js/pda'
-
-    const fs = window.require('fs');
-    const path = window.require('path');
-    const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
+    // import {handheld} from 'common/js/pda'
+    //
+    // const fs = window.require('fs');
+    // const path = window.require('path');
+    // const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
 
 
     /*Melanie Dunne supernova*/
@@ -57,7 +57,6 @@
             toInventory() {
                 this.inventoryObj.rflist = [];
                 handheld().then(data => {
-                    console.log(data);
                     this.getInventoryRf(JSON.parse(data));
                 });
                 // this.getInventoryRf();
@@ -136,6 +135,7 @@
                         this.inventoryObj.inventoryData.inventory.endTime = this.inventoryObj.getInventory.endTime;
                         this.inventoryObj.inventoryData.inventory.adminName = JSON.parse(localStorage.getItem('user')).name;
                         this.inventoryObj.inventoryData.inventory.adminId = JSON.parse(localStorage.getItem('user')).id;
+                        this.inventoryObj.inventoryData.inventory.rfidCount=res.inventory.rfidCount;
                         this.deleteFile();
                     }).catch(err => {
                         this.$message.error(err);
