@@ -10,13 +10,12 @@
                 </template>
             </el-table-column>
         </el-table>
-        <bos-paginator v-if="havePage"  :pageInfo="pageInfo" @bosCurrentPageChanged="tableChangePage"></bos-paginator>
     </div>
 </template>
 
 <script>
     export default {
-        name: "field-table",
+        name: "transferTableComponent",
         data() {
             return {
                 flag: false
@@ -40,18 +39,11 @@
                   }
               }
             },*/
-            havePage:{
-                type:Boolean,
-                default:true
-            },
             haveButton: {
                 type: Boolean,
                 default: false
             },
             tableAction:{
-                type:Object
-            },
-            pageInfo:{
                 type:Object
             }
         },
@@ -78,9 +70,6 @@
                     name:data.column.label
                 };
                 this.$emit('sortChange',obj)
-            },
-            tableChangePage(newPage){
-                this.$emit('tableCurrentPageChanged',newPage)
             }
         }
     }

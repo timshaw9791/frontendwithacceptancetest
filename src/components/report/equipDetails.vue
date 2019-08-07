@@ -56,7 +56,7 @@
         </div>
         <div class="equip-details-list">
             <div :class="item.select?'equip-details-item select-item':'equip-details-item'" v-for="item in detailsList">
-                <equip-progress :width="970" :detailItem="item" :status="true"
+                <equip-progress :width="970" :detailItem="item" :status="title=='装备使用频次'?false:true"
                                  :havePrice="viewStatus.flag">
                     <span v-text="toolTip[0]+'：'+item.allCount" style="margin-top: 8px"></span>
                     <span v-text="toolTip[1]+'：'+item.number" style="margin-top: 8px"></span>

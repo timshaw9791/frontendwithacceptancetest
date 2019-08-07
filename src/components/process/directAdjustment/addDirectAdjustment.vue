@@ -1,60 +1,73 @@
 <template>
     <div>
-        <a_dialog :width="1040" ref="dialog" :title="'调拨申请'">
+        <serviceDialog title="调拨申请" ref="checkTransferDialog" width="1040px" :button="false">
             <div class="addDirectAdjustment">
                 <div class="addDirectAdjustment-label">
                     <div class="label">
-                        <span v-text="'所在机构：'"></span>
-                        <div class="default-span"><span v-text="unit.name"></span></div>
-                    </div>
-                    <div class="label">
                         <span v-text="'所在库房：'"></span>
-                        <div class="default-span"><span v-text="house.name"></span></div>
+                        <el-input class="input" :disabled="true" size="small" v-model="house.name"></el-input>
+                        <!--<div class="default-span"><span v-text="house.name"></span></div>-->
                     </div>
                     <div class="label">
-                        <span v-text="'指定库房：'"></span>
-                        <el-input class="input" v-model="inHouseName"></el-input>
+                        <span v-text="'指定机构：'"></span>
+                        <el-input class="input" :disabled="true" size="small" v-model="unit.name"></el-input>
+                    </div>
+                    <div class="label">
+                        <span v-text="'指定领导：'"></span>
+                        <field-input-query size="small" v-model="leader.leaderName"
+                                           :inputList="leader.leaderList"
+                                           @select="getLeaderSelect"></field-input-query>
                     </div>
                 </div>
                 <div class="addDirectAdjustment-table">
                     <form-container ref="form" :model="form" style="width: 100%">
-                            <el-table :data="form.orderItems" height="490">
-                                <el-table-column label="序号" align="center">
-                                    <template scope="scope">
-                                        {{scope.$index+1}}
-                                    </template>
-                                </el-table-column>
-                                <el-table-column label="装备型号" align="center">
-                                    <template scope="scope">
-                                        <field-input-query size="small" v-model="scope.row.model"
-                                                           :inputList="restaurants"
-                                                           @select="getEquipName(scope,$event)"></field-input-query>
-                                    </template>
-                                </el-table-column>
+                        <el-table :data="form.orderItems" height="490">
+                            <el-table-column label="序号" align="center">
+                                <template scope="scope">
+                                    {{scope.$index+1}}
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="装备型号" align="center">
+                                <template scope="scope">
+                                    <field-input-query size="small" v-model="scope.row.model"
+                                                       :inputList="restaurants"
+                                                       @select="getEquipName(scope,$event)"></field-input-query>
+                                </template>
+                            </el-table-column>
 
-                                <el-table-column label="装备名称" align="center">
-                                    <template scope="scope">
-                                        {{scope.row.name}}
-                                    </template>
-                                </el-table-column>
-                                <el-table-column label="装备数量" align="center">
-                                    <template scope="scope">
-                                       <el-input v-model="scope.row.count" size="small" @input="changeCount(scope,$event)"></el-input>
-                                    </template>
-                                </el-table-column>
-                                <el-table-column label="操作" width="120">
-                                    <template scope="scope">
-                                        <el-button type="danger" @click="delqaq(scope)">删除</el-button>
-                                    </template>
-                                </el-table-column>
-                            </el-table>
+                            <el-table-column label="装备名称" align="center">
+                                <template scope="scope">
+                                    {{scope.row.name}}
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="装备数量" align="center">
+                                <template scope="scope">
+                                    <el-input v-model="scope.row.count" size="small" @input="changeCount(scope,$event)"></el-input>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="操作" width="120">
+                                <template scope="scope">
+                                    <el-button type="danger" @click="delqaq(scope)">删除</el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
                     </form-container>
+                    <div class="addDirectAdjustment-label" style="margin-top: 12px;position: relative">
+                        <div class="label" style="position: absolute;right: 0">
+                            <span v-text="'申请人员：'"></span>
+                            <el-input class="input" :disabled="true" size="small" v-model="userName"></el-input>
+                            <!--<div class="default-span"><span v-text="getUserName()"></span></div>-->
+                        </div>
+                    </div>
                     <div class="addDirectAdjustment-bottom">
                         <el-button class="cancel" @click="cancel">取消</el-button><el-button style="margin-left: 34px" class="submit" @click="submit">提交</el-button>
                     </div>
                 </div>
             </div>
-        </a_dialog>
+        </serviceDialog>
+        <!--<a_dialog :width="1040" ref="dialog" :title="'调拨申请'">-->
+
+        <!--</a_dialog>-->
     </div>
 </template>
 
@@ -70,15 +83,16 @@
         }
     }
     import a_dialog from 'components/surroundings/surroundingDialog'
+    import serviceDialog from 'components/base/gailiangban'
+    import request from 'common/js/request'
+    import {baseBURL} from "../../../api/config";
     export default {
         name: "addDirectAdjustment",
         components:{
-            a_dialog
+            a_dialog,
+            serviceDialog
         },
         props:{
-            status:{
-                type:Boolean
-            },
             restaurants:{
                 type:Array
             },
@@ -87,6 +101,9 @@
             },
             house:{
                 type:Object
+            },
+            myUnit:{
+                type:Object
             }
         },
         data(){
@@ -94,24 +111,23 @@
                 form:{},
                 inHouseName:'',
                 lastTime:'',
+                unitName:'',
+                userName:'',
                 nowTime:0,
                 nowRow:{},
-                nowCount:''
+                nowCount:'',
+                processLevelId:'',
+                leader:{
+                    leaderList:[{value:'1',key:'21212'},{value:'2',key:'12121'},{value:'3',key:'asas'}],
+                    leaderName:'',
+                    leaderItem:{},
+                }
             }
         },
         created(){
-
+            this.unitName=this.unit.name
         },
         watch:{
-            'status':{
-                handler(newVal){
-                    if(newVal){
-                        this.form = {};
-                        this.form['orderItems'] = [{model: ''}];
-                        this.$refs.dialog.show();
-                    }
-                }
-            },
             'inHouseName':{
                 handler(newVal){
                     this.$emit('getInHouse',newVal)
@@ -124,14 +140,99 @@
             }
         },
         methods:{
+            getLeaderSelect(data){
+                this.leader.leaderItem=data.key;
+            },
+            getLeader(){
+                // this.$ajax({
+                //     method:'get',
+                //     url:baseBURL+'/process-level/by-organ-unit-and-transfer-type',
+                //     params:{
+                //         organUnitId:this.unit.id,
+                //         transferType:'DOWN_TO_UP'
+                //     }
+                // }).then(res=>{
+                //     console.log(res);
+                // })
+                request({
+                    method:'get',
+                    url:baseBURL+'/process-level/by-organ-unit-and-transfer-type',
+                    params:{
+                        organUnitId:this.unit.id,
+                        transferType:'DOWN_TO_UP'
+                    }
+                }).then(res=>{
+                        this.leader.leaderList=[];
+                        this.processLevelId=res.id;
+                    if(Object.keys(res.levelLeaderMap).length==0){
+                        res.applyLeaders.forEach(item=>{
+                            this.leader.leaderList.push({value:item.name,key:item})
+                        })
+                    }else {
+                        res.levelLeaderMap['1'].forEach(item=>{
+                            this.leader.leaderList.push({value:item.name,key:item})
+                        })
+                    }
+                })
+            },
             submit(){
-                let transferOrder={};
-                transferOrder.applicant=JSON.parse(localStorage.getItem('user')).name;
-                transferOrder.inHouseName=this.inHouseName;
-                transferOrder.outHouseName=this.house.name;
-                transferOrder.orderItems = this.form.orderItems;
-                this.$emit('submit',transferOrder)
+                console.log(this.leader.leaderItem);
+                let params={
+                    nextApproveId:this.leader.leaderItem.userId,
+                    processLevelId:this.processLevelId
+                };
+               let transferApplyOrder={
+                    "applicant": {
+                        "name": JSON.parse(localStorage.getItem('user')).name,
+                        "organUnit": {
+                            "id": JSON.parse(localStorage.getItem('user')).unitId,
+                            "name": this.myUnit.name
+                        },
+                        "userId": JSON.parse(localStorage.getItem('user')).id
+                    },
+                    "inHouse": {
+                        "id": this.house.id,
+                        "name": this.house.name,
+                        "organUnit": {
+                            "id": JSON.parse(localStorage.getItem('user')).unitId,
+                            "name": this.myUnit.name
+                        }
+                    },
+                    "outOrganUnit": {
+                        "id": this.unit.id,
+                        "name": this.unit.name
+                    },
+                    "transferNeedEquip": this.form.orderItems,
+                    "type": "DOWN_TO_UP"
+                };
+                let url=baseBURL+'/transfer/start'+'?nextApproveId='+this.leader.leaderItem.userId+'&processLevelId='+this.processLevelId
+                this.allocationApplication(url,transferApplyOrder);
+                // let transferOrder={};
+                // transferOrder.applicant=JSON.parse(localStorage.getItem('user')).name;
+                // transferOrder.inHouseName=this.inHouseName;
+                // transferOrder.outHouseName=this.house.name;
+                // transferOrder.orderItems = this.form.orderItems;
+                // this.$emit('submit',transferOrder)
 
+            },
+            allocationApplication(url,transferApplyOrder){
+                this.$ajax.post(url, transferApplyOrder).then(res=>{
+                    console.log(res)
+                })
+                // this.$ajax({
+                //     method:'post',
+                //     url:url,
+                //     params:{transferApplyOrder:transferApplyOrder},
+                // }).then(res=>{
+                //    console.log(res);
+                // })
+            },
+            showAdd(){
+                this.form = {};
+                this.form['orderItems'] = [{model: ''}];
+                this.$refs.checkTransferDialog.show();
+                this.getLeader();
+                this.userName=JSON.parse(localStorage.getItem('user')).name;
             },
             addRow(){
                 if (this.nowRow.$index === this.form.orderItems.length - 1) {
@@ -170,14 +271,17 @@
 <style  scoped>
     .addDirectAdjustment {
         height: 697px;
-        padding:33px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
     .addDirectAdjustment-bottom{
         width: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-top: 21px;
+        margin-top: 53px;
     }
     .addDirectAdjustment-bottom .cancel{
         width:70px;

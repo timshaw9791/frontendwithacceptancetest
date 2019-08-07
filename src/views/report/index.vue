@@ -30,7 +30,7 @@
                     <equip-report :equipData="maintenance" :title="'装备维修率'"></equip-report>
                 </div>
                 <div @click="toDetails('装备损耗率')">
-                    <equip-report :equipData="scrap" :title="'装备损耗率'" :toolTip="['装备数量','损耗数量','使用率']"></equip-report>
+                    <equip-report :equipData="scrap" :title="'装备损耗率'" :toolTip="['装备数量','损耗数量','损耗率']"></equip-report>
                 </div>
                 <div  @click="toDetails('装备使用频次')">
                     <equip-report :equipData="useCount" :title="'装备使用频次'"
@@ -126,7 +126,7 @@
                     this.getScrap('',data=>{
                         this.$set(this.equipDetails,'list',data);
                     });
-                    this.equipDetails.toolTip=['装备数量','损耗数量','使用率']
+                    this.equipDetails.toolTip=['装备数量','损耗数量','损耗率']
                 }else {
                     this.getUseCount('',(data)=>{
                         this.$set(this.equipDetails,'list',data);
