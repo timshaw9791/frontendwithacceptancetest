@@ -180,7 +180,7 @@
                     fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
                     sources: [{
                         type: "application/x-mpegURL",
-                        src: this.src, //你的m3u8地址（必填）
+                        src: '', //你的m3u8地址（必填）
                         withCredentials: false,
                     }],
                     notSupportedMessage: '此视频暂无法播放，请稍后再试', //允许覆盖Video.js无法播放媒体源时显示的默认信息。

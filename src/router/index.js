@@ -279,20 +279,20 @@ export const asyncRouterMap = [
             },
         ]
     },
-    {
-        path: '/category',
-        component: Layout,
-        name: 'category',
-        meta: {roles: ['ADMINISTRATOR']},
-        children: [
-            {
-                path: 'index',
-                name: 'category/index',
-                component: _import('category/index'),
-                meta: {title: '装备类别', icon: '装备类别'},
-            },
-        ]
-    },
+    // {
+    //     path: '/category',
+    //     component: Layout,
+    //     name: 'category',
+    //     meta: {roles: ['ADMINISTRATOR']},
+    //     children: [
+    //         {
+    //             path: 'index',
+    //             name: 'category/index',
+    //             component: _import('category/index'),
+    //             meta: {title: '装备类别', icon: '装备类别'},
+    //         },
+    //     ]
+    // },
     {
         path: '/message',
         component: Layout,

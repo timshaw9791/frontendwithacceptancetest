@@ -11,8 +11,8 @@ export const transformMixin = {
                 return 'B面'
             } else if (data === 'ALL') {
                 return 'AB面'
-            }else {
-                return'暂无'
+            } else {
+                return '暂无'
             }
         },
         countdown(lastChargeTime, chargeCycle) {
@@ -20,7 +20,7 @@ export const transformMixin = {
                 countdownTime = '';
             countdownTime = ((date - (lastChargeTime + chargeCycle * 24 * 60 * 60 * 1000)) / (1000 * 60 * 60));
 
-            return countdownTime.toFixed(1) > 0 ? `逾期:${(countdownTime / 24).toFixed(0)}天` : `${countdownTime.toFixed(1)}小时`
+            return countdownTime.toFixed(1) > 0 ? `逾期:${(countdownTime / 24).toFixed(0)}天` : `${Math.abs(Math.round(countdownTime))}小时`
         },
         countdown1(lastChargeTime) {
             let date = (new Date()).getTime();

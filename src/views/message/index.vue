@@ -7,13 +7,13 @@
                                @selected="selected"></tb-select>
 
                     <div class="_buttonsLeft" style="margin-left: 1vw">
-                        <BosInput
-                                placeholder="装备/序号/编号/AB面"
-                                suffix="el-icon-search"
-                                v-model="inquire"
-                                :wrapforlike="true"
-                                style=" width:13vw;">
-                        </BosInput>
+                        <!--<BosInput-->
+                                <!--placeholder="装备/序号/编号/AB面"-->
+                                <!--suffix="el-icon-search"-->
+                                <!--v-model="inquire"-->
+                                <!--:wrapforlike="true"-->
+                                <!--style=" width:13vw;">-->
+                        <!--</BosInput>-->
                     </div>
                 </div>
                 <div class="ulList" ref="ulList" :v-loading="true">

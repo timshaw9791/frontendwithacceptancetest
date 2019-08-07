@@ -118,14 +118,14 @@
     // import inventoryData from 'views/warehouse/inventoryData'
     import request from 'common/js/request'
 
-    // import {handheld} from 'common/js/pda'
-    //
-    // const cmdPath = 'C:\\Users\\Administrator';
-    // const exec = window.require('child_process').exec;
-    // const spawn = window.require('child_process').spawn;
-    // const fs = window.require('fs');
-    // const path = window.require('path');
-    // const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
+    import {handheld} from 'common/js/pda'
+
+    const cmdPath = 'C:\\Users\\Administrator';
+    const exec = window.require('child_process').exec;
+    const spawn = window.require('child_process').spawn;
+    const fs = window.require('fs');
+    const path = window.require('path');
+    const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
 
 
     export default {
@@ -197,6 +197,7 @@
                 const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
                 this.pid = process.pid;
                 process.stderr.on('data', (err) => {
+                    this.$message.error('设备炸了请重新插拔!');
                     console.log(err);
                 });
 

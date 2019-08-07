@@ -3,9 +3,8 @@
         <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
 
         <!--<breadcrumb></breadcrumb>-->
-        <div class="logo">
-            警用装备智能管理系统
-        </div>
+
+        <logoTitle></logoTitle>
 
         <div class="icons">
             <div @click="$router.push('/message/index')">
@@ -49,11 +48,13 @@
     import Breadcrumb from 'components/base/Breadcrumb'
     import Hamburger from 'components/base/Hamburger'
     import {startSocket} from "common/js/webSocket";
+    import logoTitle from './Sidebar/logoTitle'
 
     export default {
         components: {
             Breadcrumb,
-            Hamburger
+            Hamburger,
+            logoTitle
         },
         computed: {
             ...mapGetters([
@@ -74,6 +75,7 @@
         },
         mounted() {
             /*startSocket(JSON.parse(localStorage.getItem('user')).id);*/
+
         }
     }
 </script>
@@ -85,10 +87,6 @@
         border-radius: 0px !important;
         position: relative;
 
-        .logo {
-            font-size: 18px;
-            color: #707070;
-        }
 
         .icons {
             display: flex;
