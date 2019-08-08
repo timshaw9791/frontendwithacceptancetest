@@ -216,8 +216,9 @@
 
             },
             allocationApplication(url,transferApplyOrder){
-                this.$ajax.post(url, transferApplyOrder).then(res=>{
-                    console.log(res)
+                this.$ajax.post(url,transferApplyOrder).then(res=>{
+                   this.$message.success('成功申请!');
+                   this.$emit('applyOrder',true);
                 })
                 // this.$ajax({
                 //     method:'post',

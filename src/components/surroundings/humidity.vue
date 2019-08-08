@@ -107,7 +107,7 @@
                 let promise=new Promise((resolve,reject)=>{
                     this.$ajax({
                         method:'post',
-                        url:'http://10.128.4.152:8080/warehouse/environment/humitureQuery',
+                        url:'http://10.128.4.127:8080/warehouse/environment/humitureQuery',
                     }).then((res)=>{
                         resolve(res.data.data)
                     }).catch(err=>{
@@ -119,7 +119,7 @@
             getHs(humidity){
                 this.$ajax({
                     method:'post',
-                    url:'http://10.128.4.152:8080/warehouse/environment/humidityHS',
+                    url:'http://10.128.4.127:8080/warehouse/environment/humidityHS',
                 }).then((res)=>{
                     let dateNow =  new Date();
                     let year = dateNow.getFullYear();

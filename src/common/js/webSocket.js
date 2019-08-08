@@ -29,7 +29,7 @@ import store from 'store'
 import {getToken} from "./auth";
 import {websocketUrl} from "../../api/config";
 
-const socket = new SockJS("http://10.128.4.152:8080/warehouse/websocket");
+const socket = new SockJS("http://10.128.4.127:8080/warehouse/websocket");
 
 const stompClient = Stomp.over(socket);
 

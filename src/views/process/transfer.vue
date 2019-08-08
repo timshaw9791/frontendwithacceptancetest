@@ -34,7 +34,7 @@
                 <t_table ref="transferTable" :typeSingle="select.typeSingle" :select="select.single" :havePage="havePage" :searchNumber="search" @toSee="toSee" ></t_table>
             </div>
         </div>
-        <bills v-if="!viewStatus.flag" :singleStatus="select.singleStatus" :typeSingle="select.typeSingle" :billData="billData" @toBack="haveBack"></bills>
+        <bills v-if="!viewStatus.flag" @closeBill="closeBill" :singleStatus="select.singleStatus" :typeSingle="select.typeSingle" :billData="billData" @toBack="haveBack"></bills>
         <add-direct-adjustment ref="addDirectAdjustment" :restaurants="restaurants" :myUnit="myUnit" :unit="unit" :house="house" @submit="submit"></add-direct-adjustment>
     </div>
 </template>
@@ -115,6 +115,10 @@
             }
         },
         methods:{
+            closeBill(){
+                this.viewStatus.flag=!this.viewStatus.flag;
+                this.$refs.transferTable.getList(this.$refs.transferTable.select,this.$refs.transferTable.searchNumber)
+            },
             addDirectAdjustment(){
                 this.$refs.addDirectAdjustment.showAdd()
             },
@@ -135,7 +139,7 @@
                             };
                             })
                 }, true);
-                let url='http://10.128.4.152:8080/warehouse/house';
+                let url='http://10.128.4.127:8080/warehouse/house';
                 request({
                     method:'get',
                     url:url,
@@ -155,7 +159,7 @@
                 // if(dataSubmit.orderItems[index].model==''){
                 //     dataSubmit.orderItems.splice(index,1)
                 // }
-                // let url = 'http://10.128.4.152:8080/warehouse/transfers/up-to-down';
+                // let url = 'http://10.128.4.127:8080/warehouse/transfers/up-to-down';
                 // request({
                 //     method:'post',
                 //     url:url,
@@ -195,7 +199,7 @@
             },
             toSee(data){
                 // this.directDefault=data.row;
-                // this.downloadSrc='http://10.128.4.152:8080/warehouse/transfers/up-to-down/export-excel'+'?transferOrderId='+this.directDefault.id;
+                // this.downloadSrc='http://10.128.4.127:8080/warehouse/transfers/up-to-down/export-excel'+'?transferOrderId='+this.directDefault.id;
                 // this.viewStatus.flag=!this.viewStatus.flag
                 this.billData=data.row.variables;
                 this.select.singleStatus=this.select.single;

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <dialog-svices ref="transFerDialogApply" width="1529px" title="出库" :button="false">
+        <dialog-svices ref="transFerDialogApply" width="1529px" :title="typeOperational" :button="false">
             <div class="directAdjustmentDialog">
                 <div class="directAdjustmentDialog-header">
                     <div class="header-item">
@@ -104,9 +104,53 @@
                         </el-table>
                     </div>
                 </div>
-                <div class="directAdjustmentDialog-bottom" v-if="directObj.state=='IN'">
+                <div class="directAdjustmentDialog-bottom">
                     <el-button class="cancel" @click="close">取消</el-button>
                     <el-button style="margin-left: 34px" class="submits" @click="submit">提交</el-button>
+                </div>
+            </div>
+        </dialog-svices>
+        <dialog-svices ref="transFerDialogTips" width="634px" :title="typeOperational+'提示'" :button="false">
+            <div class="transferdialog-tips">
+                <div style="margin-top: 84px">
+                    您的装备信息有误，确定要{{typeOperational}}吗？
+                </div>
+                <div class="transferdialog-tips-button">
+                    <el-button class="cancel" @click="closeTips">取消</el-button>
+                    <el-button style="margin-left: 12px" class="submits" @click="submitTips">提交</el-button>
+                </div>
+            </div>
+        </dialog-svices>
+        <dialog-svices ref="transFerDialogReason" width="634px" title="备注" :button="false">
+           <div class="transferdialog-textarea">
+               <span v-text="'填写备注：'"></span>
+               <div style="width: 100%;margin-top: 12px">
+                   <el-input
+                           type="textarea"
+                           :autosize="{ minRows: 8, maxRows: 10}"
+                           placeholder="请输入内容"
+                           v-model="reason"
+                           maxlength="150"
+                           show-word-limit>
+                   </el-input>
+               </div>
+               <div class="transferdialog-textarea-button">
+                   <el-button class="cancel" @click="closeTextarea">取消</el-button>
+                   <el-button style="margin-left: 12px" class="submits" @click="submitTextarea">提交</el-button>
+               </div>
+           </div>
+        </dialog-svices>
+        <dialog-svices ref="transFerDialogApplyConfirm" width="634px" title="申请人确认" :button="false">
+            <div class="transferdialog-apply-confirm">
+                <div class="transferdialog-apply-confirm-item">
+                    <span v-text="'账号：'"></span><el-input style="width: 248px" v-model="user.userName"></el-input>
+                </div>
+                <div class="transferdialog-apply-confirm-item">
+                    <span v-text="'密码：'"></span><el-input style="width: 248px;" v-model="user.password"></el-input>
+                </div>
+                <div class="transferdialog-apply-confirm-buttom">
+                    <el-button class="cancel" @click="closeConfirm">取消</el-button>
+                    <el-button style="margin-left: 12px" class="submits" @click="confirmApply">提交</el-button>
                 </div>
             </div>
         </dialog-svices>
@@ -117,15 +161,15 @@
     import dialogSvices from 'components/base/gailiangban'
     // import inventoryData from 'views/warehouse/inventoryData'
     import request from 'common/js/request'
+    import {baseURL,baseBURL} from "../../../api/config"
+    import {handheld} from 'common/js/pda'
 
-    // import {handheld} from 'common/js/pda'
-    //
-    // const cmdPath = 'C:\\Users\\Administrator';
-    // const exec = window.require('child_process').exec;
-    // const spawn = window.require('child_process').spawn;
-    // const fs = window.require('fs');
-    // const path = window.require('path');
-    // const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
+    const cmdPath = 'C:\\Users\\Administrator';
+    const exec = window.require('child_process').exec;
+    const spawn = window.require('child_process').spawn;
+    const fs = window.require('fs');
+    const path = window.require('path');
+    const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
 
 
     export default {
@@ -136,6 +180,10 @@
         props: {
             directObj: {
                 type: Object
+            },
+            typeOperational:{
+                type:String,
+                default:'出库'
             }
         },
         data() {
@@ -153,7 +201,13 @@
                 pid: '',
                 flag: false,
                 closeUsb: false,
-                com: 0
+                com: 0,
+                reason:'',
+                user:{
+                    userName:'',
+                    password:''
+                },
+                inHouseEquip:[]
             }
         },
         watch: {
@@ -231,9 +285,140 @@
             close() {
                 this.closeUsb = true;
                 this.end(this.pid);
-                this.$refs.dialog.close();
+                this.$refs.transFerDialogApply.cancelDb();
             },
-            showDialog() {
+            closeTextarea(){
+                this.$refs.transFerDialogReason.cancelDb();
+            },
+            closeTips(){
+                this.$refs.transFerDialogTips.cancelDb();
+            },
+            closeConfirm(){
+                this.$refs.transFerDialogApplyConfirm.cancelDb();
+            },
+            submitTextarea(){
+                if(this.reason==''){
+                    this.$message.info('备注不能为空!');
+                }else {
+                    if(this.typeOperational=='出库'){
+                        this.$refs.transFerDialogApplyConfirm.show();
+                    }else {
+                        this.transferEquipInOrOut('ABNORMAL')
+                    }
+                    this.$refs.transFerDialogReason.cancelDb();
+                }
+
+            },
+            confirmApply(){
+               if(this.user.userName!=''&&this.user.password!=''){
+                   let param={
+                       password:this.user.password,
+                       userId:this.directObj.userId,
+                       username:this.user.userName
+                   };
+                   request({
+                       method:'post',
+                       url:baseBURL+'/identity/authentication',
+                       params:param
+                   }).then(res=>{
+                       this.closeConfirm();
+                       let state;
+                       if(this.submitFlag){
+                           state='NORMAL'
+                       }else {
+                           state='ABNORMAL'
+                       }
+                       this.transferEquipInOrOut(state)
+                   })
+               }else {
+                   this.$message.info('请先填写完整')
+               }
+            },
+            transferEquipInOrOut(state){
+                let url;
+                let rfids=[];
+                let aUrl='';
+                let transferOrderId=this.directObj.id;
+                if(this.typeOperational=='出库'){
+                    url=baseURL+'/transfer-equips/out'+'?transferOrderId='+transferOrderId+'&state='+state;
+                    this.rightList.forEach(item=>{
+                        rfids=[...rfids,...item.rfid]
+                    });
+                }else {
+                    url=baseURL+'/transfer-equips/in'+'?transferOrderId='+transferOrderId+'&state='+state;
+                    console.log(this.inHouseEquip);
+                    rfids=this.inHouseEquip;
+                    // this.rightList.forEach(item=>{
+                    //     rfids=[...rfids,...item.rfid]
+                    // });
+                }
+                if(state=='ABNORMAL'){
+                    aUrl=url+'&note='+this.reason;
+                    // request({
+                    //     method:'DELETE',
+                    //     url: url,
+                    //     rfids
+                    // }).then(res=>{
+                    //     console.log(res);
+                    // })
+                }
+                if(this.typeOperational=='出库'){
+                    this.$ajax.delete(aUrl,{data:rfids}).then(res=>{
+                        this.$message.success('出库成功');
+                        this.sucessInOrOut()
+                    });
+                }else {
+                    request({
+                        method: 'PUT',
+                        url: aUrl,
+                        data: rfids
+                    }).then(res => {
+                        this.$message.success('入库成功');
+                        this.sucessInOrOut()
+                    })
+                }
+
+            },
+            sucessInOrOut(){
+              this.$emit('sucesssInOrOut',true);
+            },
+            submit() {
+                if (this.submitFlag) {
+                    if(this.typeOperational=='出库'){
+                        this.$refs.transFerDialogApplyConfirm.show();
+                    }else {
+                        this.transferEquipInOrOut('NORMAL')
+                    }
+                    // let rfidC = [];
+                    // this.rightList.forEach(item => {
+                    //     rfidC.push(item.rfid)
+                    // });
+                    //
+                    // let url = 'http://10.128.4.127:8080/warehouse/transfers/up-to-down/equips-out/';
+                    // let param = {
+                    //     rfidList: rfidC,
+                    //     transferOrderId: this.directObj.id
+                    // };
+                    // request({
+                    //     method: 'DELETE',
+                    //     url: url,
+                    //     data: param
+                    // }).then(res => {
+                    //     if (res) {
+                    //         console.log(res);
+                    //     }
+                    // })
+                } else {
+                    this.$refs.transFerDialogTips.show();
+                    // this.sucessInOrOut();
+                    // this.$message.error('请重新确认出库装备')
+                }
+            },
+            submitTips(){
+                this.$refs.transFerDialogReason.show();
+                this.$refs.transFerDialogTips.cancelDb();
+            },
+            showDialog(){
                 this.$refs.transFerDialogApply.show();
             },
             tableRowClassName({row, rowIndex}) {
@@ -265,84 +450,86 @@
             handheldMachine() {
                 handheld().then((data) => {
                     let json = JSON.parse(data);
-                    console.log(data);
                     this.getOutDataCopy(json.rfid);
                     this.deleteFile();
                 });
                 //todo 要换回来
                 // let data = inventoryData;
-                // this.getOutDataCopy(['q2', '3', '4', '55','6','7','8','9','11','天下第一','sdfa','10','222','23252s'])
+
+                // this.getOutDataCopy(['111', '231', '19070001', '19070007','19071103','19071105','19071106','19071104','19071102','66666666','E20020194402020927000776','77777777','19071110','1908000E'])
             },
             // getOutData(data){
             //     console.log(data);
             // },
             getOutDataCopy(data) {
-                let url = 'http://10.128.4.152:8080/warehouse/equips/by-rfidlist';
-                request({
-                    method: 'PUT',
-                    url: url,
-                    data: data
-                }).then(res => {
-                    if (res) {
-                        this.getCategroy(res);
+                if(this.typeOperational=='出库'){
+                    let url = baseURL+'/equips/by-rfidlist';
+                    request({
+                        method: 'PUT',
+                        url: url,
+                        data: data
+                    }).then(res => {
+                        if (res) {
+                            this.getCategroy(res);
+                        }
+                    })
+                }else {
+                    let url = baseBURL+'/transfer-equips/equips-out-house';
+                    request({
+                        method: 'GET',
+                        url: url,
+                        params: {transferOrderId:this.directObj.id}
+                    }).then(res => {
+                        if (res) {
+                            this.getCategroyIn(data,res.equips);
+                        }
+                    })
+                }
+            },
+            getCategroyIn(rfidData,res){
+                rfidData.forEach(item=>{
+                    let equip=res.find(value=>{
+                        return value.rfid==item
+                    });
+                    if(equip!=undefined){
+                        this.inHouseEquip.push(equip);
+                        this.getCategroy([equip])
+                    }else {
+                        this.$message.error('无法获取rfid为'+item+'的装备数据,请取出并单独入库')
                     }
                 })
             },
-            submit() {
-                if (this.submitFlag) {
-                    let rfidC = [];
-                    this.rightList.forEach(item => {
-                        rfidC.push(item.rfid)
-                    });
-
-                    let url = 'http://10.128.4.152:8080/warehouse/transfers/up-to-down/equips-out/';
-                    let param = {
-                        rfidList: rfidC,
-                        transferOrderId: this.directObj.id
-                    };
-                    request({
-                        method: 'DELETE',
-                        url: url,
-                        data: param
-                    }).then(res => {
-                        if (res) {
-                            console.log(res);
-                        }
-                    })
-                } else {
-                    this.$message.error('请重新确认出库装备')
-                }
-            },
             getCategroy(data) {
-                let typeModel = this.getTypeModel(data);
+                // let typeModel = this.getTypeModel(data);
                 data.forEach(item => {
                     if (this.rightList.length == 0) {
                         this.rightList.push({
                             name: item.equipArg.name,
                             model: item.equipArg.model,
-                            rfid: item.rfid,
+                            rfid: [item.rfid],
                             count: 1,
                             flag: false
                         });
                     } else {
                         let flag = false;
-                        let indexI = 0
+                        let indexI = 0;
                         this.rightList.forEach((listItem, index) => {
                             if (listItem.model == item.equipArg.model) {
                                 /* listItem.count=listItem.count+1*/
-                                flag = true, indexI = index
+                                flag = true; indexI = index;
                             } else {
 
                             }
                         });
                         if (flag) {
-                            this.rightList[indexI].count = this.rightList[indexI].count + 1
+                            this.rightList[indexI].count = this.rightList[indexI].count + 1;
+                            this.rightList[indexI].rfid.push(item.rfid);
                         } else {
                             this.rightList.push({
                                 name: item.equipArg.name,
                                 model: item.equipArg.model,
                                 count: 1,
-                                rfid: item.rfid,
+                                rfid: [item.rfid],
                                 flag: false
                             });
                         }
@@ -404,12 +591,60 @@
             },
             indexMethod(index) {
                 return index + 1;
-            },
+            }
         }
     }
 </script>
 
-<style>
+<style scoped>
+    .transferdialog-apply-confirm{
+        width: 100%;
+        height: 252px;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        padding-top: 24px;
+    }
+    .transferdialog-apply-confirm .transferdialog-apply-confirm-item{
+        display:flex;
+        align-items: center;
+        width: 310px;
+        margin-top: 20px;
+    }
+    .transferdialog-apply-confirm .transferdialog-apply-confirm-buttom{
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 84px;
+    }
+    .transferdialog-textarea{
+        width: 100%;
+        height: 252px;
+        padding: 0px 26px;
+
+    }
+    .transferdialog-textarea .transferdialog-textarea-button{
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 20px;
+    }
+    .transferdialog-tips{
+        width: 100%;
+        height: 252px;
+        display: flex;
+        justify-content: center;
+        position: relative;
+        font-size: 20px;
+        color: #707070;
+    }
+    .transferdialog-tips .transferdialog-tips-button{
+        position: absolute;
+        right: 32px;
+        bottom: 36px;
+    }
     .directAdjustmentDialog {
         height: 781px;
         width: 100%;
@@ -484,7 +719,7 @@
         margin-top: 57px;
     }
 
-    .directAdjustmentDialog-bottom .submits {
+    .submits {
         width: 70px;
         height: 30px;
         background: rgba(47, 47, 118, 1);
@@ -494,7 +729,7 @@
         line-height: 0px;
     }
 
-    .directAdjustmentDialog-bottom .cancel {
+    .cancel {
         width: 70px;
         height: 30px;
         background: rgba(255, 255, 255, 1);

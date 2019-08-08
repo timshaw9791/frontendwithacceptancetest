@@ -207,7 +207,7 @@
             </div>
 
         </serviceDialog>
-        <t_dialog ref="transferDialog" :directObj="direct"></t_dialog>
+        <t_dialog ref="transferDialog" @sucesssInOrOut="sucesssInOrOut" :typeOperational="typeOperational" :directObj="direct"></t_dialog>
         <!--<serviceDialog title="批准" ref="dialog2" width="40%">-->
         <!--<div style="text-align: center;font-size: 20px">您确定要批准吗</div>-->
         <!--</serviceDialog>-->
@@ -297,10 +297,12 @@
                 this.getHistroyApproval(this.billData.transferApplyOrder.historyLeaderApprovalId)
             }
             if(this.typeSingle!='apply'){
-                console.log(this.billData);
                 let myName=JSON.parse(localStorage.getItem('user')).name;
+                console.log(this.billData);
                 if(this.billData.outUser.name==myName&&this.billData.state=="WITHOUT_OUT_HOUSE"){
                     this.typeOperational='出库'
+                }else if(this.billData.transferApplyOrder.applicant.name==myName&&this.billData.state=="OUT_HOUSE"){
+                    this.typeOperational='入库'
                 }
                 this.downloadSrc=baseBURL+'/transfer-order/export-excel'+'?transferOrderId='+this.billData.id;
                 if(this.billData.state=='IN_HOUSE'){
@@ -339,8 +341,12 @@
             }
         },
         methods: {
+            sucesssInOrOut(){
+              this.$refs.transferDialog.close();
+              this.$emit('closeBill',true);
+            },
             outOfStock(){
-                this.direct={orderItems:this.billData.transferApplyOrder.transferNeedEquip,number:this.billData.transferApplyOrder.number,id:this.billData.id};
+                this.direct={orderItems:this.billData.transferApplyOrder.transferNeedEquip,number:this.billData.transferApplyOrder.number,id:this.billData.id,userId:this.billData.transferApplyOrder.applicant.userId};
                 this.$refs.transferDialog.showDialog();
             },
             getApprovalType(approvalType){
@@ -654,6 +660,7 @@
                     params:params
                 }).then(res => {
                     this.transferEquipData=[];
+                    console.log(res);
                     this.transferEquipData=res;
                 })
             },

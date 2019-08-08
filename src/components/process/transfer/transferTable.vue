@@ -318,10 +318,10 @@
             //     let param={};
             //     let url='';
             //     if(this.state!='ALL'&&this.state!=''){
-            //         url='http://10.128.4.152:8080/warehouse/transfers/up-to-down/by-state';
+            //         url='http://10.128.4.127:8080/warehouse/transfers/up-to-down/by-state';
             //         param={likeByNumber:likeByNumber,size:size,page:page,state:this.state}
             //     }else {
-            //         url = 'http://10.128.4.152:8080/warehouse/transfers/up-to-down';
+            //         url = 'http://10.128.4.127:8080/warehouse/transfers/up-to-down';
             //         param={likeByNumber:likeByNumber,size:size,page:page}
             //     }
             //     request({
