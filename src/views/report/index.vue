@@ -316,7 +316,7 @@
                     this.$ajax({
                         method: 'get',
                         params:params,
-                        url: 'http://10.128.4.127:8080/warehouse' + url,
+                        url: 'http://10.128.4.152:8080/warehouse' + url,
                     }).then((res) => {
                         sCallback.call(this, res);
                     }).catch(err => {
@@ -325,7 +325,7 @@
                 }else {
                     this.$ajax({
                         method: 'get',
-                        url: 'http://10.128.4.127:8080/warehouse' + url,
+                        url: 'http://10.128.4.152:8080/warehouse' + url,
                     }).then((res) => {
                         sCallback.call(this, res);
                     }).catch(err => {

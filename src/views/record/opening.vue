@@ -62,7 +62,7 @@
                 let data = table.row;
                 if (data) {
                     console.log(data);
-                    this.address='http://10.128.4.127:8080/warehouse/records/'+data.videoAddress;
+                    this.address='http://10.128.4.152:8080/warehouse/records/'+data.videoAddress;
                     this.$refs.recordVideo.show()
                 }
             },

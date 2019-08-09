@@ -42,7 +42,8 @@
                             </el-table-column>
                             <el-table-column label="装备数量" align="center">
                                 <template scope="scope">
-                                    <el-input v-model="scope.row.count" size="small" @input="changeCount(scope,$event)"></el-input>
+                                    <el-input v-model="scope.row.count" size="small"
+                                              @input="changeCount(scope,$event)"></el-input>
                                 </template>
                             </el-table-column>
                             <el-table-column label="操作" width="120">
@@ -60,7 +61,8 @@
                         </div>
                     </div>
                     <div class="addDirectAdjustment-bottom">
-                        <el-button class="cancel" @click="cancel">取消</el-button><el-button style="margin-left: 34px" class="submit" @click="submit">提交</el-button>
+                        <el-button class="cancel" @click="cancel">取消</el-button>
+                        <el-button style="margin-left: 34px" class="submit" @click="submit">提交</el-button>
                     </div>
                 </div>
             </div>
@@ -82,68 +84,78 @@
             }, delay)
         }
     }
+
     import a_dialog from 'components/surroundings/surroundingDialog'
     import serviceDialog from 'components/base/gailiangban'
     import request from 'common/js/request'
     import {baseBURL} from "../../../api/config";
+
     export default {
         name: "addDirectAdjustment",
-        components:{
+        components: {
             a_dialog,
             serviceDialog
         },
-        props:{
-            restaurants:{
-                type:Array
+        props: {
+            restaurants: {
+                type: Array
             },
-            unit:{
-                type:Object
+            unit: {
+                type: Object
             },
-            house:{
-                type:Object
+            house: {
+                type: Object
             },
-            myUnit:{
-                type:Object
+            myUnit: {
+                type: Object
+            },
+            addType: {
+                type: String,
+                default: 'add'
+            },
+            taskId:{
+                type:String,
+                default: ''
             }
         },
-        data(){
-            return{
-                form:{},
-                inHouseName:'',
-                lastTime:'',
-                unitName:'',
-                userName:'',
-                nowTime:0,
-                nowRow:{},
-                nowCount:'',
-                processLevelId:'',
-                leader:{
-                    leaderList:[{value:'1',key:'21212'},{value:'2',key:'12121'},{value:'3',key:'asas'}],
-                    leaderName:'',
-                    leaderItem:{},
+        data() {
+            return {
+                form: {},
+                inHouseName: '',
+                lastTime: '',
+                unitName: '',
+                userName: '',
+                nowTime: 0,
+                nowRow: {},
+                nowCount: '',
+                processLevelId: '',
+                leader: {
+                    leaderList: [{value: '1', key: '21212'}, {value: '2', key: '12121'}, {value: '3', key: 'asas'}],
+                    leaderName: '',
+                    leaderItem: {},
                 }
             }
         },
-        created(){
-            this.unitName=this.unit.name
+        created() {
+            this.unitName = this.unit.name
         },
-        watch:{
-            'inHouseName':{
-                handler(newVal){
-                    this.$emit('getInHouse',newVal)
+        watch: {
+            'inHouseName': {
+                handler(newVal) {
+                    this.$emit('getInHouse', newVal)
                 }
             },
-            'nowCount':{
-                handler(newVal){
-                    this.throttle(this.addRow,1000)
+            'nowCount': {
+                handler(newVal) {
+                    this.throttle(this.addRow, 1000)
                 }
             }
         },
-        methods:{
-            getLeaderSelect(data){
-                this.leader.leaderItem=data.key;
+        methods: {
+            getLeaderSelect(data) {
+                this.leader.leaderItem = data.key;
             },
-            getLeader(){
+            getLeader() {
                 // this.$ajax({
                 //     method:'get',
                 //     url:baseBURL+'/process-level/by-organ-unit-and-transfer-type',
@@ -155,33 +167,38 @@
                 //     console.log(res);
                 // })
                 request({
-                    method:'get',
-                    url:baseBURL+'/process-level/by-organ-unit-and-transfer-type',
-                    params:{
-                        organUnitId:this.unit.id,
-                        transferType:'DOWN_TO_UP'
+                    method: 'get',
+                    url: baseBURL + '/process-level/by-organ-unit-and-transfer-type',
+                    params: {
+                        organUnitId: this.unit.id,
+                        transferType: 'DOWN_TO_UP'
                     }
-                }).then(res=>{
-                        this.leader.leaderList=[];
-                        this.processLevelId=res.id;
-                    if(Object.keys(res.levelLeaderMap).length==0){
-                        res.applyLeaders.forEach(item=>{
-                            this.leader.leaderList.push({value:item.name,key:item})
+                }).then(res => {
+                    this.leader.leaderList = [];
+                    this.processLevelId = res.id;
+                    if (Object.keys(res.levelLeaderMap).length == 0) {
+                        res.applyLeaders.forEach(item => {
+                            this.leader.leaderList.push({value: item.name, key: item})
                         })
-                    }else {
-                        res.levelLeaderMap['1'].forEach(item=>{
-                            this.leader.leaderList.push({value:item.name,key:item})
+                    } else {
+                        res.levelLeaderMap['1'].forEach(item => {
+                            this.leader.leaderList.push({value: item.name, key: item})
                         })
                     }
                 })
             },
-            submit(){
+            submit() {
                 console.log(this.leader.leaderItem);
-                let params={
-                    nextApproveId:this.leader.leaderItem.userId,
-                    processLevelId:this.processLevelId
-                };
-               let transferApplyOrder={
+                let url = '';
+                let orderItems=[];
+                this.form.orderItems.forEach(item=>{
+                   if(item.count!=undefined){
+                       if(item.count!=''){
+                           orderItems.push(item)
+                       }
+                   }
+                });
+                let transferApplyOrder = {
                     "applicant": {
                         "name": JSON.parse(localStorage.getItem('user')).name,
                         "organUnit": {
@@ -202,11 +219,15 @@
                         "id": this.unit.id,
                         "name": this.unit.name
                     },
-                    "transferNeedEquip": this.form.orderItems,
+                    "transferNeedEquip": orderItems,
                     "type": "DOWN_TO_UP"
                 };
-                let url=baseBURL+'/transfer/start'+'?nextApproveId='+this.leader.leaderItem.userId+'&processLevelId='+this.processLevelId
-                this.allocationApplication(url,transferApplyOrder);
+                if (this.addType == 'add') {
+                    url = baseBURL + '/transfer/start' + '?nextApproveId=' + this.leader.leaderItem.userId + '&processLevelId=' + this.processLevelId
+                }else {
+                    url = baseBURL + '/transfer/apply' + '?nextApproveId=' + this.leader.leaderItem.userId + '&taskId=' + this.taskId
+                }
+                this.allocationApplication(url, transferApplyOrder);
                 // let transferOrder={};
                 // transferOrder.applicant=JSON.parse(localStorage.getItem('user')).name;
                 // transferOrder.inHouseName=this.inHouseName;
@@ -215,11 +236,22 @@
                 // this.$emit('submit',transferOrder)
 
             },
-            allocationApplication(url,transferApplyOrder){
-                this.$ajax.post(url,transferApplyOrder).then(res=>{
-                   this.$message.success('成功申请!');
-                   this.$emit('applyOrder',true);
-                })
+            allocationApplication(url, transferApplyOrder) {
+                if(this.addType=='add'){
+                    this.$ajax.post(url, transferApplyOrder).then(res => {
+                        this.sucesssAdd()
+                    })
+                }else {
+                    request({
+                        method: 'PUT',
+                        url: url,
+                        data: transferApplyOrder
+                    }).then(res => {
+                        this.sucesssAdd()
+                    });
+
+                }
+
                 // this.$ajax({
                 //     method:'post',
                 //     url:url,
@@ -228,48 +260,53 @@
                 //    console.log(res);
                 // })
             },
-            showAdd(){
+            sucesssAdd(){
+              this.$message.success('申请成功');
+              this.$emit('sucessAdd',true);
+            },
+            showAdd() {
                 this.form = {};
                 this.form['orderItems'] = [{model: ''}];
                 this.$refs.checkTransferDialog.show();
                 this.getLeader();
-                this.userName=JSON.parse(localStorage.getItem('user')).name;
+                this.userName = JSON.parse(localStorage.getItem('user')).name;
             },
-            addRow(){
+            addRow() {
                 if (this.nowRow.$index === this.form.orderItems.length - 1) {
                     this.form.orderItems.push({model: ''});
                 }
             },
-            delqaq(data){
+            delqaq(data) {
                 if (this.form.orderItems.length > 1) {
                     this.form.orderItems.splice(data.$index, 1);
                 } else {
                     this.$message.error('不能删除最后一个');
                 }
             },
-            close(){
+            close() {
                 this.$refs.dialog.close();
             },
-            cancel(){
+            cancel() {
+                this.$refs.checkTransferDialog.cancelDb()
             },
             getEquipName(row, data) {
-               this.form.orderItems[row.$index].name = data.key.name;
+                this.form.orderItems[row.$index].name = data.key.name;
             },
-            changeCount(row,event){
-                this.nowRow=row;
-                this.nowCount=event
+            changeCount(row, event) {
+                this.nowRow = row;
+                this.nowCount = event
             },
-            throttle(method,context){
+            throttle(method, context) {
                 clearTimeout(method.tId);
-                method.tId = setTimeout(function(){
+                method.tId = setTimeout(function () {
                     method.call(context)
-                },1000)
+                }, 1000)
             }
         }
     }
 </script>
 
-<style  scoped>
+<style scoped>
     .addDirectAdjustment {
         height: 697px;
         width: 100%;
@@ -277,67 +314,75 @@
         flex-direction: column;
         align-items: center;
     }
-    .addDirectAdjustment-bottom{
+
+    .addDirectAdjustment-bottom {
         width: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
         margin-top: 53px;
     }
-    .addDirectAdjustment-bottom .cancel{
-        width:70px;
-        height:30px;
-        background:rgba(255,255,255,1);
-        box-shadow:0px 3px 6px rgba(0,0,0,0.16);
-        border-radius:6px;
+
+    .addDirectAdjustment-bottom .cancel {
+        width: 70px;
+        height: 30px;
+        background: rgba(255, 255, 255, 1);
+        box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+        border-radius: 6px;
         line-height: 0px;
     }
-    .addDirectAdjustment-bottom .submit{
-        width:70px;
-        height:30px;
-        background:rgba(47,47,118,1);
-        box-shadow:0px 3px 6px rgba(0,0,0,0.16);
-        border-radius:6px;
+
+    .addDirectAdjustment-bottom .submit {
+        width: 70px;
+        height: 30px;
+        background: rgba(47, 47, 118, 1);
+        box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+        border-radius: 6px;
         color: white;
         line-height: 0px;
     }
-    .addDirectAdjustment-table{
-        width:974px;
-        height:492px;
+
+    .addDirectAdjustment-table {
+        width: 974px;
+        height: 492px;
         margin-top: 30px;
-        background:rgba(255,255,255,1);
-        border:1px solid rgba(112,112,112,1);
-        opacity:1;
+        background: rgba(255, 255, 255, 1);
+        border: 1px solid rgba(112, 112, 112, 1);
+        opacity: 1;
     }
-    .addDirectAdjustment-label{
+
+    .addDirectAdjustment-label {
         width: 100%;
         height: 30px;
         display: flex;
         justify-content: space-between;
     }
-    .addDirectAdjustment-label .label{
+
+    .addDirectAdjustment-label .label {
         height: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-direction: row;
     }
-    .label .default-span{
-        width:217px;
-        height:100%;
-        background:rgba(235,235,235,1);
-        opacity:1;
+
+    .label .default-span {
+        width: 217px;
+        height: 100%;
+        background: rgba(235, 235, 235, 1);
+        opacity: 1;
         display: flex;
         font-size: 16px;
         padding-left: 9px;
         color: #cccccc;
         align-items: center;
     }
-    .label .input{
-        width:217px;
-        line-height:30px;
-        background:rgba(255,255,255,1);
-        opacity:1;
+
+    .label .input {
+        width: 217px;
+        line-height: 30px;
+        background: rgba(255, 255, 255, 1);
+        opacity: 1;
         font-size: 16px;
     }
 </style>

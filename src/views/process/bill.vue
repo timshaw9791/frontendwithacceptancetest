@@ -21,12 +21,12 @@
         <!--</el-card>-->
         <div class="bill-action-box">
             <span>{{typeSingleFlag?'调拨单':'调拨申请单'}}</span>
-            <div class="bill-action-box-button-box" v-if="false">
-                <el-button size="medium" class="bt" @click="operational('reject')">
-                    驳回
+            <div class="bill-action-box-button-box" v-if="billData.transferApplyOrder.state=='REJECTED'">
+                <el-button size="medium" class="bt" @click="operational('REJECTED')">
+                    作废
                 </el-button>
-                <el-button size="medium" class="bt" @click="operational('review')">
-                    {{getOperate(billData.currentLevel)}}
+                <el-button size="medium" class="bt" @click="operational('reSet')">
+                    重填
                 </el-button>
             </div>
             <div v-if="typeSingleFlag" class="bill-action-box-button-box" >
@@ -65,8 +65,9 @@
                     <div class="title" v-if="typeSingleFlag">调拨人员: <span v-text="billData.outUser.name"></span></div>
                     <div class="title" v-if="typeSingleFlag">接收人员:<span v-text="billData.transferApplyOrder.applicant.name"></span></div>
                 </div>
-                <div>
+                <div class="equip-table-list">
                     <div>装备统计:</div>
+                    <svg-icon icon-class="异常" class="icon-ABNORMAL"/>
                     <el-table :data="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?transferEquipData:billData.transferApplyOrder.transferNeedEquip:billData.transferApplyOrder.transferNeedEquip" class="list" fit height="420">
                         <el-table-column label="序号" align="center">
                             <template slot-scope="scope">
@@ -187,7 +188,7 @@
             <!--</form-container>-->
         </serviceDialog>
 
-        <serviceDialog title="驳回" ref="dialog2" width="634px" @confirm="confirmReject">
+        <serviceDialog title="作废" ref="dialog2" width="634px" @confirm="confirmREJECTED">
             <div class="bill-item-box">
                 <div style="width: 80%;">
                     <el-input
@@ -211,6 +212,7 @@
         <!--<serviceDialog title="批准" ref="dialog2" width="40%">-->
         <!--<div style="text-align: center;font-size: 20px">您确定要批准吗</div>-->
         <!--</serviceDialog>-->
+        <add-direct-adjustment-bill @sucessAdd="sucessAdd" ref="addDirectAdjustmentBill" :restaurants="reSet.restaurants" :myUnit="reSet.myUnit" :unit="reSet.unit" :house="reSet.house" :taskId="billData.taskId" :addType="'reSet'"></add-direct-adjustment-bill>
 
     </div>
 </template>
@@ -226,11 +228,13 @@
     import t_dialog from 'components/process/transfer/transferDialog'
     // import {baseBURL} from "../../../api/config";
     import {baseBURL} from "../../api/config"
+    import addDirectAdjustmentBill from 'components/process/directAdjustment/addDirectAdjustment'
 
     export default {
         components: {
             serviceDialog,
-            t_dialog
+            t_dialog,
+            addDirectAdjustmentBill
         },
         props: {
             billData: {
@@ -244,6 +248,9 @@
                 type: String,
                 default: '进行中'
             },
+            reSet:{
+                type:Object
+            }
         },
         mixins: [fetchMixin],
         data() {
@@ -306,7 +313,7 @@
                 }
                 this.downloadSrc=baseBURL+'/transfer-order/export-excel'+'?transferOrderId='+this.billData.id;
                 if(this.billData.state=='IN_HOUSE'){
-                    let url = baseBURL+'/transfer-equips/equips-in-house/group';
+                    let url = baseBURL+'/transfer-equips/equips-in-house';
                     this.getTransferEquipData(url)
                 }else if(this.billData.state=='OUT_HOUSE'){
                     let url = baseBURL+'/transfer-equips/equips-out-house/group';
@@ -341,6 +348,10 @@
             }
         },
         methods: {
+            sucessAdd(){
+                this.$refs.addDirectAdjustmentBill.cancel();
+                this.$emit('toBack', '进行中')
+            },
             sucesssInOrOut(){
               this.$refs.transferDialog.close();
               this.$emit('closeBill',true);
@@ -409,7 +420,7 @@
                 let leaderApproval = {
                     "leader": {
                         "userId": JSON.parse(localStorage.getItem('user')).id,
-                        "name": JSON.parse(localStorage.getItem('user')).username,
+                        "name": JSON.parse(localStorage.getItem('user')).name,
                         "organUnit": {
                             "id": this.myOrganUnit.id,
                             "name": this.myOrganUnit.name
@@ -430,33 +441,42 @@
                     sCallback.call(this, resolve)
                 })
             },
-            confirmReject() {
+            confirmREJECTED() {
                 if (this.reason != '') {
-                    let operate = this.getOperate(this.billData.currentLevel);
-                    let leaderApproval = {
-                        "leader": {
-                            "userId": JSON.parse(localStorage.getItem('user')).id,
-                            "name": JSON.parse(localStorage.getItem('user')).username,
-                            "organUnit": {
-                                "id": this.myOrganUnit.id,
-                                "name": this.myOrganUnit.name
-                            }
-                        },
-                        "reason": this.reason,
-                        "approval": false
-                    };
-                    let taskId = this.billData.taskId;
-                    let url = baseBURL;
-                    if (operate == '审核') {
-                        url = url + '/transfer/approval' + '?taskId=' + taskId;
-                    } else {
-                        url = url + '/transfer/final-approval' + '?taskId=' + taskId;
-                        leaderApproval = {leaderApproval: leaderApproval};
-                    }
-                    this.toApproval(leaderApproval, url, (data) => {
-                        this.$message.success('驳回成功');
+                    let url = baseBURL+'/transfer'+'?reason='+this.reason+'&userId='+JSON.parse(localStorage.getItem('user')).id+'&processInstanceId='+this.billData.processInstanceId;
+                    request({
+                        method: 'DELETE',
+                        url: url
+                    }).then(res => {
+
+                        this.$message.success('作废成功');
                         this.$emit('toBack', '进行中')
-                    });
+                    })
+                    // let operate = this.getOperate(this.billData.currentLevel);
+                    // let leaderApproval = {
+                    //     "leader": {
+                    //         "userId": JSON.parse(localStorage.getItem('user')).id,
+                    //         "name": JSON.parse(localStorage.getItem('user')).username,
+                    //         "organUnit": {
+                    //             "id": this.myOrganUnit.id,
+                    //             "name": this.myOrganUnit.name
+                    //         }
+                    //     },
+                    //     "reason": this.reason,
+                    //     "approval": false
+                    // };
+                    // let taskId = this.billData.taskId;
+                    // let url = baseBURL;
+                    // if (operate == '审核') {
+                    //     url = url + '/transfer/approval' + '?taskId=' + taskId;
+                    // } else {
+                    //     url = url + '/transfer/final-approval' + '?taskId=' + taskId;
+                    //     leaderApproval = {leaderApproval: leaderApproval};
+                    // }
+                    // this.toApproval(leaderApproval, url, (data) => {
+                    //     this.$message.success('驳回成功');
+                    //     this.$emit('toBack', '进行中')
+                    // });
                 } else {
                     this.$message.warning('请先填写原因！')
                 }
@@ -552,18 +572,10 @@
                 console.log(data);
             },
             operational(data) {
-                if (data == 'reject') {
+                if (data == 'REJECTED') {
                     this.$refs.dialog2.show();
-                } else if (data == 'review') {
-                    let operate = this.getOperate(this.billData.currentLevel);
-                    if (operate == '审批') {
-                        this.getSelectUnit();
-                        this.getSelectPersonel();
-                        this.$refs.dialog1.show();
-                    } else {
-                        this.getLeder();
-                        this.$refs.dialogShenghe.show()
-                    }
+                } else if (data == 'reSet') {
+                    this.$refs.addDirectAdjustmentBill.showAdd()
                 }
             },
             getLeder() {
@@ -660,8 +672,11 @@
                     params:params
                 }).then(res => {
                     this.transferEquipData=[];
-                    console.log(res);
-                    this.transferEquipData=res;
+                    if (this.billData.state=='IN_HOUSE'){
+                        console.log('getTransferEquipData',res);
+                    }else {
+                        this.transferEquipData=res;
+                    }
                 })
             },
             download(){
@@ -669,7 +684,7 @@
             },
             transformToChinese(num) {
                 let chnNumChar = ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九"];
-                let chnUnitSection = api["", "万", "亿", "万亿", "亿亿"];
+                let chnUnitSection = ["", "万", "亿", "万亿", "亿亿"];
                 let chnUnitChar = ["", "十", "百", "千"];
 
                 // let numToChn = function (num) {
@@ -827,6 +842,16 @@
                     }
                 }
 
+            }
+            .content .equip-table-list{
+                position: relative;
+                .icon-ABNORMAL{
+                    position: absolute;
+                    right: 0px;
+                    z-index: 2;
+                    font-size: 50px;
+                    top: 28px;
+                }
             }
         }
 

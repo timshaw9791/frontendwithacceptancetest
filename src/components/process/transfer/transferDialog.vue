@@ -162,14 +162,14 @@
     // import inventoryData from 'views/warehouse/inventoryData'
     import request from 'common/js/request'
     import {baseURL,baseBURL} from "../../../api/config"
-    import {handheld} from 'common/js/pda'
-
-    const cmdPath = 'C:\\Users\\Administrator';
-    const exec = window.require('child_process').exec;
-    const spawn = window.require('child_process').spawn;
-    const fs = window.require('fs');
-    const path = window.require('path');
-    const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
+    // import {handheld} from 'common/js/pda'
+    //
+    // const cmdPath = 'C:\\Users\\Administrator';
+    // const exec = window.require('child_process').exec;
+    // const spawn = window.require('child_process').spawn;
+    // const fs = window.require('fs');
+    // const path = window.require('path');
+    // const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
 
 
     export default {
@@ -394,7 +394,7 @@
                     //     rfidC.push(item.rfid)
                     // });
                     //
-                    // let url = 'http://10.128.4.127:8080/warehouse/transfers/up-to-down/equips-out/';
+                    // let url = 'http://10.128.4.152:8080/warehouse/transfers/up-to-down/equips-out/';
                     // let param = {
                     //     rfidList: rfidC,
                     //     transferOrderId: this.directObj.id
@@ -448,15 +448,15 @@
                 }
             },
             handheldMachine() {
-                handheld().then((data) => {
-                    let json = JSON.parse(data);
-                    this.getOutDataCopy(json.rfid);
-                    this.deleteFile();
-                });
+                // handheld().then((data) => {
+                //     let json = JSON.parse(data);
+                //     this.getOutDataCopy(json.rfid);
+                //     this.deleteFile();
+                // });
                 //todo 要换回来
                 // let data = inventoryData;
 
-                // this.getOutDataCopy(['111', '231', '19070001', '19070007','19071103','19071105','19071106','19071104','19071102','66666666','E20020194402020927000776','77777777','19071110','1908000E'])
+                this.getOutDataCopy(['19071110'])
             },
             // getOutData(data){
             //     console.log(data);

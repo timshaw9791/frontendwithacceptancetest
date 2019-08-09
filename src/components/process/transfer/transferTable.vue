@@ -238,7 +238,7 @@
                 let param={};
                 let url=baseBURL;
                 if(status=='doing'){
-                    url=url+ '/process-instance/by-start-user';
+                    url=url+ '/task/by-user-and-process-definition';
                     param={startUserId:id,processDefinitionKey:'transfer'};
                 }else {
                     url=url+ '/transfer-apply-order/history';
@@ -253,10 +253,8 @@
                         let list=[];
                         // this.paginator.totalPages=res.totalPages;
                         if(status=='doing'){
-                            console.log(res);
                             res.forEach(item=>{
                                 let items=item;
-                                items.variables=item.processVariables;
                                 list.push(items)
                             });
                         }else {
@@ -318,10 +316,10 @@
             //     let param={};
             //     let url='';
             //     if(this.state!='ALL'&&this.state!=''){
-            //         url='http://10.128.4.127:8080/warehouse/transfers/up-to-down/by-state';
+            //         url='http://10.128.4.152:8080/warehouse/transfers/up-to-down/by-state';
             //         param={likeByNumber:likeByNumber,size:size,page:page,state:this.state}
             //     }else {
-            //         url = 'http://10.128.4.127:8080/warehouse/transfers/up-to-down';
+            //         url = 'http://10.128.4.152:8080/warehouse/transfers/up-to-down';
             //         param={likeByNumber:likeByNumber,size:size,page:page}
             //     }
             //     request({
