@@ -394,7 +394,7 @@
                     //     rfidC.push(item.rfid)
                     // });
                     //
-                    // let url = 'http://10.128.4.152:8080/warehouse/transfers/up-to-down/equips-out/';
+                    // let url = 'http://192.168.125.117:8080/warehouse/transfers/up-to-down/equips-out/';
                     // let param = {
                     //     rfidList: rfidC,
                     //     transferOrderId: this.directObj.id
@@ -448,15 +448,15 @@
                 }
             },
             handheldMachine() {
-                // handheld().then((data) => {
-                //     let json = JSON.parse(data);
-                //     this.getOutDataCopy(json.rfid);
-                //     this.deleteFile();
-                // });
+                handheld().then((data) => {
+                    let json = JSON.parse(data);
+                    this.getOutDataCopy(json.rfid);
+                    this.deleteFile();
+                });
                 //todo 要换回来
                 // let data = inventoryData;
 
-                this.getOutDataCopy(['19071110'])
+                // this.getOutDataCopy(['19071110'])
             },
             // getOutData(data){
             //     console.log(data);

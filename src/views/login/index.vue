@@ -71,7 +71,7 @@
                         this.loading = true
                         this.$store.dispatch('Login', this.loginForm).then(() => {
                             this.loading = false;
-                            this.$router.push({path: '/'});
+                            this.$router.push({path: '/report/index'});
                             this.$message.success('登陆成功');
                         }).catch(() => {
                             this.loading = false

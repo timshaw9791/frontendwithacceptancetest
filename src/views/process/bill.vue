@@ -65,10 +65,11 @@
                     <div class="title" v-if="typeSingleFlag">调拨人员: <span v-text="billData.outUser.name"></span></div>
                     <div class="title" v-if="typeSingleFlag">接收人员:<span v-text="billData.transferApplyOrder.applicant.name"></span></div>
                 </div>
-                <div class="equip-table-list">
+                <div class="equip-table-list" :style="transferEquipData.state=='ABNORMAL'?'cursor: pointer;':''" @click="clickAbnormalTable(transferEquipData)">
                     <div>装备统计:</div>
-                    <svg-icon icon-class="异常" class="icon-ABNORMAL"/>
-                    <el-table :data="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?transferEquipData:billData.transferApplyOrder.transferNeedEquip:billData.transferApplyOrder.transferNeedEquip" class="list" fit height="420">
+                    <svg-icon icon-class="异常" v-if="transferEquipData.state=='ABNORMAL'?true:false" class="icon-ABNORMAL"/>
+
+                    <el-table :data="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?transferEquipData.transferEquips:billData.transferApplyOrder.transferNeedEquip:billData.transferApplyOrder.transferNeedEquip" class="list" fit height="420">
                         <el-table-column label="序号" align="center">
                             <template slot-scope="scope">
                                 {{scope.$index+1}}
@@ -187,7 +188,42 @@
             <!--</field-select>-->
             <!--</form-container>-->
         </serviceDialog>
+        <serviceDialog title="出库异常详情单" ref="dialogAbnormalTable" width="1529px" @confirm="confirmReject" :button="false">
+            <div class="bill-abnormal-table">
+                <div><span  v-text="'调拨单号：'"></span><span v-text="billData.transferApplyOrder.number"></span></div>
+                <div class="bill-abnormal-table-box">
+                    <div class="bill-abnormal-table-item">
+                        <span v-text="'预计出库：'" style="margin-top: 14px"></span>
+                        <el-table :data="billData.transferApplyOrder.transferNeedEquip" class="bill-abnormal-table-list" fit height="531" max-height="531">
+                            <el-table-column label="序号" align="center">
+                                <template slot-scope="scope">
+                                    {{scope.$index+1}}
+                                </template>
+                            </el-table-column>
+                            <bos-table-column lable="装备名称" field="name"></bos-table-column>
+                            <bos-table-column lable="装备型号" field="model"></bos-table-column>
+                            <bos-table-column lable="装备数量" field="count"></bos-table-column>
+                            <!--<bos-table-column lable="总价" field="price" v-if="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?true:false:false"></bos-table-column>-->
+                        </el-table>
+                    </div>
+                    <div class="bill-abnormal-table-item">
+                        <span v-text="'实际出库：'" style="margin-top: 14px"></span>
+                        <el-table :data="transferEquipData.transferEquips" class="bill-abnormal-table-list" fit height="531" max-height="531">
+                            <el-table-column label="序号" align="center">
+                                <template slot-scope="scope">
+                                    {{scope.$index+1}}
+                                </template>
+                            </el-table-column>
+                            <bos-table-column lable="装备名称" field="name"></bos-table-column>
+                            <bos-table-column lable="装备型号" field="model"></bos-table-column>
+                            <bos-table-column lable="装备数量" field="count"></bos-table-column>
+                            <!--<bos-table-column lable="总价" field="price" v-if="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?true:false:false"></bos-table-column>-->
+                        </el-table>
+                    </div>
+                </div>
+            </div>
 
+        </serviceDialog>
         <serviceDialog title="作废" ref="dialog2" width="634px" @confirm="confirmREJECTED">
             <div class="bill-item-box">
                 <div style="width: 80%;">
@@ -290,7 +326,8 @@
                 downloadSrc:'',
                 typeOperational:'',
                 direct:{},
-                leadList: [{key: '主席', val: '主席'}, {key: '大领导', val: '大领导'}]
+                leadList: [{key: '主席', val: '主席'}, {key: '大领导', val: '大领导'}],
+                inHouseStatus:{}
             }
         },
         created() {
@@ -313,7 +350,7 @@
                 }
                 this.downloadSrc=baseBURL+'/transfer-order/export-excel'+'?transferOrderId='+this.billData.id;
                 if(this.billData.state=='IN_HOUSE'){
-                    let url = baseBURL+'/transfer-equips/equips-in-house';
+                    let url = baseBURL+'/transfer-equips/equips-in-house/group';
                     this.getTransferEquipData(url)
                 }else if(this.billData.state=='OUT_HOUSE'){
                     let url = baseBURL+'/transfer-equips/equips-out-house/group';
@@ -348,6 +385,15 @@
             }
         },
         methods: {
+            clickAbnormalTable(abnormalTable){
+                if(abnormalTable.state!=null){
+                    if(abnormalTable.state=='ABNORMAL'){
+                        this.$refs.dialogAbnormalTable.show();
+                    }else{
+
+                    }
+                }
+            },
             sucessAdd(){
                 this.$refs.addDirectAdjustmentBill.cancel();
                 this.$emit('toBack', '进行中')
@@ -448,7 +494,6 @@
                         method: 'DELETE',
                         url: url
                     }).then(res => {
-
                         this.$message.success('作废成功');
                         this.$emit('toBack', '进行中')
                     })
@@ -672,11 +717,7 @@
                     params:params
                 }).then(res => {
                     this.transferEquipData=[];
-                    if (this.billData.state=='IN_HOUSE'){
-                        console.log('getTransferEquipData',res);
-                    }else {
-                        this.transferEquipData=res;
-                    }
+                    this.transferEquipData=res;
                 })
             },
             download(){
@@ -754,6 +795,32 @@
 <style lang="scss" scoped>
 
     .card {
+        .bill-abnormal-table{
+            width: 100%;
+            height: 731px;
+            padding: 4px 30px;
+            display: flex;
+            flex-direction: column;
+            font-size: 18px;
+        }
+        .bill-abnormal-table .bill-abnormal-table-box{
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-direction: row;
+        }
+        .bill-abnormal-table-box .bill-abnormal-table-item{
+            width: 700px;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+        .bill-abnormal-table-item .bill-abnormal-table-list{
+            margin-top: 10px;
+            border: 1px solid #EBEEF5;
+            border-bottom: none !important;
+        }
         .bill-item-box {
             width: 100%;
             height: 180px;

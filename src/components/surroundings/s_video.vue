@@ -24,10 +24,10 @@
         data(){
             return{
                 srcList:[
-                    'http://10.128.4.152/test.m3u8',
-                    'http://10.128.4.152/test.m3u8',
-                    'http://10.128.4.152/test.m3u8',
-                    'http://10.128.4.152/test.m3u8'
+                    'http://192.168.125.117/test.m3u8',
+                    'http://192.168.125.117/test.m3u8',
+                    'http://192.168.125.117/test.m3u8',
+                    'http://192.168.125.117/test.m3u8'
                 ]
             }
         }

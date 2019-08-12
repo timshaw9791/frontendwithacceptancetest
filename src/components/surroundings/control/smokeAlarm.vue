@@ -52,7 +52,7 @@
             getConcentration(){
                 this.$ajax({
                     method:'post',
-                    url:'http://10.128.4.152:8080/warehouse/environment/smokeQuery',
+                    url:'http://192.168.125.117:8080/warehouse/environment/smokeQuery',
                 }).then((res)=>{
                     this.concentration=res.data.data
                 }).catch(err=>{

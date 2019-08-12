@@ -4,7 +4,14 @@
         <div class="report-body" v-if="!viewStatus.backFlag">
             <div class="report-top">
                 <div class="report-top-title">
-                    <span v-text="'库存统计'" class="r_t_title-left"></span>
+                    <div class="r_t_title-left">
+                        <span v-text="'库存统计'"></span>
+                        <div style="margin-left: 30px;cursor:pointer;display: flex;align-items: center" @click="getMing">
+                            <a :href="mingXiSrc" style="display: none" ref="mingXiDownload">a标签</a>
+                            <svg-icon icon-class="明细" style="font-size: 20px;margin-right: 5px"  ></svg-icon>
+                            <span v-text="'装备明细'"></span>
+                        </div>
+                    </div>
                     <div class="r_t_title-right">
                         <div class="title-right">
                             <div class="content">
@@ -34,7 +41,7 @@
                 </div>
                 <div  @click="toDetails('装备使用频次')">
                     <equip-report :equipData="useCount" :title="'装备使用频次'"
-                                  :toolTip="['装备名称','使用次数','使用率']"></equip-report>
+                                  :toolTip="['装备名称','使用次数']"></equip-report>
                 </div>
             </div>
         </div>
@@ -50,6 +57,7 @@
     import equipDetails from 'components/report/equipDetails'
     import report from 'gql/report.gql'
     import {fetchMixin} from 'field/common/mixinFetch'
+    import {baseURL} from "../../api/config";
 
     export default {
         name: "index",
@@ -75,6 +83,7 @@
                     toolTip:[]
                 },
                 useCount:[],
+                mingXiSrc:baseURL+'/statistic/export-excel',
                 scrap:[],
                 viewStatus: {
                     backFlag: false
@@ -95,10 +104,14 @@
             this.getGenreList();
         },
         methods: {
+            getMing() {
+                this.$refs.mingXiDownload.click();
+            },
             toSearch(data){
+                console.log(data);
                 this.equipDetails.list.forEach(item=>{
                     if(data!=''){
-                        if(item.name.indexOf(data)!=-1){
+                        if(String(item.name).indexOf(data)!=-1){
                             item.select=true;
                         }else {
                             item.select=false;
@@ -121,7 +134,7 @@
                     this.getMaintain('',data=>{
                         this.$set(this.equipDetails,'list',data);
                     });
-                    this.equipDetails.toolTip=['装备数量','维修数量','维修率']
+                    this.equipDetails.toolTip=['装备名称','维修数量','维修率']
                 }else if(data=='装备损耗率'){
                     this.getScrap('',data=>{
                         this.$set(this.equipDetails,'list',data);
@@ -161,6 +174,7 @@
              }
             },
             handleChangeGener(data){
+                console.log(data)
                 let src ='/statistic/genres/'+data;
                 this.getCategory(data);
                 this.getCategoryGener(src,'categoryStatisticList');
@@ -226,6 +240,7 @@
                     param=params
                 }
                 this.ajax('/statistic/use-count',param,(res)=>{
+
                     if(res.data.length!=0){
                         let somoe = res.data.sort(function (a, b) {
                             return b.count > a.count ? 1 : -1
@@ -244,7 +259,13 @@
                         });
                         sCallback.call(this, userCountList);
                     }else {
-                        sCallback.call(this, res.data);
+                        sCallback.call(this,[{
+                            name: 1,
+                            count:2,
+                            allCount:3,
+                            number:2,
+                            percentage: Math.round(((2 / 10) * 100)),
+                            select:false}]);
                     }
                     /*this.useCount.list = userCountList*/
                 });
@@ -256,27 +277,48 @@
                     let month = newDate.getMonth();
                     let year = newDate.getFullYear();
                     param={
-                        startTime:new Date(year,month,1,0).valueOf(),
-                        endTime:newDate.valueOf()
+                        endMonth:month+1,
+                        endYear:year,
+                        startMonth:month+1,
+                        startYear:year,
+                        v:2
                     };
                 }else {
-                    param=params
+                    let endTime=new Date(params.endTime);
+                    let startTime=new Date(params.startTime);
+                    param={
+                        endMonth:endTime.getMonth()+1,
+                        endYear:endTime.getFullYear(),
+                        startMonth:startTime.getMonth()+1,
+                        startYear:startTime.getFullYear(),
+                        v:2
+                    }
                 }
                 this.ajax('/statistic/scrap',param, (res) => {
-                    let scrapList = [];
-                    res.data.forEach(item => {
-                        scrapList.push({
-                            name: item.name,
-                            number: item.scrapCount,
-                            percentage: Math.round(((item.scrapCount / (item.inHouseCount + item.scrapCount)) * 100)),
-                            allCount: item.inHouseCount + item.scrapCount,
-                            select:false
-                        })
-                    });
-                    scrapList.sort(function (a, b) {
-                        return b.percentage > a.percentage ? 1 : -1;
-                    });
-                    sCallback.call(this,scrapList);
+                    if(res.data.length!=0){
+                        let scrapList = [];
+                        res.data.forEach(item => {
+                            scrapList.push({
+                                name: item.name,
+                                number: item.damageCount,
+                                percentage: Number((item.avgDamageRate * 100).toFixed(2)),
+                                allCount: item.name,
+                                select:false
+                            })
+                        });
+                        scrapList.sort(function (a, b) {
+                            return b.percentage > a.percentage ? 1 : -1;
+                        });
+                        sCallback.call(this,scrapList);
+                    }else {
+                        sCallback.call(this,[{
+                            name: 1,
+                            allCount:1,
+                            number:3,
+                            percentage: Number((0.454545 * 100).toFixed(2)),
+                            select:false}]);
+                    }
+
                   /*  this.scrap.list = scrapList;
                     console.log(this.scrap.list);*/
                 });
@@ -288,27 +330,47 @@
                     let month = newDate.getMonth();
                     let year = newDate.getFullYear();
                     param={
-                        startTime:new Date(year,month,1,0).valueOf(),
-                        endTime:newDate.valueOf()
+                        endMonth:month+1,
+                        endYear:year,
+                        startMonth:month+1,
+                        startYear:year,
+                        v:2
                     };
                 }else {
-                    param=params
+                    let endTime=new Date(params.endTime);
+                    let startTime=new Date(params.startTime);
+                    param={
+                        endMonth:endTime.getMonth()+1,
+                        endYear:endTime.getFullYear(),
+                        startMonth:startTime.getMonth()+1,
+                        startYear:startTime.getFullYear(),
+                        v:2
+                    }
                 }
                 this.ajax('/statistic/maintain',param, (res) => {
-                    let maintenanceList = [];
-                    res.data.forEach(item => {
-                        maintenanceList.push({
-                            name: item.name,
-                            number: item.maintainCount,
-                            percentage: Math.round(((item.maintainCount / item.count) * 100)),
-                            allCount: item.count,
-                            select:false
-                        })
-                    });
-                    maintenanceList.sort(function (a, b) {
-                        return b.percentage > a.percentage ? 1 : -1;
-                    });
-                    sCallback.call(this,maintenanceList)
+                    if(res.data.length!=0){
+                        let maintenanceList = [];
+                        res.data.forEach(item => {
+                            maintenanceList.push({
+                                name: item.name,
+                                number: item.maintainCount,
+                                percentage: Number((item.maintainRate*100).toFixed(2)),
+                                allCount: item.name,
+                                select:false
+                            })
+                        });
+                        maintenanceList.sort(function (a, b) {
+                            return b.percentage > a.percentage ? 1 : -1;
+                        });
+                        sCallback.call(this,maintenanceList)
+                    }else {
+                        sCallback.call(this,[{
+                            name: 1,
+                            allCount:1,
+                            number:3,
+                            percentage: Number((0.23456*100).toFixed(2)),
+                            select:false}]);
+                    }
                 })
             },
             ajax(url,params, sCallback) {
@@ -316,7 +378,7 @@
                     this.$ajax({
                         method: 'get',
                         params:params,
-                        url: 'http://10.128.4.152:8080/warehouse' + url,
+                        url: baseURL + url,
                     }).then((res) => {
                         sCallback.call(this, res);
                     }).catch(err => {
@@ -325,7 +387,7 @@
                 }else {
                     this.$ajax({
                         method: 'get',
-                        url: 'http://10.128.4.152:8080/warehouse' + url,
+                        url:baseURL + url,
                     }).then((res) => {
                         sCallback.call(this, res);
                     }).catch(err => {
@@ -369,6 +431,9 @@
 
     .report-top-title .r_t_title-left {
         font-size: 18px;
+        height: 20px;
+        display: flex;
+        align-items: center;
         color: rgba(112, 112, 112, 1);
     }
 

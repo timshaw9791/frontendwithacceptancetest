@@ -43,10 +43,10 @@
                 control:[
                     {svg:'插座图标',text:'智能充电台',flag:true},
                     {svg:'除湿图标',text:'除湿器控制',flag:true},
-                    {svg:'空调图标',text:'空调控制',flag:true},
                     {svg:'灯光图标',text:'灯光控制',flag:true},
                     {svg:'烟雾报警',text:'烟雾报警',flag:true},
                     {svg:'视频监控',text:'视频监控',flag:true},
+                    {svg:'空调图标',text:'空调控制',flag:true},
                     {svg:'排风图标',text:'排风控制',flag:true},
                     {svg:'消毒图标',text:'消毒机控制',flag:true},
                     {svg:'无排风',text:'排风控制',flag:false},
@@ -69,6 +69,7 @@
                    if(data.text=='视频监控'){
                        this.$emit('toVideo',true)
                    }else {
+                       console.log()
                        this.handleClick(data.text);
                    }
                }
@@ -76,12 +77,16 @@
 
             handleClick(clickItem){
                 let clickRef;
-                this.clickRefList.forEach(item=>{
-                    if(clickItem==item.name){
-                        clickRef = item.ref;
-                        this.$refs[clickRef].show();
-                    }
-                });
+                if(clickItem=='空调控制'||clickItem=='排风控制'||clickItem=='消毒机控制'){
+                    this.$message.warning('该功能尚未开放')
+                }else {
+                    this.clickRefList.forEach(item=>{
+                        if(clickItem==item.name){
+                            clickRef = item.ref;
+                            this.$refs[clickRef].show();
+                        }
+                    });
+                }
             }
         }
     }

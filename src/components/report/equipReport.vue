@@ -41,7 +41,7 @@
             toolTip:{
                 type:Array,
                 default(){
-                    return['装备数量','维修数量','维修率']
+                    return['装备名称','维修数量','维修率']
                 }
             }
         },
