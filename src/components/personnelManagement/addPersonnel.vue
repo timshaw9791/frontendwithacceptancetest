@@ -13,11 +13,11 @@
                 <field-checkbox  v-model="roleItems" label="角色" width="4.5" :disabled="disabled"
                                  prop="position" :list="cRoleList" @change="changeCheckRole"></field-checkbox>
                 <field-input class="field-input" v-model="form.idNumber" :disabled="disabled" label="身份证号" width="4.5"
-                             :rules="r(true).all(R.require)" prop="idNumber"></field-input>
+                             :rules="r(true).all(R.cardId)" prop="idNumber"></field-input>
                 <field-input class="field-input" v-model="form.position" :disabled="disabled"  label="职位" width="4.5"
                              :rules="r(true).all(R.require)" prop="position"></field-input>
                 <field-input class="field-input" v-model="form.phone"  :disabled="disabled" label="联系方式" width="4.5"
-                             :rules="r(true).all(R.require)" prop="phone"></field-input>
+                             :rules="r(true).all(R.mobile)" prop="phone"></field-input>
                 <field-input class="field-input" v-model="organUnit.name" label="机构单位" width="4.5"
                              prop="organUnit" :disabled="true"></field-input>
                 <field-input class="field-input" v-model="form.fingerprintInformation" :disabled="disabled" :type="'textarea'" label="指纹信息" width="10"
@@ -57,7 +57,7 @@
                 viewStatus:{
                     flag:true
                 },
-                src:'http://192.168.125.117:8080/warehouse/images/',
+                src:'http://62.146.2.40:8010/warehouse/images/',
                 personnelImg:''
             }
         },
@@ -154,7 +154,7 @@
                 }
             },
             Ajax(file){
-                let src = 'http://192.168.125.117:8080/warehouse/upload/image/';
+                let src = 'http://62.146.2.40:8010/warehouse/upload/image/';
                 const instance=this.$ajax.create({
                     withCredentials: true
                 });

@@ -67,7 +67,7 @@
             toConctrol(data){
                if(data.flag){
                    if(data.text=='视频监控'){
-                       this.$emit('toVideo',true)
+                       this.$message.warning('该功能尚未开放')
                    }else {
                        console.log()
                        this.handleClick(data.text);

@@ -5,7 +5,7 @@
                <div class="dehumidification-top">
                    <svg-icon icon-class="除湿图标" style="width: 56px;height: 70px"></svg-icon>
                    <span v-text="'除湿控制器'" style="margin-top: 8px"></span>
-                   <switch-control :active="active" :inactive="inactive" style="margin-top: 31px"></switch-control>
+                   <switch-control :active="active" :inactive="inactive" style="margin-top: 31px" :status="dehumidificationStatus?true:false" @handleChange="dehumidificationControl"></switch-control>
                </div>
                <div class="dehumidification-bottom">
                    <span v-text="'湿度阈值：'"></span><input class="input" :style="flag?'border:none;':''" v-model="threshold" :disabled="flag"/>
@@ -43,13 +43,44 @@
                     color:'#B8B8B8',
                 },
                 threshold:'',
+                dehumidificationStatus:false,
                 flag:true
             }
         },
         created(){
             this.getThreshold();
-        },
+            this.dehumidificationControl();
+            this.getDehumidification()
+            },
         methods:{
+            getDehumidification(){
+                this.$ajax({
+                    method:'post',
+                    url:'http://62.146.2.40:8010/warehouse/environment/dehumidifierStatus',
+                }).then((res)=>{
+                    console.log(res.data.data);
+                    this.dehumidificationStatus=res.data.data
+                }).catch(err=>{
+                    this.$message.error(err);
+                });
+            },
+            dehumidificationControl(data){
+                this.$ajax({
+                    method:'post',
+                    url:'http://62.146.2.40:8010/warehouse/environment/dehumidifierSwitch?status='+data,
+                }).then((res)=>{
+                    if (res.data.msg=='成功') {
+                        this.dehumidificationStatus=data;
+                        if(data){
+                            this.$message.success('开启成功');
+                        }else {
+                            this.$message.success('关闭成功');
+                        }
+                    }
+                }).catch(err=>{
+                    this.$message.error(err);
+                });
+            },
             show(){
                 this.$refs.dialog.show();
             },
@@ -68,7 +99,7 @@
             submissionThreshold(){
                 this.$ajax({
                     method:'post',
-                    url:'http://192.168.125.117:8080/warehouse/environment/humidityThresholdSet',
+                    url:'http://62.146.2.40:8010/warehouse/environment/humidityThresholdSet',
                     params:{max:this.threshold}
                 }).then((res)=>{
                     this.flag=!this.flag;
@@ -80,7 +111,7 @@
             getThreshold(){
                 this.$ajax({
                     method:'post',
-                    url:'http://192.168.125.117:8080/warehouse/environment/humidityThreshold',
+                    url:'http://62.146.2.40:8010/warehouse/environment/humidityThreshold',
                 }).then((res)=>{
                     this.threshold=res.data.data.humidityThreshold
                 }).catch(err=>{

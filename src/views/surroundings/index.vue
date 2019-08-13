@@ -69,7 +69,7 @@
         },
         created(){
             this.getHumiture();
-            this.videoSrc=this.$store.state.user.deploy.data['HIK_CAMERA_ADDRESS'];
+            // this.videoSrc=this.$store.state.user.deploy.data['HIK_CAMERA_ADDRESS'];
             setInterval(this.getHumiture,600000);
         },
         methods:{
@@ -129,7 +129,7 @@
             getHumiture(){
                 this.$ajax({
                     method:'post',
-                    url:'http://192.168.125.117:8080/warehouse/environment/humitureQuery',
+                    url:'http://62.146.2.40:8010/warehouse/environment/humitureQuery',
                 }).then((res)=>{
                     this.humidity=res.data.data.humidity;
                     this.temperature=res.data.data.temperature;

@@ -255,6 +255,7 @@
                 });
 
                 process.stdout.on('data', (data) => {
+                    console.log('getListUsb',data);
                     if (this.flag == false) {
                         let dataJson = JSON.parse(data);
                         if (dataJson.status == 'sucess') {
@@ -394,7 +395,7 @@
                     //     rfidC.push(item.rfid)
                     // });
                     //
-                    // let url = 'http://192.168.125.117:8080/warehouse/transfers/up-to-down/equips-out/';
+                    // let url = 'http://62.146.2.40:8010/warehouse/transfers/up-to-down/equips-out/';
                     // let param = {
                     //     rfidList: rfidC,
                     //     transferOrderId: this.directObj.id

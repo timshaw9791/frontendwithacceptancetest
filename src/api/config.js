@@ -5,8 +5,8 @@
 
 export const ERR_OK = 0;
 
-export let baseURL = 'http://192.168.125.117:8080/warehouse';
-export let baseBURL = 'http://115.159.154.194/warehouse_server';
+export let baseURL = 'http://62.146.2.40:8010/warehouse';
+export let baseBURL = 'http://62.146.128.49/warehouse_serve';
 
 export const imgBaseUrl = `${baseURL}/images/`;
 export const pdfBaseUrl = `${baseURL}/pdfs/`;
