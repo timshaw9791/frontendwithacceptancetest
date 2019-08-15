@@ -95,8 +95,9 @@
             }
         },
         created(){
-          this.getEquipInfo();
-          this.getUnitAndHouse();
+            this.$message.warning('该功能尚未开放')
+          // this.getEquipInfo();
+          // this.getUnitAndHouse();
         },
         methods:{
             black(data){

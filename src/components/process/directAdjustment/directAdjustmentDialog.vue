@@ -118,14 +118,14 @@
     // import inventoryData from 'views/warehouse/inventoryData'
     import request from 'common/js/request'
 
-    // import {handheld} from 'common/js/pda'
-    //
-    // const cmdPath = 'C:\\Users\\Administrator';
-    // const exec = window.require('child_process').exec;
-    // const spawn = window.require('child_process').spawn;
-    // const fs = window.require('fs');
-    // const path = window.require('path');
-    // const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
+    import {handheld} from 'common/js/pda'
+
+    const cmdPath = 'C:\\Users\\Administrator';
+    const exec = window.require('child_process').exec;
+    const spawn = window.require('child_process').spawn;
+    const fs = window.require('fs');
+    const path = window.require('path');
+    const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
 
 
     export default {
@@ -153,6 +153,7 @@
                 pid: '',
                 flag: false,
                 closeUsb: false,
+                index:0,
                 com: 0
             }
         },
@@ -191,6 +192,7 @@
                 // this.closeUsb=true
                 if (pid) {
                     spawn("taskkill", ["/PID", pid, "/T", "/F"]);
+                    this.index = 0;
                 }
             },
             getListUsb() {//todo
@@ -201,15 +203,14 @@
                 });
 
                 process.stdout.on('data', (data) => {
-                    if (this.flag == false) {
-                        let dataJson = JSON.parse(data);
-                        if (dataJson.status == 'sucess') {
-                            this.flag = true
-                        }
-                    } else {
+                    console.log(data);
+                    if (this.index > 0) {
                         let arr = [];
                         arr.push(data);
                         this.getOutDataCopy(arr);
+                    } else {
+                        let newData = JSON.parse(data);
+                        newData.status === 'succeed' ? this.index = 1 : this.index = 0;
                     }
                 });
 

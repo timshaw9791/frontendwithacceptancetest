@@ -1,24 +1,24 @@
 // import {websocketUrl} from "api/config";
 //
 //
-// export function socketConnect() {
-//     console.log(websocketUrl);
-//     // 客户端与服务器进行连接
-//     let ws = new WebSocket('ws://62.146.128.49/warehouse/websocket'); // 返回`WebSocket`对象，赋值给变量ws
-//     // 连接成功回调
-//     ws.onopen = e => {
-//         console.log('连接成功', e);
-//         ws.send('我发送消息给服务端'); // 客户端与服务器端通信
-//     };
-//     // 监听服务器端返回的信息
-//     ws.onmessage = e => {
-//         console.log('服务器端返回：', e.data)
-//         // do something
-//     };
-//
-//
-//     return ws; // 返回websocket对象
-// }
+export function socketConnect() {
+    console.log(websocketUrl);
+    // 客户端与服务器进行连接
+    let ws = new WebSocket('ws://62.146.2.40/warehouse/websocket'); // 返回`WebSocket`对象，赋值给变量ws
+    // 连接成功回调
+    ws.onopen = e => {
+        console.log('连接成功', e);
+        ws.send('我发送消息给服务端'); // 客户端与服务器端通信
+    };
+    // 监听服务器端返回的信息
+    ws.onmessage = e => {
+        console.log('服务器端返回：', e.data)
+        // do something
+    };
+
+
+    return ws; // 返回websocket对象
+}
 
 import '@/plugins/sockjs.min'
 

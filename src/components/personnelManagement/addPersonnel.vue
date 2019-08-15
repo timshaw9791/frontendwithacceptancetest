@@ -172,6 +172,7 @@
                     if(this.addType=='add'){}else {
                         this.form.id=this.personenlData.id
                     }
+                    this.form.unitId=JSON.parse(localStorage.getItem('user')).unitId;
                     this.$refs.form.validate.then((valid) => {
                         if(valid){
                             this.$refs.form.gqlValidate(this.addType=='add'?user.identitySaveUser:user.identityUpdateUser, {

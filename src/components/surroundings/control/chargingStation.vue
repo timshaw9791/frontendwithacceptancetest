@@ -80,35 +80,54 @@
                 }
             },
             getChargingStationtNumber(number){
-                this.qfilter.value=String(number);
-                this.gqlQuery(surroundings.getEquipChargeRecordList,{qfilter:this.qfilter}, (data) => {
-                   let socketCopy=[];
-                   for (let i=0;i<4;i++){
-                      socketCopy.push({
-                          socketName:(i+1)+'号智能插座',
-                          name:'',
-                          number:i+1,
-                          route:number,
-                          chargingTime:'',
-                          status:1
-                      })
-                   };
-                   data.forEach(item=>{
-                       let number = Number(item.chargeNumber)-1;
-                       if(socketCopy[number].name==''){
-                           socketCopy[number].name=item.equipName;
-                           socketCopy[number].number=item.chargeNumber;
-                           socketCopy[number].route=item.chargeStation;
-                           socketCopy[number].status=0;
-                           socketCopy[number].chargingTime=item.startTime;
-                       }
-                   });
-                    this.socketList=socketCopy;
-                    this.flag=false;
-                    setTimeout(()=>{
-                        this.flag=true;
-                    },0)
-                }, true)
+                this.ajax('http://62.146.2.40:8010/warehouse/environment/chargeQuery',{number:Number(number)},(data)=>{
+                    console.log('getChargingStationtNumber',data);
+                    let socket = data.data.data.split('').reverse();
+                    let socketCopy=[];
+                    socket.forEach((item,index)=>{
+                        let numberItem = index+1;
+                        if(numberItem<=8){
+                            socketCopy.push({
+                                socketName:numberItem+'号智能插座',
+                                name:'',
+                                number:numberItem,
+                                route:number,
+                                chargingTime:'',
+                                status:Number(item)
+                            })
+                        }
+                    });
+                    this.getContextGql(number,socketCopy)
+                })
+                // this.qfilter.value=String(number);
+                // this.gqlQuery(surroundings.getEquipChargeRecordList,{qfilter:this.qfilter}, (data) => {
+                //    let socketCopy=[];
+                //    for (let i=0;i<8;i++){
+                //       socketCopy.push({
+                //           socketName:(i+1)+'号智能插座',
+                //           name:'',
+                //           number:i+1,
+                //           route:number,
+                //           chargingTime:'',
+                //           status:1
+                //       })
+                //    };
+                //    data.forEach(item=>{
+                //        let number = Number(item.chargeNumber)-1;
+                //        if(socketCopy[number].name==''){
+                //            socketCopy[number].name=item.equipName;
+                //            socketCopy[number].number=item.chargeNumber;
+                //            socketCopy[number].route=item.chargeStation;
+                //            socketCopy[number].status=0;
+                //            socketCopy[number].chargingTime=item.startTime;
+                //        }
+                //    });
+                //     this.socketList=socketCopy;
+                //     this.flag=false;
+                //     setTimeout(()=>{
+                //         this.flag=true;
+                //     },0)
+                // }, true)
                /* this.ajax('http://62.146.2.40:8010/warehouse/environment/chargeQuery',params,(data)=>{
                     let socket = data.data.data.split('').map(Number).reverse();
                     let socketCopy=[];
@@ -129,6 +148,25 @@
                         this.flag=true;
                     },0)
                 })*/
+            },
+            getContextGql(number,copyList){
+                this.qfilter.value=String(number);
+                this.gqlQuery(surroundings.getEquipChargeRecordList,{qfilter:this.qfilter}, (data) => {
+                    data.forEach(item=>{
+                        let number = Number(item.chargeNumber)-1;
+                        if(copyList[number].name==''){
+                            copyList[number].name=item.equipName;
+                            copyList[number].number=item.chargeNumber;
+                            copyList[number].route=item.chargeStation;
+                            copyList[number].chargingTime=item.startTime;
+                        }
+                    });
+                    this.socketList=copyList;
+                    this.flag=false;
+                    setTimeout(()=>{
+                        this.flag=true;
+                    },0)
+                }, true)
             },
             change(data){
 
