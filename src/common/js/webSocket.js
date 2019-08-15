@@ -4,7 +4,7 @@
 export function socketConnect() {
     console.log(websocketUrl);
     // 客户端与服务器进行连接
-    let ws = new WebSocket('ws://62.146.2.40/warehouse/websocket'); // 返回`WebSocket`对象，赋值给变量ws
+    let ws = new WebSocket('ws://62.147.39.30/warehouse/websocket'); // 返回`WebSocket`对象，赋值给变量ws
     // 连接成功回调
     ws.onopen = e => {
         console.log('连接成功', e);
@@ -29,7 +29,7 @@ import store from 'store'
 import {getToken} from "./auth";
 import {websocketUrl} from "../../api/config";
 
-const socket = new SockJS("http://62.146.2.40:8010/warehouse/websocket");
+const socket = new SockJS("http://62.147.39.30:8010/warehouse/websocket");
 
 const stompClient = Stomp.over(socket);
 

@@ -53,7 +53,7 @@
         },
         methods:{
             getChargingStationtList(){
-              this.ajax('http://62.146.2.40:8010/warehouse/environment/getChargeCount','',(data)=>{
+              this.ajax('http://62.147.39.30:8010/warehouse/environment/getChargeCount','',(data)=>{
                   for (let i=1;i<=data.data.data;i++){
                       this.select.selectList.push({
                           label:i+'号智能充电台',
@@ -80,7 +80,7 @@
                 }
             },
             getChargingStationtNumber(number){
-                this.ajax('http://62.146.2.40:8010/warehouse/environment/chargeQuery',{number:Number(number)},(data)=>{
+                this.ajax('http://62.147.39.30:8010/warehouse/environment/chargeQuery',{number:Number(number)},(data)=>{
                     console.log('getChargingStationtNumber',data);
                     let socket = data.data.data.split('').reverse();
                     let socketCopy=[];
@@ -128,7 +128,7 @@
                 //         this.flag=true;
                 //     },0)
                 // }, true)
-               /* this.ajax('http://62.146.2.40:8010/warehouse/environment/chargeQuery',params,(data)=>{
+               /* this.ajax('http://62.147.39.30:8010/warehouse/environment/chargeQuery',params,(data)=>{
                     let socket = data.data.data.split('').map(Number).reverse();
                     let socketCopy=[];
                     socket.forEach((item,index)=>{

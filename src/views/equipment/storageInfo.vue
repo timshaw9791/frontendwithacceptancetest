@@ -330,7 +330,7 @@
                                 return item['rfid'];
                             }),
                             serialList: this.list.map((item) => {
-                                return item['serial'];
+                                return item['serial']==''?null:item['serial'];
                             }),
                             location: this.zbForm.location,
                             equipArgId: this.form.nameId[2],

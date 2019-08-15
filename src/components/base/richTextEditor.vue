@@ -167,7 +167,7 @@
       /*选择上传图片切换*/
       onFileChange(e) {
         let files = e.target.files;
-        axios('http://62.146.2.40:8010:8080/sts').then((result) => {
+        axios('http://62.147.39.30:8010:8080/sts').then((result) => {
           const client = new OSS({
             // endpoint: result.data.endpoint,
             endpoint: 'https://oss-cn-hangzhou.aliyuncs.com/',

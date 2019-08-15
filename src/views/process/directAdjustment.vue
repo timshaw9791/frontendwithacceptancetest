@@ -109,7 +109,7 @@
             },
             toSee(data){
                this.directDefault=data.row;
-               this.downloadSrc='http://62.146.2.40:8010/warehouse/transfers/up-to-down/export-excel'+'?transferOrderId='+this.directDefault.id;
+               this.downloadSrc='http://62.147.39.30:8010/warehouse/transfers/up-to-down/export-excel'+'?transferOrderId='+this.directDefault.id;
                this.viewStatus.flag=!this.viewStatus.flag
             },
             addDirectAdjustment(){
@@ -119,7 +119,7 @@
                 this.tableState=data
             },
             transferClick(){
-                let url='http://62.146.2.40:8010/warehouse/transfers/up-to-down/export-excel'+'?transferOrderId='+this.directDefault.id;
+                let url='http://62.147.39.30:8010/warehouse/transfers/up-to-down/export-excel'+'?transferOrderId='+this.directDefault.id;
                 request({
                     method:'post',
                     url:url
@@ -135,7 +135,7 @@
                 if(dataSubmit.orderItems[index].model==''){
                     dataSubmit.orderItems.splice(index,1)
                 }
-                let url = 'http://62.146.2.40:8010/warehouse/transfers/up-to-down';
+                let url = 'http://62.147.39.30:8010/warehouse/transfers/up-to-down';
                 request({
                     method:'post',
                     url:url,
@@ -153,7 +153,7 @@
                  this.unit.id=res.id;
                  this.unit.name=res.location+res.name
              },true);
-             let url='http://62.146.2.40:8010/warehouse/house';
+             let url='http://62.147.39.30:8010/warehouse/house';
                 request({
                     method:'get',
                     url:url,
