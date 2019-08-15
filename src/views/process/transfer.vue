@@ -178,7 +178,7 @@
             },
             getEquipInfo() {
                 this.gqlQuery(api.getEquipList1, '', (res) => {
-                    let newData = res
+                    let newData = res;
                     let eqName = newData.map(res => {
                         return res.name
                     });

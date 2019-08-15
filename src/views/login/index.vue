@@ -4,7 +4,7 @@
         <div class="video-cover"></div>
         <div class="topTitle">
             <img src="../../common/images/警徽.png" height="89" width="78"/>
-            <h3 class="title">警用装备智能管理系统</h3>
+            <h3 class="title">许昌市公安局应急装备物资管理系统</h3>
         </div>
 
         <el-form class="login-form" autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm"
@@ -40,21 +40,20 @@
 
 <script>
     import {startSocket} from "common/js/webSocket";
-
     export default {
         name: 'login',
         data() {
             return {
                 loginForm: {
-                    username: '1',
-                    password: '1'
+                    username: '',
+                    password: ''
                 },
                 loginRules: {
                     username: [{required: true, trigger: 'blur'}],
                     password: [{required: true, trigger: 'blur'}]
                 },
                 loading: false,
-                pwdType: 'password'
+                pwdType: 'password',
             }
         },
         methods: {

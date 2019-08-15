@@ -543,7 +543,6 @@
                 }
             },
             getList() {
-
                 if (this.equipId) {
                     this.gqlQuery(api.getEquip, {
                         id: this.equipId

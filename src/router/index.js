@@ -149,12 +149,12 @@ export const asyncRouterMap = [
         name: 'process',
         meta: {title: '流程管理', icon: '流程管理', roles: ['ADMINISTRATOR']},
         children: [
-            {
-                path: 'scrapped',
-                name: 'scrapped',
-                component: _import('process/scrapped'),
-                meta: {title: '报废流程'},
-            },
+            // {
+            //     path: 'scrapped',
+            //     name: 'scrapped',
+            //     component: _import('process/scrapped'),
+            //     meta: {title: '报废流程'},
+            // },
             {
                 path: 'transfer',
                 name: 'transfer',
@@ -167,19 +167,19 @@ export const asyncRouterMap = [
                 component: _import('process/directAdjustment'),
                 meta: {title: '直调流程'},
             },
-            {
-                path: 'secondment',
-                name: 'secondment',
-                component: _import('process/secondment'),
-                meta: {title: '借调流程'},
-            },
-            {
-                path: 'bill',
-                name: 'bill',
-                component: _import('process/bill'),
-                meta: {title: '报废申请单'},
-                hidden: true,
-            },
+            // {
+            //     path: 'secondment',
+            //     name: 'secondment',
+            //     component: _import('process/secondment'),
+            //     meta: {title: '借调流程'},
+            // },
+            // {
+            //     path: 'bill',
+            //     name: 'bill',
+            //     component: _import('process/bill'),
+            //     meta: {title: '报废申请单'},
+            //     hidden: true,
+            // },
         ]
     },
     {
@@ -280,20 +280,20 @@ export const asyncRouterMap = [
             },
         ]
     },
-    {
-        path: '/category',
-        component: Layout,
-        name: 'category',
-        meta: {roles: ['ADMINISTRATOR']},
-        children: [
-            {
-                path: 'index',
-                name: 'category/index',
-                component: _import('category/index'),
-                meta: {title: '装备类别', icon: '装备类别'},
-            },
-        ]
-    },
+    // {
+    //     path: '/category',
+    //     component: Layout,
+    //     name: 'category',
+    //     meta: {roles: ['ADMINISTRATOR']},
+    //     children: [
+    //         {
+    //             path: 'index',
+    //             name: 'category/index',
+    //             component: _import('category/index'),
+    //             meta: {title: '装备类别', icon: '装备类别'},
+    //         },
+    //     ]
+    // },
     {
         path: '/message',
         component: Layout,
