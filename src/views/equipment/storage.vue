@@ -109,11 +109,11 @@
                         <div class="rfid-left">
                             RFID{{index+1}} : <span>{{item.epc}}</span>
                         </div>
-                        <span>{{item.status==='succeed'?'写入成功':'写入失败'}}</span>
+                        <span>{{item.status==='succeed'?'写入成功':'已重复请下一个'}}</span>
                     </div>
                 </div>
                 <div class="_button">
-                    <el-button type="primary" size="medium">重新写入</el-button>
+                    <el-button type="primary" size="medium" @click="">重新写入</el-button>
                 </div>
             </div>
 
@@ -145,9 +145,9 @@
     import {formRulesMixin} from "../../field/common/mixinComponent";
     import {getRfid, saveRfid} from "api/rfid";
 
-    // const cmdPath = 'C:\\Users\\Administrator';
-    // const exec = window.require('child_process').exec;
-    // const spawn = window.require('child_process').spawn;
+    const cmdPath = 'C:\\Users\\Administrator';
+    const exec = window.require('child_process').exec;
+    const spawn = window.require('child_process').spawn;
 
 
     export default {
@@ -224,20 +224,19 @@
                     this.pid = process.pid;
                     let start = false;
                     process.stdout.on('data', (data) => {
-                        console.log(data);
                         let newData = JSON.parse(data);
                         console.log(newData);
                         if (start === true) {
-                            this.writeAll.push(newData);
+                            this.writeAll.unshift(newData);
                             this.writeIndex = newData;
-                            console.log(this.writeAll);
-                            console.log(this.writeIndex);
                         } else if (start === false) {
-                            newData.status === 'succeed' && !newData.epc ? start = true : start = false;
+                            newData.status === 'succeed' && newData.epc === undefined ? start = true : start = false;
                         }
                     });
+
                     process.stderr.on('data', (err) => {
                         console.log(err);
+                        this.$message.error('设备炸了请重新插拔!');
                     });
                     process.on('exit', (code) => {
                         console.log(`子进程退出，退出码 ${code}`);
@@ -250,14 +249,20 @@
             },
             cancel(data) {
                 if (this.writeIndex) {
-                    saveRfid({"rfidGeneric": this.writeIndex.epc}).then(res1 => {
+                    let epc = `0X${this.writeIndex.epc}`;
+                    let newData = parseInt(epc) + 1;
+                    saveRfid({"rfidGeneric": newData.toString(16)}).then(res1 => {
                         spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
                         this.writeIndex = '';
                         this.writeAll = [];
                     })
+
                 } else {
                     spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
-                    this.inlineForm = {};
+                    this.inlineForm = {
+                        rfid: '',
+                        newRfid: '',
+                    };
                 }
             },
             writeone() {
@@ -265,17 +270,22 @@
                     console.log(data);
                     if (data.includes('succeed')) {
                         console.log(data.split('\n')[1]);
-                        this.inlineForm.rfid = data.split('\n')[1];
+                        // this.inlineForm.rfid = data.split('\n')[1];
+                        this.$set(this.inlineForm, 'rfid', data.split('\n')[1]);
                     }
                 })
             },
             saveOne(data) {
-                exec(`java -jar writing.jar ${this.com} ${data}`, {cwd: cmdPath}, (err, data) => {
-                    console.log(data);
-                    if (data.includes('succeed')) {
-                        this.$message.success('修改成功!');
-                    }
-                })
+
+                this.$refs.inlineForm.axiosData(
+                    exec(`java -jar writing.jar ${this.com} ${data}`, {cwd: cmdPath}, (err, data) => {
+                        console.log(data);
+                        if (data.includes('succeed')) {
+                            this.$message.success('修改成功!');
+                        }
+                    })
+                );
+
             },
             getConfig() {
                 this.$store.dispatch('LogOut').then(() => {
@@ -386,7 +396,7 @@
             display: flex;
 
             .rfid-left {
-                width: 82%;
+                width: 81%;
             }
         }
     }

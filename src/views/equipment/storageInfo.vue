@@ -178,7 +178,6 @@
                             <el-table-column label="装备序号" align="center">
                                 <template scope="scope">
                                     <el-input size="small" v-model="scope.row.serial"
-                                              @change="qaq(scope)"
                                               style="width:100px"></el-input>
                                 </template>
                             </el-table-column>
@@ -219,9 +218,9 @@
     import {imgUpUrl, pdfUpUrl, videoUpUrl, imgBaseUrl, pdfBaseUrl, videoBaseUrl} from "api/config";
     import {delFile} from "api/basic";
 
-    // const cmdPath = 'C:\\Users\\Administrator';
-    // const exec = window.require('child_process').exec;
-    // const spawn = window.require('child_process').spawn;
+    const cmdPath = 'C:\\Users\\Administrator';
+    const exec = window.require('child_process').exec;
+    const spawn = window.require('child_process').spawn;
 
 
     export default {
@@ -336,7 +335,7 @@
                             location: this.zbForm.location,
                             equipArgId: this.form.nameId[2],
                             quality: this.zbForm.quality,
-                            price: this.form.price,
+                            price: this.form.price * 100,
                         }, (res) => {
                             this.index = 0;
                             this.callback(`成功`);
@@ -455,6 +454,7 @@
                 }).catch(err => {
                     console.log(err);
                     this.$message.error('上传失败');
+                    this.$refs.filePdf[index].value = null;
                 });
 
 
@@ -502,6 +502,7 @@
 
                 process.stderr.on('data', (err) => {
                     console.log(err);
+                    this.$message.error('设备炸了请重新插拔!');
                 });
 
                 process.stdout.on('data', (data) => {
@@ -554,7 +555,7 @@
                         eqData.equipArg.imageAddress ? this.imageUrl = `${imgBaseUrl}${eqData.equipArg.imageAddress}` : '';
                         this.$set(this.form, 'eqBig', eqData.equipArg.category.genre.name);
                         this.$set(this.form, 'eqSmall', eqData.equipArg.category.name);
-                        this.$set(this.form, 'price', eqData.price);
+                        this.$set(this.form, 'price', eqData.price / 100);
                         this.zb['shelfLifeQ'] = Math.round(eqData.quality.shelfLife / 24 / 60 / 60 / 1000);
                         this.zb['productDateQ'] = eqData.quality.productDate;
                         this.zb['floorL'] = eqData.location ? eqData.location.floor : '';

@@ -103,9 +103,9 @@
     import {retirementApplication} from "api/operation";
     import {getRfidinfo} from "api/rfid";
 
-    // const cmdPath = 'C:\\Users\\Administrator';
-    // const exec = window.require('child_process').exec;
-    // const spawn = window.require('child_process').spawn;
+    const cmdPath = 'C:\\Users\\Administrator';
+    const exec = window.require('child_process').exec;
+    const spawn = window.require('child_process').spawn;
 
 
     export default {
@@ -154,6 +154,7 @@
 
                 process.stderr.on('data', (err) => {
                     console.log(err);
+                    this.$message.error('设备炸了请重新插拔!');
                 });
                 process.stdout.on('data', (data) => {
                     console.log(data);

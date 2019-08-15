@@ -199,6 +199,7 @@
                 const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
                 this.pid = process.pid;
                 process.stderr.on('data', (err) => {
+                    this.$message.error('设备炸了请重新插拔!');
                     console.log(err);
                 });
 
