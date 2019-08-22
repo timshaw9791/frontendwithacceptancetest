@@ -156,6 +156,12 @@ export const asyncRouterMap = [
             //     meta: {title: '报废流程'},
             // },
             {
+                path: 'secondment',
+                name: 'secondment',
+                component: _import('process/secondment'),
+                meta: {title: '借用流程'},
+            },
+            {
                 path: 'transfer',
                 name: 'transfer',
                 component: _import('process/transfer'),

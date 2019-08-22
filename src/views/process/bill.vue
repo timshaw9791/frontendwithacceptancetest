@@ -20,8 +20,8 @@
         <!--</div>-->
         <!--</el-card>-->
         <div class="bill-action-box">
-            <span>{{typeSingleFlag?'调拨单':'调拨申请单'}}</span>
-            <div class="bill-action-box-button-box" v-if="billData.transferApplyOrder.state=='REJECTED'">
+            <span>{{typeSingleFlag?`${billName}单`:`${billName}申请单`}}</span>
+            <div class="bill-action-box-button-box" v-if="billData.applyOrder.state=='REJECTED'">
                 <el-button size="medium" class="bt" @click="operational('REJECTED')">
                     作废
                 </el-button>
@@ -42,34 +42,34 @@
         <div class="bill">
             <!--<img src="@/common/images/未审批.png" class="icon"/>-->
             <!--<img src="@/common/images/驳回.png" class="icon"/>require('@/common/images/通过.png')-->
-            <img :src="typeSingleFlag?getStatesTransferImg(billData.state):getStatesImg(billData.transferApplyOrder.state)" class="icon"/>
+            <img :src="typeSingleFlag?getStatesTransferImg(billData.state):getStatesImg(billData.applyOrder.state)" class="icon"/>
             <div class="content">
                 <div class="tr">
-                    <div class="title">{{typeSingleFlag?'调拨单号: ':'申请编号: '}}<span v-text="billData.transferApplyOrder.number"></span></div>
+                    <div class="title">{{typeSingleFlag?`${billName}单号: `:'申请编号: '}}<span v-text="billData.applyOrder.number"></span></div>
                     <div class="title" v-if="typeSingleFlag">调拨时间: <span v-text="filterTime(billData.outTime)"></span></div>
                     <div class="title" v-if="typeSingleFlag">接收时间: <span v-text="filterTime(billData.inTime)"></span></div>
                 </div>
                 <div class="tr">
-                    <div class="title">申请类型: <span v-text="applicationType(billData.transferApplyOrder.type)"></span></div>
+                    <div class="title">申请类型: <span v-text="applicationType(billData.applyOrder.type)"></span></div>
                     <div class="title" v-if="typeSingleFlag">调拨机构: <span v-text="getOutUnit()"></span></div>
-                    <div class="title">接收机构: <span v-text="billData.transferApplyOrder.inHouse.organUnit.name"></span></div>
+                    <div class="title">接收机构: <span v-text="billData.applyOrder.inHouse.organUnit.name"></span></div>
                     <div class="title" v-if="!typeSingleFlag">调拨机构: <span v-text="getOutUnit()"></span></div>
                 </div>
                 <div class="tr">
-                    <div class="title">申请时间: <span v-text="filterTime(billData.transferApplyOrder.applyTime)"></span></div>
+                    <div class="title">申请时间: <span v-text="filterTime(billData.applyOrder.applyTime)"></span></div>
                     <div class="title"  v-if="typeSingleFlag">调拨库房: <span v-text="getOutHouse()"></span></div>
-                    <div class="title">接收库房: <span v-text="billData.transferApplyOrder.inHouse.name"></span></div>
+                    <div class="title">接收库房: <span v-text="billData.applyOrder.inHouse.name"></span></div>
                 </div>
                 <div class="tr">
-                    <div class="title">申请人: <span v-text="billData.transferApplyOrder.applicant.name"></span></div>
+                    <div class="title">申请人: <span v-text="billData.applyOrder.applicant.name"></span></div>
                     <div class="title" v-if="typeSingleFlag">调拨人员: <span v-text="billData.outUser.name"></span></div>
-                    <div class="title" v-if="typeSingleFlag">接收人员:<span v-text="billData.transferApplyOrder.applicant.name"></span></div>
+                    <div class="title" v-if="typeSingleFlag">接收人员:<span v-text="billData.applyOrder.applicant.name"></span></div>
                 </div>
                 <div class="equip-table-list" :style="transferEquipData.state=='ABNORMAL'?'cursor: pointer;':''" @click="clickAbnormalTable(transferEquipData)">
                     <div>装备统计:</div>
                     <svg-icon icon-class="异常" v-if="transferEquipData.state=='ABNORMAL'?true:false" class="icon-ABNORMAL"/>
 
-                    <el-table :data="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?transferEquipData.transferEquips:billData.transferApplyOrder.transferNeedEquip:billData.transferApplyOrder.transferNeedEquip" class="list" fit height="420">
+                    <el-table :data="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?transferEquipData.equips:billData.applyOrder.applyNeedEquips:billData.applyOrder.applyNeedEquips" class="list" fit height="420">
                         <el-table-column label="序号" align="center">
                             <template slot-scope="scope">
                                 {{scope.$index+1}}
@@ -81,28 +81,27 @@
                         <bos-table-column lable="总价" field="price" v-if="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?true:false:false"></bos-table-column>
                     </el-table>
                 </div>
-                <div class="bottom" v-if="bottomFlag">
-                    <div style="margin-bottom: 12px;"><span
-                            v-text="getBillTitle(billData.transferApplyOrder.type)"></span></div>
-                    <div class="row" v-for="item in billData.approvalResults">
-                        <div style="color:rgb(47,47,118)"><span v-text="getOperateLevel(item.level)"></span></div>
-                        <div><span v-text="item.leader.name"></span></div>
-                        <div><span :style="item.approval?'color:#009B4C':'color:#EF4545'"
-                                   v-text="item.approval?'通过':'驳回'"></span><span v-if="!item.approval"
-                                                                                 style="color:#2F2F76;cursor: pointer;margin-left: 12px"
-                                                                                 v-text="'[查看原因]'"
-                                                                                 @click="checkReason(item)"></span>
-                        </div>
-                        <div><span v-text="getOperate(item.level)+'时间:'"></span><span
-                                v-text="filterTime(item.time)"></span></div>
-                    </div>
-                </div>
+                <!--<div class="bottom" v-if="bottomFlag">-->
+                    <!--<div style="margin-bottom: 12px;"><span-->
+                            <!--v-text="getBillTitle(billData.applyOrder.type)"></span></div>-->
+                    <!--<div class="row" v-for="item in billData.approvalResults">-->
+                        <!---->
+                        <!--<div><span :style="item.approval?'color:#009B4C':'color:#EF4545'"-->
+                                   <!--v-text="item.approval?'通过':'驳回'"></span><span v-if="!item.approval"-->
+                                                                                 <!--style="color:#2F2F76;cursor: pointer;margin-left: 12px"-->
+                                                                                 <!--v-text="'[查看原因]'"-->
+                                                                                 <!--@click="checkReason(item)"></span>-->
+                        <!--</div>-->
+                        <!--<div><span v-text="getOperate(item.level)+'时间:'"></span><span-->
+                                <!--v-text="filterTime(item.time)"></span></div>-->
+                    <!--</div>-->
+                <!--</div>-->
                 <div class="bottom" v-if="bottomCheckFlag">
                     <div style="margin-bottom: 12px;"><span
-                            v-text="getBillTitle(billData.transferApplyOrder.type)"></span></div>
+                            v-text="getBillTitle(billData.applyOrder.type)"></span></div>
                     <div class="row" v-for="item in checkApproval">
-                        <div style="color:rgb(47,47,118)"><span v-text="getApprovalType(item.approvalType)"></span></div>
-                        <div><span v-text="item.leader.name"></span></div>
+                        <div style="color:rgb(47,47,118)"><span v-text="getApplyType(item.approvalType)"></span></div>
+                        <div><span v-text="'['+item.leader.position+']'" style="margin-right: 5px"></span><span v-text="item.leader.name"></span></div>
                         <div><span :style="item.approval?'color:#009B4C':'color:#EF4545'"
                                    v-text="item.approval?'通过':'驳回'"></span><span v-if="!item.approval"
                                                                                  style="color:#2F2F76;cursor: pointer;margin-left: 12px"
@@ -134,67 +133,67 @@
         <!--</el-timeline>-->
         <!--</serviceDialog>-->
 
-        <serviceDialog :title="getOperate(billData.currentLevel)+'指定'" ref="dialog1" width="634px"
-                       @confirm="confirmPass">
-            <div class="bill-item-box">
-                <div class="bill-item">
-                    <div class="bill-item-span"><span v-text="'调拨操作人员：'"></span></div>
-                    <el-select style="width: 248px" v-model="selectObj.selectPersonel.select" placeholder="请选择">
-                        <el-option
-                                v-for="item in selectObj.selectPersonel.selectList"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item">
-                        </el-option>
-                    </el-select>
-                </div>
-                <div class="bill-item" style="margin-top: 20px">
-                    <div class="bill-item-span" style="margin-left: 34.5px"><span v-text="'指定仓库：'"></span></div>
-                    <el-select style="width: 248px" v-model="selectObj.selectHouse.select" placeholder="请选择">
-                        <el-option
-                                v-for="item in selectObj.selectHouse.selectList"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item">
-                        </el-option>
-                    </el-select>
-                </div>
-            </div>
-            <!--<form-container ref="inlineForm" :model="inlineForm" style="margin-left: 23%;">-->
-            <!--<field-select label="选择领导" :list="leadList" v-model="inlineForm.list"-->
-            <!--prop="list" width="7">-->
-            <!--</field-select>-->
-            <!--</form-container>-->
-        </serviceDialog>
+        <!--<serviceDialog :title="getOperate(billData.currentLevel)+'指定'" ref="dialog1" width="634px"-->
+                       <!--@confirm="confirmPass">-->
+            <!--<div class="bill-item-box">-->
+                <!--<div class="bill-item">-->
+                    <!--<div class="bill-item-span"><span v-text="'调拨操作人员：'"></span></div>-->
+                    <!--<el-select style="width: 248px" v-model="selectObj.selectPersonel.select" placeholder="请选择">-->
+                        <!--<el-option-->
+                                <!--v-for="item in selectObj.selectPersonel.selectList"-->
+                                <!--:key="item.value"-->
+                                <!--:label="item.label"-->
+                                <!--:value="item">-->
+                        <!--</el-option>-->
+                    <!--</el-select>-->
+                <!--</div>-->
+                <!--<div class="bill-item" style="margin-top: 20px">-->
+                    <!--<div class="bill-item-span" style="margin-left: 34.5px"><span v-text="'指定仓库：'"></span></div>-->
+                    <!--<el-select style="width: 248px" v-model="selectObj.selectHouse.select" placeholder="请选择">-->
+                        <!--<el-option-->
+                                <!--v-for="item in selectObj.selectHouse.selectList"-->
+                                <!--:key="item.value"-->
+                                <!--:label="item.label"-->
+                                <!--:value="item">-->
+                        <!--</el-option>-->
+                    <!--</el-select>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--&lt;!&ndash;<form-container ref="inlineForm" :model="inlineForm" style="margin-left: 23%;">&ndash;&gt;-->
+            <!--&lt;!&ndash;<field-select label="选择领导" :list="leadList" v-model="inlineForm.list"&ndash;&gt;-->
+            <!--&lt;!&ndash;prop="list" width="7">&ndash;&gt;-->
+            <!--&lt;!&ndash;</field-select>&ndash;&gt;-->
+            <!--&lt;!&ndash;</form-container>&ndash;&gt;-->
+        <!--</serviceDialog>-->
 
-        <serviceDialog :title="getOperate(billData.currentLevel)+'指定'" ref="dialogShenghe" width="634px"
-                       @confirm="confirmAudit">
-            <div class="bill-item-box">
-                <div class="bill-item">
-                    <div class="bill-item-span"><span v-text="'选择领导：'"></span></div>
-                    <el-select style="width: 248px" v-model="selectObj.selectLeder.select" placeholder="请选择">
-                        <el-option
-                                v-for="item in selectObj.selectLeder.selectList"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item">
-                        </el-option>
-                    </el-select>
-                </div>
-            </div>
-            <!--<form-container ref="inlineForm" :model="inlineForm" style="margin-left: 23%;">-->
-            <!--<field-select label="选择领导" :list="leadList" v-model="inlineForm.list"-->
-            <!--prop="list" width="7">-->
-            <!--</field-select>-->
-            <!--</form-container>-->
-        </serviceDialog>
-        <serviceDialog title="出库异常详情单" ref="dialogAbnormalTable" width="1529px" @confirm="confirmReject" :button="false">
+        <!--<serviceDialog :title="getOperate(billData.currentLevel)+'指定'" ref="dialogShenghe" width="634px"-->
+                       <!--@confirm="confirmAudit">-->
+            <!--<div class="bill-item-box">-->
+                <!--<div class="bill-item">-->
+                    <!--<div class="bill-item-span"><span v-text="'选择领导：'"></span></div>-->
+                    <!--<el-select style="width: 248px" v-model="selectObj.selectLeder.select" placeholder="请选择">-->
+                        <!--<el-option-->
+                                <!--v-for="item in selectObj.selectLeder.selectList"-->
+                                <!--:key="item.value"-->
+                                <!--:label="item.label"-->
+                                <!--:value="item">-->
+                        <!--</el-option>-->
+                    <!--</el-select>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--&lt;!&ndash;<form-container ref="inlineForm" :model="inlineForm" style="margin-left: 23%;">&ndash;&gt;-->
+            <!--&lt;!&ndash;<field-select label="选择领导" :list="leadList" v-model="inlineForm.list"&ndash;&gt;-->
+            <!--&lt;!&ndash;prop="list" width="7">&ndash;&gt;-->
+            <!--&lt;!&ndash;</field-select>&ndash;&gt;-->
+            <!--&lt;!&ndash;</form-container>&ndash;&gt;-->
+        <!--</serviceDialog>-->
+        <serviceDialog title="出库异常详情单" ref="dialogAbnormalTable" width="1529px" :button="false">
             <div class="bill-abnormal-table">
-                <div><span  v-text="'调拨单号：'"></span><span v-text="billData.transferApplyOrder.number"></span></div>
+                <div><span  v-text="'调拨单号：'"></span><span v-text="billData.applyOrder.number"></span></div>
                 <div class="bill-abnormal-table-box">
                     <div class="bill-abnormal-table-item">
                         <span v-text="'预计出库：'" style="margin-top: 14px"></span>
-                        <el-table :data="billData.transferApplyOrder.transferNeedEquip" class="bill-abnormal-table-list" fit height="531" max-height="531">
+                        <el-table :data="billData.applyOrder.applyNeedEquips" class="bill-abnormal-table-list" fit height="531" max-height="531">
                             <el-table-column label="序号" align="center">
                                 <template slot-scope="scope">
                                     {{scope.$index+1}}
@@ -208,7 +207,7 @@
                     </div>
                     <div class="bill-abnormal-table-item">
                         <span v-text="'实际出库：'" style="margin-top: 14px"></span>
-                        <el-table :data="transferEquipData.transferEquips" class="bill-abnormal-table-list" fit height="531" max-height="531">
+                        <el-table :data="transferEquipData.equips" class="bill-abnormal-table-list" fit height="531" max-height="531">
                             <el-table-column label="序号" align="center">
                                 <template slot-scope="scope">
                                     {{scope.$index+1}}
@@ -242,14 +241,13 @@
             <div style="width: 100%;text-align: center;font-size: 18px">
                 <span v-text="'驳回原因：'"></span><span v-text="checkReasonData"></span>
             </div>
-
         </serviceDialog>
         <t_dialog ref="transferDialog" @sucesssInOrOut="sucesssInOrOut" :typeOperational="typeOperational" :directObj="direct"></t_dialog>
         <!--<serviceDialog title="批准" ref="dialog2" width="40%">-->
         <!--<div style="text-align: center;font-size: 20px">您确定要批准吗</div>-->
         <!--</serviceDialog>-->
         <add-direct-adjustment-bill @sucessAdd="sucessAdd" ref="addDirectAdjustmentBill" :restaurants="reSet.restaurants" :myUnit="reSet.myUnit" :unit="reSet.unit" :house="reSet.house" :taskId="billData.taskId" :addType="'reSet'"></add-direct-adjustment-bill>
-
+        <add-apply-bill @sucessAdd="sucessAdd" ref="addSecondmentBill" :myUnit="reSet.myUnit" :unit="reSet.unit" :house="reSet.house"></add-apply-bill>
     </div>
 </template>
 
@@ -265,12 +263,13 @@
     // import {baseBURL} from "../../../api/config";
     import {baseBURL} from "../../api/config"
     import addDirectAdjustmentBill from 'components/process/directAdjustment/addDirectAdjustment'
-
+    import addApplyBill from 'components/process/secondment/addSecondment'
     export default {
         components: {
             serviceDialog,
             t_dialog,
-            addDirectAdjustmentBill
+            addDirectAdjustmentBill,
+            addApplyBill
         },
         props: {
             billData: {
@@ -279,6 +278,30 @@
             typeSingle: {
                 type: String,
                 default: 'apply'
+            },
+            billName:{
+              type:String,
+              default:'调拨'
+            },
+            billUrlObject:{
+                type:Object,
+                default(){
+                    return{
+                        histroyApprovalUrl:'/history-leader-approval/',
+                        confirmRejectUrl:{
+                            approvalUrl:'/transfer/approval',
+                            finalApprovalUrl:'/transfer/final-approval'
+                        },
+                        confirmREJECTED:'/transfer',
+                        confirmPassUrl:'/transfer/final-approval',
+                        downloadSrcUrl:'/transfer-order/export-excel',
+                        billEquipUrl:{
+                            inHouseUrl:'/order-equips/equips-in-house/group',
+                            outHouseUrl:'/order-equips/equips-out-house/group'
+                        },
+                        confirmAuditUrl:'/transfer/approval'
+                    }
+                }
             },
             singleStatus: {
                 type: String,
@@ -338,22 +361,22 @@
                 this.myOrganUnit = data[0];
             }, true);
             if (this.singleStatus != '进行中') {
-                this.getHistroyApproval(this.billData.transferApplyOrder.historyLeaderApprovalId)
+                this.getHistroyApproval(this.billData.applyOrder.historyLeaderApprovalId)
             }
             if(this.typeSingle!='apply'){
                 let myName=JSON.parse(localStorage.getItem('user')).name;
                 console.log(this.billData);
                 if(this.billData.outUser.name==myName&&this.billData.state=="WITHOUT_OUT_HOUSE"){
                     this.typeOperational='出库'
-                }else if(this.billData.transferApplyOrder.applicant.name==myName&&this.billData.state=="OUT_HOUSE"){
+                }else if(this.billData.applyOrder.applicant.name==myName&&this.billData.state=="OUT_HOUSE"){
                     this.typeOperational='入库'
                 }
-                this.downloadSrc=baseBURL+'/transfer-order/export-excel'+'?transferOrderId='+this.billData.id;
+                this.downloadSrc=baseBURL+this.billUrlObject.downloadSrcUrl+'?orderId='+this.billData.id;
                 if(this.billData.state=='IN_HOUSE'){
-                    let url = baseBURL+'/transfer-equips/equips-in-house/group';
+                    let url = baseBURL+'/order-equips/equips-in-house/group';
                     this.getTransferEquipData(url)
                 }else if(this.billData.state=='OUT_HOUSE'){
-                    let url = baseBURL+'/transfer-equips/equips-out-house/group';
+                    let url = baseBURL+'/order-equips/equips-out-house/group';
                     this.getTransferEquipData(url)
                 }
             }
@@ -373,7 +396,14 @@
                 if (this.singleStatus != '进行中') {
                     return true
                 } else {
-                    return false
+                    if (this.billData.approvalResults != null) {
+                        if (this.billData.approvalResults.length > 0) {
+                            this.checkApproval=this.billData.approvalResults;
+                            return true
+                        }
+                    } else {
+                        return false
+                    }
                 }
             },
             typeSingleFlag(){
@@ -385,6 +415,14 @@
             }
         },
         methods: {
+            getApplyType(applyType){
+                switch (applyType) {
+                    case 'APPROVAL':
+                        return '审批';
+                    case 'VERIFY':
+                        return '审核';
+                }
+            },
             clickAbnormalTable(abnormalTable){
                 if(abnormalTable.state!=null){
                     if(abnormalTable.state=='ABNORMAL'){
@@ -403,7 +441,7 @@
               this.$emit('closeBill',true);
             },
             outOfStock(){
-                this.direct={orderItems:this.billData.transferApplyOrder.transferNeedEquip,number:this.billData.transferApplyOrder.number,id:this.billData.id,userId:this.billData.transferApplyOrder.applicant.userId};
+                this.direct={orderItems:this.billData.applyOrder.applyNeedEquips,number:this.billData.applyOrder.number,id:this.billData.id,userId:this.billData.applyOrder.applicant.userId};
                 this.$refs.transferDialog.showDialog();
             },
             getApprovalType(approvalType){
@@ -416,16 +454,16 @@
             },
             getOutUnit(){
                 // if(this.typeSingleFlag){
-                //     this.billData.transferApplyOrder.inHouse.organUnit.name
+                //     this.billData.applyOrder.inHouse.organUnit.name
                 // }else {
-                //     this.billData.transferApplyOrder.outOrganUnit.name
+                //     this.billData.applyOrder.outOrganUnit.name
                 // }
-                return this.billData.transferApplyOrder.outOrganUnit.name
+                return this.billData.applyOrder.outOrganUnit.name
 
             },
             // derive(id){
             //     let url = baseBURL + '/transfer-order/export-excel';
-            //     let params={transferOrderId:id};
+            //     let params={orderId:id};
             //     request({
             //         method: 'get',
             //         url: url,
@@ -434,62 +472,62 @@
             //         console.log(res);
             //     })
             // },
-            confirmPass() {
-                let finalApproval = {
-                    "leaderApproval": {
-                        "leader": {
-                            "userId": JSON.parse(localStorage.getItem('user')).id,
-                            "name": JSON.parse(localStorage.getItem('user')).username,
-                        },
-                        "approval": true
-                    },
-                    "outHouse": {
-                        "id": this.selectObj.selectHouse.select.value,
-                        "name": this.selectObj.selectHouse.select.label,
-                        "organUnit": {
-                            "id": this.selectObj.thisUnit.id,
-                            "name": this.selectObj.thisUnit.name
-                        }
-                    },
-                    "outHouseUser": {
-                        "name": this.selectObj.selectPersonel.select.label,
-                        "userId": this.selectObj.selectPersonel.select.value
-                    }
-                };
-                let url = baseBURL + '/transfer/final-approval' + '?taskId=' + this.billData.taskId;
-                this.toApproval(finalApproval, url, (data) => {
-                    this.$message.success('审批成功');
-                    this.$emit('toBack', '进行中')
-                });
-            },
-            confirmAudit() {
-                let leaderApproval = {
-                    "leader": {
-                        "userId": JSON.parse(localStorage.getItem('user')).id,
-                        "name": JSON.parse(localStorage.getItem('user')).name,
-                        "organUnit": {
-                            "id": this.myOrganUnit.id,
-                            "name": this.myOrganUnit.name
-                        }
-                    },
-                    "approval": true
-                };
-                let nextApproveId = this.selectObj.selectLeder.select.value;
-                let taskId = this.billData.taskId;
-                let url = baseBURL + '/transfer/approval' + '?taskId=' + this.billData.taskId + '&nextApproveId=' + nextApproveId;
-                this.toApproval(leaderApproval, url, (data) => {
-                    this.$message.success('审核成功');
-                    this.$emit('toBack', '进行中')
-                });
-            },
-            toApproval(param, url, sCallback) {
-                this.$ajax.put(url, param).then(resolve => {
-                    sCallback.call(this, resolve)
-                })
-            },
+            // confirmPass() {
+            //     let finalApproval = {
+            //         "leaderApproval": {
+            //             "leader": {
+            //                 "userId": JSON.parse(localStorage.getItem('user')).id,
+            //                 "name": JSON.parse(localStorage.getItem('user')).username,
+            //             },
+            //             "approval": true
+            //         },
+            //         "outHouse": {
+            //             "id": this.selectObj.selectHouse.select.value,
+            //             "name": this.selectObj.selectHouse.select.label,
+            //             "organUnit": {
+            //                 "id": this.selectObj.thisUnit.id,
+            //                 "name": this.selectObj.thisUnit.name
+            //             }
+            //         },
+            //         "outHouseUser": {
+            //             "name": this.selectObj.selectPersonel.select.label,
+            //             "userId": this.selectObj.selectPersonel.select.value
+            //         }
+            //     };
+            //     let url = baseBURL + '/transfer/final-approval' + '?taskId=' + this.billData.taskId;
+            //     this.toApproval(finalApproval, url, (data) => {
+            //         this.$message.success('审批成功');
+            //         this.$emit('toBack', '进行中')
+            //     });
+            // },
+            // confirmAudit() {
+            //     let leaderApproval = {
+            //         "leader": {
+            //             "userId": JSON.parse(localStorage.getItem('user')).id,
+            //             "name": JSON.parse(localStorage.getItem('user')).name,
+            //             "organUnit": {
+            //                 "id": this.myOrganUnit.id,
+            //                 "name": this.myOrganUnit.name
+            //             }
+            //         },
+            //         "approval": true
+            //     };
+            //     let nextApproveId = this.selectObj.selectLeder.select.value;
+            //     let taskId = this.billData.taskId;
+            //     let url = baseBURL + '/transfer/approval' + '?taskId=' + this.billData.taskId + '&nextApproveId=' + nextApproveId;
+            //     this.toApproval(leaderApproval, url, (data) => {
+            //         this.$message.success('审核成功');
+            //         this.$emit('toBack', '进行中')
+            //     });
+            // },
+            // toApproval(param, url, sCallback) {
+            //     this.$ajax.put(url, param).then(resolve => {
+            //         sCallback.call(this, resolve)
+            //     })
+            // },
             confirmREJECTED() {
                 if (this.reason != '') {
-                    let url = baseBURL+'/transfer'+'?reason='+this.reason+'&userId='+JSON.parse(localStorage.getItem('user')).id+'&processInstanceId='+this.billData.processInstanceId;
+                    let url = baseBURL+this.billUrlObject.confirmREJECTED+'?reason='+this.reason+'&userId='+JSON.parse(localStorage.getItem('user')).id+'&processInstanceId='+this.billData.processInstanceId;
                     request({
                         method: 'DELETE',
                         url: url
@@ -590,6 +628,8 @@
                 switch (data) {
                     case 'DOWN_TO_UP':
                         return '调拨';
+                    case 'BORROW':
+                        return '借用'
                     // case 'REJECTED':
                     //     return '审核中';
                     // case 'PASS':
@@ -620,66 +660,70 @@
                 if (data == 'REJECTED') {
                     this.$refs.dialog2.show();
                 } else if (data == 'reSet') {
-                    this.$refs.addDirectAdjustmentBill.showAdd()
-                }
-            },
-            getLeder() {
-                this.selectObj.selectLeder.selectList = [];
-                this.selectObj.selectLeder.select = '';
-                if (this.billData.currentLevel > this.billData.maxLevel) {
-                    this.billData.processLevel.applyLeaders.forEach(item => {
-                        this.selectObj.selectLeder.selectList.push({
-                            label: item.name,
-                            value: item.userId
-                        })
-                    })
-                } else {
-                    for (let key in this.billData.processLevel.levelLeaderMap) {
-                        if (key == this.billData.currentLevel + 1) {
-                            this.billData.processLevel.levelLeaderMap[key].forEach(item => {
-                                this.selectObj.selectLeder.selectList.push({
-                                    label: item.name,
-                                    value: item.userId
-                                })
-                            })
-                        }
+                    if(this.billName=='借用'){
+                        this.$refs.addSecondmentBill.showAdd()
+                    }else {
+                        this.$refs.addDirectAdjustmentBill.showAdd()
                     }
                 }
             },
-            getSelectUnit() {
-                this.gqlQuery(transfer.getOrganUnit, {
-                    key: 'id',
-                    value: JSON.parse(localStorage.getItem('user')).unitId
-                }, (data) => {
-                    this.selectObj.thisUnit = data[0];
-                    data[0].houseSet.forEach(item => {
-                        this.selectObj.selectHouse.selectList = [];
-                        this.selectObj.selectHouse.selectList.push({label: item.name, value: item.id})
-                    })
-                }, true);
-            },
-            getSelectPersonel() {
-                this.gqlQuery(transfer.getUserList, {
-                    qfilter: {
-                        key: 'role.id',
-                        value: 2,
-                        operator: 'EQUEAL',
-                        combinator: 'AND',
-                        next: {
-                            key: 'unitId',
-                            value: JSON.parse(localStorage.getItem('user')).unitId,
-                            operator: 'EQUEAL'
-                        }
-                    }
-                }, (data) => {
-                    data.forEach(item => {
-                        this.selectObj.selectPersonel.selectList = [];
-                        data.forEach(item => {
-                            this.selectObj.selectPersonel.selectList.push({label: item.name, value: item.id})
-                        });
-                    })
-                }, true);
-            },
+            // getLeder() {
+            //     this.selectObj.selectLeder.selectList = [];
+            //     this.selectObj.selectLeder.select = '';
+            //     if (this.billData.currentLevel > this.billData.maxLevel) {
+            //         this.billData.processLevel.applyLeaders.forEach(item => {
+            //             this.selectObj.selectLeder.selectList.push({
+            //                 label: item.name,
+            //                 value: item.userId
+            //             })
+            //         })
+            //     } else {
+            //         for (let key in this.billData.processLevel.levelLeaderMap) {
+            //             if (key == this.billData.currentLevel + 1) {
+            //                 this.billData.processLevel.levelLeaderMap[key].forEach(item => {
+            //                     this.selectObj.selectLeder.selectList.push({
+            //                         label: item.name,
+            //                         value: item.userId
+            //                     })
+            //                 })
+            //             }
+            //         }
+            //     }
+            // },
+            // getSelectUnit() {
+            //     this.gqlQuery(transfer.getOrganUnit, {
+            //         key: 'id',
+            //         value: JSON.parse(localStorage.getItem('user')).unitId
+            //     }, (data) => {
+            //         this.selectObj.thisUnit = data[0];
+            //         data[0].houseSet.forEach(item => {
+            //             this.selectObj.selectHouse.selectList = [];
+            //             this.selectObj.selectHouse.selectList.push({label: item.name, value: item.id})
+            //         })
+            //     }, true);
+            // },
+            // getSelectPersonel() {
+            //     this.gqlQuery(transfer.getUserList, {
+            //         qfilter: {
+            //             key: 'role.id',
+            //             value: 2,
+            //             operator: 'EQUEAL',
+            //             combinator: 'AND',
+            //             next: {
+            //                 key: 'unitId',
+            //                 value: JSON.parse(localStorage.getItem('user')).unitId,
+            //                 operator: 'EQUEAL'
+            //             }
+            //         }
+            //     }, (data) => {
+            //         data.forEach(item => {
+            //             this.selectObj.selectPersonel.selectList = [];
+            //             data.forEach(item => {
+            //                 this.selectObj.selectPersonel.selectList.push({label: item.name, value: item.id})
+            //             });
+            //         })
+            //     }, true);
+            // },
             getOperateLevel(currentLevel) {
                 let maxLeve = this.billData.maxLevel;
                 let operateLevel = '';
@@ -701,7 +745,7 @@
                 return operate
             },
             getHistroyApproval(id) {
-                let url = baseBURL + '/history-leader-approval/' + id;
+                let url = baseBURL + this.billUrlObject.histroyApprovalUrl + id;
                 request({
                     method: 'get',
                     url: url
@@ -710,7 +754,7 @@
                 })
             },
             getTransferEquipData(url){
-                let params = {transferOrderId:this.billData.id};
+                let params = {orderId:this.billData.id};
                 request({
                     method: 'get',
                     url: url,

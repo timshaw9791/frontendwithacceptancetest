@@ -22,11 +22,11 @@
     import {getToken} from "../../common/js/auth";
     import request from 'common/js/request'
 
-    import {handheld} from 'common/js/pda'
-
-    const fs = window.require('fs');
-    const path = window.require('path');
-    const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
+    // import {handheld} from 'common/js/pda'
+    //
+    // const fs = window.require('fs');
+    // const path = window.require('path');
+    // const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
 
 
     /*Melanie Dunne supernova*/
@@ -74,7 +74,7 @@
             handleSubmission(data) {
                 if (data) {
                     if (Object.keys(this.inventoryObj.inventoryData.inventory).length != 0) {
-                        let url = 'http://62.147.39.30:8010/warehouse/inventories';
+                        let url = 'http://192.168.50.15:8080/warehouse/inventories';
                         let data = this.inventoryObj.inventoryData;
                         request({
                             method: 'post',
@@ -99,7 +99,7 @@
                 }
             },
             submit(data) {
-                let url = 'http://62.147.39.30:8010/warehouse/inventories/calculate';
+                let url = 'http://192.168.50.15:8080/warehouse/inventories/calculate';
                 let rfidC = [];
                 this.inventoryObj.rflist.forEach(item => {
                     rfidC.push(item.rfId);

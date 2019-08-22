@@ -18,7 +18,6 @@
                                 <span v-text="allOutHouseCount" style="font-size:25px"></span>
                                 <span v-text="'出库总数'" style="margin-top: 4px;font-size: 14px"></span>
                             </div>
-
                             <img src="../../components/icons/svg/柱形图蓝.png" class="title-img"/>
                         </div>
                         <div class="title-right" style="margin-left: 32px">
@@ -37,7 +36,7 @@
                     <equip-report :equipData="maintenance" :title="'装备维修率'"></equip-report>
                 </div>
                 <div @click="toDetails('装备损耗率')">
-                    <equip-report :equipData="scrap" :title="'装备损耗率'" :toolTip="['装备数量','损耗数量','损耗率']"></equip-report>
+                    <equip-report :equipData="scrap" :title="'装备损耗率'" :toolTip="['装备名称','损耗数量','损耗率']"></equip-report>
                 </div>
                 <div  @click="toDetails('装备使用频次')">
                     <equip-report :equipData="useCount" :title="'装备使用频次'"
@@ -139,7 +138,7 @@
                     this.getScrap('',data=>{
                         this.$set(this.equipDetails,'list',data);
                     });
-                    this.equipDetails.toolTip=['装备数量','损耗数量','损耗率']
+                    this.equipDetails.toolTip=['装备名称','损耗数量','损耗率']
                 }else {
                     this.getUseCount('',(data)=>{
                         this.$set(this.equipDetails,'list',data);
@@ -301,7 +300,7 @@
                             scrapList.push({
                                 name: item.name,
                                 number: item.damageCount,
-                                percentage: Number((item.avgDamageRate * 100).toFixed(2)),
+                                percentage: Number((item.damageRate * 100).toFixed(2)),
                                 allCount: item.name,
                                 select:false
                             })

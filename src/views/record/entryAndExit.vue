@@ -64,7 +64,7 @@
             clickTable(table) {
                 let data = table.row;
                 if (data) {
-                    this.address='http://62.147.39.30:8010/warehouse/records/'+data.videoAddress
+                    this.address='http://192.168.50.15:8080/warehouse/records/'+data.videoAddress
                     this.$refs.recordVideo.show()
                 }
             },

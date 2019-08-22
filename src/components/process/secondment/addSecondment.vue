@@ -1,0 +1,464 @@
+<template>
+    <div>
+        <serviceDialog title="借用申请" ref="checkTransferDialog" width="1040px" :button="false">
+            <div class="addApply">
+                <div class="addApply-label">
+                    <div class="label">
+                        <span v-text="'所在库房：'"></span>
+                        <el-input class="input" :disabled="true" size="small" v-model="house.name"></el-input>
+                        <!--<div class="default-span"><span v-text="house.name"></span></div>-->
+                    </div>
+                    <div class="label">
+                        <span v-text="'指定机构：'"></span>
+                        <el-cascader
+                                :options="unitList"
+                                v-model="selectUnit"
+                                :props="selectProp"
+                                change-on-select
+                                :show-all-levels="false"
+                                @change="handleUnitChange">
+                        </el-cascader>
+                        <!--<el-input class="input" :disabled="true" size="small" v-model="unit.name"></el-input>-->
+                    </div>
+                    <div class="label">
+                        <span v-text="'指定领导：'"></span>
+                        <field-input-query size="small" v-model="leader.leaderName"
+                                           :inputList="leader.leaderList"
+                                           @select="getLeaderSelect"></field-input-query>
+                    </div>
+                </div>
+                <div class="addApply-table">
+                    <form-container ref="form" :model="form" style="width: 100%">
+                        <el-table :data="form.orderItems" height="490">
+                            <el-table-column label="序号" align="center">
+                                <template scope="scope">
+                                    {{scope.$index+1}}
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="装备型号" align="center">
+                                <template scope="scope">
+                                    <field-input-query size="small" v-model="scope.row.model"
+                                                       :inputList="restaurants"
+                                                       @select="getEquipName(scope,$event)"></field-input-query>
+                                </template>
+                            </el-table-column>
+
+                            <el-table-column label="装备名称" align="center">
+                                <template scope="scope">
+                                    {{scope.row.name}}
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="装备数量" align="center">
+                                <template scope="scope">
+                                    <el-input v-model="scope.row.count" size="small"
+                                              @input="changeCount(scope,$event)"></el-input>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="操作" width="120">
+                                <template scope="scope">
+                                    <el-button type="danger" @click="delqaq(scope)">删除</el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </form-container>
+                    <div class="addApply-label" style="margin-top: 12px;position: relative">
+                        <div class="label" style="position: absolute;right: 0">
+                            <span v-text="'申请人员：'"></span>
+                            <el-input class="input" :disabled="true" size="small" v-model="userName"></el-input>
+                            <!--<div class="default-span"><span v-text="getUserName()"></span></div>-->
+                        </div>
+                    </div>
+                    <div class="addApply-bottom">
+                        <el-button class="cancel" @click="cancel">取消</el-button>
+                        <el-button style="margin-left: 34px" class="submit" @click="submit">提交</el-button>
+                    </div>
+                </div>
+            </div>
+        </serviceDialog>
+        <!--<a_dialog :width="1040" ref="dialog" :title="'调拨申请'">-->
+
+        <!--</a_dialog>-->
+    </div>
+</template>
+
+<script>
+    function debounce(fun, delay) {
+        return function (args) {
+            let that = this;
+            let _args = args;
+            clearTimeout(fun.id);
+            fun.id = setTimeout(function () {
+                fun.call(that, _args)
+            }, delay)
+        }
+    }
+
+    import a_dialog from 'components/surroundings/surroundingDialog'
+    import serviceDialog from 'components/base/gailiangban'
+    import request from 'common/js/request'
+    import {baseBURL} from "../../../api/config";
+
+    export default {
+        name: "addApply",
+        components: {
+            a_dialog,
+            serviceDialog
+        },
+        props: {
+            unit: {
+                type: Object
+            },
+            house: {
+                type: Object
+            },
+            myUnit: {
+                type: Object
+            },
+            addType: {
+                type: String,
+                default: 'add'
+            },
+            taskId:{
+                type:String,
+                default: ''
+            }
+        },
+        data() {
+            return {
+                form: {},
+                inHouseName: '',
+                lastTime: '',
+                unitName: '',
+                userName: '',
+                nowTime: 0,
+                nowRow: {},
+                restaurants:[],
+                selectProp:{value:'id',label:'name',children:'organUnitSet'},
+                unitList:[
+                    {name:'温州市公安局',id:'1',organUnitSet:[
+                            {name:'瓯海分局',id:'1',organUnitSet:[{
+                                    name:'茶山派出所',id:'2232323'
+                                }]}
+                        ]}
+                ],
+                selectUnitNow:'',
+                selectUnit:[],
+                nowCount: '',
+                processLevelId: '',
+                leader: {
+                    leaderList: [{value: '1', key: '21212'}, {value: '2', key: '12121'}, {value: '3', key: 'asas'}],
+                    leaderName: '',
+                    leaderItem: {},
+                }
+            }
+        },
+        created() {
+            this.unitName = this.unit.name
+        },
+        watch: {
+            'inHouseName': {
+                handler(newVal) {
+                    this.$emit('getInHouse', newVal)
+                }
+            },
+            'nowCount': {
+                handler(newVal) {
+                    this.throttle(this.addRow, 1000)
+                }
+            }
+        },
+        methods: {
+            handleUnitChange(data){
+                let unitId=data[data.length-1];
+                let houseId='';
+                request({
+                    method:'get',
+                    url:baseBURL+'/architecture/findById',
+                    params:{id:unitId}
+                }).then(res=>{
+                    this.selectUnitNow={
+                        name:res.name,
+                        id:res.id
+                    };
+                    if(res.houseSet!=null){
+                        res.houseSet.forEach(item=>{
+                            if(houseId==''){
+                                houseId=item.id
+                            }else {
+                                houseId=houseId+','+item.id
+                            }
+                        });
+
+                    }else {
+                        houseId='1212121';
+                    }
+                    this.getRestaurants(houseId);
+                });
+                this.getLeader(unitId);
+            },
+            getRestaurants(houseId){
+                request({
+                    method: 'get',
+                    url: baseBURL + '/equip-arg/by-houseIds/list',
+                    params: {
+                        houseIds:houseId
+                    }
+                }).then(res => {
+                    this.restaurants=[];
+                    let list = [
+                        {
+                            "categoryId": "string",
+                            "chargeCycle": 0,
+                            "model": "茶山是生",
+                            "name": "圣爱大厦",
+                            "supplier": {
+                                "id": "string",
+                                "name": "string",
+                                "organUnitId": "string",
+                                "person": "string",
+                                "phone": "string"
+                            },
+                            "upkeepCycle": 0
+                        }
+                    ];
+                    list.forEach(item=>{
+                        this.restaurants.push({
+                            value:item.model,
+                            key:item
+                        })
+                    });
+                    console.log(this.restaurants)
+                })
+            },
+            getLeaderSelect(data) {
+                this.leader.leaderItem = data.key;
+            },
+            getLeader(id) {
+                // this.$ajax({
+                //     method:'get',
+                //     url:baseBURL+'/process-level/by-organ-unit-and-transfer-type',
+                //     params:{
+                //         organUnitId:this.unit.id,
+                //         transferType:'DOWN_TO_UP'
+                //     }
+                // }).then(res=>{
+                //     console.log(res);
+                // })
+                request({
+                    method: 'get',
+                    url: baseBURL + '/process-level/by-organ-unit-and-transfer-type',
+                    params: {
+                        organUnitId: id,
+                        transferType: 'BORROW'
+                    }
+                }).then(res => {
+                    this.leader.leaderList = [];
+                    this.processLevelId = res.id;
+                    if (Object.keys(res.levelLeaderMap).length == 0) {
+                        res.applyLeaders.forEach(item => {
+                            this.leader.leaderList.push({value: item.name, key: item})
+                        })
+                    } else {
+                        res.levelLeaderMap['1'].forEach(item => {
+                            this.leader.leaderList.push({value: item.name, key: item})
+                        })
+                    }
+                })
+            },
+            submit() {
+                let url = '';
+                let orderItems=[];
+                this.form.orderItems.forEach(item=>{
+                   if(item.count!=undefined){
+                       if(item.count!=''){
+                           orderItems.push(item)
+                       }
+                   }
+                });
+                let borrowApplyOrder = {
+                    "applicant": {
+                        "name": JSON.parse(localStorage.getItem('user')).name,
+                        "organUnit": {
+                            "id": JSON.parse(localStorage.getItem('user')).unitId,
+                            "name": this.myUnit.name
+                        },
+                        "userId": JSON.parse(localStorage.getItem('user')).id
+                    },
+                    "inHouse": {
+                        "id": this.house.id,
+                        "name": this.house.name,
+                        "organUnit": {
+                            "id": JSON.parse(localStorage.getItem('user')).unitId,
+                            "name": this.myUnit.name
+                        }
+                    },
+                    "outOrganUnit": {
+                        "id": this.selectUnitNow.id,
+                        "name": this.selectUnitNow.name
+                    },
+                    "applyNeedEquips": orderItems,
+                };
+                console.log('this.leader',this.leader);
+                if (this.addType == 'add') {
+                    url = baseBURL + '/borrow/start' + '?nextApproveId=' + this.leader.leaderItem.userId + '&processLevelId=' + this.processLevelId
+                }else {
+                    url = baseBURL + '/borrow/apply' + '?nextApproveId=' + this.leader.leaderItem.userId + '&taskId=' + this.taskId
+                }
+                this.allocationApplication(url, borrowApplyOrder);
+                // let transferOrder={};
+                // transferOrder.applicant=JSON.parse(localStorage.getItem('user')).name;
+                // transferOrder.inHouseName=this.inHouseName;
+                // transferOrder.outHouseName=this.house.name;
+                // transferOrder.orderItems = this.form.orderItems;
+                // this.$emit('submit',transferOrder)
+
+            },
+            allocationApplication(url, borrowApplyOrder) {
+                if(this.addType=='add'){
+                    this.$ajax.post(url, borrowApplyOrder).then(res => {
+                        this.sucesssAdd()
+                    })
+                }else {
+                    request({
+                        method: 'PUT',
+                        url: url,
+                        data: borrowApplyOrder
+                    }).then(res => {
+                        this.sucesssAdd()
+                    });
+
+                }
+
+                // this.$ajax({
+                //     method:'post',
+                //     url:url,
+                //     params:{transferApplyOrder:transferApplyOrder},
+                // }).then(res=>{
+                //    console.log(res);
+                // })
+            },
+            sucesssAdd(){
+              this.$message.success('申请成功');
+              this.$emit('sucessAdd',true);
+            },
+            showAdd() {
+                this.form = {};
+                this.form['orderItems'] = [{model: ''}];
+                this.$refs.checkTransferDialog.show();
+                this.userName = JSON.parse(localStorage.getItem('user')).name;
+            },
+            addRow() {
+                if (this.nowRow.$index === this.form.orderItems.length - 1) {
+                    this.form.orderItems.push({model: ''});
+                }
+            },
+            delqaq(data) {
+                if (this.form.orderItems.length > 1) {
+                    this.form.orderItems.splice(data.$index, 1);
+                } else {
+                    this.$message.error('不能删除最后一个');
+                }
+            },
+            close() {
+                this.$refs.dialog.close();
+            },
+            cancel() {
+                this.$refs.checkTransferDialog.cancelDb()
+            },
+            getEquipName(row, data) {
+                this.form.orderItems[row.$index].name = data.key.name;
+            },
+            changeCount(row, event) {
+                this.nowRow = row;
+                this.nowCount = event
+            },
+            throttle(method, context) {
+                clearTimeout(method.tId);
+                method.tId = setTimeout(function () {
+                    method.call(context)
+                }, 1000)
+            }
+        }
+    }
+</script>
+
+<style scoped>
+    .addApply {
+        height: 697px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .addApply-bottom {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 53px;
+    }
+
+    .addApply-bottom .cancel {
+        width: 70px;
+        height: 30px;
+        background: rgba(255, 255, 255, 1);
+        box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+        border-radius: 6px;
+        line-height: 0px;
+    }
+
+    .addApply-bottom .submit {
+        width: 70px;
+        height: 30px;
+        background: rgba(47, 47, 118, 1);
+        box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+        border-radius: 6px;
+        color: white;
+        line-height: 0px;
+    }
+
+    .addApply-table {
+        width: 974px;
+        height: 492px;
+        margin-top: 30px;
+        background: rgba(255, 255, 255, 1);
+        border: 1px solid rgba(112, 112, 112, 1);
+        opacity: 1;
+    }
+
+    .addApply-label {
+        width: 100%;
+        height: 30px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .addApply-label .label {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: row;
+    }
+
+    .label .default-span {
+        width: 217px;
+        height: 100%;
+        background: rgba(235, 235, 235, 1);
+        opacity: 1;
+        display: flex;
+        font-size: 16px;
+        padding-left: 9px;
+        color: #cccccc;
+        align-items: center;
+    }
+
+    .label .input {
+        width: 217px;
+        line-height: 30px;
+        background: rgba(255, 255, 255, 1);
+        opacity: 1;
+        font-size: 16px;
+    }
+</style>

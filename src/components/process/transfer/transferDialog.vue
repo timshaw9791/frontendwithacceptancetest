@@ -162,14 +162,14 @@
     // import inventoryData from 'views/warehouse/inventoryData'
     import request from 'common/js/request'
     import {baseURL,baseBURL} from "../../../api/config"
-    import {handheld} from 'common/js/pda'
-
-    const cmdPath = 'C:\\Users\\Administrator';
-    const exec = window.require('child_process').exec;
-    const spawn = window.require('child_process').spawn;
-    const fs = window.require('fs');
-    const path = window.require('path');
-    const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
+    // import {handheld} from 'common/js/pda'
+    //
+    // const cmdPath = 'C:\\Users\\Administrator';
+    // const exec = window.require('child_process').exec;
+    // const spawn = window.require('child_process').spawn;
+    // const fs = window.require('fs');
+    // const path = window.require('path');
+    // const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
 
 
     export default {
@@ -395,7 +395,7 @@
                     //     rfidC.push(item.rfid)
                     // });
                     //
-                    // let url = 'http://62.147.39.30:8010/warehouse/transfers/up-to-down/equips-out/';
+                    // let url = 'http://192.168.50.15:8080/warehouse/transfers/up-to-down/equips-out/';
                     // let param = {
                     //     rfidList: rfidC,
                     //     transferOrderId: this.directObj.id

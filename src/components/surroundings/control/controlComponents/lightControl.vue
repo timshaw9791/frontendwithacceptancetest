@@ -32,7 +32,7 @@
                 };
                 this.$ajax({
                     method:'post',
-                    url:'http://62.147.39.30:8010/warehouse/environment/lightSingleSwitch',
+                    url:'http://192.168.50.15:8080/warehouse/environment/lightSingleSwitch',
                     params:params
                 }).then((res)=>{
                     console.log(res)

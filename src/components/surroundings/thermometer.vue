@@ -65,7 +65,7 @@
                 let promise=new Promise((resolve,reject)=>{
                     this.$ajax({
                         method:'post',
-                        url:'http://62.147.39.30:8010/warehouse/environment/humitureQuery',
+                        url:'http://192.168.50.15:8080/warehouse/environment/humitureQuery',
                     }).then((res)=>{
                         resolve(res.data.data)
                     }).catch(err=>{
@@ -120,7 +120,7 @@
             getHs(temperature){
                 this.$ajax({
                     method:'post',
-                    url:'http://62.147.39.30:8010/warehouse/environment/temperatureHS',
+                    url:'http://192.168.50.15:8080/warehouse/environment/temperatureHS',
                 }).then((res)=>{
                     let dateNow =  new Date();
                     let year = dateNow.getFullYear();

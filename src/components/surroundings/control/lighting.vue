@@ -58,7 +58,7 @@
             getLightInfo(){
                 this.$ajax({
                     method:'post',
-                    url:'http://62.147.39.30:8010/warehouse/environment/getLightInfo',
+                    url:'http://192.168.50.15:8080/warehouse/environment/getLightInfo',
                 }).then((res)=>{
                    let resC = res.data.data;
                    let lightListCopy = [];
@@ -80,7 +80,7 @@
             getLightQuery(list){
                 this.$ajax({
                     method:'post',
-                    url:'http://62.147.39.30:8010/warehouse/environment/lightQuery',
+                    url:'http://192.168.50.15:8080/warehouse/environment/lightQuery',
                 }).then((res)=>{
                     let status=res.data.data;
                     list.forEach(item=>{
@@ -100,7 +100,7 @@
                 }
                 this.$ajax({
                     method:'post',
-                    url:'http://62.147.39.30:8010/warehouse/environment/lightSwitch',
+                    url:'http://192.168.50.15:8080/warehouse/environment/lightSwitch',
                     params:{status:data}
                 }).then((res)=>{
                    this.lightList.forEach(item=>{

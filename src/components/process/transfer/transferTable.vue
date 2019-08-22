@@ -31,12 +31,12 @@
                     button:['查看']
                 },
                 labelList: [
-                    {lable: '申请编号', field: 'variables.transferApplyOrder.number', sort: false},
-                    {lable: '申请类型', field: 'variables.transferApplyOrder.type',filter: this.filterType, sort: false},
-                    {lable: '申请装备', field: 'variables.transferApplyOrder.transferNeedEquip', filter: this.filterName, sort: false},
-                    {lable: '申请人', field: 'variables.transferApplyOrder.applicant.name', sort: false},
-                    {lable: '申请时间', field: 'variables.transferApplyOrder.applyTime', filter: this.filterTime},
-                    {lable: '审批状态', field: 'variables.transferApplyOrder.state', filter: this.filterState}
+                    {lable: '申请编号', field: 'variables.applyOrder.number', sort: false},
+                    {lable: '申请类型', field: 'variables.applyOrder.type',filter: this.filterType, sort: false},
+                    {lable: '申请装备', field: 'variables.applyOrder.applyNeedEquips', filter: this.filterName, sort: false},
+                    {lable: '申请人', field: 'variables.applyOrder.applicant.name', sort: false},
+                    {lable: '申请时间', field: 'variables.applyOrder.applyTime', filter: this.filterTime},
+                    {lable: '审批状态', field: 'variables.applyOrder.state', filter: this.filterState}
                 ]
             }
         },
@@ -60,6 +60,22 @@
             },
             indexDefault:{
               type:String,
+            },
+            urlObject:{
+                type:Object,
+                default(){
+                    return{
+                        applyUrl:{
+                            doing:'/task/by-user-and-process-definition',
+                            history:'/transfer-apply-order/history',
+                        },
+                        billUrl:'/transfer-order/by-user-and-order-state',
+                        urlParamsKey:{
+                            processDefinitionKey:'transfer',
+                            type:'DOWN_TO_UP'
+                        }
+                    }
+                }
             },
             table:{
                 type:Object,
@@ -114,24 +130,30 @@
               handler(newVal){
                   if(newVal=='apply'){
                       this.labelList= [
-                          {lable: '申请编号', field: 'variables.transferApplyOrder.number', sort: false},
-                          {lable: '申请类型', field: 'variables.transferApplyOrder.type',filter: this.filterType, sort: false},
-                          {lable: '申请装备', field: 'variables.transferApplyOrder.transferNeedEquip', filter: this.filterName, sort: false},
-                          {lable: '申请人', field: 'variables.transferApplyOrder.applicant.name', sort: false},
-                          {lable: '申请时间', field: 'variables.transferApplyOrder.applyTime', filter: this.filterTime},
-                          {lable: '审批状态', field: 'variables.transferApplyOrder.state', filter: this.filterState}
+                          {lable: '申请编号', field: 'variables.applyOrder.number', sort: false},
+                          {lable: '申请类型', field: 'variables.applyOrder.type',filter: this.filterType, sort: false},
+                          {lable: '申请装备', field: 'variables.applyOrder.applyNeedEquips', filter: this.filterName, sort: false},
+                          {lable: '申请人', field: 'variables.applyOrder.applicant.name', sort: false},
+                          {lable: '申请时间', field: 'variables.applyOrder.applyTime', filter: this.filterTime},
+                          {lable: '审批状态', field: 'variables.applyOrder.state', filter: this.filterState}
                       ]
                   }else if(newVal=='transfer'){
                       this.labelList= [
-                          {lable: '调拨单号', field: 'variables.transferApplyOrder.number', sort: false},
-                          {lable: '申请类型', field: 'variables.transferApplyOrder.type',filter: this.filterType, sort: false},
-                          {lable: '申请装备', field: 'variables.transferApplyOrder.transferNeedEquip', filter: this.filterName, sort: false},
-                          {lable: '申请人', field: 'variables.transferApplyOrder.applicant.name', sort: false},
-                          {lable: '申请时间', field: 'variables.transferApplyOrder.applyTime', filter: this.filterTime},
+                          {lable: '调拨单号', field: 'variables.applyOrder.number', sort: false},
+                          {lable: '申请类型', field: 'variables.applyOrder.type',filter: this.filterType, sort: false},
+                          {lable: '申请装备', field: 'variables.applyOrder.applyNeedEquips', filter: this.filterName, sort: false},
+                          {lable: '申请人', field: 'variables.applyOrder.applicant.name', sort: false},
+                          {lable: '申请时间', field: 'variables.applyOrder.applyTime', filter: this.filterTime},
                           {lable: '装备状态', field: 'variables.state', filter: this.filterTransferState}
                       ]
                   }
               }
+            },
+            'urlObject.billUrl':{
+                deep:true,
+                handler(newVal){
+                    this.getList(this.select,this.searchNumber);
+                }
             },
             'select':{
                 handler(newVal){
@@ -163,7 +185,7 @@
                 this.$emit('toSee',data)
             },
             filterName(s){
-                let equipList=s.variables.transferApplyOrder.transferNeedEquip;
+                let equipList=s.variables.applyOrder.applyNeedEquips;
                 let name='';
                 equipList.forEach(item=>{
                     let small=item.model+item.name;
@@ -185,10 +207,10 @@
                 // return name.substr(1, name.length);
             },
             filterTime(nS) {
-                return new Date(parseInt(nS.variables.transferApplyOrder.applyTime)).toLocaleString().replace(/:\d{1,2}$/, ' ');
+                return new Date(parseInt(nS.variables.applyOrder.applyTime)).toLocaleString().replace(/:\d{1,2}$/, ' ');
             },
             filterState(s){
-                let state= s.variables.transferApplyOrder.state;
+                let state= s.variables.applyOrder.state;
                 if(state=='UNDER_REVIEW'){
                     return '审核中'
                 }else if(state=='REJECTED'){
@@ -210,17 +232,19 @@
                 }
             },
             filterType(s){
-                let type=s.variables.transferApplyOrder.type;
+                let type=s.variables.applyOrder.type;
                 if(type=='UP_TO_DOWN'){
                     return '直调'
                 }else if(type=='DOWN_TO_UP'){
                     return '调拨'
+                }else if(type=='BORROW'){
+                    return '借用'
                 }else {
                     return '不知道'
                 }
             },
             getList(status,search){
-                let url = baseBURL+'/transfer-order/by-user-and-order-state';
+                let url = baseBURL+this.urlObject.billUrl;
                 if(status=='进行中'){
                     this.getApplyList('doing','');
                 }else if(status=='已结束'){
@@ -238,11 +262,11 @@
                 let param={};
                 let url=baseBURL;
                 if(status=='doing'){
-                    url=url+ '/task/by-user-and-process-definition';
-                    param={startUserId:id,processDefinitionKey:'transfer'};
+                    url=url+ this.urlObject.applyUrl.doing;
+                    param={startUserId:id,processDefinitionKey:this.urlObject.urlParamsKey.processDefinitionKey};
                 }else {
-                    url=url+ '/transfer-apply-order/history';
-                    param={userId:id,page:page,size:size,number:search,transferType:'DOWN_TO_UP'};
+                    url=url+ this.urlObject.applyUrl.history;
+                    param={userId:id,page:page,size:size,number:search,type:this.urlObject.urlParamsKey.type};
                 }
                 request({
                     method:'get',
@@ -259,7 +283,7 @@
                             });
                         }else {
                             res.content.forEach(item=>{
-                                list.push({variables:{transferApplyOrder:item}})
+                                list.push({variables:{applyOrder:item}})
                             });
                             this.paginator.totalPages=res.totalPages;
                         }
@@ -316,10 +340,10 @@
             //     let param={};
             //     let url='';
             //     if(this.state!='ALL'&&this.state!=''){
-            //         url='http://62.147.39.30:8010/warehouse/transfers/up-to-down/by-state';
+            //         url='http://192.168.50.15:8080/warehouse/transfers/up-to-down/by-state';
             //         param={likeByNumber:likeByNumber,size:size,page:page,state:this.state}
             //     }else {
-            //         url = 'http://62.147.39.30:8010/warehouse/transfers/up-to-down';
+            //         url = 'http://192.168.50.15:8080/warehouse/transfers/up-to-down';
             //         param={likeByNumber:likeByNumber,size:size,page:page}
             //     }
             //     request({
