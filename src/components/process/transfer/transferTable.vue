@@ -137,7 +137,7 @@
                           {lable: '申请时间', field: 'variables.applyOrder.applyTime', filter: this.filterTime},
                           {lable: '审批状态', field: 'variables.applyOrder.state', filter: this.filterState}
                       ]
-                  }else if(newVal=='transfer'){
+                  }else if(newVal=='transfer'||newVal=='secondment'||newVal=='returns'){
                       this.labelList= [
                           {lable: '调拨单号', field: 'variables.applyOrder.number', sort: false},
                           {lable: '申请类型', field: 'variables.applyOrder.type',filter: this.filterType, sort: false},

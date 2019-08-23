@@ -153,7 +153,8 @@
             }
         },
         created() {
-            this.unitName = this.unit.name
+            this.unitName = this.unit.name;
+            this.getUnitList();
         },
         watch: {
             'inHouseName': {
@@ -168,9 +169,33 @@
             }
         },
         methods: {
+            getUnitList(){
+                request({
+                    method:'get',
+                    url:baseBURL+'/architecture/organUnitInfo',
+                }).then(res=>{
+                    this.$set(this,'unitList',[res]);
+                })
+            },
             handleUnitChange(data){
                 let unitId=data[data.length-1];
                 let houseId='';
+                request({
+                    method:'get',
+                    url:baseBURL+'/architecture/houseByOrganUnitId',
+                    params:{organUnitId:unitId}
+                }).then(res=>{
+                   let houseId='';
+                   res.forEach(item=>{
+                       if(houseId==''){
+                           houseId=item.id
+                       }else {
+                           houseId=houseId+','+item.id
+                       }
+                       this.getRestaurants(houseId);
+                   })
+                });
+
                 request({
                     method:'get',
                     url:baseBURL+'/architecture/findById',
@@ -180,19 +205,6 @@
                         name:res.name,
                         id:res.id
                     };
-                    if(res.houseSet!=null){
-                        res.houseSet.forEach(item=>{
-                            if(houseId==''){
-                                houseId=item.id
-                            }else {
-                                houseId=houseId+','+item.id
-                            }
-                        });
-
-                    }else {
-                        houseId='1212121';
-                    }
-                    this.getRestaurants(houseId);
                 });
                 this.getLeader(unitId);
             },
@@ -205,23 +217,9 @@
                     }
                 }).then(res => {
                     this.restaurants=[];
-                    let list = [
-                        {
-                            "categoryId": "string",
-                            "chargeCycle": 0,
-                            "model": "茶山是生",
-                            "name": "圣爱大厦",
-                            "supplier": {
-                                "id": "string",
-                                "name": "string",
-                                "organUnitId": "string",
-                                "person": "string",
-                                "phone": "string"
-                            },
-                            "upkeepCycle": 0
-                        }
-                    ];
+                    let list=res;
                     list.forEach(item=>{
+                        console.log(item);
                         this.restaurants.push({
                             value:item.model,
                             key:item

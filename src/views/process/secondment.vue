@@ -13,7 +13,7 @@
                     <div class="single-box-item-line" v-if="viewStatus.singleFlag.secondment"></div>
                 </div>
                 <div class="single-box-item" @click="clickSingle('returns')">
-                    <span v-text="'借用单'"></span>
+                    <span v-text="'归还单'"></span>
                     <div class="single-box-item-line" v-if="viewStatus.singleFlag.returns"></div>
                 </div>
             </div>
@@ -91,18 +91,12 @@
                     },
                     billUrlObject:{
                         histroyApprovalUrl:'/history-leader-approval/',
-                        confirmRejectUrl:{
-                            approvalUrl:'/transfer/approval',
-                            finalApprovalUrl:'/transfer/final-approval'
-                        },
                         confirmREJECTED:'/borrow',
-                        confirmPassUrl:'/transfer/final-approval',
                         downloadSrcUrl:'/transfer-order/export-excel',
                         billEquipUrl:{
                             inHouseUrl:'/order-equips/equips-in-house/group',
                             outHouseUrl:'/order-equips/equips-out-house/group'
-                        },
-                        confirmAuditUrl:'/transfer/approval'
+                        }
                     }
                 },
                 select:{

@@ -242,7 +242,7 @@
                 <span v-text="'驳回原因：'"></span><span v-text="checkReasonData"></span>
             </div>
         </serviceDialog>
-        <t_dialog ref="transferDialog" @sucesssInOrOut="sucesssInOrOut" :typeOperational="typeOperational" :directObj="direct"></t_dialog>
+        <t_dialog ref="transferDialog" :billName="billName" @sucesssInOrOut="sucesssInOrOut" :typeOperational="typeOperational" :directObj="direct"></t_dialog>
         <!--<serviceDialog title="批准" ref="dialog2" width="40%">-->
         <!--<div style="text-align: center;font-size: 20px">您确定要批准吗</div>-->
         <!--</serviceDialog>-->
@@ -288,18 +288,12 @@
                 default(){
                     return{
                         histroyApprovalUrl:'/history-leader-approval/',
-                        confirmRejectUrl:{
-                            approvalUrl:'/transfer/approval',
-                            finalApprovalUrl:'/transfer/final-approval'
-                        },
                         confirmREJECTED:'/transfer',
-                        confirmPassUrl:'/transfer/final-approval',
                         downloadSrcUrl:'/transfer-order/export-excel',
                         billEquipUrl:{
                             inHouseUrl:'/order-equips/equips-in-house/group',
                             outHouseUrl:'/order-equips/equips-out-house/group'
-                        },
-                        confirmAuditUrl:'/transfer/approval'
+                        }
                     }
                 }
             },

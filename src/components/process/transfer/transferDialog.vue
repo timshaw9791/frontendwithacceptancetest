@@ -4,7 +4,7 @@
             <div class="directAdjustmentDialog">
                 <div class="directAdjustmentDialog-header">
                     <div class="header-item">
-                        <div><span v-text="'调拨单号：'"></span><span v-text="directObj.number"></span></div>
+                        <div><span v-text="billName+'单号：'"></span><span v-text="directObj.number"></span></div>
                         <div class="d_select"><span v-text="'硬件选择：'"></span>
                             <el-select v-model="hardware" placeholder="请选择" size="mini">
                                 <el-option
@@ -181,6 +181,9 @@
             directObj: {
                 type: Object
             },
+            billName:{
+              type:String
+            },
             typeOperational:{
                 type:String,
                 default:'出库'
@@ -196,7 +199,7 @@
                 rightList: [],
                 outList: [],
                 align: 'center',
-                submitFlag: true,
+                submitFlag: false,
                 types: '',
                 pid: '',
                 index:0,
@@ -257,7 +260,6 @@
                 });
 
                 process.stdout.on('data', (data) => {
-                    console.log('getListUsb',data);
                     if (this.index > 0) {
                         let arr = [];
                         arr.push(data);
@@ -339,16 +341,16 @@
                 let url;
                 let rfids=[];
                 let aUrl='';
-                let transferOrderId=this.directObj.id;
+                let orderId=this.directObj.id;
                 if(this.typeOperational=='出库'){
-                    url=baseURL+'/transfer-equips/out'+'?transferOrderId='+transferOrderId+'&state='+state;
+                    url=baseURL+'/order-equips/out'+'?orderId='+orderId+'&state='+state;
                     this.rightList.forEach(item=>{
                         rfids=[...rfids,...item.rfid]
                     });
                 }else {
-                    url=baseURL+'/transfer-equips/in'+'?transferOrderId='+transferOrderId+'&state='+state;
-                    console.log(this.inHouseEquip);
+                    url=baseURL+'/order-equips/in'+'?orderId='+orderId+'&state='+state;
                     rfids=this.inHouseEquip;
+                    console.log(rfids)
                     // this.rightList.forEach(item=>{
                     //     rfids=[...rfids,...item.rfid]
                     // });
@@ -362,6 +364,8 @@
                     // }).then(res=>{
                     //     console.log(res);
                     // })
+                }else {
+                    aUrl=url
                 }
                 if(this.typeOperational=='出库'){
                     this.$ajax.delete(aUrl,{data:rfids}).then(res=>{
@@ -398,7 +402,7 @@
                     // let url = 'http://192.168.50.15:8080/warehouse/transfers/up-to-down/equips-out/';
                     // let param = {
                     //     rfidList: rfidC,
-                    //     transferOrderId: this.directObj.id
+                    //     orderId: this.directObj.id
                     // };
                     // request({
                     //     method: 'DELETE',
@@ -410,7 +414,11 @@
                     //     }
                     // })
                 } else {
-                    this.$refs.transFerDialogTips.show();
+                    if(this.billName!='借用'){
+                        this.$refs.transFerDialogTips.show();
+                    }else {
+                        this.$message.error('请确认出库装备正确')
+                    }
                     // this.sucessInOrOut();
                     // this.$message.error('请重新确认出库装备')
                 }
@@ -449,14 +457,25 @@
                 }
             },
             handheldMachine() {
-                handheld().then((data) => {
-                    let json = JSON.parse(data);
-                    this.getOutDataCopy(json.rfid);
-                    this.deleteFile();
-                });
+                // handheld().then((data) => {
+                //     let json = JSON.parse(data);
+                //     this.getOutDataCopy(json.rfid);
+                //     this.deleteFile();
+                // });
                 //todo 要换回来
                 // let data = inventoryData;
-
+                if(this.typeOperational=='出库'){
+                    this.rightList.push({
+                        name: '圣爱大厦',
+                        model: '茶山是生',
+                        count: 22,
+                        rfid: ['222','19080012'],
+                        flag: false
+                    });
+                    this.getTrueOrFalse();
+                }else {
+                    this.getOutDataCopy(['222','19080012']);
+                }
                 // this.getOutDataCopy(['19071110'])
             },
             // getOutData(data){
@@ -475,11 +494,11 @@
                         }
                     })
                 }else {
-                    let url = baseBURL+'/transfer-equips/equips-out-house';
+                    let url = baseBURL+'/order-equips/equips-out-house';
                     request({
                         method: 'GET',
                         url: url,
-                        params: {transferOrderId:this.directObj.id}
+                        params: {orderId:this.directObj.id}
                     }).then(res => {
                         if (res) {
                             this.getCategroyIn(data,res.equips);
@@ -575,20 +594,22 @@
                 return typeModel
             },
             getTrueOrFalse() {
+                let flags=true;
                 this.rightList.forEach(item => {
                     this.directObj.orderItems.forEach(directItem => {
                         if (directItem.model == item.model) {
                             item.flag = true;
                             if (directItem.count == item.count) {
                             } else {
-                                this.submitFlag = false
+                                flags = false
                                 item.flag = false
                             }
                         } else {
-                            this.submitFlag = false
+                            flags = false
                         }
                     })
-                })
+                });
+                this.submitFlag=true//todo 要改回 this.submitFlag=flags
             },
             indexMethod(index) {
                 return index + 1;
