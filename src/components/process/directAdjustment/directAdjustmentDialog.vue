@@ -199,7 +199,7 @@
                 const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
                 this.pid = process.pid;
                 process.stderr.on('data', (err) => {
-                    this.$message.error('设备炸了请重新插拔!');
+                    this.$message.error('设备故障请重新插拔!');
                     console.log(err);
                 });
 
@@ -279,7 +279,7 @@
             //     console.log(data);
             // },
             getOutDataCopy(data) {
-                let url = 'http://192.168.50.15:8080/warehouse/equips/by-rfidlist';
+                let url = 'http://10.128.4.127:8080/warehouse/equips/by-rfidlist';
                 request({
                     method: 'PUT',
                     url: url,
@@ -297,7 +297,7 @@
                         rfidC.push(item.rfid)
                     });
 
-                    let url = 'http://192.168.50.15:8080/warehouse/transfers/up-to-down/equips-out/';
+                    let url = 'http://10.128.4.127:8080/warehouse/transfers/up-to-down/equips-out/';
                     let param = {
                         rfidList: rfidC,
                         transferOrderId: this.directObj.id

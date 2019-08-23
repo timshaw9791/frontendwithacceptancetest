@@ -56,7 +56,7 @@
             getDehumidification(){
                 this.$ajax({
                     method:'post',
-                    url:'http://192.168.50.15:8080/warehouse/environment/dehumidifierStatus',
+                    url:'http://10.128.4.127:8080/warehouse/environment/dehumidifierStatus',
                 }).then((res)=>{
                     console.log(res.data.data);
                     this.dehumidificationStatus=res.data.data
@@ -67,7 +67,7 @@
             dehumidificationControl(data){
                 this.$ajax({
                     method:'post',
-                    url:'http://192.168.50.15:8080/warehouse/environment/dehumidifierSwitch?status='+data,
+                    url:'http://10.128.4.127:8080/warehouse/environment/dehumidifierSwitch?status='+data,
                 }).then((res)=>{
                     if (res.data.msg=='成功') {
                         this.dehumidificationStatus=data;
@@ -99,7 +99,7 @@
             submissionThreshold(){
                 this.$ajax({
                     method:'post',
-                    url:'http://192.168.50.15:8080/warehouse/environment/humidityThresholdSet',
+                    url:'http://10.128.4.127:8080/warehouse/environment/humidityThresholdSet',
                     params:{max:this.threshold}
                 }).then((res)=>{
                     this.flag=!this.flag;
@@ -111,7 +111,7 @@
             getThreshold(){
                 this.$ajax({
                     method:'post',
-                    url:'http://192.168.50.15:8080/warehouse/environment/humidityThreshold',
+                    url:'http://10.128.4.127:8080/warehouse/environment/humidityThreshold',
                 }).then((res)=>{
                     this.threshold=res.data.data.humidityThreshold
                 }).catch(err=>{

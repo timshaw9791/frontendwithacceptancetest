@@ -77,6 +77,7 @@
                 house:{
                     id:'',name:''
                 },
+                billName:'借用',
                 urlObject:{
                     transferUrlObj:{
                         applyUrl:{
@@ -256,6 +257,7 @@
                 this.search='';
                 if(type=='apply'){
                     this.indexDefault='进行中';
+                    this.billName='借用'
                     this.selectList=this.select.selectModel.apply;
                     if(this.viewStatus.singleFlag.apply){}else {
                         this.viewStatus.singleFlag.apply=true;
@@ -264,8 +266,9 @@
                     }
                 }else if (type=='secondment'){
                     this.indexDefault='全部';
+                    this.billName='借用';
                     this.urlObject.transferUrlObj.billUrl='/borrow-orders/by-user-and-order-state';
-                console.log( this.urlObject.transferUrlObj.billUrl)
+                    console.log( this.urlObject.transferUrlObj.billUrl)
                     this.selectList=this.select.selectModel.secondment;
                     if(this.viewStatus.singleFlag.secondment){}else {
                         this.viewStatus.singleFlag.secondment=true;
@@ -274,6 +277,7 @@
                     }
                 }else {
                     this.indexDefault='全部';
+                    this.billName='归还';
                     this.urlObject.transferUrlObj.billUrl='/return-orders/by-user-and-order-state';
                     this.selectList=this.select.selectModel.secondment;
                     if(this.viewStatus.singleFlag.returns){}else {

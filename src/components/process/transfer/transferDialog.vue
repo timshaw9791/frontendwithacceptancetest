@@ -399,7 +399,7 @@
                     //     rfidC.push(item.rfid)
                     // });
                     //
-                    // let url = 'http://192.168.50.15:8080/warehouse/transfers/up-to-down/equips-out/';
+                    // let url = 'http://10.128.4.127:8080/warehouse/transfers/up-to-down/equips-out/';
                     // let param = {
                     //     rfidList: rfidC,
                     //     orderId: this.directObj.id
@@ -457,25 +457,25 @@
                 }
             },
             handheldMachine() {
-                // handheld().then((data) => {
-                //     let json = JSON.parse(data);
-                //     this.getOutDataCopy(json.rfid);
-                //     this.deleteFile();
-                // });
+                handheld().then((data) => {
+                    let json = JSON.parse(data);
+                    this.getOutDataCopy(json.rfid);
+                    this.deleteFile();
+                });
                 //todo 要换回来
                 // let data = inventoryData;
-                if(this.typeOperational=='出库'){
-                    this.rightList.push({
-                        name: '圣爱大厦',
-                        model: '茶山是生',
-                        count: 22,
-                        rfid: ['222','19080012'],
-                        flag: false
-                    });
-                    this.getTrueOrFalse();
-                }else {
-                    this.getOutDataCopy(['222','19080012']);
-                }
+                // if(this.typeOperational=='出库'){
+                //     this.rightList.push({
+                //         name: '圣爱大厦',
+                //         model: '茶山是生',
+                //         count: 22,
+                //         rfid: ['222','19080012'],
+                //         flag: false
+                //     });
+                //     this.getTrueOrFalse();
+                // }else {
+                //     this.getOutDataCopy(['222','19080012']);
+                // }
                 // this.getOutDataCopy(['19071110'])
             },
             // getOutData(data){
@@ -609,7 +609,7 @@
                         }
                     })
                 });
-                this.submitFlag=true//todo 要改回 this.submitFlag=flags
+                this.submitFlag=flags//todo
             },
             indexMethod(index) {
                 return index + 1;

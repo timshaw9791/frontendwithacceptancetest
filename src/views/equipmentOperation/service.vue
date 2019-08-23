@@ -154,7 +154,7 @@
 
                 process.stderr.on('data', (err) => {
                     console.log(err);
-                    this.$message.error('设备炸了请重新插拔!');
+                    this.$message.error('设备故障请重新插拔!');
                 });
                 process.stdout.on('data', (data) => {
                     console.log(data);

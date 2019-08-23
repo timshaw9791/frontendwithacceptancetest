@@ -139,7 +139,7 @@
             controlAir(data){
                 this.$ajax({
                     method:'post',
-                    url:'http://192.168.50.15:8080/warehouse/environment/airConditionerSwitch',
+                    url:'http://10.128.4.127:8080/warehouse/environment/airConditionerSwitch',
                     params:{status:data}
                 }).then((res)=>{
                     this.$message.success('操作成功')
@@ -153,7 +153,7 @@
             submissionThreshold(){
                 this.$ajax({
                     method:'post',
-                    url:'http://192.168.50.15:8080/warehouse/environment/temperatureThresholdSet',
+                    url:'http://10.128.4.127:8080/warehouse/environment/temperatureThresholdSet',
                     params:{max:this.threshold.max,min:this.threshold.min}
                 }).then((res)=>{
                     this.flag=!this.flag;
@@ -165,7 +165,7 @@
             getThreshold(){
                 this.$ajax({
                     method:'post',
-                    url:'http://192.168.50.15:8080/warehouse/environment/temperatureThreshold',
+                    url:'http://10.128.4.127:8080/warehouse/environment/temperatureThreshold',
                 }).then((res)=>{
                     this.threshold.max=res.data.data.temperatureMaximum;
                     this.threshold.min=res.data.data.temperatureMinimum;
@@ -174,7 +174,7 @@
                 });
                 this.$ajax({
                     method:'post',
-                    url:'http://192.168.50.15:8080/warehouse/environment/airConditionerStatus',
+                    url:'http://10.128.4.127:8080/warehouse/environment/airConditionerStatus',
                 }).then((res)=>{
                     let status = res.data.data.STATUS;
                     if(status=='REFRIGERATION'){

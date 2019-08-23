@@ -236,7 +236,7 @@
 
                     process.stderr.on('data', (err) => {
                         console.log(err);
-                        this.$message.error('设备炸了请重新插拔!');
+                        this.$message.error('设备故障请重新插拔!');
                     });
                     process.on('exit', (code) => {
                         console.log(`子进程退出，退出码 ${code}`);
