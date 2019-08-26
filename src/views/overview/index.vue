@@ -40,7 +40,6 @@
 
                 <div class="block">
 
-
                     <div class="bk-style" v-for="(item,index) in contentList" :key="index">
                         <div class="bk-top">
                             <span>{{item.name}}</span>
@@ -110,7 +109,8 @@
                         </div>
                         <div class="bk-content">
                             <!--<monitor src="ws://localhost:8888" width="454px" height="248px"></monitor>-->
-                            <my-video :playerOptions="playerOptions"></my-video>
+                            <!--<my-video :playerOptions="playerOptions"></my-video>-->
+                            <video-player width="454px" height="248px" :videoID="1"></video-player>
                         </div>
                     </div>
 
@@ -128,6 +128,7 @@
     import progressCircular from 'components/base/progressCircular'
     import myVideo from 'components/videoPlayer/index'
     import monitor from 'components/videoPlayer/monitor'
+    import FlvPlayerVue from 'components/videoPlayer/FlvPlayer.vue';
 
     import {temperatureValue} from "api/surroundings";
     import {equipmentAmount, equipmentScrapped, equipmentCharging} from "api/statistics";
@@ -142,55 +143,60 @@
             return {
                 list: [],
                 flag: false,
-                playerOptions: {
-                    // live: false,
-                    // autoplay: true, //如果true,浏览器准备好时开始回放。
-                    // preload: 'auto', //视频预加载
-                    // fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
-                    // muted: false, // 默认情况下将会消除任何音频。
-                    // notSupportedMessage: '此视频暂无法播放，请稍后再试', //允许覆盖Video.js无法播放媒体源时显示的默认信息。
-                    // techOrder: ['flash'],
-                    // language: 'zh-CN',
-                    // aspectRatio: '16:9', // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
-                    // // poster: "@/assets/logo.png", //你的封面地址
-                    // controlBar: {
-                    //     timeDivider: true,
-                    //     durationDisplay: true,
-                    //     remainingTimeDisplay: false,
-                    //     fullscreenToggle: true //全屏按钮
-                    // },
-                    // controls: true, //控制条
-                    // flash: {
-                    //     hls: {
-                    //         withCredentials: false
-                    //     },
-                    // },
-                    // sources: [{
-                    //     type: "application/x-mpegURL",
-                    //     src: "",
-                    //     //src: 'rtmp://10.128.4.109:1935/live/robot',
-                    // }],
-                    live: true,
-                    autoplay: true, //如果true,浏览器准备好时开始回放。
-                    muted: false, // 默认情况下将会消除任何音频。
-                    loop: false, // 导致视频一结束就重新开始。
-                    preload: 'auto', // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
-                    language: 'zh-CN',
-                    aspectRatio: '16:9', // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
-                    fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
-                    sources: [{
-                        type: "application/x-mpegURL",
-                        src: '', //你的m3u8地址（必填）
-                        withCredentials: false,
-                    }],
-                    notSupportedMessage: '此视频暂无法播放，请稍后再试', //允许覆盖Video.js无法播放媒体源时显示的默认信息。
-                },
+                // playerOptions: {
+                //     // live: false,
+                //     // autoplay: true, //如果true,浏览器准备好时开始回放。
+                //     // preload: 'auto', //视频预加载
+                //     // fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
+                //     // muted: false, // 默认情况下将会消除任何音频。
+                //     // notSupportedMessage: '此视频暂无法播放，请稍后再试', //允许覆盖Video.js无法播放媒体源时显示的默认信息。
+                //     // techOrder: ['flash'],
+                //     // language: 'zh-CN',
+                //     // aspectRatio: '16:9', // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
+                //     // // poster: "@/assets/logo.png", //你的封面地址
+                //     // controlBar: {
+                //     //     timeDivider: true,
+                //     //     durationDisplay: true,
+                //     //     remainingTimeDisplay: false,
+                //     //     fullscreenToggle: true //全屏按钮
+                //     // },
+                //     // controls: true, //控制条
+                //     // flash: {
+                //     //     hls: {
+                //     //         withCredentials: false
+                //     //     },
+                //     // },
+                //     // sources: [{
+                //     //     type: "application/x-mpegURL",
+                //     //     src: "",
+                //     //     //src: 'rtmp://10.128.4.109:1935/live/robot',
+                //     // }],
+                //     live: true,
+                //     autoplay: true, //如果true,浏览器准备好时开始回放。
+                //     muted: false, // 默认情况下将会消除任何音频。
+                //     loop: false, // 导致视频一结束就重新开始。
+                //     preload: 'auto', // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
+                //     language: 'zh-CN',
+                //     aspectRatio: '16:9', // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
+                //     fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
+                //     sources: [{
+                //         type: "application/x-mpegURL",
+                //         src: '', //你的m3u8地址（必填）
+                //         withCredentials: false,
+                //     }],
+                //     notSupportedMessage: '此视频暂无法播放，请稍后再试', //允许覆盖Video.js无法播放媒体源时显示的默认信息。
+                // },
                 surroundings: {
                     temperature: 0,
-                    humidity: 0,
-                },
+                    humidity:
+                        0,
+                }
+                ,
                 topList: [],
-                contentList: [{name: '调拨通知'}, {name: '保养/充电通知'}, {name: '到期报废提醒'}, {name: '未归还提醒'}],
+                contentList:
+                    [{name: '调拨通知'}, {name: '保养/充电通知'}, {name: '到期报废提醒'}, {name: '未归还提醒'}],
+                videoTime: '',
+
             }
         },
         mixins: [formRulesMixin, transformMixin],
@@ -217,7 +223,6 @@
                 }).catch(err => {
                     console.log(err);
                 });
-
 
                 equipmentAmount().then(res => {
                     res.genreStatisticList.forEach((item, index) => {
@@ -251,7 +256,8 @@
                     };
                     this.contentList.push('');
                     this.contentList.pop();
-                })
+                });
+
 
             },
             gotoInfo(row, route) {
@@ -282,26 +288,34 @@
                     this.$message.error(err);
                 });
             },
-            getdeploys() {
-                request({
-                    url: '/environment/deviceConfig',
-                    method: 'get',
-                }).then(data => {
-                    this.playerOptions.sources[0].src = data.data['HIK_CAMERA_ADDRESS'][0];
-                })
-            }
+            // getdeploys() {
+            //     request({
+            //         url: '/environment/deviceConfig',
+            //         method: 'get',
+            //     }).then(data => {
+            //         this.playerOptions.sources[0].src = data.data['HIK_CAMERA_ADDRESS'][0];
+            //     })
+            // }
         },
         created() {
-            this.getdeploys();
+            // this.getdeploys();
         },
         mounted() {
             this.getList();
             this.getHumiture();
+            this.videoTime = setInterval(() => {
+                window.location.reload();
+            }, 18000000);
         },
+        beforeDestroy() {
+            clearTimeout(this.videoTime);
+        },
+
         components: {
             progressCircular,
             myVideo,
-            monitor
+            monitor,
+            "video-player": FlvPlayerVue
         },
 
     }

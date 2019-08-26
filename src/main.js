@@ -11,6 +11,8 @@ import axios from 'axios';
 import PDFJS from 'pdfjs-dist'
 import './plugins/field';
 import '@/permission'
+import Video from 'video.js'
+Vue.prototype.$video = Video;
 
 import VideoPlayer from 'vue-video-player'
 

@@ -26,6 +26,7 @@
                     </el-button>
 
 
+
                     <div class="_buttons">
                         <BosInput
                                 placeholder="RFID/类型/类别/名称/型号"
@@ -215,7 +216,6 @@
                     case 'rfid':
                         this.$refs.dialogPattern.show();
                         break;
-
                 }
             },
             serialRfid() {
