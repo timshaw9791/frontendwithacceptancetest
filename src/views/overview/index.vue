@@ -188,8 +188,7 @@
                 // },
                 surroundings: {
                     temperature: 0,
-                    humidity:
-                        0,
+                    humidity: 0,
                 }
                 ,
                 topList: [],
