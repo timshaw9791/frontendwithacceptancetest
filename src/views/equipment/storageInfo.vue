@@ -8,16 +8,26 @@
                 <el-card class="box-card" shadow="never">
                     <div slot="header">
                         <span>装备参数</span>
+
+                        <el-button type="text" class="topIcon" @click="$refs.copyRfidDialog.show()"
+                                   v-if="title.includes('装备查看')">
+                            <svg-icon icon-class="加"/>
+                            复制RFID
+                        </el-button>
+
+
                         <el-button type="text" class="topIcon" @click="edit=!edit" v-if="title.includes('装备查看')">
                             <svg-icon icon-class="编辑"/>
                             {{edit?'编辑':'取消编辑'}}
                         </el-button>
+
 
                         <el-button type="text" class="topIcon" @click="editClick"
                                    v-if="title.includes('信息查看')">
                             <svg-icon icon-class="编辑"/>
                             {{edit?'编辑':'取消编辑'}}
                         </el-button>
+
 
                     </div>
                     <div class="box-body">
@@ -34,7 +44,7 @@
                             </field-cascader>
 
                             <field-input v-model="form.price" label="装备单价" width="3"
-                                         :rules="r(true).all(R.integer)" prop="price"
+                                         :rules="r(true).all(R.digital)" prop="price"
                                          v-if="title.includes('入库')"></field-input>
 
 
@@ -43,7 +53,7 @@
 
                             <field-input v-model="form.price" label="装备单价" width="3"
                                          :disabled="disabled"
-                                         :rules="r(true).all(R.integer)" prop="price"
+                                         :rules="r(true).all(R.digital)" prop="price"
                                          v-if="title.includes('装备查看')"></field-input>
 
 
@@ -205,6 +215,13 @@
             </div>
         </field-dialog>
 
+        <serviceDialog title="复制RFID" ref="copyRfidDialog" @confirm="copyRfid">
+            <form-container ref="copyRfid" :model="copyRfidList" style="text-align: center">
+                <field-input v-model="copyRfidList.rfid" label="RFID" width="4"
+                             :disabled="true"></field-input>
+            </form-container>
+        </serviceDialog>
+
 
     </div>
 </template>
@@ -217,6 +234,7 @@
     import axios from 'axios';
     import {imgUpUrl, pdfUpUrl, videoUpUrl, imgBaseUrl, pdfBaseUrl, videoBaseUrl} from "api/config";
     import {delFile} from "api/basic";
+    import serviceDialog from 'components/base/serviceDialog/index'
 
     // const cmdPath = 'C:\\Users\\Administrator';
     // const exec = window.require('child_process').exec;
@@ -246,12 +264,14 @@
                 serialList: [],
                 pid: '',
                 index: 0,
-                com: 0
+                com: 0,
+                copyRfidList: {},
             }
         },
         mixins: [formRulesMixin],
         components: {
-            imgUp
+            imgUp,
+            serviceDialog
         },
         props: {
             commonHouseId: {
@@ -543,6 +563,18 @@
                     this.$message.error('不能删除最后一个');
                 }
             },
+            copyRfid() {
+                exec(`java -jar writing.jar ${this.com} ${this.copyRfidList.rfid}`, {cwd: cmdPath}, (err, data) => {
+                    console.log(data);
+                    if (data.includes('succeed')) {
+                        this.$message.success('复制成功!');
+                        this.$refs.copyRfidDialog.hide();
+                    } else {
+                        this.$message.error('复制失败!');
+                    }
+                })
+            },
+
             getList() {
                 if (this.equipId) {
                     this.gqlQuery(api.getEquip, {
@@ -564,6 +596,9 @@
                         this.zb['sectionL'] = eqData.location ? eqData.location.section : '';
                         this.$set(this.form, 'personM', eqData.equipArg.supplier.person);
                         this.$set(this.form, 'phoneM', eqData.equipArg.supplier.phone);
+
+                        this.$set(this.copyRfidList, 'rfid', eqData.rfid);
+
                         this.zbForm = this.zb;
                     });
                 }
@@ -643,7 +678,6 @@
             this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];
         },
         mounted() {
-
             if (this.title.includes('入库')) {
                 this.disabled = true;
             } else if (this.title.includes('装备查看')) {
