@@ -124,8 +124,7 @@
                                  :disabled="true"></field-input>
                     <el-button style="margin-left: 12px" type="primary" @click='writeone'>读取</el-button>
                     <br/>
-                    <field-input v-model="inlineForm.newRfid" prop="newRfid"
-                                 :rules="r(true).all(R.rfid)" size="medium" label="修改RFID:" width="8"></field-input>
+                    <field-input v-model="inlineForm.newRfid" size="medium" label="修改RFID:" width="8"></field-input>
                 </form-container>
                 <div class="_button">
                     <el-button size="medium" @click="$refs.dialogModify.hide()">取消</el-button>
