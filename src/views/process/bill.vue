@@ -359,7 +359,6 @@
             }
             if(this.typeSingle!='apply'){
                 let myName=JSON.parse(localStorage.getItem('user')).name;
-                console.log(this.billData);
                 if(this.billData.outUser.name==myName&&this.billData.state=="WITHOUT_OUT_HOUSE"){
                     this.typeOperational='出库'
                 }else if(this.billData.applyOrder.applicant.name==myName&&this.billData.state=="OUT_HOUSE"){

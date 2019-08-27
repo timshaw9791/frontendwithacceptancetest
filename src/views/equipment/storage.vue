@@ -1,5 +1,16 @@
 <template>
     <div>
+        <el-dialog
+                title="提示"
+                :visible.sync="dialogVisible"
+                width="30%"
+        >
+            <span>确定删除？</span>
+            <span slot="footer" >
+               <el-button @click="dialogVisible = false">取 消</el-button>
+               <el-button type="primary" @click="delEquip">确 定</el-button>
+            </span>
+        </el-dialog>
         <el-card shadow="never" v-if="!storageInfoShow">
             <div slot="header">
                 <span class="_card-title">{{$route.meta.title}}</span>
@@ -20,7 +31,7 @@
                         装备入库
                     </el-button>
 
-                    <el-button type="text" class="_textBt" @click="goInfo('rfid')">
+                    <el-button type="text" class="_textBt" @click="goInfo('rfid')" v-if="authentication">
                         <svg-icon icon-class="加"/>
                         修改RFID
                     </el-button>
@@ -38,7 +49,6 @@
                     </div>
                 </tabs>
             </div>
-
             <el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
                       fit>
                 <bos-table-column lable="RFID" field="rfid"></bos-table-column>
@@ -50,6 +60,7 @@
                 <el-table-column label="操作" align="supplier" width="200">
                     <template slot-scope="scope">
                         <el-button type="primary" size="mini" @click="goInfo('look',scope.row)">查看</el-button>
+                        <el-button size="mini" @click="toDel(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -144,7 +155,8 @@
     import serviceDialog from 'components/base/serviceDialog/index'
     import {formRulesMixin} from "../../field/common/mixinComponent";
     import {getRfid, saveRfid} from "api/rfid";
-
+    import request from 'common/js/request'
+    import {baseURL} from "../../api/config";
     // const cmdPath = 'C:\\Users\\Administrator';
     // const exec = window.require('child_process').exec;
     // const spawn = window.require('child_process').spawn;
@@ -172,6 +184,8 @@
                     rfid: '',
                     newRfid: '',
                 },
+                delEquipObj:{},
+                dialogVisible: false,
                 writeAll: [],
                 writeIndex: '',
                 pid: '',
@@ -187,6 +201,20 @@
         methods: {
             cancelPattern() {
 
+            },
+            delEquip() {
+                request({
+                    method:'DELETE',
+                    url:baseURL+'/equips/'+this.delEquipObj.id,
+                }).then(res=>{
+                    this.$message.success('删除成功');
+                    this.refetch();
+                    this.dialogVisible=false;
+                });
+            },
+            toDel(data){
+                this.delEquipObj=data;
+                this.dialogVisible=true
             },
             rfidMode(mode) {
                 this.modeType = mode;
@@ -304,7 +332,16 @@
             this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];
         },
         mixins: [formRulesMixin],
-
+        computed:{
+            authentication(){
+                let auth = JSON.parse(localStorage.getItem('user')).role;
+                if(auth[0]=='SUPER_ADMINISTRATOR'){
+                    return true
+                }else {
+                    return false
+                }
+            }
+        },
         watch: {
             inquire(newVal, oldVal) {
                 this.param.namelike = newVal;

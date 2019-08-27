@@ -38,7 +38,7 @@
                 <t_table ref="secondmentTable" :urlObject="urlObject.transferUrlObj" :typeSingle="select.typeSingle" :select="select.single" :havePage="havePage" :searchNumber="search" @toSee="toSee" ></t_table>
             </div>
         </div>
-        <bills v-if="!viewStatus.flag" :billName="'借用'" :reSet="{unit:unit,restaurants:restaurants,myUnit:myUnit,house:house}" @closeBill="closeBill" :singleStatus="select.singleStatus" :billUrlObject="urlObject.billUrlObject" :typeSingle="select.typeSingle" :billData="billData" @toBack="haveBack"></bills>
+        <bills v-if="!viewStatus.flag" :billName="billName" :reSet="{unit:unit,restaurants:restaurants,myUnit:myUnit,house:house}" @closeBill="closeBill" :singleStatus="select.singleStatus" :billUrlObject="urlObject.billUrlObject" :typeSingle="select.typeSingle" :billData="billData" @toBack="haveBack"></bills>
         <add-apply ref="addDirectAdjustment" @sucessAdd="closeAddDialog" :myUnit="myUnit" :unit="unit" :house="house" @submit="submit"></add-apply>
     </div>
 </template>
@@ -93,7 +93,7 @@
                     billUrlObject:{
                         histroyApprovalUrl:'/history-leader-approval/',
                         confirmREJECTED:'/borrow',
-                        downloadSrcUrl:'/transfer-order/export-excel',
+                        downloadSrcUrl:'/borrow-orders/export-excel',
                         billEquipUrl:{
                             inHouseUrl:'/order-equips/equips-in-house/group',
                             outHouseUrl:'/order-equips/equips-out-house/group'
@@ -268,6 +268,7 @@
                     this.indexDefault='全部';
                     this.billName='借用';
                     this.urlObject.transferUrlObj.billUrl='/borrow-orders/by-user-and-order-state';
+                    this.urlObject.billUrlObject.downloadSrcUrl='/borrow-orders/export-excel';
                     console.log( this.urlObject.transferUrlObj.billUrl)
                     this.selectList=this.select.selectModel.secondment;
                     if(this.viewStatus.singleFlag.secondment){}else {
@@ -279,6 +280,7 @@
                     this.indexDefault='全部';
                     this.billName='归还';
                     this.urlObject.transferUrlObj.billUrl='/return-orders/by-user-and-order-state';
+                    this.urlObject.billUrlObject.downloadSrcUrl='/return-orders/export-excel';
                     this.selectList=this.select.selectModel.secondment;
                     if(this.viewStatus.singleFlag.returns){}else {
                         this.viewStatus.singleFlag.secondment=false;

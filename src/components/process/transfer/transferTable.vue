@@ -138,8 +138,14 @@
                           {lable: '审批状态', field: 'variables.applyOrder.state', filter: this.filterState}
                       ]
                   }else if(newVal=='transfer'||newVal=='secondment'||newVal=='returns'){
+                      let name='调拨单号';
+                      if(newVal=='secondment'){
+                          name='借用单号'
+                      }else if(newVal=='returns'){
+                          name='归还单号'
+                      }
                       this.labelList= [
-                          {lable: '调拨单号', field: 'variables.applyOrder.number', sort: false},
+                          {lable: name, field: 'variables.applyOrder.number', sort: false},
                           {lable: '申请类型', field: 'variables.applyOrder.type',filter: this.filterType, sort: false},
                           {lable: '申请装备', field: 'variables.applyOrder.applyNeedEquips', filter: this.filterName, sort: false},
                           {lable: '申请人', field: 'variables.applyOrder.applicant.name', sort: false},
