@@ -159,7 +159,7 @@ export const asyncRouterMap = [
                 path: 'secondment',
                 name: 'secondment',
                 component: _import('process/secondment'),
-                meta: {title: '借用流程'},
+                meta: {title: '借调流程'},
             },
             {
                 path: 'transfer',
@@ -167,12 +167,12 @@ export const asyncRouterMap = [
                 component: _import('process/transfer'),
                 meta: {title: '调拨流程'},
             },
-            {
-                path: 'directAdjustment',
-                name: 'directAdjustment',
-                component: _import('process/directAdjustment'),
-                meta: {title: '直调流程'},
-            },
+            // {
+            //     path: 'directAdjustment',
+            //     name: 'directAdjustment',
+            //     component: _import('process/directAdjustment'),
+            //     meta: {title: '直调流程'},
+            // },
             // {
             //     path: 'secondment',
             //     name: 'secondment',

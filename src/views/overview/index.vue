@@ -135,6 +135,7 @@
     import api from 'gql/home.gql'
     import {transformMixin} from 'common/js/transformMixin'
     import {formRulesMixin} from 'field/common/mixinComponent';
+    import {baseURL} from "../../api/config";
     import request from 'common/js/request';
 
 
@@ -279,7 +280,7 @@
             getHumiture() {
                 this.$ajax({
                     method: 'post',
-                    url: 'http://62.146.2.40:8010/warehouse/environment/humitureQuery',
+                    url: baseURL+'/environment/humitureQuery',
                 }).then((res) => {
                     this.surroundings.temperature = res.data.data.temperature;
                     this.surroundings.humidity = res.data.data.humidity;

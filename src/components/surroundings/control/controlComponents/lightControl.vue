@@ -12,6 +12,8 @@
 <script>
     import surroundingCard from '../../surroundingCard'
     import switchControl from './switch'
+    import {baseURL} from "../../../../api/config";
+
     export default {
         name: "lightControl",
         components:{
@@ -32,7 +34,7 @@
                 };
                 this.$ajax({
                     method:'post',
-                    url:'http://62.146.2.40:8010/warehouse/environment/lightSingleSwitch',
+                    url:baseURL+'/environment/lightSingleSwitch',
                     params:params
                 }).then((res)=>{
                     console.log(res)

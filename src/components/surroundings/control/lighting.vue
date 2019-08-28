@@ -19,6 +19,8 @@
     import dialogs from '../surroundingDialog'
     import switchControl from './controlComponents/switch'
     import lightControl from './controlComponents/lightControl'
+    import {baseURL} from "../../../api/config";
+
     export default {
         name: "lighting",
         components:{
@@ -58,7 +60,7 @@
             getLightInfo(){
                 this.$ajax({
                     method:'post',
-                    url:'http://62.146.2.40:8010/warehouse/environment/getLightInfo',
+                    url:baseURL+'/environment/getLightInfo',
                 }).then((res)=>{
                    let resC = res.data.data;
                    let lightListCopy = [];
@@ -80,7 +82,7 @@
             getLightQuery(list){
                 this.$ajax({
                     method:'post',
-                    url:'http://62.146.2.40:8010/warehouse/environment/lightQuery',
+                    url:baseURL+'/environment/lightQuery',
                 }).then((res)=>{
                     let status=res.data.data;
                     list.forEach(item=>{
@@ -100,7 +102,7 @@
                 }
                 this.$ajax({
                     method:'post',
-                    url:'http://62.146.2.40:8010/warehouse/environment/lightSwitch',
+                    url:baseURL+'/environment/lightSwitch',
                     params:{status:data}
                 }).then((res)=>{
                    this.lightList.forEach(item=>{

@@ -28,6 +28,8 @@
     import dialogs from '../surroundingDialog'
     import surroundingCard from '../surroundingCard'
     import switchControl from './controlComponents/switch'
+    import {baseURL} from "../../../api/config";
+
     export default {
         name: "airConditioning",
         components: {
@@ -139,7 +141,7 @@
             controlAir(data){
                 this.$ajax({
                     method:'post',
-                    url:'http://62.146.2.40:8010/warehouse/environment/airConditionerSwitch',
+                    url:baseURL+'/environment/airConditionerSwitch',
                     params:{status:data}
                 }).then((res)=>{
                     this.$message.success('操作成功')
@@ -153,7 +155,7 @@
             submissionThreshold(){
                 this.$ajax({
                     method:'post',
-                    url:'http://62.146.2.40:8010/warehouse/environment/temperatureThresholdSet',
+                    url:baseURL+'/environment/temperatureThresholdSet',
                     params:{max:this.threshold.max,min:this.threshold.min}
                 }).then((res)=>{
                     this.flag=!this.flag;
@@ -165,7 +167,7 @@
             getThreshold(){
                 this.$ajax({
                     method:'post',
-                    url:'http://62.146.2.40:8010/warehouse/environment/temperatureThreshold',
+                    url:baseURL+'/environment/temperatureThreshold',
                 }).then((res)=>{
                     this.threshold.max=res.data.data.temperatureMaximum;
                     this.threshold.min=res.data.data.temperatureMinimum;
@@ -174,7 +176,7 @@
                 });
                 this.$ajax({
                     method:'post',
-                    url:'http://62.146.2.40:8010/warehouse/environment/airConditionerStatus',
+                    url:baseURL+'/environment/airConditionerStatus',
                 }).then((res)=>{
                     let status = res.data.data.STATUS;
                     if(status=='REFRIGERATION'){

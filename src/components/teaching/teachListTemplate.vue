@@ -11,6 +11,8 @@
 </template>
 
 <script>
+    import {baseURL} from "../../api/config";
+
     export default {
         name: "teachListTemplate",
         data(){
@@ -32,7 +34,7 @@
               if(this.item.imageAddress==''||this.item.imageAddress==null){
                   img=require('@/assets/noImg.png');
               }else{
-                  img='http://62.146.2.40:8010/warehouse/images/'+this.item.imageAddress
+                  img=baseURL+'/images/'+this.item.imageAddress
               }
               return img
           }

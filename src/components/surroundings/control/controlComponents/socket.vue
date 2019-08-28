@@ -19,6 +19,8 @@
 <script>
     import surroundingCard from '../../surroundingCard'
     import switchControl from './switch'
+    import {baseURL} from "../../../../api/config";
+
     export default {
         name: "socket",
         components:{
@@ -60,7 +62,7 @@
                 let params={route:this.socket.route,number:this.socket.number,status:data};
                 this.$ajax({
                     method:'post',
-                    url:'http://62.146.2.40:8010/warehouse/environment/chargeSwitch',
+                    url:baseURL+'/environment/chargeSwitch',
                     params:params
                 }).then((res)=>{
                     let resData={

@@ -33,6 +33,8 @@
     import s_humidity from 'components/surroundings/humidity'
     import s_video from 'components/surroundings/s_video'
     import s_line_chart from 'components/surroundings/linChartView'
+    import {baseURL} from "../../api/config";
+
     export default {
         name: "index",
         components: {
@@ -129,7 +131,7 @@
             getHumiture(){
                 this.$ajax({
                     method:'post',
-                    url:'http://62.146.2.40:8010/warehouse/environment/humitureQuery',
+                    url:baseURL+'/environment/humitureQuery',
                 }).then((res)=>{
                     this.humidity=res.data.data.humidity;
                     this.temperature=res.data.data.temperature;

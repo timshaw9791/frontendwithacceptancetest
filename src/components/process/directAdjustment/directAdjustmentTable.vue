@@ -10,6 +10,8 @@
 
 <script>
     import request from 'common/js/request'
+    import {baseURL} from "../../../api/config";
+
     export default {
         name: "directAdjustmentTable",
         data(){
@@ -117,10 +119,10 @@
                 let param={};
                 let url='';
                 if(this.state!='ALL'&&this.state!=''){
-                    url='http://62.146.2.40:8010/warehouse/transfers/up-to-down/by-state';
+                    url=baseURL+'/transfers/up-to-down/by-state';
                     param={likeByNumber:likeByNumber,size:size,page:page,state:this.state}
                 }else {
-                    url = 'http://62.146.2.40:8010/warehouse/transfers/up-to-down';
+                    url = baseURL+'/transfers/up-to-down';
                     param={likeByNumber:likeByNumber,size:size,page:page}
                 }
                 request({

@@ -49,7 +49,7 @@
     import transferApi from 'gql/transfer.gql'
     import {fetchMixin} from 'field/common/mixinFetch'
     import request from 'common/js/request'
-    import {baseBURL} from "../../api/config";
+    import {baseBURL,baseURL} from "../../api/config";
     export default {
         name: "transfer",
         components:{
@@ -145,7 +145,7 @@
                             })
                         }
                 }, true);
-                let url='http://62.146.2.40:8010/warehouse/house';
+                let url=baseURL+'/house';
                 request({
                     method:'get',
                     url:url,
@@ -165,7 +165,7 @@
                 // if(dataSubmit.orderItems[index].model==''){
                 //     dataSubmit.orderItems.splice(index,1)
                 // }
-                // let url = 'http://62.146.2.40:8010/warehouse/transfers/up-to-down';
+                // let url = baseURL+'/transfers/up-to-down';
                 // request({
                 //     method:'post',
                 //     url:url,
@@ -205,7 +205,7 @@
             },
             toSee(data){
                 // this.directDefault=data.row;
-                // this.downloadSrc='http://62.146.2.40:8010/warehouse/transfers/up-to-down/export-excel'+'?transferOrderId='+this.directDefault.id;
+                // this.downloadSrc=baseURL+'/transfers/up-to-down/export-excel'+'?transferOrderId='+this.directDefault.id;
                 // this.viewStatus.flag=!this.viewStatus.flag
                 this.billData=data.row.variables;
                 this.select.singleStatus=this.select.single;

@@ -14,6 +14,8 @@
 </template>
 
 <script>
+    import {baseURL} from "../../api/config";
+
     export default {
         name: "personnelTemplate",
         props:{
@@ -23,7 +25,7 @@
         },
         data(){
             return{
-                src:'http://62.146.2.40:8010/warehouse/images/',
+                src:baseURL+'/images/',
             }
         },
         methods:{

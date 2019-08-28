@@ -14,6 +14,7 @@
     import r_video from 'components/record/recordDialog'
     import r_label from 'common/vue/label'
     import record from 'gql/record.gql'
+    import {baseURL} from "../../api/config";
 
     export default {
         name: "borrow",
@@ -85,7 +86,7 @@
             clickTable(table) {
                 let data = table.row;
                 if (data) {
-                    this.address='http://62.146.2.40:8010/warehouse/records/'+data.videoAddress;
+                    this.address=baseURL+'/records/'+data.videoAddress;
                     this.$refs.recordVideo.show()
                 }
             },

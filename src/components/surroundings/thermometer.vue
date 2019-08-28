@@ -18,6 +18,8 @@
     import s_card from './surroundingCard'
     import s_thermometerComponent from './control/controlComponents/thermometerComponent'
     import s_lineChart_t from './control/controlComponents/lineChart/lineChart'
+    import {baseURL} from "../../api/config";
+
     export default {
         name: "thermometer",
         components:{
@@ -65,7 +67,7 @@
                 let promise=new Promise((resolve,reject)=>{
                     this.$ajax({
                         method:'post',
-                        url:'http://62.146.2.40:8010/warehouse/environment/humitureQuery',
+                        url:baseURL+'/environment/humitureQuery',
                     }).then((res)=>{
                         resolve(res.data.data)
                     }).catch(err=>{
@@ -83,7 +85,7 @@
                 };
                 this.$ajax({
                     method:'post',
-                    url:'http://62.146.2.40:8010/warehouse/environment/temperatureMonthHS',
+                    url:baseURL+'/environment/temperatureMonthHS',
                     params:params
                 }).then((res)=>{
                     let copyList=[];
@@ -120,7 +122,7 @@
             getHs(temperature){
                 this.$ajax({
                     method:'post',
-                    url:'http://62.146.2.40:8010/warehouse/environment/temperatureHS',
+                    url:baseURL+'/environment/temperatureHS',
                 }).then((res)=>{
                     let dateNow =  new Date();
                     let year = dateNow.getFullYear();

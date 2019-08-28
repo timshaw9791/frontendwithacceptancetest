@@ -5,7 +5,7 @@
         <div class="topTitle">
             <img src="../../common/images/警徽.png" height="89" width="78"/>
             <h3 class="title">许昌市公安局应急装备物资管理系统</h3>
-    </div>
+        </div>
 
         <el-form class="login-form" autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm"
                  label-position="right">

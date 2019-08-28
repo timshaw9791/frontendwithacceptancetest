@@ -4,7 +4,7 @@
             <div class="directAdjustmentDialog">
                 <div class="directAdjustmentDialog-header">
                     <div class="header-item">
-                        <div><span v-text="billType+'单号：'"></span><span v-text="directObj.number"></span></div>
+                        <div><span v-text="billName+'单号：'"></span><span v-text="directObj.number"></span></div>
                         <div class="d_select"><span v-text="'硬件选择：'"></span>
                             <el-select v-model="hardware" placeholder="请选择" size="mini">
                                 <el-option
@@ -187,9 +187,6 @@
             typeOperational:{
                 type:String,
                 default:'出库'
-            },
-            billType:{
-                type:String
             }
         },
         data() {
@@ -402,7 +399,7 @@
                     //     rfidC.push(item.rfid)
                     // });
                     //
-                    // let url = 'http://62.146.2.40:8010/warehouse/transfers/up-to-down/equips-out/';
+                    // let url = 'http://192.168.50.14:8080/warehouse/transfers/up-to-down/equips-out/';
                     // let param = {
                     //     rfidList: rfidC,
                     //     orderId: this.directObj.id

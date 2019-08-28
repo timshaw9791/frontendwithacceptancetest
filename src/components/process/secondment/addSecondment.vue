@@ -1,6 +1,6 @@
 <template>
     <div>
-        <serviceDialog title="借用申请" ref="checkTransferDialog" width="1040px" :button="false">
+        <serviceDialog title="借调申请" ref="checkTransferDialog" width="1040px" :button="false">
             <div class="addApply">
                 <div class="addApply-label">
                     <div class="label">
@@ -146,7 +146,7 @@
                 nowCount: '',
                 processLevelId: '',
                 leader: {
-                    leaderList: [{value: '1', key: '21212'}, {value: '2', key: '12121'}, {value: '3', key: 'asas'}],
+                    leaderList: [],
                     leaderName: '',
                     leaderItem: {},
                 }

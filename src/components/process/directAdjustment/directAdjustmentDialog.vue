@@ -117,7 +117,7 @@
     import dialogs from 'components/surroundings/surroundingDialog'
     // import inventoryData from 'views/warehouse/inventoryData'
     import request from 'common/js/request'
-
+    import {baseURL} from "../../../api/config";
     import {handheld} from 'common/js/pda'
 
     const cmdPath = 'C:\\Users\\Administrator';
@@ -279,7 +279,7 @@
             //     console.log(data);
             // },
             getOutDataCopy(data) {
-                let url = 'http://62.146.2.40:8010/warehouse/equips/by-rfidlist';
+                let url = baseURL+'/equips/by-rfidlist';
                 request({
                     method: 'PUT',
                     url: url,
@@ -297,7 +297,7 @@
                         rfidC.push(item.rfid)
                     });
 
-                    let url = 'http://62.146.2.40:8010/warehouse/transfers/up-to-down/equips-out/';
+                    let url = baseURL+'/transfers/up-to-down/equips-out/';
                     let param = {
                         rfidList: rfidC,
                         transferOrderId: this.directObj.id

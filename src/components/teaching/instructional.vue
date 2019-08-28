@@ -10,6 +10,8 @@
 <script>
     import PDFJS from 'pdfjs-dist'
     import myNewVideo from '@/components/videoPlayer/newLive'
+    import {baseURL} from "../../api/config";
+
     export default {
         name: "instructional",
         components:{
@@ -27,8 +29,8 @@
         },
         data(){
             return{
-                src:'http://62.146.2.40:8010/warehouse/pdfs/',
-                mp4:'http://62.146.2.40:8010/warehouse/videos/'
+                src:baseURL+'/pdfs/',
+                mp4:baseURL+'/videos/'
             }
         },
         computed:{

@@ -140,7 +140,7 @@
                   }else if(newVal=='transfer'||newVal=='secondment'||newVal=='returns'){
                       let name='调拨单号';
                       if(newVal=='secondment'){
-                          name='借用单号'
+                          name='借调单号'
                       }else if(newVal=='returns'){
                           name='归还单号'
                       }
@@ -244,7 +244,7 @@
                 }else if(type=='DOWN_TO_UP'){
                     return '调拨'
                 }else if(type=='BORROW'){
-                    return '借用'
+                    return '借调'
                 }else {
                     return '不知道'
                 }
@@ -346,10 +346,10 @@
             //     let param={};
             //     let url='';
             //     if(this.state!='ALL'&&this.state!=''){
-            //         url='http://62.146.2.40:8010/warehouse/transfers/up-to-down/by-state';
+            //         url='http://192.168.50.14:8080/warehouse/transfers/up-to-down/by-state';
             //         param={likeByNumber:likeByNumber,size:size,page:page,state:this.state}
             //     }else {
-            //         url = 'http://62.146.2.40:8010/warehouse/transfers/up-to-down';
+            //         url = 'http://192.168.50.14:8080/warehouse/transfers/up-to-down';
             //         param={likeByNumber:likeByNumber,size:size,page:page}
             //     }
             //     request({

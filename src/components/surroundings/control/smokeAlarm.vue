@@ -19,6 +19,8 @@
     import dialogs from '../surroundingDialog'
     import surroundingCard from '../surroundingCard'
     import switchControl from './controlComponents/switch'
+    import {baseURL} from "../../../api/config";
+
     export default {
         name: "smokeAlarm",
         components: {
@@ -52,7 +54,7 @@
             getConcentration(){
                 this.$ajax({
                     method:'post',
-                    url:'http://62.146.2.40:8010/warehouse/environment/smokeQuery',
+                    url:baseURL+'/environment/smokeQuery',
                 }).then((res)=>{
                     this.concentration=res.data.data
                 }).catch(err=>{

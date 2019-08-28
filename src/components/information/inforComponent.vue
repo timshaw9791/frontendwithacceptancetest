@@ -56,6 +56,7 @@
     import {formRulesMixin} from 'field/common/mixinComponent';
     import user from 'gql/user.gql'
     import tips from 'components/base/tips'
+    import {baseURL} from "../../api/config";
     /* import {scrappedUp} from "api/workflow";*/
 
     export default {
@@ -69,7 +70,7 @@
                 viewStatus:{
                     flag:true
                 },
-                src:'http://62.146.2.40:8010/warehouse/images/',
+                src:baseURL+'/images/',
                 personnelImg:'',
                 cPassword:'',
                 cPhone:'',
@@ -220,7 +221,7 @@
                 }
             },
             Ajax(file){
-                let src = 'http://62.146.2.40:8010/warehouse/upload/image/';
+                let src = baseURL+'/upload/image/';
                 const instance=this.$ajax.create({
                     withCredentials: true
                 });

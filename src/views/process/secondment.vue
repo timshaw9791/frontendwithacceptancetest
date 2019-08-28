@@ -1,15 +1,15 @@
 <template>
     <div class="secondment-box">
-        <my-header :title="'调拨流程'" :searchFlag="false" :haveBlack="!viewStatus.flag" @h_black="black"></my-header>
+        <my-header :title="'借调流程'" :searchFlag="false" :haveBlack="!viewStatus.flag" @h_black="black"></my-header>
         <!--<bills></bills>-->
         <div v-show="viewStatus.flag">
             <div class="single-box">
                 <div class="single-box-item">
-                    <span v-text="'调拨申请单'" @click="clickSingle('apply')"></span>
+                    <span v-text="'借调申请单'" @click="clickSingle('apply')"></span>
                     <div class="single-box-item-line" v-if="viewStatus.singleFlag.apply"></div>
                 </div>
                 <div class="single-box-item" @click="clickSingle('secondment')">
-                    <span v-text="'调拨单'"></span>
+                    <span v-text="'借调单'"></span>
                     <div class="single-box-item-line" v-if="viewStatus.singleFlag.secondment"></div>
                 </div>
                 <div class="single-box-item" @click="clickSingle('returns')">
@@ -23,7 +23,7 @@
                 </div>
                 <div style="margin-left: 38px;cursor: pointer" @click="addDirectAdjustment" v-if="viewStatus.singleFlag.apply">
                     <svg-icon icon-class='加' class="icon-search"></svg-icon>
-                    <span>添加调拨</span>
+                    <span>添加借调</span>
                 </div>
                 <div class="_buttons" style="margin-right: 18px" v-if="havePage">
                     <BosInput
@@ -38,7 +38,7 @@
                 <t_table ref="secondmentTable" :urlObject="urlObject.transferUrlObj" :typeSingle="select.typeSingle" :select="select.single" :havePage="havePage" :searchNumber="search" @toSee="toSee" ></t_table>
             </div>
         </div>
-        <bills v-if="!viewStatus.flag" :billType="billType" :billName="billName" :reSet="{unit:unit,restaurants:restaurants,myUnit:myUnit,house:house}" @closeBill="closeBill" :singleStatus="select.singleStatus" :billUrlObject="urlObject.billUrlObject" :typeSingle="select.typeSingle" :billData="billData" @toBack="haveBack"></bills>
+        <bills v-if="!viewStatus.flag" :billName="billName" :reSet="{unit:unit,restaurants:restaurants,myUnit:myUnit,house:house}" @closeBill="closeBill" :singleStatus="select.singleStatus" :billUrlObject="urlObject.billUrlObject" :typeSingle="select.typeSingle" :billData="billData" @toBack="haveBack"></bills>
         <add-apply ref="addDirectAdjustment" @sucessAdd="closeAddDialog" :myUnit="myUnit" :unit="unit" :house="house" @submit="submit"></add-apply>
     </div>
 </template>
@@ -53,7 +53,7 @@
     import secondmentApi from 'gql/transfer.gql'
     import {fetchMixin} from 'field/common/mixinFetch'
     import request from 'common/js/request'
-    import {baseBURL} from "../../api/config";
+    import {baseBURL,baseURL} from "../../api/config";
     export default {
         name: "secondment",
         components:{
@@ -77,8 +77,7 @@
                 house:{
                     id:'',name:''
                 },
-                billName:'借用',
-                billType:'调拨',
+                billName:'借调',
                 urlObject:{
                     transferUrlObj:{
                         applyUrl:{
@@ -174,7 +173,7 @@
                         })
                     }
                 }, true);
-                let url='http://62.146.2.40:8010/warehouse/house';
+                let url=baseURL+'/house';
                 request({
                     method:'get',
                     url:url,
@@ -194,7 +193,7 @@
                 // if(dataSubmit.orderItems[index].model==''){
                 //     dataSubmit.orderItems.splice(index,1)
                 // }
-                // let url = 'http://62.146.2.40:8010/warehouse/secondments/up-to-down';
+                // let url = baseURL+'/secondments/up-to-down';
                 // request({
                 //     method:'post',
                 //     url:url,
@@ -234,7 +233,7 @@
             },
             toSee(data){
                 // this.directDefault=data.row;
-                // this.downloadSrc='http://62.146.2.40:8010/warehouse/secondments/up-to-down/export-excel'+'?secondmentOrderId='+this.directDefault.id;
+                // this.downloadSrc=baseURL+'/secondments/up-to-down/export-excel'+'?secondmentOrderId='+this.directDefault.id;
                 // this.viewStatus.flag=!this.viewStatus.flag
                 this.billData=data.row.variables;
                 this.select.singleStatus=this.select.single;
@@ -258,8 +257,7 @@
                 this.search='';
                 if(type=='apply'){
                     this.indexDefault='进行中';
-                    this.billName='借用';
-                    this.billType='调拨';
+                    this.billName='借调';
                     this.selectList=this.select.selectModel.apply;
                     if(this.viewStatus.singleFlag.apply){}else {
                         this.viewStatus.singleFlag.apply=true;
@@ -268,8 +266,7 @@
                     }
                 }else if (type=='secondment'){
                     this.indexDefault='全部';
-                    this.billName='借用';
-                    this.billType='调拨';
+                    this.billName='借调';
                     this.urlObject.transferUrlObj.billUrl='/borrow-orders/by-user-and-order-state';
                     this.urlObject.billUrlObject.downloadSrcUrl='/borrow-orders/export-excel';
                     console.log( this.urlObject.transferUrlObj.billUrl)
@@ -282,7 +279,6 @@
                 }else {
                     this.indexDefault='全部';
                     this.billName='归还';
-                    this.billType='归还';
                     this.urlObject.transferUrlObj.billUrl='/return-orders/by-user-and-order-state';
                     this.urlObject.billUrlObject.downloadSrcUrl='/return-orders/export-excel';
                     this.selectList=this.select.selectModel.secondment;

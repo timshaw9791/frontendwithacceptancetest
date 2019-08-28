@@ -25,6 +25,8 @@
     import dialogs from '../surroundingDialog'
     import surroundingCard from '../surroundingCard'
     import switchControl from './controlComponents/switch'
+    import {baseURL} from "../../../api/config";
+
     export default {
         name: "dehumidification",
         components: {
@@ -56,7 +58,7 @@
             getDehumidification(){
                 this.$ajax({
                     method:'post',
-                    url:'http://62.146.2.40:8010/warehouse/environment/dehumidifierStatus',
+                    url:baseURL+'/environment/dehumidifierStatus',
                 }).then((res)=>{
                     console.log(res.data.data);
                     this.dehumidificationStatus=res.data.data
@@ -67,7 +69,7 @@
             dehumidificationControl(data){
                 this.$ajax({
                     method:'post',
-                    url:'http://62.146.2.40:8010/warehouse/environment/dehumidifierSwitch?status='+data,
+                    url:baseURL+'/environment/dehumidifierSwitch?status='+data,
                 }).then((res)=>{
                     if (res.data.msg=='成功') {
                         this.dehumidificationStatus=data;
@@ -99,7 +101,7 @@
             submissionThreshold(){
                 this.$ajax({
                     method:'post',
-                    url:'http://62.146.2.40:8010/warehouse/environment/humidityThresholdSet',
+                    url:baseURL+'/environment/humidityThresholdSet',
                     params:{max:this.threshold}
                 }).then((res)=>{
                     this.flag=!this.flag;
@@ -111,7 +113,7 @@
             getThreshold(){
                 this.$ajax({
                     method:'post',
-                    url:'http://62.146.2.40:8010/warehouse/environment/humidityThreshold',
+                    url:baseURL+'/environment/humidityThreshold',
                 }).then((res)=>{
                     this.threshold=res.data.data.humidityThreshold
                 }).catch(err=>{

@@ -18,6 +18,8 @@
     import s_card from './surroundingCard'
     import s_humidityComponent from './control/controlComponents/thermometerComponent'
     import s_lineChart from './control/controlComponents/lineChart/lineChart'
+    import {baseURL} from "../../api/config";
+
     export default {
         name: "humidity",
         components:{
@@ -69,7 +71,7 @@
                 };
                 this.$ajax({
                     method:'post',
-                    url:'http://62.146.2.40:8010/warehouse/environment/humidityMonthHS',
+                    url:baseURL+'/environment/humidityMonthHS',
                     params:params
                 }).then((res)=>{
                     let copyList=[];
@@ -107,7 +109,7 @@
                 let promise=new Promise((resolve,reject)=>{
                     this.$ajax({
                         method:'post',
-                        url:'http://62.146.2.40:8010/warehouse/environment/humitureQuery',
+                        url:baseURL+'/environment/humitureQuery',
                     }).then((res)=>{
                         resolve(res.data.data)
                     }).catch(err=>{
@@ -119,7 +121,7 @@
             getHs(humidity){
                 this.$ajax({
                     method:'post',
-                    url:'http://62.146.2.40:8010/warehouse/environment/humidityHS',
+                    url:baseURL+'/environment/humidityHS',
                 }).then((res)=>{
                     let dateNow =  new Date();
                     let year = dateNow.getFullYear();

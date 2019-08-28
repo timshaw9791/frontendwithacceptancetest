@@ -49,7 +49,9 @@
    import request from 'common/js/request'
    import d_table from 'components/process/directAdjustment/directAdjustmentTable'
    import d_details from 'components/process/directAdjustment/directAdjustmentDetails'
-    export default {
+   import {baseURL} from "../../api/config";
+
+   export default {
         name:'directAdjustment',
         mixins: [fetchMixin],
         components: {
@@ -108,7 +110,7 @@
             },
             toSee(data){
                this.directDefault=data.row;
-               this.downloadSrc='http://62.146.2.40:8010/warehouse/transfers/up-to-down/export-excel'+'?transferOrderId='+this.directDefault.id;
+               this.downloadSrc=baseURL+'/transfers/up-to-down/export-excel'+'?transferOrderId='+this.directDefault.id;
                this.viewStatus.flag=!this.viewStatus.flag
             },
             addDirectAdjustment(){
@@ -118,7 +120,7 @@
                 this.tableState=data
             },
             transferClick(){
-                let url='http://62.146.2.40:8010/warehouse/transfers/up-to-down/export-excel'+'?transferOrderId='+this.directDefault.id;
+                let url=baseURL+'/transfers/up-to-down/export-excel'+'?transferOrderId='+this.directDefault.id;
                 request({
                     method:'post',
                     url:url
@@ -134,7 +136,7 @@
                 if(dataSubmit.orderItems[index].model==''){
                     dataSubmit.orderItems.splice(index,1)
                 }
-                let url = 'http://62.146.2.40:8010/warehouse/transfers/up-to-down';
+                let url = baseURL+'/transfers/up-to-down';
                 request({
                     method:'post',
                     url:url,
@@ -152,7 +154,7 @@
                  this.unit.id=res.id;
                  this.unit.name=res.location+res.name
              },true);
-             let url='http://62.146.2.40:8010/warehouse/house';
+             let url=baseURL+'/house';
                 request({
                     method:'get',
                     url:url,

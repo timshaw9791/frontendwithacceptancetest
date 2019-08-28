@@ -44,7 +44,8 @@
 <script>
     import {formRulesMixin} from 'field/common/mixinComponent';
     import user from 'gql/user.gql'
-   /* import {scrappedUp} from "api/workflow";*/
+    import {baseURL} from "../../api/config";
+    /* import {scrappedUp} from "api/workflow";*/
 
     export default {
         data() {
@@ -57,7 +58,7 @@
                 viewStatus:{
                     flag:true
                 },
-                src:'http://62.146.2.40:8010/warehouse/images/',
+                src:baseURL+'/images/',
                 personnelImg:''
             }
         },
@@ -154,7 +155,7 @@
                 }
             },
             Ajax(file){
-                let src = 'http://62.146.2.40:8010/warehouse/upload/image/';
+                let src =baseURL+'/upload/image/';
                 const instance=this.$ajax.create({
                     withCredentials: true
                 });

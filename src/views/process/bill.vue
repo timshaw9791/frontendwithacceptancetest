@@ -20,7 +20,7 @@
         <!--</div>-->
         <!--</el-card>-->
         <div class="bill-action-box">
-            <span>{{typeSingleFlag?`${billType}单`:`${billType}申请单`}}</span>
+            <span>{{typeSingleFlag?`${billName}单`:`${billName}申请单`}}</span>
             <div class="bill-action-box-button-box" v-if="billData.applyOrder.state=='REJECTED'">
                 <el-button size="medium" class="bt" @click="operational('REJECTED')">
                     作废
@@ -45,7 +45,7 @@
             <img :src="typeSingleFlag?getStatesTransferImg(billData.state):getStatesImg(billData.applyOrder.state)" class="icon"/>
             <div class="content">
                 <div class="tr">
-                    <div class="title">{{typeSingleFlag?`${billType}单号: `:'申请编号: '}}<span v-text="billData.applyOrder.number"></span></div>
+                    <div class="title">{{typeSingleFlag?`${billName}单号: `:'申请编号: '}}<span v-text="billData.applyOrder.number"></span></div>
                     <div class="title" v-if="typeSingleFlag">调拨时间: <span v-text="filterTime(billData.outTime)"></span></div>
                     <div class="title" v-if="typeSingleFlag">接收时间: <span v-text="filterTime(billData.inTime)"></span></div>
                 </div>
@@ -242,7 +242,7 @@
                 <span v-text="'驳回原因：'"></span><span v-text="checkReasonData"></span>
             </div>
         </serviceDialog>
-        <t_dialog ref="transferDialog" :billName="billName" :billType="billType" @sucesssInOrOut="sucesssInOrOut" :typeOperational="typeOperational" :directObj="direct"></t_dialog>
+        <t_dialog ref="transferDialog" :billName="billName" @sucesssInOrOut="sucesssInOrOut" :typeOperational="typeOperational" :directObj="direct"></t_dialog>
         <!--<serviceDialog title="批准" ref="dialog2" width="40%">-->
         <!--<div style="text-align: center;font-size: 20px">您确定要批准吗</div>-->
         <!--</serviceDialog>-->
@@ -283,10 +283,7 @@
               type:String,
               default:'调拨'
             },
-            billType:{
-                type:String,
-                default:'调拨'
-            },
+
             billUrlObject:{
                 type:Object,
                 default(){
@@ -626,7 +623,7 @@
                     case 'DOWN_TO_UP':
                         return '调拨';
                     case 'BORROW':
-                        return '借用'
+                        return '借调'
                     // case 'REJECTED':
                     //     return '审核中';
                     // case 'PASS':
@@ -657,7 +654,7 @@
                 if (data == 'REJECTED') {
                     this.$refs.dialog2.show();
                 } else if (data == 'reSet') {
-                    if(this.billName=='借用'){
+                    if(this.billName=='借调'){
                         this.$refs.addSecondmentBill.showAdd()
                     }else {
                         this.$refs.addDirectAdjustmentBill.showAdd()
