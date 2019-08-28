@@ -1,15 +1,15 @@
 <template>
     <div class="secondment-box">
-        <my-header :title="'借用流程'" :searchFlag="false" :haveBlack="!viewStatus.flag" @h_black="black"></my-header>
+        <my-header :title="'调拨流程'" :searchFlag="false" :haveBlack="!viewStatus.flag" @h_black="black"></my-header>
         <!--<bills></bills>-->
         <div v-show="viewStatus.flag">
             <div class="single-box">
                 <div class="single-box-item">
-                    <span v-text="'借用申请单'" @click="clickSingle('apply')"></span>
+                    <span v-text="'调拨申请单'" @click="clickSingle('apply')"></span>
                     <div class="single-box-item-line" v-if="viewStatus.singleFlag.apply"></div>
                 </div>
                 <div class="single-box-item" @click="clickSingle('secondment')">
-                    <span v-text="'借用单'"></span>
+                    <span v-text="'调拨单'"></span>
                     <div class="single-box-item-line" v-if="viewStatus.singleFlag.secondment"></div>
                 </div>
                 <div class="single-box-item" @click="clickSingle('returns')">
@@ -23,7 +23,7 @@
                 </div>
                 <div style="margin-left: 38px;cursor: pointer" @click="addDirectAdjustment" v-if="viewStatus.singleFlag.apply">
                     <svg-icon icon-class='加' class="icon-search"></svg-icon>
-                    <span>添加借用</span>
+                    <span>添加调拨</span>
                 </div>
                 <div class="_buttons" style="margin-right: 18px" v-if="havePage">
                     <BosInput
@@ -38,7 +38,7 @@
                 <t_table ref="secondmentTable" :urlObject="urlObject.transferUrlObj" :typeSingle="select.typeSingle" :select="select.single" :havePage="havePage" :searchNumber="search" @toSee="toSee" ></t_table>
             </div>
         </div>
-        <bills v-if="!viewStatus.flag" :billName="billName" :reSet="{unit:unit,restaurants:restaurants,myUnit:myUnit,house:house}" @closeBill="closeBill" :singleStatus="select.singleStatus" :billUrlObject="urlObject.billUrlObject" :typeSingle="select.typeSingle" :billData="billData" @toBack="haveBack"></bills>
+        <bills v-if="!viewStatus.flag" :billType="billType" :billName="billName" :reSet="{unit:unit,restaurants:restaurants,myUnit:myUnit,house:house}" @closeBill="closeBill" :singleStatus="select.singleStatus" :billUrlObject="urlObject.billUrlObject" :typeSingle="select.typeSingle" :billData="billData" @toBack="haveBack"></bills>
         <add-apply ref="addDirectAdjustment" @sucessAdd="closeAddDialog" :myUnit="myUnit" :unit="unit" :house="house" @submit="submit"></add-apply>
     </div>
 </template>
@@ -78,6 +78,7 @@
                     id:'',name:''
                 },
                 billName:'借用',
+                billType:'调拨',
                 urlObject:{
                     transferUrlObj:{
                         applyUrl:{
@@ -173,7 +174,7 @@
                         })
                     }
                 }, true);
-                let url='http://62.146.2.40:8010/warehouse/warehouse/house';
+                let url='http://192.168.50.15:8080/warehouse/warehouse/house';
                 request({
                     method:'get',
                     url:url,
@@ -257,7 +258,8 @@
                 this.search='';
                 if(type=='apply'){
                     this.indexDefault='进行中';
-                    this.billName='借用'
+                    this.billName='借用';
+                    this.billType='调拨';
                     this.selectList=this.select.selectModel.apply;
                     if(this.viewStatus.singleFlag.apply){}else {
                         this.viewStatus.singleFlag.apply=true;
@@ -267,6 +269,7 @@
                 }else if (type=='secondment'){
                     this.indexDefault='全部';
                     this.billName='借用';
+                    this.billType='调拨';
                     this.urlObject.transferUrlObj.billUrl='/borrow-orders/by-user-and-order-state';
                     this.urlObject.billUrlObject.downloadSrcUrl='/borrow-orders/export-excel';
                     console.log( this.urlObject.transferUrlObj.billUrl)
@@ -279,6 +282,7 @@
                 }else {
                     this.indexDefault='全部';
                     this.billName='归还';
+                    this.billType='归还';
                     this.urlObject.transferUrlObj.billUrl='/return-orders/by-user-and-order-state';
                     this.urlObject.billUrlObject.downloadSrcUrl='/return-orders/export-excel';
                     this.selectList=this.select.selectModel.secondment;
