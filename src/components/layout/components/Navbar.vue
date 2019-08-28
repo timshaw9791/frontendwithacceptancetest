@@ -4,7 +4,7 @@
 
         <!--<breadcrumb></breadcrumb>-->
         <div class="logo">
-            建安区公安局应急装备物资管理系统
+            许昌市公安局应急装备物资管理系统
         </div>
 
         <div class="icons">
