@@ -5,7 +5,7 @@
 </template>
 
 <script>
-    // import flvjs from "flv.js";
+    import flvjs from "flv.js";
 
     import 'video.js/dist/video-js.css'
 

@@ -399,7 +399,7 @@
                     //     rfidC.push(item.rfid)
                     // });
                     //
-                    // let url = 'http://10.128.4.127:8080/warehouse/transfers/up-to-down/equips-out/';
+                    // let url = 'http://62.146.2.40:8010/warehouse/transfers/up-to-down/equips-out/';
                     // let param = {
                     //     rfidList: rfidC,
                     //     orderId: this.directObj.id

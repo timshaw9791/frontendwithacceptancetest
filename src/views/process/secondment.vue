@@ -173,7 +173,7 @@
                         })
                     }
                 }, true);
-                let url='http://192.168.50.15:8080/warehouse/house';
+                let url='http://62.146.2.40:8010/warehouse/warehouse/house';
                 request({
                     method:'get',
                     url:url,
