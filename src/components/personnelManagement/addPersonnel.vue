@@ -57,7 +57,7 @@
                 viewStatus:{
                     flag:true
                 },
-                src:'http://192.168.50.15:8080/warehouse/images/',
+                src:'http://62.146.2.40:8010/warehouse/images/',
                 personnelImg:''
             }
         },
@@ -154,7 +154,7 @@
                 }
             },
             Ajax(file){
-                let src = 'http://192.168.50.15:8080/warehouse/upload/image/';
+                let src = 'http://62.146.2.40:8010/warehouse/upload/image/';
                 const instance=this.$ajax.create({
                     withCredentials: true
                 });

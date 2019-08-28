@@ -279,7 +279,7 @@
             //     console.log(data);
             // },
             getOutDataCopy(data) {
-                let url = 'http://192.168.50.15:8080/warehouse/equips/by-rfidlist';
+                let url = 'http://62.146.2.40:8010/warehouse/equips/by-rfidlist';
                 request({
                     method: 'PUT',
                     url: url,
@@ -297,7 +297,7 @@
                         rfidC.push(item.rfid)
                     });
 
-                    let url = 'http://192.168.50.15:8080/warehouse/transfers/up-to-down/equips-out/';
+                    let url = 'http://62.146.2.40:8010/warehouse/transfers/up-to-down/equips-out/';
                     let param = {
                         rfidList: rfidC,
                         transferOrderId: this.directObj.id

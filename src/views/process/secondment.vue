@@ -174,7 +174,7 @@
                         })
                     }
                 }, true);
-                let url='http://192.168.50.15:8080/warehouse/warehouse/house';
+                let url='http://62.146.2.40:8010/warehouse/warehouse/house';
                 request({
                     method:'get',
                     url:url,
@@ -194,7 +194,7 @@
                 // if(dataSubmit.orderItems[index].model==''){
                 //     dataSubmit.orderItems.splice(index,1)
                 // }
-                // let url = 'http://192.168.50.15:8080/warehouse/secondments/up-to-down';
+                // let url = 'http://62.146.2.40:8010/warehouse/secondments/up-to-down';
                 // request({
                 //     method:'post',
                 //     url:url,
@@ -234,7 +234,7 @@
             },
             toSee(data){
                 // this.directDefault=data.row;
-                // this.downloadSrc='http://192.168.50.15:8080/warehouse/secondments/up-to-down/export-excel'+'?secondmentOrderId='+this.directDefault.id;
+                // this.downloadSrc='http://62.146.2.40:8010/warehouse/secondments/up-to-down/export-excel'+'?secondmentOrderId='+this.directDefault.id;
                 // this.viewStatus.flag=!this.viewStatus.flag
                 this.billData=data.row.variables;
                 this.select.singleStatus=this.select.single;

@@ -32,7 +32,7 @@
               if(this.item.imageAddress==''||this.item.imageAddress==null){
                   img=require('@/assets/noImg.png');
               }else{
-                  img='http://192.168.50.15:8080/warehouse/images/'+this.item.imageAddress
+                  img='http://62.146.2.40:8010/warehouse/images/'+this.item.imageAddress
               }
               return img
           }
