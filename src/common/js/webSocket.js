@@ -23,13 +23,13 @@ export function socketConnect() {
 import '@/plugins/sockjs.min'
 
 import '@/plugins/stomp.min'
-
+import {baseURL} from "../../api/config";
 import store from 'store'
 
 import {getToken} from "./auth";
 import {websocketUrl} from "../../api/config";
 
-const socket = new SockJS("http://192.168.50.14:8080/warehouse/websocket");
+const socket = new SockJS(`${baseURL}/websocket`);
 
 const stompClient = Stomp.over(socket);
 

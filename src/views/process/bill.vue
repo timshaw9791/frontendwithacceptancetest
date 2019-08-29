@@ -78,7 +78,12 @@
                         <bos-table-column lable="装备名称" field="name"></bos-table-column>
                         <bos-table-column lable="装备型号" field="model"></bos-table-column>
                         <bos-table-column lable="装备数量" field="count"></bos-table-column>
-                        <bos-table-column lable="总价" field="price" v-if="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?true:false:false"></bos-table-column>
+                        <el-table-column align="center" lable="总价" v-if="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?true:false:false">
+                            <template slot-scope="scope">
+                                {{scope.row.price/100}}
+                            </template>
+                        </el-table-column>
+                        <!--<bos-table-column lable="总价" field="price" v-if="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?true:false:false"></bos-table-column>-->
                     </el-table>
                 </div>
                 <!--<div class="bottom" v-if="bottomFlag">-->

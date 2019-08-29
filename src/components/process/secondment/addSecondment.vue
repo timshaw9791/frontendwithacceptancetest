@@ -135,11 +135,6 @@
                 restaurants:[],
                 selectProp:{value:'id',label:'name',children:'organUnitSet'},
                 unitList:[
-                    {name:'温州市公安局',id:'1',organUnitSet:[
-                            {name:'瓯海分局',id:'1',organUnitSet:[{
-                                    name:'茶山派出所',id:'2232323'
-                                }]}
-                        ]}
                 ],
                 selectUnitNow:'',
                 selectUnit:[],

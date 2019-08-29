@@ -385,7 +385,9 @@
 
             },
             sucessInOrOut(){
-              this.$emit('sucesssInOrOut',true);
+                this.end(this.pid);
+                this.closeUsb = true;
+               this.$emit('sucesssInOrOut',true);
             },
             submit() {
                 if (this.submitFlag) {
