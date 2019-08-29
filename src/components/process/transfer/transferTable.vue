@@ -283,10 +283,12 @@
                         let list=[];
                         // this.paginator.totalPages=res.totalPages;
                         if(status=='doing'){
-                            res.forEach(item=>{
-                                let items=item;
-                                list.push(items)
-                            });
+                            // res.forEach(item=>{
+                            //     let items=item;
+                            //     list.push(items)
+                            // });
+                            list=res;
+                            list.sort(this.compare('createTime'))
                         }else {
                             res.content.forEach(item=>{
                                 list.push({variables:{applyOrder:item}})
@@ -296,6 +298,13 @@
                         this.list=list;
                     }
                 })
+            },
+            compare(property){
+                return function(a,b){
+                    let value1 = a[property];
+                    let value2 = b[property];
+                    return value2 - value1;
+                }
             },
             getTransferList(status,url,search){
                 let page=this.paginator.page;
