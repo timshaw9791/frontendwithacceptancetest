@@ -350,7 +350,7 @@
                 }else {
                     url=baseURL+'/order-equips/in'+'?orderId='+orderId+'&state='+state;
                     rfids=this.inHouseEquip;
-                    console.log(rfids)
+
                     // this.rightList.forEach(item=>{
                     //     rfids=[...rfids,...item.rfid]
                     // });
@@ -416,7 +416,7 @@
                     //     }
                     // })
                 } else {
-                    if(this.billName!='借用'){
+                    if(this.billName!='借调'||this.billName!='归还'){
                         this.$refs.transFerDialogTips.show();
                     }else {
                         this.$message.error('请确认出库装备正确')
