@@ -54,10 +54,11 @@
                 this.$emit('cancel','end');
             },
             handleClose(done) {
-                this.hide()
+
+                this.cancel()
             },
             cancelDb() {
-                this.hide();
+                this.cancel();
             }
         }
     }

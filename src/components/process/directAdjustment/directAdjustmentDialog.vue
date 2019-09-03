@@ -118,14 +118,14 @@
     // import inventoryData from 'views/warehouse/inventoryData'
     import request from 'common/js/request'
     import {baseURL} from "../../../api/config";
-    import {handheld} from 'common/js/pda'
-
-    const cmdPath = 'C:\\Users\\Administrator';
-    const exec = window.require('child_process').exec;
-    const spawn = window.require('child_process').spawn;
-    const fs = window.require('fs');
-    const path = window.require('path');
-    const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
+    // import {handheld} from 'common/js/pda'
+    //
+    // const cmdPath = 'C:\\Users\\Administrator';
+    // const exec = window.require('child_process').exec;
+    // const spawn = window.require('child_process').spawn;
+    // const fs = window.require('fs');
+    // const path = window.require('path');
+    // const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
 
 
     export default {
@@ -328,13 +328,12 @@
                         });
                     } else {
                         let flag = false;
-                        let indexI = 0
+                        let indexI = 0;
                         this.rightList.forEach((listItem, index) => {
                             if (listItem.model == item.equipArg.model) {
                                 /* listItem.count=listItem.count+1*/
-                                flag = true, indexI = index
+                                flag = true;indexI = index
                             } else {
-
                             }
                         });
                         if (flag) {

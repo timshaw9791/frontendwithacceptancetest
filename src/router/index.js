@@ -149,12 +149,12 @@ export const asyncRouterMap = [
         name: 'process',
         meta: {title: '流程管理', icon: '流程管理', roles: ['ADMINISTRATOR']},
         children: [
-            // {
-            //     path: 'scrapped',
-            //     name: 'scrapped',
-            //     component: _import('process/scrapped'),
-            //     meta: {title: '报废流程'},
-            // },
+            {
+                path: 'scrapped',
+                name: 'scrapped',
+                component: _import('process/scrapped'),
+                meta: {title: '报废流程'},
+            },
             {
                 path: 'secondment',
                 name: 'secondment',

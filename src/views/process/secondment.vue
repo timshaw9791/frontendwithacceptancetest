@@ -84,6 +84,7 @@
                             doing:'/task/by-user-and-process-definition',
                             history:'/borrow-apply-orders/history',
                         },
+                        equipOrderName:'applyNeedEquips',
                         billUrl:'/borrow-orders/by-user-and-order-state',
                         urlParamsKey:{
                             processDefinitionKey:'borrow',

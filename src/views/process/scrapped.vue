@@ -1,150 +1,331 @@
 <template>
-    <div>
-        <el-card shadow="never">
-            <div slot="header">
-                <span class="_card-title">{{$route.meta.title}}</span>
+    <div class="scrapped-box">
+        <my-header :title="'报废流程'" :searchFlag="false" :haveBlack="!viewStatus.flag" @h_black="black"></my-header>
+        <!--<bills></bills>-->
+        <div v-show="viewStatus.flag">
+            <div class="single-box">
+                <div class="single-box-item">
+                    <span v-text="'报废申请单'" @click="clickSingle('apply')"></span>
+                    <div class="single-box-item-line" v-if="viewStatus.singleFlag.apply"></div>
+                </div>
             </div>
-            <div>
-                <tabs :list="tabsList" :indexDefault="0">
-                    <el-button type="text" class="_textBt" @click="scrapped">
-                        <svg-icon icon-class="加"/>
-                        添加报废
-                    </el-button>
-                    <div class="_buttons">
-                        <BosInput
-                                placeholder="id"
-                                suffix="el-icon-search"
-                                v-model="inquire"
-                                :wrapforlike="true"
-                                style=" width:285px;">
-                        </BosInput>
-                    </div>
-                </tabs>
-
-                <el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
-                          fit highlight-current-row>
-
-                    <bos-table-column lable="申请ID" field="id"></bos-table-column>
-                    <bos-table-column lable="申请类型" :filter="(row)=>applicationType(row.scrapType)"></bos-table-column>
-                    <bos-table-column lable="申请装备" :filter="(row)=>equipment(row.equipScrapItems)"></bos-table-column>
-                    <bos-table-column lable="申请人" field="operator"></bos-table-column>
-                    <bos-table-column lable="申请时间" :filter="(row)=>formatTime(row.time)"></bos-table-column>
-                    <bos-table-column lable="审批状态" :filter="(row)=>approval(row.scrapType)"></bos-table-column>
-                    <el-table-column label="操作" align="center" width="200">
-                        <template slot-scope="scope">
-                            <el-button type="primary" size="mini"
-                                       @click="$router.push({path:'/process/bill',query:{id:scope.row.id}})">查 看
-                            </el-button>
-                        </template>
-                    </el-table-column>
-                </el-table>
-                <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
+            <div class="action-box">
+                <div style="width:117px; padding-left:18px;">
+                    <tab-select :sizeHeight="'mini'"  :options="selectList" :indexDefault="indexDefault" @selected="selectValue"></tab-select>
+                </div>
+                <div style="margin-left: 38px;cursor: pointer" @click="addDirectAdjustment" v-if="viewStatus.singleFlag.apply">
+                    <svg-icon icon-class='加' class="icon-search"></svg-icon>
+                    <span>添加报废</span>
+                </div>
+                <div class="_buttons" style="margin-right: 18px" v-if="havePage">
+                    <BosInput
+                            placeholder="编号"
+                            suffix="el-icon-search"
+                            v-model="search"
+                            style=" width:285px;">
+                    </BosInput>
+                </div>
             </div>
-        </el-card>
-
-        <serviceDialog title="报废申请" ref="dialog" width="60%">
-            <form-container ref="inlineForm" :model="inlineForm">
-                <!--<field-input v-model="inlineForm.username" label="编号" width="2.5"></field-input>-->
-                <!--<field-input v-model="inlineForm.username" label="申请人" width="2.5"></field-input>-->
-                <!--<field-input v-model="inlineForm.username" label="申请时间" width="2.5"></field-input>-->
-                <!--<field-input v-model="inlineForm.username" label="审核人" width="2.5"-->
-                <!--:rules="r(true).all(R.require)" prop="username"></field-input>-->
-
-                <field-input v-model="inlineForm.username" label="申请原因" width="10" type="textarea"
-                             :rules="r(true).all(R.require)" prop="username"></field-input>
-
-            </form-container>
-
-            <el-table :data="dialogList" class="list">
-                <bos-table-column lable="序号" field="id"></bos-table-column>
-                <bos-table-column lable="装备名称" field="name"></bos-table-column>
-                <bos-table-column lable="装备序号" field="name"></bos-table-column>
-                <bos-table-column lable="架体编号" field="name"></bos-table-column>
-                <bos-table-column lable="架体AB面" field="name"></bos-table-column>
-            </el-table>
-        </serviceDialog>
-
-
+            <div class="scrapped-body">
+                <t_table ref="scrappedTable" :urlObject="urlObject.transferUrlObj" :typeSingle="select.typeSingle" :select="select.single" :havePage="havePage" :searchNumber="search" @toSee="toSee" ></t_table>
+            </div>
+        </div>
+        <bills v-if="!viewStatus.flag" :billName="billName" :reSet="{unit:unit,restaurants:restaurants,myUnit:myUnit,house:house}" @closeBill="closeBill" :singleStatus="select.singleStatus" :billUrlObject="urlObject.billUrlObject" :typeSingle="select.typeSingle" :billData="billData" @toBack="haveBack"></bills>
+        <add-apply ref="addDirectAdjustment" :taskType="'报废'" @sucessAdd="closeAddDialog" :myUnit="myUnit" :unit="unit" :house="house" @submit="submit"></add-apply>
     </div>
 </template>
 
 <script>
-    import equip from 'components/equipment/addEquipment'
-    import tabs from 'components/base/tabs/index'
-    import {formRulesMixin} from 'field/common/mixinComponent';
-    import {transformMixin} from "common/js/transformMixin";
-    import serviceDialog from 'components/base/serviceDialog'
-    import api from 'gql/process.gql'
-
+    import bills from './bill'
+    import myHeader from 'components/base/header/header'
+    import tabSelect from 'components/base/tableSelect'
+    import t_table from 'components/process/transfer/transferTable'
+    import addApply from 'components/process/secondment/addSecondment'
+    import api from 'gql/home.gql'
+    import scrappedApi from 'gql/transfer.gql'
+    import {fetchMixin} from 'field/common/mixinFetch'
+    import request from 'common/js/request'
+    import {baseBURL,baseURL} from "../../api/config";
     export default {
-        data() {
-            return {
-                tabsList: [],
-                list: [],
-                inlineForm: {},
-                dialogList: [],
-                inquire: '',
-                param: {
-                    qfilter: {
-                        "key": "id",
-                        "operator": "LIKE",
-                        value: '%%',
+        name: "scrapped",
+        components:{
+            bills,
+            myHeader,
+            tabSelect,
+            t_table,
+            addApply
+        },
+        mixins: [fetchMixin],
+        data(){
+            return{
+                selectList:[
+                    {label:'进行中',value:'进行中'},
+                    {label:'已结束',value:'已结束'}
+                ],
+                unit:{
+                    name:'',
+                    id:''
+                },
+                house:{
+                    id:'',name:''
+                },
+                billName:'报废',
+                urlObject:{
+                    transferUrlObj:{
+                        applyUrl:{
+                            doing:'/task/by-user-and-process-definition',
+                            history:'/scrap-apply-orders/history',
+                        },
+                        billUrl:'',
+                        equipOrderName:'scrapEquips',
+                        urlParamsKey:{
+                            processDefinitionKey:'scrap',
+                            type:'SCRAP'
+                        }
+                    },
+                    billUrlObject:{
+                        histroyApprovalUrl:'/history-leader-approval/',
+                        confirmREJECTED:'/borrow',
+                        downloadSrcUrl:'/borrow-orders/export-excel',
+                        billEquipUrl:{
+                            inHouseUrl:'/order-equips/equips-in-house/group',
+                            outHouseUrl:'/order-equips/equips-out-house/group'
+                        }
+                    }
+                },
+                select:{
+                    single:'进行中',
+                    typeSingle:'apply',
+                    singleStatus:'',
+                    selectModel:{
+                        apply:[{label:'进行中',value:'进行中'},
+                            {label:'已结束',value:'已结束'}],
+                        scrapped:[{label:'全部',value:'All'},
+                            {label:'已出库',value:'OUT_HOUSE'},{label:'已入库',value:'IN_HOUSE'},{label:'未出库',value:'WITHOUT_OUT_HOUSE'}]
+                    }
+                },
+                indexDefault:'进行中',
+                search:'',
+                restaurants:[],
+                myUnit:{},
+                billData:{},
+                viewStatus:{
+                    flag:true,
+                    add:false,
+                    singleFlag:{
+                        apply:true,
+                        scrapped:false,
+                        returns:false
                     }
                 },
             }
         },
-        methods: {
-            scrapped() {
-                this.$refs.dialog.show();
-            },
-            approval(data) {
-                return '已通过';
-            },
-            equipment(data) {
-                let newData = [];
-                newData = data.map(res => {
-                    return res.name
-                });
-
-                return newData.join(',')
-            },
+        created(){
+            this.getEquipInfo();
+            this.getUnitAndHouse();
         },
-        apollo: {
-            list() {
-                return this.getEntityListWithPagintor(api.getEquipScrapedRecordList);
+        computed:{
+            havePage(){
+                let flag;
+                if(this.viewStatus.singleFlag.apply&&this.select.single=='进行中'){
+                    flag=false
+                }else {
+                    flag=true
+                }
+                return flag
+            }
+        },
+        methods:{
+            closeBill(){
+                this.viewStatus.flag=!this.viewStatus.flag;
+                this.$refs.scrappedTable.getList(this.$refs.scrappedTable.select,this.$refs.scrappedTable.searchNumber)
             },
-        },
+            closeAddDialog(){
+                this.$refs.addDirectAdjustment.cancel();
+                this.$refs.scrappedTable.getList(this.$refs.scrappedTable.select,this.$refs.scrappedTable.searchNumber)
+            },
+            addDirectAdjustment(){
+                this.$refs.addDirectAdjustment.showAdd()
+            },
+            getUnitAndHouse(){
+                this.gqlQuery(scrappedApi.getOrganUnit, {
+                    key: 'id',
+                    value: JSON.parse(localStorage.getItem('user')).unitId
+                }, (data) => {
+                    this.myUnit=data[0];
+                    if(this.myUnit.level!="MUNICIPAL"){
+                        request({
+                            method:'get',
+                            url:baseBURL+'/architecture/findById',
+                            params:{id:data[0].upperId}
+                        }).then(res=>{
+                            this.unit={
+                                name:res.name,
+                                id:res.id
+                            };
+                        })
+                    }
+                }, true);
+                let url=baseURL+'/house';
+                request({
+                    method:'get',
+                    url:url,
+                }).then(res=>{
+                    this.house.id= res.id;
+                    this.house.name=res.name;
+                })
+            },
+            haveBack(data){
+                this.viewStatus.flag=!this.viewStatus.flag;
+                this.$refs.scrappedTable.getApplyList('doing','');
+            },
+            submit(data){
+                console.log(data);
+                // let dataSubmit = data;
+                // let index =dataSubmit.orderItems.length-1
+                // if(dataSubmit.orderItems[index].model==''){
+                //     dataSubmit.orderItems.splice(index,1)
+                // }
+                // let url = baseURL+'/scrappeds/up-to-down';
+                // request({
+                //     method:'post',
+                //     url:url,
+                //     data:dataSubmit
+                // }).then(res=>{
+                //     if(res){
+                //         this.$message.success('操作成功');
+                //         this.$refs.addDirectAdjustment.close();
+                //         this.$refs.directAdjustmentTable.getList();
+                //     }
+                // })
+            },
+            getEquipInfo() {
+                this.gqlQuery(api.getEquipList1, '', (res) => {
+                    let newData = res;
+                    let eqName = newData.map(res => {
+                        return res.name
+                    });
+                    let endData = [];
+                    eqName = Array.from(new Set(eqName));
+                    eqName.forEach(item => {
+                        newData.some(item1 => {
+                            if (item === item1.name) {
+                                endData.push({
+                                    value: item1.equipArg.model,
+                                    key: {
+                                        name: item1.name,
+                                        model: item1.equipArg.model,
+                                    }
+                                });
+                                return true
+                            }
+                        })
+                    });
+                    this.restaurants = endData;
+                },true)
+            },
+            toSee(data){
+                // this.directDefault=data.row;
+                // this.downloadSrc=baseURL+'/scrappeds/up-to-down/export-excel'+'?scrappedOrderId='+this.directDefault.id;
+                // this.viewStatus.flag=!this.viewStatus.flag
+                this.billData=data.row.variables;
+                this.select.singleStatus=this.select.single;
 
-
-        mixins: [formRulesMixin, transformMixin],
-
-        components: {
-            equip,
-            tabs,
-            serviceDialog
-        },
-        watch: {
-            inquire(newVal, oldVal) {
-                this.param.namelike = newVal;
-                this.param['qfilter'] = {
-                    "key": "id",
-                    "operator": "LIKE",
-                    value: newVal,
-                };
+                if(data.row.taskId!=null){
+                    this.$set(this.billData,'taskId',data.row.taskId)
+                }
+                if(data.row.processInstanceId!=undefined){
+                    this.$set(this.billData,'processInstanceId',data.row.processInstanceId)
+                }
+                console.log(data)
+                this.viewStatus.flag=!this.viewStatus.flag
+            },
+            black(data){
+                this.viewStatus.flag=!this.viewStatus.flag
+            },
+            selectValue(data) {
+                this.select.single = data;
+            },
+            clickSingle(type){
+                this.select.typeSingle=type;
+                this.search='';
+                if(type=='apply'){
+                    this.indexDefault='进行中';
+                    this.billName='报废';
+                    this.selectList=this.select.selectModel.apply;
+                    if(this.viewStatus.singleFlag.apply){}else {
+                        this.viewStatus.singleFlag.apply=true;
+                        this.viewStatus.singleFlag.scrapped=false;
+                        this.viewStatus.singleFlag.returns=false
+                    }
+                }else if (type=='scrapped'){
+                    this.indexDefault='全部';
+                    this.billName='报废';
+                    this.urlObject.transferUrlObj.billUrl='/borrow-orders/by-user-and-order-state';
+                    this.urlObject.billUrlObject.downloadSrcUrl='/borrow-orders/export-excel';
+                    console.log( this.urlObject.transferUrlObj.billUrl)
+                    this.selectList=this.select.selectModel.scrapped;
+                    if(this.viewStatus.singleFlag.scrapped){}else {
+                        this.viewStatus.singleFlag.scrapped=true;
+                        this.viewStatus.singleFlag.apply=false;
+                        this.viewStatus.singleFlag.returns=false
+                    }
+                }else {
+                    this.indexDefault='全部';
+                    this.billName='归还';
+                    this.urlObject.transferUrlObj.billUrl='/return-orders/by-user-and-order-state';
+                    this.urlObject.billUrlObject.downloadSrcUrl='/return-orders/export-excel';
+                    this.selectList=this.select.selectModel.scrapped;
+                    if(this.viewStatus.singleFlag.returns){}else {
+                        this.viewStatus.singleFlag.scrapped=false;
+                        this.viewStatus.singleFlag.apply=false;
+                        this.viewStatus.singleFlag.returns=true
+                    }
+                }
             }
         }
     }
 </script>
 
-<style lang="scss" scoped>
-    .el-card {
-        border: none !important;
+<style scoped>
+    .scrapped-box{
+        width: 100%;
+        color: #707070;
     }
-
-    .list {
-        border: 1px solid #EBEEF5;
-        border-bottom: none !important;
+    .scrapped-box .scrapped-body {
         width: 100%;
     }
-
+    .scrapped-box .single-box{
+        width: 100%;
+        height: 57px;
+        display: flex;
+        border-top: 1px solid rgba(112,112,112,0.13);
+        border-bottom: 1px solid rgba(112,112,112,0.13);
+        padding-left: 18px;
+    }
+    .scrapped-box .action-box{
+        display: flex;
+        height: 57px;
+        width: 100%;
+        align-items: center;
+        padding-right: 18px;
+        border-bottom: 1px solid rgba(112,112,112,0.13);
+    }
+    .single-box .single-box-item{
+        height: 100%;
+        display: flex;
+        position: relative;
+        align-items: center;
+        margin-right: 34px;
+        cursor: pointer;
+    }
+    .single-box-item .single-box-item-line{
+        width: 100%;
+        position: absolute;
+        bottom: 0px;
+        height:5px;
+        background:rgba(112,112,112,1);
+        opacity:1;
+        border-radius:16px;
+    }
 </style>

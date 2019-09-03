@@ -26,6 +26,7 @@
                     totalPages:10,
                     size:9
                 },
+
                 tableAction:{
                     label:'操作',
                     button:['查看']
@@ -33,7 +34,7 @@
                 labelList: [
                     {lable: '申请编号', field: 'variables.applyOrder.number', sort: false},
                     {lable: '申请类型', field: 'variables.applyOrder.type',filter: this.filterType, sort: false},
-                    {lable: '申请装备', field: 'variables.applyOrder.applyNeedEquips', filter: this.filterName, sort: false},
+                    {lable: '申请装备', field: `variables.applyOrder.${this.urlObject.equipOrderName}`, filter: this.filterName, sort: false},
                     {lable: '申请人', field: 'variables.applyOrder.applicant.name', sort: false},
                     {lable: '申请时间', field: 'variables.applyOrder.applyTime', filter: this.filterTime},
                     {lable: '审批状态', field: 'variables.applyOrder.state', filter: this.filterState}
@@ -69,6 +70,7 @@
                             doing:'/task/by-user-and-process-definition',
                             history:'/transfer-apply-order/history',
                         },
+                        equipOrderName:'applyNeedEquips',
                         billUrl:'/transfer-order/by-user-and-order-state',
                         urlParamsKey:{
                             processDefinitionKey:'transfer',
@@ -147,7 +149,7 @@
                       this.labelList= [
                           {lable: name, field: 'variables.applyOrder.number', sort: false},
                           {lable: '申请类型', field: 'variables.applyOrder.type',filter: this.filterType, sort: false},
-                          {lable: '申请装备', field: 'variables.applyOrder.applyNeedEquips', filter: this.filterName, sort: false},
+                          {lable: '申请装备', field: 'variables.applyOrder.scrapEquips', filter: this.filterName, sort: false},
                           {lable: '申请人', field: 'variables.applyOrder.applicant.name', sort: false},
                           {lable: '申请时间', field: 'variables.applyOrder.applyTime', filter: this.filterTime},
                           {lable: '装备状态', field: 'variables.state', filter: this.filterTransferState}
@@ -191,7 +193,7 @@
                 this.$emit('toSee',data)
             },
             filterName(s){
-                let equipList=s.variables.applyOrder.applyNeedEquips;
+                let equipList=s.variables.applyOrder[this.urlObject.equipOrderName];
                 let name='';
                 equipList.forEach(item=>{
                     let small=item.model+item.name;
@@ -245,8 +247,8 @@
                     return '调拨'
                 }else if(type=='BORROW'){
                     return '借调'
-                }else {
-                    return '不知道'
+                }else if(type=='SCRAP'){
+                    return '报废'
                 }
             },
             getList(status,search){
@@ -281,6 +283,7 @@
                 }).then(res=>{
                     if(res){
                         let list=[];
+                        console.log('status',status);
                         // this.paginator.totalPages=res.totalPages;
                         if(status=='doing'){
                             // res.forEach(item=>{
@@ -296,6 +299,7 @@
                             this.paginator.totalPages=res.totalPages;
                         }
                         this.list=list;
+                        console.log('this.list',this.list)
                     }
                 })
             },

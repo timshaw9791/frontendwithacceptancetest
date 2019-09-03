@@ -1,14 +1,14 @@
 <template>
     <div>
-        <serviceDialog title="借调申请" ref="checkTransferDialog" width="1040px" :button="false">
+        <serviceDialog :title="`${taskType}申请`" ref="checkTransferDialog" width="1040px" :button="false" @cancel="resultData">
             <div class="addApply">
-                <div class="addApply-label">
+                <div class="addApply-label" >
                     <div class="label">
                         <span v-text="'所在库房：'"></span>
                         <el-input class="input" :disabled="true" size="small" v-model="house.name"></el-input>
                         <!--<div class="default-span"><span v-text="house.name"></span></div>-->
                     </div>
-                    <div class="label">
+                    <div class="label" v-if="taskType!='报废'">
                         <span v-text="'指定机构：'"></span>
                         <el-cascader
                                 :options="unitList"
@@ -26,52 +26,90 @@
                                            :inputList="leader.leaderList"
                                            @select="getLeaderSelect"></field-input-query>
                     </div>
+                    <div class="label" v-if="taskType=='报废'">
+                        <span v-text="'硬件选择：'"></span>
+                        <el-select v-model="hardware.hardwareSelect" placeholder="请选择" size="small">
+                            <el-option
+                                    v-for="item in hardware.hardwareList"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </div>
+                </div>
+                <div class="addApply-label" v-if="taskType=='报废'" :style="taskType=='报废'?'justify-content: left!important;margin-top: 17px;margin-bottom: 12px;':''">
+                    <span v-text="'申请原因：'"></span>
+                    <div style="width: 92.9%">
+                        <el-input
+                                type="textarea"
+                                :autosize="{ minRows: 2, maxRows:2}"
+                                placeholder="请输入内容"
+                                v-model="reason"
+                                maxlength="150"
+                                show-word-limit>
+                        </el-input>
+                    </div>
                 </div>
                 <div class="addApply-table">
                     <form-container ref="form" :model="form" style="width: 100%">
-                        <el-table :data="form.orderItems" height="490">
+                        <el-table :data="form.orderItems" :height="taskType=='报废'?'378':'490'">
                             <el-table-column label="序号" align="center">
                                 <template scope="scope">
                                     {{scope.$index+1}}
                                 </template>
                             </el-table-column>
-                            <el-table-column label="装备型号" align="center">
+                            <el-table-column label="装备型号" align="center" v-if="taskType!='报废'">
                                 <template scope="scope">
                                     <field-input-query size="small" v-model="scope.row.model"
                                                        :inputList="restaurants"
                                                        @select="getEquipName(scope,$event)"></field-input-query>
                                 </template>
                             </el-table-column>
-
+                            <el-table-column label="装备型号" align="center" v-if="taskType=='报废'">
+                                <template scope="scope">
+                                    {{scope.row.model}}
+                                </template>
+                            </el-table-column>
                             <el-table-column label="装备名称" align="center">
                                 <template scope="scope">
                                     {{scope.row.name}}
                                 </template>
                             </el-table-column>
-                            <el-table-column label="装备数量" align="center">
+                            <el-table-column label="装备序号" align="center" v-if="taskType=='报废'">
+                                <template scope="scope">
+                                    {{scope.row.serial}}
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="RFID" align="center" v-if="taskType=='报废'">
+                                <template scope="scope">
+                                    {{scope.row.rfid}}
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="装备数量" align="center" v-if="taskType!='报废'">
                                 <template scope="scope">
                                     <el-input v-model="scope.row.count" size="small"
                                               @input="changeCount(scope,$event)"></el-input>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="操作" width="120">
+                            <el-table-column label="操作" width="120" align="center">
                                 <template scope="scope">
-                                    <el-button type="danger" @click="delqaq(scope)">删除</el-button>
+                                    <el-button type="danger"  @click="delqaq(scope)">删除</el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
                     </form-container>
-                    <div class="addApply-label" style="margin-top: 12px;position: relative">
+                    <div class="addApply-label" :style="taskType=='报废'?'margin-top: 122px;position: relative':'margin-top: 12px;position: relative'">
                         <div class="label" style="position: absolute;right: 0">
                             <span v-text="'申请人员：'"></span>
                             <el-input class="input" :disabled="true" size="small" v-model="userName"></el-input>
                             <!--<div class="default-span"><span v-text="getUserName()"></span></div>-->
                         </div>
                     </div>
-                    <div class="addApply-bottom">
-                        <el-button class="cancel" @click="cancel">取消</el-button>
-                        <el-button style="margin-left: 34px" class="submit" @click="submit">提交</el-button>
-                    </div>
+                </div>
+                <div class="addApply-bottom">
+                    <el-button class="cancel" @click="cancel">取消</el-button>
+                    <el-button style="margin-left: 34px" class="submit" @click="submit">提交</el-button>
                 </div>
             </div>
         </serviceDialog>
@@ -92,12 +130,19 @@
             }, delay)
         }
     }
-
     import a_dialog from 'components/surroundings/surroundingDialog'
     import serviceDialog from 'components/base/gailiangban'
     import request from 'common/js/request'
-    import {baseBURL} from "../../../api/config";
+    import {baseBURL,baseURL} from "../../../api/config";
 
+    // import {handheld} from 'common/js/pda'
+    //
+    // const cmdPath = 'C:\\Users\\Administrator';
+    // const exec = window.require('child_process').exec;
+    // const spawn = window.require('child_process').spawn;
+    // const fs = window.require('fs');
+    // const path = window.require('path');
+    // const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
     export default {
         name: "addApply",
         components: {
@@ -121,16 +166,28 @@
             taskId:{
                 type:String,
                 default: ''
+            },
+            taskType:{
+                type:String,
+                default:'借调'
             }
         },
         data() {
             return {
+                pid:'',
                 form: {},
                 inHouseName: '',
                 lastTime: '',
                 unitName: '',
                 userName: '',
                 nowTime: 0,
+                hardware:{
+                    hardwareList: [
+                        {value: '手持机', label: '手持机'},
+                        {value: 'RFID读写器', label: 'RFID读写器'},
+                    ],
+                    hardwareSelect:''
+                },
                 nowRow: {},
                 restaurants:[],
                 selectProp:{value:'id',label:'name',children:'organUnitSet'},
@@ -140,6 +197,8 @@
                 selectUnit:[],
                 nowCount: '',
                 processLevelId: '',
+                reason:'',
+                index:0,
                 leader: {
                     leaderList: [],
                     leaderName: '',
@@ -149,7 +208,14 @@
         },
         created() {
             this.unitName = this.unit.name;
-            this.getUnitList();
+            console.log('created',this.taskType);
+            if(this.taskType=='报废'){
+                this.getLeader(JSON.parse(localStorage.getItem('user')).unitId);
+                // this.handleUnitChange([JSON.parse(localStorage.getItem('user')).unitId])
+            }else if(this.taskType=='借调'){
+                this.getUnitList();
+            }
+
         },
         watch: {
             'inHouseName': {
@@ -161,9 +227,120 @@
                 handler(newVal) {
                     this.throttle(this.addRow, 1000)
                 }
+            },
+            'hardware.hardwareSelect': {
+                deep:true,
+                handler(newVal, oldVal) {
+                    if (oldVal == 'RFID读写器' && newVal == '手持机') {
+                        this.end(this.pid)
+                    }else if(newVal==''){
+                        this.end(this.pid)
+                    }
+                    if (newVal == '手持机') {
+                        console.log('手持机');
+                        this.restaurants=[];
+                        this.handheldMachine();
+                    } else if (newVal == 'RFID读写器') {
+                        this.restaurants=[];
+                        this.getListUsb();
+                    }
+                }
             }
         },
         methods: {
+            end(pid) {
+                // alert('关掉了');
+                // this.closeUsb=true
+                if (pid) {
+                    spawn("taskkill", ["/PID", pid, "/T", "/F"]);
+                    this.index = 0;
+                }
+            },
+            handheldMachine() {
+                // handheld().then((data) => {
+                //     let json = JSON.parse(data);
+                //     this.getOutDataCopy(json.rfid);
+                //     this.deleteFile();
+                // });
+                //todo 要换回来
+                // let data = inventoryData;
+                this.getOutDataCopy([19080012])
+            },
+            getListUsb() {//todo
+                const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
+                this.pid = process.pid;
+                process.stderr.on('data', (err) => {
+                    this.$message.error('设备故障请重新插拔!');
+                    console.log(err);
+                });
+
+                process.stdout.on('data', (data) => {
+                    console.log(data);
+                    if (this.index > 0) {
+                        let arr = [];
+                        arr.push(data);
+                        this.getOutDataCopy(arr);
+                    } else {
+                        let newData = JSON.parse(data);
+                        newData.status === 'succeed' ? this.index = 1 : this.index = 0;
+                    }
+                });
+
+                process.on('exit', (code) => {
+                    console.log(`子进程退出，退出码 ${code}`);
+                });
+                // let intercal=setInterval(()=>{
+                //     if(this.closeUsb){
+                //         clearInterval(intercal);
+                //         return;
+                //     }
+                //     this.getOutDataCopy(['q2', '3', '4', '55','6','7','8','9','11','天下第一','sdfa','10','222','23252s'])
+                // },1000)
+
+            },
+            deleteFile() {
+                fs.unlink(newFile_path, function (error) {
+                    if (error) {
+                        return false;
+                    }
+                })
+
+            },
+            getOutDataCopy(data) {
+                let url = baseURL+'/equips/by-rfidlist';
+                request({
+                    method: 'PUT',
+                    url: url,
+                    data: data
+                }).then(res => {
+                    if (res) {
+                       res.forEach(item=>{
+                           this.form.orderItems.push({
+                               name: item.name,
+                               model: item.model,
+                               rfid: item.rfid,
+                               id: item.id,
+                               serial: item.serial
+                           })
+                       })
+                    }
+                })
+            },
+            resultData(){
+              this.hardware={
+                    hardwareList: [
+                        {value: '手持机', label: '手持机'},
+                        {value: 'RFID读写器', label: 'RFID读写器'},
+                    ],
+                        hardwareSelect:''
+                };
+                this.restaurants=[];
+                this.selectUnit=[];
+                this.leader.leaderName='';
+                this.leader.leaderItem={};
+                this.reason='';
+
+            },
             getUnitList(){
                 request({
                     method:'get',
@@ -227,6 +404,7 @@
                 this.leader.leaderItem = data.key;
             },
             getLeader(id) {
+                console.log(id);
                 // this.$ajax({
                 //     method:'get',
                 //     url:baseBURL+'/process-level/by-organ-unit-and-transfer-type',
@@ -235,14 +413,22 @@
                 //         transferType:'DOWN_TO_UP'
                 //     }
                 // }).then(res=>{
-                //     console.log(res);
-                // })
+                //      })
+                let type='';
+                switch (this.taskType) {
+                    case '报废':
+                        type='SCRAP';
+                        break;
+                    case '借调':
+                       type='BORROW';
+                        break;
+                }
                 request({
                     method: 'get',
                     url: baseBURL + '/process-level/by-organ-unit-and-transfer-type',
                     params: {
                         organUnitId: id,
-                        transferType: 'BORROW'
+                        transferType: type
                     }
                 }).then(res => {
                     this.leader.leaderList = [];
@@ -261,43 +447,71 @@
             submit() {
                 let url = '';
                 let orderItems=[];
-                this.form.orderItems.forEach(item=>{
-                   if(item.count!=undefined){
-                       if(item.count!=''){
-                           orderItems.push(item)
-                       }
-                   }
-                });
-                let borrowApplyOrder = {
-                    "applicant": {
-                        "name": JSON.parse(localStorage.getItem('user')).name,
-                        "organUnit": {
-                            "id": JSON.parse(localStorage.getItem('user')).unitId,
-                            "name": this.myUnit.name
-                        },
-                        "userId": JSON.parse(localStorage.getItem('user')).id
-                    },
-                    "inHouse": {
-                        "id": this.house.id,
-                        "name": this.house.name,
-                        "organUnit": {
-                            "id": JSON.parse(localStorage.getItem('user')).unitId,
-                            "name": this.myUnit.name
+                let applyOrder = {};
+                let urlApi='';
+                if(this.taskType=='借调'){
+                    this.form.orderItems.forEach(item=>{
+                        if(item.count!=undefined){
+                            if(item.count!=''){
+                                orderItems.push(item)
+                            }
                         }
-                    },
-                    "outOrganUnit": {
-                        "id": this.selectUnitNow.id,
-                        "name": this.selectUnitNow.name
-                    },
-                    "applyNeedEquips": orderItems,
-                };
-                console.log('this.leader',this.leader);
-                if (this.addType == 'add') {
-                    url = baseBURL + '/borrow/start' + '?nextApproveId=' + this.leader.leaderItem.userId + '&processLevelId=' + this.processLevelId
-                }else {
-                    url = baseBURL + '/borrow/apply' + '?nextApproveId=' + this.leader.leaderItem.userId + '&taskId=' + this.taskId
+                    });
+                    urlApi='borrow';
+                    applyOrder={
+                        "applicant": {
+                            "name": JSON.parse(localStorage.getItem('user')).name,
+                            "organUnit": {
+                                "id": JSON.parse(localStorage.getItem('user')).unitId,
+                                "name": this.myUnit.name
+                            },
+                            "userId": JSON.parse(localStorage.getItem('user')).id
+                        },
+                        "reason":this.reason,
+                        "inHouse": {
+                            "id": this.house.id,
+                            "name": this.house.name,
+                            "organUnit": {
+                                "id": JSON.parse(localStorage.getItem('user')).unitId,
+                                "name": this.myUnit.name
+                            }
+                        },
+                        "outOrganUnit": {
+                            "id": this.selectUnitNow.id,
+                            "name": this.selectUnitNow.name
+                        },
+                        "applyNeedEquips": orderItems,
+                    };
+                }else if(this.taskType=='报废') {
+                    orderItems=this.form.orderItems;
+                    urlApi='scrap';
+                    applyOrder={
+                        "applicant": {
+                            "name": JSON.parse(localStorage.getItem('user')).name,
+                            "organUnit": {
+                                "id": JSON.parse(localStorage.getItem('user')).unitId,
+                                "name": this.myUnit.name
+                            },
+                            "userId": JSON.parse(localStorage.getItem('user')).id
+                        },
+                        "reason":this.reason,
+                        "house": {
+                            "id": this.house.id,
+                            "name": this.house.name,
+                            "organUnit": {
+                                "id": JSON.parse(localStorage.getItem('user')).unitId,
+                                "name": this.myUnit.name
+                            }
+                        },
+                        "scrapEquips": orderItems,
+                    }
                 }
-                this.allocationApplication(url, borrowApplyOrder);
+                if (this.addType == 'add') {
+                    url = baseBURL + `/${urlApi}/start` + '?nextApproveId=' + this.leader.leaderItem.userId + '&processLevelId=' + this.processLevelId
+                }else {
+                    url = baseBURL + `/${urlApi}/apply` + '?nextApproveId=' + this.leader.leaderItem.userId + '&taskId=' + this.taskId
+                }
+                this.allocationApplication(url, applyOrder);
                 // let transferOrder={};
                 // transferOrder.applicant=JSON.parse(localStorage.getItem('user')).name;
                 // transferOrder.inHouseName=this.inHouseName;
@@ -336,7 +550,11 @@
             },
             showAdd() {
                 this.form = {};
-                this.form['orderItems'] = [{model: ''}];
+                if(this.taskType!='报废'){
+                    this.form['orderItems'] = [{model: ''}];
+                }else {
+                    this.form['orderItems'] = [];
+                }
                 this.$refs.checkTransferDialog.show();
                 this.userName = JSON.parse(localStorage.getItem('user')).name;
             },
@@ -383,13 +601,13 @@
         flex-direction: column;
         align-items: center;
     }
-
     .addApply-bottom {
         width: 100%;
+        position: absolute;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-top: 53px;
+        bottom: 54px;
     }
 
     .addApply-bottom .cancel {
@@ -399,6 +617,7 @@
         box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
         border-radius: 6px;
         line-height: 0px;
+
     }
 
     .addApply-bottom .submit {

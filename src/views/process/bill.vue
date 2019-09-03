@@ -43,7 +43,7 @@
             <!--<img src="@/common/images/未审批.png" class="icon"/>-->
             <!--<img src="@/common/images/驳回.png" class="icon"/>require('@/common/images/通过.png')-->
             <img :src="typeSingleFlag?getStatesTransferImg(billData.state):getStatesImg(billData.applyOrder.state)" class="icon"/>
-            <div class="content">
+            <div class="content" v-if="billName!='报废'">
                 <div class="tr">
                     <div class="title">{{typeSingleFlag?`${billName}单号: `:'申请编号: '}}<span v-text="billData.applyOrder.number"></span></div>
                     <div class="title" v-if="typeSingleFlag">调拨时间: <span v-text="filterTime(billData.outTime)"></span></div>
@@ -100,6 +100,81 @@
                         <!--<div><span v-text="getOperate(item.level)+'时间:'"></span><span-->
                                 <!--v-text="filterTime(item.time)"></span></div>-->
                     <!--</div>-->
+                <!--</div>-->
+                <div class="bottom" v-if="bottomCheckFlag">
+                    <div style="margin-bottom: 12px;"><span
+                            v-text="getBillTitle(billData.applyOrder.type)"></span></div>
+                    <div class="row" v-for="item in checkApproval">
+                        <div style="color:rgb(47,47,118)"><span v-text="getApplyType(item.approvalType)"></span></div>
+                        <div><span v-text="'['+item.leader.position+']'" style="margin-right: 5px"></span><span v-text="item.leader.name"></span></div>
+                        <div><span :style="item.approval?'color:#009B4C':'color:#EF4545'"
+                                   v-text="item.approval?'通过':'驳回'"></span><span v-if="!item.approval"
+                                                                                 style="color:#2F2F76;cursor: pointer;margin-left: 12px"
+                                                                                 v-text="'[查看原因]'"
+                                                                                 @click="checkReason(item)"></span>
+                        </div>
+                        <div><span v-text="getOperate(item.level)+'时间:'"></span><span
+                                v-text="filterTime(item.time)"></span></div>
+                    </div>
+                </div>
+                <!--<div class="trBottom">审核人：审核</div>-->
+                <!--<div class="trBottom">审核时间:2019年5月7日 14:53:58</div>-->
+
+                <!--<div class="_box-bottom">-->
+                <!--<el-button type="danger" size="medium">驳 回</el-button>-->
+                <!--<el-button type="primary" size="medium">批 准</el-button>-->
+                <!--</div>-->
+            </div>
+            <div class="content" v-if="billName=='报废'">
+                <div class="tr">
+                    <div class="title">{{typeSingleFlag?`${billName}单号: `:'申请编号: '}}<span v-text="billData.applyOrder.number"></span></div>
+                    <div class="title">申请类型: <span v-text="applicationType(billData.applyOrder.type)"></span></div>
+                </div>
+                <div class="tr">
+                    <div class="title">申请时间: <span v-text="filterTime(billData.applyOrder.applyTime)"></span></div>
+                    <div class="title">申请人: <span v-text="billData.applyOrder.applicant.name"></span></div>
+                </div>
+                <div class="tr">
+                    <div class="title">申请原因: <span v-text="billData.applyOrder.reason"></span></div>
+                </div>
+                <div class="equip-table-list">
+                    <div>装备统计:</div>
+                    <el-table :data="billData.applyOrder.scrapEquips" class="list" fit height="420">
+                        <el-table-column label="序号" align="center">
+                            <template slot-scope="scope">
+                                {{scope.$index+1}}
+                            </template>
+                        </el-table-column>
+                        <bos-table-column lable="装备名称" field="name"></bos-table-column>
+                        <bos-table-column lable="装备型号" field="model"></bos-table-column>
+                        <bos-table-column lable="装备序号" field="serial"></bos-table-column>
+                        <el-table-column label="装备数量" align="center">
+                            <template slot-scope="scope">
+                                {{1}}
+                            </template>
+                        </el-table-column>
+                        <el-table-column align="center" lable="总价" v-if="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?true:false:false">
+                            <template slot-scope="scope">
+                                {{scope.row.price/100}}
+                            </template>
+                        </el-table-column>
+                        <!--<bos-table-column lable="总价" field="price" v-if="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?true:false:false"></bos-table-column>-->
+                    </el-table>
+                </div>
+                <!--<div class="bottom" v-if="bottomFlag">-->
+                <!--<div style="margin-bottom: 12px;"><span-->
+                <!--v-text="getBillTitle(billData.applyOrder.type)"></span></div>-->
+                <!--<div class="row" v-for="item in billData.approvalResults">-->
+                <!---->
+                <!--<div><span :style="item.approval?'color:#009B4C':'color:#EF4545'"-->
+                <!--v-text="item.approval?'通过':'驳回'"></span><span v-if="!item.approval"-->
+                <!--style="color:#2F2F76;cursor: pointer;margin-left: 12px"-->
+                <!--v-text="'[查看原因]'"-->
+                <!--@click="checkReason(item)"></span>-->
+                <!--</div>-->
+                <!--<div><span v-text="getOperate(item.level)+'时间:'"></span><span-->
+                <!--v-text="filterTime(item.time)"></span></div>-->
+                <!--</div>-->
                 <!--</div>-->
                 <div class="bottom" v-if="bottomCheckFlag">
                     <div style="margin-bottom: 12px;"><span
@@ -629,8 +704,8 @@
                         return '调拨';
                     case 'BORROW':
                         return '借调'
-                    // case 'REJECTED':
-                    //     return '审核中';
+                    case 'SCRAP':
+                        return '报废';
                     // case 'PASS':
                     //     return '已通过';
                 }

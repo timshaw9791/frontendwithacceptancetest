@@ -102,10 +102,10 @@
     import {transformMixin} from 'common/js/transformMixin'
     import {retirementApplication} from "api/operation";
     import {getRfidinfo} from "api/rfid";
-
-    const cmdPath = 'C:\\Users\\Administrator';
-    const exec = window.require('child_process').exec;
-    const spawn = window.require('child_process').spawn;
+    //
+    // const cmdPath = 'C:\\Users\\Administrator';
+    // const exec = window.require('child_process').exec;
+    // const spawn = window.require('child_process').spawn;
 
 
     export default {
