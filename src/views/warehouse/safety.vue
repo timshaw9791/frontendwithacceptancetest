@@ -120,17 +120,17 @@
                         value: newVal,
                         "next": {
                             "combinator": "OR",
-                            "key": "name",
+                            "key": "equipArg.name",
                             "operator": "LIKE",
                             value: newVal,
                             "next": {
                                 "combinator": "OR",
-                                "key": "model",
+                                "key": "equipArg.model",
                                 "operator": "LIKE",
                                 value: newVal,
                                 "next": {
                                     "combinator": "OR",
-                                    "key": "supplier.name",
+                                    "key": "equipArg.supplier.name",
                                     "operator": "LIKE",
                                     value: newVal,
                                 }
