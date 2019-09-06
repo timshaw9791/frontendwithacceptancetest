@@ -5,9 +5,14 @@
 
 export const ERR_OK = 0;
 
-export let baseURL = 'http://62.146.2.40:8010/warehouse';
+export let baseURL = 'http://47.199.32.111:8010/warehouse';
 
-export let baseBURL = 'http://62.146.128.49/warehouse_server';
+export let baseBURL = 'http://47.199.32.118/warehouse_server';
+
+// export let baseURL = 'http://10.128.1.198:8080/warehouse';
+// export let baseBURL = 'http://115.159.154.194/warehouse_server';
+
+
 
 
 
