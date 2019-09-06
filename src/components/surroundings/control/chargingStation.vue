@@ -88,7 +88,7 @@
                     let socketCopy=[];
                     socket.forEach((item,index)=>{
                         let numberItem = index+1;
-                        if(numberItem<=8){
+                        if(numberItem<=4){
                             socketCopy.push({
                                 socketName:numberItem+'号智能插座',
                                 name:'',
