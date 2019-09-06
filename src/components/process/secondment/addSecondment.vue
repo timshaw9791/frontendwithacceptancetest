@@ -208,12 +208,13 @@
         },
         created() {
             this.unitName = this.unit.name;
-            console.log('created',this.taskType);
             if(this.taskType=='报废'){
                 this.getLeader(JSON.parse(localStorage.getItem('user')).unitId);
                 // this.handleUnitChange([JSON.parse(localStorage.getItem('user')).unitId])
             }else if(this.taskType=='借调'){
                 this.getUnitList();
+            }else if(this.taskType=='直调'){
+                this.getLowerLevelUnitList()
             }
 
         },
@@ -248,6 +249,24 @@
             }
         },
         methods: {
+            getLowerLevelUnitList(){
+                request({
+                    method:'get',
+                    url:baseBURL+'/architecture/organUnitInfo',
+                }).then(res=>{
+                    this.findId(res);
+                    // this.$set(this,'unitList',[res]);
+                })
+            },
+            findId(item) {
+                if(item.id==JSON.parse(localStorage.getItem('user')).unitId){
+                    this.$set(this,'unitList',[item]);
+                }else if(item.organUnitSet!=null&&item.organUnitSet!=[]&&item.level!='POLICE_STATION'){
+                    item.organUnitSet.forEach(lowerItem=>{
+                        this.findId(lowerItem)
+                    })
+                }
+            },
             end(pid) {
                 // alert('关掉了');
                 // this.closeUsb=true
@@ -351,11 +370,16 @@
             },
             handleUnitChange(data){
                 let unitId=data[data.length-1];
-                let houseId='';
+                let gethouseUnitId='';
+                if(this.taskType=='直调'){
+                    gethouseUnitId=JSON.parse(localStorage.getItem('user')).unitId
+                }else {
+                    gethouseUnitId=unitId
+                }
                 request({
                     method:'get',
                     url:baseBURL+'/architecture/houseByOrganUnitId',
-                    params:{organUnitId:unitId}
+                    params:{organUnitId:gethouseUnitId}
                 }).then(res=>{
                    let houseId='';
                    res.forEach(item=>{
@@ -364,8 +388,8 @@
                        }else {
                            houseId=houseId+','+item.id
                        }
-                       this.getRestaurants(houseId);
-                   })
+                   });
+                    this.getRestaurants(houseId);
                 });
 
                 request({
@@ -391,13 +415,11 @@
                     this.restaurants=[];
                     let list=res;
                     list.forEach(item=>{
-                        console.log(item);
                         this.restaurants.push({
                             value:item.model,
                             key:item
                         })
                     });
-                    console.log(this.restaurants)
                 })
             },
             getLeaderSelect(data) {
@@ -422,6 +444,9 @@
                     case '借调':
                        type='BORROW';
                         break;
+                    case '直调':
+                        type='DIRECT_TRANSFER';
+                        break;
                 }
                 request({
                     method: 'get',
@@ -433,12 +458,18 @@
                 }).then(res => {
                     this.leader.leaderList = [];
                     this.processLevelId = res.id;
-                    if (Object.keys(res.levelLeaderMap).length == 0) {
+                    if(res.levelLeaderMap!=null){
+                        if (Object.keys(res.levelLeaderMap).length == 0) {
+                            res.applyLeaders.forEach(item => {
+                                this.leader.leaderList.push({value: item.name, key: item})
+                            })
+                        } else {
+                            res.levelLeaderMap['1'].forEach(item => {
+                                this.leader.leaderList.push({value: item.name, key: item})
+                            })
+                        }
+                    }else {
                         res.applyLeaders.forEach(item => {
-                            this.leader.leaderList.push({value: item.name, key: item})
-                        })
-                    } else {
-                        res.levelLeaderMap['1'].forEach(item => {
                             this.leader.leaderList.push({value: item.name, key: item})
                         })
                     }
@@ -505,6 +536,32 @@
                         },
                         "scrapEquips": orderItems,
                     }
+                }else if (this.taskType=='直调'){
+                    urlApi='direct-transfer';
+                    applyOrder={
+                        "applicant": {
+                            "name": JSON.parse(localStorage.getItem('user')).name,
+                            "organUnit": {
+                                "id": JSON.parse(localStorage.getItem('user')).unitId,
+                                "name": this.myUnit.name
+                            },
+                            "userId": JSON.parse(localStorage.getItem('user')).id
+                        },
+                        "reason":this.reason,
+                        "inHouse": {
+                            "id": this.house.id,
+                            "name": this.house.name,
+                            "organUnit": {
+                                "id": JSON.parse(localStorage.getItem('user')).unitId,
+                                "name": this.myUnit.name
+                            }
+                        },
+                        "outOrganUnit": {
+                            "id": this.selectUnitNow.id,
+                            "name": this.selectUnitNow.name
+                        },
+                        "applyNeedEquips": orderItems,
+                    };
                 }
                 if (this.addType == 'add') {
                     url = baseBURL + `/${urlApi}/start` + '?nextApproveId=' + this.leader.leaderItem.userId + '&processLevelId=' + this.processLevelId

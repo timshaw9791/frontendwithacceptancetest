@@ -249,7 +249,7 @@
         <!--<serviceDialog :title="getOperate(billData.currentLevel)+'指定'" ref="dialogShenghe" width="634px"-->
                        <!--@confirm="confirmAudit">-->
             <!--<div class="bill-item-box">-->
-                <!--<div class="bill-item">-->
+t                <!--<div class="bill-item">-->
                     <!--<div class="bill-item-span"><span v-text="'选择领导：'"></span></div>-->
                     <!--<el-select style="width: 248px" v-model="selectObj.selectLeder.select" placeholder="请选择">-->
                         <!--<el-option-->
@@ -326,8 +326,8 @@
         <!--<serviceDialog title="批准" ref="dialog2" width="40%">-->
         <!--<div style="text-align: center;font-size: 20px">您确定要批准吗</div>-->
         <!--</serviceDialog>-->
-        <add-direct-adjustment-bill @sucessAdd="sucessAdd" ref="addDirectAdjustmentBill" :restaurants="reSet.restaurants" :myUnit="reSet.myUnit" :unit="reSet.unit" :house="reSet.house" :taskId="billData.taskId" :addType="'reSet'"></add-direct-adjustment-bill>
-        <add-apply-bill @sucessAdd="sucessAdd" ref="addSecondmentBill" :myUnit="reSet.myUnit" :unit="reSet.unit" :house="reSet.house"></add-apply-bill>
+        <add-direct-adjustment-bill  @sucessAdd="sucessAdd" ref="addDirectAdjustmentBill" :restaurants="reSet.restaurants" :myUnit="reSet.myUnit" :unit="reSet.unit" :house="reSet.house" :taskId="billData.taskId" :addType="'reSet'"></add-direct-adjustment-bill>
+        <add-apply-bill @sucessAdd="sucessAdd" :taskType="billName" ref="addSecondmentBill" :myUnit="reSet.myUnit" :unit="reSet.unit" :house="reSet.house"></add-apply-bill>
     </div>
 </template>
 

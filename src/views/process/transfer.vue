@@ -100,7 +100,7 @@
             }
         },
         created(){
-            this.getEquipInfo();
+            // this.getEquipInfo();
             this.getUnitAndHouse();
         },
         computed:{
@@ -142,6 +142,7 @@
                                     name:res.name,
                                     id:res.id
                                 };
+                                this.getRestaurants(res.id)
                             })
                         }
                 }, true);
@@ -152,6 +153,25 @@
                 }).then(res=>{
                     this.house.id= res.id;
                     this.house.name=res.name;
+                })
+            },
+            getRestaurants(houseId){
+                request({
+                    method: 'get',
+                    url: baseBURL + '/equip-arg/by-houseIds/list',
+                    params: {
+                        houseIds:houseId
+                    }
+                }).then(res => {
+                    this.restaurants=[];
+                    let list=res;
+                    list.forEach(item=>{
+                        this.restaurants.push({
+                            value:item.model,
+                            key:item
+                        })
+                    });
+                    console.log('this.restaurants',this.restaurants)
                 })
             },
             haveBack(data){
