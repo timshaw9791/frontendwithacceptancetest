@@ -30,7 +30,7 @@
                     flag: true,
                     labelList: [
                         {lable: 'RFID', field: 'equipInfo.equipRfid', sort: false},
-                        {lable: '装备名称', field: 'equipArgInfo.equipName', sort: false},
+                        {lable: '装备名称', field: 'equipInfo.equipName', sort: false},
                         {lable: '装备序号', field: 'equipInfo.equipSerial', filter: this.filterSerial, sort: false},
                         {lable: '操作人员', field: 'operator', sort: false},
                         {lable: '操作时间', field: 'startTime', filter: this.filterTime, sort: 'custom'},
@@ -74,7 +74,7 @@
                         }
                     };
                     qfilter = {
-                        key: 'equipArgInfo.equipName',
+                        key: 'equipInfo.equipName',
                         value: '%' + data + '%',
                         operator: 'LIKE',
                         combinator: 'AND',
