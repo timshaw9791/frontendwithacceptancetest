@@ -157,6 +157,7 @@
     import {getRfid, saveRfid} from "api/rfid";
     import request from 'common/js/request'
     import {baseURL} from "../../api/config";
+
     const cmdPath = 'C:\\Users\\Administrator';
     const exec = window.require('child_process').exec;
     const spawn = window.require('child_process').spawn;

@@ -172,7 +172,7 @@
                     </div>
                     <div>
                         <el-table :data="list" fit height="360" class="list">
-                            <el-table-column label="RFID" align="center">
+                            <el-table-column label="序号" align="center">
                                 <template scope="scope">
                                     {{scope.$index+1}}
                                 </template>
@@ -235,6 +235,8 @@
     import {imgUpUrl, pdfUpUrl, videoUpUrl, imgBaseUrl, pdfBaseUrl, videoBaseUrl} from "api/config";
     import {delFile} from "api/basic";
     import serviceDialog from 'components/base/serviceDialog/index'
+    import {transformMixin} from "common/js/transformMixin";
+
 
     const cmdPath = 'C:\\Users\\Administrator';
     const exec = window.require('child_process').exec;
@@ -268,7 +270,7 @@
                 copyRfidList: {},
             }
         },
-        mixins: [formRulesMixin],
+        mixins: [formRulesMixin, transformMixin],
         components: {
             imgUp,
             serviceDialog
@@ -309,6 +311,13 @@
                 if (this.title.includes('新增')) {
                     this.form.videoAddresses ? this.form.videoAddresses = this.form.videoAddresses.join(',') : '';
                     this.form.documentAddresses ? this.form.documentAddresses = this.form.documentAddresses.join(',') : '';
+
+
+                    // let newData = JSON.parse(JSON.stringify(this.form));
+                    // newData.upkeepCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.upkeepCycle)));
+                    // newData.chargeCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.chargeCycle)));
+
+
                     this.$refs.form.gqlValidate(api.category_addEquipArg, {
                         supplierId: this.form.vendorId ? this.form.vendorId : '',
                         categoryId: this.form.nameId ? this.form.nameId[1] : '',
@@ -322,6 +331,12 @@
                     this.form.videoAddresses ? this.form.videoAddresses = this.form.videoAddresses.join(',') : '';
                     this.form.documentAddresses ? this.form.documentAddresses = this.form.documentAddresses.join(',') : '';
                     this.form.supplier.id ? this.form.supplier.id = this.form.vendorId : '';
+
+
+                    // let newData = JSON.parse(JSON.stringify(this.form));
+                    // newData.upkeepCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.upkeepCycle)));
+                    // newData.chargeCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.chargeCycle)));
+
 
                     this.$refs.form.gqlValidate(api.category_saveEquipArg, {
                         categoryId: this.form.nameId ? this.form.nameId[1] : '',
@@ -350,7 +365,7 @@
                                 return item['rfid'];
                             }),
                             serialList: this.list.map((item) => {
-                                return item['serial']==''?null:item['serial'];
+                                return item['serial'] == '' ? null : item['serial'];
                             }),
                             location: this.zbForm.location,
                             equipArgId: this.form.nameId[2],
@@ -501,8 +516,15 @@
                 }, (res) => {
                     let a = JSON.parse(JSON.stringify(res.data.EquipArg));
                     this.form['name'] = a.name;
+
+                    // this.form['upkeepCycle'] = this.milliToDay(a.upkeepCycle);
+                    // this.form['chargeCycle'] = this.milliToDay(a.chargeCycle);
+
                     this.form['upkeepCycle'] = a.upkeepCycle;
                     this.form['chargeCycle'] = a.chargeCycle;
+
+
+
                     this.form.vendorId = a.supplier.id;
                     this.$set(this.form, 'model', a.model);
                     this.$set(this.form, 'personM', a.supplier.person);
@@ -587,7 +609,13 @@
                         eqData.equipArg.imageAddress ? this.imageUrl = `${imgBaseUrl}${eqData.equipArg.imageAddress}` : '';
                         this.$set(this.form, 'eqBig', eqData.equipArg.category.genre.name);
                         this.$set(this.form, 'eqSmall', eqData.equipArg.category.name);
+
+                        // this.$set(this.form, 'upkeepCycle', this.milliToDay(eqData.equipArg.upkeepCycle));
+                        // this.$set(this.form, 'chargeCycle', this.milliToDay(eqData.equipArg.chargeCycle));
+
+
                         this.$set(this.form, 'price', eqData.price / 100);
+
                         this.zb['shelfLifeQ'] = Math.round(eqData.quality.shelfLife / 24 / 60 / 60 / 1000);
                         this.zb['productDateQ'] = eqData.quality.productDate;
                         this.zb['floorL'] = eqData.location ? eqData.location.floor : '';

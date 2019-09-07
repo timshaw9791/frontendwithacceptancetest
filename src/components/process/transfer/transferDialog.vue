@@ -162,8 +162,8 @@
     // import inventoryData from 'views/warehouse/inventoryData'
     import request from 'common/js/request'
     import {baseURL,baseBURL} from "../../../api/config"
-    import {handheld} from 'common/js/pda'
 
+    import {handheld} from 'common/js/pda'
     const cmdPath = 'C:\\Users\\Administrator';
     const exec = window.require('child_process').exec;
     const spawn = window.require('child_process').spawn;
