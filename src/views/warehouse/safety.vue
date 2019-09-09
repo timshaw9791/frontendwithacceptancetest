@@ -8,7 +8,7 @@
                 <div class="secondaryTitle">
                     <div class="_buttons">
                         <BosInput
-                                placeholder="装备/序号/编号/AB面"
+                                placeholder="装备/序号/类型/类别"
                                 suffix="el-icon-search"
                                 v-model="inquire"
                                 :wrapforlike="true"
@@ -120,17 +120,17 @@
                         value: newVal,
                         "next": {
                             "combinator": "OR",
-                            "key": "name",
+                            "key": "equipArg.name",
                             "operator": "LIKE",
                             value: newVal,
                             "next": {
                                 "combinator": "OR",
-                                "key": "model",
+                                "key": "equipArg.model",
                                 "operator": "LIKE",
                                 value: newVal,
                                 "next": {
                                     "combinator": "OR",
-                                    "key": "supplier.name",
+                                    "key": "equipArg.supplier.name",
                                     "operator": "LIKE",
                                     value: newVal,
                                 }

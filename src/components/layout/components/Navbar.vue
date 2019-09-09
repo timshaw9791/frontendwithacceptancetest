@@ -73,7 +73,7 @@
             },
         },
         mounted() {
-            /*startSocket(JSON.parse(localStorage.getItem('user')).id);*/
+            startSocket(JSON.parse(localStorage.getItem('user')).id);
         }
     }
 </script>

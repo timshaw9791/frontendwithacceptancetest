@@ -232,7 +232,6 @@ query getHouseStockList($paginator: paginator, $qfilter: qfilter) {
     totalElements
     content {
       safeStock
-
       id
       equipArg {
         id
