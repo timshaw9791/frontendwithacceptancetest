@@ -312,16 +312,15 @@
                     this.form.videoAddresses ? this.form.videoAddresses = this.form.videoAddresses.join(',') : '';
                     this.form.documentAddresses ? this.form.documentAddresses = this.form.documentAddresses.join(',') : '';
 
-
-                    // let newData = JSON.parse(JSON.stringify(this.form));
-                    // newData.upkeepCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.upkeepCycle)));
-                    // newData.chargeCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.chargeCycle)));
+                    let newData = JSON.parse(JSON.stringify(this.form));
+                    newData.upkeepCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.upkeepCycle)));
+                    newData.chargeCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.chargeCycle)));
 
 
                     this.$refs.form.gqlValidate(api.category_addEquipArg, {
                         supplierId: this.form.vendorId ? this.form.vendorId : '',
                         categoryId: this.form.nameId ? this.form.nameId[1] : '',
-                        equipArg: this.form
+                        equipArg: newData
                     }, (res) => {
                         this.dialogConfirm();
                         this.callback('添加成功!');
@@ -333,14 +332,14 @@
                     this.form.supplier.id ? this.form.supplier.id = this.form.vendorId : '';
 
 
-                    // let newData = JSON.parse(JSON.stringify(this.form));
-                    // newData.upkeepCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.upkeepCycle)));
-                    // newData.chargeCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.chargeCycle)));
+                    let newData = JSON.parse(JSON.stringify(this.form));
+                    newData.upkeepCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.upkeepCycle)));
+                    newData.chargeCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.chargeCycle)));
 
 
                     this.$refs.form.gqlValidate(api.category_saveEquipArg, {
                         categoryId: this.form.nameId ? this.form.nameId[1] : '',
-                        equipArg: this.form
+                        equipArg: newData
                     }, (res) => {
                         console.log(res);
                         this.dialogConfirm();
@@ -517,12 +516,11 @@
                     let a = JSON.parse(JSON.stringify(res.data.EquipArg));
                     this.form['name'] = a.name;
 
-                    // this.form['upkeepCycle'] = this.milliToDay(a.upkeepCycle);
-                    // this.form['chargeCycle'] = this.milliToDay(a.chargeCycle);
+                    this.form['upkeepCycle'] = this.milliToDay(a.upkeepCycle);
+                    this.form['chargeCycle'] = this.milliToDay(a.chargeCycle);
 
-                    this.form['upkeepCycle'] = a.upkeepCycle;
-                    this.form['chargeCycle'] = a.chargeCycle;
-
+                    // this.form['upkeepCycle'] = a.upkeepCycle;
+                    // this.form['chargeCycle'] = a.chargeCycle;
 
 
                     this.form.vendorId = a.supplier.id;
@@ -610,11 +608,10 @@
                         this.$set(this.form, 'eqBig', eqData.equipArg.category.genre.name);
                         this.$set(this.form, 'eqSmall', eqData.equipArg.category.name);
 
-                        // this.$set(this.form, 'upkeepCycle', this.milliToDay(eqData.equipArg.upkeepCycle));
-                        // this.$set(this.form, 'chargeCycle', this.milliToDay(eqData.equipArg.chargeCycle));
-
-
+                        this.$set(this.form, 'upkeepCycle', this.milliToDay(eqData.equipArg.upkeepCycle));
+                        this.$set(this.form, 'chargeCycle', this.milliToDay(eqData.equipArg.chargeCycle));
                         this.$set(this.form, 'price', eqData.price / 100);
+
 
                         this.zb['shelfLifeQ'] = Math.round(eqData.quality.shelfLife / 24 / 60 / 60 / 1000);
                         this.zb['productDateQ'] = eqData.quality.productDate;
@@ -640,9 +637,11 @@
                         this.form = eqData;
                         this.form.vendorId = eqData.supplier.id;
                         eqData.imageAddress ? this.imageUrl = `${imgBaseUrl}${eqData.imageAddress}` : '';
-
                         this.form.videoAddresses = eqData.videoAddresses ? eqData.videoAddresses.split(",") : [];
                         this.form.documentAddresses = eqData.documentAddresses ? eqData.documentAddresses.split(",") : [];
+
+                        this.$set(this.form, 'upkeepCycle', this.milliToDay(eqData.upkeepCycle));
+                        this.$set(this.form, 'chargeCycle', this.milliToDay(eqData.chargeCycle));
 
                         this.form.nameId = [eqData.category.genre.id, eqData.category.id];
                         this.$set(this.form, 'eqBig', eqData.category.genre.name);

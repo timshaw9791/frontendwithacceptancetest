@@ -8,11 +8,9 @@
             <bos-table-column lable="架体AB面"
                               :filter="(row)=>surface(row.equip.location?row.equip.location.surface:'暂无')"></bos-table-column>
 
-            <!--<bos-table-column lable="充电周期" :filter="(row)=>milliToDay(row.chargeCycle)"></bos-table-column>-->
+            <bos-table-column lable="充电周期" :filter="(row)=>milliToDay(row.chargeCycle)"></bos-table-column>
 
-            <bos-table-column lable="充电周期" field="chargeCycle"></bos-table-column>
-
-
+            <!--<bos-table-column lable="充电周期" field="chargeCycle"></bos-table-column>-->
 
             <bos-table-column lable="上次充电时间" :filter="(row)=>formatTime(row.lastChargeTime)"></bos-table-column>
             <bos-table-column lable="电量倒计时"
@@ -53,7 +51,6 @@
         methods: {
             async getList() {
                 this.list = await this.getAxiosList(getNeedCharge);
-                console.log(this.list);
             }
         },
         mounted() {

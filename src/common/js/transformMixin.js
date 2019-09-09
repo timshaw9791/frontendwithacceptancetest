@@ -33,11 +33,8 @@ export const transformMixin = {
         },
 
         milliToDay(data) {
-            let a = Math.round(data / 24 / 60 / 60 / 1000);
-            console.log(a);
-            return a
+            return Math.round(data / 24 / 60 / 60 / 1000)
         },
-
 
         applicationType(data) {
             switch (data) {

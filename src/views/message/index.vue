@@ -89,11 +89,9 @@
 
         methods: {
             getList() {
-                console.log(this.$store.state.socket.message);
 
                 this.gqlQuery(api.getMessageList,
                     {qfilter: this.qfilter}, (res) => {
-                        console.log(res.data.MessageList.content);
                         this.list = JSON.parse(JSON.stringify(res.data.MessageList.content));
                         if (this.oldScrollTop) {
                             this.$nextTick(() => {
@@ -104,7 +102,6 @@
             },
 
             read(id) {
-                console.log(id);
                 this.oldScrollTop = this.$refs.ulList.scrollTop;
                 this.gqlMutate(api.houseUser_readMessage,
                     {
@@ -115,7 +112,6 @@
                     });
             },
             ulClick(data, index) {
-                console.log(this.$refs.ulList.scrollTop);
                 if (!data.readed) {
                     this.read(data.id);
                 }
@@ -130,7 +126,6 @@
                 }
             },
             selected(data) {
-                console.log(data);
                 if (data === '全部') {
                     this.qfilter = {
                         key: "userId",
