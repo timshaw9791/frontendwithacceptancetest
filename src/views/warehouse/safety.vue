@@ -8,7 +8,7 @@
                 <div class="secondaryTitle">
                     <div class="_buttons">
                         <BosInput
-                                placeholder="装备/序号/类型/类别"
+                                placeholder="名称/型号/类型/类别"
                                 suffix="el-icon-search"
                                 v-model="inquire"
                                 :wrapforlike="true"
