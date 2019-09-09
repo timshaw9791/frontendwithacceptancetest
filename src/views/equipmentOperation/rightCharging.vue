@@ -7,7 +7,10 @@
             <bos-table-column lable="架体编号" field="location.number"></bos-table-column>
             <bos-table-column lable="架体AB面"
                               :filter="(row)=>surface(row.location?row.location.surface:'暂无')"></bos-table-column>
-            <bos-table-column lable="充电周期" field="equipArg.chargeCycle"></bos-table-column>
+
+            <!--<bos-table-column lable="充电周期" field="equipArg.chargeCycle"></bos-table-column>-->
+
+            <bos-table-column lable="充电周期" :filter="(row)=>milliToDay(row.equipArg.chargeCycle)"></bos-table-column>
 
         </el-table>
 

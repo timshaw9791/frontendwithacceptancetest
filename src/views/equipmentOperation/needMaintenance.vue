@@ -1,7 +1,6 @@
 <template>
     <div>
-        <el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
-                  fit highlight-current-row
+        <el-table :data="list" fit highlight-current-row
                   @selection-change="handleSelectionChange">
             <el-table-column
                     type="selection"
@@ -13,8 +12,14 @@
             <bos-table-column lable="架体编号" field="equip.location.number"></bos-table-column>
             <bos-table-column lable="架体AB面"
                               :filter="(row)=>surface(row.equip.location?row.equip.location.surface:'暂无')"></bos-table-column>
-            <bos-table-column lable="保养周期/天" field="upkeepCycle"></bos-table-column>
+
+            <bos-table-column lable="保养周期/天" :filter="(row)=>milliToDay(row.upkeepCycle)"></bos-table-column>
+
+            <!--<bos-table-column lable="保养周期/天" field="upkeepCycle"></bos-table-column>-->
+
+
             <bos-table-column lable="上次保养时间" :filter="(row)=>formatTime(row.lastUpkeepTime)"></bos-table-column>
+
             <bos-table-column lable="保养倒计时"
                               :filter="(row)=>countdown(row.lastUpkeepTime,row.upkeepCycle)"></bos-table-column>
 
@@ -43,28 +48,21 @@
 </template>
 
 <script>
-    import {formRulesMixin} from 'field/common/mixinComponent';
+    import {formRulesMixin} from 'field/common/mixinAxios';
     import serviceDialog from 'components/base/serviceDialog'
     import api from 'gql/operation.gql'
     import {transformMixin} from 'common/js/transformMixin'
+    import {getNeedUpkeep} from "api/needs";
 
     export default {
         data() {
             return {
                 equipList: [],
                 param: {
-                    qfilter: {
-                        "key": "upkeepCycle",
-                        "operator": "GREATTHAN",
-                        "value": "0",
-                        "combinator": "AND",
-                        "next": {
-                            "key": "upkeepState",
-                            "operator": "EQUEAL",
-                            "value": "NEED_UPKEEP"
-                        }
-                    },
+                    property:'lastUpkeepTime',
+                    direction:'ASC'
                 },
+                list: [],
             }
         },
         mixins: [formRulesMixin, transformMixin],
@@ -79,12 +77,23 @@
         components: {
             serviceDialog
         },
-        apollo: {
-            list() {
-                return this.getEntityListWithPagintor(api.getEquipRemindStrategyList);
-            },
+        // apollo: {
+        //     list() {
+        //         return this.getEntityListWithPagintor(api.getEquipRemindStrategyList);
+        //     },
+        // },
+
+        mounted() {
+            this.getList();
         },
+
+
         methods: {
+            async getList() {
+                this.list = await this.getAxiosList(getNeedUpkeep);
+                console.log(this.list);
+            },
+
             submit() {
                 if (0 in this.equipList) {
                     this.gqlMutate(api.admin_upkeepEquips, {

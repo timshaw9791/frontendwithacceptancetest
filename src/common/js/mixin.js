@@ -56,7 +56,6 @@ export const historyPageMixin = {
 
       let historyPage = this.getHistoryPage();
       if (historyPage) {
-        console.log('historyPage', historyPage);
         this.param.paginator.page = +historyPage; //分页组件的当前页数page同步
       }
 

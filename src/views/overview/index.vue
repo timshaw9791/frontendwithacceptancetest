@@ -280,7 +280,7 @@
             getHumiture() {
                 this.$ajax({
                     method: 'post',
-                    url: baseURL+'/environment/humitureQuery',
+                    url: baseURL + '/environment/humitureQuery',
                 }).then((res) => {
                     this.surroundings.temperature = res.data.data.temperature;
                     this.surroundings.humidity = res.data.data.humidity;
@@ -305,7 +305,7 @@
             this.getHumiture();
             this.videoTime = setInterval(() => {
                 window.location.reload();
-            }, 18000000);
+            }, 1800000);
         },
         beforeDestroy() {
             clearTimeout(this.videoTime);

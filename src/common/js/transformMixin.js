@@ -18,7 +18,7 @@ export const transformMixin = {
         countdown(lastChargeTime, chargeCycle) {
             let date = (new Date()).getTime(),
                 countdownTime = '';
-            countdownTime = ((date - (lastChargeTime + chargeCycle * 24 * 60 * 60 * 1000)) / (1000 * 60 * 60));
+            countdownTime = ((date - (lastChargeTime + chargeCycle)) / (1000 * 60 * 60));
 
             return countdownTime.toFixed(1) > 0 ? `逾期:${(countdownTime / 24).toFixed(0)}天` : `${Math.abs(Math.round(countdownTime))}小时`
         },
@@ -26,6 +26,16 @@ export const transformMixin = {
             let date = (new Date()).getTime();
             return Math.round((date - lastChargeTime) / 1000 / 60 / 60 / 24) + '天'
         },
+
+
+        dayToMilli(data) {
+            return Math.round(data * 24 * 60 * 60 * 1000);
+        },
+
+        milliToDay(data) {
+            return Math.round(data / 24 / 60 / 60 / 1000)
+        },
+
         applicationType(data) {
             switch (data) {
                 case 'USE_POST_TIME':

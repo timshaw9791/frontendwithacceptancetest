@@ -328,12 +328,13 @@
                         });
                     } else {
                         let flag = false;
-                        let indexI = 0;
+                        let indexI = 0
                         this.rightList.forEach((listItem, index) => {
                             if (listItem.model == item.equipArg.model) {
                                 /* listItem.count=listItem.count+1*/
-                                flag = true;indexI = index
+                                flag = true, indexI = index
                             } else {
+
                             }
                         });
                         if (flag) {
