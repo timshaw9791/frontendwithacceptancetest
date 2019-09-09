@@ -5,7 +5,7 @@
 </template>
 
 <script>
-    const $fs = window.require('fs');
+    // const $fs = window.require('fs');
 
     console.log(window);
     export default {

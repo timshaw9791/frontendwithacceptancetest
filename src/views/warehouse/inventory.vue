@@ -24,9 +24,9 @@
     import {baseURL} from "../../api/config";
     import {handheld} from 'common/js/pda'
 
-    const fs = window.require('fs');
-    const path = window.require('path');
-    const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
+    // const fs = window.require('fs');
+    // const path = window.require('path');
+    // const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
 
 
     /*Melanie Dunne supernova*/
