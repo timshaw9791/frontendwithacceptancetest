@@ -63,6 +63,7 @@
         methods: {
             windowClose() {
                 window.close();
+                console.log(1213);
             },
             showPwd() {
                 if (this.pwdType === 'password') {
