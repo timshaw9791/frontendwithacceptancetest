@@ -241,7 +241,8 @@
             },
             filterType(s){
                 let type=s.variables.applyOrder.type;
-                if(type=='UP_TO_DOWN'){
+                console.log(s.variables.applyOrder.type)
+                if(type=='DIRECT_TRANSFER'){
                     return '直调'
                 }else if(type=='DOWN_TO_UP'){
                     return '调拨'
@@ -293,6 +294,7 @@
                             list=res;
                             list.sort(this.compare('createTime'))
                         }else {
+                            console.log('notdoing',res);
                             res.content.forEach(item=>{
                                 list.push({variables:{applyOrder:item}})
                             });

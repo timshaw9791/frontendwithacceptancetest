@@ -20,7 +20,7 @@
         <!--</div>-->
         <!--</el-card>-->
         <div class="bill-action-box">
-            <span>{{typeSingleFlag?`${billName}单`:`${billName}申请单`}}</span>
+            <span v-text="typeSingleFlag?`${billName}单`:`${billName}申请单`"></span>
             <div class="bill-action-box-button-box" v-if="billData.applyOrder.state=='REJECTED'">
                 <el-button size="medium" class="bt" @click="operational('REJECTED')">
                     作废
@@ -29,25 +29,31 @@
                     重填
                 </el-button>
             </div>
-            <div v-if="typeSingleFlag" class="bill-action-box-button-box" >
-                <el-button size="mini" class="bt" style="margin-right: 32px" @click="outOfStock" v-if="typeOperational!=''">
+            <div v-if="typeSingleFlag" class="bill-action-box-button-box">
+                <el-button size="mini" class="bt" style="margin-right: 32px" @click="outOfStock"
+                           v-if="typeOperational!=''">
                     {{typeOperational}}
                 </el-button>
                 <a :href="downloadSrc" style="display: none" ref="aDownload">a标签</a>
                 <div class="bill-action-box-button-box-svg" @click="download">
-                    <svg-icon icon-class="导出" style="margin-right: 3px"/>导出
+                    <svg-icon icon-class="导出" style="margin-right: 3px"/>
+                    导出
                 </div>
             </div>
         </div>
         <div class="bill">
             <!--<img src="@/common/images/未审批.png" class="icon"/>-->
             <!--<img src="@/common/images/驳回.png" class="icon"/>require('@/common/images/通过.png')-->
-            <img :src="typeSingleFlag?getStatesTransferImg(billData.state):getStatesImg(billData.applyOrder.state)" class="icon"/>
+            <img :src="typeSingleFlag?getStatesTransferImg(billData.state):getStatesImg(billData.applyOrder.state)"
+                 class="icon"/>
             <div class="content" v-if="billName!='报废'">
                 <div class="tr">
-                    <div class="title">{{typeSingleFlag?`${billName}单号: `:'申请编号: '}}<span v-text="billData.applyOrder.number"></span></div>
-                    <div class="title" v-if="typeSingleFlag">调拨时间: <span v-text="filterTime(billData.outTime)"></span></div>
-                    <div class="title" v-if="typeSingleFlag">接收时间: <span v-text="filterTime(billData.inTime)"></span></div>
+                    <div class="title">{{typeSingleFlag?`${billName}单号: `:'申请编号: '}}<span
+                            v-text="billData.applyOrder.number"></span></div>
+                    <div class="title" v-if="typeSingleFlag">调拨时间: <span v-text="filterTime(billData.outTime)"></span>
+                    </div>
+                    <div class="title" v-if="typeSingleFlag">接收时间: <span v-text="filterTime(billData.inTime)"></span>
+                    </div>
                 </div>
                 <div class="tr">
                     <div class="title">申请类型: <span v-text="applicationType(billData.applyOrder.type)"></span></div>
@@ -57,19 +63,24 @@
                 </div>
                 <div class="tr">
                     <div class="title">申请时间: <span v-text="filterTime(billData.applyOrder.applyTime)"></span></div>
-                    <div class="title"  v-if="typeSingleFlag">调拨库房: <span v-text="getOutHouse()"></span></div>
+                    <div class="title" v-if="typeSingleFlag">调拨库房: <span v-text="getOutHouse()"></span></div>
                     <div class="title">接收库房: <span v-text="billData.applyOrder.inHouse.name"></span></div>
                 </div>
                 <div class="tr">
                     <div class="title">申请人: <span v-text="billData.applyOrder.applicant.name"></span></div>
                     <div class="title" v-if="typeSingleFlag">调拨人员: <span v-text="billData.outUser.name"></span></div>
-                    <div class="title" v-if="typeSingleFlag">接收人员:<span v-text="billData.applyOrder.applicant.name"></span></div>
+                    <div class="title" v-if="typeSingleFlag">接收人员:<span
+                            v-text="billData.applyOrder.applicant.name"></span></div>
                 </div>
-                <div class="equip-table-list" :style="transferEquipData.state=='ABNORMAL'?'cursor: pointer;':''" @click="clickAbnormalTable(transferEquipData)">
+                <div class="equip-table-list" :style="transferEquipData.state=='ABNORMAL'?'cursor: pointer;':''"
+                     @click="clickAbnormalTable(transferEquipData)">
                     <div>装备统计:</div>
-                    <svg-icon icon-class="异常" v-if="transferEquipData.state=='ABNORMAL'?true:false" class="icon-ABNORMAL"/>
+                    <svg-icon icon-class="异常" v-if="transferEquipData.state=='ABNORMAL'?true:false"
+                              class="icon-ABNORMAL"/>
 
-                    <el-table :data="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?transferEquipData.equips:billData.applyOrder.applyNeedEquips:billData.applyOrder.applyNeedEquips" class="list" fit height="420">
+                    <el-table
+                            :data="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?transferEquipData.equips:billData.applyOrder.applyNeedEquips:billData.applyOrder.applyNeedEquips"
+                            class="list" fit height="420">
                         <el-table-column label="序号" align="center">
                             <template slot-scope="scope">
                                 {{scope.$index+1}}
@@ -78,82 +89,8 @@
                         <bos-table-column lable="装备名称" field="name"></bos-table-column>
                         <bos-table-column lable="装备型号" field="model"></bos-table-column>
                         <bos-table-column lable="装备数量" field="count"></bos-table-column>
-                        <el-table-column align="center" lable="总价" v-if="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?true:false:false">
-                            <template slot-scope="scope">
-                                {{scope.row.price/100}}
-                            </template>
-                        </el-table-column>
-                        <!--<bos-table-column lable="总价" field="price" v-if="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?true:false:false"></bos-table-column>-->
-                    </el-table>
-                </div>
-                <!--<div class="bottom" v-if="bottomFlag">-->
-                    <!--<div style="margin-bottom: 12px;"><span-->
-                            <!--v-text="getBillTitle(billData.applyOrder.type)"></span></div>-->
-                    <!--<div class="row" v-for="item in billData.approvalResults">-->
-                        <!---->
-                        <!--<div><span :style="item.approval?'color:#009B4C':'color:#EF4545'"-->
-                                   <!--v-text="item.approval?'通过':'驳回'"></span><span v-if="!item.approval"-->
-                                                                                 <!--style="color:#2F2F76;cursor: pointer;margin-left: 12px"-->
-                                                                                 <!--v-text="'[查看原因]'"-->
-                                                                                 <!--@click="checkReason(item)"></span>-->
-                        <!--</div>-->
-                        <!--<div><span v-text="getOperate(item.level)+'时间:'"></span><span-->
-                                <!--v-text="filterTime(item.time)"></span></div>-->
-                    <!--</div>-->
-                <!--</div>-->
-                <div class="bottom" v-if="bottomCheckFlag">
-                    <div style="margin-bottom: 12px;"><span
-                            v-text="getBillTitle(billData.applyOrder.type)"></span></div>
-                    <div class="row" v-for="item in checkApproval">
-                        <div style="color:rgb(47,47,118)"><span v-text="getApplyType(item.approvalType)"></span></div>
-                        <div><span v-text="'['+item.leader.position+']'" style="margin-right: 5px"></span><span v-text="item.leader.name"></span></div>
-                        <div><span :style="item.approval?'color:#009B4C':'color:#EF4545'"
-                                   v-text="item.approval?'通过':'驳回'"></span><span v-if="!item.approval"
-                                                                                 style="color:#2F2F76;cursor: pointer;margin-left: 12px"
-                                                                                 v-text="'[查看原因]'"
-                                                                                 @click="checkReason(item)"></span>
-                        </div>
-                        <div><span v-text="getOperate(item.level)+'时间:'"></span><span
-                                v-text="filterTime(item.time)"></span></div>
-                    </div>
-                </div>
-                <!--<div class="trBottom">审核人：审核</div>-->
-                <!--<div class="trBottom">审核时间:2019年5月7日 14:53:58</div>-->
-
-                <!--<div class="_box-bottom">-->
-                <!--<el-button type="danger" size="medium">驳 回</el-button>-->
-                <!--<el-button type="primary" size="medium">批 准</el-button>-->
-                <!--</div>-->
-            </div>
-            <div class="content" v-if="billName=='报废'">
-                <div class="tr">
-                    <div class="title">{{typeSingleFlag?`${billName}单号: `:'申请编号: '}}<span v-text="billData.applyOrder.number"></span></div>
-                    <div class="title">申请类型: <span v-text="applicationType(billData.applyOrder.type)"></span></div>
-                </div>
-                <div class="tr">
-                    <div class="title">申请时间: <span v-text="filterTime(billData.applyOrder.applyTime)"></span></div>
-                    <div class="title">申请人: <span v-text="billData.applyOrder.applicant.name"></span></div>
-                </div>
-                <div class="tr">
-                    <div class="title">申请原因: <span v-text="billData.applyOrder.reason"></span></div>
-                </div>
-                <div class="equip-table-list">
-                    <div>装备统计:</div>
-                    <el-table :data="billData.applyOrder.scrapEquips" class="list" fit height="420">
-                        <el-table-column label="序号" align="center">
-                            <template slot-scope="scope">
-                                {{scope.$index+1}}
-                            </template>
-                        </el-table-column>
-                        <bos-table-column lable="装备名称" field="name"></bos-table-column>
-                        <bos-table-column lable="装备型号" field="model"></bos-table-column>
-                        <bos-table-column lable="装备序号" field="serial"></bos-table-column>
-                        <el-table-column label="装备数量" align="center">
-                            <template slot-scope="scope">
-                                {{1}}
-                            </template>
-                        </el-table-column>
-                        <el-table-column align="center" lable="总价" v-if="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?true:false:false">
+                        <el-table-column align="center" lable="总价"
+                                         v-if="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?true:false:false">
                             <template slot-scope="scope">
                                 {{scope.row.price/100}}
                             </template>
@@ -181,7 +118,86 @@
                             v-text="getBillTitle(billData.applyOrder.type)"></span></div>
                     <div class="row" v-for="item in checkApproval">
                         <div style="color:rgb(47,47,118)"><span v-text="getApplyType(item.approvalType)"></span></div>
-                        <div><span v-text="'['+item.leader.position+']'" style="margin-right: 5px"></span><span v-text="item.leader.name"></span></div>
+                        <div><span v-text="'['+item.leader.position+']'" style="margin-right: 5px"></span><span
+                                v-text="item.leader.name"></span></div>
+                        <div><span :style="item.approval?'color:#009B4C':'color:#EF4545'"
+                                   v-text="item.approval?'通过':'驳回'"></span><span v-if="!item.approval"
+                                                                                 style="color:#2F2F76;cursor: pointer;margin-left: 12px"
+                                                                                 v-text="'[查看原因]'"
+                                                                                 @click="checkReason(item)"></span>
+                        </div>
+                        <div><span v-text="getOperate(item.level)+'时间:'"></span><span
+                                v-text="filterTime(item.time)"></span></div>
+                    </div>
+                </div>
+                <!--<div class="trBottom">审核人：审核</div>-->
+                <!--<div class="trBottom">审核时间:2019年5月7日 14:53:58</div>-->
+
+                <!--<div class="_box-bottom">-->
+                <!--<el-button type="danger" size="medium">驳 回</el-button>-->
+                <!--<el-button type="primary" size="medium">批 准</el-button>-->
+                <!--</div>-->
+            </div>
+            <div class="content" v-if="billName=='报废'">
+                <div class="tr">
+                    <div class="title">{{typeSingleFlag?`${billName}单号: `:'申请编号: '}}<span
+                            v-text="billData.applyOrder.number"></span></div>
+                    <div class="title">申请类型: <span v-text="applicationType(billData.applyOrder.type)"></span></div>
+                </div>
+                <div class="tr">
+                    <div class="title">申请时间: <span v-text="filterTime(billData.applyOrder.applyTime)"></span></div>
+                    <div class="title">申请人: <span v-text="billData.applyOrder.applicant.name"></span></div>
+                </div>
+                <div class="tr">
+                    <div class="title">申请原因: <span v-text="billData.applyOrder.reason"></span></div>
+                </div>
+                <div class="equip-table-list">
+                    <div>装备统计:</div>
+                    <el-table :data="billData.applyOrder.scrapEquips" class="list" fit height="420">
+                        <el-table-column label="序号" align="center">
+                            <template slot-scope="scope">
+                                {{scope.$index+1}}
+                            </template>
+                        </el-table-column>
+                        <bos-table-column lable="装备名称" field="name"></bos-table-column>
+                        <bos-table-column lable="装备型号" field="model"></bos-table-column>
+                        <bos-table-column lable="装备序号" field="serial"></bos-table-column>
+                        <el-table-column label="装备数量" align="center">
+                            <template slot-scope="scope">
+                                {{1}}
+                            </template>
+                        </el-table-column>
+                        <el-table-column align="center" lable="总价"
+                                         v-if="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?true:false:false">
+                            <template slot-scope="scope">
+                                {{scope.row.price/100}}
+                            </template>
+                        </el-table-column>
+                        <!--<bos-table-column lable="总价" field="price" v-if="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?true:false:false"></bos-table-column>-->
+                    </el-table>
+                </div>
+                <!--<div class="bottom" v-if="bottomFlag">-->
+                <!--<div style="margin-bottom: 12px;"><span-->
+                <!--v-text="getBillTitle(billData.applyOrder.type)"></span></div>-->
+                <!--<div class="row" v-for="item in billData.approvalResults">-->
+                <!---->
+                <!--<div><span :style="item.approval?'color:#009B4C':'color:#EF4545'"-->
+                <!--v-text="item.approval?'通过':'驳回'"></span><span v-if="!item.approval"-->
+                <!--style="color:#2F2F76;cursor: pointer;margin-left: 12px"-->
+                <!--v-text="'[查看原因]'"-->
+                <!--@click="checkReason(item)"></span>-->
+                <!--</div>-->
+                <!--<div><span v-text="getOperate(item.level)+'时间:'"></span><span-->
+                <!--v-text="filterTime(item.time)"></span></div>-->
+                <!--</div>-->
+                <!--</div>-->
+                <div class="bottom" v-if="bottomCheckFlag">
+                    <div style="margin-bottom: 12px;"><span
+                            v-text="getBillTitle(billData.applyOrder.type)"></span></div>
+                    <div class="row" v-for="item in checkApproval">
+                        <div style="color:rgb(47,47,118)"><span v-text="getApplyType(item.approvalType)"></span></div>
+                        <div><span v-text="'['+item.leader.position+']'" style="margin-right: 5px"></span><span
+                                v-text="item.leader.name"></span></div>
                         <div><span :style="item.approval?'color:#009B4C':'color:#EF4545'"
                                    v-text="item.approval?'通过':'驳回'"></span><span v-if="!item.approval"
                                                                                  style="color:#2F2F76;cursor: pointer;margin-left: 12px"
@@ -214,66 +230,67 @@
         <!--</serviceDialog>-->
 
         <!--<serviceDialog :title="getOperate(billData.currentLevel)+'指定'" ref="dialog1" width="634px"-->
-                       <!--@confirm="confirmPass">-->
-            <!--<div class="bill-item-box">-->
-                <!--<div class="bill-item">-->
-                    <!--<div class="bill-item-span"><span v-text="'调拨操作人员：'"></span></div>-->
-                    <!--<el-select style="width: 248px" v-model="selectObj.selectPersonel.select" placeholder="请选择">-->
-                        <!--<el-option-->
-                                <!--v-for="item in selectObj.selectPersonel.selectList"-->
-                                <!--:key="item.value"-->
-                                <!--:label="item.label"-->
-                                <!--:value="item">-->
-                        <!--</el-option>-->
-                    <!--</el-select>-->
-                <!--</div>-->
-                <!--<div class="bill-item" style="margin-top: 20px">-->
-                    <!--<div class="bill-item-span" style="margin-left: 34.5px"><span v-text="'指定仓库：'"></span></div>-->
-                    <!--<el-select style="width: 248px" v-model="selectObj.selectHouse.select" placeholder="请选择">-->
-                        <!--<el-option-->
-                                <!--v-for="item in selectObj.selectHouse.selectList"-->
-                                <!--:key="item.value"-->
-                                <!--:label="item.label"-->
-                                <!--:value="item">-->
-                        <!--</el-option>-->
-                    <!--</el-select>-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--&lt;!&ndash;<form-container ref="inlineForm" :model="inlineForm" style="margin-left: 23%;">&ndash;&gt;-->
-            <!--&lt;!&ndash;<field-select label="选择领导" :list="leadList" v-model="inlineForm.list"&ndash;&gt;-->
-            <!--&lt;!&ndash;prop="list" width="7">&ndash;&gt;-->
-            <!--&lt;!&ndash;</field-select>&ndash;&gt;-->
-            <!--&lt;!&ndash;</form-container>&ndash;&gt;-->
+        <!--@confirm="confirmPass">-->
+        <!--<div class="bill-item-box">-->
+        <!--<div class="bill-item">-->
+        <!--<div class="bill-item-span"><span v-text="'调拨操作人员：'"></span></div>-->
+        <!--<el-select style="width: 248px" v-model="selectObj.selectPersonel.select" placeholder="请选择">-->
+        <!--<el-option-->
+        <!--v-for="item in selectObj.selectPersonel.selectList"-->
+        <!--:key="item.value"-->
+        <!--:label="item.label"-->
+        <!--:value="item">-->
+        <!--</el-option>-->
+        <!--</el-select>-->
+        <!--</div>-->
+        <!--<div class="bill-item" style="margin-top: 20px">-->
+        <!--<div class="bill-item-span" style="margin-left: 34.5px"><span v-text="'指定仓库：'"></span></div>-->
+        <!--<el-select style="width: 248px" v-model="selectObj.selectHouse.select" placeholder="请选择">-->
+        <!--<el-option-->
+        <!--v-for="item in selectObj.selectHouse.selectList"-->
+        <!--:key="item.value"-->
+        <!--:label="item.label"-->
+        <!--:value="item">-->
+        <!--</el-option>-->
+        <!--</el-select>-->
+        <!--</div>-->
+        <!--</div>-->
+        <!--&lt;!&ndash;<form-container ref="inlineForm" :model="inlineForm" style="margin-left: 23%;">&ndash;&gt;-->
+        <!--&lt;!&ndash;<field-select label="选择领导" :list="leadList" v-model="inlineForm.list"&ndash;&gt;-->
+        <!--&lt;!&ndash;prop="list" width="7">&ndash;&gt;-->
+        <!--&lt;!&ndash;</field-select>&ndash;&gt;-->
+        <!--&lt;!&ndash;</form-container>&ndash;&gt;-->
         <!--</serviceDialog>-->
 
         <!--<serviceDialog :title="getOperate(billData.currentLevel)+'指定'" ref="dialogShenghe" width="634px"-->
-                       <!--@confirm="confirmAudit">-->
-            <!--<div class="bill-item-box">-->
-t                <!--<div class="bill-item">-->
-                    <!--<div class="bill-item-span"><span v-text="'选择领导：'"></span></div>-->
-                    <!--<el-select style="width: 248px" v-model="selectObj.selectLeder.select" placeholder="请选择">-->
-                        <!--<el-option-->
-                                <!--v-for="item in selectObj.selectLeder.selectList"-->
-                                <!--:key="item.value"-->
-                                <!--:label="item.label"-->
-                                <!--:value="item">-->
-                        <!--</el-option>-->
-                    <!--</el-select>-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--&lt;!&ndash;<form-container ref="inlineForm" :model="inlineForm" style="margin-left: 23%;">&ndash;&gt;-->
-            <!--&lt;!&ndash;<field-select label="选择领导" :list="leadList" v-model="inlineForm.list"&ndash;&gt;-->
-            <!--&lt;!&ndash;prop="list" width="7">&ndash;&gt;-->
-            <!--&lt;!&ndash;</field-select>&ndash;&gt;-->
-            <!--&lt;!&ndash;</form-container>&ndash;&gt;-->
+        <!--@confirm="confirmAudit">-->
+        <!--<div class="bill-item-box">-->
+        t                <!--<div class="bill-item">-->
+        <!--<div class="bill-item-span"><span v-text="'选择领导：'"></span></div>-->
+        <!--<el-select style="width: 248px" v-model="selectObj.selectLeder.select" placeholder="请选择">-->
+        <!--<el-option-->
+        <!--v-for="item in selectObj.selectLeder.selectList"-->
+        <!--:key="item.value"-->
+        <!--:label="item.label"-->
+        <!--:value="item">-->
+        <!--</el-option>-->
+        <!--</el-select>-->
+        <!--</div>-->
+        <!--</div>-->
+        <!--&lt;!&ndash;<form-container ref="inlineForm" :model="inlineForm" style="margin-left: 23%;">&ndash;&gt;-->
+        <!--&lt;!&ndash;<field-select label="选择领导" :list="leadList" v-model="inlineForm.list"&ndash;&gt;-->
+        <!--&lt;!&ndash;prop="list" width="7">&ndash;&gt;-->
+        <!--&lt;!&ndash;</field-select>&ndash;&gt;-->
+        <!--&lt;!&ndash;</form-container>&ndash;&gt;-->
         <!--</serviceDialog>-->
         <serviceDialog title="出库异常详情单" ref="dialogAbnormalTable" width="1529px" :button="false">
             <div class="bill-abnormal-table">
-                <div><span  v-text="'调拨单号：'"></span><span v-text="billData.applyOrder.number"></span></div>
+                <div><span v-text="'调拨单号：'"></span><span v-text="billData.applyOrder.number"></span></div>
                 <div class="bill-abnormal-table-box">
                     <div class="bill-abnormal-table-item">
                         <span v-text="'预计出库：'" style="margin-top: 14px"></span>
-                        <el-table :data="billData.applyOrder.applyNeedEquips" class="bill-abnormal-table-list" fit height="531" max-height="531">
+                        <el-table :data="billData.applyOrder.applyNeedEquips" class="bill-abnormal-table-list" fit
+                                  height="531" max-height="531">
                             <el-table-column label="序号" align="center">
                                 <template slot-scope="scope">
                                     {{scope.$index+1}}
@@ -287,7 +304,8 @@ t                <!--<div class="bill-item">-->
                     </div>
                     <div class="bill-abnormal-table-item">
                         <span v-text="'实际出库：'" style="margin-top: 14px"></span>
-                        <el-table :data="transferEquipData.equips" class="bill-abnormal-table-list" fit height="531" max-height="531">
+                        <el-table :data="transferEquipData.equips" class="bill-abnormal-table-list" fit height="531"
+                                  max-height="531">
                             <el-table-column label="序号" align="center">
                                 <template slot-scope="scope">
                                     {{scope.$index+1}}
@@ -322,12 +340,18 @@ t                <!--<div class="bill-item">-->
                 <span v-text="'驳回原因：'"></span><span v-text="checkReasonData"></span>
             </div>
         </serviceDialog>
-        <t_dialog ref="transferDialog" :billName="billName" @sucesssInOrOut="sucesssInOrOut" :typeOperational="typeOperational" :directObj="direct"></t_dialog>
+        <t_dialog ref="transferDialog" :billName="billName" @sucesssInOrOut="sucesssInOrOut"
+                  :typeOperational="typeOperational" :directObj="direct"></t_dialog>
         <!--<serviceDialog title="批准" ref="dialog2" width="40%">-->
         <!--<div style="text-align: center;font-size: 20px">您确定要批准吗</div>-->
         <!--</serviceDialog>-->
-        <add-direct-adjustment-bill  @sucessAdd="sucessAdd" ref="addDirectAdjustmentBill" :restaurants="reSet.restaurants" :myUnit="reSet.myUnit" :unit="reSet.unit" :house="reSet.house" :taskId="billData.taskId" :addType="'reSet'"></add-direct-adjustment-bill>
-        <add-apply-bill @sucessAdd="sucessAdd" :taskType="billName" ref="addSecondmentBill" :myUnit="reSet.myUnit" :unit="reSet.unit" :house="reSet.house"></add-apply-bill>
+        <add-direct-adjustment-bill @sucessAdd="sucessAdd" ref="addDirectAdjustmentBill"
+                                    :restaurants="reSet.restaurants" :myUnit="reSet.myUnit" :unit="reSet.unit"
+                                    :house="reSet.house" :taskId="billData.taskId"
+                                    :addType="'reSet'"></add-direct-adjustment-bill>
+        <add-apply-bill @sucessAdd="sucessAdd" :taskId="billData.taskId" :taskType="billName" ref="addSecondmentBill"
+                        :myUnit="reSet.myUnit" :unit="reSet.unit" :house="reSet.house"
+                        :addType="'reSet'"></add-apply-bill>
     </div>
 </template>
 
@@ -344,6 +368,7 @@ t                <!--<div class="bill-item">-->
     import {baseBURL} from "../../api/config"
     import addDirectAdjustmentBill from 'components/process/directAdjustment/addDirectAdjustment'
     import addApplyBill from 'components/process/secondment/addSecondment'
+
     export default {
         components: {
             serviceDialog,
@@ -359,21 +384,21 @@ t                <!--<div class="bill-item">-->
                 type: String,
                 default: 'apply'
             },
-            billName:{
-              type:String,
-              default:'调拨'
+            billName: {
+                type: String,
+                default: '调拨'
             },
 
-            billUrlObject:{
-                type:Object,
-                default(){
-                    return{
-                        histroyApprovalUrl:'/history-leader-approval/',
-                        confirmREJECTED:'/transfer',
-                        downloadSrcUrl:'/transfer-order/export-excel',
-                        billEquipUrl:{
-                            inHouseUrl:'/order-equips/equips-in-house/group',
-                            outHouseUrl:'/order-equips/equips-out-house/group'
+            billUrlObject: {
+                type: Object,
+                default() {
+                    return {
+                        histroyApprovalUrl: '/history-leader-approval/',
+                        confirmREJECTED: '/transfer',
+                        downloadSrcUrl: '/transfer-order/export-excel',
+                        billEquipUrl: {
+                            inHouseUrl: '/order-equips/equips-in-house/group',
+                            outHouseUrl: '/order-equips/equips-out-house/group'
                         }
                     }
                 }
@@ -382,8 +407,8 @@ t                <!--<div class="bill-item">-->
                 type: String,
                 default: '进行中'
             },
-            reSet:{
-                type:Object
+            reSet: {
+                type: Object
             }
         },
         mixins: [fetchMixin],
@@ -415,17 +440,17 @@ t                <!--<div class="bill-item">-->
                     },
                     thisUnit: {}
                 },
-                checkApproval:[],
+                checkApproval: [],
                 myOrganUnit: {},
                 items: '',
                 reason: '',
                 checkReasonData: '',
-                transferEquipData:[],
-                downloadSrc:'',
-                typeOperational:'',
-                direct:{},
+                transferEquipData: [],
+                downloadSrc: '',
+                typeOperational: '',
+                direct: {},
                 leadList: [{key: '主席', val: '主席'}, {key: '大领导', val: '大领导'}],
-                inHouseStatus:{}
+                inHouseStatus: {}
             }
         },
         created() {
@@ -438,19 +463,19 @@ t                <!--<div class="bill-item">-->
             if (this.singleStatus != '进行中') {
                 this.getHistroyApproval(this.billData.applyOrder.historyLeaderApprovalId)
             }
-            if(this.typeSingle!='apply'){
-                let myName=JSON.parse(localStorage.getItem('user')).name;
-                if(this.billData.outUser.name==myName&&this.billData.state=="WITHOUT_OUT_HOUSE"){
-                    this.typeOperational='出库'
-                }else if(this.billData.applyOrder.applicant.name==myName&&this.billData.state=="OUT_HOUSE"){
-                    this.typeOperational='入库'
+            if (this.typeSingle != 'apply') {
+                let myName = JSON.parse(localStorage.getItem('user')).name;
+                if (this.billData.outUser.name == myName && this.billData.state == "WITHOUT_OUT_HOUSE") {
+                    this.typeOperational = '出库'
+                } else if (this.billData.applyOrder.applicant.name == myName && this.billData.state == "OUT_HOUSE") {
+                    this.typeOperational = '入库'
                 }
-                this.downloadSrc=baseBURL+this.billUrlObject.downloadSrcUrl+'?orderId='+this.billData.id;
-                if(this.billData.state=='IN_HOUSE'){
-                    let url = baseBURL+'/order-equips/equips-in-house/group';
+                this.downloadSrc = baseBURL + this.billUrlObject.downloadSrcUrl + '?orderId=' + this.billData.id;
+                if (this.billData.state == 'IN_HOUSE') {
+                    let url = baseBURL + '/order-equips/equips-in-house/group';
                     this.getTransferEquipData(url)
-                }else if(this.billData.state=='OUT_HOUSE'){
-                    let url = baseBURL+'/order-equips/equips-out-house/group';
+                } else if (this.billData.state == 'OUT_HOUSE') {
+                    let url = baseBURL + '/order-equips/equips-out-house/group';
                     this.getTransferEquipData(url)
                 }
             }
@@ -472,7 +497,7 @@ t                <!--<div class="bill-item">-->
                 } else {
                     if (this.billData.approvalResults != null) {
                         if (this.billData.approvalResults.length > 0) {
-                            this.checkApproval=this.billData.approvalResults;
+                            this.checkApproval = this.billData.approvalResults;
                             return true
                         }
                     } else {
@@ -480,16 +505,16 @@ t                <!--<div class="bill-item">-->
                     }
                 }
             },
-            typeSingleFlag(){
-                if(this.typeSingle=='apply'){
+            typeSingleFlag() {
+                if (this.typeSingle == 'apply') {
                     return false
-                }else {
+                } else {
                     return true
                 }
             }
         },
         methods: {
-            getApplyType(applyType){
+            getApplyType(applyType) {
                 switch (applyType) {
                     case 'APPROVAL':
                         return '审批';
@@ -497,28 +522,43 @@ t                <!--<div class="bill-item">-->
                         return '审核';
                 }
             },
-            clickAbnormalTable(abnormalTable){
-                if(abnormalTable.state!=null){
-                    if(abnormalTable.state=='ABNORMAL'){
+            clickAbnormalTable(abnormalTable) {
+                if (abnormalTable.state != null) {
+                    if (abnormalTable.state == 'ABNORMAL') {
                         this.$refs.dialogAbnormalTable.show();
-                    }else{
+                    } else {
 
                     }
                 }
             },
-            sucessAdd(){
+            sucessAdd() {
                 this.$refs.addDirectAdjustmentBill.cancel();
                 this.$emit('toBack', '进行中')
             },
-            sucesssInOrOut(){
-              this.$refs.transferDialog.close();
-              this.$emit('closeBill',true);
+            sucesssInOrOut() {
+                this.$refs.transferDialog.close();
+                this.$emit('closeBill', true);
             },
-            outOfStock(){
-                this.direct={orderItems:this.billData.applyOrder.applyNeedEquips,number:this.billData.applyOrder.number,id:this.billData.id,userId:this.billData.applyOrder.applicant.userId};
+            outOfStock() {
+                console.log(this.billData);
+                if (this.billName == '直调') {
+                    this.direct = {
+                        orderItems: this.billData.applyOrder.applyNeedEquips,
+                        number: this.billData.applyOrder.number,
+                        id: this.billData.id,
+                        userId: this.billData.applyOrder.inUser.userId
+                    };
+                } else {
+                    this.direct = {
+                        orderItems: this.billData.applyOrder.applyNeedEquips,
+                        number: this.billData.applyOrder.number,
+                        id: this.billData.id,
+                        userId: this.billData.applyOrder.applicant.userId
+                    };
+                }
                 this.$refs.transferDialog.showDialog();
             },
-            getApprovalType(approvalType){
+            getApprovalType(approvalType) {
                 switch (approvalType) {
                     case 'APPROVAL':
                         return '审批';
@@ -526,7 +566,7 @@ t                <!--<div class="bill-item">-->
                         return '审核';
                 }
             },
-            getOutUnit(){
+            getOutUnit() {
                 // if(this.typeSingleFlag){
                 //     this.billData.applyOrder.inHouse.organUnit.name
                 // }else {
@@ -601,7 +641,7 @@ t                <!--<div class="bill-item">-->
             // },
             confirmREJECTED() {
                 if (this.reason != '') {
-                    let url = baseBURL+this.billUrlObject.confirmREJECTED+'?reason='+this.reason+'&userId='+JSON.parse(localStorage.getItem('user')).id+'&processInstanceId='+this.billData.processInstanceId;
+                    let url = baseBURL + this.billUrlObject.confirmREJECTED + '?reason=' + this.reason + '&userId=' + JSON.parse(localStorage.getItem('user')).id + '&processInstanceId=' + this.billData.processInstanceId;
                     request({
                         method: 'DELETE',
                         url: url
@@ -645,7 +685,7 @@ t                <!--<div class="bill-item">-->
             confirmCheckReason() {
                 this.$refs.checkReasonDialog.cancelDb();
             },
-            getStatesTransferImg(state){
+            getStatesTransferImg(state) {
                 switch (state) {
                     case 'WITHOUT_OUT_HOUSE':
                         return require('@/common/images/未出库修.png');
@@ -677,7 +717,7 @@ t                <!--<div class="bill-item">-->
                 // }
             },
             filterTime(date) {
-                if(date!=0){
+                if (date != 0) {
                     let dates = new Date(date);
                     let year = dates.getFullYear();
                     let month = dates.getMonth() + 1;
@@ -686,15 +726,15 @@ t                <!--<div class="bill-item">-->
                     let min = dates.getMinutes();
                     let s = dates.getSeconds();
                     return year + '-' + month + '-' + day + '\xa0' + hour + ':' + min + ':' + s
-                }else {
+                } else {
                     return ''
                 }
 
             },
-            getOutHouse(){
-                if(!this.typeSingleFlag){
+            getOutHouse() {
+                if (!this.typeSingleFlag) {
                     return ''
-                }else {
+                } else {
                     return this.billData.outHouse.name
                 }
             },
@@ -706,6 +746,8 @@ t                <!--<div class="bill-item">-->
                         return '借调'
                     case 'SCRAP':
                         return '报废';
+                    case 'DIRECT_TRANSFER':
+                        return '直调'
                     // case 'PASS':
                     //     return '已通过';
                 }
@@ -734,9 +776,9 @@ t                <!--<div class="bill-item">-->
                 if (data == 'REJECTED') {
                     this.$refs.dialog2.show();
                 } else if (data == 'reSet') {
-                    if(this.billName=='借调'){
+                    if (this.billName != '调拨') {
                         this.$refs.addSecondmentBill.showAdd()
-                    }else {
+                    } else {
                         this.$refs.addDirectAdjustmentBill.showAdd()
                     }
                 }
@@ -824,21 +866,21 @@ t                <!--<div class="bill-item">-->
                     method: 'get',
                     url: url
                 }).then(res => {
-                    this.checkApproval=res.leaderApprovalList;
+                    this.checkApproval = res.leaderApprovalList;
                 })
             },
-            getTransferEquipData(url){
-                let params = {orderId:this.billData.id};
+            getTransferEquipData(url) {
+                let params = {orderId: this.billData.id};
                 request({
                     method: 'get',
                     url: url,
-                    params:params
+                    params: params
                 }).then(res => {
-                    this.transferEquipData=[];
-                    this.transferEquipData=res;
+                    this.transferEquipData = [];
+                    this.transferEquipData = res;
                 })
             },
-            download(){
+            download() {
                 this.$refs.aDownload.click();
             },
             transformToChinese(num) {
@@ -913,7 +955,7 @@ t                <!--<div class="bill-item">-->
 <style lang="scss" scoped>
 
     .card {
-        .bill-abnormal-table{
+        .bill-abnormal-table {
             width: 100%;
             height: 731px;
             padding: 4px 30px;
@@ -921,20 +963,20 @@ t                <!--<div class="bill-item">-->
             flex-direction: column;
             font-size: 18px;
         }
-        .bill-abnormal-table .bill-abnormal-table-box{
+        .bill-abnormal-table .bill-abnormal-table-box {
             width: 100%;
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-direction: row;
         }
-        .bill-abnormal-table-box .bill-abnormal-table-item{
+        .bill-abnormal-table-box .bill-abnormal-table-item {
             width: 700px;
             height: 600px;
             display: flex;
             flex-direction: column;
         }
-        .bill-abnormal-table-item .bill-abnormal-table-list{
+        .bill-abnormal-table-item .bill-abnormal-table-list {
             margin-top: 10px;
             border: 1px solid #EBEEF5;
             border-bottom: none !important;
@@ -1028,9 +1070,9 @@ t                <!--<div class="bill-item">-->
                 }
 
             }
-            .content .equip-table-list{
+            .content .equip-table-list {
                 position: relative;
-                .icon-ABNORMAL{
+                .icon-ABNORMAL {
                     position: absolute;
                     right: 0px;
                     z-index: 2;
@@ -1071,7 +1113,7 @@ t                <!--<div class="bill-item">-->
         display: flex;
         align-items: center;
 
-        .bill-action-box-button-box-svg{
+        .bill-action-box-button-box-svg {
             display: flex;
             align-items: center;
             cursor: pointer;

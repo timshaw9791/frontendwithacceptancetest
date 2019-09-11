@@ -313,6 +313,7 @@
 
             },
             confirmApply(){
+                console.log(this.directObj);
                if(this.user.userName!=''&&this.user.password!=''){
                    let param={
                        password:this.user.password,
@@ -459,11 +460,11 @@
                 }
             },
             handheldMachine() {
-                handheld().then((data) => {
-                    let json = JSON.parse(data);
-                    this.getOutDataCopy(json.rfid);
-                    this.deleteFile();
-                });
+                // handheld().then((data) => {
+                //     let json = JSON.parse(data);
+                //     this.getOutDataCopy(json.rfid);
+                //     this.deleteFile();
+                // });
                 //todo 要换回来
                 // let data = inventoryData;
                 // if(this.typeOperational=='出库'){
@@ -478,7 +479,7 @@
                 // }else {
                 //     this.getOutDataCopy(['222','19080012']);
                 // }
-                // this.getOutDataCopy(['19071110'])
+                this.getOutDataCopy(['19080012'])
             },
             // getOutData(data){
             //     console.log(data);

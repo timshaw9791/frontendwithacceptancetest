@@ -15,8 +15,7 @@
 
     export default {
         data() {
-            return {
-            }
+            return {}
         },
         methods: {
             querySearch(queryString, cb) {
@@ -56,6 +55,12 @@
                 type: [Boolean, String],
                 default: false
             },
+            myAutocomplete: {
+                type: Object,
+                default() {
+                    return {}
+                }
+            }
 
         }
     }

@@ -34,8 +34,8 @@
                 <t_table ref="secondmentTable" :urlObject="urlObject.transferUrlObj" :typeSingle="select.typeSingle" :select="select.single" :havePage="havePage" :searchNumber="search" @toSee="toSee" ></t_table>
             </div>
         </div>
-        <bills v-if="!viewStatus.flag" :billName="billName" :reSet="{unit:unit,restaurants:restaurants,myUnit:myUnit,house:house}" @closeBill="closeBill" :singleStatus="select.singleStatus" :billUrlObject="urlObject.billUrlObject" :typeSingle="select.typeSingle" :billData="billData" @toBack="haveBack"></bills>
-        <add-apply ref="addDirectAdjustment" :taskType="'直调'" @sucessAdd="closeAddDialog" :myUnit="myUnit" :unit="unit" :house="house" @submit="submit"></add-apply>
+        <bills v-if="!viewStatus.flag"  :billName="billName" :reSet="{unit:unit,restaurants:restaurants,myUnit:myUnit,house:house}" @closeBill="closeBill" :singleStatus="select.singleStatus" :billUrlObject="urlObject.billUrlObject" :typeSingle="select.typeSingle" :billData="billData" @toBack="haveBack"></bills>
+        <add-apply ref="addDirectAdjustment"   :taskType="'直调'" @sucessAdd="closeAddDialog" :myUnit="myUnit" :unit="unit" :house="house" @submit="submit"></add-apply>
     </div>
 </template>
 
@@ -90,7 +90,7 @@
                     billUrlObject:{
                         histroyApprovalUrl:'/history-leader-approval/',
                         confirmREJECTED:'/borrow',
-                        downloadSrcUrl:'/borrow-orders/export-excel',
+                        downloadSrcUrl:'/direct-transfer-orders/export-excel',
                         billEquipUrl:{
                             inHouseUrl:'/order-equips/equips-in-house/group',
                             outHouseUrl:'/order-equips/equips-out-house/group'

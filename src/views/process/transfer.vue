@@ -154,6 +154,14 @@
                     this.house.id= res.id;
                     this.house.name=res.name;
                 })
+                request({
+                    method:'get',
+                    url:baseBURL+ '/architecture/houseByOrganUnitId',
+                    params:{organUnitId:JSON.parse(localStorage.getItem('user')).unitId}
+                }).then(res=>{
+                    this.house.id= res[0].id;
+                    this.house.name=res[0].name;
+                });
             },
             getRestaurants(houseId){
                 request({

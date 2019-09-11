@@ -3,26 +3,42 @@
         <serviceDialog :title="`${taskType}申请`" ref="checkTransferDialog" width="1040px" :button="false" @cancel="resultData">
             <div class="addApply">
                 <div class="addApply-label" >
-                    <div class="label">
+                    <div class="label" v-if="taskType!='直调'">
                         <span v-text="'所在库房：'"></span>
                         <el-input class="input" :disabled="true" size="small" v-model="house.name"></el-input>
                         <!--<div class="default-span"><span v-text="house.name"></span></div>-->
                     </div>
                     <div class="label" v-if="taskType!='报废'">
-                        <span v-text="'指定机构：'"></span>
-                        <el-cascader
-                                :options="unitList"
-                                v-model="selectUnit"
-                                :props="selectProp"
-                                change-on-select
-                                :show-all-levels="false"
-                                @change="handleUnitChange">
-                        </el-cascader>
+                        <span v-text="`${ZhiDingOrJieShou}机构：`"></span>
+                        <div style="width: 181px">
+                            <el-cascader
+                                    :options="unitList"
+                                    v-model="selectUnit"
+                                    :props="selectProp"
+                                    change-on-select
+                                    :show-all-levels="false"
+                                    @change="handleUnitChange">
+                            </el-cascader>
+                        </div>
                         <!--<el-input class="input" :disabled="true" size="small" v-model="unit.name"></el-input>-->
                     </div>
-                    <div class="label">
+                    <div class="label" v-if="taskType=='直调'">
+                        <span v-text="`${ZhiDingOrJieShou}库房：`"></span>
+                        <field-input-query size="large" v-model="houseObj.houseName"
+                                           :inputList="houseObj.houseList"
+                                           @select="getHouseSelect"></field-input-query>
+                        <!--<el-input class="input" :disabled="true" size="small" v-model="unit.name"></el-input>-->
+                    </div>
+                    <div class="label" v-if="taskType=='直调'">
+                        <span v-text="`${ZhiDingOrJieShou}人员：`"></span>
+                        <field-input-query size="large" v-model="adminUser.adminName"
+                                           :inputList="adminUser.adminList"
+                                           @select="getAdminSelect"></field-input-query>
+                        <!--<el-input class="input" :disabled="true" size="small" v-model="unit.name"></el-input>-->
+                    </div>
+                    <div class="label" v-if="taskType!='直调'">
                         <span v-text="'指定领导：'"></span>
-                        <field-input-query size="small" v-model="leader.leaderName"
+                        <field-input-query size="large" v-model="leader.leaderName"
                                            :inputList="leader.leaderList"
                                            @select="getLeaderSelect"></field-input-query>
                     </div>
@@ -36,6 +52,14 @@
                                     :value="item.value">
                             </el-option>
                         </el-select>
+                    </div>
+                </div>
+                <div class="addApply-label" v-if="taskType=='直调'" :style="taskType=='报废'?'justify-content: left!important;margin-top: 17px;margin-bottom: 12px;':''">
+                    <div class="label" style="margin-top: 18px">
+                        <span v-text="'指定领导：'"></span>
+                        <field-input-query size="large" v-model="leader.leaderName"
+                                           :inputList="leader.leaderList"
+                                           @select="getLeaderSelect"></field-input-query>
                     </div>
                 </div>
                 <div class="addApply-label" v-if="taskType=='报废'" :style="taskType=='报废'?'justify-content: left!important;margin-top: 17px;margin-bottom: 12px;':''">
@@ -53,7 +77,7 @@
                 </div>
                 <div class="addApply-table">
                     <form-container ref="form" :model="form" style="width: 100%">
-                        <el-table :data="form.orderItems" :height="taskType=='报废'?'378':'490'">
+                        <el-table :data="form.orderItems" :height="taskType=='报废'||taskType=='直调'?'378':'490'">
                             <el-table-column label="序号" align="center">
                                 <template scope="scope">
                                     {{scope.$index+1}}
@@ -99,7 +123,7 @@
                             </el-table-column>
                         </el-table>
                     </form-container>
-                    <div class="addApply-label" :style="taskType=='报废'?'margin-top: 122px;position: relative':'margin-top: 12px;position: relative'">
+                    <div class="addApply-label" :style="taskType=='报废'||taskType=='直调'?'margin-top: 122px;position: relative':'margin-top: 12px;position: relative'">
                         <div class="label" style="position: absolute;right: 0">
                             <span v-text="'申请人员：'"></span>
                             <el-input class="input" :disabled="true" size="small" v-model="userName"></el-input>
@@ -193,6 +217,16 @@
                 selectProp:{value:'id',label:'name',children:'organUnitSet'},
                 unitList:[
                 ],
+                houseObj:{
+                    houseList:[],
+                    houseName:'',
+                    houseItem:{}
+                },
+                adminUser:{
+                  adminList:[],
+                  adminName:'',
+                  adminItem:'',
+                },
                 selectUnitNow:'',
                 selectUnit:[],
                 nowCount: '',
@@ -218,6 +252,15 @@
             }
 
         },
+        computed:{
+          ZhiDingOrJieShou(){
+              if(this.taskType=='直调'){
+                  return '接收'
+              }else{
+                  return '指定'
+              }
+          }
+        },
         watch: {
             'inHouseName': {
                 handler(newVal) {
@@ -238,7 +281,6 @@
                         this.end(this.pid)
                     }
                     if (newVal == '手持机') {
-                        console.log('手持机');
                         this.restaurants=[];
                         this.handheldMachine();
                     } else if (newVal == 'RFID读写器') {
@@ -276,14 +318,14 @@
                 }
             },
             handheldMachine() {
-                // handheld().then((data) => {
-                //     let json = JSON.parse(data);
-                //     this.getOutDataCopy(json.rfid);
-                //     this.deleteFile();
-                // });
+                handheld().then((data) => {
+                    let json = JSON.parse(data);
+                    this.getOutDataCopy(json.rfid);
+                    this.deleteFile();
+                });
                 //todo 要换回来
                 // let data = inventoryData;
-                this.getOutDataCopy([19080012])
+                // this.getOutDataCopy([19080012])
             },
             getListUsb() {//todo
                 const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
@@ -353,6 +395,16 @@
                     ],
                         hardwareSelect:''
                 };
+                this.houseObj={
+                    houseList:[],
+                        houseName:'',
+                        houseItem:{}
+                };
+                this.adminUser={
+                    adminList:[],
+                    adminName:'',
+                    adminItem:'',
+                };
                 this.restaurants=[];
                 this.selectUnit=[];
                 this.leader.leaderName='';
@@ -372,7 +424,7 @@
                 let unitId=data[data.length-1];
                 let gethouseUnitId='';
                 if(this.taskType=='直调'){
-                    gethouseUnitId=JSON.parse(localStorage.getItem('user')).unitId
+                    gethouseUnitId=JSON.parse(localStorage.getItem('user')).unitId;
                 }else {
                     gethouseUnitId=unitId
                 }
@@ -402,7 +454,34 @@
                         id:res.id
                     };
                 });
-                this.getLeader(unitId);
+                this.getLeader(gethouseUnitId);
+                this.getHouseList(unitId);
+                this.getAdminList(unitId)
+            },
+            getAdminList(unitId){
+                request({
+                    method:'get',
+                    url:baseBURL+'/identity/findByUnitAdmin',
+                    params:{unitId:unitId}
+                }).then(res=>{
+                    console.log('getAdminList',res);
+                    this.adminUser.adminList=[];
+                    res.forEach(item=>{
+                        this.adminUser.adminList.push({value: item.name, key: item})
+                    });
+                });
+            },
+            getHouseList(unitId){
+                request({
+                    method:'get',
+                    url:baseBURL+ '/architecture/houseByOrganUnitId',
+                    params:{organUnitId:unitId}
+                }).then(res=>{
+                    this.houseObj.houseList=[];
+                    res.forEach(item=>{
+                        this.houseObj.houseList.push({value: item.name, key: item})
+                    });
+                });
             },
             getRestaurants(houseId){
                 request({
@@ -424,6 +503,13 @@
             },
             getLeaderSelect(data) {
                 this.leader.leaderItem = data.key;
+            },
+            getHouseSelect(data){
+                this.houseObj.houseItem = data.key;
+                console.log('this.houseObj.houseItem',this.houseObj.houseItem)
+            },
+            getAdminSelect(data){
+                this.adminUser.adminItem= data.key
             },
             getLeader(id) {
                 console.log(id);
@@ -538,6 +624,13 @@
                     }
                 }else if (this.taskType=='直调'){
                     urlApi='direct-transfer';
+                    this.form.orderItems.forEach(item=>{
+                        if(item.count!=undefined){
+                            if(item.count!=''){
+                                orderItems.push(item)
+                            }
+                        }
+                    });
                     applyOrder={
                         "applicant": {
                             "name": JSON.parse(localStorage.getItem('user')).name,
@@ -547,21 +640,29 @@
                             },
                             "userId": JSON.parse(localStorage.getItem('user')).id
                         },
-                        "reason":this.reason,
                         "inHouse": {
-                            "id": this.house.id,
-                            "name": this.house.name,
+                            "id": this.houseObj.houseItem.id,
+                            "name": this.houseObj.houseItem.name,
                             "organUnit": {
-                                "id": JSON.parse(localStorage.getItem('user')).unitId,
-                                "name": this.myUnit.name
+                                "id": this.selectUnitNow.id,
+                                "name": this.selectUnitNow.name
                             }
                         },
                         "outOrganUnit": {
-                            "id": this.selectUnitNow.id,
-                            "name": this.selectUnitNow.name
+                            "id": JSON.parse(localStorage.getItem('user')).unitId,
+                            "name": this.myUnit.name
                         },
-                        "applyNeedEquips": orderItems,
+                        "applyNeedEquips":orderItems,
+                        "inUser": {
+                            "name":this.adminUser.adminItem.name,
+                            "organUnit": {
+                                "id": this.selectUnitNow.id,
+                                "name": this.selectUnitNow.name
+                            },
+                            "userId": this.adminUser.adminItem.id
+                        }
                     };
+
                 }
                 if (this.addType == 'add') {
                     url = baseBURL + `/${urlApi}/start` + '?nextApproveId=' + this.leader.leaderItem.userId + '&processLevelId=' + this.processLevelId
@@ -604,6 +705,7 @@
             sucesssAdd(){
               this.$message.success('申请成功');
               this.$emit('sucessAdd',true);
+              this.resultData();
             },
             showAdd() {
                 this.form = {};
@@ -701,6 +803,7 @@
         height: 30px;
         display: flex;
         justify-content: space-between;
+        flex-wrap:  wrap;
     }
 
     .addApply-label .label {
