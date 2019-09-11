@@ -85,6 +85,7 @@ service.interceptors.response.use(response => {
     },
     error => {
         console.log('err' + error) // for debug
+
         let errcode = String(error);
         if (errcode.indexOf('401') > 0) {
             if (location.href === config.loginUrl) {    /*登陆页面401错误，提示用户名或者密码错误*/
@@ -98,7 +99,6 @@ service.interceptors.response.use(response => {
                 console.log(config.loginUrl);
                 removeToken();
                 location.href = config.loginUrl;
-
                 //setLimited('true');
                 // setLimitedUrl(location.href);
             }
@@ -109,8 +109,11 @@ service.interceptors.response.use(response => {
             });
         }
 
-
-
+        if (errcode.includes('Error')) {
+            Message.error({
+                message: `请求超时请重试!`
+            });
+        }
 
         return Promise.reject(error)
     }

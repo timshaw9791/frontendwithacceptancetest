@@ -16,7 +16,7 @@
             <span v-text="equipment.outHouseCount+'件'" style="margin-left: 10px"></span>
         </div>
         <div class="warehousingDataPrice" style="margin-top: 27px">
-            <span v-text="'装备总价：¥'+equipment.price"></span>
+            <span v-text="'装备总价：¥'+Number(Number(equipment.price)/100)"></span>
         </div>
     </div>
 </template>

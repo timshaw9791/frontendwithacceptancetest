@@ -5,6 +5,9 @@
                 <span class="_card-title">{{title}}</span>
             </div>
             <div>
+
+                <!--装备参数-->
+
                 <el-card class="box-card" shadow="never">
                     <div slot="header">
                         <span>装备参数</span>
@@ -104,6 +107,8 @@
 
                 </el-card>
 
+                <!--扩展信息-->
+
                 <el-card class="box-card" shadow="never" v-if="!title.includes('新增')&&!title.includes('信息查看')">
                     <div slot="header">
                         <span>扩展信息</span>
@@ -136,6 +141,8 @@
                     </div>
                 </el-card>
 
+                <!--教学视频-->
+
                 <el-card class="box-card" shadow="never" v-if="title.includes('新增')||title.includes('信息查看')">
                     <div slot="header">
                         <span>教学视频路径</span>
@@ -150,6 +157,8 @@
                         </div>
                     </div>
                 </el-card>
+
+                <!--文档信息-->
 
                 <el-card class="box-card" shadow="never" v-if="title.includes('新增')||title.includes('信息查看')">
                     <div slot="header">
@@ -166,13 +175,15 @@
                     </div>
                 </el-card>
 
+                <!--绑定序号-->
+
                 <el-card class="box-card" shadow="never" v-if="title.includes('入库')">
                     <div slot="header">
                         <span>绑定序号</span>
                     </div>
                     <div>
                         <el-table :data="list" fit height="360" class="list">
-                            <el-table-column label="RFID" align="center">
+                            <el-table-column label="序号" align="center">
                                 <template scope="scope">
                                     {{scope.$index+1}}
                                 </template>
@@ -215,6 +226,8 @@
             </div>
         </field-dialog>
 
+
+
         <serviceDialog title="复制RFID" ref="copyRfidDialog" @confirm="copyRfid">
             <form-container ref="copyRfid" :model="copyRfidList" style="text-align: center">
                 <field-input v-model="copyRfidList.rfid" label="RFID" width="4"
@@ -235,6 +248,8 @@
     import {imgUpUrl, pdfUpUrl, videoUpUrl, imgBaseUrl, pdfBaseUrl, videoBaseUrl} from "api/config";
     import {delFile} from "api/basic";
     import serviceDialog from 'components/base/serviceDialog/index'
+    import {transformMixin} from "common/js/transformMixin";
+
 
     const cmdPath = 'C:\\Users\\Administrator';
     const exec = window.require('child_process').exec;
@@ -257,8 +272,8 @@
                 unitId: JSON.parse(localStorage.getItem('user')).unitId,
                 options: [],
                 vendorId: [],
-                disabled: false,
                 edit: false,
+                disabled: false,
                 imageUrl: '',
                 rfids: [],
                 serialList: [],
@@ -268,7 +283,7 @@
                 copyRfidList: {},
             }
         },
-        mixins: [formRulesMixin],
+        mixins: [formRulesMixin, transformMixin],
         components: {
             imgUp,
             serviceDialog
@@ -295,6 +310,8 @@
 
 
         methods: {
+
+            //离开页面以后为父组件抛出black 杀死进程
             black() {
                 if (this.title.includes('查看')) {
                     this.$emit('black', true);
@@ -305,14 +322,22 @@
                 this.index = 0;
             },
 
+
+            //点击提交后 根据从什么入口进入的执行对应的  新增  入库  装备基础信息修改 装备入库信息修改
             addEquipArg() {
                 if (this.title.includes('新增')) {
                     this.form.videoAddresses ? this.form.videoAddresses = this.form.videoAddresses.join(',') : '';
                     this.form.documentAddresses ? this.form.documentAddresses = this.form.documentAddresses.join(',') : '';
+
+                    let newData = JSON.parse(JSON.stringify(this.form));
+                    newData.upkeepCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.upkeepCycle)));
+                    newData.chargeCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.chargeCycle)));
+
+
                     this.$refs.form.gqlValidate(api.category_addEquipArg, {
                         supplierId: this.form.vendorId ? this.form.vendorId : '',
                         categoryId: this.form.nameId ? this.form.nameId[1] : '',
-                        equipArg: this.form
+                        equipArg: newData
                     }, (res) => {
                         this.dialogConfirm();
                         this.callback('添加成功!');
@@ -323,9 +348,15 @@
                     this.form.documentAddresses ? this.form.documentAddresses = this.form.documentAddresses.join(',') : '';
                     this.form.supplier.id ? this.form.supplier.id = this.form.vendorId : '';
 
+
+                    let newData = JSON.parse(JSON.stringify(this.form));
+                    newData.upkeepCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.upkeepCycle)));
+                    newData.chargeCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.chargeCycle)));
+
+
                     this.$refs.form.gqlValidate(api.category_saveEquipArg, {
                         categoryId: this.form.nameId ? this.form.nameId[1] : '',
-                        equipArg: this.form
+                        equipArg: newData
                     }, (res) => {
                         console.log(res);
                         this.dialogConfirm();
@@ -350,7 +381,7 @@
                                 return item['rfid'];
                             }),
                             serialList: this.list.map((item) => {
-                                return item['serial']==''?null:item['serial'];
+                                return item['serial'] == '' ? null : item['serial'];
                             }),
                             location: this.zbForm.location,
                             equipArgId: this.form.nameId[2],
@@ -393,17 +424,21 @@
                 this.$emit('black', true);
             },
 
+            //点击图标执行input的上传click事件
             pdfUp(data) {
                 if (!this.edit) {
                     this.$refs.filePdf[data].click();
                 }
             },
+
+            //点击图标执行input的上传click事件
             videoUp(data) {
                 if (!this.edit) {
                     this.$refs.fileVideo[data].click();
                 }
             },
 
+            //上传video类
             videoFileChange(index) {
                 if (this.form.videoAddresses.length > 0) {
                     delFile({
@@ -442,6 +477,8 @@
                     this.$message.error('上传失败');
                 });
             },
+
+            //上传pdf
             pdfFileChange(index) {
 
                 if (this.form.documentAddresses.length > 0) {
@@ -480,6 +517,7 @@
 
             },
 
+            //选择供应商后更新 对应信息
             vendor(data) {
                 console.log(data);
                 this.vendorId.some(item => {
@@ -490,19 +528,27 @@
                     }
                 })
             },
+
+            //图片上传成功暴露的方法
             successUp(data) {
                 console.log(data);
                 this.form.imageAddress = data;
             },
-            getEquipInfo(data) {
 
+            //选择完装备后执行 显示对应数据 和开启读卡器的使用
+            getEquipInfo(data) {
                 this.gqlQuery(api.getEquipArg, {
                     id: data
                 }, (res) => {
                     let a = JSON.parse(JSON.stringify(res.data.EquipArg));
                     this.form['name'] = a.name;
-                    this.form['upkeepCycle'] = a.upkeepCycle;
-                    this.form['chargeCycle'] = a.chargeCycle;
+
+                    this.form['upkeepCycle'] = this.milliToDay(a.upkeepCycle);
+                    this.form['chargeCycle'] = this.milliToDay(a.chargeCycle);
+
+                    // this.form['upkeepCycle'] = a.upkeepCycle;
+                    // this.form['chargeCycle'] = a.chargeCycle;
+
                     this.form.vendorId = a.supplier.id;
                     this.$set(this.form, 'model', a.model);
                     this.$set(this.form, 'personM', a.supplier.person);
@@ -544,25 +590,30 @@
                     console.log(`子进程退出，退出码 ${code}`);
                 });
 
-
             },
+
+            //点击编辑后状态改变
             editClick() {
                 this.edit = !this.edit;
                 this.disabled = !this.disabled;
             },
-            qaq(row) {
-                if (row.$index === this.list.length - 1) {
-                    this.list.push({id: this.list.length});
-                }
-            },
-            delqaq(row) {
 
+            // qaq(row) {
+            //     if (row.$index === this.list.length - 1) {
+            //         this.list.push({id: this.list.length});
+            //     }
+            // },
+
+            //删除读卡后的当前选择数据
+            delqaq(row) {
                 if (this.list.length > 1) {
                     this.list.splice(row.$index, 1);
                 } else {
                     this.$message.error('不能删除最后一个');
                 }
             },
+
+            // 复制RFID
             copyRfid() {
                 exec(`java -jar writing.jar ${this.com} ${this.copyRfidList.rfid}`, {cwd: cmdPath}, (err, data) => {
                     console.log(data);
@@ -575,6 +626,7 @@
                 })
             },
 
+            //进入页面获取数据
             getList() {
                 if (this.equipId) {
                     this.gqlQuery(api.getEquip, {
@@ -587,7 +639,12 @@
                         eqData.equipArg.imageAddress ? this.imageUrl = `${imgBaseUrl}${eqData.equipArg.imageAddress}` : '';
                         this.$set(this.form, 'eqBig', eqData.equipArg.category.genre.name);
                         this.$set(this.form, 'eqSmall', eqData.equipArg.category.name);
+
+                        this.$set(this.form, 'upkeepCycle', this.milliToDay(eqData.equipArg.upkeepCycle));
+                        this.$set(this.form, 'chargeCycle', this.milliToDay(eqData.equipArg.chargeCycle));
                         this.$set(this.form, 'price', eqData.price / 100);
+
+
                         this.zb['shelfLifeQ'] = Math.round(eqData.quality.shelfLife / 24 / 60 / 60 / 1000);
                         this.zb['productDateQ'] = eqData.quality.productDate;
                         this.zb['floorL'] = eqData.location ? eqData.location.floor : '';
@@ -612,9 +669,11 @@
                         this.form = eqData;
                         this.form.vendorId = eqData.supplier.id;
                         eqData.imageAddress ? this.imageUrl = `${imgBaseUrl}${eqData.imageAddress}` : '';
-
                         this.form.videoAddresses = eqData.videoAddresses ? eqData.videoAddresses.split(",") : [];
                         this.form.documentAddresses = eqData.documentAddresses ? eqData.documentAddresses.split(",") : [];
+
+                        this.$set(this.form, 'upkeepCycle', this.milliToDay(eqData.upkeepCycle));
+                        this.$set(this.form, 'chargeCycle', this.milliToDay(eqData.chargeCycle));
 
                         this.form.nameId = [eqData.category.genre.id, eqData.category.id];
                         this.$set(this.form, 'eqBig', eqData.category.genre.name);
@@ -672,12 +731,15 @@
                     })
                 });
             }
-
         },
+
         created() {
-            this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];
+            this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];//获取到串口号
         },
         mounted() {
+
+            //不同的入口进入的展示不同页面
+
             if (this.title.includes('入库')) {
                 this.disabled = true;
             } else if (this.title.includes('装备查看')) {
@@ -689,7 +751,6 @@
             }
             this.getList();
         },
-
 
     }
 </script>

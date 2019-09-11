@@ -13,7 +13,10 @@
             <bos-table-column lable="架体编号" field="location.number"></bos-table-column>
             <bos-table-column lable="架体AB面"
                               :filter="(row)=>surface(row.location?row.location.surface:'暂无')"></bos-table-column>
-            <bos-table-column lable="保养周期/天" field="equipArg.upkeepCycle"></bos-table-column>
+
+            <!--<bos-table-column lable="保养周期/天" field="equipArg.upkeepCycle"></bos-table-column>-->
+
+            <bos-table-column lable="保养周期/天" :filter="(row)=>milliToDay(row.equipArg.upkeepCycle)"></bos-table-column>
 
         </el-table>
         <div class="_contentBt" v-if="batch">

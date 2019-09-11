@@ -29,10 +29,6 @@ query getEquipActionRecordList($paginator: paginator, $qfilter: qfilter) {
         equipRfid
         equipSerial
         equipId
-        houseName
-        houseId
-      }
-      equipArgInfo {
         equipModel
         equipName
       }
@@ -56,15 +52,10 @@ query getEquipActionRecordListDESC($paginator: paginator, $qfilter: qfilter) {
          equipRfid
          equipSerial
          equipId
-         houseName
-         houseId
-      }
-      equipArgInfo {
-        equipModel
-        equipName
+         equipModel
+         equipName
       }
       duration
-
       action
       operator
       startTime(OrderBy:DESC)
@@ -81,15 +72,10 @@ query getEquipActionRecordListASC($paginator: paginator, $qfilter: qfilter) {
          equipRfid
          equipSerial
          equipId
-         houseName
-         houseId
-      }
-      equipArgInfo {
-        equipModel
-        equipName
+         equipModel
+         equipName
       }
       duration
-
       action
       operator
       startTime(OrderBy:ASC)

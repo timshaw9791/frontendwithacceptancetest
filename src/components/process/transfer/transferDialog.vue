@@ -162,8 +162,8 @@
     // import inventoryData from 'views/warehouse/inventoryData'
     import request from 'common/js/request'
     import {baseURL,baseBURL} from "../../../api/config"
-    import {handheld} from 'common/js/pda'
 
+    import {handheld} from 'common/js/pda'
     const cmdPath = 'C:\\Users\\Administrator';
     const exec = window.require('child_process').exec;
     const spawn = window.require('child_process').spawn;
@@ -350,7 +350,7 @@
                 }else {
                     url=baseURL+'/order-equips/in'+'?orderId='+orderId+'&state='+state;
                     rfids=this.inHouseEquip;
-                    console.log(rfids)
+
                     // this.rightList.forEach(item=>{
                     //     rfids=[...rfids,...item.rfid]
                     // });
@@ -416,7 +416,7 @@
                     //     }
                     // })
                 } else {
-                    if(this.billName!='借用'){
+                    if(this.billName!='借调'||this.billName!='归还'){
                         this.$refs.transFerDialogTips.show();
                     }else {
                         this.$message.error('请确认出库装备正确')

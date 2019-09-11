@@ -3,8 +3,10 @@
         <!--<video src="../../assets/黑贞.mp4" loop="loop" autoplay="autoplay" class="video"></video>-->
         <div class="video-cover"></div>
         <div class="topTitle">
-            <img src="../../common/images/警徽.png" height="89" width="78"/>
-            <h3 class="title">许昌市公安局应急装备物资管理系统</h3>
+            <img src="../../common/images/警徽.png" height="89" width="78" style="cursor: pointer;"
+                 @click="windowClose"/>
+
+            <h3 class="title">吉安县公安局应急装备物资管理系统</h3>
         </div>
 
         <el-form class="login-form" autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm"
@@ -29,7 +31,8 @@
             </el-form-item>
 
             <el-form-item>
-                <el-button type="primary" style="width:192px;height:44px;font-size: 20px" :loading="loading" @click.native.prevent="handleLogin">
+                <el-button type="primary" style="width:192px;height:44px;font-size: 20px" :loading="loading"
+                           @click.native.prevent="handleLogin">
                     登 录
                 </el-button>
             </el-form-item>
@@ -40,6 +43,7 @@
 
 <script>
     import {startSocket} from "common/js/webSocket";
+
     export default {
         name: 'login',
         data() {
@@ -57,6 +61,9 @@
             }
         },
         methods: {
+            windowClose() {
+                window.close();
+            },
             showPwd() {
                 if (this.pwdType === 'password') {
                     this.pwdType = ''
@@ -97,11 +104,13 @@
         .el-input {
             display: inline-block;
             width: 85%;
+
             input {
                 background: transparent;
                 border: 0px;
                 -webkit-appearance: none;
                 border-radius: 0px;
+
                 &:-webkit-autofill {
                     -webkit-box-shadow: 0 0 0 1000px white inset !important;
                     /*-webkit-animation: autofill-fix 1s infinite;*/

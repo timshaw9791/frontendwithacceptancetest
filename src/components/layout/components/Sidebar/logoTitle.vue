@@ -23,7 +23,6 @@
                 this.gqlQuery(api.getUser, {
                     id: data.unitId
                 }, (res) => {
-                    console.log('nmsl', res);
                     this.name = res.data.OrganUnit.name;
                 })
             }
