@@ -1,27 +1,17 @@
 <template>
     <div>
-        <el-dialog
-                title="提示"
-                :visible.sync="dialogVisible"
-                width="30%"
-        >
-            <span>确定删除？</span>
-            <span slot="footer" >
-               <el-button @click="dialogVisible = false">取 消</el-button>
-               <el-button type="primary" @click="delEquip">确 定</el-button>
-            </span>
-        </el-dialog>
         <el-card shadow="never" v-if="!storageInfoShow">
+
+            <!--element card 的头部-->
+
             <div slot="header">
                 <span class="_card-title">{{$route.meta.title}}</span>
             </div>
+
+
+            <!--操作拦-->
             <div>
                 <tabs>
-                    <!--<el-cascader-->
-                    <!--:options="options"-->
-                    <!--:show-all-levels="false"-->
-                    <!--&gt;</el-cascader>-->
-
                     <el-button type="text" class="_textBt" @click="goInfo('add')">
                         <svg-icon icon-class="加"/>
                         新增装备信息
@@ -35,9 +25,6 @@
                         <svg-icon icon-class="加"/>
                         修改RFID
                     </el-button>
-
-
-
                     <div class="_buttons">
                         <BosInput
                                 placeholder="RFID/类型/类别/名称/型号"
@@ -49,6 +36,9 @@
                     </div>
                 </tabs>
             </div>
+
+            <!--list列表-->
+
             <el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
                       fit>
                 <bos-table-column lable="RFID" field="rfid"></bos-table-column>
@@ -67,7 +57,13 @@
             <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
         </el-card>
 
+
+        <!--内部业务组件-->
+
         <storageInfo :equipId="equipId" v-if="storageInfoShow" :title="title" @black="black"></storageInfo>
+
+
+        <!--RFID遮罩层 -->
 
         <service-dialog ref="dialogPattern" title="选择模式" width="634px" :button="false" @cancel="cancelPattern">
             <div class="pattern-box">
@@ -75,43 +71,9 @@
                 <el-button class="pattern" style="margin-left: 109px" v-text="'单件模式'"
                            @click="rfidMode('singleton')"></el-button>
             </div>
-
-            <!--<el-button type="text" class="dialogButton" style="margin-bottom: 20px" @click="mode=!mode">-->
-            <!--<svg-icon icon-class="切换模式" class="icon"/>-->
-            <!--切换模式-->
-            <!--</el-button>-->
-
-
-            <!--<div v-if="mode">-->
-            <!--<div class='rfidList'>-->
-            <!--<div v-for="(item,index) in writeAll" class="rfid">-->
-            <!--<div class="rfid-left">-->
-            <!--RFID{{index+1}} : <span>{{item.epc}}</span>-->
-            <!--</div>-->
-            <!--<span>{{item.status==='succeed'?'写入成功':'写入失败'}}</span>-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--<div class="_button">-->
-            <!--<el-button type="primary" size="medium">重新写入</el-button>-->
-            <!--</div>-->
-            <!--</div>-->
-
-            <!--<div v-else>-->
-            <!--<form-container ref="inlineForm" :model="inlineForm">-->
-            <!--<field-input v-model="inlineForm.rfid" size="medium" label="RFID:" width="8"-->
-            <!--:disabled="true"></field-input>-->
-            <!--<el-button style="margin-left: 12px" type="primary" @click='writeone'>读取</el-button>-->
-            <!--<br/>-->
-            <!--<field-input v-model="inlineForm.newRfid" prop="newRfid"-->
-            <!--:rules="r(true).all(R.rfid)" size="medium" label="修改RFID:" width="8"></field-input>-->
-            <!--</form-container>-->
-            <!--<div class="_button">-->
-            <!--<el-button size="medium" @click="$refs.dialog.hide()">取消</el-button>-->
-            <!--<el-button type="primary" size="medium" @click="saveOne(inlineForm.newRfid)">写入</el-button>-->
-            <!--</div>-->
-            <!--</div>-->
-
         </service-dialog>
+
+        <!--RFID遮罩层 -->
 
         <service-dialog ref="dialogModify" title="修改RFID" width="634px" :button="false" @cancel="cancel">
 
@@ -145,6 +107,19 @@
 
         </service-dialog>
 
+        <!--提示的遮罩层 -->
+        <el-dialog
+                title="提示"
+                :visible.sync="dialogVisible"
+                width="30%">
+            <span>确定删除？</span>
+            <span slot="footer" >
+               <el-button @click="dialogVisible = false">取 消</el-button>
+               <el-button type="primary" @click="delEquip">确 定</el-button>
+            </span>
+        </el-dialog>
+
+
     </div>
 </template>
 
@@ -158,7 +133,9 @@
     import request from 'common/js/request'
     import {baseURL} from "../../api/config";
 
-    const cmdPath = 'C:\\Users\\Administrator';
+    // nodejs调用子进程的方法
+
+    const cmdPath = 'C:\\Users\\Administrator';   //cmd命令的位置
     const exec = window.require('child_process').exec;
     const spawn = window.require('child_process').spawn;
 
@@ -248,9 +225,13 @@
             },
             serialRfid() {
                 getRfid().then(res => {
-                    const process = exec(`java -jar auto.jar ${this.com} ${res}`, {cwd: cmdPath});
+
+                    //是以流的形式,可以监听
+                    const process = exec(`java -jar auto.jar ${this.com} ${res}`, {cwd: cmdPath}); //调用cmd执行读写器
                     this.pid = process.pid;
                     let start = false;
+
+                    //成功的时候
                     process.stdout.on('data', (data) => {
                         let newData = JSON.parse(data);
                         console.log(newData);
@@ -262,10 +243,13 @@
                         }
                     });
 
+                    //报错的时候
                     process.stderr.on('data', (err) => {
                         console.log(err);
                         this.$message.error('设备故障请重新插拔!');
                     });
+
+                    //退出的时候
                     process.on('exit', (code) => {
                         console.log(`子进程退出，退出码 ${code}`);
                     });
@@ -280,13 +264,14 @@
                     let epc = `0X${this.writeIndex.epc}`;
                     let newData = parseInt(epc) + 1;
                     saveRfid({"rfidGeneric": newData.toString(16)}).then(res1 => {
-                        spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
+
+                        spawn("taskkill", ["/PID", this.pid, "/T", "/F"]); //杀死进程
                         this.writeIndex = '';
                         this.writeAll = [];
                     })
 
                 } else {
-                    spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
+                    spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);//杀死进程
                     this.inlineForm = {
                         rfid: '',
                         newRfid: '',
@@ -294,6 +279,7 @@
                 }
             },
             writeone() {
+                //执行一次不能监听
                 exec(`java -jar reading.jar ${this.com}`, {cwd: cmdPath}, (err, data) => {
                     console.log(data);
                     if (data.includes('succeed')) {
@@ -324,13 +310,13 @@
         },
         apollo: {
             list() {
-                return this.getEntityListWithPagintor(api.getEquipList);
+                return this.getEntityListWithPagintor(api.getEquipList); //  graphql结合自定义组件的mixin方法 传入语句即可
             },
         },
         mounted() {
         },
         created() {
-            this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];
+            this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];//获取到串口号
         },
         mixins: [formRulesMixin],
         computed:{
@@ -344,6 +330,7 @@
             }
         },
         watch: {
+            //监听搜索关键词, 因为写过监听param所以修改param可以实现发送graphql请求
             inquire(newVal, oldVal) {
                 this.param.namelike = newVal;
                 this.param['qfilter'] = {
