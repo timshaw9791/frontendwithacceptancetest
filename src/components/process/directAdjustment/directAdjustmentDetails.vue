@@ -5,7 +5,7 @@
             <img src="../../icons/svg/已出库.png" v-if="direct.state=='OUT'"/>
         </div>
         <div class="directAdjustmentDetails-context">
-            <div class="context-row"><div class="row-item-box"><span v-text="'调拨单号：'"></span><span v-text="direct.number"></span></div><div class="row-item-box"><span v-text="'调拨类型：'"></span><span v-text="filterType(direct.type)"></span></div><div class="row-item-box"></div></div>
+            <div class="context-row"><div class="row-item-box"><span v-text="'调拨单号：'"></span><span v-text="direct.number"></span></div><div class="row-item-box"><span v-text="'调拨大类：'"></span><span v-text="filterType(direct.type)"></span></div><div class="row-item-box"></div></div>
             <div class="context-row"><div class="row-item-box"><span v-text="'调拨库房：'"></span><span v-text="direct.outHouseName"></span></div><div class="row-item-box"><span v-text="'调拨操作人员：'"></span><span v-text="direct.operator"></span></div><div class="row-item-box"><span v-text="'调拨时间：'"></span><span v-text="filterTime(direct.transferTime)"></span></div></div>
             <div class="context-row"><div class="row-item-box"><span v-text="'接受库房：'"></span><span v-text="direct.inHouseName"></span></div><div class="row-item-box"><span v-text="'接收人：'"></span><span v-text="direct.receiver"></span></div><div class="row-item-box"><span v-text="'接收时间：'"></span><span v-text="filterTime(direct.receiveTime)"></span></div></div>
             <div class="context-row"><div class="row-item-box"><span v-text="'装备统计：'"></span></div><div class="row-item-box"></div><div class="row-item-box"></div></div>

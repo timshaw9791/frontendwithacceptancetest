@@ -1,11 +1,11 @@
 <template>
     <div class="warehouse">
-        <my-header @search="getSearch" :title="header.title" :placeholder="'类别/类型/名称/型号'"
+        <my-header @search="getSearch" :title="header.title" :placeholder="'小类/大类/名称/型号'"
                    :searchFlag="viewStatus.flag"></my-header>
         <div class="action-bar" v-show="viewStatus.flag">
             <cascader :cascader="cascader"></cascader>
             <my-select class="select" :select="select" :size="1"></my-select>
-            <el-button type="text" size="mini" class="action-button" @click="add('category')">新增类别</el-button>
+            <el-button type="text" size="mini" class="action-button" @click="add('category')">新增小类</el-button>
             <el-button type="text" size="mini" class="action-button" @click="add('equi')">新增装备信息</el-button>
         </div>
         <div class="action-bar" v-show="!viewStatus.flag">
@@ -83,8 +83,8 @@
                 },
                 table: {
                     labelList: [
-                        {lable: '类型', field: 'category.genre.name', sort: false},
-                        {lable: '类别', field: 'category.name', sort: false},
+                        {lable: '大类', field: 'category.genre.name', sort: false},
+                        {lable: '小类', field: 'category.name', sort: false},
                         {lable: '装备名称', field: 'name', sort: false},
                         {lable: '装备型号', field: 'model', sort: false},
                         /* {lable: '数量', field: 'count', sort: false},*/
@@ -205,7 +205,7 @@
                     this.dialog = {
                         select: {
                             model: 'type',
-                            title: '选择类型',
+                            title: '选择大类',
                             list:
                                 [
                                     {key: '防护、防爆装备', val: 'PROTECTIVE_EQUIP'},
@@ -217,9 +217,9 @@
                                 ]
                         },
                         dialogList: [
-                            {model: 'name', label: '类别名称'}
+                            {model: 'name', label: '小类名称'}
                         ],
-                        title: '新增类型'
+                        title: '新增大类'
                     };
                     this.$refs.dialog.show();
                 } else {

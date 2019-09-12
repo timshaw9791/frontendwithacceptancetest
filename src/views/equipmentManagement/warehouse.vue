@@ -78,7 +78,7 @@
                 if (name == 'categoryItem') {
                     this.dialog = {
                         dialogList: [
-                            {model: 'categoryId', label: '所选类型'},
+                            {model: 'categoryId', label: '所选大类'},
                             {model: 'name', label: '小类名'}
                         ],
                         title: '新增小类',

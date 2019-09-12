@@ -50,14 +50,14 @@
                                     <el-table :data="item.list" fit @row-click="gotoInfo">
                                         <div v-if="index===0">
                                             <bos-table-column lable="编号" field="name"></bos-table-column>
-                                            <bos-table-column lable="类型" field="name"></bos-table-column>
+                                            <bos-table-column lable="大类" field="name"></bos-table-column>
                                             <bos-table-column lable="状态" field="name"></bos-table-column>
                                         </div>
                                         <div v-if="index===1">
                                             <bos-table-column lable="倒计时"
                                                               :filter="(row)=>`${row.day}天`"></bos-table-column>
 
-                                            <bos-table-column lable="类型" field="type"></bos-table-column>
+                                            <bos-table-column lable="大类" field="type"></bos-table-column>
 
                                             <bos-table-column lable="装备序号" field="equipSerial"></bos-table-column>
 

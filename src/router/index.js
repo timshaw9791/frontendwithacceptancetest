@@ -296,7 +296,7 @@ export const asyncRouterMap = [
     //             path: 'index',
     //             name: 'category/index',
     //             component: _import('category/index'),
-    //             meta: {title: '装备类别', icon: '装备类别'},
+    //             meta: {title: '装备小类', icon: '装备小类'},
     //         },
     //     ]
     // },

@@ -33,7 +33,7 @@
             // },
             // name: {
             //     type: String,
-            //     default: '此乃类别'
+            //     default: '此乃小类'
             // },
             // number:{
             //     type:Number,

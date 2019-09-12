@@ -40,7 +40,7 @@
 
                     <div class="_buttons">
                         <BosInput
-                                placeholder="RFID/类型/类别/名称/型号"
+                                placeholder="RFID/大类/小类/名称/型号"
                                 suffix="el-icon-search"
                                 v-model="inquire"
                                 :wrapforlike="true"
@@ -52,8 +52,8 @@
             <el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
                       fit>
                 <bos-table-column lable="RFID" field="rfid"></bos-table-column>
-                <bos-table-column lable="装备类型" field="equipArg.category.genre.name"></bos-table-column>
-                <bos-table-column lable="装备类别" field="equipArg.category.name"></bos-table-column>
+                <bos-table-column lable="装备大类" field="equipArg.category.genre.name"></bos-table-column>
+                <bos-table-column lable="装备小类" field="equipArg.category.name"></bos-table-column>
                 <bos-table-column lable="装备名称" field="equipArg.name"></bos-table-column>
                 <bos-table-column lable="装备型号" field="equipArg.model"></bos-table-column>
                 <bos-table-column lable="供应商" field="equipArg.supplier.name"></bos-table-column>

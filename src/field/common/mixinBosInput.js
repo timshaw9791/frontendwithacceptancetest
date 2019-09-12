@@ -24,7 +24,7 @@ export let initmixinBosInput = {
       default: '',
     },
     /*综合考虑以下3点原因，抛弃form-item的required属性,我们自己处理并与常规rule放到一起进行验证。
-    1.element-ui的formitem中的required值为true/false，其实是削弱了asyn-validator的required的能力（本来可以明确类型的{type:number,required},
+    1.element-ui的formitem中的required值为true/false，其实是削弱了asyn-validator的required的能力（本来可以明确大类的{type:number,required},
     2.但另一方面asyn-validator的requreid的错误提示中没法插入我们字段中文别名，
     3.required应该放在其他rule前面执行，如果不满足则直接返回。这个在element-ui中如果存在多个rules，似乎智能手写到data中去？没法启用required属性？
     */

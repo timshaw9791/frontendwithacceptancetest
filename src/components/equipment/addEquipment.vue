@@ -9,7 +9,7 @@
                     <field-input v-model="form.name" label="装备名" width="2.5" :disabled="disabled"
                                  :rules="r(true).all(R.require)" prop="name"></field-input>
 
-                    <field-input v-model="form.model" label="装备类型" width="2.5" :disabled="disabled"
+                    <field-input v-model="form.model" label="装备大类" width="2.5" :disabled="disabled"
                                  :rules="r(true).all(R.require)" prop="model"></field-input>
                     <field-input v-model="form.upkeepCycle" label="保养周期" width="2.5" :disabled="disabled"
                     ></field-input>

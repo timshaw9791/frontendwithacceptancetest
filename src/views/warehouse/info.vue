@@ -9,7 +9,7 @@
                     <tab-select :options="selectList" indexDefault="全部" @selected="selectValue"></tab-select>
                     <div class="_buttons">
                         <BosInput
-                                placeholder="类型/类别/名称/型号/供应商"
+                                placeholder="大类/小类/名称/型号/供应商"
                                 suffix="el-icon-search"
                                 v-model="inquire"
                                 :wrapforlike="true"
@@ -20,8 +20,8 @@
                 <el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
                           fit>
 
-                    <bos-table-column lable="装备类型" field="category.genre.name"></bos-table-column>
-                    <bos-table-column lable="装备类别" field="category.name"></bos-table-column>
+                    <bos-table-column lable="装备大类" field="category.genre.name"></bos-table-column>
+                    <bos-table-column lable="装备小类" field="category.name"></bos-table-column>
                     <bos-table-column lable="装备名称" field="name"></bos-table-column>
                     <bos-table-column lable="装备型号" field="model"></bos-table-column>
                     <bos-table-column lable="供应商" field="supplier.name"></bos-table-column>

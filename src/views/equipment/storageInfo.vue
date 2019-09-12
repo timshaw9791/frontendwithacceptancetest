@@ -48,7 +48,7 @@
                                          v-if="title.includes('入库')"></field-input>
 
 
-                            <field-input v-model="form.eqBig" label="装备类型" width="3" :disabled="disabled||edit"
+                            <field-input v-model="form.eqBig" label="装备大类" width="3" :disabled="disabled||edit"
                                          v-if="title.includes('装备查看')||(title.includes('信息查看')&&edit)"></field-input>
 
                             <field-input v-model="form.price" label="装备单价" width="3"
@@ -57,7 +57,7 @@
                                          v-if="title.includes('装备查看')"></field-input>
 
 
-                            <field-input v-model="form.eqSmall" label="装备类别" width="3" :disabled="disabled||edit"
+                            <field-input v-model="form.eqSmall" label="装备小类" width="3" :disabled="disabled||edit"
                                          v-if="title.includes('装备查看')||(title.includes('信息查看')&&edit)"></field-input>
 
 
@@ -77,7 +77,7 @@
                             ></field-input>
 
                             <!--M标识第三层-->
-                            <field-cascader label="装备类别" :options="options" v-model="form.nameId" prop="nameId"
+                            <field-cascader label="装备小类" :options="options" v-model="form.nameId" prop="nameId"
                                             width="3" :rules="r(true).all(R.require)"
                                             :disabled="edit"
                                             v-if="title.includes('新增')||(title.includes('信息查看')&&!edit)">

@@ -56,7 +56,7 @@
                     </div>
                 </div>
                 <div class="tr">
-                    <div class="title">申请类型: <span v-text="applicationType(billData.applyOrder.type)"></span></div>
+                    <div class="title">申请大类: <span v-text="applicationType(billData.applyOrder.type)"></span></div>
                     <div class="title" v-if="typeSingleFlag">调拨机构: <span v-text="getOutUnit()"></span></div>
                     <div class="title">接收机构: <span v-text="billData.applyOrder.inHouse.organUnit.name"></span></div>
                     <div class="title" v-if="!typeSingleFlag">调拨机构: <span v-text="getOutUnit()"></span></div>
@@ -142,7 +142,7 @@
                 <div class="tr">
                     <div class="title">{{typeSingleFlag?`${billName}单号: `:'申请编号: '}}<span
                             v-text="billData.applyOrder.number"></span></div>
-                    <div class="title">申请类型: <span v-text="applicationType(billData.applyOrder.type)"></span></div>
+                    <div class="title">申请大类: <span v-text="applicationType(billData.applyOrder.type)"></span></div>
                 </div>
                 <div class="tr">
                     <div class="title">申请时间: <span v-text="filterTime(billData.applyOrder.applyTime)"></span></div>

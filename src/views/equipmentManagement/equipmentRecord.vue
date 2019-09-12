@@ -82,7 +82,7 @@
                             {key:"报废",value:"SCRAP"},
                             {key:"充电",value:"CHARGE"}
                         ],
-                        title: '操作类型'
+                        title: '操作大类'
                     },
                     time: {
                         times: '',
