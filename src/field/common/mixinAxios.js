@@ -116,9 +116,10 @@ export let formRulesMixin = {
                         this.setHistoryPage(this.param.page);
                     }
                 } else if (this.param.keyword === '' && this.copyNameLike !== '') {
-                    this.param.page = Number(this.getHistoryPage());
+                    if (this.getHistoryPage()) {
+                        this.param.page = Number(this.getHistoryPage());
+                    }
                 }
-
                 this.refetch();
 
             }, {deep: true});
