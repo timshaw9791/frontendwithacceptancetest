@@ -43,7 +43,7 @@
                             <field-cascader label="装备名称" :options="options" v-model="form.nameId" prop="nameId"
                                             width="3" :rules="r(true).all(R.require)"
                                             v-if="title.includes('入库')"
-                                            @change="getEquipInfo(form.nameId[2])">
+                                            @change="getEquipInfo(form.nameId[2])">q
                             </field-cascader>
 
                             <field-input v-model="form.price" label="装备单价" width="3"
@@ -182,7 +182,7 @@
                         <span>绑定序号</span>
                     </div>
                     <div>
-                        <el-table :data="list" fit height="360" class="list">
+                        <el-table :data="list" fit height="360" class="list" :row-class-name="tableRowClassName">
                             <el-table-column label="序号" align="center">
                                 <template scope="scope">
                                     {{scope.$index+1}}
@@ -227,7 +227,6 @@
         </field-dialog>
 
 
-
         <serviceDialog title="复制RFID" ref="copyRfidDialog" @confirm="copyRfid">
             <form-container ref="copyRfid" :model="copyRfidList" style="text-align: center">
                 <field-input v-model="copyRfidList.rfid" label="RFID" width="4"
@@ -251,10 +250,10 @@
     import {transformMixin} from "common/js/transformMixin";
 
 
-    // const cmdPath = 'C:\\Users\\Administrator';
-    // const exec = window.require('child_process').exec;
-    // const spawn = window.require('child_process').spawn;
-
+    const cmdPath = 'C:\\Users\\Administrator';
+    const exec = window.require('child_process').exec;
+    const spawn = window.require('child_process').spawn;
+    import {killProcess} from "common/js/kill";
 
     export default {
         data() {
@@ -318,10 +317,8 @@
                 } else {
                     this.$refs.dialog.show();
                 }
-                spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
-                this.index = 0;
+                killProcess();
             },
-
 
             //点击提交后 根据从什么入口进入的执行对应的  新增  入库  装备基础信息修改 装备入库信息修改
             addEquipArg() {
@@ -376,7 +373,7 @@
                             productDate: this.zbForm.productDateQ,
                         };
 
-                        this.$refs.zbForm.gqlValidate(api.admin_importEquips, {
+                        this.$refs.zbForm.gqlValidateErr(api.admin_importEquips, {
                             rfids: this.list.map((item) => {
                                 return item['rfid'];
                             }),
@@ -388,13 +385,33 @@
                             quality: this.zbForm.quality,
                             price: this.form.price * 100,
                         }, (res) => {
-                            this.index = 0;
                             this.callback(`成功`);
                             spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
                             this.$emit('black', true);
+                        }, (errs) => {
+                            console.log('errs', errs);
+                            let newData = [],
+                                oldData = String(errs).split('[');
+                            for (let j = 1; j < oldData.length; j++) {
+                                if (oldData[j].includes(']')) {
+                                    newData = oldData[j].split(']')[0].split(',').map(res => {
+                                        return res.trim();
+                                    });
+                                }
+                            }
+                            newData.forEach(value => {
+                                this.list.some(value1 => {
+                                    if (value === value1['rfid']) {
+                                        this.$set(value1, 'style', true);
+                                        return true
+                                    }
+                                })
+                            });
+                            console.log(newData);
+                            console.log(this.list);
                         })
+
                     }).catch(err => {
-                        console.log(err);
                         this.$message.error('未通过检验');
                     })
 
@@ -418,6 +435,14 @@
                         this.$emit('black', true);
                     })
                 }
+            },
+
+
+            tableRowClassName({row, rowIndex}) {
+                if (row.style) {
+                    return 'err-row';
+                }
+                return '';
             },
 
             dialogConfirm() {
@@ -540,9 +565,9 @@
                 this.gqlQuery(api.getEquipArg, {
                     id: data
                 }, (res) => {
+                    this.index = 0;
                     let a = JSON.parse(JSON.stringify(res.data.EquipArg));
                     this.form['name'] = a.name;
-
                     this.form['upkeepCycle'] = this.milliToDay(a.upkeepCycle);
                     this.form['chargeCycle'] = this.milliToDay(a.chargeCycle);
 
@@ -568,7 +593,9 @@
 
                 process.stderr.on('data', (err) => {
                     console.log(err);
-                    this.$message.error('设备故障请重新插拔!');
+                    this.$message.error('设备故障请重新插拔!插入后请重新选择装备');
+                    this.index = 1;
+                    killProcess();
                 });
 
                 process.stdout.on('data', (data) => {
@@ -587,6 +614,9 @@
                 });
 
                 process.on('exit', (code) => {
+                    if (this.index === 0) {
+                        this.$message.error('设备未插入或串口号错误,插入后请重新选择装备!');
+                    }
                     console.log(`子进程退出，退出码 ${code}`);
                 });
 
@@ -758,6 +788,7 @@
 <style lang="scss" scoped>
     @import "common/css/mixin.scss";
     @import "common/css/variables.scss";
+
 
     .el-card:not(:nth-last-child(2)) {
         border-bottom: none !important;

@@ -103,10 +103,10 @@
     import {retirementApplication} from "api/operation";
     import {getRfidinfo} from "api/rfid";
 
-    // const cmdPath = 'C:\\Users\\Administrator';
-    // const exec = window.require('child_process').exec;
-    // const spawn = window.require('child_process').spawn;
-
+    const cmdPath = 'C:\\Users\\Administrator';
+    const exec = window.require('child_process').exec;
+    const spawn = window.require('child_process').spawn;
+    import {killProcess} from "common/js/kill";
 
     export default {
         data() {
@@ -129,7 +129,7 @@
                 equipId: '',
                 inquire: '%%',
                 pid: '',
-                dialogList:[],
+                dialogList: [],
                 listPush: [],
             }
         },
@@ -150,10 +150,16 @@
                 this.pid = process.pid;
                 let index = 0;
 
+
                 process.stderr.on('data', (err) => {
                     console.log(err);
-                    this.$message.error('设备故障请重新插拔!');
+                    this.$message.error('设备故障请重新插拔!插入后请重新打开维修');
+                    index = 1;
+                    killProcess();
+                    this.$refs.dialog.hide();
                 });
+
+
                 process.stdout.on('data', (data) => {
                     console.log(data);
                     if (index > 0) {
@@ -163,6 +169,7 @@
                                 this.listPush.push(res[0].id);
                             } else {
                                 this.$message.error(`${data}该RFID不在库房内`);
+                                index = 1;
                             }
                         })
                     }
@@ -170,13 +177,18 @@
                         index = 1;
                     }
                 });
+
                 process.on('exit', (code) => {
+                    if (index === 0) {
+                        this.$message.error('设备未插入或串口号错误,插入后请重新打开维修!');
+                        this.$refs.dialog.hide();
+                    }
                     console.log(`子进程退出，退出码 ${code}`);
                 });
 
             },
             cancel() {
-                spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
+                killProcess();
             },
 
             dialogConfirm() {
