@@ -113,7 +113,7 @@
                 :visible.sync="dialogVisible"
                 width="30%">
             <span>确定删除？</span>
-            <span slot="footer" >
+            <span slot="footer">
                <el-button @click="dialogVisible = false">取 消</el-button>
                <el-button type="primary" @click="delEquip">确 定</el-button>
             </span>
@@ -138,7 +138,7 @@
     const cmdPath = 'C:\\Users\\Administrator';   //cmd命令的位置
     const exec = window.require('child_process').exec;
     const spawn = window.require('child_process').spawn;
-
+    import {killProcess} from "common/js/kill";
 
     export default {
         data() {
@@ -162,7 +162,7 @@
                     rfid: '',
                     newRfid: '',
                 },
-                delEquipObj:{},
+                delEquipObj: {},
                 dialogVisible: false,
                 writeAll: [],
                 writeIndex: '',
@@ -178,21 +178,21 @@
         },
         methods: {
             cancelPattern() {
-
+                killProcess();
             },
             delEquip() {
                 request({
-                    method:'DELETE',
-                    url:baseURL+'/equips/'+this.delEquipObj.id,
-                }).then(res=>{
+                    method: 'DELETE',
+                    url: baseURL + '/equips/' + this.delEquipObj.id,
+                }).then(res => {
                     this.$message.success('删除成功');
                     this.refetch();
-                    this.dialogVisible=false;
+                    this.dialogVisible = false;
                 });
             },
-            toDel(data){
-                this.delEquipObj=data;
-                this.dialogVisible=true
+            toDel(data) {
+                this.delEquipObj = data;
+                this.dialogVisible = true
             },
             rfidMode(mode) {
                 this.modeType = mode;
@@ -246,11 +246,18 @@
                     //报错的时候
                     process.stderr.on('data', (err) => {
                         console.log(err);
-                        this.$message.error('设备故障请重新插拔!');
+                        this.$message.error('设备故障请重新插拔!插入后请重新打开');
+                        start = true;
+                        this.$refs.dialogModify.hide();
+                        killProcess();
                     });
 
                     //退出的时候
                     process.on('exit', (code) => {
+                        if (start === false) {
+                            this.$message.error('设备未插入或串口号错误,插入后请重新打开');
+                            this.$refs.dialogModify.hide();
+                        }
                         console.log(`子进程退出，退出码 ${code}`);
                     });
                 });
@@ -264,7 +271,6 @@
                     let epc = `0X${this.writeIndex.epc}`;
                     let newData = parseInt(epc) + 1;
                     saveRfid({"rfidGeneric": newData.toString(16)}).then(res1 => {
-
                         spawn("taskkill", ["/PID", this.pid, "/T", "/F"]); //杀死进程
                         this.writeIndex = '';
                         this.writeAll = [];
@@ -319,12 +325,12 @@
             this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];//获取到串口号
         },
         mixins: [formRulesMixin],
-        computed:{
-            authentication(){
+        computed: {
+            authentication() {
                 let auth = JSON.parse(localStorage.getItem('user')).role;
-                if(auth[0]=='SUPER_ADMINISTRATOR'){
+                if (auth[0] == 'SUPER_ADMINISTRATOR') {
                     return true
-                }else {
+                } else {
                     return false
                 }
             }

@@ -170,7 +170,7 @@
     const fs = window.require('fs');
     const path = window.require('path');
     const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
-
+    import {killProcess} from "common/js/kill";
 
     export default {
         name: "directAdjustmentDialog",
@@ -249,15 +249,21 @@
                 // this.closeUsb=true
                 if (pid) {
                     spawn("taskkill", ["/PID", pid, "/T", "/F"]);
-                    this.index = 0;
                 }
             },
             getListUsb() {//todo
+
+                this.index = 0;
                 const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
                 this.pid = process.pid;
+
                 process.stderr.on('data', (err) => {
                     console.log(err);
+                    this.$message.error('设备故障请重新插拔!插入后请重新选择');
+                    this.index = 1;
+                    killProcess();
                 });
+
 
                 process.stdout.on('data', (data) => {
                     if (this.index > 0) {
@@ -271,8 +277,13 @@
                 });
 
                 process.on('exit', (code) => {
+                    if (this.index === 0) {
+                        this.$message.error('设备未插入或串口号错误,插入后请重新选择!');
+                    }
                     console.log(`子进程退出，退出码 ${code}`);
                 });
+
+
                 // let intercal=setInterval(()=>{
                 //     if(this.closeUsb){
                 //         clearInterval(intercal);
