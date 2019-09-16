@@ -12,7 +12,7 @@
                                 suffix="el-icon-search"
                                 v-model="inquire"
                                 :wrapforlike="true"
-                                style=" width:285px;">
+                                style="width:285px;">
                         </BosInput>
                     </div>
                 </div>

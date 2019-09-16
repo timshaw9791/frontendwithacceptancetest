@@ -1,13 +1,13 @@
 <template>
     <div class="report-box">
         <my-header :title="'统计报表'" :searchFlag="false" :haveBlack="viewStatus.backFlag" @h_black="black"></my-header>
-        <div class="report-body" v-if="!viewStatus.backFlag">
+        <div class="report-body" v-show="!viewStatus.backFlag">
             <div class="report-top">
                 <div class="report-top-title">
                     <div class="r_t_title-left">
                         <span v-text="'库存统计'"></span>
                         <div style="margin-left: 30px;cursor:pointer;display: flex;align-items: center" @click="getMing">
-                            <a :href="mingXiSrc" style="display: none" ref="mingXiDownload">a标签</a>
+                            <!--<a :href="mingXiSrc" style="display: none" ref="mingXiDownload">a标签</a>-->
                             <svg-icon icon-class="明细" style="font-size: 20px;margin-right: 5px"  ></svg-icon>
                             <span v-text="'装备明细'"></span>
                         </div>
@@ -44,8 +44,9 @@
                 </div>
             </div>
         </div>
-        <equip-details v-if="viewStatus.backFlag" @changeCategory="handleChangeCategory" @changeGener="handleChangeGener" :genre="equipDetails.genre" :selectDefault="equipDetails.selectDefault" :detailsList="equipDetails.list"
+        <equip-details v-if="viewStatus.detailesFlag" @changeCategory="handleChangeCategory" @changeGener="handleChangeGener" :genre="equipDetails.genre" :selectDefault="equipDetails.selectDefault" :detailsList="equipDetails.list"
                        @changeDate="handleDate" :categoryList="equipDetails.categoryList" :title="equipDetails.title" :toolTip="equipDetails.toolTip" @handleSearch="toSearch"></equip-details>
+        <ming-xi v-if="viewStatus.mingXiFlag"></ming-xi>
     </div>
 </template>
 
@@ -54,6 +55,7 @@
     import warehoused from 'components/report/warehousing'
     import equipReport from 'components/report/equipReport'
     import equipDetails from 'components/report/equipDetails'
+    import mingXi from 'components/report/mingXi'
     import report from 'gql/report.gql'
     import {fetchMixin} from 'field/common/mixinFetch'
     import {baseURL} from "../../api/config";
@@ -65,7 +67,8 @@
             myHeader,
             warehoused,
             equipReport,
-            equipDetails
+            equipDetails,
+            mingXi
         },
         data() {
             return {
@@ -82,10 +85,11 @@
                     toolTip:[]
                 },
                 useCount:[],
-                mingXiSrc:baseURL+'/statistic/export-excel',
                 scrap:[],
                 viewStatus: {
-                    backFlag: false
+                    backFlag: false,
+                    detailesFlag:false,
+                    mingXiFlag:false
                 }
             }
         },
@@ -104,7 +108,8 @@
         },
         methods: {
             getMing() {
-                this.$refs.mingXiDownload.click();
+                this.viewStatus.backFlag = !this.viewStatus.backFlag;
+                this.viewStatus.mingXiFlag = !this.viewStatus.mingXiFlag;
             },
             toSearch(data){
                 console.log(data);
@@ -122,6 +127,8 @@
             },
             black(){
                 this.viewStatus.backFlag = !this.viewStatus.backFlag;
+                this.viewStatus.detailesFlag=false;
+                this.viewStatus.mingXiFlag=false;
                 this.equipDetails.selectDefault='';
                 this.equipDetails.categoryList=[];
                 this.equipDetails.list=[];
@@ -146,6 +153,7 @@
                     this.equipDetails.toolTip=['装备名称','使用次数']
                 }
                 this.viewStatus.backFlag = !this.viewStatus.backFlag;
+                this.viewStatus.detailesFlag = !this.viewStatus.detailesFlag;
             },
             getGenreList() {
                 this.gqlQuery(report.getGenreList, '', (data) => {
@@ -216,7 +224,8 @@
                 this.equipDetails.title='库存统计';
                 this.equipDetails.selectDefault=data.name;
                 this.equipDetails.toolTip=['装备数量','出库数量','出库率'];
-                this.viewStatus.backFlag = !this.viewStatus.backFlag
+                this.viewStatus.backFlag = !this.viewStatus.backFlag;
+                this.viewStatus.detailesFlag = !this.viewStatus.detailesFlag;
             },
             getWareHouse() {
                 this.ajax('/statistic/genres/total','', (res) => {
