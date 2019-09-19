@@ -47,7 +47,7 @@ export let formRulesMixin = {
             param: {paginator: {size: 10, page: 1}},//分页参数,
             copyNameLike: '%%',
             historyPage: 'History-Page',//存放当前页数,
-            loading: false
+            loading: false,
         }
     },
     computed: {
@@ -188,10 +188,11 @@ export let formRulesMixin = {
         gqlMutate(graphql, variables, sCallback) {//便利方法，用于手动修改数据的请求
             this.mutate(graphql, variables).then((data) => {
                 if (data.errors) {   //未通过服务端的表单验证
-                    this.$message.error(`${error}`);
+                    console.log(data.errors);
                 } else {//通过后返回数据，使用者可执行自定义处理数据
                     sCallback.call(this, data);
                 }
+
             })
         },
         gqlQuery(graphql, variables, sCallback, defult) {//便利方法，用于手动修改数据的请求
@@ -211,6 +212,23 @@ export let formRulesMixin = {
                 }
             })
         },
+
+        gqlMutateError(graphql, variables, sCallback, errorBack) {//便利方法，用于手动修改数据的请求
+            this.$apollo.mutate({
+                mutation: graphql,
+                variables: variables,
+            }).then(res => {
+                if (res.errors) {
+                    console.log(res.errors);
+                } else {
+                    sCallback.call(this, res);
+                }
+            }).catch(err => {
+                errorBack.call(this, err);
+            });
+        },
+
+
 //路由处理信息
         routerPush(path, queryObject) {
             this.$router.push({path: path, query: queryObject});

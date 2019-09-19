@@ -33,12 +33,10 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 
 const authLink = authMiddleware.concat(httpLink);
 const errorLink = onError(({networkError, response}) => {
-    console.log(networkError, response);
-
+    console.log(response);
     let errorMsg = '';
     if (!!response && response.errors !== undefined && response.errors.length) {
         errorMsg = !response.errors[0].message ? '服务器错误' : response.errors[0].message;
-        console.log(errorMsg);
         Message.error({
             message: errorMsg
         });
@@ -47,21 +45,20 @@ const errorLink = onError(({networkError, response}) => {
         errorMsg = networkError.message;
         if (networkError.result !== undefined) {
             errorMsg = networkError.result.success === false ? networkError.result.message : networkError.result.error;
-            console.log(errorMsg);
             Message.error({
                 message: errorMsg
             });
         }
     }
 
-    if (networkError['statusCode'] === 401) {
-        store.commit('SET_TOKEN', '');
-        store.commit('SET_ROLES', []);
-        removeToken();
-        Message.error({
-            message: '用户已经过期!'
-        });
-    }
+    // if (networkError['statusCode'] === 401) {
+    //     store.commit('SET_TOKEN', '');
+    //     store.commit('SET_ROLES', []);
+    //     removeToken();
+    //     Message.error({
+    //         message: '用户已经过期!'
+    //     });
+    // }
 
 });
 

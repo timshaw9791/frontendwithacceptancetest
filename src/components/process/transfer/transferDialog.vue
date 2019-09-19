@@ -162,15 +162,15 @@
     // import inventoryData from 'views/warehouse/inventoryData'
     import request from 'common/js/request'
     import {baseURL,baseBURL} from "../../../api/config"
-    // import {handheld} from 'common/js/pda'
-    //
-    // const cmdPath = 'C:\\Users\\Administrator';
-    // const exec = window.require('child_process').exec;
-    // const spawn = window.require('child_process').spawn;
-    // const fs = window.require('fs');
-    // const path = window.require('path');
-    // const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
 
+    import {handheld} from 'common/js/pda'
+    const cmdPath = 'C:\\Users\\Administrator';
+    const exec = window.require('child_process').exec;
+    const spawn = window.require('child_process').spawn;
+    const fs = window.require('fs');
+    const path = window.require('path');
+    const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
+    import {killProcess} from "common/js/kill";
 
     export default {
         name: "directAdjustmentDialog",
@@ -249,15 +249,21 @@
                 // this.closeUsb=true
                 if (pid) {
                     spawn("taskkill", ["/PID", pid, "/T", "/F"]);
-                    this.index = 0;
                 }
             },
             getListUsb() {//todo
+
+                this.index = 0;
                 const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
                 this.pid = process.pid;
+
                 process.stderr.on('data', (err) => {
                     console.log(err);
+                    this.$message.error('设备故障请重新插拔!插入后请重新选择');
+                    this.index = 1;
+                    killProcess();
                 });
+
 
                 process.stdout.on('data', (data) => {
                     if (this.index > 0) {
@@ -271,8 +277,13 @@
                 });
 
                 process.on('exit', (code) => {
+                    if (this.index === 0) {
+                        this.$message.error('设备未插入或串口号错误,插入后请重新选择!');
+                    }
                     console.log(`子进程退出，退出码 ${code}`);
                 });
+
+
                 // let intercal=setInterval(()=>{
                 //     if(this.closeUsb){
                 //         clearInterval(intercal);
@@ -313,7 +324,6 @@
 
             },
             confirmApply(){
-                console.log(this.directObj);
                if(this.user.userName!=''&&this.user.password!=''){
                    let param={
                        password:this.user.password,
@@ -460,11 +470,11 @@
                 }
             },
             handheldMachine() {
-                // handheld().then((data) => {
-                //     let json = JSON.parse(data);
-                //     this.getOutDataCopy(json.rfid);
-                //     this.deleteFile();
-                // });
+                handheld().then((data) => {
+                    let json = JSON.parse(data);
+                    this.getOutDataCopy(json.rfid);
+                    this.deleteFile();
+                });
                 //todo 要换回来
                 // let data = inventoryData;
                 // if(this.typeOperational=='出库'){
@@ -479,7 +489,7 @@
                 // }else {
                 //     this.getOutDataCopy(['222','19080012']);
                 // }
-                this.getOutDataCopy(['19080012'])
+                // this.getOutDataCopy(['19071110'])
             },
             // getOutData(data){
             //     console.log(data);
