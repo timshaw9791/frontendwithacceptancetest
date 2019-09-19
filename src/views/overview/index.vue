@@ -233,41 +233,41 @@
             gotoInfo(row, route) {
                 console.log(row);
                 if (row.type === '充电') {
-                    this.$router.push({path: '/equipmentOperation/charging', params: {name: row.rfid}});
+                    this.$router.push({path: '/equipmentOperation/charging', query: {name: row.rfid}});
                 } else if (row.type === '保养') {
-                    this.$router.push({path: '/equipmentOperation/maintenance', params: {name: row.rfid}});
+                    this.$router.push({path: '/equipmentOperation/maintenance', query: {name: row.rfid}});
                 }
                 if (row === 'surroundings') {
                     this.$router.push('/surroundings/index');
                 }
                 if (row === 'video') {
-                    this.$router.push({path: '/surroundings/index', params: {name: 'video'}});
+                    this.$router.push({path: '/surroundings/index', query: {name: 'video'}});
                 }
                 if (row === 'statistics') {
-                    this.$router.push({path: '/report/index', params: {name: route}});
+                    this.$router.push({path: '/report/index', query: {name: route}});
                 }
 
                 if (row.state && row.inputTime) {
-                    this.$router.push({path: '/record/borrow', params: {name: row.rfid}});
+                    this.$router.push({path: '/record/borrow', query: {name: row.rfid}});
                 }
                 if (row.processInstanceId) {
                     switch (row.type) {
                         case 'DOWN_TO_UP':
-                            this.$router.push({path: '/process/transfer', params: {state: row.state, type: row.type}});
+                            this.$router.push({path: '/process/transfer', query: {state: row.state, type: row.type}});
                             break;
                         case 'BORROW':
                             this.$router.push({
                                 path: '/process/secondment',
-                                params: {state: row.state, type: row.type}
+                                query: {state: row.state, type: row.type}
                             });
                             break;
                         case 'SCRAP':
-                            this.$router.push({path: '/process/scrapped', params: {state: row.state, type: row.type}});
+                            this.$router.push({path: '/process/scrapped', query: {state: row.state, type: row.type}});
                             break;
                         case 'DIRECT_TRANSFER':
                             this.$router.push({
                                 path: '/process/directAdjustment',
-                                params: {state: row.state, type: row.type}
+                                query: {state: row.state, type: row.type}
                             });
                             break;
                     }
