@@ -50,8 +50,7 @@
 
     .el-menu {
       border: none;
-      height: 80%;
-      max-height: 62vh;
+      max-height: 60vh;
       width: 100% !important;
     }
 
@@ -100,6 +99,7 @@
     }
 
     .topBottom {
+      transition: all 0.28s;
       width: 225px;
       text-align: center;
       color: #707070;
@@ -112,6 +112,13 @@
       height: 44px;
     }
   }
+
+  @media only screen and (max-height: 900px) {
+    .sidebar-container .topBottom {
+      display: none;
+    }
+  }
+
 
   .hideSidebar {
     .sidebar-container {

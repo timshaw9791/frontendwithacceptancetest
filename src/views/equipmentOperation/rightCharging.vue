@@ -2,6 +2,7 @@
     <div>
         <el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
                   fit highlight-current-row>
+            <bos-table-column lable="rfid" field="equip.rfid"></bos-table-column>
             <bos-table-column lable="装备名" field="name"></bos-table-column>
             <bos-table-column lable="装备序号" field="serial"></bos-table-column>
             <bos-table-column lable="架体编号" field="location.number"></bos-table-column>

@@ -29,7 +29,8 @@
 
                     <el-table-column label="操作" align="center" width="300">
                         <template slot-scope="scope">
-                            <el-button type="text" class="_textBt" @click="dialogShow(scope.row)">
+                            <el-button type="text" class="_textBt" style="vertical-align: middle;"
+                                       @click="dialogShow(scope.row)">
                                 <svg-icon icon-class="编辑"/>
                                 安全库存 :
                             </el-button>

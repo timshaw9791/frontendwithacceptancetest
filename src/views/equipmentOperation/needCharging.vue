@@ -35,8 +35,8 @@
         data() {
             return {
                 param: {
-                    property:'lastUpkeepTime',
-                    direction:'ASC'
+                    property: 'lastUpkeepTime',
+                    direction: 'ASC'
                 },
                 list: [],
             }
@@ -48,6 +48,20 @@
         //         return this.getEntityListWithPagintor(api.getEquipRemindStrategyList);
         //     },
         // },
+        props: {
+            keyword: {
+                type: String,
+            }
+        },
+
+        watch: {
+            keyword(newVal) {
+                if (newVal) {
+                    this.$set(this.param, 'keyword', newVal);
+                }
+            }
+        },
+
         methods: {
             async getList() {
                 this.list = await this.getAxiosList(getNeedCharge);

@@ -15,9 +15,6 @@
 
             <bos-table-column lable="保养周期/天" :filter="(row)=>milliToDay(row.upkeepCycle)"></bos-table-column>
 
-            <!--<bos-table-column lable="保养周期/天" field="upkeepCycle"></bos-table-column>-->
-
-
             <bos-table-column lable="上次保养时间" :filter="(row)=>formatTime(row.lastUpkeepTime)"></bos-table-column>
 
             <bos-table-column lable="保养倒计时"
@@ -35,6 +32,8 @@
             <el-button @click="$emit('cancel',false)">取 消</el-button>
             <el-button type="primary" @click="submit">提 交</el-button>
         </div>
+
+
         <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
 
 
@@ -71,8 +70,9 @@
             batch: {
                 type: [Boolean, String],
                 default: false
-            }
+            },
         },
+
 
         components: {
             serviceDialog
@@ -86,7 +86,6 @@
         mounted() {
             this.getList();
         },
-
 
         methods: {
             async getList() {
@@ -117,7 +116,10 @@
                 this.$refs.dialogButton.show();
                 this.equipList.push(row.equip.id);
             },
-        }
+        },
+
+
+
     }
 </script>
 

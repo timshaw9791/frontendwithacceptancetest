@@ -27,4 +27,10 @@ export function equipmentCharging(data) {
 }
 
 
-
+export function getProcess(data) {
+    return request({
+        url: '/workflow-records/by-applicantId',
+        method: 'get',
+        params: data
+    })
+}
