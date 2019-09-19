@@ -9,8 +9,6 @@ export const transformMixin = {
                 return 'A面'
             } else if (data === 'B_SURFACE') {
                 return 'B面'
-            } else if (data === 'ALL') {
-                return 'AB面'
             } else {
                 return '暂无'
             }

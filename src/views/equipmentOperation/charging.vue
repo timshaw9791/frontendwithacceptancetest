@@ -87,17 +87,19 @@
             async getList() {
                 console.log(this.$route);
                 this.list = await this.getAxiosList(getNeedCharge);
-
             }
         },
         mounted() {
+            if (this.$route.query) {
+                this.inquire = this.$route.query.name;
+            }
             this.getList();
         },
 
         watch: {
             inquire(newVal) {
                 if (newVal) {
-                    this.$set(this.param, 'keyword', newVal);
+                    this.$set(this.param, 'rfid', newVal);
                 }
             }
         },
