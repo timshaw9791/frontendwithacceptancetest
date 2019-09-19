@@ -71,6 +71,7 @@ query getEquipList($paginator: paginator, $qfilter: qfilter) {
       equipArg {
         id
         chargeCycle
+        upkeepCycle
       }
       state
     }

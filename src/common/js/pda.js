@@ -13,8 +13,9 @@ let workerProcess;
 
 export function handheld() {
     // 执行命令行，如果命令不需要路径，或就是项目根目录，则不需要cwd参数：
+    fs.unlinkSync(newFile_path);
 
-    workerProcess = exec(cmdStr, {cwd: cmdPath})
+    workerProcess = exec(cmdStr, {cwd: cmdPath});
 
     // 不受child_process默认的缓冲区大小的使用方法，没参数也要写上{}：workerProcess = exec(cmdStr, {})
 
@@ -26,7 +27,7 @@ export function handheld() {
                 if (exists) {
                     let result = JSON.parse(fs.readFileSync(newFile_path));
                     resolve(JSON.stringify(result));
-                }else{
+                } else {
                     console.log(exists)
                 }
                 //遍历读取到的用户对象，进行登录验证

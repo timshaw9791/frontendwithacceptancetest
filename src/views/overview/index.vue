@@ -40,7 +40,7 @@
 
                 <div class="block">
 
-                    <div class="bk-style" v-for="(item,index) in contentList" :key="index">
+                    <div class="bk-style" v-for="(item,index) in contentList" :key="index+0.1">
                         <div class="bk-top">
                             <span>{{item.name}}</span>
                         </div>
@@ -50,18 +50,21 @@
                                     <el-table :data="item.list" fit @row-click="gotoInfo">
                                         <div v-if="index===0">
                                             <bos-table-column lable="编号" field="name"></bos-table-column>
-                                            <bos-table-column lable="大类" field="name"></bos-table-column>
+                                            <bos-table-column lable="类型" field="name"></bos-table-column>
                                             <bos-table-column lable="状态" field="name"></bos-table-column>
                                         </div>
                                         <div v-if="index===1">
                                             <bos-table-column lable="倒计时"
                                                               :filter="(row)=>`${row.day}天`"></bos-table-column>
 
-                                            <bos-table-column lable="大类" field="type"></bos-table-column>
+                                            <bos-table-column lable="名称" field="equipName"></bos-table-column>
 
                                             <bos-table-column lable="装备序号" field="equipSerial"></bos-table-column>
 
-                                            <bos-table-column lable="名称" field="equipName"></bos-table-column>
+
+                                            <bos-table-column lable="类型" field="type"></bos-table-column>
+
+
                                         </div>
                                         <div v-if="index===2">
                                             <bos-table-column lable="倒计时"
@@ -93,7 +96,8 @@
                             <span>温/湿度</span>
                         </div>
                         <div class="bk-content center" @click="gotoInfo('surroundings')">
-                            <progress-circular :width="180" :strokeWidth="6" :percentage="100" color="#2F2F76">
+                            <progress-circular :width="180" :strokeWidth="6" :percentage="100" color="#2F2F76"
+                                               style="cursor: pointer;">
                                 <div class="inside">
                                     <div>当前温度</div>
                                     <div>{{surroundings.temperature}}°</div>
@@ -105,7 +109,7 @@
 
                     <div class="bk-style">
                         <div class="bk-top">
-                            <span @click="gotoInfo('video')">视频监控</span>
+                            <span @click="gotoInfo('video')" style="cursor:pointer">视频监控</span>
                         </div>
                         <div class="bk-content">
                             <video-player width="454px" height="248px" :videoID="1"></video-player>
@@ -126,7 +130,7 @@
     import progressCircular from 'components/base/progressCircular'
     import FlvPlayerVue from 'components/videoPlayer/FlvPlayer.vue';
     import {temperatureValue} from "api/surroundings";
-    import {equipmentAmount, equipmentScrapped, equipmentCharging} from "api/statistics";
+    import {equipmentAmount, equipmentScrapped, equipmentCharging, getProcess} from "api/statistics";
     import api from 'gql/home.gql'
     import {transformMixin} from 'common/js/transformMixin'
     import {formRulesMixin} from 'field/common/mixinComponent';
@@ -153,11 +157,14 @@
         mixins: [formRulesMixin, transformMixin],
         methods: {
             getList() {
+                // getProcess().then(res => {
+                //
+                // });
                 equipmentScrapped().then(res => {
                     console.log(res);
                     this.contentList[2] = {
                         list: res,
-                        name: '到期报废提醒',
+                        name: '到期报废提醒', equipmentCharging
                     };
                     this.contentList.push('');
                     this.contentList.pop();
@@ -208,15 +215,13 @@
                     this.contentList.push('');
                     this.contentList.pop();
                 });
-
-
             },
             gotoInfo(row, route) {
                 console.log(row);
                 if (row.type === '充电') {
-                    this.$router.push('/equipmentOperation/charging');
+                    this.$router.push({path: '/equipmentOperation/charging', params: {name: row.rfid}});
                 } else if (row.type === '保养') {
-                    this.$router.push('/equipmentOperation/maintenance');
+                    this.$router.push({path: '/equipmentOperation/maintenance', params: {name: row.rfid}});
                 }
                 if (row === 'surroundings') {
                     this.$router.push('/surroundings/index');
@@ -227,6 +232,11 @@
                 if (row === 'statistics') {
                     this.$router.push({path: '/report/index', params: {name: route}});
                 }
+
+                if (row.state) {
+                    this.$router.push({path: '/record/borrow', params: {name: row.rfid}});
+                }
+
             },
             getHumiture() {
                 this.$ajax({
@@ -262,6 +272,11 @@
 </script>
 
 <style lang="scss" scoped>
+
+    /deep/ .hover-row {
+        cursor: pointer;
+    }
+
     .overview {
         .el-card {
             border: none !important;
@@ -314,6 +329,7 @@
                         display: flex;
                         justify-content: center;
                         align-items: center;
+                        cursor: pointer;
 
                         .inside {
                             display: grid;
@@ -393,6 +409,7 @@
                     .bk-content {
                         padding: 0 30px;
 
+
                         .monitor {
                             width: 300px;
                             height: 300px;
@@ -400,7 +417,6 @@
 
                         .scroll-bar {
                             max-height: 250px;
-                            min-height: 250px;
                             width: 100%;
                         }
 
@@ -434,6 +450,5 @@
         }
 
     }
-
 
 </style>

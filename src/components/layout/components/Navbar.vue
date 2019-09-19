@@ -34,8 +34,12 @@
                     </el-dropdown-item>
                 </router-link>
 
+                <el-dropdown-item>
+                    <span @click="logout">注 销</span>
+                </el-dropdown-item>
+
                 <el-dropdown-item divided>
-                    <span @click="logout" style="display:block;">退 出</span>
+                    <span @click="windowClose" style="display:block;">退 出</span>
                 </el-dropdown-item>
             </el-dropdown-menu>
         </el-dropdown>
@@ -71,6 +75,9 @@
                     // this.$message.success('退出成功');
                 })
             },
+            windowClose() {
+                window.close();
+            },
         },
         mounted() {
             startSocket(JSON.parse(localStorage.getItem('user')).id);
@@ -102,7 +109,7 @@
                 .svg {
                     cursor: pointer;
                     font-size: 22px;
-                    color: rgb(90, 90, 90);
+                    color: rgba(47, 47, 118, 0.9);
                 }
             }
 

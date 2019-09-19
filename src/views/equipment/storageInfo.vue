@@ -250,10 +250,10 @@
     import {transformMixin} from "common/js/transformMixin";
 
 
-    const cmdPath = 'C:\\Users\\Administrator';
-    const exec = window.require('child_process').exec;
-    const spawn = window.require('child_process').spawn;
-    import {killProcess} from "common/js/kill";
+    // const cmdPath = 'C:\\Users\\Administrator';
+    // const exec = window.require('child_process').exec;
+    // const spawn = window.require('child_process').spawn;
+    // import {killProcess} from "common/js/kill";
 
     export default {
         data() {

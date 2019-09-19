@@ -50,7 +50,7 @@
                 <el-table-column label="操作" align="supplier" width="200">
                     <template slot-scope="scope">
                         <el-button type="primary" size="mini" @click="goInfo('look',scope.row)">查看</el-button>
-                        <el-button size="mini" @click="toDel(scope.row)">删除</el-button>
+                        <el-button type="danger" size="mini" @click="toDel(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -135,10 +135,10 @@
 
     // nodejs调用子进程的方法
 
-    const cmdPath = 'C:\\Users\\Administrator';   //cmd命令的位置
-    const exec = window.require('child_process').exec;
-    const spawn = window.require('child_process').spawn;
-    import {killProcess} from "common/js/kill";
+    // const cmdPath = 'C:\\Users\\Administrator';   //cmd命令的位置
+    // const exec = window.require('child_process').exec;
+    // const spawn = window.require('child_process').spawn;
+    // import {killProcess} from "common/js/kill";
 
     export default {
         data() {

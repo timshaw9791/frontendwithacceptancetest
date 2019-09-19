@@ -41,7 +41,7 @@ export let formRulesMixin = {
             R: __RULES__,
             //设置分页参数，和默认值
             partialPiginator: {totalPages: 10, totalElements: 10},//默认值
-            param: {size: 5, page: 1, keyword: ''},//分页参数,
+            param: {size: 10, page: 1, keyword: ''},//分页参数,
             copyNameLike: '',
             historyPage: 'History-Page',//存放当前页数,
             loading: false,
@@ -160,7 +160,6 @@ export let formRulesMixin = {
 
             return axios(JSON.parse(JSON.stringify(this.param))).then(res => {
                 console.log(res);
-
                 this.partialPiginator.totalPages = res.totalPages;
                 this.partialPiginator.totalElements = res.totalElements;
                 return res.content;
@@ -168,7 +167,23 @@ export let formRulesMixin = {
                 console.log(err);
                 this.$message.error(err);
             })
-        }
+        },
+        gqlMutate(graphql, variables, sCallback) {//便利方法，用于手动修改数据的请求
+            this.mutate(graphql, variables).then((data) => {
+                if (data.errors) {   //未通过服务端的表单验证
+                    console.log(data.errors);
+                } else {//通过后返回数据，使用者可执行自定义处理数据
+                    sCallback.call(this, data);
+                }
+
+            })
+        },
+        mutate(mutation, variables) {//声明手动修改的方法
+            return this.$apollo.mutate({
+                mutation: mutation,
+                variables: variables,
+            });
+        },
     },
     destroyed() {
         this.removeHistoryPage();
