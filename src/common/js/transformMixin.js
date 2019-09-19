@@ -13,6 +13,32 @@ export const transformMixin = {
                 return '暂无'
             }
         },
+        workType(data) {
+            switch (data) {
+                case 'DOWN_TO_UP':
+                    return '调拨';
+                case 'BORROW':
+                    return '借用';
+                case 'SCRAP':
+                    return '报废';
+                case 'DIRECT_TRANSFER':
+                    return '报废';
+            }
+        },
+        workState(data) {
+            switch (data) {
+                case 'UNDER_REVIEW':
+                    return '审核中';
+                case 'REJECTED':
+                    return '已驳回';
+                case 'PASS':
+                    return '已通过';
+                case 'INVALLD':
+                    return '作废';
+            }
+        },
+
+
         countdown(lastChargeTime, chargeCycle) {
             let date = (new Date()).getTime(),
                 countdownTime = '';
