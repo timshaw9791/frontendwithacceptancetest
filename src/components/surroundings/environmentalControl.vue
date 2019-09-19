@@ -2,7 +2,7 @@
     <div class="environmentalControl">
         <s_card :header="'设备状态及控制'">
            <div class="control-box">
-               <control-template v-for="item in control" v-if="item.flag"  :templateData="item" @handleConctrol="toConctrol"></control-template>
+               <control-template v-for="item in control"  :templateData="item" @handleConctrol="toConctrol"></control-template>
            </div>
         </s_card>
         <charging-station ref="chargingStation"></charging-station>
@@ -25,6 +25,8 @@
     import light from './control/lighting'
     import exhaust from './control/exhaust'
     import disinfection from './control/disinfection'
+    import {baseURL} from "../../api/config";
+
     export default {
         name: "environmentalControl",
         components:{
@@ -41,16 +43,14 @@
         data(){
             return{
                 control:[
-                    {svg:'插座图标',text:'智能充电台',flag:true},
-                    {svg:'除湿图标',text:'除湿器控制',flag:true},
-                    {svg:'灯光图标',text:'灯光控制',flag:true},
-                    {svg:'烟雾报警',text:'烟雾报警',flag:true},
-                    {svg:'视频监控',text:'视频监控',flag:true},
-                    {svg:'空调图标',text:'空调控制',flag:true},
-                    {svg:'排风图标',text:'排风控制',flag:true},
-                    {svg:'消毒图标',text:'消毒机控制',flag:true},
-                    {svg:'无排风',text:'排风控制',flag:false},
-                    {svg:'无消毒',text:'消毒机控制',flag:false}
+                    {svg:'插座图标',notSvg:'',text:'智能充电台',flag:true},
+                    {svg:'除湿图标',notSvg:'除湿图标灰',text:'除湿器控制',flag:true},
+                    {svg:'灯光图标',notSvg:'',text:'灯光控制',flag:true},
+                    {svg:'烟雾报警',notSvg:'烟雾报警灰',text:'烟雾报警',flag:true},
+                    {svg:'视频监控',notSvg:'',text:'视频监控',flag:true},
+                    {svg:'空调图标',notSvg:'空调图标灰',text:'空调控制',flag:true},
+                    {svg:'排风图标',notSvg:'排风图标灰',text:'排风控制',flag:true},
+                    {svg:'消毒图标',notSvg:'消毒图标灰',text:'消毒机控制',flag:true},
                 ],
                 clickRefList:[
                     {name:'智能充电台',ref:'chargingStation'},
@@ -60,32 +60,60 @@
                     {name:'烟雾报警',ref:'smokeAlarm'},
                     {name:'排风控制',ref:'exhaust'},
                     {name:'消毒机控制',ref:'disinfection'}
-                    ]
+                    ],
+                flag:{
+                    chargingStation:false,
+                    dehumidification:false,
+                    airConditioning:false,
+                    lighting:false,
+                    smokeAlarm:false,
+                    exhaust:false,
+                    disinfection:false
+                }
             }
         },
+        created(){
+            this.getConfigs();
+        },
         methods:{
+            getConfigs(){
+                this.$ajax({
+                    method:'post',
+                    url:baseURL+'/environment/deviceConfig',
+                }).then((res)=>{
+                    let config=res.data.data;
+                    this.control[3].flag=config.SMOKE;
+                    this.control[1].flag=config.DEHUMIDIFIER;
+                    this.control[7].flag=config.DISINFECTION;
+                    this.control[5].flag=config.AIR_CONDITIONER;
+                    this.control[6].flag=config.EXHAUST_AIR;
+                }).catch(err=>{
+                    this.$message.error(err);
+                });
+            },
             toConctrol(data){
                if(data.flag){
-                   if(data.text=='视频监控'){
-                       this.$message.warning('该功能尚未开放')
-                   }else {
-                       console.log()
-                       this.handleClick(data.text);
-                   }
+                   this.handleClick(data.text);
+               }else {
+                   this.$message.error('本仓库尚未开放此功能')
                }
             },
-
             handleClick(clickItem){
                 let clickRef;
-                if(clickItem=='空调控制'||clickItem=='排风控制'||clickItem=='消毒机控制'){
-                    this.$message.warning('该功能尚未开放')
-                }else {
-                    this.clickRefList.forEach(item=>{
-                        if(clickItem==item.name){
-                            clickRef = item.ref;
-                            this.$refs[clickRef].show();
-                        }
-                    });
+                this.clickRefList.forEach(item=>{
+                    if(clickItem==item.name){
+                        clickRef = item.ref;
+                        this.$refs[clickRef].show();
+                    }
+                });
+            },
+            clickFlag(ref){
+                for (let key in this.flag){
+                    if(key!=ref){
+                        this.flag[key]=false
+                    }else {
+                        this.flag[key]=true
+                    }
                 }
             }
         }

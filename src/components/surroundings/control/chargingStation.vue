@@ -51,9 +51,19 @@
             }
         },
         created(){
-
+            this.getConfigs()
         },
         methods:{
+            getConfigs(){
+                this.$ajax({
+                    method:'post',
+                    url:baseURL+'/environment/deviceConfig',
+                }).then((res)=>{
+                    console.log('getConfigs',res.data);
+                }).catch(err=>{
+                    this.$message.error(err);
+                });
+            },
             getChargingStationtList(){
               this.ajax(baseURL+'/environment/getChargeCount','',(data)=>{
                   for (let i=1;i<=data.data.data;i++){

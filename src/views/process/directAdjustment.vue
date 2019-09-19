@@ -77,7 +77,7 @@
                 urlObject:{
                     transferUrlObj:{
                         applyUrl:{
-                            doing:'/task/by-user-and-process-definition',
+                            doing:'/process-instance/by-start-user',
                             history:'/direct-transfer-apply-orders/history',
                         },
                         equipOrderName:'applyNeedEquips',

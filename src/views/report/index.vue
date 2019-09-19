@@ -309,7 +309,7 @@
                             scrapList.push({
                                 name: item.name,
                                 number: item.damageCount,
-                                percentage: Number((item.damageRate * 100).toFixed(2)),
+                                percentage: Number((item.damageRate * 100).toFixed(1)),
                                 allCount: item.name,
                                 select:false
                             })
@@ -323,7 +323,7 @@
                             name: 1,
                             allCount:1,
                             number:3,
-                            percentage: Number((0.454545 * 100).toFixed(2)),
+                            percentage: Number((0.454545 * 100).toFixed(1)),
                             select:false}]);
                     }
 
@@ -362,7 +362,7 @@
                             maintenanceList.push({
                                 name: item.name,
                                 number: item.maintainCount,
-                                percentage: Number((item.maintainRate*100).toFixed(2)),
+                                percentage: Number((item.maintainRate*100).toFixed(1)),
                                 allCount: item.name,
                                 select:false
                             })
@@ -376,7 +376,7 @@
                             name: 1,
                             allCount:1,
                             number:3,
-                            percentage: Number((0.23456*100).toFixed(2)),
+                            percentage: Number((0.23456*100).toFixed(1)),
                             select:false}]);
                     }
                 })

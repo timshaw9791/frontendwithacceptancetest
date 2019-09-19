@@ -85,6 +85,7 @@
         justify-content: center;
         height: 100%;
         font-size: 20px;
+        cursor: pointer;
     }
     .input-box .input{
         width: 100%;

@@ -124,7 +124,12 @@
                 this.$refs.transferTable.getList(this.$refs.transferTable.select,this.$refs.transferTable.searchNumber)
             },
             addDirectAdjustment(){
-                this.$refs.addDirectAdjustment.showAdd()
+                if(this.myUnit.level!="MUNICIPAL"){
+                    this.$refs.addDirectAdjustment.showAdd()
+                }else {
+                    this.$message.info('市局无法发起调拨！')
+                }
+
             },
             getUnitAndHouse(){
                 this.gqlQuery(transferApi.getOrganUnit, {
@@ -132,6 +137,7 @@
                     value: JSON.parse(localStorage.getItem('user')).unitId
                 }, (data) => {
                         this.myUnit=data[0];
+                    console.log(this.myUnit)
                         if(this.myUnit.level!="MUNICIPAL"){
                             request({
                                 method:'get',
@@ -147,13 +153,6 @@
                         }
                 }, true);
                 let url=baseURL+'/house';
-                request({
-                    method:'get',
-                    url:url,
-                }).then(res=>{
-                    this.house.id= res.id;
-                    this.house.name=res.name;
-                })
                 request({
                     method:'get',
                     url:baseBURL+ '/architecture/houseByOrganUnitId',

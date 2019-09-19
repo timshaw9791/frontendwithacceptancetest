@@ -33,9 +33,9 @@
                 },
                 labelList: [
                     {lable: '申请编号', field: 'variables.applyOrder.number', sort: false},
-                    {lable: '申请大类', field: 'variables.applyOrder.type',filter: this.filterType, sort: false},
+                    {lable: '申请类型', field: 'variables.applyOrder.type',filter: this.filterType, sort: false},
                     {lable: '申请装备', field: `variables.applyOrder.${this.urlObject.equipOrderName}`, filter: this.filterName, sort: false},
-                    {lable: '申请人', field: 'variables.applyOrder.applicant.name', sort: false},
+                    {lable: '申请人员', field: 'variables.applyOrder.applicant.name', sort: false},
                     {lable: '申请时间', field: 'variables.applyOrder.applyTime', filter: this.filterTime},
                     {lable: '审批状态', field: 'variables.applyOrder.state', filter: this.filterState}
                 ]
@@ -67,7 +67,7 @@
                 default(){
                     return{
                         applyUrl:{
-                            doing:'/task/by-user-and-process-definition',
+                            doing:'/process-instance/by-start-user',
                             history:'/transfer-apply-order/history',
                         },
                         equipOrderName:'applyNeedEquips',
@@ -133,9 +133,9 @@
                   if(newVal=='apply'){
                       this.labelList= [
                           {lable: '申请编号', field: 'variables.applyOrder.number', sort: false},
-                          {lable: '申请大类', field: 'variables.applyOrder.type',filter: this.filterType, sort: false},
+                          {lable: '申请类型', field: 'variables.applyOrder.type',filter: this.filterType, sort: false},
                           {lable: '申请装备', field: 'variables.applyOrder.applyNeedEquips', filter: this.filterName, sort: false},
-                          {lable: '申请人', field: 'variables.applyOrder.applicant.name', sort: false},
+                          {lable: '申请人员', field: 'variables.applyOrder.applicant.name', sort: false},
                           {lable: '申请时间', field: 'variables.applyOrder.applyTime', filter: this.filterTime},
                           {lable: '审批状态', field: 'variables.applyOrder.state', filter: this.filterState}
                       ]
@@ -148,9 +148,9 @@
                       }
                       this.labelList= [
                           {lable: name, field: 'variables.applyOrder.number', sort: false},
-                          {lable: '申请大类', field: 'variables.applyOrder.type',filter: this.filterType, sort: false},
+                          {lable: '申请类型', field: 'variables.applyOrder.type',filter: this.filterType, sort: false},
                           {lable: '申请装备', field: 'variables.applyOrder.scrapEquips', filter: this.filterName, sort: false},
-                          {lable: '申请人', field: 'variables.applyOrder.applicant.name', sort: false},
+                          {lable: '申请人员', field: 'variables.applyOrder.applicant.name', sort: false},
                           {lable: '申请时间', field: 'variables.applyOrder.applyTime', filter: this.filterTime},
                           {lable: '装备状态', field: 'variables.state', filter: this.filterTransferState}
                       ]
@@ -284,15 +284,19 @@
                 }).then(res=>{
                     if(res){
                         let list=[];
-                        console.log('status',status);
                         // this.paginator.totalPages=res.totalPages;
                         if(status=='doing'){
                             // res.forEach(item=>{
                             //     let items=item;
                             //     list.push(items)
                             // });
-                            list=res;
-                            list.sort(this.compare('createTime'))
+                            if(res!=[]){
+                                res.forEach(item=>{
+                                    list.push({variables:{applyOrder:item.processVariables.applyOrder},createTime:item.stateTime})
+                                });
+                                list.sort(this.compare('createTime'))
+                            }
+
                         }else {
                             console.log('notdoing',res);
                             res.content.forEach(item=>{

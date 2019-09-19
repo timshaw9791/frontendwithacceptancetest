@@ -77,8 +77,14 @@
                         key: 'equipInfo.equipName',
                         value: '%' + data + '%',
                         operator: 'LIKE',
-                        combinator: 'AND',
-                        next: copyQ
+                        combinator: 'OR',
+                        next: {
+                            key: 'equipInfo.equipRfid',
+                            value: '%' + data + '%',
+                            operator: 'LIKE',
+                            combinator: 'AND',
+                            next:copyQ
+                        }
                     };
                 }
                 this.$set(this.table.graphqlTable.graphqlKey, 'qfilter', qfilter);

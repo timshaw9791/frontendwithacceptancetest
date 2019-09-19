@@ -73,7 +73,7 @@
                 urlObject:{
                     transferUrlObj:{
                         applyUrl:{
-                            doing:'/task/by-user-and-process-definition',
+                            doing:'/process-instance/by-start-user',
                             history:'/scrap-apply-orders/history',
                         },
                         billUrl:'',

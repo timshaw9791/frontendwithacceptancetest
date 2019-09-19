@@ -5,16 +5,16 @@
                 <div class="addDirectAdjustment-label">
                     <div class="label">
                         <span v-text="'所在库房：'"></span>
-                        <el-input class="input" :disabled="true" size="small" v-model="house.name"></el-input>
+                        <el-input class="input" :disabled="true" size="large" v-model="house.name"></el-input>
                         <!--<div class="default-span"><span v-text="house.name"></span></div>-->
                     </div>
                     <div class="label">
-                        <span v-text="'指定机构：'"></span>
-                        <el-input class="input" :disabled="true" size="small" v-model="unit.name"></el-input>
+                        <span v-text="'出库机构：'"></span>
+                        <el-input class="input" :disabled="true" size="large" v-model="unit.name"></el-input>
                     </div>
                     <div class="label">
                         <span v-text="'指定领导：'"></span>
-                        <field-input-query size="small" v-model="leader.leaderName"
+                        <field-input-query size="large" v-model="leader.leaderName"
                                            :inputList="leader.leaderList"
                                            @select="getLeaderSelect"></field-input-query>
                     </div>

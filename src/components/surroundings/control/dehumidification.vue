@@ -51,7 +51,7 @@
         },
         created(){
             this.getThreshold();
-            this.dehumidificationControl();
+
             this.getDehumidification()
             },
         methods:{

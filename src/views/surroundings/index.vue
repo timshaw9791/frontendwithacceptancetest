@@ -70,11 +70,13 @@
             }
         },
         created(){
+
             this.getHumiture();
             // this.videoSrc=this.$store.state.user.deploy.data['HIK_CAMERA_ADDRESS'];
             setInterval(this.getHumiture,600000);
         },
         methods:{
+
             h_black(data){
                 this.flag=!this.flag;
                 this.isVideo=false;

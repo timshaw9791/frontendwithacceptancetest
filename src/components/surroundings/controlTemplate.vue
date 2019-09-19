@@ -1,6 +1,6 @@
 <template>
     <div class="c_template" @click="handleConctrol">
-        <svg-icon :icon-class="templateData.svg" class="svg"></svg-icon>
+        <svg-icon :icon-class="templateData.flag?templateData.svg:templateData.notSvg" class="svg"></svg-icon>
         <span v-text="templateData.text" class="span"></span>
     </div>
 </template>

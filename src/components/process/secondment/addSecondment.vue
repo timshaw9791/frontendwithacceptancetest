@@ -5,13 +5,14 @@
                 <div class="addApply-label" >
                     <div class="label" v-if="taskType!='直调'">
                         <span v-text="'所在库房：'"></span>
-                        <el-input class="input" :disabled="true" size="small" v-model="house.name"></el-input>
+                        <el-input class="input" :disabled="true" size="large" v-model="house.name"></el-input>
                         <!--<div class="default-span"><span v-text="house.name"></span></div>-->
                     </div>
                     <div class="label" v-if="taskType!='报废'">
                         <span v-text="`${ZhiDingOrJieShou}机构：`"></span>
                         <div style="width: 181px">
                             <el-cascader
+                                    size="large"
                                     :options="unitList"
                                     v-model="selectUnit"
                                     :props="selectProp"
@@ -44,7 +45,7 @@
                     </div>
                     <div class="label" v-if="taskType=='报废'">
                         <span v-text="'硬件选择：'"></span>
-                        <el-select v-model="hardware.hardwareSelect" placeholder="请选择" size="small">
+                        <el-select v-model="hardware.hardwareSelect" placeholder="请选择" size="large">
                             <el-option
                                     v-for="item in hardware.hardwareList"
                                     :key="item.value"
@@ -512,7 +513,6 @@
                 this.adminUser.adminItem= data.key
             },
             getLeader(id) {
-                console.log(id);
                 // this.$ajax({
                 //     method:'get',
                 //     url:baseBURL+'/process-level/by-organ-unit-and-transfer-type',
@@ -542,23 +542,29 @@
                         transferType: type
                     }
                 }).then(res => {
-                    this.leader.leaderList = [];
-                    this.processLevelId = res.id;
-                    if(res.levelLeaderMap!=null){
-                        if (Object.keys(res.levelLeaderMap).length == 0) {
+                    if(res){
+                        this.leader.leaderList = [];
+                        this.processLevelId = res.id;
+                        if(res.levelLeaderMap!=null){
+                            if (Object.keys(res.levelLeaderMap).length == 0) {
+                                res.applyLeaders.forEach(item => {
+                                    this.leader.leaderList.push({value: item.name, key: item})
+                                })
+                            } else {
+                                res.levelLeaderMap['1'].forEach(item => {
+                                    this.leader.leaderList.push({value: item.name, key: item})
+                                })
+                            }
+                        }else {
                             res.applyLeaders.forEach(item => {
-                                this.leader.leaderList.push({value: item.name, key: item})
-                            })
-                        } else {
-                            res.levelLeaderMap['1'].forEach(item => {
                                 this.leader.leaderList.push({value: item.name, key: item})
                             })
                         }
                     }else {
-                        res.applyLeaders.forEach(item => {
-                            this.leader.leaderList.push({value: item.name, key: item})
-                        })
+                       this.$message.error('尚未设置本机构的'+this.taskType+'流程！')
                     }
+                }).catch(err=>{
+                    this.$message.error(err);
                 })
             },
             submit() {

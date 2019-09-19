@@ -50,7 +50,7 @@
                 <el-table-column label="操作" align="supplier" width="200">
                     <template slot-scope="scope">
                         <el-button type="primary" size="mini" @click="goInfo('look',scope.row)">查看</el-button>
-                        <el-button size="mini" @click="toDel(scope.row)">删除</el-button>
+                        <el-button size="mini" style="background: #EF4545;border-color:#EF4545;color: white;" @click="toDel(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>

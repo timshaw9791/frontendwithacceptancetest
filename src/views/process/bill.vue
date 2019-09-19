@@ -146,7 +146,7 @@
                 </div>
                 <div class="tr">
                     <div class="title">申请时间: <span v-text="filterTime(billData.applyOrder.applyTime)"></span></div>
-                    <div class="title">申请人: <span v-text="billData.applyOrder.applicant.name"></span></div>
+                    <div class="title">申请人员: <span v-text="billData.applyOrder.applicant.name"></span></div>
                 </div>
                 <div class="tr">
                     <div class="title">申请原因: <span v-text="billData.applyOrder.reason"></span></div>
