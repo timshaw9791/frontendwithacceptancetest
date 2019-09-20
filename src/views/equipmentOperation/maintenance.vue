@@ -162,11 +162,21 @@
                 this.equipList.push(row.equip.id);
             },
 
-
         },
 
         mounted() {
+            if (this.$route.query) {
+                this.inquire = this.$route.query.name;
+            }
             this.getList();
+        },
+
+        watch: {
+            inquire(newVal) {
+                if (newVal) {
+                    this.$set(this.param, 'rfid', newVal);
+                }
+            }
         },
 
         components: {

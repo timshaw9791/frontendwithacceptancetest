@@ -49,9 +49,11 @@
                                 <div class="scroll-bar">
                                     <el-table :data="item.list" fit @row-click="gotoInfo">
                                         <div v-if="index===0">
-                                            <bos-table-column lable="编号" field="name"></bos-table-column>
-                                            <bos-table-column lable="类型" field="name"></bos-table-column>
-                                            <bos-table-column lable="状态" field="name"></bos-table-column>
+                                            <bos-table-column lable="类型"
+                                                              :filter="(row)=>workType(row.type)"></bos-table-column>
+                                            <bos-table-column lable="编号" field="number"></bos-table-column>
+                                            <bos-table-column lable="状态"
+                                                              :filter="(row)=>workState(row.state)"></bos-table-column>
                                         </div>
                                         <div v-if="index===1">
                                             <bos-table-column lable="倒计时"
@@ -157,14 +159,26 @@
         mixins: [formRulesMixin, transformMixin],
         methods: {
             getList() {
-                // getProcess().then(res => {
-                //
-                // });
+                let data = {
+                    page: 1,
+                    size: 20,
+                    applicantId: JSON.parse(localStorage.getItem('user')).id
+                };
+
+                getProcess(data).then(res => {
+                    this.contentList[0] = {
+                        list: res.content,
+                        name: '调拨通知',
+                    };
+                    console.log(res);
+                });
+
+
                 equipmentScrapped().then(res => {
                     console.log(res);
                     this.contentList[2] = {
                         list: res,
-                        name: '到期报废提醒', equipmentCharging
+                        name: '到期报废提醒',
                     };
                     this.contentList.push('');
                     this.contentList.pop();
@@ -219,24 +233,45 @@
             gotoInfo(row, route) {
                 console.log(row);
                 if (row.type === '充电') {
-                    this.$router.push({path: '/equipmentOperation/charging', params: {name: row.rfid}});
+                    this.$router.push({path: '/equipmentOperation/charging', query: {name: row.rfid}});
                 } else if (row.type === '保养') {
-                    this.$router.push({path: '/equipmentOperation/maintenance', params: {name: row.rfid}});
+                    this.$router.push({path: '/equipmentOperation/maintenance', query: {name: row.rfid}});
                 }
                 if (row === 'surroundings') {
                     this.$router.push('/surroundings/index');
                 }
                 if (row === 'video') {
-                    this.$router.push({path: '/surroundings/index', params: {name: 'video'}});
+                    this.$router.push({path: '/surroundings/index', query: {name: 'video'}});
                 }
                 if (row === 'statistics') {
-                    this.$router.push({path: '/report/index', params: {name: route}});
+                    this.$router.push({path: '/report/index', query: {name: route}});
                 }
 
-                if (row.state) {
-                    this.$router.push({path: '/record/borrow', params: {name: row.rfid}});
+                if (row.state && row.inputTime) {
+                    this.$router.push({path: '/record/borrow', query: {name: row.rfid}});
                 }
-
+                if (row.processInstanceId) {
+                    switch (row.type) {
+                        case 'DOWN_TO_UP':
+                            this.$router.push({path: '/process/transfer', query: {state: row.state, type: row.type}});
+                            break;
+                        case 'BORROW':
+                            this.$router.push({
+                                path: '/process/secondment',
+                                query: {state: row.state, type: row.type}
+                            });
+                            break;
+                        case 'SCRAP':
+                            this.$router.push({path: '/process/scrapped', query: {state: row.state, type: row.type}});
+                            break;
+                        case 'DIRECT_TRANSFER':
+                            this.$router.push({
+                                path: '/process/directAdjustment',
+                                query: {state: row.state, type: row.type}
+                            });
+                            break;
+                    }
+                }
             },
             getHumiture() {
                 this.$ajax({

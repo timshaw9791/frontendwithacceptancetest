@@ -1,5 +1,5 @@
 import request from 'common/js/request'
-
+import {baseBURL} from "./config";
 
 export function equipmentAmount(data) {
     return request({
@@ -29,7 +29,7 @@ export function equipmentCharging(data) {
 
 export function getProcess(data) {
     return request({
-        url: '/workflow-records/by-applicantId',
+        url: `${baseBURL}/workflow-records/by-applicantId`,
         method: 'get',
         params: data
     })

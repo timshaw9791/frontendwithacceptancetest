@@ -122,7 +122,7 @@
 
                             <field-select label="架体AB面" v-model="zbForm.surfaceL" width="2.5"
                                           :disabled="edit"
-                                          :list="[{val:'A_SURFACE',key:'A面'},{val:'B_SURFACE',key:'B面'},{val:'ALL',key:'AB面'}]"></field-select>
+                                          :list="[{val:'A_SURFACE',key:'A面'},{val:'B_SURFACE',key:'B面'}]"></field-select>
 
                             <field-input v-model="zbForm.floorL" label="架体层号" width="2.5"
                                          :disabled="edit"></field-input>
