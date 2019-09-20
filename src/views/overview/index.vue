@@ -253,21 +253,47 @@
                 if (row.processInstanceId) {
                     switch (row.type) {
                         case 'DOWN_TO_UP':
-                            this.$router.push({path: '/process/transfer', query: {state: row.state, type: row.type}});
+                            this.$router.push({
+                                path: '/process/transfer',
+                                query: {
+                                    state: row.state,
+                                    type: row.type,
+                                    id: row.id,
+                                    processInstanceId: row.processInstanceId
+                                }
+                            });
                             break;
                         case 'BORROW':
                             this.$router.push({
                                 path: '/process/secondment',
-                                query: {state: row.state, type: row.type}
+                                query: {
+                                    state: row.state,
+                                    type: row.type,
+                                    id: row.id,
+                                    processInstanceId: row.processInstanceId
+                                }
                             });
                             break;
                         case 'SCRAP':
-                            this.$router.push({path: '/process/scrapped', query: {state: row.state, type: row.type}});
+                            this.$router.push({
+                                path: '/process/scrapped',
+                                query: {
+                                    state: row.state,
+                                    type: row.type,
+                                    id: row.id,
+                                    processInstanceId: row.processInstanceId
+                                }
+                            });
                             break;
                         case 'DIRECT_TRANSFER':
                             this.$router.push({
                                 path: '/process/directAdjustment',
-                                query: {state: row.state, type: row.type}
+                                query: {
+                                    state: row.state,
+                                    type: row.type,
+                                    id: row.id,
+                                    processInstanceId: row.processInstanceId
+                                }
                             });
                             break;
                     }
