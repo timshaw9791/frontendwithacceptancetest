@@ -259,6 +259,7 @@
                                     state: row.state,
                                     type: row.type,
                                     id: row.id,
+                                    number:row.number,
                                     processInstanceId: row.processInstanceId
                                 }
                             });
@@ -270,6 +271,7 @@
                                     state: row.state,
                                     type: row.type,
                                     id: row.id,
+                                    number:row.number,
                                     processInstanceId: row.processInstanceId
                                 }
                             });
@@ -281,6 +283,7 @@
                                     state: row.state,
                                     type: row.type,
                                     id: row.id,
+                                    number:row.number,
                                     processInstanceId: row.processInstanceId
                                 }
                             });
@@ -292,6 +295,7 @@
                                     state: row.state,
                                     type: row.type,
                                     id: row.id,
+                                    number:row.number,
                                     processInstanceId: row.processInstanceId
                                 }
                             });

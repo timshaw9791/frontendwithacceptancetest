@@ -188,6 +188,10 @@
                 type: String,
                 default: 'add'
             },
+            applyOrderId:{
+              type:String,
+              default:''
+            },
             taskId:{
                 type:String,
                 default: ''
@@ -673,6 +677,7 @@
                 if (this.addType == 'add') {
                     url = baseBURL + `/${urlApi}/start` + '?nextApproveId=' + this.leader.leaderItem.userId + '&processLevelId=' + this.processLevelId
                 }else {
+                    applyOrder.id=this.applyOrderId;
                     url = baseBURL + `/${urlApi}/apply` + '?nextApproveId=' + this.leader.leaderItem.userId + '&taskId=' + this.taskId
                 }
                 this.allocationApplication(url, applyOrder);

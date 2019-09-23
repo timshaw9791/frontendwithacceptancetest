@@ -8,7 +8,7 @@
                    <switch-control :active="active" :inactive="inactive" style="margin-top: 31px" :status="dehumidificationStatus?true:false" @handleChange="dehumidificationControl"></switch-control>
                </div>
                <div class="dehumidification-bottom">
-                   <span v-text="'湿度阈值：'"></span><input class="input" :style="flag?'border:none;':''" v-model="threshold" :disabled="flag"/>
+                   <span v-text="'湿度阈值：'"></span><input class="input" :style="flag?'border:none;':''" v-model="threshold" :disabled="flag"/><span v-text="'%'"></span>
                    <div @click="toSetThreshold">
                        <svg-icon icon-class="编辑" style="width: 18px;height: 18px;margin-left: 24px"></svg-icon>
                    </div>
@@ -24,7 +24,7 @@
 <script>
     import dialogs from '../surroundingDialog'
     import surroundingCard from '../surroundingCard'
-    import switchControl from './controlComponents/switch'
+    import switchControl from './controlComponents/switchControl'
     import {baseURL} from "../../../api/config";
 
     export default {
@@ -51,7 +51,6 @@
         },
         created(){
             this.getThreshold();
-
             this.getDehumidification()
             },
         methods:{

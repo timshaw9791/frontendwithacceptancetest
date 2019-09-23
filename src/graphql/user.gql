@@ -44,6 +44,25 @@ query getOrganUnit($id: String!) {
     name
   }
 }
+mutation identityTriggerSyncFaceInfo {
+  identity_triggerSyncFaceInfo {
+    faceInformation
+    gender
+    name
+    policeSign
+    position
+    fingerprintInformation
+    phone
+    password
+    role {
+      id
+    }
+    unitId
+    id
+    idNumber
+    sign
+  }
+}
 
 mutation identitySaveUser($user: User_!) {
   identity_saveUser(user: $user) {

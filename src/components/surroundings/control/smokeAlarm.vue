@@ -18,7 +18,7 @@
 <script>
     import dialogs from '../surroundingDialog'
     import surroundingCard from '../surroundingCard'
-    import switchControl from './controlComponents/switch'
+    import switchControl from './controlComponents/switchControl'
     import {baseURL} from "../../../api/config";
 
     export default {

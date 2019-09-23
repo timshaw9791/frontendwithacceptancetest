@@ -1,7 +1,7 @@
 export function killProcess() {
     let newData = [];
-    const exec = window.require('child_process').exec;
-    const spawn = window.require('child_process').spawn;
+    //  const exec = window.require('child_process').exec;
+    // const spawn = window.require('child_process').spawn;
     exec("jps", ["/L"], (err, data) => {
         newData = data.split('\n');
         newData.some(value => {

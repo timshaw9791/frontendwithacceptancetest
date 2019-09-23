@@ -21,11 +21,14 @@
         },
         methods: {
             indexValue() {
+                console.log('indexValue',this.value);
                 this.$emit('selected', this.value);
             }
         },
-        created(){
-
+        mounted(){
+            if(this.indexDefault=='已结束'){
+                this.indexValue()
+            }
         },
         props: {
             options: {
@@ -41,9 +44,13 @@
             }
         },
         watch: {
-            indexDefault(newVal) {
-                this.value = newVal;
-                this.$emit('selected', newVal);
+            'indexDefault':{
+               handler(newVal){
+                   console.log('indexDefaultWatch',newVal);
+                   this.value = newVal;
+
+                   this.$emit('selected', newVal);
+               }
             }
         }
     }

@@ -35,7 +35,7 @@
                 </div>
             </div>
             <div class="secondment-body">
-                <t_table ref="secondmentTable" :urlObject="urlObject.transferUrlObj" :typeSingle="select.typeSingle" :select="select.single" :havePage="havePage" :searchNumber="search" @toSee="toSee" ></t_table>
+                <t_table ref="secondmentTable" :processInstanceId="processInstanceId"  :urlObject="urlObject.transferUrlObj" :typeSingle="select.typeSingle" :select="select.single" :havePage="havePage" :searchNumber="search" @toSee="toSee" ></t_table>
             </div>
         </div>
         <bills v-if="!viewStatus.flag" :billName="billName" :reSet="{unit:unit,restaurants:restaurants,myUnit:myUnit,house:house}" @closeBill="closeBill" :singleStatus="select.singleStatus" :billUrlObject="urlObject.billUrlObject" :typeSingle="select.typeSingle" :billData="billData" @toBack="haveBack"></bills>
@@ -77,6 +77,7 @@
                 house:{
                     id:'',name:''
                 },
+                processInstanceId:'',
                 billName:'借调',
                 urlObject:{
                     transferUrlObj:{
@@ -129,6 +130,7 @@
             }
         },
         created(){
+            this.defaultList();
             this.getEquipInfo();
             this.getUnitAndHouse();
         },
@@ -144,6 +146,23 @@
             }
         },
         methods:{
+            defaultList(){
+              if(this.$route.query.state!=null){
+                  if(this.$route.query.state=='UNDER_REVIEW'||this.$route.query.state=='REJECTED'){
+                      this.getOnGoingList(this.$route.query)
+                  }else {
+                      this.getOverList(this.$route.query)
+                  }
+              }
+            },
+            getOverList(query){
+                this.indexDefault='已结束';
+                this.search=query.number;
+            },
+            getOnGoingList(query){
+                this.indexDefault='进行中';
+                this.processInstanceId=query.processInstanceId;
+            },
             closeBill(){
                 this.viewStatus.flag=!this.viewStatus.flag;
                 this.$refs.secondmentTable.getList(this.$refs.secondmentTable.select,this.$refs.secondmentTable.searchNumber)
@@ -236,13 +255,13 @@
                 // this.directDefault=data.row;
                 // this.downloadSrc=baseURL+'/secondments/up-to-down/export-excel'+'?secondmentOrderId='+this.directDefault.id;
                 // this.viewStatus.flag=!this.viewStatus.flag
+                console.log(data)
                 this.billData=data.row.variables;
                 this.select.singleStatus=this.select.single;
-
-                if(data.row.taskId!=null){
+                if(data.row.taskId!=null&&data.row.taskId!=''){
                     this.$set(this.billData,'taskId',data.row.taskId)
                 }
-                if(data.row.processInstanceId!=undefined){
+                if(data.row.processInstanceId!=undefined&&data.row.processInstanceId!=''){
                     this.$set(this.billData,'processInstanceId',data.row.processInstanceId)
                 }
                 this.viewStatus.flag=!this.viewStatus.flag
@@ -251,11 +270,14 @@
                 this.viewStatus.flag=!this.viewStatus.flag
             },
             selectValue(data) {
+                console.log('selectValue',data);
                 this.select.single = data;
             },
             clickSingle(type){
+
                 this.select.typeSingle=type;
                 this.search='';
+                this.processInstanceId='';
                 if(type=='apply'){
                     this.indexDefault='进行中';
                     this.billName='借调';

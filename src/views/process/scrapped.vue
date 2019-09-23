@@ -106,6 +106,7 @@
                 },
                 indexDefault:'进行中',
                 search:'',
+                processInstanceId:'',
                 restaurants:[],
                 myUnit:{},
                 billData:{},
@@ -121,6 +122,7 @@
             }
         },
         created(){
+            this.defaultList();
             this.getEquipInfo();
             this.getUnitAndHouse();
         },
@@ -136,6 +138,23 @@
             }
         },
         methods:{
+            defaultList(){
+                if(this.$route.query.state!=null){
+                    if(this.$route.query.state=='UNDER_REVIEW'||this.$route.query.state=='REJECTED'){
+                        this.getOnGoingList(this.$route.query)
+                    }else {
+                        this.getOverList(this.$route.query)
+                    }
+                }
+            },
+            getOverList(query){
+                this.indexDefault='已结束';
+                this.search=query.number;
+            },
+            getOnGoingList(query){
+                this.indexDefault='进行中';
+                this.processInstanceId=query.processInstanceId;
+            },
             closeBill(){
                 this.viewStatus.flag=!this.viewStatus.flag;
                 this.$refs.scrappedTable.getList(this.$refs.scrappedTable.select,this.$refs.scrappedTable.searchNumber)
@@ -249,6 +268,7 @@
             clickSingle(type){
                 this.select.typeSingle=type;
                 this.search='';
+                this.processInstanceId='';
                 if(type=='apply'){
                     this.indexDefault='进行中';
                     this.billName='报废';

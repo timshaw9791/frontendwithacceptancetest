@@ -17,7 +17,7 @@
 
 <script>
     import dialogs from '../surroundingDialog'
-    import switchControl from './controlComponents/switch'
+    import switchControl from './controlComponents/switchControl'
     import lightControl from './controlComponents/lightControl'
     import {baseURL} from "../../../api/config";
 

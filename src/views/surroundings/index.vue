@@ -1,7 +1,7 @@
 <template>
     <div class="surroundings-box">
         <my-header :title="'环境管理'" :searchFlag="false" :haveBlack="!flag" @h_black="h_black"></my-header>
-        <div class="title">
+        <div class="title" v-if="!flag">
             <span v-text="'视频监控'" v-if="isVideo"></span>
             <span v-text="title" v-if="isLineChart"></span>
         </div>

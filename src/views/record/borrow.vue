@@ -1,7 +1,7 @@
 <template>
     <div class="borrow">
         <my-header :title="'装备领还记录'" :searchFlag="false"></my-header>
-        <r_search :placeholder="'装备名称'" @handleSearch="handleSearch"></r_search>
+        <r_search :placeholder="'装备名称/RFID'" @handleSearch="handleSearch" :defaultSearch="defaultSearch"></r_search>
         <r_label :table="table" v-show="table.flag" @clickTable="clickTable" @sortCondition="sortGql"
                  ref="las"></r_label>
         <r_video ref="recordVideo" :src="address"></r_video>
@@ -24,8 +24,14 @@
             r_label,
             r_video
         },
+        created(){
+            if(this.$route.query.name!=null){
+                this.defaultSearch=this.$route.query.name
+            }
+        },
         data() {
             return {
+                defaultSearch:'',
                 table: {
                     flag: true,
                     labelList: [
@@ -56,6 +62,7 @@
                 address:''
             }
         },
+
         methods: {
             handleSearch(data) {
                 let qfilter;
@@ -68,22 +75,19 @@
                     }
                 } else {
                     let that = this;
-                    let copyQ = {
+                     qfilter = {
                         key: "action", value: 'RECEIVE_RETURN', operator: "EQUEAL", combinator: "OR", next: {
-                            key: "action", value: 'RECEIVE', operator: "EQUEAL"
-                        }
-                    };
-                    qfilter = {
-                        key: 'equipInfo.equipName',
-                        value: '%' + data + '%',
-                        operator: 'LIKE',
-                        combinator: 'OR',
-                        next: {
-                            key: 'equipInfo.equipRfid',
-                            value: '%' + data + '%',
-                            operator: 'LIKE',
-                            combinator: 'AND',
-                            next:copyQ
+                            key: "action", value: 'RECEIVE', operator: "EQUEAL",combinator:"AND",next:{
+                                key: 'equipInfo.equipName',
+                                value: '%' + data + '%',
+                                operator: 'LIKE',
+                                combinator: 'OR',
+                                next: {
+                                    key: 'equipInfo.equipRfid',
+                                    value: '%' + data + '%',
+                                    operator: 'LIKE'
+                                }
+                            }
                         }
                     };
                 }

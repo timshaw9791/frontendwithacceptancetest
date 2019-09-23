@@ -18,7 +18,7 @@
 
 <script>
     import surroundingCard from '../../surroundingCard'
-    import switchControl from './switch'
+    import switchControl from './switchControl'
     import {baseURL} from "../../../../api/config";
 
     export default {

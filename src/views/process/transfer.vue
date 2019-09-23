@@ -31,7 +31,7 @@
                 </div>
             </div>
             <div class="transfer-body">
-                <t_table ref="transferTable" :typeSingle="select.typeSingle" :select="select.single" :havePage="havePage" :searchNumber="search" @toSee="toSee" ></t_table>
+                <t_table ref="transferTable" :processInstanceId="processInstanceId" :typeSingle="select.typeSingle" :select="select.single" :havePage="havePage" :searchNumber="search" @toSee="toSee" ></t_table>
             </div>
         </div>
         <bills v-if="!viewStatus.flag" :reSet="{unit:unit,restaurants:restaurants,myUnit:myUnit,house:house}" @closeBill="closeBill" :singleStatus="select.singleStatus" :typeSingle="select.typeSingle" :billData="billData" @toBack="haveBack"></bills>
@@ -86,6 +86,7 @@
                 },
                 indexDefault:'进行中',
                 search:'',
+                processInstanceId:'',
                 restaurants:[],
                 myUnit:{},
                 billData:{},
@@ -101,6 +102,11 @@
         },
         created(){
             // this.getEquipInfo();
+            this.defaultList();
+            console.log('query',this.$route.query);
+            if(this.$route.query.state!=null){
+
+            }
             this.getUnitAndHouse();
         },
         computed:{
@@ -115,6 +121,23 @@
             }
         },
         methods:{
+            defaultList(){
+                if(this.$route.query.state!=null){
+                    if(this.$route.query.state=='UNDER_REVIEW'||this.$route.query.state=='REJECTED'){
+                        this.getOnGoingList(this.$route.query)
+                    }else {
+                        this.getOverList(this.$route.query)
+                    }
+                }
+            },
+            getOverList(query){
+                this.indexDefault='已结束';
+                this.search=query.number;
+            },
+            getOnGoingList(query){
+                this.indexDefault='进行中';
+                this.processInstanceId=query.processInstanceId;
+            },
             closeBill(){
                 this.viewStatus.flag=!this.viewStatus.flag;
                 this.$refs.transferTable.getList(this.$refs.transferTable.select,this.$refs.transferTable.searchNumber)
@@ -137,7 +160,6 @@
                     value: JSON.parse(localStorage.getItem('user')).unitId
                 }, (data) => {
                         this.myUnit=data[0];
-                    console.log(this.myUnit)
                         if(this.myUnit.level!="MUNICIPAL"){
                             request({
                                 method:'get',
@@ -254,6 +276,7 @@
             clickSingle(type){
                 this.select.typeSingle=type;
                 this.search='';
+                this.processInstanceId='';
                 if(type=='apply'){
                     this.indexDefault='进行中';
                     this.selectList=this.select.selectModel.apply;

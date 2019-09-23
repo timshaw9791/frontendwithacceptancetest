@@ -16,7 +16,7 @@
 
 <script>
     export default {
-        name: "switch",
+        name: "switchControl",
         data(){
             return{
                 value:''

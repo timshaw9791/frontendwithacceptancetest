@@ -28,6 +28,10 @@
             }
         },
         props:{
+            defaultSearch:{
+              type:String,
+              default:''
+            },
             placeholder:{
                 type:String,
                 default:'测试'
@@ -51,6 +55,9 @@
         },
         created(){
           this.action[0].flag=true;
+            if(this.defaultSearch!=''){
+                this.search=this.defaultSearch
+            }
         },
         methods:{
             clickSelect(index){

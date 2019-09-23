@@ -2,7 +2,8 @@
     <div class="transferTable">
         <div class="table">
             <field-table :list="list" :labelList="labelList"
-                         :tableAction="tableAction" :havePage="havePage" @sortChange="sortChange"  :pageInfo="paginator" @tableCurrentPageChanged="changePage" @clickTableCloum="clickTableCloum" style="width: 100%">
+                         :tableAction="tableAction" :havePage="havePage" @sortChange="sortChange" :pageInfo="paginator"
+                         @tableCurrentPageChanged="changePage" @clickTableCloum="clickTableCloum" style="width: 100%">
             </field-table>
         </div>
     </div>
@@ -15,109 +16,118 @@
 
     export default {
         name: "transferTable",
-        components:{
+        components: {
             transferComponent
         },
-        data(){
-            return{
-                list:[],
-                paginator:{
-                    page:1,
-                    totalPages:10,
-                    size:9
+        data() {
+            return {
+                list: [],
+                paginator: {
+                    page: 1,
+                    totalPages: 10,
+                    size: 9
                 },
 
-                tableAction:{
-                    label:'操作',
-                    button:['查看']
+                tableAction: {
+                    label: '操作',
+                    button: ['查看']
                 },
                 labelList: [
                     {lable: '申请编号', field: 'variables.applyOrder.number', sort: false},
-                    {lable: '申请类型', field: 'variables.applyOrder.type',filter: this.filterType, sort: false},
-                    {lable: '申请装备', field: `variables.applyOrder.${this.urlObject.equipOrderName}`, filter: this.filterName, sort: false},
+                    {lable: '申请类型', field: 'variables.applyOrder.type', filter: this.filterType, sort: false},
+                    {
+                        lable: '申请装备',
+                        field: `variables.applyOrder.${this.urlObject.equipOrderName}`,
+                        filter: this.filterName,
+                        sort: false
+                    },
                     {lable: '申请人员', field: 'variables.applyOrder.applicant.name', sort: false},
                     {lable: '申请时间', field: 'variables.applyOrder.applyTime', filter: this.filterTime},
                     {lable: '审批状态', field: 'variables.applyOrder.state', filter: this.filterState}
                 ]
             }
         },
-        props:{
-            searchNumber:{
-                type:String,
-                default:''
+        props: {
+            searchNumber: {
+                type: String,
+                default: ''
             },
-            state:{
-                type:String
+            state: {
+                type: String
             },
-            havePage:{
-              type:Boolean,
-              default:true
+            havePage: {
+                type: Boolean,
+                default: true
             },
-            select:{
-              type:String
+            select: {
+                type: String
             },
-            typeSingle:{
-              type:String
+            processInstanceId: {
+                type: String,
+                default: ''
             },
-            indexDefault:{
-              type:String,
+            typeSingle: {
+                type: String
             },
-            urlObject:{
-                type:Object,
-                default(){
-                    return{
-                        applyUrl:{
-                            doing:'/process-instance/by-start-user',
-                            history:'/transfer-apply-order/history',
+            indexDefault: {
+                type: String,
+            },
+            urlObject: {
+                type: Object,
+                default() {
+                    return {
+                        applyUrl: {
+                            doing: '/process-instance/by-start-user',
+                            history: '/transfer-apply-order/history',
                         },
-                        equipOrderName:'applyNeedEquips',
-                        billUrl:'/transfer-order/by-user-and-order-state',
-                        urlParamsKey:{
-                            processDefinitionKey:'transfer',
-                            type:'DOWN_TO_UP'
+                        equipOrderName: 'applyNeedEquips',
+                        billUrl: '/transfer-order/by-user-and-order-state',
+                        urlParamsKey: {
+                            processDefinitionKey: 'transfer',
+                            type: 'DOWN_TO_UP'
                         }
                     }
                 }
             },
-            table:{
-                type:Object,
-                default(){
-                    return{
-                        configure:[
-                            {prop:'id',lable:'RFID',sortable:false,formatter:false},
-                            {prop:'name',lable:'装备名称',sortable:false,formatter:false},
-                            {prop:'number',lable:'装备序列',sortable:false,formatter:false},
-                            {prop:'user',lable:'操作人员',sortable:false,formatter:false},
-                            {prop:'timer',lable:'操作时间',sortable:true,formatter:false},
-                            {prop:'state',lable:'装备状态',sortable:false,formatter:false}
+            table: {
+                type: Object,
+                default() {
+                    return {
+                        configure: [
+                            {prop: 'id', lable: 'RFID', sortable: false, formatter: false},
+                            {prop: 'name', lable: '装备名称', sortable: false, formatter: false},
+                            {prop: 'number', lable: '装备序列', sortable: false, formatter: false},
+                            {prop: 'user', lable: '操作人员', sortable: false, formatter: false},
+                            {prop: 'timer', lable: '操作时间', sortable: true, formatter: false},
+                            {prop: 'state', lable: '装备状态', sortable: false, formatter: false}
                         ]
                     }
                 }
             }
         },
-        watch:{
-            'searchNumber':{
-                deep:true,
-                handler(newVal,oldVal){
-                    this.paginator.page=1;
+        watch: {
+            'searchNumber': {
+                deep: true,
+                handler(newVal, oldVal) {
+                    this.paginator.page = 1;
                     // this.getList()
-                    if(newVal==''&&oldVal!=''){
-                        this.getList(this.select,newVal);
-                    }else if(newVal!=''){
-                        this.getList(this.select,newVal);
+                    if (newVal == '' && oldVal != '') {
+                        this.getList(this.select, newVal);
+                    } else if (newVal != '') {
+                        this.getList(this.select, newVal);
                     }
 
                 }
             },
-            'state':{
-                handler(newVal){
-                    this.paginator.page=1;
+            'state': {
+                handler(newVal) {
+                    this.paginator.page = 1;
                     // this.getList()
                 }
             },
-            'havePage':{
-                handler(newVal){
-                    this.paginator.page=1;
+            'havePage': {
+                handler(newVal) {
+                    this.paginator.page = 1;
                 }
 
             },
@@ -128,43 +138,53 @@
             //       }
             //   }
             // },
-            'typeSingle':{
-              handler(newVal){
-                  if(newVal=='apply'){
-                      this.labelList= [
-                          {lable: '申请编号', field: 'variables.applyOrder.number', sort: false},
-                          {lable: '申请类型', field: 'variables.applyOrder.type',filter: this.filterType, sort: false},
-                          {lable: '申请装备', field: 'variables.applyOrder.applyNeedEquips', filter: this.filterName, sort: false},
-                          {lable: '申请人员', field: 'variables.applyOrder.applicant.name', sort: false},
-                          {lable: '申请时间', field: 'variables.applyOrder.applyTime', filter: this.filterTime},
-                          {lable: '审批状态', field: 'variables.applyOrder.state', filter: this.filterState}
-                      ]
-                  }else if(newVal=='transfer'||newVal=='secondment'||newVal=='returns'){
-                      let name='调拨单号';
-                      if(newVal=='secondment'){
-                          name='借调单号'
-                      }else if(newVal=='returns'){
-                          name='归还单号'
-                      }
-                      this.labelList= [
-                          {lable: name, field: 'variables.applyOrder.number', sort: false},
-                          {lable: '申请类型', field: 'variables.applyOrder.type',filter: this.filterType, sort: false},
-                          {lable: '申请装备', field: 'variables.applyOrder.scrapEquips', filter: this.filterName, sort: false},
-                          {lable: '申请人员', field: 'variables.applyOrder.applicant.name', sort: false},
-                          {lable: '申请时间', field: 'variables.applyOrder.applyTime', filter: this.filterTime},
-                          {lable: '装备状态', field: 'variables.state', filter: this.filterTransferState}
-                      ]
-                  }
-              }
-            },
-            'urlObject.billUrl':{
-                deep:true,
-                handler(newVal){
-                    this.getList(this.select,this.searchNumber);
+            'typeSingle': {
+                handler(newVal) {
+                    if (newVal == 'apply') {
+                        this.labelList = [
+                            {lable: '申请编号', field: 'variables.applyOrder.number', sort: false},
+                            {lable: '申请类型', field: 'variables.applyOrder.type', filter: this.filterType, sort: false},
+                            {
+                                lable: '申请装备',
+                                field: 'variables.applyOrder.applyNeedEquips',
+                                filter: this.filterName,
+                                sort: false
+                            },
+                            {lable: '申请人员', field: 'variables.applyOrder.applicant.name', sort: false},
+                            {lable: '申请时间', field: 'variables.applyOrder.applyTime', filter: this.filterTime},
+                            {lable: '审批状态', field: 'variables.applyOrder.state', filter: this.filterState}
+                        ]
+                    } else if (newVal == 'transfer' || newVal == 'secondment' || newVal == 'returns') {
+                        let name = '调拨单号';
+                        if (newVal == 'secondment') {
+                            name = '借调单号'
+                        } else if (newVal == 'returns') {
+                            name = '归还单号'
+                        }
+                        this.labelList = [
+                            {lable: name, field: 'variables.applyOrder.number', sort: false},
+                            {lable: '申请类型', field: 'variables.applyOrder.type', filter: this.filterType, sort: false},
+                            {
+                                lable: '申请装备',
+                                field: 'variables.applyOrder.scrapEquips',
+                                filter: this.filterName,
+                                sort: false
+                            },
+                            {lable: '申请人员', field: 'variables.applyOrder.applicant.name', sort: false},
+                            {lable: '申请时间', field: 'variables.applyOrder.applyTime', filter: this.filterTime},
+                            {lable: '装备状态', field: 'variables.state', filter: this.filterTransferState}
+                        ]
+                    }
                 }
             },
-            'select':{
-                handler(newVal){
+            'urlObject.billUrl': {
+                deep: true,
+                handler(newVal) {
+                    this.getList(this.select, this.searchNumber);
+                }
+            },
+            'select': {
+                handler(newVal) {
                     // let url = baseBURL+'/transfer-order/by-user-and-order-state';
                     // if(newVal=='进行中'){
                     //     this.getApplyList('doing');
@@ -175,37 +195,37 @@
                     // }else {
                     //     this.getTransferList(newVal,url)
                     // }
-                    this.getList(newVal,this.searchNumber);
+                    this.getList(newVal, this.searchNumber);
                 }
             }
         },
-        created(){
-            this.getApplyList('doing','');
+        created() {
+            this.getApplyList('doing', '');
         },
         methods: {
-            sortChange(data){
+            sortChange(data) {
                 /*this.$emit('sortCondition',data)*/
             },
-            changePage(data){
-                this.paginator.page=data;
+            changePage(data) {
+                this.paginator.page = data;
             },
-            clickTableCloum(data){
-                this.$emit('toSee',data)
+            clickTableCloum(data) {
+                this.$emit('toSee', data)
             },
-            filterName(s){
-                let equipList=s.variables.applyOrder[this.urlObject.equipOrderName];
-                let name='';
-                equipList.forEach(item=>{
-                    let small=item.model+item.name;
-                    if(name==''){
-                        name=small
-                    }else {
-                        name=name+','+small
+            filterName(s) {
+                let equipList = s.variables.applyOrder[this.urlObject.equipOrderName];
+                let name = '';
+                equipList.forEach(item => {
+                    let small = item.model + item.name;
+                    if (name == '') {
+                        name = small
+                    } else {
+                        name = name + ',' + small
                     }
                 });
-                if(name.length>12){
+                if (name.length > 12) {
 
-                    name=name.substring(0, 11)+'...'
+                    name = name.substring(0, 11) + '...'
                 }
                 return name
                 // let name='';
@@ -217,118 +237,146 @@
             filterTime(nS) {
                 return new Date(parseInt(nS.variables.applyOrder.applyTime)).toLocaleString().replace(/:\d{1,2}$/, ' ');
             },
-            filterState(s){
-                let state= s.variables.applyOrder.state;
-                if(state=='UNDER_REVIEW'){
+            filterState(s) {
+                let state = s.variables.applyOrder.state;
+                if (state == 'UNDER_REVIEW') {
                     return '审核中'
-                }else if(state=='REJECTED'){
+                } else if (state == 'REJECTED') {
                     return '已驳回'
-                } else if(state=='PASS'){
+                } else if (state == 'PASS') {
                     return '已通过'
-                }else {
+                } else {
                     return '作废'
                 }
             },
-            filterTransferState(s){
-                let state= s.variables.state;
-                if(state=='WITHOUT_OUT_HOUSE'){
+            filterTransferState(s) {
+                let state = s.variables.state;
+                if (state == 'WITHOUT_OUT_HOUSE') {
                     return '未出库'
-                }else if(state=='OUT_HOUSE'){
+                } else if (state == 'OUT_HOUSE') {
                     return '已出库'
-                } else if(state=='IN_HOUSE'){
+                } else if (state == 'IN_HOUSE') {
                     return '已入库'
                 }
             },
-            filterType(s){
-                let type=s.variables.applyOrder.type;
-                console.log(s.variables.applyOrder.type)
-                if(type=='DIRECT_TRANSFER'){
+            filterType(s) {
+                let type = s.variables.applyOrder.type;
+                console.log(s.variables.applyOrder.type);
+                if (type == 'DIRECT_TRANSFER') {
                     return '直调'
-                }else if(type=='DOWN_TO_UP'){
+                } else if (type == 'DOWN_TO_UP') {
                     return '调拨'
-                }else if(type=='BORROW'){
+                } else if (type == 'BORROW') {
                     return '借调'
-                }else if(type=='SCRAP'){
+                } else if (type == 'SCRAP') {
                     return '报废'
                 }
             },
-            getList(status,search){
-                let url = baseBURL+this.urlObject.billUrl;
-                if(status=='进行中'){
-                    this.getApplyList('doing','');
-                }else if(status=='已结束'){
-                    this.getApplyList('end',search);
-                }else if(status=='全部'||status=='All'){
-                    this.getTransferList('all',url,search)
-                }else {
-                    this.getTransferList(status,url,search)
+            getList(status, search) {
+                let url = baseBURL + this.urlObject.billUrl;
+                if (status == '进行中') {
+                    this.getApplyList('doing', '');
+                } else if (status == '已结束') {
+                    this.getApplyList('end', search);
+                } else if (status == '全部' || status == 'All') {
+                    this.getTransferList('all', url, search)
+                } else {
+                    this.getTransferList(status, url, search)
                 }
             },
-            getApplyList(status,search){
-                let page=this.paginator.page;
-                let size=this.paginator.size;
-                let id=JSON.parse(localStorage.getItem('user')).id;
-                let param={};
-                let url=baseBURL;
-                if(status=='doing'){
-                    url=url+ this.urlObject.applyUrl.doing;
-                    param={startUserId:id,processDefinitionKey:this.urlObject.urlParamsKey.processDefinitionKey};
-                }else {
-                    url=url+ this.urlObject.applyUrl.history;
-                    param={userId:id,page:page,size:size,number:search,type:this.urlObject.urlParamsKey.type};
+            getApplyList(status, search) {
+                let page = this.paginator.page;
+                let size = this.paginator.size;
+                let id = JSON.parse(localStorage.getItem('user')).id;
+                let param = {};
+                let url = baseBURL;
+                if (status == 'doing') {
+                    url = url + this.urlObject.applyUrl.doing;
+                    if (this.processInstanceId) {
+                        param = {
+                            startUserId: id,
+                            processDefinitionKey: this.urlObject.urlParamsKey.processDefinitionKey,
+                            processInstanceId: this.processInstanceId
+                        };
+                    } else {
+                        param = {
+                            startUserId: id,
+                            processDefinitionKey: this.urlObject.urlParamsKey.processDefinitionKey
+                        };
+                    }
+                } else {
+                    url = url + this.urlObject.applyUrl.history;
+                    param = {
+                        userId: id,
+                        page: page,
+                        size: size,
+                        number: search,
+                        type: this.urlObject.urlParamsKey.type
+                    };
                 }
                 request({
-                    method:'get',
-                    url:url,
-                    params:param
-                }).then(res=>{
-                    if(res){
-                        let list=[];
+                    method: 'get',
+                    url: url,
+                    params: param
+                }).then(res => {
+                    if (res) {
+                        let list = [];
                         // this.paginator.totalPages=res.totalPages;
-                        if(status=='doing'){
+                        if (status == 'doing') {
                             // res.forEach(item=>{
                             //     let items=item;
                             //     list.push(items)
                             // });
-                            if(res!=[]){
-                                res.forEach(item=>{
-                                    list.push({variables:{applyOrder:item.processVariables.applyOrder},createTime:item.stateTime})
+                            if (res != []) {
+
+                                res.forEach(item => {
+                                    list.push({
+                                        variables: {
+                                            applyOrder: item.processVariables.applyOrder,
+                                            approvalResults:item.processVariables.approvalResults,
+                                            maxLevel:item.processVariables.maxLevel,
+                                            currentLevel:item.processVariables.currentLevel
+                                        },
+                                        createTime: item.stateTime,
+                                        taskId: item.taskId,
+                                        processInstanceId: item.processInstanceId
+                                    })
                                 });
-                                list.sort(this.compare('createTime'))
+                                list.sort(this.compare('createTime'));
+                                console.log('list',list)
                             }
 
-                        }else {
-                            console.log('notdoing',res);
-                            res.content.forEach(item=>{
-                                list.push({variables:{applyOrder:item}})
+                        } else {
+                            res.content.forEach(item => {
+                                list.push({variables: {applyOrder: item}})
                             });
-                            this.paginator.totalPages=res.totalPages;
+                            this.paginator.totalPages = res.totalPages;
                         }
-                        this.list=list;
-                        console.log('this.list',this.list)
+                        this.list = list;
+                        console.log('this.list', this.list)
                     }
                 })
             },
-            compare(property){
-                return function(a,b){
+            compare(property) {
+                return function (a, b) {
                     let value1 = a[property];
                     let value2 = b[property];
                     return value2 - value1;
                 }
             },
-            getTransferList(status,url,search){
-                let page=this.paginator.page;
-                let size=this.paginator.size;
-                let id=JSON.parse(localStorage.getItem('user')).id;
-                let param={};
-                if (status == 'all'){
-                    if(this.search==''){
-                        param={page:page,size:size,userId:id};
-                    }else {
-                        param={number:search,page:page,size:size,userId:id};
+            getTransferList(status, url, search) {
+                let page = this.paginator.page;
+                let size = this.paginator.size;
+                let id = JSON.parse(localStorage.getItem('user')).id;
+                let param = {};
+                if (status == 'all') {
+                    if (this.search == '') {
+                        param = {page: page, size: size, userId: id};
+                    } else {
+                        param = {number: search, page: page, size: size, userId: id};
                     }
-                }else {
-                    param={number:search,page:page,size:size,userId:id,state:status};
+                } else {
+                    param = {number: search, page: page, size: size, userId: id, state: status};
                 }
 
                 // if(status=='doing'){
@@ -339,22 +387,22 @@
                 //     param={userId:JSON.parse(localStorage.getItem('user')).id,page:page,size:size,number:'201907305038'};
                 // }
                 request({
-                    method:'get',
-                    url:url,
-                    params:param
-                }).then(res=>{
-                    if(res){
-                        let list=[];
+                    method: 'get',
+                    url: url,
+                    params: param
+                }).then(res => {
+                    if (res) {
+                        let list = [];
                         // this.paginator.totalPages=res.totalPages;
-                        if(status=='doing'){
-                            list=res;
-                        }else {
-                            res.content.forEach(item=>{
-                                list.push({variables:item})
+                        if (status == 'doing') {
+                            list = res;
+                        } else {
+                            res.content.forEach(item => {
+                                list.push({variables: item})
                             });
-                            this.paginator.totalPages=res.totalPages;
+                            this.paginator.totalPages = res.totalPages;
                         }
-                        this.list=list;
+                        this.list = list;
                     }
                 })
             },
@@ -387,10 +435,11 @@
 </script>
 
 <style scoped>
-    .transferTable{
+    .transferTable {
         width: 100%;
     }
-    .transferTable .table{
+
+    .transferTable .table {
 
     }
 </style>

@@ -15,7 +15,7 @@
 <script>
     import dialogs from '../surroundingDialog'
     import surroundingCard from '../surroundingCard'
-    import switchControl from './controlComponents/switch'
+    import switchControl from './controlComponents/switchControl'
     export default {
         name: "exhaust",
         components: {
