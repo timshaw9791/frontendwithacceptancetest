@@ -1,8 +1,12 @@
 <template>
     <div>
         <el-card shadow="never" :body-style="{ padding:'0'}">
-            <div slot="header">
+            <div slot="header" class="header">
                 <span class="_card-title">{{title}}</span>
+                <div class="black" @click="black">
+                <svg-icon icon-class="返回" class="svg-info"></svg-icon>
+                <span v-text="'返回'"></span>
+            </div>
             </div>
             <div>
 
@@ -214,7 +218,7 @@
 
 
                 <div class="_box-bottom">
-                    <el-button @click="black">返回</el-button>
+                    <!-- <el-button @click="black">返回</el-button> -->
                     <el-button type="primary" @click="addEquipArg" v-if="!edit">确认</el-button>
                 </div>
             </div>
@@ -317,7 +321,7 @@
                 } else {
                     this.$refs.dialog.show();
                 }
-                killProcess();
+                //killProcess();
             },
 
             //点击提交后 根据从什么入口进入的执行对应的  新增  入库  装备基础信息修改 装备入库信息修改
@@ -799,6 +803,18 @@
         border-top: none !important;
     }
 
+    .black {
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        float: right;
+    }
+    
+    .black .svg-info {
+        height: 20px;
+        width: 20px;
+        margin-right: 10px;
+    }
 
     .box-card {
         .topIcon {

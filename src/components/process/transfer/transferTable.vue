@@ -33,7 +33,7 @@
                     button: ['查看']
                 },
                 labelList: [
-                    {lable: '申请编号', field: 'variables.applyOrder.number', sort: false},
+                    {lable: '申请单号', field: 'variables.applyOrder.number', sort: false},
                     {lable: '申请类型', field: 'variables.applyOrder.type', filter: this.filterType, sort: false},
                     {
                         lable: '申请装备',
@@ -142,7 +142,7 @@
                 handler(newVal) {
                     if (newVal == 'apply') {
                         this.labelList = [
-                            {lable: '申请编号', field: 'variables.applyOrder.number', sort: false},
+                            {lable: '申请单号', field: 'variables.applyOrder.number', sort: false},
                             {lable: '申请类型', field: 'variables.applyOrder.type', filter: this.filterType, sort: false},
                             {
                                 lable: '申请装备',

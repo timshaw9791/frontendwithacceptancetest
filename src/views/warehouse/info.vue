@@ -6,7 +6,7 @@
             </div>
             <div>
                 <tabs>
-                    <tab-select :options="selectList" indexDefault="全部" @selected="selectValue"></tab-select>
+                    <!-- <tab-select :options="selectList" indexDefault="全部" @selected="selectValue"></tab-select> -->
                     <div class="_buttons">
                         <BosInput
                                 placeholder="大类/小类/名称/型号/供应商"
