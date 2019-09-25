@@ -453,19 +453,19 @@
                 }
             },
             filterTime(date) {
-                if (date != 0) {
-                    let dates = new Date(date);
-                    let year = dates.getFullYear();
-                    let month = dates.getMonth() + 1;
-                    let day = dates.getDate();
-                    let hour = dates.getHours();
-                    let min = dates.getMinutes();
-                    let s = dates.getSeconds();
-                    return year + '-' + month + '-' + day + '\xa0' + hour + ':' + min + ':' + s
-                } else {
-                    return ''
-                }
-
+                // if (date != 0) {
+                //     let dates = new Date(date);
+                //     let year = dates.getFullYear();
+                //     let month = dates.getMonth() + 1;
+                //     let day = dates.getDate();
+                //     let hour = dates.getHours();
+                //     let min = dates.getMinutes();
+                //     let s = dates.getSeconds();
+                //     return year + '-' + month + '-' + day + '\xa0' + hour + ':' + min + ':' + s
+                // } else {
+                //     return ''
+                // }
+                return new Date(parseInt(date)).toLocaleString()
             },
             getOutHouse() {
                 if (!this.typeSingleFlag) {
