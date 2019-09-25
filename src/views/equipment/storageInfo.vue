@@ -1,13 +1,18 @@
 <template>
     <div>
         <el-card shadow="never" :body-style="{ padding:'0'}">
-            <div slot="header">
-                <span class="_card-title">{{title}}</span>
+            <div slot="header" style="display: flex">
+                <span class="_card-title" style="width: 100%;display: flex;align-items: center;">{{title}}</span>
+                <div>
+                    <el-button type="text" class="_textBt" style="padding: 0;" @click="black">
+                        <svg-icon icon-class="返回"/>
+                        返 回
+                    </el-button>
+                </div>
             </div>
             <div>
 
                 <!--装备参数-->
-
                 <el-card class="box-card" shadow="never">
                     <div slot="header">
                         <span>装备参数</span>
@@ -43,7 +48,7 @@
                             <field-cascader label="装备名称" :options="options" v-model="form.nameId" prop="nameId"
                                             width="3" :rules="r(true).all(R.require)"
                                             v-if="title.includes('入库')"
-                                            @change="getEquipInfo(form.nameId[2])">q
+                                            @change="getEquipInfo(form.nameId[2])">
                             </field-cascader>
 
                             <field-input v-model="form.price" label="装备单价" width="3"
@@ -52,6 +57,7 @@
 
 
                             <field-input v-model="form.eqBig" label="装备大类" width="3" :disabled="disabled||edit"
+                                         name="大类"
                                          v-if="title.includes('装备查看')||(title.includes('信息查看')&&edit)"></field-input>
 
                             <field-input v-model="form.price" label="装备单价" width="3"
@@ -61,6 +67,7 @@
 
 
                             <field-input v-model="form.eqSmall" label="装备小类" width="3" :disabled="disabled||edit"
+                                         name="小类"
                                          v-if="title.includes('装备查看')||(title.includes('信息查看')&&edit)"></field-input>
 
 
@@ -81,13 +88,13 @@
 
                             <!--M标识第三层-->
                             <field-cascader label="装备小类" :options="options" v-model="form.nameId" prop="nameId"
-                                            width="3" :rules="r(true).all(R.require)"
+                                            width="3" :rules="r(true).all(R.require)" name="小类"
                                             :disabled="edit"
                                             v-if="title.includes('新增')||(title.includes('信息查看')&&!edit)">
                             </field-cascader>
 
 
-                            <field-select label="供应商" v-model="form.vendorId" width="3"
+                            <field-select label="供应商" v-model="form.vendorId" width="3" name="供应商"
                                           :rules="r(true).all(R.require)"
                                           prop="vendorId"
                                           @change="vendor(form.vendorId)"
@@ -264,7 +271,7 @@
                     imageAddress: '',
                 },
                 zbForm: {},
-                list: [{rfid: "", serial: ""}],
+                list: [{rfid: null, serial: null}],
                 formRes: '',
                 inlineForm: {},
                 leadershipList: [],
@@ -562,6 +569,7 @@
 
             //选择完装备后执行 显示对应数据 和开启读卡器的使用
             getEquipInfo(data) {
+                killProcess();
                 this.gqlQuery(api.getEquipArg, {
                     id: data
                 }, (res) => {
@@ -586,6 +594,7 @@
                         this.imageUrl = '';
                     }
                 });
+
 
                 const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
 
@@ -765,6 +774,7 @@
 
         created() {
             this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];//获取到串口号
+            killProcess();
         },
         mounted() {
 

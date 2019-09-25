@@ -10,7 +10,7 @@
                          :rules="r(true).all(R.require)" prop="models"></field-input>
             <field-input v-model="form.model" label="装备型号" width="2.5" :disabled="disabled"
                          :rules="r(true).all(R.require)" prop="model"></field-input>
-            <field-input v-model="form.safeStock" label="安全库存" width="2.5" :disabled="disabled"
+            <field-input v-model="form.safeStock" label="标准库存" width="2.5" :disabled="disabled"
                          :rules="r(true).all(R.require)" prop="safeStock"></field-input>
             <field-input v-model="form.count" label="装备数量" width="2.5" :disabled="disabled"
                          :rules="r(true).all(R.require)" prop="count"></field-input>

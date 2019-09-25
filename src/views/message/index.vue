@@ -69,7 +69,7 @@
                     {label: '保养', value: 'MAINTAIN_REMIND'},
                     {label: '未归还', value: 'LONG_TIME_NOT_RETURN'},
                     {label: '过保', value: 'PERIOD_EXCEED_SHELF_LIFE'},
-                    {label: '安全库存', value: 'SAFE_SOCK_REMIND'},
+                    {label: '标准库存', value: 'SAFE_SOCK_REMIND'},
                 ],
                 qfilter: {},
             }

@@ -108,7 +108,6 @@
                             </progress-circular>
                         </div>
                     </div>
-
                     <div class="bk-style">
                         <div class="bk-top">
                             <span @click="gotoInfo('video')" style="cursor:pointer">视频监控</span>
@@ -117,7 +116,6 @@
                             <video-player width="454px" height="248px" :videoID="1"></video-player>
                         </div>
                     </div>
-
                 </div>
             </div>
         </el-card>
@@ -318,7 +316,7 @@
             this.getHumiture();
             this.videoTime = setInterval(() => {
                 window.location.reload();
-            }, 1800000);
+            }, 60000);  //180000
         },
         beforeDestroy() {
             clearTimeout(this.videoTime);
