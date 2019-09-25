@@ -34,8 +34,8 @@
                     </el-dropdown-item>
                 </router-link>
 
-                <el-dropdown-item>
-                    <span @click="logout">注 销</span>
+                <el-dropdown-item @click.native="logout">
+                    <span>注 销</span>
                 </el-dropdown-item>
 
                 <el-dropdown-item divided>
