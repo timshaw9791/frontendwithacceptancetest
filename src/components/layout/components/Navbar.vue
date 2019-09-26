@@ -4,7 +4,7 @@
 
         <!--<breadcrumb></breadcrumb>-->
         <div class="logo">
-            吉安县公安局应急装备物资管理系统
+            龙湾区公安局应急装备物资管理系统
         </div>
 
         <div class="icons">

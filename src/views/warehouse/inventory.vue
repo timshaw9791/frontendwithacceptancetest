@@ -56,12 +56,13 @@
         methods: {
             toInventory() {
                 this.inventoryObj.rflist = [];
-                handheld().then(data => {
-                    this.getInventoryRf(JSON.parse(data));
-                });
+                // handheld().then(data => {
+                //     this.getInventoryRf(JSON.parse(data));
+                // });
                 // this.getInventoryRf();
                 // this.getInventoryRfCopy();
                 //todo 记得合并前换回来
+                this.getInventoryRf({rfid:['19080020','12312141'],size:2});
                 this.$refs['inventory_dialog'].show();
             },
             getNote(data) {

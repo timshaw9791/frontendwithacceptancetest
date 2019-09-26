@@ -141,7 +141,7 @@
         height: 100%;
     }
     .inventory-box .header{
-        width: 976px;
+        width: 1244px;
         height: 30px;
         display: flex;
         justify-content: space-between;
@@ -162,7 +162,7 @@
         justify-content: center;
     }
     .inventory-box .title{
-        width:976px;
+        width:1244px;
         height:46px;
         background:rgba(47,47,118,0.03);
         border:1px solid rgba(112,112,112,0.03);
@@ -179,14 +179,14 @@
         color: #2F2F76;
     }
     .inventory-box .body{
-        width:976px;
+        width:1244px;
         display: flex;
         flex-direction:column;
         margin-top: 25px;
         margin-bottom: 15px;
     }
     .inventory-box .bottom{
-        width: 976px;
+        width: 1244px;
         margin-top: 15px;
         display: flex;
         align-items: center;

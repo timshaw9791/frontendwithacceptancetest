@@ -103,7 +103,6 @@
         created(){
             // this.getEquipInfo();
             this.defaultList();
-            console.log('query',this.$route.query);
             if(this.$route.query.state!=null){
 
             }
@@ -170,8 +169,24 @@
                                     name:res.name,
                                     id:res.id
                                 };
-                                this.getRestaurants(res.id)
-                            })
+                                console.log(res.id)
+                            });
+                            request({
+                                method:'get',
+                                url:baseBURL+'/architecture/houseByOrganUnitId',
+                                params:{organUnitId:data[0].upperId}
+                            }).then(houseRes=>{
+                                console.log('houseRes',houseRes);
+                                let houseId='';
+                                houseRes.forEach(item=>{
+                                    if(houseId==''){
+                                        houseId=item.id
+                                    }else {
+                                        houseId=houseId+','+item.id
+                                    }
+                                });
+                                this.getRestaurants(houseId)
+                            });
                         }
                 }, true);
                 let url=baseURL+'/house';
@@ -200,7 +215,6 @@
                             key:item
                         })
                     });
-                    console.log('this.restaurants',this.restaurants)
                 })
             },
             haveBack(data){

@@ -13,7 +13,7 @@
 
 <script>
     export default {
-        name:'gailiangban',
+        name:'recordServiceDialog',
         data() {
             return {
                 showFlag: false,
@@ -77,10 +77,10 @@
         /deep/ .el-dialog__title {
             color: white;
         }
-        /*/deep/ .el-dialog--center /deep/ .el-dialog__body {*/
-            /*text-align: initial;*/
-            /*padding: 0px 0px 0px;*/
-        /*}*/
+        /deep/ .el-dialog--center /deep/ .el-dialog__body {
+            text-align: initial;
+            padding: 0px 0px 0px;
+        }
         /deep/ .el-dialog__headerbtn /deep/ .el-dialog__close {
             margin-top: -3px;
             font-size: 25px;

@@ -29,25 +29,25 @@
                 <div class="tr">
                     <div class="title">{{typeSingleFlag?`${billName}单号: `:'申请编号: '}}<span
                             v-text="billData.applyOrder.number"></span></div>
-                    <div class="title" v-if="typeSingleFlag">调拨时间: <span v-text="filterTime(billData.outTime)"></span>
+                    <div class="title" v-if="typeSingleFlag">出库时间: <span v-text="filterTime(billData.outTime)"></span>
                     </div>
                     <div class="title" v-if="typeSingleFlag">接收时间: <span v-text="filterTime(billData.inTime)"></span>
                     </div>
                 </div>
                 <div class="tr">
                     <div class="title">申请大类: <span v-text="applicationType(billData.applyOrder.type)"></span></div>
-                    <div class="title" v-if="typeSingleFlag">调拨机构: <span v-text="getOutUnit()"></span></div>
+                    <div class="title" v-if="typeSingleFlag">出库机构: <span v-text="getOutUnit()"></span></div>
                     <div class="title">接收机构: <span v-text="billData.applyOrder.inHouse.organUnit.name"></span></div>
-                    <div class="title" v-if="!typeSingleFlag">调拨机构: <span v-text="getOutUnit()"></span></div>
+                    <div class="title" v-if="!typeSingleFlag">出库机构: <span v-text="getOutUnit()"></span></div>
                 </div>
                 <div class="tr">
                     <div class="title">申请时间: <span v-text="filterTime(billData.applyOrder.applyTime)"></span></div>
-                    <div class="title" v-if="typeSingleFlag">调拨库房: <span v-text="getOutHouse()"></span></div>
+                    <div class="title" v-if="typeSingleFlag">出库库房: <span v-text="getOutHouse()"></span></div>
                     <div class="title">接收库房: <span v-text="billData.applyOrder.inHouse.name"></span></div>
                 </div>
                 <div class="tr">
                     <div class="title">申请人: <span v-text="billData.applyOrder.applicant.name"></span></div>
-                    <div class="title" v-if="typeSingleFlag">调拨人员: <span v-text="billData.outUser.name"></span></div>
+                    <div class="title" v-if="typeSingleFlag">出库人员: <span v-text="billData.outUser.name"></span></div>
                     <div class="title" v-if="typeSingleFlag">接收人员:<span
                             v-text="billData.applyOrder.applicant.name"></span></div>
                 </div>
@@ -217,7 +217,7 @@
         <add-direct-adjustment-bill @sucessAdd="sucessAdd" ref="addDirectAdjustmentBill"
                                     :restaurants="reSet.restaurants" :myUnit="reSet.myUnit" :unit="reSet.unit"
                                     :house="reSet.house" :taskId="billData.taskId"
-                                    :addType="'reSet'"></add-direct-adjustment-bill>
+                                    :addType="'reSet'" :applyOrderId="billData.applyOrder.id"></add-direct-adjustment-bill>
         <add-apply-bill @sucessAdd="sucessAdd" :taskId="billData.taskId" :taskType="billName" ref="addSecondmentBill"
                         :myUnit="reSet.myUnit" :unit="reSet.unit" :house="reSet.house"
                         :addType="'reSet'" :applyOrderId="billData.applyOrder.id"></add-apply-bill>
@@ -313,6 +313,7 @@
             }
             if (this.typeSingle != 'apply') {
                 let myName = JSON.parse(localStorage.getItem('user')).name;
+                console.log('typeSingle',this.billData.outUser.name,myName );
                 if (this.billData.outUser.name == myName && this.billData.state == "WITHOUT_OUT_HOUSE") {
                     this.typeOperational = '出库'
                 } else if (this.billData.applyOrder.applicant.name == myName && this.billData.state == "OUT_HOUSE") {

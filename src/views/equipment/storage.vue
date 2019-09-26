@@ -132,7 +132,7 @@
     import {getRfid, saveRfid} from "api/rfid";
     import request from 'common/js/request'
     import {baseURL} from "../../api/config";
-
+``
     // nodejs调用子进程的方法
 
     // const cmdPath = 'C:\\Users\\Administrator';   //cmd命令的位置
