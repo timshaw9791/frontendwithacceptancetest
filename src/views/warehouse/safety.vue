@@ -32,7 +32,7 @@
                             <el-button type="text" class="_textBt" style="vertical-align: middle;"
                                        @click="dialogShow(scope.row)">
                                 <svg-icon icon-class="编辑"/>
-                                安全库存 :
+                                标准库存 :
                             </el-button>
                             <el-input size="mini" v-model="scope.row.safeStock" :disabled="true"
                                       style="width: 60px"></el-input>
@@ -47,7 +47,7 @@
         <serviceDialog title="提示" ref="dialogButton" @confirm="submit">
             <div class="_dialogDiv">
                 <form-container ref="inlineForm" :model="inlineForm">
-                    <field-input v-model="inlineForm.safeStock" label="安全库存" width="3"
+                    <field-input v-model="inlineForm.safeStock" label="标准库存" width="3"
                                  :rules="r(true).all(R.integer)" prop="safeStock"></field-input>
                 </form-container>
             </div>
