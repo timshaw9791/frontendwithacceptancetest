@@ -157,6 +157,7 @@
                 });
                 return str.substring(1, str.length);
             },
+            /* 处理获得的rfid JSON数据 */
             getInventoryRf(data) {
                 this.inventoryObj.getInventory = data;
                 this.size = String(data.size);
