@@ -160,7 +160,9 @@
                 let data = {
                     page: 1,
                     size: 20,
-                    applicantId: JSON.parse(localStorage.getItem('user')).id
+                    applicantId: JSON.parse(localStorage.getItem('user')).id,
+                    property: 'time',
+                    direction: 'DESC'
                 };
 
                 getProcess(data).then(res => {
