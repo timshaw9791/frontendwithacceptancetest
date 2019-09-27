@@ -64,7 +64,7 @@
 
           <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage" />
 
-          <serviceDialog title="确认保养装备清单" ref="maintenanceDialog" @confirm="submit" width="1040px">
+          <serviceDialog title="确认保养装备清单" ref="maintenanceDialog" @cancel="quit" @confirm="submit" width="1040px">
             <el-table :data="maintenance.list" height="500" fit class="list">
               <el-table-column label="序号" width="60" align="center">
                 <template scope="scope">{{ scope.$index + 1 }}</template>
@@ -119,6 +119,10 @@ import api from "gql/operation.gql";
 import { transformMixin } from "common/js/transformMixin";
 import { getNeedUpkeep } from "api/needs";
 
+// const exec = window.require('child_process').exec;
+//  const spawn = window.require('child_process').spawn;
+// import {killProcess} from "common/js/kill";
+
 export default {
   data() {
     return {
@@ -137,6 +141,10 @@ export default {
       haveImg: require("@/assets/have.png"),
       noneImg: require("@/assets/none.png"),
       rfidList: [], // 扫描时，记录rfid
+      process: {
+        pid: "",
+        index: 0 // 用以判断是否是第一条数据  {"status":"succeed"}
+      },
       maintenance: {
         list: [],
         cancelZb: {} // 取消保养的装备
@@ -170,33 +178,87 @@ export default {
     },
     /* 显示具体的保养列表 */
     maintenanceShow() {
-      // this.$message.error("该装备不属于装备保养清单！")
       this.maintenance.list = this.list.map(item => {
         // return Object.assign(item, {rfidConfirm: -1}) // -1为初始 无显示， 1为勾， 0为感叹号
         this.$set(item, "rfidConfirm", -1); // 对返回对象进行响应式属性添加
         return item;
       });
       this.$refs.maintenanceDialog.show();
-      setTimeout(() => {
-        this.startRfid("19080011");
-      }, 5000);
+
+      // setTimeout(() =>  {
+      //   this.startRfid("1908000E")
+      // }, 5000)
+
+      // const process = exec(`java -jar scan.jar 4`, { cwd: "C:\\Users\\10359" });
+
+      // this.process.pid = process.pid;
+
+      // process.stderr.on("data", err => {
+      //   console.log(err);
+      //   this.$message.error("设备故障请重新插拔!插入后请重新选择装备");
+      //   killProcess();
+      // });
+
+      // process.stdout.on("data", (data) => {
+      //   data = data.replace(/[\r\n]/g, "") // 扫描值带有 "%0A" 后缀
+      //   let noHave = true;
+      //   if (this.process.index == 1) {
+      //     this.maintenance.list.forEach(item => {
+      //       if (item.equip.rfid == data) {
+      //         item.rfidConfirm = 1;
+      //         noHave = false
+      //         this.$message({
+      //           message: "装备扫描成功！",
+      //           type: "success"
+      //         });
+      //       }
+      //     });
+      //     if(noHave) {
+      //       this.$message.error("该装备不属于装备保养清单！")
+      //     }
+      //   } else {
+      //     let newData = JSON.parse(data);
+      //     newData.status == "succeed"
+      //       ? (this.process.index = 1)
+      //       : (this.process.index = 0);
+      //   }
+      // });
+
+      // process.on("exit", code => {
+      //   if (this.index === 0) {
+      //     this.$message.error("设备未插入或串口号错误,插入后请重新选择装备!");
+      //   }
+      //   console.log(`子进程退出，退出码 ${code}`);
+      // });
     },
-    /* RFID读卡器数据 */
-    startRfid(rfid) {
-      this.maintenance.list.forEach(item => {
-        if (item.equip.rfid.includes(rfid)) {
-          item.rfidConfirm = 1;
-          this.$message({
-              message: "装备扫描成功！",
-              type: 'success'
-          })
+    /* RFID读卡器数据 测试用 */
+    startRfid(data) {
+      console.log(data);
+      var noHave = true
+        if (this.process.index == 0) {
+          this.maintenance.list.forEach(item => {
+            if (item.equip.rfid.includes(data)) {
+              item.rfidConfirm = 1;
+              noHave = false
+              this.$message({
+                message: "装备扫描成功！",
+                type: "success"
+              });
+            }
+          });
+          if(noHave) {
+            this.$message.error("该装备不属于装备保养清单！")
+          }
         }
-      });
     },
     /* 点击保养列表勾 */
     cancelMaintenance(item) {
       this.maintenance.cancelZb = item;
       this.$refs.dialogButton.show();
+    },
+    /* 放弃本次操作 */
+    quit() {
+        spawn("taskkill", ["/PID", this.process.pid, "/T", "/F"]);  
     },
     /* 确认取消保养该装备 */
     dialogConfim() {
