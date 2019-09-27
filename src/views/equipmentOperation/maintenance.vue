@@ -10,7 +10,9 @@
             <svg-icon icon-class="批量" />批量保养
           </el-button>
           <el-button type="text" class="_textBt" @click="batch=!batch" v-else>
-            <svg-icon icon-class="批量" />批量入库
+            <svg-icon icon-class="批量" />
+           <span v-if="!batch">批量入库</span>
+           <span v-else>取消入库</span>
           </el-button>
           <div class="_buttons">
             <BosInput
