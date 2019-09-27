@@ -79,27 +79,29 @@
                 this.type = data;
                 if (data === '需要充电') {
                     this.show = true;
-                    this.getList();
+
+                    if (this.$route.query['name']) {
+                        this.inquire = this.$route.query.name;
+                    } else {
+                        this.getList();
+                    }
+
                 } else if (data === '正在充电') {
                     this.show = false;
                 }
             },
             async getList() {
-                console.log(this.$route);
-                this.list = await this.getAxiosList(getNeedCharge);
+                this.list = await this.getAxiosList1(getNeedCharge);
             }
         },
-        mounted() {
-            if (this.$route.query) {
-                this.inquire = this.$route.query.name;
-            }
-            this.getList();
-        },
+
 
         watch: {
             inquire(newVal) {
                 if (newVal) {
                     this.$set(this.param, 'rfid', newVal);
+                } else {
+                    this.$set(this.param, 'rfid', null);
                 }
             }
         },

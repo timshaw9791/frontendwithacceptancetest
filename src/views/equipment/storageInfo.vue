@@ -260,7 +260,7 @@
     // const cmdPath = 'C:\\Users\\Administrator';
     // const exec = window.require('child_process').exec;
     // const spawn = window.require('child_process').spawn;
-    // import {killProcess} from "common/js/kill";
+    // import {killProcess,killProcessSync} from "common/js/kill";
 
     export default {
         data() {
@@ -569,7 +569,6 @@
 
             //选择完装备后执行 显示对应数据 和开启读卡器的使用
             getEquipInfo(data) {
-                killProcess();
                 this.gqlQuery(api.getEquipArg, {
                     id: data
                 }, (res) => {
@@ -578,10 +577,6 @@
                     this.form['name'] = a.name;
                     this.form['upkeepCycle'] = this.milliToDay(a.upkeepCycle);
                     this.form['chargeCycle'] = this.milliToDay(a.chargeCycle);
-
-                    // this.form['upkeepCycle'] = a.upkeepCycle;
-                    // this.form['chargeCycle'] = a.chargeCycle;
-
                     this.form.vendorId = a.supplier.id;
                     this.$set(this.form, 'model', a.model);
                     this.$set(this.form, 'personM', a.supplier.person);
@@ -593,40 +588,38 @@
                     } else {
                         this.imageUrl = '';
                     }
-                });
 
+                    killProcessSync().then(res=>{
+                        const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
+                        this.pid = process.pid;
+                        process.stderr.on('data', (err) => {
+                            console.log(err);
+                            this.$message.error('设备故障请重新插拔!插入后请重新选择装备');
+                            this.index = 1;
+                            killProcess();
+                        });
+                        process.stdout.on('data', (data) => {
+                            console.log(data);
+                            if (this.index > 0) {
+                                if (this.index == 1) {
+                                    this.list[0].rfid = data;
+                                } else {
+                                    this.list.push({rfid: data});
+                                }
+                                this.index = this.index + 1;
+                            } else {
+                                let newData = JSON.parse(data);
+                                newData.status === 'succeed' ? this.index = 1 : this.index = 0;
+                            }
+                        });
+                        process.on('exit', (code) => {
+                            if (this.index === 0) {
+                                this.$message.error('设备未插入或串口号错误,插入后请重新选择装备!');
+                            }
+                            console.log(`子进程退出，退出码 ${code}`);
+                        });
+                    })
 
-                const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
-
-                this.pid = process.pid;
-
-                process.stderr.on('data', (err) => {
-                    console.log(err);
-                    this.$message.error('设备故障请重新插拔!插入后请重新选择装备');
-                    this.index = 1;
-                    killProcess();
-                });
-
-                process.stdout.on('data', (data) => {
-                    console.log(data);
-                    if (this.index > 0) {
-                        if (this.index == 1) {
-                            this.list[0].rfid = data;
-                        } else {
-                            this.list.push({rfid: data});
-                        }
-                        this.index = this.index + 1;
-                    } else {
-                        let newData = JSON.parse(data);
-                        newData.status === 'succeed' ? this.index = 1 : this.index = 0;
-                    }
-                });
-
-                process.on('exit', (code) => {
-                    if (this.index === 0) {
-                        this.$message.error('设备未插入或串口号错误,插入后请重新选择装备!');
-                    }
-                    console.log(`子进程退出，退出码 ${code}`);
                 });
 
             },

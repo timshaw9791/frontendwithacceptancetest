@@ -16,7 +16,7 @@
                                 placeholder="rfid"
                                 suffix="el-icon-search"
                                 v-model="inquire"
-                                :wrapforlike="true"
+                                :wrapforlike="false"
                                 style=" width:285px;">
                         </BosInput>
                     </div>
@@ -114,12 +114,16 @@
 
         methods: {
             selected(data) {
-                console.log(data);
                 this.type = data;
                 if (data === '需要保养') {
                     this.title = '批量保养';
                     this.show = true;
-                    this.getList();
+                    if (this.$route.query['name']) {
+                        this.inquire = this.$route.query.name;
+                    } else {
+                        this.getList();
+                    }
+
                 } else if (data === '正在保养') {
                     this.title = '批量入库';
                     this.show = false;
@@ -131,10 +135,8 @@
                 this.batch = data;
             },
 
-
             async getList() {
-                this.list = await this.getAxiosList(getNeedUpkeep);
-                console.log(this.list);
+                this.list = await this.getAxiosList1(getNeedUpkeep);
             },
 
             submit() {
@@ -164,17 +166,12 @@
 
         },
 
-        mounted() {
-            if (this.$route.query) {
-                this.inquire = this.$route.query.name;
-            }
-            this.getList();
-        },
-
         watch: {
             inquire(newVal) {
                 if (newVal) {
                     this.$set(this.param, 'rfid', newVal);
+                } else {
+                    this.$set(this.param, 'rfid', null);
                 }
             }
         },
