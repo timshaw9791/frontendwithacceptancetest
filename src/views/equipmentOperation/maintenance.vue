@@ -9,8 +9,8 @@
           <el-button type="text" class="_textBt" @click="maintenanceShow" v-if="show">
             <svg-icon icon-class="批量" />批量保养
           </el-button>
-          <el-button type="text" class="_textBt" @click="batch=!batch" v-else>
-            <svg-icon icon-class="批量" />批量入库
+          <el-button type="text" class="_textBt" @click="batchstorage" v-else>
+            <svg-icon icon-class="批量" />{{this.storage}}入库
           </el-button>
           <div class="_buttons">
             <BosInput
@@ -128,6 +128,7 @@ var _  = require('lodash')
 export default {
   data() {
     return {
+      storage:"批量",
       tabsList: ["需要保养", "正在保养"],
       type: "",
       inquire: "",
@@ -156,6 +157,14 @@ export default {
   mixins: [formRulesMixin, transformMixin],
 
   methods: {
+    batchstorage(){
+      this.batch=!this.batch
+      if(this.batch){
+        this.storage = "取消"
+      }else{
+        this.storage = "批量"
+      }
+    },
     selected(data) {
       console.log(data);
       this.type = data;
