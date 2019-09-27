@@ -1,7 +1,10 @@
 <template>
     <div class="t-template">
         <div class="t-t-img-box">
-            <img class="t-t-img" :src="img"/>
+            <img class="t-t-img" :src="img" v-if="!showText"/>
+            <div class="_suo" v-else>
+              <span>暂无缩略图</span>
+            </div>
             <div class="t-t-line"></div>
         </div>
         <div class="t-t-span-box">
@@ -17,7 +20,7 @@
         name: "teachListTemplate",
         data(){
             return{
-
+            showText:false,
             }
         },
         props:{
@@ -32,6 +35,7 @@
           img:function () {
               let img;
               if(this.item.imageAddress==''||this.item.imageAddress==null){
+                  this.showText=true
                   img=require('@/assets/noImg.png');
               }else{
                   img=baseURL+'/images/'+this.item.imageAddress
@@ -89,5 +93,13 @@
     .t-t-img-box .t-t-img{
         width: 248px;
         height: 164px;
+    }
+    ._suo{
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        width: 248px;
+        height: 164px;
+        
     }
 </style>

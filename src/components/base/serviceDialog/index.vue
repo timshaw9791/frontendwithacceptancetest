@@ -61,6 +61,7 @@
             },
             dialogConfirm() {
                 this.$emit('confirm');
+                this.$emit('confirmWare')
             },
             cancel() {
                 this.innerVisible = false;

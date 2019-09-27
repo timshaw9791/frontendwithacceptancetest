@@ -103,6 +103,7 @@
         </div>
 
         <right :batch="batch" @cancel="cancel" v-if="!show"></right>
+       
       </div>
     </el-card>
   </div>
