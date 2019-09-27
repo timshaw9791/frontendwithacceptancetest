@@ -41,7 +41,7 @@ export let formRulesMixin = {
             R: __RULES__,
             //设置分页参数，和默认值
             partialPiginator: {totalPages: 10, totalElements: 10},//默认值
-            param: {size: 10, page: 1, keyword: ''},//分页参数,
+            param: {size: 10, page: 1, rfid: null},//分页参数,
             copyNameLike: '',
             historyPage: 'History-Page',//存放当前页数,
             loading: false,
@@ -108,14 +108,14 @@ export let formRulesMixin = {
         _initPage() {
             //监听param变化，如果发生变化,刷新
             this.$watch("param", () => {
-                if (this.param.keyword !== this.copyNameLike && this.copyNameLike === '') {
+                if (this.param.rfid !== this.copyNameLike && this.copyNameLike === null) {
                     if (this.param.page !== 1) {
                         this.setHistoryPage(this.param.page);
                         this.param.page = 1
                     } else {
                         this.setHistoryPage(this.param.page);
                     }
-                } else if (this.param.keyword === '' && this.copyNameLike !== '') {
+                } else if (this.param.rfid === null && this.copyNameLike !== null) {
                     if (this.getHistoryPage()) {
                         this.param.page = Number(this.getHistoryPage());
                     }
@@ -124,6 +124,8 @@ export let formRulesMixin = {
 
             }, {deep: true});
         },
+
+
         getHistoryPage() {
             return sessionStorage.getItem(this.historyPage);
         },
@@ -159,7 +161,7 @@ export let formRulesMixin = {
             this.copyNameLike = JSON.parse(JSON.stringify(this.param.keyword));
 
             return axios(JSON.parse(JSON.stringify(this.param))).then(res => {
-                console.log(res);
+                console.log(this.param);
                 this.partialPiginator.totalPages = res.totalPages;
                 this.partialPiginator.totalElements = res.totalElements;
                 return res.content;
@@ -168,6 +170,20 @@ export let formRulesMixin = {
                 this.$message.error(err);
             })
         },
+
+        getAxiosList1(axios) {
+            this.copyNameLike = JSON.parse(JSON.stringify(this.param['rfid']));
+
+            return axios(JSON.parse(JSON.stringify(this.param))).then(res => {
+                this.partialPiginator.totalPages = res.totalPages;
+                this.partialPiginator.totalElements = res.totalElements;
+                return res.content;
+            }).catch(err => {
+                console.log(err);
+                this.$message.error(err);
+            })
+        },
+
         gqlMutate(graphql, variables, sCallback) {//便利方法，用于手动修改数据的请求
             this.mutate(graphql, variables).then((data) => {
                 if (data.errors) {   //未通过服务端的表单验证

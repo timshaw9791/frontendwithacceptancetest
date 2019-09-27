@@ -17,6 +17,14 @@ export function equipmentScrapped(data) {
     })
 }
 
+export function equipmentScrappedInfo(data) {
+    return request({
+        url: '/equips/need-scrap/detail',
+        method: 'get',
+        params: data
+    })
+}
+
 
 export function equipmentCharging(data) {
     return request({
