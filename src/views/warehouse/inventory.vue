@@ -23,10 +23,10 @@
     import request from 'common/js/request'
     import {baseURL} from "../../api/config";
 
-    // import {handheld} from 'common/js/pda'
-    // const fs = window.require('fs');
-    // const path = window.require('path');
-    // const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
+    import {handheld} from 'common/js/pda'
+    const fs = window.require('fs');
+    const path = window.require('path');
+    const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
 
 
     /*Melanie Dunne supernova*/
@@ -56,13 +56,13 @@
         methods: {
             toInventory() {
                 this.inventoryObj.rflist = [];
-                // handheld().then(data => {
-                //     this.getInventoryRf(JSON.parse(data));
-                // });
+                handheld().then(data => {
+                    this.getInventoryRf(JSON.parse(data));
+                });
                 // this.getInventoryRf();
                 // this.getInventoryRfCopy();
                 //todo 记得合并前换回来
-                this.getInventoryRf({rfid:['19080020','12312141'],size:2});
+                // this.getInventoryRf({rfid:['19080020','12312141'],size:2});
                 this.$refs['inventory_dialog'].show();
             },
             getNote(data) {

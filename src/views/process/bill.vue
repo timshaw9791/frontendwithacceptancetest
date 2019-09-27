@@ -347,6 +347,7 @@
                     if (this.billData.approvalResults != null) {
                         if (this.billData.approvalResults.length > 0) {
                             this.checkApproval = this.billData.approvalResults;
+                            this.checkApproval.reverse()
                             console.log(this.billData.approvalResults)
                             return true
                         }
@@ -596,6 +597,7 @@
                     url: url
                 }).then(res => {
                     this.checkApproval = res.leaderApprovalList;
+                    this.checkApproval.reverse()
                 })
             },
             getTransferEquipData(url) {

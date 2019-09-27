@@ -163,14 +163,14 @@
     import request from 'common/js/request'
     import {baseURL,baseBURL} from "../../../api/config"
     //
-    // import {handheld} from 'common/js/pda'
-    // const cmdPath = 'C:\\Users\\Administrator';
-    // const exec = window.require('child_process').exec;
-    // const spawn = window.require('child_process').spawn;
-    // const fs = window.require('fs');
-    // const path = window.require('path');
-    // const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
-    // import {killProcess} from "common/js/kill";
+    import {handheld} from 'common/js/pda'
+    const cmdPath = 'C:\\Users\\Administrator';
+    const exec = window.require('child_process').exec;
+    const spawn = window.require('child_process').spawn;
+    const fs = window.require('fs');
+    const path = window.require('path');
+    const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
+    import {killProcess} from "common/js/kill";
 
     export default {
         name: "directAdjustmentDialog",

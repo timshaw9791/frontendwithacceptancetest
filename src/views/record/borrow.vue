@@ -1,7 +1,7 @@
 <template>
     <div class="borrow">
         <my-header :title="'装备领还记录'" :searchFlag="false"></my-header>
-        <r_search :placeholder="'装备名称'" @handleSearch="handleSearch" :defaultSearch="defaultSearch"></r_search>
+        <r_search :placeholder="'装备名称/RFID'" @handleSearch="handleSearch" :defaultSearch="defaultSearch"></r_search>
         <r_label :table="table" @clickTable="clickTable"
                  ref="las"></r_label>
         <r_video ref="recordVideo" :src="address"></r_video>
@@ -33,6 +33,7 @@
         created(){
             if(this.$route.query.name!=null){
                 this.defaultSearch=this.$route.query.name
+                this.table.flag=true
             }
         },
         data() {
@@ -49,7 +50,8 @@
                         label:'监控视频',
                         button:['详情','查看']
                     },
-                    search:''
+                    search:'',
+                    flag:false
                 },
                 equipList:{
                     list:[],

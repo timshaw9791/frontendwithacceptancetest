@@ -47,8 +47,10 @@
             },
 
         },
-        created(){
-            this.getList()
+        mounted(){
+            if(this.table.flag){}else {
+                this.getList()
+            }
         },
         methods:{
             getList(){

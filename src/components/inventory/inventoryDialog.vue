@@ -64,11 +64,11 @@
                 this.$refs['dialog'].show();
             },
             cancel(){
-                this.$refs['dialog'].close();
+                this.$refs['dialog'].hide();
             },
             submit(){
                 this.$emit('submit',true);
-                this.$refs['dialog'].close();
+                this.$refs['dialog'].hide();
             },
             indexMethod(index) {
                 return index +1;

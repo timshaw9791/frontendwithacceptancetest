@@ -257,10 +257,10 @@
     import {transformMixin} from "common/js/transformMixin";
 
 
-    // const cmdPath = 'C:\\Users\\Administrator';
-    // const exec = window.require('child_process').exec;
-    // const spawn = window.require('child_process').spawn;
-    // import {killProcess,killProcessSync} from "common/js/kill";
+    const cmdPath = 'C:\\Users\\Administrator';
+    const exec = window.require('child_process').exec;
+    const spawn = window.require('child_process').spawn;
+    import {killProcess, killProcessSync} from "common/js/kill";
 
     export default {
         data() {
@@ -589,7 +589,7 @@
                         this.imageUrl = '';
                     }
 
-                    killProcessSync().then(res=>{
+                    killProcessSync().then(res => {
                         const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
                         this.pid = process.pid;
                         process.stderr.on('data', (err) => {
@@ -613,9 +613,9 @@
                             }
                         });
                         process.on('exit', (code) => {
-                            if (this.index === 0) {
-                                this.$message.error('设备未插入或串口号错误,插入后请重新选择装备!');
-                            }
+                            // if (this.index === 0) {
+                            //       this.$message.error('设备未插入或串口号错误,插入后请重新选择装备!');
+                            //   }
                             console.log(`子进程退出，退出码 ${code}`);
                         });
                     })
@@ -638,11 +638,12 @@
 
             //删除读卡后的当前选择数据
             delqaq(row) {
-                if (this.list.length > 1) {
-                    this.list.splice(row.$index, 1);
-                } else {
-                    this.$message.error('不能删除最后一个');
-                }
+                this.list.splice(row.$index, 1);
+                // if (this.list.length > 1) {
+                //     this.list.splice(row.$index, 1);
+                // } else {
+                //     this.$message.error('不能删除最后一个');
+                // }
             },
 
             // 复制RFID
@@ -792,7 +793,6 @@
     @import "common/css/mixin.scss";
     @import "common/css/variables.scss";
 
-
     .el-card:not(:nth-last-child(2)) {
         border-bottom: none !important;
     }
@@ -801,7 +801,6 @@
 
         border-top: none !important;
     }
-
 
     .box-card {
         .topIcon {
