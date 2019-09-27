@@ -118,6 +118,7 @@ import serviceDialog from "components/base/serviceDialog";
 import api from "gql/operation.gql";
 import { transformMixin } from "common/js/transformMixin";
 import { getNeedUpkeep } from "api/needs";
+var _  = require('lodash')
 
 // const exec = window.require('child_process').exec;
 //  const spawn = window.require('child_process').spawn;
@@ -132,7 +133,7 @@ export default {
       batch: false, // 是否显示多选框(正在保养)
       show: true,
       title: "",
-      equipList: [],
+      equipList: [], // 保存确认保养的装备id
       param: {
         property: "lastUpkeepTime",
         direction: "ASC"
@@ -185,9 +186,15 @@ export default {
       });
       this.$refs.maintenanceDialog.show();
 
-      // setTimeout(() =>  {
-      //   this.startRfid("1908000E")
-      // }, 5000)
+      setTimeout(() =>  {
+        this.startRfid("limingaaa")
+      }, 1000)
+            setTimeout(() =>  {
+        this.startRfid("12344444")
+      }, 3000)
+            setTimeout(() =>  {
+        this.startRfid("65035")
+      }, 2000)
 
       // const process = exec(`java -jar scan.jar 4`, { cwd: "C:\\Users\\10359" });
 
@@ -233,13 +240,13 @@ export default {
     },
     /* RFID读卡器数据 测试用 */
     startRfid(data) {
-      console.log(data);
       var noHave = true
         if (this.process.index == 0) {
           this.maintenance.list.forEach(item => {
             if (item.equip.rfid.includes(data)) {
               item.rfidConfirm = 1;
               noHave = false
+              this.equipList.push(item)
               this.$message({
                 message: "装备扫描成功！",
                 type: "success"
@@ -258,11 +265,15 @@ export default {
     },
     /* 放弃本次操作 */
     quit() {
+      this.equipList = []
         spawn("taskkill", ["/PID", this.process.pid, "/T", "/F"]);  
     },
     /* 确认取消保养该装备 */
     dialogConfim() {
       this.maintenance.cancelZb.rfidConfirm = 0;
+      _.remove(this.equipList, (item) => {
+        return item.equip.id == this.maintenance.cancelZb.equip.id
+      })
       this.$refs.dialogButton.hide();
     },
     /* 确认保养 */
@@ -274,9 +285,9 @@ export default {
             equipIdList: this.equipList
           },
           res => {
-            this.$refs.dialogButton.hide();
+            this.$refs.maintenanceDialog.hide()
             this.$message.success("正在保养了!");
-            this.cancel(true);
+            //this.cancel(true);
             this.getList();
             this.equipList = [];
           }
