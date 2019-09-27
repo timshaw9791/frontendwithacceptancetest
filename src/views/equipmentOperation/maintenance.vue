@@ -86,6 +86,7 @@
                     height="13px"
                     @click="cancelMaintenance(scope.row)"
                     v-show="scope.row.rfidConfirm == 1"
+                    style="cursor: pointer"
                   />
                   <img :src="noneImg" width="3px" height="17px" v-show="scope.row.rfidConfirm == 0" />
                 </template>
@@ -186,15 +187,15 @@ export default {
       });
       this.$refs.maintenanceDialog.show();
 
-      setTimeout(() =>  {
-        this.startRfid("limingaaa")
-      }, 1000)
-            setTimeout(() =>  {
-        this.startRfid("12344444")
-      }, 3000)
-            setTimeout(() =>  {
-        this.startRfid("65035")
-      }, 2000)
+      // setTimeout(() =>  {
+      //   this.startRfid("limingaaa")
+      // }, 1000)
+      //       setTimeout(() =>  {
+      //   this.startRfid("12344444")
+      // }, 3000)
+      //       setTimeout(() =>  {
+      //   this.startRfid("19071105")
+      // }, 2000)
 
       // const process = exec(`java -jar scan.jar 4`, { cwd: "C:\\Users\\10359" });
 
@@ -246,7 +247,7 @@ export default {
             if (item.equip.rfid.includes(data)) {
               item.rfidConfirm = 1;
               noHave = false
-              this.equipList.push(item)
+              this.equipList.push(item.equip.id)
               this.$message({
                 message: "装备扫描成功！",
                 type: "success"
@@ -272,7 +273,7 @@ export default {
     dialogConfim() {
       this.maintenance.cancelZb.rfidConfirm = 0;
       _.remove(this.equipList, (item) => {
-        return item.equip.id == this.maintenance.cancelZb.equip.id
+        return item == this.maintenance.cancelZb.equip.id
       })
       this.$refs.dialogButton.hide();
     },
@@ -351,13 +352,10 @@ export default {
   height: 10px;
 }
 ::-webkit-scrollbar-thumb {
-  height: 20px;
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  background: rgba(47, 47, 118, 0.37);
+  background: rgba(47, 47, 118, 0.27);
   border-radius: 22px;
 }
 ::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   border-radius: 10px;
   background-color: #fff;
 }
