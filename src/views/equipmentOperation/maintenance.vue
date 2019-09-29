@@ -78,7 +78,7 @@
               </el-table>
             <div class="bottom-tip">
               “<img :src="haveImg" width="16px" height="13px" /> ”为确定保养装备，
-              “<img :src="noneImg" width="3px" height="15px" /> ”为取消保养装备
+              “ <img :src="noneImg" width="3px" height="15px" /> ”为取消保养装备
             </div>
           </serviceDialog>
 
@@ -328,7 +328,7 @@ export default {
 
 <style>
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 6px;
   height: 10px;
 }
 ::-webkit-scrollbar-thumb {
