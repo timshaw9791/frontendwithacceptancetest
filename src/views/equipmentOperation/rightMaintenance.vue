@@ -23,7 +23,7 @@
         </el-table>
         <div class="_contentBt" v-if="batch">
             <el-button @click="$emit('cancel',false)">取 消</el-button>
-            <el-button type="primary" @click="confirmWare">确定</el-button>
+            <el-button type="primary" @click="DialogShow">提 交</el-button>
         </div>
         <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
       
@@ -46,6 +46,22 @@
             <div class="_dialogDiv">
                 您确定要保养此装备吗!?
             </div>
+        </serviceDialog>
+
+        <serviceDialog title="请确认入库装备清单" ref="StorageDialog" @confirm="submit" width="1040px">
+            <el-table :data="list" height="500" fit >
+              <el-table-column label="序号" width="60" align="center">
+                <template scope="scope">{{ scope.$index + 1 }}</template>
+              </el-table-column>
+              <bos-table-column lable="RFID" field="rfid"></bos-table-column>
+              <bos-table-column lable="装备名称" field="name"></bos-table-column>
+              <bos-table-column lable="装备序号" field="serial"></bos-table-column>
+              <bos-table-column lable="架体编号" field="location.number"></bos-table-column>
+              <bos-table-column
+                lable="架体AB面"
+                :filter="(row)=>surface(row.location?row.location.surface:'暂无')"
+              ></bos-table-column>
+            </el-table>
         </serviceDialog>
 
     </div>
@@ -100,6 +116,7 @@
                         console.log(res);
                         this.callback('入库成功!');
                         this.equipList = [];
+                        this.$refs.StorageDialog.hide()
                     })
                 } else {
                     this.$message.error('未选择装备!')
@@ -130,6 +147,9 @@
                 })
                
 
+            },
+            DialogShow() {
+                this.$refs.StorageDialog.show();
             },
         }
     }
