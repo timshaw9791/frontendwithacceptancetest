@@ -31,7 +31,7 @@
       
 
         <serviceDialog title="请确认入库装备清单" ref="StorageDialog" @confirm="submit" width="1040px">
-            <el-table :data="list" height="500" fit >
+            <el-table :data="moreList" height="500" fit >
               <el-table-column label="序号" width="60" align="center">
                 <template scope="scope">{{ scope.$index + 1 }}</template>
               </el-table-column>
