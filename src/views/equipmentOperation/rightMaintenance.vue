@@ -29,7 +29,7 @@
       
        
         <serviceDialog title="请确认入库装备清单" ref="isWarehouse" @confirm="submit" width="1040px" height="574px">
-           <el-table :data="list"  highlight-current-row
+           <el-table :data="moreList"  highlight-current-row
            height="500px"
                 >
             <el-table-column label="序号" width="60" align="center">
@@ -138,13 +138,13 @@
             },
 
             handleSelectionChange(val) {
-                
                 this.equipList = val.map((res) => {
                     console.log(res);
-                    this.moreList.push(res)
-                    console.log()
                     return res.id
                 });
+                this.moreList=val.map((res)=>{
+                    return res
+                })
                
 
             },
