@@ -28,25 +28,7 @@
         <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
       
        
-        <serviceDialog title="请确认入库装备清单" ref="isWarehouse" @confirm="submit" width="1040px" height="574px">
-           <el-table :data="moreList"  highlight-current-row
-           height="500px"
-                >
-            <el-table-column label="序号" width="60" align="center">
-                <template scope="scope">{{ scope.$index + 1 }}</template>
-              </el-table-column>
-            <bos-table-column lable="装备名称" field="name"></bos-table-column>
-            <bos-table-column lable="装备序号" field="serial"></bos-table-column>
-            <bos-table-column lable="架体编号" field="location.number"></bos-table-column>
-            <bos-table-column lable="架体AB面"
-                              :filter="(row)=>surface(row.location?row.location.surface:'暂无')"></bos-table-column>
-       </el-table>
-        </serviceDialog>
-        <serviceDialog title="提示" ref="dialogButton" @confirm="dialogSubmit">
-            <div class="_dialogDiv">
-                您确定要保养此装备吗!?
-            </div>
-        </serviceDialog>
+      
 
         <serviceDialog title="请确认入库装备清单" ref="StorageDialog" @confirm="submit" width="1040px">
             <el-table :data="list" height="500" fit >
@@ -122,21 +104,6 @@
                     this.$message.error('未选择装备!')
                 }
             },
-            dialogSubmit() {
-                if (0 in this.equipList) {
-                    this.gqlMutate(api.admin_upkeepEquips, {
-                        equipIdList: this.equipList,
-                    }, (res) => {
-                        console.log(res);
-                        this.$refs.dialogButton.hide();
-                        this.callback('正在保养了!');
-                        this.equipList = [];
-                    })
-                } else {
-                    this.$message.error('未选择装备!')
-                }
-            },
-
             handleSelectionChange(val) {
                 this.equipList = val.map((res) => {
                     console.log(res);
