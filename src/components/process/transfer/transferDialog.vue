@@ -162,6 +162,7 @@
     // import inventoryData from 'views/warehouse/inventoryData'
     import request from 'common/js/request'
     import {baseURL,baseBURL} from "../../../api/config"
+    import { start } from 'common/js/rfidReader'
 
     // import {handheld} from 'common/js/pda'
     // const cmdPath = 'C:\\Users\\Administrator';
@@ -253,35 +254,43 @@
             },
             getListUsb() {//todo
 
-                this.index = 0;
-                const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
-                this.pid = process.pid;
+                start("java -jar scan.jar", (data) => {
+                    let arr = [];
+                    arr.push(data);
+                    this.getOutDataCopy(arr);
+                }, (fail) => {
+                    this.$message.error(fail)
+                }, (pid, err) => {pid?this.pid = pid:this.$message.error(err)})
 
-                process.stderr.on('data', (err) => {
-                    console.log(err);
-                    this.$message.error('设备故障请重新插拔!插入后请重新选择');
-                    this.index = 1;
-                    killProcess();
-                });
+                // this.index = 0;
+                // const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
+                // this.pid = process.pid;
+
+                // process.stderr.on('data', (err) => {
+                //     console.log(err);
+                //     this.$message.error('设备故障请重新插拔!插入后请重新选择');
+                //     this.index = 1;
+                //     killProcess();
+                // });
 
 
-                process.stdout.on('data', (data) => {
-                    if (this.index > 0) {
-                        let arr = [];
-                        arr.push(data);
-                        this.getOutDataCopy(arr);
-                    } else {
-                        let newData = JSON.parse(data);
-                        newData.status === 'succeed' ? this.index = 1 : this.index = 0;
-                    }
-                });
+                // process.stdout.on('data', (data) => {
+                //     if (this.index > 0) {
+                //         let arr = [];
+                //         arr.push(data);
+                //         this.getOutDataCopy(arr);
+                //     } else {
+                //         let newData = JSON.parse(data);
+                //         newData.status === 'succeed' ? this.index = 1 : this.index = 0;
+                //     }
+                // });
 
-                process.on('exit', (code) => {
-                    if (this.index === 0) {
-                        this.$message.error('设备未插入或串口号错误,插入后请重新选择!');
-                    }
-                    console.log(`子进程退出，退出码 ${code}`);
-                });
+                // process.on('exit', (code) => {
+                //     if (this.index === 0) {
+                //         this.$message.error('设备未插入或串口号错误,插入后请重新选择!');
+                //     }
+                //     console.log(`子进程退出，退出码 ${code}`);
+                // });
 
 
                 // let intercal=setInterval(()=>{

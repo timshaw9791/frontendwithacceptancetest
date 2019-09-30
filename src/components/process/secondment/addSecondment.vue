@@ -159,6 +159,7 @@
     import serviceDialog from 'components/base/gailiangban'
     import request from 'common/js/request'
     import {baseBURL,baseURL} from "../../../api/config";
+    import { start } from 'common/js/rfidReader'
 
     // import {handheld} from 'common/js/pda'
     // const cmdPath = 'C:\\Users\\Administrator';
@@ -333,28 +334,36 @@
                 // this.getOutDataCopy([19080012])
             },
             getListUsb() {//todo
-                const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
-                this.pid = process.pid;
-                process.stderr.on('data', (err) => {
-                    this.$message.error('设备故障请重新插拔!');
-                    console.log(err);
-                });
 
-                process.stdout.on('data', (data) => {
-                    console.log(data);
-                    if (this.index > 0) {
-                        let arr = [];
-                        arr.push(data);
-                        this.getOutDataCopy(arr);
-                    } else {
-                        let newData = JSON.parse(data);
-                        newData.status === 'succeed' ? this.index = 1 : this.index = 0;
-                    }
-                });
+                start("java -jar scan.jar", (data) => {
+                    let arr = [];
+                    arr.push(data);
+                    this.getOutDataCopy(arr);
+                }, (fail) => {
+                    this.$message.error(fail)
+                }, (pid, err) => {pid?this.pid = pid:this.$message.error(err)})
+                // const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
+                // this.pid = process.pid;
+                // process.stderr.on('data', (err) => {
+                //     this.$message.error('设备故障请重新插拔!');
+                //     console.log(err);
+                // });
 
-                process.on('exit', (code) => {
-                    console.log(`子进程退出，退出码 ${code}`);
-                });
+                // process.stdout.on('data', (data) => {
+                //     console.log(data);
+                //     if (this.index > 0) {
+                //         let arr = [];
+                //         arr.push(data);
+                //         this.getOutDataCopy(arr);
+                //     } else {
+                //         let newData = JSON.parse(data);
+                //         newData.status === 'succeed' ? this.index = 1 : this.index = 0;
+                //     }
+                // });
+
+                // process.on('exit', (code) => {
+                //     console.log(`子进程退出，退出码 ${code}`);
+                // });
                 // let intercal=setInterval(()=>{
                 //     if(this.closeUsb){
                 //         clearInterval(intercal);
