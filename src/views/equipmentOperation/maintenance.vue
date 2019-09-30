@@ -207,6 +207,7 @@ export default {
       //       if (item.equip.rfid == data) {
       //         item.rfidConfirm = 1;
       //         noHave = false
+      // this.equipList.push(item.equip.id);
       //         this.$message({
       //           message: "装备扫描成功！",
       //           type: "success"
