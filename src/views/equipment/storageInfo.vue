@@ -1,14 +1,12 @@
 <template>
     <div>
         <el-card shadow="never" :body-style="{ padding:'0'}">
-            <div slot="header" style="display: flex">
-                <span class="_card-title" style="width: 100%;display: flex;align-items: center;">{{title}}</span>
-                <div>
-                    <el-button type="text" class="_textBt" style="padding: 0;" @click="black">
-                        <svg-icon icon-class="返回"/>
-                        返 回
-                    </el-button>
-                </div>
+            <div slot="header" class="header">
+                <span class="_card-title">{{title}}</span>
+                <div class="black" @click="black">
+                <svg-icon icon-class="返回" class="svg-info"></svg-icon>
+                <span v-text="'返回'"></span>
+            </div>
             </div>
             <div>
 
@@ -799,6 +797,19 @@
     .el-card:first-child {
 
         border-top: none !important;
+    }
+
+    .black {
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        float: right;
+    }
+
+    .black .svg-info {
+        height: 20px;
+        width: 20px;
+        margin-right: 10px;
     }
 
     .box-card {

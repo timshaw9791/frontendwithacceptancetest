@@ -8,7 +8,7 @@
                     v-if="batch"
                     width="55">
             </el-table-column>
-            <bos-table-column lable="rfid" field="equip.rfid"></bos-table-column>
+            <bos-table-column lable="rfid" field="rfid"></bos-table-column>
             <bos-table-column lable="装备名称" field="name"></bos-table-column>
             <bos-table-column lable="装备序号" field="serial"></bos-table-column>
             <bos-table-column lable="架体编号" field="location.number"></bos-table-column>
@@ -23,15 +23,27 @@
         </el-table>
         <div class="_contentBt" v-if="batch">
             <el-button @click="$emit('cancel',false)">取 消</el-button>
-            <el-button type="primary" @click="submit">提 交</el-button>
+            <el-button type="primary" @click="DialogShow">提 交</el-button>
         </div>
         <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
+      
+       
+      
 
-
-        <serviceDialog title="提示" ref="dialogButton" @confirm="dialogSubmit">
-            <div class="_dialogDiv">
-                您确定要保养此装备吗!?
-            </div>
+        <serviceDialog title="请确认入库装备清单" ref="StorageDialog" @confirm="submit" width="1040px">
+            <el-table :data="moreList" height="500" fit >
+              <el-table-column label="序号" width="60" align="center">
+                <template scope="scope">{{ scope.$index + 1 }}</template>
+              </el-table-column>
+              <bos-table-column lable="RFID" field="rfid"></bos-table-column>
+              <bos-table-column lable="装备名称" field="name"></bos-table-column>
+              <bos-table-column lable="装备序号" field="serial"></bos-table-column>
+              <bos-table-column lable="架体编号" field="location.number"></bos-table-column>
+              <bos-table-column
+                lable="架体AB面"
+                :filter="(row)=>surface(row.location?row.location.surface:'暂无')"
+              ></bos-table-column>
+            </el-table>
         </serviceDialog>
 
     </div>
@@ -46,6 +58,7 @@
     export default {
         data() {
             return {
+                moreList:[],
                 equipList: [],
                 param: {
                     qfilter: {
@@ -74,6 +87,9 @@
             },
         },
         methods: {
+            confirmWare(){
+            this.$refs.isWarehouse.show();
+            },
             submit() {
                 if (0 in this.equipList) {
                     this.gqlMutate(api.houseUser_returnEquip, {
@@ -82,37 +98,44 @@
                         console.log(res);
                         this.callback('入库成功!');
                         this.equipList = [];
+                        this.$refs.StorageDialog.hide()
                     })
                 } else {
                     this.$message.error('未选择装备!')
                 }
             },
-            dialogSubmit() {
-                if (0 in this.equipList) {
-                    this.gqlMutate(api.admin_upkeepEquips, {
-                        equipIdList: this.equipList,
-                    }, (res) => {
-                        console.log(res);
-                        this.$refs.dialogButton.hide();
-                        this.callback('正在保养了!');
-                        this.equipList = [];
-                    })
-                } else {
-                    this.$message.error('未选择装备!')
-                }
-            },
-
             handleSelectionChange(val) {
                 this.equipList = val.map((res) => {
                     console.log(res);
                     return res.id
                 });
+                this.moreList=val.map((res)=>{
+                    return res
+                })
+               
 
+            },
+            DialogShow() {
+                this.$refs.StorageDialog.show();
             },
         }
     }
 </script>
 
 <style scoped>
-
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  height: 20px;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background: rgba(47, 47, 118, 0.37);
+  border-radius: 22px;
+}
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-color: #fff;
+}
 </style>
