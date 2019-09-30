@@ -180,7 +180,7 @@ export default {
       //   this.startRfid("19071105")
       // }, 2000)
 
-      start((data) => {
+      start("java -jar scan.jar", (data) => {
         data = data.replace(/[\r\n]/g, "") // 扫描值带有 "%0A" 后缀
         let noHave = true;
           this.maintenance.list.forEach(item => {
