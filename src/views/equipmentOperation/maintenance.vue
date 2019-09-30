@@ -107,7 +107,7 @@ var _ = require("lodash");
 import { start } from "common/js/rfidReader"
 
 // const exec = window.require('child_process').exec;
- const spawn = window.require('child_process').spawn;
+// const spawn = window.require('child_process').spawn;
 // import {killProcess} from "common/js/kill";
 
 export default {

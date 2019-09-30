@@ -1,9 +1,9 @@
-    import {
-        killProcess
-    } from "common/js/kill";
- const exec = window.require('child_process').exec;
- const spawn = window.require('child_process').spawn;
- var cwd = "C:\\Users\\10359"; // 执行目录
+//     import {
+//         killProcess
+//     } from "common/js/kill";
+//  const exec = window.require('child_process').exec;
+//  const spawn = window.require('child_process').spawn;
+//  var cwd = "C:\\Users\\10359"; // 执行目录
 // var com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM']; // 端口 串口号
 var com = 4
 
