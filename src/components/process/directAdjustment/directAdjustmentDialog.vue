@@ -198,9 +198,14 @@
             getListUsb() {//todo
 
                 start("java -jar scan.jar", (data) => {
+                        if (this.index > 0) {
                         let arr = [];
                         arr.push(data);
                         this.getOutDataCopy(arr);
+                    } else {
+                        let newData = JSON.parse(data);
+                        newData.status === 'succeed' ? this.index = 1 : this.index = 0;
+                    }
                 }, (fail) => {
                     this.$message.error(fail)
                 }, (pid, err) => {

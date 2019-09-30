@@ -24,7 +24,7 @@
     import {baseURL} from "../../api/config";
     import { delFile } from 'common/js/rfidReader'
 
-    // import {handheld} from 'common/js/pda'
+    import {handheld} from 'common/js/pda'
     // const fs = window.require('fs');
     // const path = window.require('path');
     // const newFile_path = 'C:\\Users\\Administrator\\inventory.json';

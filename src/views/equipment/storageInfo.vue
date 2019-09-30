@@ -602,6 +602,7 @@
                         this.index = this.index + 1;
                     } else {
                         let newData = JSON.parse(data);
+                        
                         newData.status === 'succeed' ? this.index = 1 : this.index = 0;
                     }
                 }, (fail) => {

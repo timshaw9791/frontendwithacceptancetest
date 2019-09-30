@@ -43,7 +43,7 @@ export function start(cmd, success, failure, callBack) {
 
         process.stderr.on("data", err => {
             console.log(err);
-            failure.call(this, err)
+            if(!err.includes("Error"))  failure.call(this, err)
             index = 1
             //callBack(null, "设备故障请重新插拔!插入后请重新选择装备")
             spawn("taskkill", ["/PID", process.pid, "/T", "/F"]);
@@ -51,11 +51,10 @@ export function start(cmd, success, failure, callBack) {
         });
 
         process.stdout.on("data", data => {
+            success(data)
             if (index == 0 && JSON.parse(data).status == "succeed") {
                 index = 1
-            } else {
-                success(data)
-            }
+            } 
         });
 
         process.on("exit", code => {
