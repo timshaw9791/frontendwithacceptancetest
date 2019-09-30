@@ -11,13 +11,11 @@
 
 <script>
     import request from 'common/js/request'
-    import transferComponent from './transferTableComponent'
     import {baseBURL} from "../../../api/config";
 
     export default {
         name: "transferTable",
         components: {
-            transferComponent
         },
         data() {
             return {

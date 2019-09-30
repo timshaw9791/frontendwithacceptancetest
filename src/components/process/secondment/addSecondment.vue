@@ -160,13 +160,13 @@
     import request from 'common/js/request'
     import {baseBURL,baseURL} from "../../../api/config";
 
-    // import {handheld} from 'common/js/pda'
-    // const cmdPath = 'C:\\Users\\Administrator';
-    // const exec = window.require('child_process').exec;
-    // const spawn = window.require('child_process').spawn;
-    // const fs = window.require('fs');
-    // const path = window.require('path');
-    // const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
+    import {handheld} from 'common/js/pda'
+    const cmdPath = 'C:\\Users\\Administrator';
+    const exec = window.require('child_process').exec;
+    const spawn = window.require('child_process').spawn;
+    const fs = window.require('fs');
+    const path = window.require('path');
+    const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
 
     export default {
         name: "addApply",
@@ -210,6 +210,7 @@
                 unitName: '',
                 userName: '',
                 nowTime: 0,
+                com:0,
                 hardware:{
                     hardwareList: [
                         {value: '手持机', label: '手持机'},
@@ -246,6 +247,7 @@
             }
         },
         created() {
+            this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];
             this.unitName = this.unit.name;
             if(this.taskType=='报废'){
                 this.getLeader(JSON.parse(localStorage.getItem('user')).unitId);
@@ -290,7 +292,8 @@
                         this.handheldMachine();
                     } else if (newVal == 'RFID读写器') {
                         this.restaurants=[];
-                        this.getListUsb();
+                        this.getOutDataCopy(['1908000C']);
+                        // this.getListUsb();
                     }
                 }
             }
@@ -428,11 +431,12 @@
             handleUnitChange(data){
                 let unitId=data[data.length-1];
                 let gethouseUnitId='';
-                if(this.taskType=='直调'){
-                    gethouseUnitId=JSON.parse(localStorage.getItem('user')).unitId;
-                }else {
-                    gethouseUnitId=unitId
-                }
+                // if(this.taskType=='直调'){
+                //     gethouseUnitId=JSON.parse(localStorage.getItem('user')).unitId;
+                // }else {
+                //     gethouseUnitId=unitId
+                // }
+                gethouseUnitId=JSON.parse(localStorage.getItem('user')).unitId;
                 request({
                     method:'get',
                     url:baseBURL+'/architecture/houseByOrganUnitId',
@@ -469,7 +473,6 @@
                     url:baseBURL+'/identity/findByUnitAdmin',
                     params:{unitId:unitId}
                 }).then(res=>{
-                    console.log('getAdminList',res);
                     this.adminUser.adminList=[];
                     res.forEach(item=>{
                         this.adminUser.adminList.push({value: item.name, key: item})
@@ -552,16 +555,16 @@
                         if(res.levelLeaderMap!=null){
                             if (Object.keys(res.levelLeaderMap).length == 0) {
                                 res.applyLeaders.forEach(item => {
-                                    this.leader.leaderList.push({value: item.name, key: item})
+                                    this.leader.leaderList.push({value: item.organUnit.name+item.name, key: item})
                                 })
                             } else {
                                 res.levelLeaderMap['1'].forEach(item => {
-                                    this.leader.leaderList.push({value: item.name, key: item})
+                                    this.leader.leaderList.push({value: item.organUnit.name+item.name, key: item})
                                 })
                             }
                         }else {
                             res.applyLeaders.forEach(item => {
-                                this.leader.leaderList.push({value: item.name, key: item})
+                                this.leader.leaderList.push({value: item.organUnit.name+item.name, key: item})
                             })
                         }
                     }else {
@@ -755,7 +758,7 @@
             },
             throttle(method, context) {
                 clearTimeout(method.tId);
-                method.tId = setTimeout(function () {
+                method.tId = setTimeout( ()=>{
                     method.call(context)
                 }, 1000)
             }

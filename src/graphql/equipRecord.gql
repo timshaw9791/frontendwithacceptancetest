@@ -13,7 +13,6 @@ query getEquipOperateRecordList($paginator: paginator, $qfilter: qfilter) {
       operator
       houseId
       operate
-
       }
       }
       }

@@ -1,10 +1,10 @@
-// const fs = window.require('fs');
+const fs = window.require('fs');
 
 const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
 
 let cmdPath = 'C:\\Users\\Administrator';
 
-// const exec = window.require('child_process').exec;
+const exec = window.require('child_process').exec;
 
 let cmdStr = 'chcp 65001 && adb pull sdcard/inventoryData/inventory.json .';
 
@@ -13,7 +13,15 @@ let workerProcess;
 
 export function handheld() {
     // 执行命令行，如果命令不需要路径，或就是项目根目录，则不需要cwd参数：
-    fs.unlinkSync(newFile_path);
+
+    fs.access(newFile_path, (err) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(1);
+            fs.unlinkSync(newFile_path);
+        }
+    });
 
     workerProcess = exec(cmdStr, {cwd: cmdPath});
 
@@ -44,7 +52,7 @@ export function handheld() {
     // 退出之后的输出
     workerProcess.on('close', (code) => {
         console.log('out code：' + code);
-    })
+    });
 
     return start
 }

@@ -108,7 +108,6 @@
                             </progress-circular>
                         </div>
                     </div>
-
                     <div class="bk-style">
                         <div class="bk-top">
                             <span @click="gotoInfo('video')" style="cursor:pointer">视频监控</span>
@@ -117,13 +116,25 @@
                             <video-player width="454px" height="248px" :videoID="1"></video-player>
                         </div>
                     </div>
-
                 </div>
             </div>
         </el-card>
         <el-card shadow="never" :body-style="{ padding:'30px'}" v-else>
             欢迎警员!
         </el-card>
+
+        <service-dialog ref="dialogMaturity" title="到期报废装备" width="60%" :button="false" :secondary="false">
+            <el-table :data="maturityList" fit>
+                <bos-table-column lable="RFID" field="rfid"></bos-table-column>
+                <bos-table-column lable="装备名称" field="equipArg.name"></bos-table-column>
+                <bos-table-column lable="装备型号" field="equipArg.model"></bos-table-column>
+                <bos-table-column lable="架体编号" field="location.number"></bos-table-column>
+                <bos-table-column lable="架体AB面" field="location.surface"></bos-table-column>
+                <bos-table-column lable="架体节号" field="location.section"></bos-table-column>
+                <bos-table-column lable="架体层号" field="location.floor"></bos-table-column>
+            </el-table>
+        </service-dialog>
+
     </div>
 </template>
 
@@ -137,7 +148,8 @@
     import {transformMixin} from 'common/js/transformMixin'
     import {formRulesMixin} from 'field/common/mixinComponent';
     import {baseURL} from "api/config";
-
+    import serviceDialog from 'components/base/serviceDialog/index'
+    import {equipmentScrappedInfo} from "api/statistics";
 
     export default {
         data() {
@@ -153,6 +165,7 @@
                 contentList:
                     [{name: '调拨通知'}, {name: '保养/充电通知'}, {name: '到期报废提醒'}, {name: '未归还提醒'}],
                 videoTime: '',
+                maturityList: [],
 
             }
         },
@@ -162,7 +175,9 @@
                 let data = {
                     page: 1,
                     size: 20,
-                    applicantId: JSON.parse(localStorage.getItem('user')).id
+                    applicantId: JSON.parse(localStorage.getItem('user')).id,
+                    property: 'time',
+                    direction: 'DESC'
                 };
 
                 getProcess(data).then(res => {
@@ -233,9 +248,9 @@
             gotoInfo(row, route) {
                 console.log(row);
                 if (row.type === '充电') {
-                    this.$router.push({path: '/equipmentOperation/charging', query: {name: row.rfid}});
+                    this.$router.push({path: '/equipmentOperation/charging', query: {name: row.equipRfid}});
                 } else if (row.type === '保养') {
-                    this.$router.push({path: '/equipmentOperation/maintenance', query: {name: row.rfid}});
+                    this.$router.push({path: '/equipmentOperation/maintenance', query: {name: row.equipRfid}});
                 }
                 if (row === 'surroundings') {
                     this.$router.push('/surroundings/index');
@@ -250,6 +265,16 @@
                 if (row.state && row.inputTime) {
                     this.$router.push({path: '/record/borrow', query: {name: row.rfid}});
                 }
+                if (row.count) {
+                    equipmentScrappedInfo({
+                        model: row.equipArgInfo.equipModel,
+                        name: row.equipArgInfo.equipName
+                    }).then(res => {
+                        this.maturityList = res;
+                    });
+                    this.$refs.dialogMaturity.show();
+                }
+
                 if (row.processInstanceId) {
                     switch (row.type) {
                         case 'DOWN_TO_UP':
@@ -322,7 +347,7 @@
             this.getHumiture();
             this.videoTime = setInterval(() => {
                 window.location.reload();
-            }, 1800000);
+            }, 60000);  //180000
         },
         beforeDestroy() {
             clearTimeout(this.videoTime);
@@ -330,7 +355,8 @@
 
         components: {
             progressCircular,
-            "video-player": FlvPlayerVue
+            "video-player": FlvPlayerVue,
+            serviceDialog
         },
 
     }

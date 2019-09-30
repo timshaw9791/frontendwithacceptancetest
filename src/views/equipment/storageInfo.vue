@@ -11,7 +11,6 @@
             <div>
 
                 <!--装备参数-->
-
                 <el-card class="box-card" shadow="never">
                     <div slot="header">
                         <span>装备参数</span>
@@ -47,7 +46,7 @@
                             <field-cascader label="装备名称" :options="options" v-model="form.nameId" prop="nameId"
                                             width="3" :rules="r(true).all(R.require)"
                                             v-if="title.includes('入库')"
-                                            @change="getEquipInfo(form.nameId[2])">q
+                                            @change="getEquipInfo(form.nameId[2])">
                             </field-cascader>
 
                             <field-input v-model="form.price" label="装备单价" width="3"
@@ -56,6 +55,7 @@
 
 
                             <field-input v-model="form.eqBig" label="装备大类" width="3" :disabled="disabled||edit"
+                                         name="大类"
                                          v-if="title.includes('装备查看')||(title.includes('信息查看')&&edit)"></field-input>
 
                             <field-input v-model="form.price" label="装备单价" width="3"
@@ -65,6 +65,7 @@
 
 
                             <field-input v-model="form.eqSmall" label="装备小类" width="3" :disabled="disabled||edit"
+                                         name="小类"
                                          v-if="title.includes('装备查看')||(title.includes('信息查看')&&edit)"></field-input>
 
 
@@ -85,13 +86,13 @@
 
                             <!--M标识第三层-->
                             <field-cascader label="装备小类" :options="options" v-model="form.nameId" prop="nameId"
-                                            width="3" :rules="r(true).all(R.require)"
+                                            width="3" :rules="r(true).all(R.require)" name="小类"
                                             :disabled="edit"
                                             v-if="title.includes('新增')||(title.includes('信息查看')&&!edit)">
                             </field-cascader>
 
 
-                            <field-select label="供应商" v-model="form.vendorId" width="3"
+                            <field-select label="供应商" v-model="form.vendorId" width="3" name="供应商"
                                           :rules="r(true).all(R.require)"
                                           prop="vendorId"
                                           @change="vendor(form.vendorId)"
@@ -254,10 +255,10 @@
     import {transformMixin} from "common/js/transformMixin";
 
 
-    // const cmdPath = 'C:\\Users\\Administrator';
-    // const exec = window.require('child_process').exec;
-    // const spawn = window.require('child_process').spawn;
-    // import {killProcess} from "common/js/kill";
+    const cmdPath = 'C:\\Users\\Administrator';
+    const exec = window.require('child_process').exec;
+    const spawn = window.require('child_process').spawn;
+    import {killProcess, killProcessSync} from "common/js/kill";
 
     export default {
         data() {
@@ -268,7 +269,7 @@
                     imageAddress: '',
                 },
                 zbForm: {},
-                list: [{rfid: "", serial: ""}],
+                list: [{rfid: null, serial: null}],
                 formRes: '',
                 inlineForm: {},
                 leadershipList: [],
@@ -574,10 +575,6 @@
                     this.form['name'] = a.name;
                     this.form['upkeepCycle'] = this.milliToDay(a.upkeepCycle);
                     this.form['chargeCycle'] = this.milliToDay(a.chargeCycle);
-
-                    // this.form['upkeepCycle'] = a.upkeepCycle;
-                    // this.form['chargeCycle'] = a.chargeCycle;
-
                     this.form.vendorId = a.supplier.id;
                     this.$set(this.form, 'model', a.model);
                     this.$set(this.form, 'personM', a.supplier.person);
@@ -589,39 +586,38 @@
                     } else {
                         this.imageUrl = '';
                     }
-                });
 
-                const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
+                    killProcessSync().then(res => {
+                        const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
+                        this.pid = process.pid;
+                        process.stderr.on('data', (err) => {
+                            console.log(err);
+                            this.$message.error('设备故障请重新插拔!插入后请重新选择装备');
+                            this.index = 1;
+                            killProcess();
+                        });
+                        process.stdout.on('data', (data) => {
+                            console.log(data);
+                            if (this.index > 0) {
+                                if (this.index == 1) {
+                                    this.list[0].rfid = data;
+                                } else {
+                                    this.list.push({rfid: data});
+                                }
+                                this.index = this.index + 1;
+                            } else {
+                                let newData = JSON.parse(data);
+                                newData.status === 'succeed' ? this.index = 1 : this.index = 0;
+                            }
+                        });
+                        process.on('exit', (code) => {
+                            // if (this.index === 0) {
+                            //       this.$message.error('设备未插入或串口号错误,插入后请重新选择装备!');
+                            //   }
+                            console.log(`子进程退出，退出码 ${code}`);
+                        });
+                    })
 
-                this.pid = process.pid;
-
-                process.stderr.on('data', (err) => {
-                    console.log(err);
-                    this.$message.error('设备故障请重新插拔!插入后请重新选择装备');
-                    this.index = 1;
-                    killProcess();
-                });
-
-                process.stdout.on('data', (data) => {
-                    console.log(data);
-                    if (this.index > 0) {
-                        if (this.index == 1) {
-                            this.list[0].rfid = data;
-                        } else {
-                            this.list.push({rfid: data});
-                        }
-                        this.index = this.index + 1;
-                    } else {
-                        let newData = JSON.parse(data);
-                        newData.status === 'succeed' ? this.index = 1 : this.index = 0;
-                    }
-                });
-
-                process.on('exit', (code) => {
-                    if (this.index === 0) {
-                        this.$message.error('设备未插入或串口号错误,插入后请重新选择装备!');
-                    }
-                    console.log(`子进程退出，退出码 ${code}`);
                 });
 
             },
@@ -640,11 +636,12 @@
 
             //删除读卡后的当前选择数据
             delqaq(row) {
-                if (this.list.length > 1) {
-                    this.list.splice(row.$index, 1);
-                } else {
-                    this.$message.error('不能删除最后一个');
-                }
+                this.list.splice(row.$index, 1);
+                // if (this.list.length > 1) {
+                //     this.list.splice(row.$index, 1);
+                // } else {
+                //     this.$message.error('不能删除最后一个');
+                // }
             },
 
             // 复制RFID
@@ -769,6 +766,7 @@
 
         created() {
             this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];//获取到串口号
+            killProcess();
         },
         mounted() {
 
@@ -792,7 +790,6 @@
 <style lang="scss" scoped>
     @import "common/css/mixin.scss";
     @import "common/css/variables.scss";
-
 
     .el-card:not(:nth-last-child(2)) {
         border-bottom: none !important;

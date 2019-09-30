@@ -1,21 +1,23 @@
 <template>
     <div class="record-dialog">
-        <dialogs ref="dialog" :width="1040" :title="'视频监控'">
+        <serviceDialog title="视屏监控" ref="dialogVideo" width="1040px" :button="false">
             <div class="d_body">
                 <my-video :src="src" :autoplay="true"></my-video>
             </div>
-        </dialogs>
+        </serviceDialog>
     </div>
 </template>
 
 <script>
     import dialogs from 'components/surroundings/surroundingDialog'
+    import serviceDialog from './recordServiceDialog'
     import myVideo from '@/components/videoPlayer/newLive'
     export default {
         name: "recordDialog",
         components:{
             dialogs,
-            myVideo
+            myVideo,
+            serviceDialog
         },
         data(){
             return{
@@ -28,10 +30,10 @@
         },
         methods:{
             show(){
-                this.$refs['dialog'].show();
+                this.$refs['dialogVideo'].show();
             },
             cancel(){
-                this.$refs['dialog'].close();
+                this.$refs['dialogVideo'].close();
             }
         }
     }

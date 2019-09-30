@@ -26,7 +26,7 @@
                             placeholder="编号"
                             suffix="el-icon-search"
                             v-model="search"
-                            style=" width:285px;">
+                            style="width:285px;">
                     </BosInput>
                 </div>
             </div>
