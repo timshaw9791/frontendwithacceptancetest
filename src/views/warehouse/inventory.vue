@@ -22,6 +22,7 @@
     import {getToken} from "../../common/js/auth";
     import request from 'common/js/request'
     import {baseURL} from "../../api/config";
+    import { delFile } from 'common/js/rfidReader'
 
     // import {handheld} from 'common/js/pda'
     // const fs = window.require('fs');
@@ -143,11 +144,12 @@
                 }
             },
             deleteFile() {
-                fs.unlink(newFile_path, function (error) {
-                    if (error) {
-                        return false;
-                    }
-                })
+                delFile(newFile_path, () => {})
+                // fs.unlink(newFile_path, function (error) {
+                //     if (error) {
+                //         return false;
+                //     }
+                // })
 
             },
             getString(data) {

@@ -162,7 +162,7 @@
     // import inventoryData from 'views/warehouse/inventoryData'
     import request from 'common/js/request'
     import {baseURL,baseBURL} from "../../../api/config"
-    import { start } from 'common/js/rfidReader'
+    import { start, delFile } from 'common/js/rfidReader'
 
     // import {handheld} from 'common/js/pda'
     // const cmdPath = 'C:\\Users\\Administrator';
@@ -237,12 +237,13 @@
         },
         methods: {
             deleteFile() {
-                fs.unlink(newFile_path, function (error) {
-                    if (error) {
-                        return false;
-                    }
-                    console.log('删除文件' + newFile_path + '成功');
-                })
+                delFile(newFile_path, () => {console.log('删除文件' + newFile_path + '成功')})
+                // fs.unlink(newFile_path, function (error) {
+                //     if (error) {
+                //         return false;
+                //     }
+                //     console.log('删除文件' + newFile_path + '成功');
+                // })
 
             },
             end(pid) {

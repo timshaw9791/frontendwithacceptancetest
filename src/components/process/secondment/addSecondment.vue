@@ -159,7 +159,7 @@
     import serviceDialog from 'components/base/gailiangban'
     import request from 'common/js/request'
     import {baseBURL,baseURL} from "../../../api/config";
-    import { start } from 'common/js/rfidReader'
+    import { start, delFile } from 'common/js/rfidReader'
 
     // import {handheld} from 'common/js/pda'
     // const cmdPath = 'C:\\Users\\Administrator';
@@ -374,11 +374,12 @@
 
             },
             deleteFile() {
-                fs.unlink(newFile_path, function (error) {
-                    if (error) {
-                        return false;
-                    }
-                })
+                delFile(newFile_path, () => {})
+                // fs.unlink(newFile_path, function (error) {
+                //     if (error) {
+                //         return false;
+                //     }
+                // })
 
             },
             getOutDataCopy(data) {

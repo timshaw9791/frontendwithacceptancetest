@@ -3,6 +3,7 @@ if (process.env.NODE_ENV == "production") {
     var spawn = window.require('child_process').spawn;
     var cwd = "C:\\Users\\10359"; // 执行目录
     var com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM']; // 端口 串口号
+    var fs = window.require('fs')
 }
 
 
@@ -68,4 +69,12 @@ export function start(cmd, success, failure, callBack) {
 export function startOne(cmd, callBack, rfid=null) {
     if(rfid) exec(`${cmd} ${com} ${rfid}`, {cwd: cwd}, (err, data) => {callBack(data)})
     else exec(`${cmd} ${com}`, {cwd: cwd}, (err, data) => {callBack(data)})
+}
+
+
+export function delFile(path, callBack) {
+    fs.unlink(path, err => {
+        if(err) return false
+        else callBack()
+    })
 }
