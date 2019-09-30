@@ -159,14 +159,14 @@
     import serviceDialog from 'components/base/gailiangban'
     import request from 'common/js/request'
     import {baseBURL,baseURL} from "../../../api/config";
-
-    import {handheld} from 'common/js/pda'
-    const cmdPath = 'C:\\Users\\Administrator';
-    const exec = window.require('child_process').exec;
-    const spawn = window.require('child_process').spawn;
-    const fs = window.require('fs');
-    const path = window.require('path');
-    const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
+    //
+    // import {handheld} from 'common/js/pda'
+    // const cmdPath = 'C:\\Users\\Administrator';
+    // const exec = window.require('child_process').exec;
+    // const spawn = window.require('child_process').spawn;
+    // const fs = window.require('fs');
+    // const path = window.require('path');
+    // const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
 
     export default {
         name: "addApply",
@@ -530,6 +530,7 @@
                 // }).then(res=>{
                 //      })
                 let type='';
+                console.log('此时菜市场',id)
                 switch (this.taskType) {
                     case '报废':
                         type='SCRAP';

@@ -44,7 +44,7 @@
             </div>
         </el-card>
 
-        <serviceDialog title="提示" ref="dialogButton" @confirm="submit">
+        <serviceDialog title="提示" ref="dialogButton" @confirm="submit" :secondary="false">
             <div class="_dialogDiv">
                 <form-container ref="inlineForm" :model="inlineForm">
                     <field-input v-model="inlineForm.safeStock" label="标准库存" width="3"

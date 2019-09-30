@@ -221,8 +221,7 @@
 
 
                 <div class="_box-bottom">
-                    <el-button @click="black">返回</el-button>
-                    <el-button type="primary" @click="addEquipArg" v-if="!edit">确认</el-button>
+                    <el-button type="primary" @click="addEquipArg" v-if="!edit">提交</el-button>
                 </div>
             </div>
         </el-card>
@@ -256,11 +255,11 @@
     import serviceDialog from 'components/base/serviceDialog/index'
     import {transformMixin} from "common/js/transformMixin";
 
-
-    const cmdPath = 'C:\\Users\\Administrator';
-    const exec = window.require('child_process').exec;
-    const spawn = window.require('child_process').spawn;
-    import {killProcess, killProcessSync} from "common/js/kill";
+    //
+    // const cmdPath = 'C:\\Users\\Administrator';
+    // const exec = window.require('child_process').exec;
+    // const spawn = window.require('child_process').spawn;
+    // import {killProcess, killProcessSync} from "common/js/kill";
 
     export default {
         data() {

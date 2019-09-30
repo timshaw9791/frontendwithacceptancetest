@@ -107,13 +107,15 @@
             'searchNumber': {
                 deep: true,
                 handler(newVal, oldVal) {
-                    this.paginator.page = 1;
-                    // this.getList()
+                    if( this.paginator.page != 1){
+                        this.paginator.page = 1;
+                    }
                     if (newVal == '' && oldVal != '') {
                         this.getList(this.select, newVal);
                     } else if (newVal != '') {
                         this.getList(this.select, newVal);
                     }
+                    // this.getList()
 
                 }
             },
@@ -138,6 +140,7 @@
             // },
             'typeSingle': {
                 handler(newVal) {
+
                     if (newVal == 'apply') {
                         this.labelList = [
                             {lable: '申请单号', field: 'variables.applyOrder.number', sort: false},
@@ -178,11 +181,19 @@
             'urlObject.billUrl': {
                 deep: true,
                 handler(newVal) {
+                    this.paginator.page = 1;
+                    this.getList(this.select, this.searchNumber);
+                }
+            },
+            'paginator.page':{
+                deep: true,
+                handler(newVal) {
                     this.getList(this.select, this.searchNumber);
                 }
             },
             'select': {
                 handler(newVal) {
+                    this.paginator.page = 1;
                     // let url = baseBURL+'/transfer-order/by-user-and-order-state';
                     // if(newVal=='进行中'){
                     //     this.getApplyList('doing');
