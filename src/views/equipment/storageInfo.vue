@@ -391,7 +391,7 @@
                             price: this.form.price * 100,
                         }, (res) => {
                             this.callback(`成功`);
-                            spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
+                            //spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
                             this.$emit('black', true);
                         }, (errs) => {
                             console.log('errs', errs);
