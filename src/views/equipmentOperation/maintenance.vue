@@ -87,7 +87,7 @@
           </serviceDialog>
         </div>
 
-        <right :batch="batch" @cancel="cancel" v-if="!show"></right>
+        <right :batch="batch" @cancel="cancel"  @tobatch="change" v-if="!show"></right>
        
       </div>
     </el-card>
@@ -106,8 +106,8 @@ import { transformMixin } from "common/js/transformMixin";
 import { getNeedUpkeep } from "api/needs";
 var _ = require("lodash");
 
-// const exec = window.require('child_process').exec;
-//  const spawn = window.require('child_process').spawn;
+// // const exec = window.require('child_process').exec;
+//  // const spawn = window.require('child_process').spawn;
 // import {killProcess} from "common/js/kill";
 
 export default {
@@ -158,10 +158,11 @@ export default {
 
     cancel(data) {
       this.batch = data;
+
     },
 
     async getList() {
-      this.list = await this.getAxiosList(getNeedUpkeep);
+      this.list = await this.getAxiosList1(getNeedUpkeep);
       console.log(this.list);
     },
     /* 显示具体的保养列表 */
@@ -173,15 +174,15 @@ export default {
       });
       this.$refs.maintenanceDialog.show();
 
-      // setTimeout(() =>  {
-      //   this.startRfid("limingaaa")
-      // }, 1000)
-      //       setTimeout(() =>  {
-      //   this.startRfid("12344444")
-      // }, 3000)
-      //       setTimeout(() =>  {
-      //   this.startRfid("19071105")
-      // }, 2000)
+      setTimeout(() =>  {
+        this.startRfid("limingaaa")
+      }, 1000)
+            setTimeout(() =>  {
+        this.startRfid("12344444")
+      }, 3000)
+            setTimeout(() =>  {
+        this.startRfid("19071105")
+      }, 2000)
 
       // const process = exec(`java -jar scan.jar 4`, { cwd: "C:\\Users\\10359" });
 
@@ -263,6 +264,10 @@ export default {
         return item == this.maintenance.cancelZb.equip.id;
       });
       this.$refs.dialogButton.hide();
+    },
+    change(){
+  
+    this.batch=!this.batch
     },
     /* 确认保养 */
     submit() {
