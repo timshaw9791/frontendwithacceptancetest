@@ -87,10 +87,11 @@
 </template>
 
 <script>
-    const cmdPath = 'C:\\Users\\Administrator';
-    const exec = window.require('child_process').exec;
-    const spawn = window.require('child_process').spawn;
-    import {killProcess} from "common/js/kill";
+    //const cmdPath = 'C:\\Users\\Administrator';
+    // const exec = window.require('child_process').exec;
+    // const spawn = window.require('child_process').spawn;
+    // import {killProcess} from "common/js/kill";
+    import { startOne } from 'common/js/rfidReader'
     import dialogSvices from 'components/record/recordServiceDialog'
     export default {
         name: "inventoryTable",
@@ -113,13 +114,13 @@
             },
             cancelCopy(){
                 this.$refs.copyRfidDialog.hide();
-                killProcess();
+                //killProcess();
             },
             cancel(){
-                killProcess();
+                //killProcess();
             },
             copyRfid() {
-                exec(`java -jar writing.jar ${JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM']} ${this.cRfid}`, {cwd: cmdPath}, (err, data) => {
+                startOne("java -jar writing.jar", (err, data) => {
                     console.log(data);
                     if (data.includes('succeed')) {
                         this.$message.success('复制成功!');
@@ -127,7 +128,16 @@
                     } else {
                         this.$message.error('复制失败!');
                     }
-                })
+                }, this.cRfid)
+                // exec(`java -jar writing.jar ${JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM']} ${this.cRfid}`, {cwd: cmdPath}, (err, data) => {
+                //     console.log(data);
+                //     if (data.includes('succeed')) {
+                //         this.$message.success('复制成功!');
+                //         this.$refs.copyRfidDialog.hide();
+                //     } else {
+                //         this.$message.error('复制失败!');
+                //     }
+                // })
             },
             indexMethod(index) {
                 return index +1;

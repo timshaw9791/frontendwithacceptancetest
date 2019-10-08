@@ -253,12 +253,13 @@
     import {delFile} from "api/basic";
     import serviceDialog from 'components/base/serviceDialog/index'
     import {transformMixin} from "common/js/transformMixin";
+    import { start, startOne } from 'common/js/rfidReader'
 
 
-    const cmdPath = 'C:\\Users\\Administrator';
-    const exec = window.require('child_process').exec;
-    const spawn = window.require('child_process').spawn;
-    import {killProcess, killProcessSync} from "common/js/kill";
+    // const cmdPath = 'C:\\Users\\Administrator';
+    // const exec = window.require('child_process').exec;
+    // const spawn = window.require('child_process').spawn;
+    // import {killProcess, killProcessSync} from "common/js/kill";
 
     export default {
         data() {
@@ -391,7 +392,7 @@
                             price: this.form.price * 100,
                         }, (res) => {
                             this.callback(`成功`);
-                            spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
+                            //spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
                             this.$emit('black', true);
                         }, (errs) => {
                             console.log('errs', errs);
@@ -586,39 +587,58 @@
                     } else {
                         this.imageUrl = '';
                     }
-
-                    killProcessSync().then(res => {
-                        const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
-                        this.pid = process.pid;
-                        process.stderr.on('data', (err) => {
-                            console.log(err);
-                            this.$message.error('设备故障请重新插拔!插入后请重新选择装备');
-                            this.index = 1;
-                            killProcess();
-                        });
-                        process.stdout.on('data', (data) => {
-                            console.log(data);
-                            if (this.index > 0) {
-                                if (this.index == 1) {
-                                    this.list[0].rfid = data;
-                                } else {
-                                    this.list.push({rfid: data});
-                                }
-                                this.index = this.index + 1;
-                            } else {
-                                let newData = JSON.parse(data);
-                                newData.status === 'succeed' ? this.index = 1 : this.index = 0;
-                            }
-                        });
-                        process.on('exit', (code) => {
-                            // if (this.index === 0) {
-                            //       this.$message.error('设备未插入或串口号错误,插入后请重新选择装备!');
-                            //   }
-                            console.log(`子进程退出，退出码 ${code}`);
-                        });
-                    })
-
                 });
+
+                start("java -jar scan.jar", (data) => {
+                    if (this.index > 0) {
+                        if (this.index == 1) {
+                            this.list[0] = {rfid: data};
+                        } else {
+                            this.list.push({rfid: data});
+                        }
+                        this.index = this.index + 1;
+                    } else {
+                        let newData = JSON.parse(data);
+                        
+                        newData.status === 'succeed' ? this.index = 1 : this.index = 0;
+                    }
+                }, (fail) => {
+                    this.index = 1;
+                    this.$message.error(fail)
+                }, (pid, err) => {pid?this.pid=pid:this.$message.error(err)})
+
+                // const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
+
+                // this.pid = process.pid;
+
+                // process.stderr.on('data', (err) => {
+                //     console.log(err);
+                //     this.$message.error('设备故障请重新插拔!插入后请重新选择装备');
+                //     this.index = 1;
+                //     killProcess();
+                // });
+
+                // process.stdout.on('data', (data) => {
+                //     console.log(data);
+                //     if (this.index > 0) {
+                //         if (this.index == 1) {
+                //             this.list[0].rfid = data;
+                //         } else {
+                //             this.list.push({rfid: data});
+                //         }
+                //         this.index = this.index + 1;
+                //     } else {
+                //         let newData = JSON.parse(data);
+                //         newData.status === 'succeed' ? this.index = 1 : this.index = 0;
+                //     }
+                // });
+
+                // process.on('exit', (code) => {
+                //     if (this.index === 0) {
+                //         this.$message.error('设备未插入或串口号错误,插入后请重新选择装备!');
+                //     }
+                //     console.log(`子进程退出，退出码 ${code}`);
+                // });
 
             },
 
@@ -646,15 +666,24 @@
 
             // 复制RFID
             copyRfid() {
-                exec(`java -jar writing.jar ${this.com} ${this.copyRfidList.rfid}`, {cwd: cmdPath}, (err, data) => {
-                    console.log(data);
+                console.log("SprWu");
+                startOne("java -jar writing.jar", (data) => {
                     if (data.includes('succeed')) {
                         this.$message.success('复制成功!');
                         this.$refs.copyRfidDialog.hide();
                     } else {
                         this.$message.error('复制失败!');
                     }
-                })
+                }, this.copyRfidList.rfid)
+                // exec(`java -jar writing.jar ${this.com} ${this.copyRfidList.rfid}`, {cwd: cmdPath}, (err, data) => {
+                //     console.log(data);
+                //     if (data.includes('succeed')) {
+                //         this.$message.success('复制成功!');
+                //         this.$refs.copyRfidDialog.hide();
+                //     } else {
+                //         this.$message.error('复制失败!');
+                //     }
+                // })
             },
 
             //进入页面获取数据
@@ -766,7 +795,7 @@
 
         created() {
             this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];//获取到串口号
-            killProcess();
+            //killProcess();
         },
         mounted() {
 

@@ -102,11 +102,12 @@
     import {transformMixin} from 'common/js/transformMixin'
     import {retirementApplication} from "api/operation";
     import {getRfidinfo} from "api/rfid";
+    import { start } from 'common/js/rfidReader'
 
-    const cmdPath = 'C:\\Users\\Administrator';
-    const exec = window.require('child_process').exec;
-    const spawn = window.require('child_process').spawn;
-    import {killProcess} from "common/js/kill";
+    // const cmdPath = 'C:\\Users\\Administrator';
+    // const exec = window.require('child_process').exec;
+    // const spawn = window.require('child_process').spawn;
+    // import {killProcess} from "common/js/kill";
 
     export default {
         data() {
@@ -146,49 +147,64 @@
                 this.dialogList = [];
                 this.listPush = [];
 
-                const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
-                this.pid = process.pid;
-                let index = 0;
+                start("java -jar scan.jar", (data) => {
+                    getRfidinfo([`${data}`]).then(res => {
+                        if (0 in res) {
+                            this.dialogList.push(res[0]);
+                            this.listPush.push(res[0].id);
+                        } else {
+                            this.$message.error(`${data}该RFID不在库房内`);
+                            index = 1;
+                        }
+                    })
+                }, (fail) => {
+                    this.$message.error(fail)
+                    this.$refs.dialog.hide()
+                }, (pid, err) => {pid?this.pid = pid:this.$message.error(err);this.$refs.dialog.hide()})
+
+                // const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
+                // this.pid = process.pid;
+                // let index = 0;
 
 
-                process.stderr.on('data', (err) => {
-                    console.log(err);
-                    this.$message.error('设备故障请重新插拔!插入后请重新打开维修');
-                    index = 1;
-                    killProcess();
-                    this.$refs.dialog.hide();
-                });
+                // process.stderr.on('data', (err) => {
+                //     console.log(err);
+                //     this.$message.error('设备故障请重新插拔!插入后请重新打开维修');
+                //     index = 1;
+                //     killProcess();
+                //     this.$refs.dialog.hide();
+                // });
 
 
-                process.stdout.on('data', (data) => {
-                    console.log(data);
-                    if (index > 0) {
-                        getRfidinfo([`${data}`]).then(res => {
-                            if (0 in res) {
-                                this.dialogList.push(res[0]);
-                                this.listPush.push(res[0].id);
-                            } else {
-                                this.$message.error(`${data}该RFID不在库房内`);
-                                index = 1;
-                            }
-                        })
-                    }
-                    if (data.includes('succeed')) {
-                        index = 1;
-                    }
-                });
+                // process.stdout.on('data', (data) => {
+                //     console.log(data);
+                //     if (index > 0) {
+                //         getRfidinfo([`${data}`]).then(res => {
+                //             if (0 in res) {
+                //                 this.dialogList.push(res[0]);
+                //                 this.listPush.push(res[0].id);
+                //             } else {
+                //                 this.$message.error(`${data}该RFID不在库房内`);
+                //                 index = 1;
+                //             }
+                //         })
+                //     }
+                //     if (data.includes('succeed')) {
+                //         index = 1;
+                //     }
+                // });
 
-                process.on('exit', (code) => {
-                    if (index === 0) {
-                        this.$message.error('设备未插入或串口号错误,插入后请重新打开维修!');
-                        this.$refs.dialog.hide();
-                    }
-                    console.log(`子进程退出，退出码 ${code}`);
-                });
+                // process.on('exit', (code) => {
+                //     if (index === 0) {
+                //         this.$message.error('设备未插入或串口号错误,插入后请重新打开维修!');
+                //         this.$refs.dialog.hide();
+                //     }
+                //     console.log(`子进程退出，退出码 ${code}`);
+                // });
 
             },
             cancel() {
-                killProcess();
+                //killProcess();
             },
 
             dialogConfirm() {
@@ -255,7 +271,7 @@
                 }, (res) => {
                     this.callback('已经申请维修!');
                     this.$refs.dialog.hide();
-                    spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
+                    //spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
                 })
             }
         },

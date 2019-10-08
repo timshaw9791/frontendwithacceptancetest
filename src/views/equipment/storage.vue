@@ -132,12 +132,14 @@
     import {getRfid, saveRfid} from "api/rfid";
     import request from 'common/js/request'
     import {baseURL} from "../../api/config";
+    import { start, startOne } from 'common/js/rfidReader'
+
     // nodejs调用子进程的方法
 
-    const cmdPath = 'C:\\Users\\Administrator';   //cmd命令的位置
-    const exec = window.require('child_process').exec;
-    const spawn = window.require('child_process').spawn;
-    import {killProcess} from "common/js/kill";
+    // const cmdPath = 'C:\\Users\\Administrator';   //cmd命令的位置
+    // const exec = window.require('child_process').exec;
+    // const spawn = window.require('child_process').spawn;
+    // import {killProcess} from "common/js/kill";
 
     export default {
         data() {
@@ -167,7 +169,8 @@
                 writeIndex: '',
                 pid: '',
                 modeType: '',
-                com: 0
+                com: 0,
+                index: false, // 进程回调判断
             }
         },
         components: {
@@ -225,40 +228,55 @@
             serialRfid() {
                 getRfid().then(res => {
 
-                    //是以流的形式,可以监听
-                    const process = exec(`java -jar auto.jar ${this.com} ${res}`, {cwd: cmdPath}); //调用cmd执行读写器
-                    this.pid = process.pid;
-                    let start = false;
-
-                    //成功的时候
-                    process.stdout.on('data', (data) => {
+                    start("java -jar auto.jar", (data) => {
                         let newData = JSON.parse(data);
                         console.log(newData);
-                        if (start === true) {
+                        if (this.index>0) {
                             this.writeAll.unshift(newData);
                             this.writeIndex = newData;
-                        } else if (start === false) {
-                            newData.status === 'succeed' && newData.epc === undefined ? start = true : start = false;
+                        } else {
+                            newData.status === 'succeed' && newData.epc === undefined? this.index = 1: this.index = 0;
                         }
-                    });
+                    }, (fail) => {
+                        this.index = 1
+                        this.$refs.dialogModify.hide()
+                        this.$message.error(fail)
+                    }, (pid, err) => {pid?this.pid = pid:this.$message.error(err);this.$refs.dialogModify.hide()})
+
+                    //是以流的形式,可以监听
+                    // const process = exec(`java -jar auto.jar ${this.com} ${res}`, {cwd: cmdPath}); //调用cmd执行读写器
+                    // this.pid = process.pid;
+                    // let start = false;
+
+                    //成功的时候
+                    // process.stdout.on('data', (data) => {
+                    //     let newData = JSON.parse(data);
+                    //     console.log(newData);
+                    //     if (start === true) {
+                    //         this.writeAll.unshift(newData);
+                    //         this.writeIndex = newData;
+                    //     } else if (start === false) {
+                    //         newData.status === 'succeed' && newData.epc === undefined ? start = true : start = false;
+                    //     }
+                    // });
 
                     //报错的时候
-                    process.stderr.on('data', (err) => {
-                        console.log(err);
-                        this.$message.error('设备故障请重新插拔!插入后请重新打开');
-                        start = true;
-                        this.$refs.dialogModify.hide();
-                        killProcess();
-                    });
+                    // process.stderr.on('data', (err) => {
+                    //     console.log(err);
+                    //     this.$message.error('设备故障请重新插拔!插入后请重新打开');
+                    //     start = true;
+                    //     this.$refs.dialogModify.hide();
+                    //     killProcess();
+                    // });
 
                     //退出的时候
-                    process.on('exit', (code) => {
-                        if (start === false) {
-                            this.$message.error('设备未插入或串口号错误,插入后请重新打开');
-                            this.$refs.dialogModify.hide();
-                        }
-                        console.log(`子进程退出，退出码 ${code}`);
-                    });
+                    // process.on('exit', (code) => {
+                    //     if (start === false) {
+                    //         this.$message.error('设备未插入或串口号错误,插入后请重新打开');
+                    //         this.$refs.dialogModify.hide();
+                    //     }
+                    //     console.log(`子进程退出，退出码 ${code}`);
+                    // });
                 });
             },
             black(data) {
@@ -285,24 +303,37 @@
             },
             writeone() {
                 //执行一次不能监听
-                exec(`java -jar reading.jar ${this.com}`, {cwd: cmdPath}, (err, data) => {
-                    console.log(data);
-                    if (data.includes('succeed')) {
+                startOne("java -jar reading.jar", (data) => {
+                    if(data.includes('succeed')) {
                         console.log(data.split('\n')[1]);
                         // this.inlineForm.rfid = data.split('\n')[1];
                         this.$set(this.inlineForm, 'rfid', data.split('\n')[1]);
                     }
                 })
+                // exec(`java -jar reading.jar ${this.com}`, {cwd: cmdPath}, (err, data) => {
+                //     console.log(data);
+                //     if (data.includes('succeed')) {
+                //         console.log(data.split('\n')[1]);
+                //         // this.inlineForm.rfid = data.split('\n')[1];
+                //         this.$set(this.inlineForm, 'rfid', data.split('\n')[1]);
+                //     }
+                // })
             },
             saveOne(data) {
 
                 this.$refs.inlineForm.axiosData(
-                    exec(`java -jar writing.jar ${this.com} ${data}`, {cwd: cmdPath}, (err, data) => {
+                    startOne("java -jar writing.jar", (data) => {
                         console.log(data);
-                        if (data.includes('succeed')) {
-                            this.$message.success('修改成功!');
+                        if(data.includes('succeed')) {
+                            this.$message.success('修改成功!')
                         }
                     })
+                    // exec(`java -jar writing.jar ${this.com} ${data}`, {cwd: cmdPath}, (err, data) => {
+                    //     console.log(data);
+                    //     if (data.includes('succeed')) {
+                    //         this.$message.success('修改成功!');
+                    //     }
+                    // })
                 );
 
             },

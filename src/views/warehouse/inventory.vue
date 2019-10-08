@@ -22,11 +22,12 @@
     import {getToken} from "../../common/js/auth";
     import request from 'common/js/request'
     import {baseURL} from "../../api/config";
+    import { delFile, handheld } from 'common/js/rfidReader'
 
-    import {handheld} from 'common/js/pda'
-    const fs = window.require('fs');
-    const path = window.require('path');
-    const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
+    // import {handheld} from 'common/js/pda'
+    // const fs = window.require('fs');
+    // const path = window.require('path');
+    // const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
 
 
     /*Melanie Dunne supernova*/
@@ -144,11 +145,12 @@
                 }
             },
             deleteFile() {
-                fs.unlink(newFile_path, function (error) {
-                    if (error) {
-                        return false;
-                    }
-                })
+                delFile(newFile_path, () => {})
+                // fs.unlink(newFile_path, function (error) {
+                //     if (error) {
+                //         return false;
+                //     }
+                // })
 
             },
             getString(data) {
