@@ -87,7 +87,7 @@
           </serviceDialog>
         </div>
 
-        <right :batch="batch" @cancel="cancel" v-if="!show"></right>
+        <right :batch="batch" @cancel="cancel"  @tobatch="change" v-if="!show"></right>
        
       </div>
     </el-card>
@@ -159,6 +159,7 @@ export default {
 
     cancel(data) {
       this.batch = data;
+
     },
 
     async getList() {
@@ -174,15 +175,15 @@ export default {
       });
       this.$refs.maintenanceDialog.show();
 
-      // setTimeout(() =>  {
-      //   this.startRfid("limingaaa")
-      // }, 1000)
-      //       setTimeout(() =>  {
-      //   this.startRfid("12344444")
-      // }, 3000)
-      //       setTimeout(() =>  {
-      //   this.startRfid("19071105")
-      // }, 2000)
+      setTimeout(() =>  {
+        this.startRfid("limingaaa")
+      }, 1000)
+            setTimeout(() =>  {
+        this.startRfid("12344444")
+      }, 3000)
+            setTimeout(() =>  {
+        this.startRfid("19071105")
+      }, 2000)
 
       start("java -jar scan.jar", (data) => {
         data = data.replace(/[\r\n]/g, "") // 扫描值带有 "%0A" 后缀
@@ -284,6 +285,10 @@ export default {
         return item == this.maintenance.cancelZb.equip.id;
       });
       this.$refs.dialogButton.hide();
+    },
+    change(){
+  
+    this.batch=!this.batch
     },
     /* 确认保养 */
     submit() {

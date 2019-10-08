@@ -30,7 +30,7 @@
        
       
 
-        <serviceDialog title="请确认入库装备清单" ref="StorageDialog" @confirm="submit" width="1040px">
+        <serviceDialog title="请确认入库装备清单" ref="StorageDialog" @confirm="submit" @cancel="cancelbatch" width="1040px">
             <el-table :data="moreList" height="500" fit >
               <el-table-column label="序号" width="60" align="center">
                 <template scope="scope">{{ scope.$index + 1 }}</template>
@@ -91,6 +91,7 @@
             this.$refs.isWarehouse.show();
             },
             submit() {
+                
                 if (0 in this.equipList) {
                     this.gqlMutate(api.houseUser_returnEquip, {
                         equipIds: this.equipList,
@@ -103,6 +104,7 @@
                 } else {
                     this.$message.error('未选择装备!')
                 }
+                this.$emit("tobatch")
             },
             handleSelectionChange(val) {
                 this.equipList = val.map((res) => {
@@ -118,6 +120,9 @@
             DialogShow() {
                 this.$refs.StorageDialog.show();
             },
+            cancelbatch(){
+                this.$emit('cancel',false)
+            }
         }
     }
 </script>
