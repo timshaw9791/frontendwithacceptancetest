@@ -286,6 +286,10 @@
                 index: 0,
                 com: 0,
                 copyRfidList: {},
+                judgeEdit: { // 判断是否对数据进行修改
+                    form: null,
+                    zbForm: null
+                }
             }
         },
         mixins: [formRulesMixin, transformMixin],
@@ -318,12 +322,19 @@
 
             //离开页面以后为父组件抛出black 杀死进程
             black() {
-                if (this.title.includes('查看')) {
+                if(this.isEqual()) {
                     this.$emit('black', true);
                 } else {
                     this.$refs.dialog.show();
                 }
                 //killProcess();
+            },
+            
+            /* 判断两次数据是否相等 */
+            isEqual() {
+                let flag1 = JSON.stringify(this.form) == JSON.stringify(this.judgeEdit.form)
+                let flag2 = JSON.stringify(this.zbForm) == JSON.stringify(this.judgeEdit.zbForm)
+                return flag1&&flag2;
             },
 
             //点击提交后 根据从什么入口进入的执行对应的  新增  入库  装备基础信息修改 装备入库信息修改
@@ -366,6 +377,11 @@
                         this.callback('添加成功!');
                     })
                 } else if (this.title.includes('入库')) {
+                    if(this.list[0].rfid == null) {
+                        this.$message.error("请扫入RFID")
+                        return
+                    }
+                    
 
                     this.$refs.form.validate.then((res1) => {
                         this.zbForm['location'] = {
@@ -413,8 +429,8 @@
                                     }
                                 })
                             });
-                            console.log(newData);
-                            console.log(this.list);
+                            //console.log(newData);
+                            //console.log(this.list);
                         })
 
                     }).catch(err => {
@@ -789,6 +805,8 @@
                             }
                         }
                     })
+                    this.judgeEdit.form = JSON.parse(JSON.stringify(this.form))
+                    this.judgeEdit.zbForm = JSON.parse(JSON.stringify(this.zbForm))
                 });
             }
         },
@@ -810,6 +828,7 @@
                 this.edit = true;
                 this.disabled = true;
             }
+
             this.getList();
         },
 
