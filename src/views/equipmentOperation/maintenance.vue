@@ -175,16 +175,6 @@ export default {
       });
       this.$refs.maintenanceDialog.show();
 
-      setTimeout(() =>  {
-        this.startRfid("limingaaa")
-      }, 1000)
-            setTimeout(() =>  {
-        this.startRfid("12344444")
-      }, 3000)
-            setTimeout(() =>  {
-        this.startRfid("19071105")
-      }, 2000)
-
       start("java -jar scan.jar", (data) => {
         data = data.replace(/[\r\n]/g, "") // 扫描值带有 "%0A" 后缀
         let noHave = true;
@@ -247,26 +237,6 @@ export default {
       //   }
       //   console.log(`子进程退出，退出码 ${code}`);
       // });
-    },
-    /* RFID读卡器数据 测试用 */
-    startRfid(data) {
-      var noHave = true;
-      if (this.process.index == 0) {
-        this.maintenance.list.forEach(item => {
-          if (item.equip.rfid.includes(data)) {
-            item.rfidConfirm = 1;
-            noHave = false;
-            this.equipList.push(item.equip.id);
-            this.$message({
-              message: "装备扫描成功！",
-              type: "success"
-            });
-          }
-        });
-        if (noHave) {
-          this.$message.error("该装备不属于装备保养清单！");
-        }
-      }
     },
     /* 点击保养列表勾 */
     cancelMaintenance(item) {
