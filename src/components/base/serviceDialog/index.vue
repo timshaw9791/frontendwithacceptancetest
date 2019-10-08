@@ -67,6 +67,7 @@
                 this.innerVisible = false;
                 this.showFlag = false;
                 this.$emit('cancel','end');
+                this.$emit('cancelbatch')
             },
             handleClose(done) {
                 if (this.secondary) {
