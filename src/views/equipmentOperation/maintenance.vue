@@ -270,7 +270,7 @@ export default {
     /* 放弃本次操作 */
     quit() {
       this.equipList = [];
-      spawn("taskkill", ["/PID", this.process.pid, "/T", "/F"]);
+      //spawn("taskkill", ["/PID", this.process.pid, "/T", "/F"]);
     },
     /* 确认取消保养该装备 */
     dialogConfim() {

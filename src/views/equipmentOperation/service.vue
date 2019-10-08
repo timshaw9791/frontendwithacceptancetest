@@ -271,7 +271,7 @@
                 }, (res) => {
                     this.callback('已经申请维修!');
                     this.$refs.dialog.hide();
-                    spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
+                    //spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
                 })
             }
         },
