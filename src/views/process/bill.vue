@@ -101,7 +101,7 @@
                 <div class="tr">
                     <div class="title">{{typeSingleFlag?`${billName}单号: `:'申请单号: '}}<span
                             v-text="billData.applyOrder.number"></span></div>
-                    <div class="title">申请大类: <span v-text="applicationType(billData.applyOrder.type)"></span></div>
+                    <div class="title">申请类型: <span v-text="applicationType(billData.applyOrder.type)"></span></div>
                 </div>
                 <div class="tr">
                     <div class="title">申请时间: <span v-text="filterTime(billData.applyOrder.applyTime)"></span></div>

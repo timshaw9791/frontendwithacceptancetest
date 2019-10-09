@@ -1,6 +1,6 @@
 <template>
     <div class="personnelManagement">
-        <my-header :title="'人员信息管理'" :searchFlag="false" :haveBlack="!viewStatus.flag" @h_black="black"></my-header>
+        <my-header :title="'人员信息管理'" :searchFlag="false" :haveBlack="!viewStatus.flag" @h_black="blackJudge"></my-header>
         <div class="personnel-action-bar">
             <div v-show="viewStatus.flag" class="add">
                 <div class="add-personnel">
@@ -25,9 +25,9 @@
                 </div>
             </div>
         </div>
-        <div class="personnelManagement-body">
+        <div class="personnelManagement-body"  v-loading="loading" element-loading-text="正在同步中..." element-loading-background="rgba(255,255,255, 0.8)">
             <personnel-list ref="personList" :searchName="search" @clickPersonnel="selectPersonnel" :personnel="personnel" v-show="viewStatus.flag"></personnel-list>
-            <add-personnel @black="black" :addType="type" :personenlData="personnel.personenlData" :disabled="disabled" v-if="!viewStatus.flag" :organUnit="unit" @addSucess="addPersonnelSucess" :roleList="select.selectList"></add-personnel>
+            <add-personnel ref="addPerson" @black="black" :addType="type" :personenlData="personnel.personenlData" :disabled="disabled" v-if="!viewStatus.flag" :organUnit="unit" @addSucess="addPersonnelSucess" :roleList="select.selectList"></add-personnel>
         </div>
     </div>
 </template>
@@ -50,6 +50,7 @@
         mixins: [fetchMixin],
         data() {
             return {
+                loading: false,
                 search: '',
                 select: {
                     selectList: [],
@@ -63,15 +64,15 @@
                         },
                         graphqlApi: user.getUserList
                     },
-                    personenlData:{}
+                    personenlData:{} // 具体人员信息
                 },
                 viewStatus: {
                     flag: true,
                 },
                 unit:{},
                 searchKey: ['name', 'position', 'policeSign'],
-                type:'',
-                disabled:false
+                type:'', // 操作类型
+                disabled:false // 是否开启编辑
             }
         },
         watch: {
@@ -88,9 +89,15 @@
             },
             methods: {
                 synchronization(){
-                    this.gqlMutate(user.identityTriggerSyncFaceInfo,'',(data)=>{
-                      this.$message.error(data.errors[0].message)
-                    },true)
+                    this.loading = true
+                    this.gqlMutateLoad(user.identityTriggerSyncFaceInfo,'',(data)=>{
+                      this.loading = false
+                      if(data.errors) {
+                          this.$message.error(data.errors[0].message)
+                      } else {
+                          this.$message.success("同步成功")
+                      }
+                    }, () => { this.loading = false },true)
                 },
                 getUnit(id){
                     this.gqlQuery(user.getOrganUnit, {id:id}, (data) => {
@@ -110,6 +117,10 @@
                 addPersonnelSucess(){
                     this.viewStatus.flag=true;
                     this.$refs.personList.refetch();
+                },
+                // 由于要加数据是否编辑的判断，而数据在子组件中，所以调用子组件方法
+                blackJudge() {
+                    this.$refs.addPerson.black()
                 },
                 black(data) {
                     this.viewStatus.flag=true;
@@ -282,4 +293,12 @@
         height: 25px;
         transform: translateY(-50%);
     }
+    
+    .el-loading-spinner {
+        margin-top: -10vh !important;
+    }
+    .el-loading-spinner .el-loading-text {
+    color: #2f2f76 !important;
+    font-size: 18px !important;
+}
 </style>

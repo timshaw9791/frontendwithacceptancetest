@@ -26,6 +26,9 @@ export let fetchMixin = {
                 this.$message.error(`${error}`);
             })
         },
+        gqlMutateLoad(graphql, variables, sCallback, failCallback) {
+            this.mutate(graphql, variables).then(data => sCallback(data)).catch(err => failCallback())
+        },
         gqlQuery(graphql, variables, sCallback, defult) {//便利方法，用于手动修改数据的请求
             this.query(graphql, variables).then((data) => {
                 if (data.errors) {   //未通过服务端的表单验证

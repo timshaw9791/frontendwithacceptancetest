@@ -35,9 +35,15 @@
             </div>
         </div>
         <div class="add-personneo-bottom">
-            <el-button @click="black">返回</el-button>
+            <!-- <el-button @click="black">返回</el-button> -->
             <el-button type="primary" @click="confirm">确认</el-button>
         </div>
+
+        <field-dialog title="提示" ref="dialog" @confirm="dialogConfirm">
+            <div class="_dialogDiv">
+                您确定要放弃本次操作吗?
+            </div>
+        </field-dialog>
     </div>
 </template>
 
@@ -59,7 +65,8 @@
                     flag:true
                 },
                 src:baseURL+'/images/',
-                personnelImg:''
+                personnelImg:'',
+                judgeForm: {}, // 用于判断是否编辑内容
             }
         },
         mixins: [formRulesMixin],
@@ -118,9 +125,17 @@
                 this.$set(this.form,'faceInformation',this.personnelImg);
                 this.roleItems.push(this.personenlData.role.id);
                 this.viewStatus.flag=false;
+                this.judgeForm = JSON.parse(JSON.stringify(this.form))
             },
             black(){
-                this.$emit('black',true)
+                if(JSON.stringify(this.form) == JSON.stringify(this.judgeForm)) {
+                    this.$emit('black',true)
+                } else {
+                    this.$refs.dialog.show();
+                }
+            },
+            dialogConfirm() {
+                this.$emit('black', true);
             },
             getSrc(){
               let srcs;
