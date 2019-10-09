@@ -217,7 +217,7 @@
                         {value: '手持机', label: '手持机'},
                         {value: 'RFID读写器', label: 'RFID读写器'},
                     ],
-                    hardwareSelect:''
+                    hardwareSelect:'' // 硬件选择
                 },
                 nowRow: {},
                 restaurants:[],
@@ -242,7 +242,7 @@
                 index:0,
                 leader: {
                     leaderList: [],
-                    leaderName: '',
+                    leaderName: '', // 指定领导
                     leaderItem: {},
                 }
             }
@@ -294,7 +294,7 @@
                     } else if (newVal == 'RFID读写器') {
                         this.restaurants=[];
                         this.getOutDataCopy(['1908000C']);
-                        // this.getListUsb();
+                        //this.getListUsb();
                     }
                 }
             }
@@ -322,7 +322,7 @@
                 // alert('关掉了');
                 // this.closeUsb=true
                 if (pid) {
-                    spawn("taskkill", ["/PID", pid, "/T", "/F"]);
+                    //spawn("taskkill", ["/PID", pid, "/T", "/F"]);
                     this.index = 0;
                 }
             },
@@ -589,6 +589,18 @@
                 let orderItems=[];
                 let applyOrder = {};
                 let urlApi='';
+                if(this.leader.leaderName.trim() == '') {
+                    this.$message.error("请选择指定领导")
+                    return
+                }
+                if(this.hardware.hardwareSelect == '') {
+                    this.$message.error("请选择硬件")
+                    return;
+                }
+                if(this.form.orderItems.length == 0) {
+                    this.$message.error("请扫入RFID")
+                    return;
+                }
                 if(this.taskType=='借调'){
                     this.form.orderItems.forEach(item=>{
                         if(item.count!=undefined){
