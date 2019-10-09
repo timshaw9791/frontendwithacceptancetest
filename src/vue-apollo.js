@@ -32,7 +32,7 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 });
 
 const authLink = authMiddleware.concat(httpLink);
-const errorLink = onError(({networkError, response}) => {
+const errorLink = onError(({networkError, response, operation, forward}) => {
      console.log(response);
     let errorMsg = '';
     if (!!response && response.errors !== undefined && response.errors.length) {
@@ -59,7 +59,6 @@ const errorLink = onError(({networkError, response}) => {
     //         message: '用户已经过期!'
     //     });
     // }
-
 });
 
 
