@@ -36,7 +36,7 @@
         </div>
         <div class="add-personneo-bottom">
             <!-- <el-button @click="black">返回</el-button> -->
-            <el-button type="primary" @click="confirm">确认</el-button>
+            <el-button type="primary" @click="confirm" v-show="!disabled">确认</el-button>
         </div>
 
         <field-dialog title="提示" ref="dialog" @confirm="dialogConfirm">
