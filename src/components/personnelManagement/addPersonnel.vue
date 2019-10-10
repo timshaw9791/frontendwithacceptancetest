@@ -34,7 +34,7 @@
                 </form>
             </div>
         </div>
-        <div class="add-personneo-bottom">
+        <div class="add-personneo-bottom" v-if="!disabled" >
             <el-button @click="black">返回</el-button>
             <el-button type="primary" @click="confirm">确认</el-button>
         </div>
