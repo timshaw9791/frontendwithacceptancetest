@@ -1,12 +1,12 @@
 //const fs = window.require('fs');
 
-const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
+// const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
 
-let cmdPath = 'C:\\Users\\Administrator';
+// let cmdPath = 'C:\\Users\\Administrator';
 
 //const exec = window.require('child_process').exec;
 
-let cmdStr = 'chcp 65001 && adb pull sdcard/inventoryData/inventory.json .';
+// let cmdStr = 'chcp 65001 && adb pull sdcard/inventoryData/inventory.json .';
 
 // 子进程名称
 let workerProcess;

@@ -159,14 +159,15 @@
     import serviceDialog from 'components/base/gailiangban'
     import request from 'common/js/request'
     import {baseBURL,baseURL} from "../../../api/config";
+    import { start, delFile, handheld } from 'common/js/rfidReader'
 
-    import {handheld} from 'common/js/pda'
-    const cmdPath = 'C:\\Users\\Administrator';
-    //const exec = window.require('child_process').exec;
-    //const spawn = window.require('child_process').spawn;
-    //const fs = window.require('fs');
-    //const path = window.require('path');
-    const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
+    // import {handheld} from 'common/js/pda'
+    // const cmdPath = 'C:\\Users\\Administrator';
+    // const exec = window.require('child_process').exec;
+    // const spawn = window.require('child_process').spawn;
+    // const fs = window.require('fs');
+    // const path = window.require('path');
+    // const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
 
     export default {
         name: "addApply",
@@ -216,7 +217,7 @@
                         {value: '手持机', label: '手持机'},
                         {value: 'RFID读写器', label: 'RFID读写器'},
                     ],
-                    hardwareSelect:''
+                    hardwareSelect:'' // 硬件选择
                 },
                 nowRow: {},
                 restaurants:[],
@@ -241,7 +242,7 @@
                 index:0,
                 leader: {
                     leaderList: [],
-                    leaderName: '',
+                    leaderName: '', // 指定领导
                     leaderItem: {},
                 }
             }
@@ -293,7 +294,7 @@
                     } else if (newVal == 'RFID读写器') {
                         this.restaurants=[];
                         this.getOutDataCopy(['1908000C']);
-                        // this.getListUsb();
+                        //this.getListUsb();
                     }
                 }
             }
@@ -321,7 +322,7 @@
                 // alert('关掉了');
                 // this.closeUsb=true
                 if (pid) {
-                    spawn("taskkill", ["/PID", pid, "/T", "/F"]);
+                    //spawn("taskkill", ["/PID", pid, "/T", "/F"]);
                     this.index = 0;
                 }
             },
@@ -336,28 +337,36 @@
                 // this.getOutDataCopy([19080012])
             },
             getListUsb() {//todo
-                const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
-                this.pid = process.pid;
-                process.stderr.on('data', (err) => {
-                    this.$message.error('设备故障请重新插拔!');
-                    console.log(err);
-                });
 
-                process.stdout.on('data', (data) => {
-                    console.log(data);
-                    if (this.index > 0) {
-                        let arr = [];
-                        arr.push(data);
-                        this.getOutDataCopy(arr);
-                    } else {
-                        let newData = JSON.parse(data);
-                        newData.status === 'succeed' ? this.index = 1 : this.index = 0;
-                    }
-                });
+                start("java -jar scan.jar", (data) => {
+                    let arr = [];
+                    arr.push(data);
+                    this.getOutDataCopy(arr);
+                }, (fail) => {
+                    this.$message.error(fail)
+                }, (pid, err) => {pid?this.pid = pid:this.$message.error(err)})
+                // const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
+                // this.pid = process.pid;
+                // process.stderr.on('data', (err) => {
+                //     this.$message.error('设备故障请重新插拔!');
+                //     console.log(err);
+                // });
 
-                process.on('exit', (code) => {
-                    console.log(`子进程退出，退出码 ${code}`);
-                });
+                // process.stdout.on('data', (data) => {
+                //     console.log(data);
+                //     if (this.index > 0) {
+                //         let arr = [];
+                //         arr.push(data);
+                //         this.getOutDataCopy(arr);
+                //     } else {
+                //         let newData = JSON.parse(data);
+                //         newData.status === 'succeed' ? this.index = 1 : this.index = 0;
+                //     }
+                // });
+
+                // process.on('exit', (code) => {
+                //     console.log(`子进程退出，退出码 ${code}`);
+                // });
                 // let intercal=setInterval(()=>{
                 //     if(this.closeUsb){
                 //         clearInterval(intercal);
@@ -368,11 +377,12 @@
 
             },
             deleteFile() {
-                fs.unlink(newFile_path, function (error) {
-                    if (error) {
-                        return false;
-                    }
-                })
+                delFile(newFile_path, () => {})
+                // fs.unlink(newFile_path, function (error) {
+                //     if (error) {
+                //         return false;
+                //     }
+                // })
 
             },
             getOutDataCopy(data) {
@@ -579,6 +589,18 @@
                 let orderItems=[];
                 let applyOrder = {};
                 let urlApi='';
+                if(this.leader.leaderName.trim() == '') {
+                    this.$message.error("请选择指定领导")
+                    return
+                }
+                if(this.hardware.hardwareSelect == '') {
+                    this.$message.error("请选择硬件")
+                    return;
+                }
+                if(this.form.orderItems.length == 0) {
+                    this.$message.error("请扫入RFID")
+                    return;
+                }
                 if(this.taskType=='借调'){
                     this.form.orderItems.forEach(item=>{
                         if(item.count!=undefined){

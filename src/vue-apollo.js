@@ -32,8 +32,8 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 });
 
 const authLink = authMiddleware.concat(httpLink);
-const errorLink = onError(({networkError, response}) => {
-    console.log(response);
+const errorLink = onError(({networkError, response, operation, forward}) => {
+     console.log(response);
     let errorMsg = '';
     if (!!response && response.errors !== undefined && response.errors.length) {
         errorMsg = !response.errors[0].message ? '服务器错误' : response.errors[0].message;
@@ -41,15 +41,15 @@ const errorLink = onError(({networkError, response}) => {
             message: errorMsg
         });
     }
-    if (!!networkError) {
-        errorMsg = networkError.message;
-        if (networkError.result !== undefined) {
-            errorMsg = networkError.result.success === false ? networkError.result.message : networkError.result.error;
-            Message.error({
-                message: errorMsg
-            });
-        }
-    }
+    // if (!!networkError) {
+    //     errorMsg = networkError.message;
+    //     if (networkError.result !== undefined) {
+    //         errorMsg = networkError.result.success === false ? networkError.result.message : networkError.result.error;
+    //         Message.error({
+    //             message: errorMsg
+    //         });
+    //     }
+    // }
 
     // if (networkError['statusCode'] === 401) {
     //     store.commit('SET_TOKEN', '');
@@ -59,7 +59,6 @@ const errorLink = onError(({networkError, response}) => {
     //         message: '用户已经过期!'
     //     });
     // }
-
 });
 
 
