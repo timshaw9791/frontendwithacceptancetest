@@ -9,8 +9,7 @@
                 accept=".jpg,.jpeg,.png,.JPG,.JPEG"
                 :before-upload="beforeAvatarUpload">
             <img v-if="imageUrl" :src="imageUrl" class="avatar">
-            <img v-else src="@/assets/noThumbnails.png" class="avatar">
-            <!-- <i v-else class="el-icon-plus avatar-uploader-icon"></i>  -->
+            <i v-else class="avatar"></i> 
         </el-upload>
     </div>
 </template>
@@ -100,6 +99,11 @@
         }
 
         .avatar {
+            width: 150px;
+            height: 150px;
+            display: block;
+        }
+        .avatar1{
             width: 150px;
             height: 150px;
             display: block;
