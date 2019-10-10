@@ -6,8 +6,8 @@
         </div>
         <div class="directAdjustmentDetails-context">
             <div class="context-row"><div class="row-item-box"><span v-text="'调拨单号：'"></span><span v-text="direct.number"></span></div><div class="row-item-box"><span v-text="'调拨大类：'"></span><span v-text="filterType(direct.type)"></span></div><div class="row-item-box"></div></div>
-            <div class="context-row"><div class="row-item-box"><span v-text="'调拨库房：'"></span><span v-text="direct.outHouseName"></span></div><div class="row-item-box"><span v-text="'调拨操作人员：'"></span><span v-text="direct.operator"></span></div><div class="row-item-box"><span v-text="'调拨时间：'"></span><span v-text="filterTime(direct.transferTime)"></span></div></div>
-            <div class="context-row"><div class="row-item-box"><span v-text="'接受库房：'"></span><span v-text="direct.inHouseName"></span></div><div class="row-item-box"><span v-text="'接收人：'"></span><span v-text="direct.receiver"></span></div><div class="row-item-box"><span v-text="'接收时间：'"></span><span v-text="filterTime(direct.receiveTime)"></span></div></div>
+            <div class="context-row"><div class="row-item-box"><span v-text="'调拨库房：'"></span><span v-text="direct.outHouseName"></span></div><div class="row-item-box"><span v-text="'调拨操作人员：'"></span><span v-text="direct.operator"></span></div><div class="row-item-box"><span v-text="'调拨时间：'"></span><span v-text="$filterTime(direct.transferTime)"></span></div></div>
+            <div class="context-row"><div class="row-item-box"><span v-text="'接受库房：'"></span><span v-text="direct.inHouseName"></span></div><div class="row-item-box"><span v-text="'接收人：'"></span><span v-text="direct.receiver"></span></div><div class="row-item-box"><span v-text="'接收时间：'"></span><span v-text="$filterTime(direct.receiveTime)"></span></div></div>
             <div class="context-row"><div class="row-item-box"><span v-text="'装备统计：'"></span></div><div class="row-item-box"></div><div class="row-item-box"></div></div>
         </div>
         <div class="directAdjustmentDetails-table">
@@ -46,7 +46,7 @@
         </div>
         <div class="directAdjustmentDetails-bottom-context">
             <div class="bottom-context-item"><span v-text="'申请人：'"></span><span v-text="direct.applicant"></span></div>
-            <div class="bottom-context-item" style="margin-top: 2px"><span v-text="'申请时间：'" style="margin-top: 8px"></span><span v-text="filterTime(direct.applyTime)"></span></div>
+            <div class="bottom-context-item" style="margin-top: 2px"><span v-text="'申请时间：'" style="margin-top: 8px"></span><span v-text="$filterTime(direct.applyTime)"></span></div>
         </div>
         <div class="directAdjustmentDetails-buttom">
             <el-button  class="submits" @click="submit">出库</el-button>
@@ -94,27 +94,27 @@
                     return '不知道'
                 }
             },
-            filterTime(date){
-                let time='';
-                if(date!=''&&date!=null){
-                    let dateNow =  new Date(date);
-                    let year = dateNow.getFullYear();
-                    let moth = dateNow.getMonth()+1;
-                    let day = dateNow.getDay();
-                    let hour = dateNow.getHours();
-                    let min = dateNow.getMinutes();
-                    let seconds = dateNow.getSeconds();
-                    time = year+'-'+addZero(moth)+'-'+addZero(day)+'\xa0\xa0\xa0'+addZero(hour)+':'+addZero(min)+':'+addZero(seconds);
-                }
-                function addZero(some) {
-                    if (some<10){
-                        return '0'+some
-                    }else {
-                        return some
-                    }
-                }
-                return time
-            }
+            // filterTime(date){
+            //     let time='';
+            //     if(date!=''&&date!=null){
+            //         let dateNow =  new Date(date);
+            //         let year = dateNow.getFullYear();
+            //         let moth = dateNow.getMonth()+1;
+            //         let day = dateNow.getDay();
+            //         let hour = dateNow.getHours();
+            //         let min = dateNow.getMinutes();
+            //         let seconds = dateNow.getSeconds();
+            //         time = year+'-'+addZero(moth)+'-'+addZero(day)+'\xa0\xa0\xa0'+addZero(hour)+':'+addZero(min)+':'+addZero(seconds);
+            //     }
+            //     function addZero(some) {
+            //         if (some<10){
+            //             return '0'+some
+            //         }else {
+            //             return some
+            //         }
+            //     }
+            //     return time
+            // }
         }
     }
 </script>

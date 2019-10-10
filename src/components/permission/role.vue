@@ -15,7 +15,7 @@
       <bos-table-column lable="账号" field="username" width="180"></bos-table-column>
       <bos-table-column lable="拥有角色" field="roleItems" :filter="(row)=>getRole(row.roleItems)"></bos-table-column>
       <bos-table-column lable="创建时间" field="createtime" width="200"
-                        :filter="(row)=>formatTime(row.createtime)"
+                        :filter="(row)=>$filterTime(row.createtime)"
       ></bos-table-column>
       <bos-table-column lable="手机" field="phone"></bos-table-column>
       <bos-table-column lable="门店" field="store.name"></bos-table-column>

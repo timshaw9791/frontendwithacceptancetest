@@ -10,8 +10,9 @@
                     <switch-control :active="dehumidificationActive" :inactive="dehumidificationInactive" :status="dehumidification" style="margin-top: 16px"  @handleChange="dehumidificationControl"></switch-control>
                 </div>
                 <div class="airConditioning-bottom">
-                    <span v-text="'温度阈值：'"></span><input class="input" :style="flag?'border:none;':''" v-model="threshold.max" :disabled="flag"/>
-                    <span>~~</span><input class="input" :style="flag?'border:none;':''" v-model="threshold.min" :disabled="flag"/>
+                    <span v-text="'温度阈值：'"></span>
+                    <input class="input" :style="flag?'border:none;':''" v-model="threshold.min" :disabled="flag"/><span>~~</span>
+                    <input class="input" :style="flag?'border:none;':''" v-model="threshold.max" :disabled="flag"/>
                     <div @click="toSetThreshold">
                         <svg-icon icon-class="编辑" style="width: 18px;height: 18px;margin-left: 24px"></svg-icon>
                     </div>

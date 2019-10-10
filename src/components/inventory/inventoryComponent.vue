@@ -82,7 +82,7 @@
               let time='';
               if(this.overview.startTime){
                   console.log(new Date(this.overview.startTime));
-                  time =this.filterTime(this.overview.startTime);
+                  time = this.$filterTime(this.overview.startTime);
               }
                 return time;
             },
@@ -90,7 +90,7 @@
                 let time='';
                 if(this.overview.endTime){
                     console.log(new Date(this.overview.endTime));
-                    time =this.filterTime(this.overview.endTime);
+                    time = this.$filterTime(this.overview.endTime);
                 }
                 return time
             }
@@ -101,27 +101,27 @@
             }
         },
         methods:{
-          filterTime(date){
-             let time='';
-             if(date!=''){
-                 let dateNow =  new Date(date);
-                 let year = dateNow.getFullYear();
-                 let moth = dateNow.getMonth()+1;
-                 let day = dateNow.getDate();
-                 let hour = dateNow.getHours();
-                 let min = dateNow.getMinutes();
-                 let seconds = dateNow.getSeconds();
-                 time = year+'-'+addZero(moth)+'-'+addZero(day)+'\xa0\xa0\xa0'+addZero(hour)+':'+addZero(min)+':'+addZero(seconds);
-             }
-             function addZero(some) {
-                 if (some<10){
-                     return '0'+some
-                 }else {
-                     return some
-                 }
-             };
-             return time
-          },
+        //   filterTime(date){
+        //      let time='';
+        //      if(date!=''){
+        //          let dateNow =  new Date(date);
+        //          let year = dateNow.getFullYear();
+        //          let moth = dateNow.getMonth()+1;
+        //          let day = dateNow.getDate();
+        //          let hour = dateNow.getHours();
+        //          let min = dateNow.getMinutes();
+        //          let seconds = dateNow.getSeconds();
+        //          time = year+'-'+addZero(moth)+'-'+addZero(day)+'\xa0\xa0\xa0'+addZero(hour)+':'+addZero(min)+':'+addZero(seconds);
+        //      }
+        //      function addZero(some) {
+        //          if (some<10){
+        //              return '0'+some
+        //          }else {
+        //              return some
+        //          }
+        //      };
+        //      return time
+        //   },
             submission(){
                this.$emit('handleSubmission',true)
             }

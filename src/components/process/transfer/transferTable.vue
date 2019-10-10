@@ -233,7 +233,7 @@
                 // return name.substr(1, name.length);
             },
             filterTime(nS) {
-                return new Date(parseInt(nS.variables.applyOrder.applyTime)).toLocaleString().replace(/:\d{1,2}$/, ' ');
+                return this.$filterTime(parseInt(nS.variables.applyOrder.applyTime))
             },
             filterState(s) {
                 let state = s.variables.applyOrder.state;
@@ -265,7 +265,11 @@
                 } else if (type == 'DOWN_TO_UP') {
                     return '调拨'
                 } else if (type == 'BORROW') {
-                    return '借调'
+                    if(this.typeSingle == 'returns') {
+                        return '归还'
+                    } else {
+                        return '借调'
+                    }
                 } else if (type == 'SCRAP') {
                     return '报废'
                 }
@@ -390,6 +394,8 @@
                     params: param
                 }).then(res => {
                     if (res) {
+                                            console.log(res);
+                        console.log('-------------------');
                         let list = [];
                         // this.paginator.totalPages=res.totalPages;
                         if (status == 'doing') {
@@ -401,6 +407,7 @@
                             this.paginator.totalPages = res.totalPages;
                         }
                         this.list = list;
+                        console.log(this.list);
                     }
                 })
             },
