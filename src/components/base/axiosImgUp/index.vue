@@ -9,7 +9,8 @@
                 accept=".jpg,.jpeg,.png,.JPG,.JPEG"
                 :before-upload="beforeAvatarUpload">
             <img v-if="imageUrl" :src="imageUrl" class="avatar">
-            <i v-else class="avatar"></i> 
+            <i v-else :class='[upload?"avatar-uploader-icon":"avatar",upload ? "el-icon-plus" : ""]'></i> 
+            <!-- el-icon-plus avatar-uploader-icon -->
         </el-upload>
     </div>
 </template>
@@ -23,6 +24,7 @@
             return {
                 imageUrl: '',
                 url: '',
+                isupload:false,
             };
         },
         props: {
@@ -33,7 +35,12 @@
             image: {
                 type: String,
                 default: null
+            },
+            upload:{
+                type: Boolean,
+                default: false
             }
+           
         },
 
 

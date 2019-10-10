@@ -39,7 +39,7 @@
                     <div class="box-body">
                         <div class="imgUp">
                             <imgUp @success="successUp" :disabled="disabled"
-                                   :image="imageUrl"></imgUp>
+                                   :image="imageUrl" :upload="title.includes('入库')?false:true"></imgUp>
 
                         </div>
                         <form-container ref="form" :model="form" class="formList">
