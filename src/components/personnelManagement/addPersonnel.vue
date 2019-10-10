@@ -35,9 +35,15 @@
             </div>
         </div>
         <div class="add-personneo-bottom">
-            <el-button @click="black">返回</el-button>
-            <el-button type="primary" @click="confirm">确认</el-button>
+            <el-button type="primary" @click="confirm" v-show="!disabled">确认</el-button>
         </div>
+        
+        <field-dialog title="提示" ref="dialog" @confirm="dialogConfirm">
+            <div class="_dialogDiv">
+                您确定要放弃本次操作吗?
+            </div>
+        </field-dialog>
+
     </div>
 </template>
 
@@ -50,6 +56,7 @@
     export default {
         data() {
             return {
+                form2:{},
                 form: {},
                 nanlist:[{val:'男',key:'男'},{val:'女',key:'女'}],
                 gender:[],
@@ -98,6 +105,8 @@
                }
             });
             // this.$set(this.form,'organUnit',{id:this.organUnit.value});
+            let _form = JSON.stringify(this.form)
+            this.form2 = JSON.parse(_form)
         },
         methods: {
             initForm(){
@@ -120,8 +129,18 @@
                 this.viewStatus.flag=false;
             },
             black(){
-                this.$emit('black',true)
+                if(this.disabled||JSON.stringify(this.form)==JSON.stringify(this.form2)){
+                    this.$emit('black',true)
+                }else{
+                    this.$refs.dialog.show();
+                }
+                
             },
+            
+            dialogConfirm() {
+                this.$emit('black', true);
+            },
+
             getSrc(){
               let srcs;
               srcs=this.src+this.personnelImg;

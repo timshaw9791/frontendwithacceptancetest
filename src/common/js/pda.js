@@ -1,10 +1,10 @@
-const fs = window.require('fs');
+//const fs = window.require('fs');
 
 const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
 
 let cmdPath = 'C:\\Users\\Administrator';
 
-const exec = window.require('child_process').exec;
+//const exec = window.require('child_process').exec;
 
 let cmdStr = 'chcp 65001 && adb pull sdcard/inventoryData/inventory.json .';
 

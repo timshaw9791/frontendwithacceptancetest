@@ -82,14 +82,14 @@
                     <el-button class="copyRfid-button-cancel" @click="cancelCopy">取消</el-button><el-button class="copyRfid-button-submits" @click="copyRfid">写入</el-button>
                 </div>
             </div>
-        </dialog-svices>>
+        </dialog-svices>
     </div>
 </template>
 
 <script>
     const cmdPath = 'C:\\Users\\Administrator';
-    const exec = window.require('child_process').exec;
-    const spawn = window.require('child_process').spawn;
+    //const exec = window.require('child_process').exec;
+    //const spawn = window.require('child_process').spawn;
     import {killProcess} from "common/js/kill";
     import dialogSvices from 'components/record/recordServiceDialog'
     export default {

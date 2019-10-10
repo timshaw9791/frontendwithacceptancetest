@@ -87,7 +87,7 @@
                 tableData: [],
                 tableEquipName:'',
                 labelList: [
-                    {lable: '装备大类', field: 'genreName', sort: false},
+                    {lable: '装备类型', field: 'genreName', sort: false},
                     {lable: '装备小类', field: 'categoryName', sort: false},
                     {lable: '装备名称', field: 'name',sort: false},
                     {lable: '装备型号', field: 'model', sort: false},

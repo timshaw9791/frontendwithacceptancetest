@@ -17,10 +17,11 @@
                     </div>
                 </div>
                 <div class="ulList" ref="ulList" :v-loading="true">
-                    <div v-for="(item,index) in list" :key="index" @click="ulClick(item,index)" class="megDiv"
-                         :class="{divColor:contentTrue===index,unread:!item.readed}">
+                    <div v-for="(item,index) in list" :key="index" @click="ulClick(item,index)" class="megDiv">
                         {{item.title}}
+                        <div class="i" v-show="!item.readed"></div>
                         <span>{{formatTime(item.time)}} {{conversion(item.readed)}}</span>
+                        
                     </div>
                 </div>
                 <div class="msgBottom">
@@ -266,8 +267,14 @@
                 background: rgb(249, 249, 249);
             }
 
-            .unread {
-                font-weight: 600 !important;
+            .i{
+                background:#f00;
+                border-radius:50%;
+                width:5px;
+                height:5px;
+                left: 5px;
+                margin-top: -15px;
+                position:absolute;
             }
 
         }
