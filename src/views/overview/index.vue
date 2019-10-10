@@ -345,12 +345,12 @@
         mounted() {
             this.getList();
             this.getHumiture();
-            this.videoTime = setInterval(() => {
-                window.location.reload();
-            }, 60000);  //180000
+            // this.videoTime = setInterval(() => {
+            //     window.location.reload();
+            // }, 60000);  //180000
         },
         beforeDestroy() {
-            clearTimeout(this.videoTime);
+            // clearTimeout(this.videoTime);
         },
 
         components: {
