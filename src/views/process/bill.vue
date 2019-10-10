@@ -480,7 +480,11 @@
                     case 'DOWN_TO_UP':
                         return '调拨';
                     case 'BORROW':
-                        return '借调'
+                        if(this.typeSingle == "returns") {
+                            return '归还'
+                        } else {
+                            return '借调'
+                        }
                     case 'SCRAP':
                         return '报废';
                     case 'DIRECT_TRANSFER':
