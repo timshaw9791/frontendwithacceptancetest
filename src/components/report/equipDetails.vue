@@ -9,7 +9,7 @@
         </div>
         <div class="equip-details-select" v-if="viewStatus.flag">
             <div class="select-category">
-                <span v-text="'装备大类：'" style="font-size: 16px"></span>
+                <span v-text="'装备类型：'" style="font-size: 16px"></span>
                 <el-select v-model="selectGener" placeholder="请选择" style="width: 217px" @change="toChange">
                     <el-option
                             v-for="item in genre"

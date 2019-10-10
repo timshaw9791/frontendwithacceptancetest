@@ -42,7 +42,7 @@
             <el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
                       fit>
                 <bos-table-column lable="RFID" field="rfid"></bos-table-column>
-                <bos-table-column lable="装备大类" field="equipArg.category.genre.name"></bos-table-column>
+                <bos-table-column lable="装备类型" field="equipArg.category.genre.name"></bos-table-column>
                 <bos-table-column lable="装备小类" field="equipArg.category.name"></bos-table-column>
                 <bos-table-column lable="装备名称" field="equipArg.name"></bos-table-column>
                 <bos-table-column lable="装备型号" field="equipArg.model"></bos-table-column>
@@ -135,8 +135,8 @@
     // nodejs调用子进程的方法
 
     const cmdPath = 'C:\\Users\\Administrator';   //cmd命令的位置
-    const exec = window.require('child_process').exec;
-    const spawn = window.require('child_process').spawn;
+    //const exec = window.require('child_process').exec;
+    //const spawn = window.require('child_process').spawn;
     import {killProcess} from "common/js/kill";
 
     export default {

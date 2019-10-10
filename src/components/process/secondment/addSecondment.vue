@@ -10,7 +10,7 @@
                     </div>
                     <div class="label" v-if="taskType!='报废'">
                         <span v-text="`${ZhiDingOrJieShou}机构：`"></span>
-                        <div style="width: 181px">
+                        <div style="width: 185px">
                             <el-cascader
                                     size="large"
                                     :options="unitList"
@@ -162,10 +162,10 @@
 
     import {handheld} from 'common/js/pda'
     const cmdPath = 'C:\\Users\\Administrator';
-    const exec = window.require('child_process').exec;
-    const spawn = window.require('child_process').spawn;
-    const fs = window.require('fs');
-    const path = window.require('path');
+    //const exec = window.require('child_process').exec;
+    //const spawn = window.require('child_process').spawn;
+    //const fs = window.require('fs');
+    //const path = window.require('path');
     const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
 
     export default {

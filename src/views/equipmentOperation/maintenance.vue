@@ -41,7 +41,7 @@
             ></bos-table-column>
           </el-table>
 
-          <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage" />
+          <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage" v-if="this.list.length>0" />
 
           <serviceDialog title="确认保养装备清单" ref="maintenanceDialog" @cancel="quit" @confirm="submit" width="1040px">
               <el-table :data="maintenance.list" height="500" fit class="list maintenance-list-box">
@@ -106,8 +106,8 @@ import { transformMixin } from "common/js/transformMixin";
 import { getNeedUpkeep } from "api/needs";
 var _ = require("lodash");
 
-// const exec = window.require('child_process').exec;
-//  const spawn = window.require('child_process').spawn;
+// //const exec = window.require('child_process').exec;
+//  //const spawn = window.require('child_process').spawn;
 // import {killProcess} from "common/js/kill";
 
 export default {
@@ -161,7 +161,7 @@ export default {
     },
 
     async getList() {
-      this.list = await this.getAxiosList(getNeedUpkeep);
+      this.list = await this.getAxiosList1(getNeedUpkeep);
       console.log(this.list);
     },
     /* 显示具体的保养列表 */
