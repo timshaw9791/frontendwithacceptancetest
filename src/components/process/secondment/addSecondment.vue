@@ -540,6 +540,7 @@
                 // }).then(res=>{
                 //      })
                 let type='';
+                console.log('此时菜市场',id)
                 switch (this.taskType) {
                     case '报废':
                         type='SCRAP';

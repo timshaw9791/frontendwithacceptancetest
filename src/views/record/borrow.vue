@@ -47,8 +47,8 @@
                         {lable: '操作状态', field: 'action', filter: this.filterAction}
                     ],
                     tableAction:{
-                        label:'监控视频',
-                        button:['详情','查看']
+                        label:'操作',
+                        button:['详情','监控']
                     },
                     search:'',
                     flag:false

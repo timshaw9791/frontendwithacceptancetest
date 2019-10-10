@@ -111,6 +111,7 @@ export let initmixinBosInput = {
             callback((result !== true) ? new Error((rule.errormsg ? rule.errormsg : result).replace(/%s/, fieldalias)) : []);
           }
         }
+
         return result;
       });
     }

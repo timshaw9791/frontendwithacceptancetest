@@ -44,8 +44,8 @@
                         {lable: '结束时间', field: 'endTime', filter: (ns) => this.$filterTime(parseInt(ns.endTime))},
                     ],
                     tableAction: {
-                        label: '详情',
-                        button: ['查看']
+                        label: '操作',
+                        button: ['详情']
                     },
                     graphqlTable: {
                         graphqlApi: record.getInventoryList,

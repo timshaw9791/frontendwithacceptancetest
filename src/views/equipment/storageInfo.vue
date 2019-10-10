@@ -219,8 +219,7 @@
 
 
                 <div class="_box-bottom">
-                    <!-- <el-button @click="black">返回</el-button> -->
-                    <el-button type="primary" @click="addEquipArg" v-if="!edit">确认</el-button>
+                    <el-button type="primary" @click="addEquipArg" v-if="!edit">提交</el-button>
                 </div>
             </div>
         </el-card>
@@ -254,7 +253,6 @@
     import serviceDialog from 'components/base/serviceDialog/index'
     import {transformMixin} from "common/js/transformMixin";
     import { start, startOne } from 'common/js/rfidReader'
-
 
     // const cmdPath = 'C:\\Users\\Administrator';
     // const exec = window.require('child_process').exec;
@@ -328,7 +326,7 @@
                 } else {
                     this.$refs.dialog.show();
                 }
-                //killProcess();
+                killProcess();
             },
             
             /* 判断两次数据是否相等 */
@@ -859,7 +857,7 @@
         align-items: center;
         float: right;
     }
-    
+
     .black .svg-info {
         height: 20px;
         width: 20px;

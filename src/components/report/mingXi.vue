@@ -77,7 +77,7 @@
                 paginator:{
                     page:1,
                     totalPages:10,
-                    size:2
+                    size:9
                 },
                 searchPage:'',
                 tableAction:{
