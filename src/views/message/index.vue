@@ -20,7 +20,7 @@
                     <div v-for="(item,index) in list" :key="index" @click="ulClick(item,index)" class="megDiv">
                         {{item.title}}
                         <div class="i" v-show="!item.readed"></div>
-                        <span>{{formatTime(item.time)}} {{conversion(item.readed)}}</span>
+                        <span>{{$filterTime(item.time)}} {{conversion(item.readed)}}</span>
                         
                     </div>
                 </div>
@@ -34,7 +34,7 @@
                 <div class="contents" v-if="content">
                     <div class="title">
                         <h2>{{content.title}}</h2>
-                        <h4>推送时间 : {{formatTime(content.time)}}</h4>
+                        <h4>推送时间 : {{$filterTime(content.time)}}</h4>
                     </div>
                     <div v-html="content.content" class="msgText"></div>
                 </div>

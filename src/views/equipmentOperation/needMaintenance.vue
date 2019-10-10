@@ -15,7 +15,7 @@
 
             <bos-table-column lable="保养周期/天" :filter="(row)=>milliToDay(row.upkeepCycle)"></bos-table-column>
 
-            <bos-table-column lable="上次保养时间" :filter="(row)=>formatTime(row.lastUpkeepTime)"></bos-table-column>
+            <bos-table-column lable="上次保养时间" :filter="(row)=>$filterTime(row.lastUpkeepTime)"></bos-table-column>
 
             <bos-table-column lable="保养倒计时"
                               :filter="(row)=>countdown(row.lastUpkeepTime,row.upkeepCycle)"></bos-table-column>

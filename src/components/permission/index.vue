@@ -13,7 +13,7 @@
       <bos-table-column lable="编号" field="number" width="180"></bos-table-column>
       <bos-table-column lable="角色名" field="name"></bos-table-column>
       <bos-table-column lable="创建时间" field="createtime" width="200"
-                        :filter="(row)=>formatTime(row.createtime)"
+                        :filter="(row)=>$filterTime(row.createtime)"
       ></bos-table-column>
       <bos-table-column lable="状态" field="disabled"
                         :filter="(row)=>adminStatus(row.disabled)"

@@ -19,7 +19,11 @@ export function filterAttr(obj,flag){
   return newObj;
 }
 
+/* 时间格式化 */
 export function parseTime(time, cFormat) {
+  // if(time == '' || time == 0 || time == null) {
+  //   return ' '
+  // }
   if (arguments.length === 0) {
     return null
   }
@@ -40,6 +44,15 @@ export function parseTime(time, cFormat) {
     s: date.getSeconds(),
     a: date.getDay()
   }
+  /* 
+    replace() 第二个参数为匿名函数时：
+      (a, b, c, d) => {}
+      a: 被匹配字段
+      b: 替换后字段(括号内匹配字段)
+      c: 匹配位置
+      d: 被匹配原字符串
+      例： {y}-----y-------0--------- {y}-{m}-{d} {h}:{i}:{s}
+  */
   const time_str = format.replace(/{(y|m|d|h|i|s|a)+}/g, (result, key) => {
     let value = formatObj[key]
     if (key === 'a') return ['一', '二', '三', '四', '五', '六', '日'][value - 1]

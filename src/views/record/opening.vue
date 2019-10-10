@@ -29,7 +29,7 @@
                     flag: true,
                     labelList: [
                         {lable: '开门人员', field: 'policeName',sort:false},
-                        {lable: '开门时间', field: 'time', filter: this.filterTime},
+                        {lable: '开门时间', field: 'time', filter: (ns) => this.$filterTime(parseInt(nS.time))},
                     ],
                     graphqlTable: {
                         graphqlApi: record.getGateOpenRecordList,
@@ -68,9 +68,9 @@
                     this.$refs.recordVideo.show()
                 }
             },
-            filterTime(nS) {
-                return new Date(parseInt(nS.time)).toLocaleString().replace(/:\d{1,2}$/, ' ');
-            },
+            // filterTime(nS) {
+            //     return new Date(parseInt(nS.time)).toLocaleString().replace(/:\d{1,2}$/, ' ');
+            // },
             sortGql(data){
                 if (data.order=='descending'){
                     this.$set(this.table.graphqlTable,'graphqlApi', record.getGateOpenRecordListDESC);

@@ -233,7 +233,7 @@
                 // return name.substr(1, name.length);
             },
             filterTime(nS) {
-                return new Date(parseInt(nS.variables.applyOrder.applyTime)).toLocaleString().replace(/:\d{1,2}$/, ' ');
+                return this.$filterTime(parseInt(nS.variables.applyOrder.applyTime))
             },
             filterState(s) {
                 let state = s.variables.applyOrder.state;

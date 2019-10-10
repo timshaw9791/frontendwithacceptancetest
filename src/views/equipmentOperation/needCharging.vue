@@ -12,7 +12,7 @@
 
             <!--<bos-table-column lable="充电周期" field="chargeCycle"></bos-table-column>-->
 
-            <bos-table-column lable="上次充电时间" :filter="(row)=>formatTime(row.lastChargeTime)"></bos-table-column>
+            <bos-table-column lable="上次充电时间" :filter="(row)=>$filterTime(row.lastChargeTime)"></bos-table-column>
             <bos-table-column lable="电量倒计时"
                               v-if="type!=='正在充电'"
                               :filter="(row)=>countdown(row.lastChargeTime,row.chargeCycle)"></bos-table-column>

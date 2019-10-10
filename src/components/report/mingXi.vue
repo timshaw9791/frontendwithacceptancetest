@@ -44,7 +44,7 @@
                             prop="receiveTime"
                             label="操作时间">
                         <template slot-scope="scope">
-                            {{filterTime(scope.row)}}
+                            {{ $filterTime(parseInt(scope.row.receiveTime)) }}
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -233,10 +233,10 @@
             downloadDetails(){
                 this.$refs.downloadRefs.click();
             },
-            filterTime(nS) {
-                console.log(nS);
-                return new Date(parseInt(nS.receiveTime)).toLocaleString().replace(/:\d{1,2}$/, ' ');
-            },
+            // filterTime(nS) {
+            //     console.log(nS);
+            //     return new Date(parseInt(nS.receiveTime)).toLocaleString().replace(/:\d{1,2}$/, ' ');
+            // },
             submit(){
 
             },
