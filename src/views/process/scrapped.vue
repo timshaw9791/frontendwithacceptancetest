@@ -130,9 +130,9 @@
             havePage(){
                 let flag;
                 if(this.viewStatus.singleFlag.apply&&this.select.single=='进行中'){
-                    flag=false
-                }else {
                     flag=true
+                }else {
+                    flag=false
                 }
                 return flag
             }

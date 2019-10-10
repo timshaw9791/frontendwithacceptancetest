@@ -56,6 +56,7 @@
     export default {
         data() {
             return {
+                form2:{},
                 form: {},
                 nanlist:[{val:'男',key:'男'},{val:'女',key:'女'}],
                 gender:[],
@@ -105,6 +106,8 @@
                }
             });
             // this.$set(this.form,'organUnit',{id:this.organUnit.value});
+            let _form = JSON.stringify(this.form)
+            this.form2 = JSON.parse(_form)
         },
         methods: {
             initForm(){
@@ -137,6 +140,7 @@
             dialogConfirm() {
                 this.$emit('black', true);
             },
+
             getSrc(){
               let srcs;
               srcs=this.src+this.personnelImg;

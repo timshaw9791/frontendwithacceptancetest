@@ -54,7 +54,7 @@
                                          v-if="title.includes('入库')"></field-input>
 
 
-                            <field-input v-model="form.eqBig" label="装备大类" width="3" :disabled="disabled||edit"
+                            <field-input v-model="form.eqBig" label="装备类型" width="3" :disabled="disabled||edit"
                                          name="大类"
                                          v-if="title.includes('装备查看')||(title.includes('信息查看')&&edit)"></field-input>
 
@@ -69,7 +69,7 @@
                                          v-if="title.includes('装备查看')||(title.includes('信息查看')&&edit)"></field-input>
 
 
-                            <field-input v-model="form.name" label="装备名" width="3" :disabled="disabled||edit"
+                            <field-input v-model="form.name" label="装备名称" width="3" :disabled="disabled||edit"
                                          :rules="r(true).all(R.require)" prop="name"></field-input>
 
                             <field-input v-model="form.model" label="装备型号" width="3" :disabled="disabled||edit"

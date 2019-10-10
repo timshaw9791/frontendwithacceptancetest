@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-table :data="list" fit highlight-current-row>
-            <bos-table-column lable="装备名" field="equip.name"></bos-table-column>
+            <bos-table-column lable="装备名称" field="equip.name"></bos-table-column>
             <bos-table-column lable="装备序号" field="equip.serial"></bos-table-column>
             <bos-table-column lable="架体编号" field="equip.location.number"></bos-table-column>
 
