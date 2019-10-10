@@ -2,9 +2,8 @@
     <div class="t-template">
         <div class="t-t-img-box">
             <img class="t-t-img" :src="img" v-if="!showText"/>
-            <div class="_suo" v-else>
-              <span>暂无缩略图</span>
-            </div>
+            <img :src="img" class="t-t-img" v-else>
+           <!-- <img src="@/assets/noThumbnails.png" class="t-t-img" v-else> -->
             <div class="t-t-line"></div>
         </div>
         <div class="t-t-span-box">
@@ -15,7 +14,7 @@
 
 <script>
     import {baseURL} from "../../api/config";
-
+    import {delFile} from "api/basic";
     export default {
         name: "teachListTemplate",
         data(){
@@ -34,9 +33,12 @@
         computed:{
           img:function () {
               let img;
+            
+              console.log(this.item)
               if(this.item.imageAddress==''||this.item.imageAddress==null){
                   this.showText=true
-                  img=require('@/assets/noImg.png');
+                  img=require('@/assets/noThumbnails.png');
+                  
               }else{
                   img=baseURL+'/images/'+this.item.imageAddress
               }

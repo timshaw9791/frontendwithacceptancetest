@@ -8,7 +8,9 @@
                 :on-success="handleAvatarSuccess"
                 accept=".jpg,.jpeg,.png,.JPG,.JPEG"
                 :before-upload="beforeAvatarUpload">
+                
             <img v-if="imageUrl" :src="imageUrl" class="avatar">
+            <img v-else-if="noimg&&!upload" src='@/assets/noThumbnails.png' class="avatar">
             <i v-else :class='[upload?"avatar-uploader-icon":"avatar",upload ? "el-icon-plus" : ""]'></i> 
             <!-- el-icon-plus avatar-uploader-icon -->
         </el-upload>
@@ -22,7 +24,7 @@
     export default {
         data() {
             return {
-                imageUrl: '',
+                imageUrl: '',    
                 url: '',
                 isupload:false,
             };
@@ -39,6 +41,10 @@
             upload:{
                 type: Boolean,
                 default: false
+            },
+            noimg:{
+                type: Boolean,
+                default: false
             }
            
         },
@@ -50,6 +56,7 @@
                 this.$emit('success', res);
             },
             beforeAvatarUpload(file) {
+                
                 const isLt2M = file.size / 1024 / 1024 < 2;
                 if (!isLt2M) {
                     this.$message.error('上传头像图片大小不能超过 2MB!');

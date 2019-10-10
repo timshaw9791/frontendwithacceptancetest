@@ -39,7 +39,7 @@
                     <div class="box-body">
                         <div class="imgUp">
                             <imgUp @success="successUp" :disabled="disabled"
-                                   :image="imageUrl" :upload="title.includes('入库')?false:true"></imgUp>
+                                   :image="imageUrl" :upload="title.includes('入库')?false:true" :noimg="noimg"></imgUp>
 
                         </div>
                         <form-container ref="form" :model="form" class="formList">
@@ -267,13 +267,14 @@
                 form: {
                     videoAddresses: [],
                     documentAddresses: [],
-                    imageAddress: '',
+                    imageAddress: 'noImg.jpg',
                 },
                 zbForm: {},
                 list: [{rfid: null, serial: null}],
                 formRes: '',
                 inlineForm: {},
                 leadershipList: [],
+                noimg:false,
                 unitId: JSON.parse(localStorage.getItem('user')).unitId,
                 options: [],
                 vendorId: [],
@@ -579,6 +580,7 @@
             //图片上传成功暴露的方法
             successUp(data) {
                 console.log(data);
+              
                 this.form.imageAddress = data;
             },
 
@@ -602,7 +604,9 @@
                         this.imageUrl = `${imgBaseUrl}${a.imageAddress}`
                     } else {
                         this.imageUrl = '';
+                        this.noimg=true;
                     }
+                    
                 });
 
                 start("java -jar scan.jar", (data) => {
@@ -704,6 +708,7 @@
 
             //进入页面获取数据
             getList() {
+               
                 if (this.equipId) {
                     this.gqlQuery(api.getEquip, {
                         id: this.equipId
