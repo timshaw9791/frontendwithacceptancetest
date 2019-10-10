@@ -2,10 +2,6 @@
     <div class="info-box">
         <div slot="header" class="header">
             <span class="_card-title">{{$route.meta.title}}</span>
-            <div class="black" @click="black">
-                <svg-icon icon-class="返回" class="svg-info"></svg-icon>
-                <span v-text="'返回'"></span>
-            </div>
         </div>
         <div>
             <info :personenlData="personenlData" :toBack="toBack" @noBack="noBack" :organUnit="unit" :role="role"></info>

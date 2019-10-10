@@ -4,7 +4,7 @@
             <field-input v-model="form.age" label="装备名称" width="2.5" :disabled="disabled"
                          :rules="r(true).all(R.require)" prop="age"></field-input>
 
-            <field-input v-model="form.modelss" label="装备大类" width="2.5" :disabled="disabled"
+            <field-input v-model="form.modelss" label="装备类型" width="2.5" :disabled="disabled"
                          :rules="r(true).all(R.require)" prop="modelss"></field-input>
             <field-input v-model="form.models" label="装备小类" width="2.5" :disabled="disabled"
                          :rules="r(true).all(R.require)" prop="models"></field-input>

@@ -1,6 +1,6 @@
 <template>
     <div class="record-dialog">
-        <serviceDialog title="视屏监控" ref="dialogVideo" width="1040px" :button="false">
+        <serviceDialog title="视频监控" ref="dialogVideo" width="1040px" :button="false">
             <div class="d_body">
                 <my-video :src="src" :autoplay="true"></my-video>
             </div>
