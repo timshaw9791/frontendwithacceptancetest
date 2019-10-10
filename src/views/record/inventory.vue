@@ -2,8 +2,13 @@
     <div>
         <my-header :title="'盘点记录'" :searchFlag="false" :haveBlack="!viewStatus.flag" @h_black="black"></my-header>
         <r_search :placeholder="'人员姓名'" @handleSearch="handleSearch" v-show="viewStatus.flag"></r_search>
-        <r_inventory :tableData="inventory.equipList" :overview="inventory.overview" :size="String(inventory.overview.rfidCount)" :componentType="'see'"
-                     v-show="!viewStatus.flag" ref="recordInventory"></r_inventory>
+        <div v-show="!viewStatus.flag">
+            <div class="line"></div>
+            <r_inventory :tableData="inventory.equipList" :overview="inventory.overview" :size="String(inventory.overview.rfidCount)" :componentType="'see'"
+             ref="recordInventory"></r_inventory>
+        </div>
+
+        
         <r_label :table="table" v-show="viewStatus.flag" @clickTable="clickTable" @sortCondition="sortGql"
                  ref="las"></r_label>
     </div>
@@ -140,5 +145,7 @@
 </script>
 
 <style scoped>
-
+    .line {
+        border-top: rgba(112, 112, 112, 0.13) solid 1px;
+    }
 </style>
