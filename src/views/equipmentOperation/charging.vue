@@ -21,7 +21,7 @@
                 <div v-if="show">
                     <el-table :data="list" fit highlight-current-row>
                         <bos-table-column lable="rfid" field="equip.rfid"></bos-table-column>
-                        <bos-table-column lable="装备名" field="equip.name"></bos-table-column>
+                        <bos-table-column lable="装备名称" field="equip.name"></bos-table-column>
                         <bos-table-column lable="装备序号" field="equip.serial"></bos-table-column>
                         <bos-table-column lable="架体编号" field="equip.location.number"></bos-table-column>
 
@@ -33,7 +33,7 @@
                         <!--<bos-table-column lable="充电周期" field="chargeCycle"></bos-table-column>-->
 
                         <bos-table-column lable="上次充电时间"
-                                          :filter="(row)=>formatTime(row.lastChargeTime)"></bos-table-column>
+                                          :filter="(row)=>$filterTime(row.lastChargeTime)"></bos-table-column>
                         <bos-table-column lable="电量倒计时"
                                           v-if="type!=='正在充电'"
                                           :filter="(row)=>countdown(row.lastChargeTime,row.chargeCycle)"></bos-table-column>
@@ -79,27 +79,29 @@
                 this.type = data;
                 if (data === '需要充电') {
                     this.show = true;
-                    this.getList();
+
+                    if (this.$route.query['name']) {
+                        this.inquire = this.$route.query.name;
+                    } else {
+                        this.getList();
+                    }
+
                 } else if (data === '正在充电') {
                     this.show = false;
                 }
             },
             async getList() {
-                console.log(this.$route);
-                this.list = await this.getAxiosList(getNeedCharge);
+                this.list = await this.getAxiosList1(getNeedCharge);
             }
         },
-        mounted() {
-            if (this.$route.query) {
-                this.inquire = this.$route.query.name;
-            }
-            this.getList();
-        },
+
 
         watch: {
             inquire(newVal) {
                 if (newVal) {
                     this.$set(this.param, 'rfid', newVal);
+                } else {
+                    this.$set(this.param, 'rfid', null);
                 }
             }
         },

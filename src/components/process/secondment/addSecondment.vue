@@ -10,7 +10,7 @@
                     </div>
                     <div class="label" v-if="taskType!='报废'">
                         <span v-text="`${ZhiDingOrJieShou}机构：`"></span>
-                        <div style="width: 181px">
+                        <div style="width: 185px">
                             <el-cascader
                                     size="large"
                                     :options="unitList"
@@ -159,6 +159,7 @@
     import serviceDialog from 'components/base/gailiangban'
     import request from 'common/js/request'
     import {baseBURL,baseURL} from "../../../api/config";
+    import { start, delFile, handheld } from 'common/js/rfidReader'
 
     // import {handheld} from 'common/js/pda'
     // const cmdPath = 'C:\\Users\\Administrator';
@@ -210,12 +211,13 @@
                 unitName: '',
                 userName: '',
                 nowTime: 0,
+                com:0,
                 hardware:{
                     hardwareList: [
                         {value: '手持机', label: '手持机'},
                         {value: 'RFID读写器', label: 'RFID读写器'},
                     ],
-                    hardwareSelect:''
+                    hardwareSelect:'' // 硬件选择
                 },
                 nowRow: {},
                 restaurants:[],
@@ -240,12 +242,13 @@
                 index:0,
                 leader: {
                     leaderList: [],
-                    leaderName: '',
+                    leaderName: '', // 指定领导
                     leaderItem: {},
                 }
             }
         },
         created() {
+            this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];
             this.unitName = this.unit.name;
             if(this.taskType=='报废'){
                 this.getLeader(JSON.parse(localStorage.getItem('user')).unitId);
@@ -290,7 +293,8 @@
                         this.handheldMachine();
                     } else if (newVal == 'RFID读写器') {
                         this.restaurants=[];
-                        this.getListUsb();
+                        this.getOutDataCopy(['1908000C']);
+                        //this.getListUsb();
                     }
                 }
             }
@@ -318,7 +322,7 @@
                 // alert('关掉了');
                 // this.closeUsb=true
                 if (pid) {
-                    spawn("taskkill", ["/PID", pid, "/T", "/F"]);
+                    //spawn("taskkill", ["/PID", pid, "/T", "/F"]);
                     this.index = 0;
                 }
             },
@@ -333,28 +337,36 @@
                 // this.getOutDataCopy([19080012])
             },
             getListUsb() {//todo
-                const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
-                this.pid = process.pid;
-                process.stderr.on('data', (err) => {
-                    this.$message.error('设备故障请重新插拔!');
-                    console.log(err);
-                });
 
-                process.stdout.on('data', (data) => {
-                    console.log(data);
-                    if (this.index > 0) {
-                        let arr = [];
-                        arr.push(data);
-                        this.getOutDataCopy(arr);
-                    } else {
-                        let newData = JSON.parse(data);
-                        newData.status === 'succeed' ? this.index = 1 : this.index = 0;
-                    }
-                });
+                start("java -jar scan.jar", (data) => {
+                    let arr = [];
+                    arr.push(data);
+                    this.getOutDataCopy(arr);
+                }, (fail) => {
+                    this.$message.error(fail)
+                }, (pid, err) => {pid?this.pid = pid:this.$message.error(err)})
+                // const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
+                // this.pid = process.pid;
+                // process.stderr.on('data', (err) => {
+                //     this.$message.error('设备故障请重新插拔!');
+                //     console.log(err);
+                // });
 
-                process.on('exit', (code) => {
-                    console.log(`子进程退出，退出码 ${code}`);
-                });
+                // process.stdout.on('data', (data) => {
+                //     console.log(data);
+                //     if (this.index > 0) {
+                //         let arr = [];
+                //         arr.push(data);
+                //         this.getOutDataCopy(arr);
+                //     } else {
+                //         let newData = JSON.parse(data);
+                //         newData.status === 'succeed' ? this.index = 1 : this.index = 0;
+                //     }
+                // });
+
+                // process.on('exit', (code) => {
+                //     console.log(`子进程退出，退出码 ${code}`);
+                // });
                 // let intercal=setInterval(()=>{
                 //     if(this.closeUsb){
                 //         clearInterval(intercal);
@@ -365,11 +377,12 @@
 
             },
             deleteFile() {
-                fs.unlink(newFile_path, function (error) {
-                    if (error) {
-                        return false;
-                    }
-                })
+                delFile(newFile_path, () => {})
+                // fs.unlink(newFile_path, function (error) {
+                //     if (error) {
+                //         return false;
+                //     }
+                // })
 
             },
             getOutDataCopy(data) {
@@ -428,11 +441,12 @@
             handleUnitChange(data){
                 let unitId=data[data.length-1];
                 let gethouseUnitId='';
-                if(this.taskType=='直调'){
-                    gethouseUnitId=JSON.parse(localStorage.getItem('user')).unitId;
-                }else {
-                    gethouseUnitId=unitId
-                }
+                // if(this.taskType=='直调'){
+                //     gethouseUnitId=JSON.parse(localStorage.getItem('user')).unitId;
+                // }else {
+                //     gethouseUnitId=unitId
+                // }
+                gethouseUnitId=JSON.parse(localStorage.getItem('user')).unitId;
                 request({
                     method:'get',
                     url:baseBURL+'/architecture/houseByOrganUnitId',
@@ -469,7 +483,6 @@
                     url:baseBURL+'/identity/findByUnitAdmin',
                     params:{unitId:unitId}
                 }).then(res=>{
-                    console.log('getAdminList',res);
                     this.adminUser.adminList=[];
                     res.forEach(item=>{
                         this.adminUser.adminList.push({value: item.name, key: item})
@@ -552,16 +565,16 @@
                         if(res.levelLeaderMap!=null){
                             if (Object.keys(res.levelLeaderMap).length == 0) {
                                 res.applyLeaders.forEach(item => {
-                                    this.leader.leaderList.push({value: item.name, key: item})
+                                    this.leader.leaderList.push({value: item.organUnit.name+item.name, key: item})
                                 })
                             } else {
                                 res.levelLeaderMap['1'].forEach(item => {
-                                    this.leader.leaderList.push({value: item.name, key: item})
+                                    this.leader.leaderList.push({value: item.organUnit.name+item.name, key: item})
                                 })
                             }
                         }else {
                             res.applyLeaders.forEach(item => {
-                                this.leader.leaderList.push({value: item.name, key: item})
+                                this.leader.leaderList.push({value: item.organUnit.name+item.name, key: item})
                             })
                         }
                     }else {
@@ -576,6 +589,18 @@
                 let orderItems=[];
                 let applyOrder = {};
                 let urlApi='';
+                if(this.leader.leaderName.trim() == '') {
+                    this.$message.error("请选择指定领导")
+                    return
+                }
+                if(this.hardware.hardwareSelect == '') {
+                    this.$message.error("请选择硬件")
+                    return;
+                }
+                if(this.form.orderItems.length == 0) {
+                    this.$message.error("请扫入RFID")
+                    return;
+                }
                 if(this.taskType=='借调'){
                     this.form.orderItems.forEach(item=>{
                         if(item.count!=undefined){
@@ -755,7 +780,7 @@
             },
             throttle(method, context) {
                 clearTimeout(method.tId);
-                method.tId = setTimeout(function () {
+                method.tId = setTimeout( ()=>{
                     method.call(context)
                 }, 1000)
             }

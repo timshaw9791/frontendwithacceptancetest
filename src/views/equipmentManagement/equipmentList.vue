@@ -90,7 +90,7 @@
                     labelList: [
                         {lable: 'RFID', field: 'rfid',sort:false},
                         {lable: '装备名称', field: 'name',sort:false},
-                        {lable: '入库时间', field: 'inputTime', filter: this.filterTime,sort:'custom'},
+                        {lable: '入库时间', field: 'inputTime', filter: (ns) => this.$filterTime(parseInt(ns.inputTime)),sort:'custom'},
 
                     ],
                     graphqlTable: {
@@ -174,9 +174,9 @@
                     this.table.flag=!this.table.flag
                 }
             },
-            filterTime(nS) {
-                return new Date(parseInt(nS.inputTime)).toLocaleString().replace(/:\d{1,2}$/, ' ');
-            },
+            // filterTime(nS) {
+            //     return new Date(parseInt(nS.inputTime)).toLocaleString().replace(/:\d{1,2}$/, ' ');
+            // },
             getCommonHouseList() {
                 this.gqlQuery(warehouse.getCommonHouseList, {id: this.cascader.selectCascader}, (data) => {
                     if(data!=''){

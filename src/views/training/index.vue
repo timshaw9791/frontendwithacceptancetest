@@ -71,7 +71,8 @@
           this.getListGql(qfilter);
         },
         methods:{
-            clickCard(data){
+            clickCard(data){ // 这里点击后，组件/页面没有变化，只是数据变化
+            console.log(data)
                 if (this.condition.length==0){
                     this.viewStatus.searchFlag=false;
                     this.list = data.modelList;
@@ -80,20 +81,29 @@
                     let rList=[];
                     if(data.videoAddresses!=null&&data.videoAddresses!=''){
                         data.videoAddresses.forEach(item=>{
+                            if(item!='')
+                            {
                             rList.push({
                                 typeName:'MP4',
                                 name:item,
                                 key:item
                             })
+                           
+                            }
+                            
                         })
                     }
                     if(data.documentAddresses!=null&&data.documentAddresses!=''){
                         data.documentAddresses.forEach(item=>{
+                            if(item!='')
+                            {
                             rList.push({
                                 typeName:'PDF',
                                 name:item,
                                 key:item
                             })
+                            }
+                            
                         })
                     }
                     this.resourcesList=rList;

@@ -22,6 +22,7 @@
     import {getToken} from "../../common/js/auth";
     import request from 'common/js/request'
     import {baseURL} from "../../api/config";
+    import { delFile, handheld } from 'common/js/rfidReader'
 
     // import {handheld} from 'common/js/pda'
     // const fs = window.require('fs');
@@ -62,6 +63,7 @@
                 // this.getInventoryRf();
                 // this.getInventoryRfCopy();
                 //todo 记得合并前换回来
+                // this.getInventoryRf({rfid:['19080020','12312141'],size:2});
                 this.$refs['inventory_dialog'].show();
             },
             getNote(data) {
@@ -143,11 +145,12 @@
                 }
             },
             deleteFile() {
-                fs.unlink(newFile_path, function (error) {
-                    if (error) {
-                        return false;
-                    }
-                })
+                delFile(newFile_path, () => {})
+                // fs.unlink(newFile_path, function (error) {
+                //     if (error) {
+                //         return false;
+                //     }
+                // })
 
             },
             getString(data) {
@@ -157,6 +160,7 @@
                 });
                 return str.substring(1, str.length);
             },
+            /* 处理获得的rfid JSON数据 */
             getInventoryRf(data) {
                 this.inventoryObj.getInventory = data;
                 this.size = String(data.size);

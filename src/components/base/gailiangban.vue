@@ -3,7 +3,6 @@
         <el-dialog :title="title" :visible.sync="showFlag" v-if="showFlag" center :before-close="handleClose"
                    :width="width">
             <slot></slot>
-
             <div slot="footer" class="dialog-footer" v-if="button">
                 <el-button @click="cancelDb">取 消</el-button>
                 <el-button type="primary" @click="dialogConfirm">确 定</el-button>
@@ -78,7 +77,10 @@
         /deep/ .el-dialog__title {
             color: white;
         }
-
+        /*/deep/ .el-dialog--center /deep/ .el-dialog__body {*/
+            /*text-align: initial;*/
+            /*padding: 0px 0px 0px;*/
+        /*}*/
         /deep/ .el-dialog__headerbtn /deep/ .el-dialog__close {
             margin-top: -3px;
             font-size: 25px;

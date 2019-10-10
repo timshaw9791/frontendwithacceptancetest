@@ -11,13 +11,11 @@
 
 <script>
     import request from 'common/js/request'
-    import transferComponent from './transferTableComponent'
     import {baseBURL} from "../../../api/config";
 
     export default {
         name: "transferTable",
         components: {
-            transferComponent
         },
         data() {
             return {
@@ -33,7 +31,7 @@
                     button: ['查看']
                 },
                 labelList: [
-                    {lable: '申请编号', field: 'variables.applyOrder.number', sort: false},
+                    {lable: '申请单号', field: 'variables.applyOrder.number', sort: false},
                     {lable: '申请类型', field: 'variables.applyOrder.type', filter: this.filterType, sort: false},
                     {
                         lable: '申请装备',
@@ -142,7 +140,7 @@
                 handler(newVal) {
                     if (newVal == 'apply') {
                         this.labelList = [
-                            {lable: '申请编号', field: 'variables.applyOrder.number', sort: false},
+                            {lable: '申请单号', field: 'variables.applyOrder.number', sort: false},
                             {lable: '申请类型', field: 'variables.applyOrder.type', filter: this.filterType, sort: false},
                             {
                                 lable: '申请装备',
@@ -235,7 +233,7 @@
                 // return name.substr(1, name.length);
             },
             filterTime(nS) {
-                return new Date(parseInt(nS.variables.applyOrder.applyTime)).toLocaleString().replace(/:\d{1,2}$/, ' ');
+                return this.$filterTime(parseInt(nS.variables.applyOrder.applyTime))
             },
             filterState(s) {
                 let state = s.variables.applyOrder.state;
@@ -267,7 +265,11 @@
                 } else if (type == 'DOWN_TO_UP') {
                     return '调拨'
                 } else if (type == 'BORROW') {
-                    return '借调'
+                    if(this.typeSingle == 'returns') {
+                        return '归还'
+                    } else {
+                        return '借调'
+                    }
                 } else if (type == 'SCRAP') {
                     return '报废'
                 }
@@ -392,6 +394,8 @@
                     params: param
                 }).then(res => {
                     if (res) {
+                                            console.log(res);
+                        console.log('-------------------');
                         let list = [];
                         // this.paginator.totalPages=res.totalPages;
                         if (status == 'doing') {
@@ -403,6 +407,7 @@
                             this.paginator.totalPages = res.totalPages;
                         }
                         this.list = list;
+                        console.log(this.list);
                     }
                 })
             },

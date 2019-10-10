@@ -82,7 +82,7 @@
               let time='';
               if(this.overview.startTime){
                   console.log(new Date(this.overview.startTime));
-                  time =this.filterTime(this.overview.startTime);
+                  time = this.$filterTime(this.overview.startTime);
               }
                 return time;
             },
@@ -90,7 +90,7 @@
                 let time='';
                 if(this.overview.endTime){
                     console.log(new Date(this.overview.endTime));
-                    time =this.filterTime(this.overview.endTime);
+                    time = this.$filterTime(this.overview.endTime);
                 }
                 return time
             }
@@ -101,27 +101,27 @@
             }
         },
         methods:{
-          filterTime(date){
-             let time='';
-             if(date!=''){
-                 let dateNow =  new Date(date);
-                 let year = dateNow.getFullYear();
-                 let moth = dateNow.getMonth()+1;
-                 let day = dateNow.getDate();
-                 let hour = dateNow.getHours();
-                 let min = dateNow.getMinutes();
-                 let seconds = dateNow.getSeconds();
-                 time = year+'-'+addZero(moth)+'-'+addZero(day)+'\xa0\xa0\xa0'+addZero(hour)+':'+addZero(min)+':'+addZero(seconds);
-             }
-             function addZero(some) {
-                 if (some<10){
-                     return '0'+some
-                 }else {
-                     return some
-                 }
-             };
-             return time
-          },
+        //   filterTime(date){
+        //      let time='';
+        //      if(date!=''){
+        //          let dateNow =  new Date(date);
+        //          let year = dateNow.getFullYear();
+        //          let moth = dateNow.getMonth()+1;
+        //          let day = dateNow.getDate();
+        //          let hour = dateNow.getHours();
+        //          let min = dateNow.getMinutes();
+        //          let seconds = dateNow.getSeconds();
+        //          time = year+'-'+addZero(moth)+'-'+addZero(day)+'\xa0\xa0\xa0'+addZero(hour)+':'+addZero(min)+':'+addZero(seconds);
+        //      }
+        //      function addZero(some) {
+        //          if (some<10){
+        //              return '0'+some
+        //          }else {
+        //              return some
+        //          }
+        //      };
+        //      return time
+        //   },
             submission(){
                this.$emit('handleSubmission',true)
             }
@@ -141,7 +141,7 @@
         height: 100%;
     }
     .inventory-box .header{
-        width: 976px;
+        width: 1244px;
         height: 30px;
         display: flex;
         justify-content: space-between;
@@ -162,7 +162,7 @@
         justify-content: center;
     }
     .inventory-box .title{
-        width:976px;
+        width:1244px;
         height:46px;
         background:rgba(47,47,118,0.03);
         border:1px solid rgba(112,112,112,0.03);
@@ -179,14 +179,14 @@
         color: #2F2F76;
     }
     .inventory-box .body{
-        width:976px;
+        width:1244px;
         display: flex;
         flex-direction:column;
         margin-top: 25px;
         margin-bottom: 15px;
     }
     .inventory-box .bottom{
-        width: 976px;
+        width: 1244px;
         margin-top: 15px;
         display: flex;
         align-items: center;

@@ -15,7 +15,7 @@
                 </div>
                 <div style="margin-left: 38px;cursor: pointer" @click="addDirectAdjustment" v-if="viewStatus.singleFlag.apply">
                     <svg-icon icon-class='加' class="icon-search"></svg-icon>
-                    <span>添加报废</span>
+                    <span style="color: #409EFF">申请报废</span>
                 </div>
                 <div class="_buttons" style="margin-right: 18px" v-if="havePage">
                     <BosInput
@@ -130,9 +130,9 @@
             havePage(){
                 let flag;
                 if(this.viewStatus.singleFlag.apply&&this.select.single=='进行中'){
-                    flag=false
-                }else {
                     flag=true
+                }else {
+                    flag=false
                 }
                 return flag
             }

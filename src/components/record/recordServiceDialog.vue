@@ -3,22 +3,6 @@
         <el-dialog :title="title" :visible.sync="showFlag" v-if="showFlag" center :before-close="handleClose"
                    :width="width">
             <slot></slot>
-
-            <el-dialog
-                    v-if="secondary"
-                    width="30%"
-                    title="提示"
-                    :visible.sync="innerVisible"
-                    append-to-body>
-                <div class="_dialogDiv">
-                    您确定要放弃本次操作吗?
-                </div>
-                <div slot="footer" class="dialog-footer">
-                    <el-button @click="innerVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="cancel">确 定</el-button>
-                </div>
-            </el-dialog>
-
             <div slot="footer" class="dialog-footer" v-if="button">
                 <el-button @click="cancelDb">取 消</el-button>
                 <el-button type="primary" @click="dialogConfirm">确 定</el-button>
@@ -29,6 +13,7 @@
 
 <script>
     export default {
+        name:'recordServiceDialog',
         data() {
             return {
                 showFlag: false,
@@ -61,7 +46,6 @@
             },
             dialogConfirm() {
                 this.$emit('confirm');
-                this.$emit('confirmWare')
             },
             cancel() {
                 this.innerVisible = false;
@@ -69,18 +53,11 @@
                 this.$emit('cancel','end');
             },
             handleClose(done) {
-                if (this.secondary) {
-                    this.innerVisible = true;
-                } else {
-                    this.hide();
-                }
+
+                this.cancel()
             },
             cancelDb() {
-                if (this.secondary) {
-                    this.innerVisible = true
-                } else {
-                    this.hide();
-                }
+                this.cancel();
             }
         }
     }
@@ -89,14 +66,24 @@
 <style lang="scss" scoped>
     .dialog {
         /deep/ .el-dialog__header {
+            height: 57px;
+            padding: 0px 20px;
             background: #2F2F76 !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /deep/ .el-dialog__title {
             color: white;
         }
-
+        /deep/ .el-dialog--center /deep/ .el-dialog__body {
+            text-align: initial;
+            padding: 0px 0px 0px;
+        }
         /deep/ .el-dialog__headerbtn /deep/ .el-dialog__close {
+            margin-top: -3px;
+            font-size: 25px;
             color: white;
         }
     }

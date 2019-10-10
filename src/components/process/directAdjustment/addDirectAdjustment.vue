@@ -106,6 +106,10 @@
             house: {
                 type: Object
             },
+            applyOrderId:{
+                type:String,
+                default:''
+            },
             myUnit: {
                 type: Object
             },
@@ -170,20 +174,24 @@
                     method: 'get',
                     url: baseBURL + '/process-level/by-organ-unit-and-transfer-type',
                     params: {
-                        organUnitId: this.unit.id,
+                        organUnitId: JSON.parse(localStorage.getItem('user')).unitId,
                         transferType: 'DOWN_TO_UP'
                     }
                 }).then(res => {
-                    this.leader.leaderList = [];
-                    this.processLevelId = res.id;
-                    if (Object.keys(res.levelLeaderMap).length == 0) {
-                        res.applyLeaders.forEach(item => {
-                            this.leader.leaderList.push({value: item.name, key: item})
-                        })
-                    } else {
-                        res.levelLeaderMap['1'].forEach(item => {
-                            this.leader.leaderList.push({value: item.name, key: item})
-                        })
+                    if(res){
+                        this.leader.leaderList = [];
+                        this.processLevelId = res.id;
+                        if (Object.keys(res.levelLeaderMap).length == 0) {
+                            res.applyLeaders.forEach(item => {
+                                this.leader.leaderList.push({value: item.organUnit.name+item.name, key: item})
+                            })
+                        } else {
+                            res.levelLeaderMap['1'].forEach(item => {
+                                this.leader.leaderList.push({value: item.organUnit.name+item.name, key: item})
+                            })
+                        }
+                    }else {
+                        this.$message.error('尚未设置调拨流程!')
                     }
                 })
             },
@@ -219,12 +227,13 @@
                         "id": this.unit.id,
                         "name": this.unit.name
                     },
-                    "transferNeedEquip": orderItems,
+                    "applyNeedEquips": orderItems,
                     "type": "DOWN_TO_UP"
                 };
                 if (this.addType == 'add') {
                     url = baseBURL + '/transfer/start' + '?nextApproveId=' + this.leader.leaderItem.userId + '&processLevelId=' + this.processLevelId
                 }else {
+                    transferApplyOrder.id=this.applyOrderId;
                     url = baseBURL + '/transfer/apply' + '?nextApproveId=' + this.leader.leaderItem.userId + '&taskId=' + this.taskId
                 }
                 this.allocationApplication(url, transferApplyOrder);

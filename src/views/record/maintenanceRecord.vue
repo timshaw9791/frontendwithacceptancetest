@@ -26,8 +26,8 @@
                         {lable: 'RFID', field: 'rfid',sort:false},
                         {lable: '装备名称', field: 'equipName',sort:false},
                         {lable: '装备序号', field: 'equipSerial',filter:this.filterSerial,sort:false},
-                        {lable: '开始时间', field: 'startTime', filter: this.filterTime},
-                        {lable: '结束时间', field: 'duration', filter: this.filterEndTime,sort:false},
+                        {lable: '开始时间', field: 'startTime', filter: (ns) => this.$filterTime(parseInt(ns.startTime))},
+                        {lable: '结束时间', field: 'duration', filter: (ns) => this.$filterTime(parseInt(ns.startTime+ns.duration)),sort:false},
                         {lable: '充电时长', field: 'duration',filter: this.filterLong,sort:false},
                     ],
                     graphqlTable: {
@@ -85,8 +85,8 @@
                         {lable: 'RFID', field: 'rfid',sort:false},
                         {lable: '装备名称', field: 'equipName',sort:false},
                         {lable: '装备序号', field: 'equipSerial',filter:this.filterSerial,sort:false},
-                        {lable: '开始时间', field: 'startTime', filter: this.filterTime},
-                        {lable: '结束时间', field: 'duration', filter: this.filterEndTime,sort:false},
+                        {lable: '开始时间', field: 'startTime', filter: (ns) => this.$filterTime(parseInt(ns.startTime))},
+                        {lable: '结束时间', field: 'duration', filter: (ns) => this.$filterTime(parseInt(ns.startTime+ns.duration)),sort:false},
                         {lable: '充电时长', field: 'duration',filter: this.filterLong,sort:false},
                         ];
                     this.$set(this.table.graphqlTable,'graphqlApi',record.getEquipChargeRecordList);
@@ -97,8 +97,8 @@
                         {lable: '装备名称', field: 'equipInfo.equipName',sort:false},
                         {lable: '装备序号', field: 'equipInfo.equipSerial',filter:this.filterSerial,sort:false},
                         {lable: '操作人员', field: 'operator',sort:false},
-                        {lable: '开始时间', field: 'startTime', filter: this.filterTime,},
-                        {lable: '结束时间', field: 'endTime', filter: this.filterEndTime,sort:false},
+                        {lable: '开始时间', field: 'startTime', filter: (ns) => this.$filterTime(parseInt(ns.startTime)),},
+                        {lable: '结束时间', field: 'endTime', filter: (ns) => this.$filterTime(parseInt(ns.startTime+ns.duration)),sort:false},
                         {lable: '保养时长', field: 'duration',filter: this.filterLong,sort:false}
                     ];
                     this.$set(this.table.graphqlTable,'graphqlApi',record.getEquipActionRecordList);
@@ -109,7 +109,7 @@
                         {lable: '装备名称', field: 'equipInfo.equipName',sort:false},
                         {lable: '装备序号', field: 'equipInfo.equipSerial',filter:this.filterSerial,sort:false},
                         {lable: '操作人员', field: 'operator',sort:false},
-                        {lable: '操作时间', field: 'startTime', filter: this.filterTime},
+                        {lable: '操作时间', field: 'startTime', filter: (ns) => this.$filterTime(parseInt(ns.startTime))},
                         {lable: '操作状态', field: 'action', filter: this.filterAction}
                     ];
                     this.$set(this.table.graphqlTable,'graphqlApi',record.getEquipActionRecordList);
@@ -129,12 +129,12 @@
             filterSerial(se) {
                 return se.equipSerial == '' ? '无' : se.equipSerial
             },
-            filterTime(nS) {
-                return new Date(parseInt(nS.startTime)).toLocaleString().replace(/:\d{1,2}$/, ' ');
-            },
-            filterEndTime(nS){
-                return new Date(parseInt(nS.startTime+nS.duration)).toLocaleString().replace(/:\d{1,2}$/, ' ');
-            },
+            // filterTime(nS) {
+            //     return new Date(parseInt(nS.startTime)).toLocaleString().replace(/:\d{1,2}$/, ' ');
+            // },
+            // filterEndTime(nS){
+            //     return new Date(parseInt(nS.startTime+nS.duration)).toLocaleString().replace(/:\d{1,2}$/, ' ');
+            // },
             filterLong(nS){
                 return (nS.duration/1000/3600/24).toFixed(2)+'天'
             },

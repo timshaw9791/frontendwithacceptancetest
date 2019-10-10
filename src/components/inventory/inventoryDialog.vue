@@ -1,6 +1,9 @@
 <template>
     <div class="inventory">
-        <dialogs ref="dialog" :width="523" :title="'盘点'">
+        <!--<dialogs ref="dialog" :width="523" :title="'盘点'">-->
+           <!---->
+        <!--</dialogs>-->
+        <dialog-svices ref="dialog" width="523px" :title="'盘点'" :button="false">
             <div class="d_body">
                 <div class="d_up">
                     <span v-text="'盘点总数'"></span><span style="margin-left: 20px" v-text="size"></span>
@@ -30,16 +33,18 @@
                     <el-button class="cancel" @click="cancel">取消</el-button><el-button style="margin-left: 34px" class="submits" @click="submit">提交</el-button>
                 </div>
             </div>
-        </dialogs>
+        </dialog-svices>
     </div>
 </template>
 
 <script>
     import dialogs from 'components/surroundings/surroundingDialog'
+    import dialogSvices from 'components/record/recordServiceDialog'
     export default {
         name: "inventoryDialog",
         components:{
-            dialogs
+            dialogs,
+            dialogSvices
         },
         data(){
             return{
@@ -59,11 +64,11 @@
                 this.$refs['dialog'].show();
             },
             cancel(){
-                this.$refs['dialog'].close();
+                this.$refs['dialog'].hide();
             },
             submit(){
                 this.$emit('submit',true);
-                this.$refs['dialog'].close();
+                this.$refs['dialog'].hide();
             },
             indexMethod(index) {
                 return index +1;

@@ -27,27 +27,26 @@
                  class="icon"/>
             <div class="content" v-if="billName!='报废'">
                 <div class="tr">
-                    <div class="title">{{typeSingleFlag?`${billName}单号: `:'申请编号: '}}<span
+                    <div class="title">{{typeSingleFlag?`${billName}单号: `:'申请单号: '}}<span
                             v-text="billData.applyOrder.number"></span></div>
-                    <div class="title" v-if="typeSingleFlag">调拨时间: <span v-text="filterTime(billData.outTime)"></span>
+                    <div class="title" v-if="typeSingleFlag">出库时间: <span v-text="$filterTime(billData.outTime)"></span>
                     </div>
-                    <div class="title" v-if="typeSingleFlag">接收时间: <span v-text="filterTime(billData.inTime)"></span>
+                    <div class="title" v-if="typeSingleFlag">接收时间: <span v-text="$filterTime(billData.inTime)"></span>
                     </div>
                 </div>
                 <div class="tr">
-                    <div class="title">申请大类: <span v-text="applicationType(billData.applyOrder.type)"></span></div>
-                    <div class="title" v-if="typeSingleFlag">调拨机构: <span v-text="getOutUnit()"></span></div>
+                    <div class="title">申请类型: <span v-text="applicationType(billData.applyOrder.type)"></span></div>
                     <div class="title">接收机构: <span v-text="billData.applyOrder.inHouse.organUnit.name"></span></div>
-                    <div class="title" v-if="!typeSingleFlag">调拨机构: <span v-text="getOutUnit()"></span></div>
+                    <div class="title">出库机构: <span v-text="getOutUnit()"></span></div>
                 </div>
                 <div class="tr">
-                    <div class="title">申请时间: <span v-text="filterTime(billData.applyOrder.applyTime)"></span></div>
-                    <div class="title" v-if="typeSingleFlag">调拨库房: <span v-text="getOutHouse()"></span></div>
+                    <div class="title">申请时间: <span v-text="$filterTime(billData.applyOrder.applyTime)"></span></div>
+                    <div class="title" v-if="typeSingleFlag">出库库房: <span v-text="getOutHouse()"></span></div>
                     <div class="title">接收库房: <span v-text="billData.applyOrder.inHouse.name"></span></div>
                 </div>
                 <div class="tr">
-                    <div class="title">申请人: <span v-text="billData.applyOrder.applicant.name"></span></div>
-                    <div class="title" v-if="typeSingleFlag">调拨人员: <span v-text="billData.outUser.name"></span></div>
+                    <div class="title">申请人员: <span v-text="billData.applyOrder.applicant.name"></span></div>
+                    <div class="title" v-if="typeSingleFlag">出库人员: <span v-text="billData.outUser.name"></span></div>
                     <div class="title" v-if="typeSingleFlag">接收人员:<span
                             v-text="billData.applyOrder.applicant.name"></span></div>
                 </div>
@@ -92,19 +91,19 @@
                                                                                  @click="checkReason(item)"></span>
                         </div>
                         <div><span v-text="getOperate(item.level)+'时间:'"></span><span
-                                v-text="filterTime(item.time)"></span></div>
+                                v-text="$filterTime(item.time)"></span></div>
                     </div>
                 </div>
 
             </div>
             <div class="content" v-if="billName=='报废'">
                 <div class="tr">
-                    <div class="title">{{typeSingleFlag?`${billName}单号: `:'申请编号: '}}<span
+                    <div class="title">{{typeSingleFlag?`${billName}单号: `:'申请单号: '}}<span
                             v-text="billData.applyOrder.number"></span></div>
-                    <div class="title">申请大类: <span v-text="applicationType(billData.applyOrder.type)"></span></div>
+                    <div class="title">申请类型: <span v-text="applicationType(billData.applyOrder.type)"></span></div>
                 </div>
                 <div class="tr">
-                    <div class="title">申请时间: <span v-text="filterTime(billData.applyOrder.applyTime)"></span></div>
+                    <div class="title">申请时间: <span v-text="$filterTime(billData.applyOrder.applyTime)"></span></div>
                     <div class="title">申请人员: <span v-text="billData.applyOrder.applicant.name"></span></div>
                 </div>
                 <div class="tr">
@@ -149,7 +148,7 @@
                                                                                  @click="checkReason(item)"></span>
                         </div>
                         <div><span v-text="getOperate(item.level)+'时间:'"></span><span
-                                v-text="filterTime(item.time)"></span></div>
+                                v-text="$filterTime(item.time)"></span></div>
                     </div>
                 </div>
             </div>
@@ -217,7 +216,7 @@
         <add-direct-adjustment-bill @sucessAdd="sucessAdd" ref="addDirectAdjustmentBill"
                                     :restaurants="reSet.restaurants" :myUnit="reSet.myUnit" :unit="reSet.unit"
                                     :house="reSet.house" :taskId="billData.taskId"
-                                    :addType="'reSet'"></add-direct-adjustment-bill>
+                                    :addType="'reSet'" :applyOrderId="billData.applyOrder.id"></add-direct-adjustment-bill>
         <add-apply-bill @sucessAdd="sucessAdd" :taskId="billData.taskId" :taskType="billName" ref="addSecondmentBill"
                         :myUnit="reSet.myUnit" :unit="reSet.unit" :house="reSet.house"
                         :addType="'reSet'" :applyOrderId="billData.applyOrder.id"></add-apply-bill>
@@ -313,6 +312,7 @@
             }
             if (this.typeSingle != 'apply') {
                 let myName = JSON.parse(localStorage.getItem('user')).name;
+                console.log('typeSingle',this.billData.outUser.name,myName );
                 if (this.billData.outUser.name == myName && this.billData.state == "WITHOUT_OUT_HOUSE") {
                     this.typeOperational = '出库'
                 } else if (this.billData.applyOrder.applicant.name == myName && this.billData.state == "OUT_HOUSE") {
@@ -346,6 +346,7 @@
                     if (this.billData.approvalResults != null) {
                         if (this.billData.approvalResults.length > 0) {
                             this.checkApproval = this.billData.approvalResults;
+                            this.checkApproval.reverse()
                             console.log(this.billData.approvalResults)
                             return true
                         }
@@ -452,21 +453,21 @@
                         return require('@/common/images/已作废.png')
                 }
             },
-            filterTime(date) {
-                if (date != 0) {
-                    let dates = new Date(date);
-                    let year = dates.getFullYear();
-                    let month = dates.getMonth() + 1;
-                    let day = dates.getDate();
-                    let hour = dates.getHours();
-                    let min = dates.getMinutes();
-                    let s = dates.getSeconds();
-                    return year + '-' + month + '-' + day + '\xa0' + hour + ':' + min + ':' + s
-                } else {
-                    return ''
-                }
-
-            },
+            //filterTime(date) {
+                // if (date != 0) {
+                //     let dates = new Date(date);
+                //     let year = dates.getFullYear();
+                //     let month = dates.getMonth() + 1;
+                //     let day = dates.getDate();
+                //     let hour = dates.getHours();
+                //     let min = dates.getMinutes();
+                //     let s = dates.getSeconds();
+                //     return year + '-' + month + '-' + day + '\xa0' + hour + ':' + min + ':' + s
+                // } else {
+                //     return ''
+                // }
+             //   return new Date(parseInt(date)).toLocaleString()
+            //},
             getOutHouse() {
                 if (!this.typeSingleFlag) {
                     return ''
@@ -479,7 +480,11 @@
                     case 'DOWN_TO_UP':
                         return '调拨';
                     case 'BORROW':
-                        return '借调'
+                        if(this.typeSingle == "returns") {
+                            return '归还'
+                        } else {
+                            return '借调'
+                        }
                     case 'SCRAP':
                         return '报废';
                     case 'DIRECT_TRANSFER':
@@ -595,6 +600,7 @@
                     url: url
                 }).then(res => {
                     this.checkApproval = res.leaderApprovalList;
+                    this.checkApproval.reverse()
                 })
             },
             getTransferEquipData(url) {

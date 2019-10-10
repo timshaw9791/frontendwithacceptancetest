@@ -17,10 +17,11 @@
                     </div>
                 </div>
                 <div class="ulList" ref="ulList" :v-loading="true">
-                    <div v-for="(item,index) in list" :key="index" @click="ulClick(item,index)" class="megDiv"
-                         :class="{divColor:contentTrue===index,unread:!item.readed}">
+                    <div v-for="(item,index) in list" :key="index" @click="ulClick(item,index)" class="megDiv">
                         {{item.title}}
-                        <span>{{formatTime(item.time)}} {{conversion(item.readed)}}</span>
+                        <div class="i" v-show="!item.readed"></div>
+                        <span>{{$filterTime(item.time)}} {{conversion(item.readed)}}</span>
+                        
                     </div>
                 </div>
                 <div class="msgBottom">
@@ -33,7 +34,7 @@
                 <div class="contents" v-if="content">
                     <div class="title">
                         <h2>{{content.title}}</h2>
-                        <h4>推送时间 : {{formatTime(content.time)}}</h4>
+                        <h4>推送时间 : {{$filterTime(content.time)}}</h4>
                     </div>
                     <div v-html="content.content" class="msgText"></div>
                 </div>
@@ -69,7 +70,7 @@
                     {label: '保养', value: 'MAINTAIN_REMIND'},
                     {label: '未归还', value: 'LONG_TIME_NOT_RETURN'},
                     {label: '过保', value: 'PERIOD_EXCEED_SHELF_LIFE'},
-                    {label: '安全库存', value: 'SAFE_SOCK_REMIND'},
+                    {label: '标准库存', value: 'SAFE_SOCK_REMIND'},
                 ],
                 qfilter: {},
             }
@@ -101,19 +102,22 @@
                     });
             },
 
-            read(id) {
+            read(data) {
                 this.oldScrollTop = this.$refs.ulList.scrollTop;
                 this.gqlMutate(api.houseUser_readMessage,
                     {
-                        messageId: id
+                        messageId: data.id
                     }, (res) => {
-                        this.list = [];
-                        this.getList();
+                        // 重新拉取消息数据，会刷新列表
+                        // this.list = [];
+                        // this.getList();
+                        // 只改变当前消息，不会刷新列表
+                        data.readed = true 
                     });
             },
             ulClick(data, index) {
                 if (!data.readed) {
-                    this.read(data.id);
+                    this.read(data);
                 }
                 this.content = data;
                 this.contentTrue = index;
@@ -266,8 +270,14 @@
                 background: rgb(249, 249, 249);
             }
 
-            .unread {
-                font-weight: 600 !important;
+            .i{
+                background:#f00;
+                border-radius:50%;
+                width:5px;
+                height:5px;
+                left: 5px;
+                margin-top: -15px;
+                position:absolute;
             }
 
         }

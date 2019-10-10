@@ -12,6 +12,7 @@ import PDFJS from 'pdfjs-dist'
 import './plugins/field';
 import '@/permission'
 import Video from 'video.js'
+import { parseTime } from 'common/js/index'
 Vue.prototype.$video = Video;
 
 import VideoPlayer from 'vue-video-player'
@@ -21,6 +22,8 @@ Vue.use(VideoPlayer);
 
 Vue.config.productionTip = false;
 Vue.prototype.$ajax = axios;
+
+Vue.prototype.$filterTime = parseTime
 
 new Vue({
     router,

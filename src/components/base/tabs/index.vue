@@ -46,6 +46,7 @@
         padding-bottom: 16px;
         border-bottom: 1px solid #EBEEF5;
         max-height: 44px;
+        min-height: 44px;
         position: relative;
 
         .button {

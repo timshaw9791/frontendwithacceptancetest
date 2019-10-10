@@ -7,7 +7,7 @@
                     <span style="font-size: 30px" v-text="temperature+'°'"></span>
                 </div>
                 <s_thermometer-component style="margin-top: 47px" :scale="scale" :temperature="temperature" :color="color"></s_thermometer-component>
-                <span v-text="'查看温度曲线'" style="margin-top: 62px" @click="toTemLineChart"></span>
+                <span v-text="'查看温度曲线'" style="margin-top: 62px; color:blue" @click="toTemLineChart"></span>
                 <!--<s_line-chart_t ref="tLine" :characterType="'°'" :svgData="svgData" :region="region" :initTime="initTime" :ticksNumber="3" :titile="'温度'" :threshold="threshold"></s_line-chart_t>-->
             </div>
         </s_card>

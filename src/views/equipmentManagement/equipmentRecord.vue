@@ -53,8 +53,8 @@
                         {lable: '序列号', field: 'equipSerial'},
                         {lable: '物品名', field: 'equipName'},
                         {lable: 'id', field: 'id'},
-                        {lable: '开始时间', field: 'startTime', filter: this.filterTime},
-                        {lable: '结束时间', field: 'endTime', filter: this.filterTime},
+                        {lable: '开始时间', field: 'startTime', filter: (ns) => this.$filterTime(ns.startTime)},
+                        {lable: '结束时间', field: 'endTime', filter: (ns) => this.$filterTime(ns.endTime)},
                         {lable: '操作人', field: 'operator'},
                         {lable: '操作', field: 'operate', filter: this.filterOperate}
                     ],
@@ -239,9 +239,9 @@
                 }
                 return operate
             },
-            filterTime(row) {
-                return new Date(parseInt(row.startTime || row.endTime)).toLocaleString().replace(/:\d{1,2}$/, ' ');
-            },
+            // filterTime(row) {
+            //     return new Date(parseInt(row.startTime || row.endTime)).toLocaleString().replace(/:\d{1,2}$/, ' ');
+            // },
             clickTree(data) {
                 if (data) {
                     this.gqlQuery(warehouse.getCommonHouseList, {id: this.tree.node.id}, (data) => {

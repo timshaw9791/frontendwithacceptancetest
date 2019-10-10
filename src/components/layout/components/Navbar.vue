@@ -4,7 +4,7 @@
 
         <!--<breadcrumb></breadcrumb>-->
         <div class="logo">
-            吉安县公安局应急装备物资管理系统
+            龙湾区公安局应急装备物资管理系统
         </div>
 
         <div class="icons">
@@ -34,13 +34,18 @@
                     </el-dropdown-item>
                 </router-link>
 
-                <el-dropdown-item>
-                    <span @click="logout">注 销</span>
-                </el-dropdown-item>
+                <div @click="logout">
+                    <el-dropdown-item>
+                        <span>注 销</span>
+                    </el-dropdown-item>
+                </div>
 
-                <el-dropdown-item divided>
-                    <span @click="windowClose" style="display:block;">退 出</span>
-                </el-dropdown-item>
+                <div @click="windowClose" style="display:block;">
+                    <el-dropdown-item divided>
+                        <span>退 出</span>
+                    </el-dropdown-item>
+                </div>
+
             </el-dropdown-menu>
         </el-dropdown>
 

@@ -29,10 +29,10 @@
                 },
                 labelList: [
                     {lable: '调拨单号', field: 'number', sort: false},
-                    {lable: '申请大类', field: 'type',filter: this.filterType, sort: false},
+                    {lable: '申请类型', field: 'type',filter: this.filterType, sort: false},
                     {lable: '申请装备', field: 'orderItems', filter: this.filterName, sort: false},
-                    {lable: '申请人', field: 'applicant', sort: false},
-                    {lable: '申请时间', field: 'applyTime', filter: this.filterTime},
+                    {lable: '申请人员', field: 'applicant', sort: false},
+                    {lable: '申请时间', field: 'applyTime', filter: (ns) => this.$filterTime(parseInt(ns.applyTime))},
                     {lable: '装备状态', field: 'state', filter: this.filterState}
                 ]
             }
@@ -94,9 +94,9 @@
                 });
                 return name.substr(1, name.length);
             },
-            filterTime(nS) {
-                return new Date(parseInt(nS.applyTime)).toLocaleString().replace(/:\d{1,2}$/, ' ');
-            },
+            // filterTime(nS) {
+            //     return new Date(parseInt(nS.applyTime)).toLocaleString().replace(/:\d{1,2}$/, ' ');
+            // },
             filterState(s){
                 if(s.state=='IN'){
                     return '未出库'
