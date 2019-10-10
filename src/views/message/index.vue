@@ -102,19 +102,22 @@
                     });
             },
 
-            read(id) {
+            read(data) {
                 this.oldScrollTop = this.$refs.ulList.scrollTop;
                 this.gqlMutate(api.houseUser_readMessage,
                     {
-                        messageId: id
+                        messageId: data.id
                     }, (res) => {
-                        this.list = [];
-                        this.getList();
+                        // 重新拉取消息数据，会刷新列表
+                        // this.list = [];
+                        // this.getList();
+                        // 只改变当前消息，不会刷新列表
+                        data.readed = true 
                     });
             },
             ulClick(data, index) {
                 if (!data.readed) {
-                    this.read(data.id);
+                    this.read(data);
                 }
                 this.content = data;
                 this.contentTrue = index;
