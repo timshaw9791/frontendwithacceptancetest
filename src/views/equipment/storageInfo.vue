@@ -219,7 +219,7 @@
 
 
                 <div class="_box-bottom">
-                    <el-button type="primary" @click="addEquipArg" v-if="!edit">提交</el-button>
+                    <el-button type="primary" @click="addEquipArg" :disabled="isClick" v-if="!edit">提交</el-button>
                 </div>
             </div>
         </el-card>
@@ -288,7 +288,8 @@
                 judgeEdit: { // 判断是否对数据进行修改
                     form: null,
                     zbForm: null
-                }
+                },
+                isClick: false // 避免提交按钮快速点击
             }
         },
         mixins: [formRulesMixin, transformMixin],
@@ -326,7 +327,7 @@
                 } else {
                     this.$refs.dialog.show();
                 }
-                killProcess();
+                //killProcess();
             },
 
             /* 判断两次数据是否相等 */
@@ -338,6 +339,8 @@
 
             //点击提交后 根据从什么入口进入的执行对应的  新增  入库  装备基础信息修改 装备入库信息修改
             addEquipArg() {
+                this.isClick = true
+                setTimeout(() => {this.isClick = false}, 1600)
                 if (this.title.includes('新增')) {
                     this.form.videoAddresses ? this.form.videoAddresses = this.form.videoAddresses.join(',') : '';
                     this.form.documentAddresses ? this.form.documentAddresses = this.form.documentAddresses.join(',') : '';
