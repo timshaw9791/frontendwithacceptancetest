@@ -597,11 +597,11 @@
                     this.$message.error("请选择指定领导")
                     return
                 }
-                if(this.hardware.hardwareSelect == '') {
+                if(this.hardware.hardwareSelect == '' && this.taskType=='报废') {
                     this.$message.error("请选择硬件")
                     return;
                 }
-                if(this.form.orderItems.length == 0) {
+                if(this.form.orderItems.length == 0 && this.taskType=='报废') {
                     this.$message.error("请扫入RFID")
                     return;
                 }

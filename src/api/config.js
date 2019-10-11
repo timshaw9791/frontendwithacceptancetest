@@ -9,7 +9,7 @@ export const ERR_OK = 0;
 
 
 
-var baseURL = 'http://192.168.50.14:8010/warehouse';
+var baseURL = 'http://10.128.1.233:8010/warehouse';
 var baseBURL = 'http://115.159.154.194/warehouse_server';
 
 // export let baseURL = 'http://192.168.50.14:8010/warehouse';

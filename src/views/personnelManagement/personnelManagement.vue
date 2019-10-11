@@ -7,10 +7,10 @@
                     <select-personel id="personnelManagementSelect" :select="select.selectList" @selectRole="selectRole"></select-personel>
                     <div class="add-personnel-item">
                         <svg-icon icon-class='加' style="margin-left: 38px" class="icon-search"></svg-icon>
-                        <span @click="addPersonnel">新增人员</span>
+                        <span style="color: #2F2F76" @click="addPersonnel">新增人员</span>
                     </div>
                     <div class="add-personnel-item"><svg-icon icon-class='同步' style="margin-left: 38px" class="icon-search"></svg-icon>
-                        <span @click="synchronization">信息头像同步</span></div>
+                        <span style="color: #2F2F76" @click="synchronization">信息头像同步</span></div>
                 </div>
                 <div class="input-box">
                     <svg-icon icon-class="搜索" class="icon-search"></svg-icon>
