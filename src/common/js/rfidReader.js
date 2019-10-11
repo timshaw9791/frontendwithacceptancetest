@@ -2,14 +2,14 @@ if (process.env.NODE_ENV == "production") {
     var exec = window.require('child_process').exec;
     var spawn = window.require('child_process').spawn;
     var cwd = "C:\\Users\\10359"; // 执行目录
-    // var com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM']; // 端口 串口号
+    var com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM']; // 端口 串口号
     var fs = window.require('fs')
 }
 
 var newFile_path = 'C:\\Users\\Administrator\\inventory.json'; // 手持机路径
 var cmdPath = 'C:\\Users\\Administrator'; // 读卡器路径
 var cmdStr = 'chcp 65001 && adb pull sdcard/inventoryData/inventory.json .';
-var com = 4
+// var com = 4
 var workerProcess; // 子进程名
 
 /* 结束对应进程 */

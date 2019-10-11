@@ -328,7 +328,7 @@
                 }
                 killProcess();
             },
-            
+
             /* 判断两次数据是否相等 */
             isEqual() {
                 let flag1 = JSON.stringify(this.form) == JSON.stringify(this.judgeEdit.form)
@@ -380,7 +380,7 @@
                         this.$message.error("请扫入RFID")
                         return
                     }
-                    
+
 
                     this.$refs.form.validate.then((res1) => {
                         this.zbForm['location'] = {
@@ -578,7 +578,7 @@
             //图片上传成功暴露的方法
             successUp(data) {
                 console.log(data);
-              
+
                 this.form.imageAddress = data;
             },
 
@@ -604,7 +604,7 @@
                         this.imageUrl = '';
                         this.noimg=true;
                     }
-                    
+
                 });
 
                 start("java -jar scan.jar", (data) => {
@@ -617,7 +617,7 @@
                         this.index = this.index + 1;
                     } else {
                         let newData = JSON.parse(data);
-                        
+
                         newData.status === 'succeed' ? this.index = 1 : this.index = 0;
                     }
                 }, (fail) => {
@@ -706,7 +706,7 @@
 
             //进入页面获取数据
             getList() {
-               
+
                 if (this.equipId) {
                     this.gqlQuery(api.getEquip, {
                         id: this.equipId
