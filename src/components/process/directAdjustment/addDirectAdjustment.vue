@@ -43,7 +43,7 @@
                             <el-table-column label="装备数量" align="center">
                                 <template scope="scope">
                                     <el-input v-model="scope.row.count" size="small"
-                                              @input="changeCount(scope,$event)"></el-input>
+                                              @blur="changeCount(scope,$event)"></el-input>
                                 </template>
                             </el-table-column>
                             <el-table-column label="操作" width="120">
@@ -62,7 +62,7 @@
                     </div>
                     <div class="addDirectAdjustment-bottom">
                         <el-button class="cancel" @click="cancel">取消</el-button>
-                        <el-button style="margin-left: 34px" class="submit" @click="submit">提交</el-button>
+                        <el-button style="margin-left: 34px" class="submit" :disabled="isClick" @click="submit">提交</el-button>
                     </div>
                 </div>
             </div>
@@ -137,7 +137,8 @@
                     leaderList: [{value: '1', key: '21212'}, {value: '2', key: '12121'}, {value: '3', key: 'asas'}],
                     leaderName: '',
                     leaderItem: {},
-                }
+                },
+                isClick: false,
             }
         },
         created() {
@@ -149,11 +150,11 @@
                     this.$emit('getInHouse', newVal)
                 }
             },
-            'nowCount': {
-                handler(newVal) {
-                    this.throttle(this.addRow, 1000)
-                }
-            }
+            // 'nowCount': {
+            //     handler(newVal) {
+            //         this.throttle(this.addRow, 1000)
+            //     }
+            // }
         },
         methods: {
             getLeaderSelect(data) {
@@ -196,6 +197,8 @@
                 })
             },
             submit() {
+                this.isClick = true
+                setTimeout(() => this.isClick = false, 1600)
                 console.log(this.leader.leaderItem);
                 let url = '';
                 let orderItems=[];
@@ -249,6 +252,8 @@
                 if(this.addType=='add'){
                     this.$ajax.post(url, transferApplyOrder).then(res => {
                         this.sucesssAdd()
+                    }, err => {
+                        this.$message.error("申请失败")
                     })
                 }else {
                     request({
@@ -257,6 +262,8 @@
                         data: transferApplyOrder
                     }).then(res => {
                         this.sucesssAdd()
+                    }, err => {
+                        this.$message.error("申请失败")
                     });
 
                 }
@@ -302,15 +309,17 @@
                 this.form.orderItems[row.$index].name = data.key.name;
             },
             changeCount(row, event) {
-                this.nowRow = row;
-                this.nowCount = event
+                if(row.row.count && row.row.count != 0) {
+                    this.nowRow = row;
+                    this.addRow()
+                }           
             },
-            throttle(method, context) {
-                clearTimeout(method.tId);
-                method.tId = setTimeout(function () {
-                    method.call(context)
-                }, 1000)
-            }
+            // throttle(method, context) {
+            //     clearTimeout(method.tId);
+            //     method.tId = setTimeout(function () {
+            //         method.call(context)
+            //     }, 1000)
+            // }
         }
     }
 </script>

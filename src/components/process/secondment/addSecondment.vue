@@ -114,7 +114,7 @@
                             <el-table-column label="装备数量" align="center" v-if="taskType!='报废'">
                                 <template scope="scope">
                                     <el-input v-model="scope.row.count" size="small"
-                                              @input="changeCount(scope,$event)"></el-input>
+                                              @blur="changeCount(scope,$event)"></el-input>
                                 </template>
                             </el-table-column>
                             <el-table-column label="操作" width="120" align="center">
@@ -276,11 +276,11 @@
                     this.$emit('getInHouse', newVal)
                 }
             },
-            'nowCount': {
-                handler(newVal) {
-                    this.throttle(this.addRow, 1000)
-                }
-            },
+            // 'nowCount': {
+            //     handler(newVal) {
+            //         this.throttle(this.addRow, 1000)
+            //     }
+            // },
             'hardware.hardwareSelect': {
                 deep:true,
                 handler(newVal, oldVal) {
@@ -294,8 +294,8 @@
                         this.handheldMachine();
                     } else if (newVal == 'RFID读写器') {
                         this.restaurants=[];
-                        this.getOutDataCopy(['1908000C']);
-                        //this.getListUsb();
+                        //this.getOutDataCopy(['1908000C']);
+                        this.getListUsb();
                     }
                 }
             }
@@ -722,6 +722,8 @@
                 if(this.addType=='add'){
                     this.$ajax.post(url, borrowApplyOrder).then(res => {
                         this.sucesssAdd()
+                    }, err => {
+                        this.$message.error("申请失败")
                     })
                 }else {
                     request({
@@ -730,6 +732,8 @@
                         data: borrowApplyOrder
                     }).then(res => {
                         this.sucesssAdd()
+                    }, err => {
+                        this.$message.error("申请失败")
                     });
 
                 }
@@ -779,15 +783,17 @@
                 this.form.orderItems[row.$index].name = data.key.name;
             },
             changeCount(row, event) {
-                this.nowRow = row;
-                this.nowCount = event
+                if(row.row.count && row.row.count != 0) {
+                    this.nowRow = row;
+                    this.addRow()
+                }
             },
-            throttle(method, context) {
-                clearTimeout(method.tId);
-                method.tId = setTimeout( ()=>{
-                    method.call(context)
-                }, 1000)
-            }
+            // throttle(method, context) {
+            //     clearTimeout(method.tId);
+            //     method.tId = setTimeout( ()=>{
+            //         method.call(context)
+            //     }, 1000)
+            // }
         }
     }
 </script>
