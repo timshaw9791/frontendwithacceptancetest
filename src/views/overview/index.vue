@@ -386,9 +386,8 @@
                 box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
                 display: flex;
                 align-items: center;
-                height: 148px;
+                height: 130px;
                 width: 100%;
-                margin-bottom: 30px;
                 flex-wrap: wrap;
                 justify-content: space-around;
 
@@ -408,7 +407,6 @@
                 }
 
                 .ss-content {
-
                     .title {
                         text-align: center;
                         font-size: 18px;
@@ -482,7 +480,8 @@
                     width: 510px;
                     height: 321px;
                     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
-                    margin-bottom: 30px;
+                    // margin-bottom: 14px;
+                    margin-top: 30px;
                     color: rgba(112, 112, 112, 1);
 
                     .bk-top {
@@ -498,8 +497,7 @@
                     }
 
                     .bk-content {
-                        padding: 0 30px;
-
+                        padding: 0 30px;    
 
                         .monitor {
                             width: 300px;

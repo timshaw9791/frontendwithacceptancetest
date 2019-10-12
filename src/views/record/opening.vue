@@ -86,6 +86,6 @@
 <style scoped>
 .opening-box{
     width: 100%;
-    min-height: 965px;
+    min-height: 908px;
 }
 </style>
