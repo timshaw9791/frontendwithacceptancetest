@@ -132,6 +132,7 @@
                 nowTime: 0,
                 nowRow: {},
                 nowCount: '',
+                oldCount:'',
                 processLevelId: '',
                 leader: {
                     leaderList: [{value: '1', key: '21212'}, {value: '2', key: '12121'}, {value: '3', key: 'asas'}],
@@ -303,7 +304,17 @@
             },
             changeCount(row, event) {
                 this.nowRow = row;
+                if(event!=this.oldCount)
+                {
                 this.nowCount = event
+                this.oldCount=event
+                }
+                else{
+                    this.nowCount=0
+                    this.oldCount=0
+                }
+                
+               
             },
             throttle(method, context) {
                 clearTimeout(method.tId);
