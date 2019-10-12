@@ -86,7 +86,12 @@ export function delFile(path, callBack) {
 /* 手持机 */
 export function handheld() {
     // 执行命令行，如果命令不需要路径，或就是项目根目录，则不需要cwd参数：
-    fs.unlinkSync(newFile_path);
+    
+    fs.exists(newFile_path, exists => {
+        if(exists) {
+            fs.unlinkSync(newFile_path);
+        }
+    })
 
     workerProcess = exec(cmdStr, {cwd: cmdPath});
 
