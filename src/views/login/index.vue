@@ -6,7 +6,7 @@
             <img src="../../common/images/警徽.png" height="89" width="78" style="cursor: pointer;"
                  @click="windowClose"/>
 
-            <h3 class="title">龙湾区公安局应急装备物资管理系统</h3>
+            <h3 class="title">{{ title }}</h3>
         </div>
 
         <el-form class="login-form" autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm"
@@ -43,11 +43,13 @@
 
 <script>
     import {startSocket} from "common/js/webSocket";
+    import { localTitle } from 'api/config';
 
     export default {
         name: 'login',
         data() {
             return {
+                title: localTitle,
                 loginForm: {
                     username: '',
                     password: ''
