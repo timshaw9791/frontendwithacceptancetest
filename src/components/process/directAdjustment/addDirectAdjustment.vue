@@ -181,7 +181,7 @@
                 }).then(res => {
                     if(res){
                         this.leader.leaderList = [];
-                        // this.leader.leaderName=''
+                        this.leader.leaderName=''
                         this.processLevelId = res.id;
                         if (Object.keys(res.levelLeaderMap).length == 0) {
                             res.applyLeaders.forEach(item => {
@@ -241,7 +241,6 @@
                     url = baseBURL + '/transfer/apply' + '?nextApproveId=' + this.leader.leaderItem.userId + '&taskId=' + this.taskId
                 }
                 this.allocationApplication(url, transferApplyOrder);
-                this.leader.leaderName=''
                 // let transferOrder={};
                 // transferOrder.applicant=JSON.parse(localStorage.getItem('user')).name;
                 // transferOrder.inHouseName=this.inHouseName;
