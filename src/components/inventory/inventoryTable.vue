@@ -82,7 +82,7 @@
                     <el-button class="copyRfid-button-cancel" @click="cancelCopy">取消</el-button><el-button class="copyRfid-button-submits" @click="copyRfid">写入</el-button>
                 </div>
             </div>
-        </dialog-svices>>
+        </dialog-svices>
     </div>
 </template>
 

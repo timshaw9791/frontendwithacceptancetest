@@ -21,7 +21,7 @@
                 <div v-if="show">
                     <el-table :data="list" fit highlight-current-row>
                         <bos-table-column lable="rfid" field="equip.rfid"></bos-table-column>
-                        <bos-table-column lable="装备名" field="equip.name"></bos-table-column>
+                        <bos-table-column lable="装备名称" field="equip.name"></bos-table-column>
                         <bos-table-column lable="装备序号" field="equip.serial"></bos-table-column>
                         <bos-table-column lable="架体编号" field="equip.location.number"></bos-table-column>
 
@@ -33,7 +33,7 @@
                         <!--<bos-table-column lable="充电周期" field="chargeCycle"></bos-table-column>-->
 
                         <bos-table-column lable="上次充电时间"
-                                          :filter="(row)=>formatTime(row.lastChargeTime)"></bos-table-column>
+                                          :filter="(row)=>$filterTime(row.lastChargeTime)"></bos-table-column>
                         <bos-table-column lable="电量倒计时"
                                           v-if="type!=='正在充电'"
                                           :filter="(row)=>countdown(row.lastChargeTime,row.chargeCycle)"></bos-table-column>

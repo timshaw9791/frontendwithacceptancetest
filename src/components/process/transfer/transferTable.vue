@@ -107,13 +107,15 @@
             'searchNumber': {
                 deep: true,
                 handler(newVal, oldVal) {
-                    this.paginator.page = 1;
-                    // this.getList()
+                    if( this.paginator.page != 1){
+                        this.paginator.page = 1;
+                    }
                     if (newVal == '' && oldVal != '') {
                         this.getList(this.select, newVal);
                     } else if (newVal != '') {
                         this.getList(this.select, newVal);
                     }
+                    // this.getList()
 
                 }
             },
@@ -138,6 +140,7 @@
             // },
             'typeSingle': {
                 handler(newVal) {
+
                     if (newVal == 'apply') {
                         this.labelList = [
                             {lable: '申请单号', field: 'variables.applyOrder.number', sort: false},
@@ -178,11 +181,19 @@
             'urlObject.billUrl': {
                 deep: true,
                 handler(newVal) {
+                    this.paginator.page = 1;
+                    this.getList(this.select, this.searchNumber);
+                }
+            },
+            'paginator.page':{
+                deep: true,
+                handler(newVal) {
                     this.getList(this.select, this.searchNumber);
                 }
             },
             'select': {
                 handler(newVal) {
+                    this.paginator.page = 1;
                     // let url = baseBURL+'/transfer-order/by-user-and-order-state';
                     // if(newVal=='进行中'){
                     //     this.getApplyList('doing');
@@ -233,7 +244,7 @@
                 // return name.substr(1, name.length);
             },
             filterTime(nS) {
-                return new Date(parseInt(nS.variables.applyOrder.applyTime)).toLocaleString().replace(/:\d{1,2}$/, ' ');
+                return this.$filterTime(parseInt(nS.variables.applyOrder.applyTime))
             },
             filterState(s) {
                 let state = s.variables.applyOrder.state;
@@ -265,7 +276,11 @@
                 } else if (type == 'DOWN_TO_UP') {
                     return '调拨'
                 } else if (type == 'BORROW') {
-                    return '借调'
+                    if(this.typeSingle == 'returns') {
+                        return '归还'
+                    } else {
+                        return '借调'
+                    }
                 } else if (type == 'SCRAP') {
                     return '报废'
                 }
@@ -390,6 +405,8 @@
                     params: param
                 }).then(res => {
                     if (res) {
+                                            console.log(res);
+                        console.log('-------------------');
                         let list = [];
                         // this.paginator.totalPages=res.totalPages;
                         if (status == 'doing') {
@@ -401,6 +418,7 @@
                             this.paginator.totalPages = res.totalPages;
                         }
                         this.list = list;
+                        console.log(this.list);
                     }
                 })
             },

@@ -43,12 +43,12 @@
                     labelList: [
                         {lable: '装备名称', field: 'action',filter: this.filterName, sort: false},
                         {lable: '操作人员', field: 'operator', sort: false},
-                        {lable: '操作时间', field: 'startTime', filter: this.filterTime, sort: false},
+                        {lable: '操作时间', field: 'startTime', filter: (ns) => this.$filterTime(ns.time), sort: false},
                         {lable: '操作状态', field: 'action', filter: this.filterAction}
                     ],
                     tableAction:{
-                        label:'监控视频',
-                        button:['详情','查看']
+                        label:'操作',
+                        button:['详情','监控']
                     },
                     search:'',
                     flag:false
@@ -96,9 +96,9 @@
                 }
 
             },
-            filterTime(nS) {
-                return new Date(parseInt(nS.time)).toLocaleString().replace(/:\d{1,2}$/, ' ');
-            },
+            // filterTime(nS) {
+            //     return new Date(parseInt(nS.time)).toLocaleString().replace(/:\d{1,2}$/, ' ');
+            // },
 
             filterName(ns){
                 let equipArges=ns.equipActionRecords;

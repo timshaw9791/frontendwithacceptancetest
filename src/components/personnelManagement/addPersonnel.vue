@@ -6,12 +6,26 @@
                              :rules="r(true).all(R.require)" prop="name" :disabled="disabled"></field-input>
                 <field-input class="field-input" v-model="form.policeSign" :disabled="disabled"  label="警号(账号)" width="4.5"
                              :rules="r(true).all(R.require)" prop="policeSign"></field-input>
-                <field-checkbox  v-model="gender" label="性别" width="4.5"
-                                prop="position" :list="nanlist" @change="changeCheck" :disabled="disabled"></field-checkbox>
+                <!--<field-checkbox  v-model="gender" label="性别" width="4.5" :rules="r(true).all(R.require)"-->
+                                <!--prop="position" :list="nanlist" @change="changeCheck" :disabled="disabled"></field-checkbox>-->
+                <el-form :model="ruleFormGs" :rules="rulesG" ref="ruleForm" style="margin-left: 65px;margin-top: 10px;">
+                    <el-form-item label="性别" prop="type">
+                        <el-checkbox-group v-model="ruleFormGs.type" style="display: flex;flex-direction: column" :disabled="disabled" @change="changeCheck">
+                            <el-checkbox  v-for="item in nanlist" :label="item.val" name="type"  style="margin-left: 50px;">{{item.val}}</el-checkbox>
+                        </el-checkbox-group>
+                    </el-form-item>
+                </el-form>
                 <field-input class="field-input" v-model="form.password" label="密码" width="4.5"
                              :rules="r(true).all(R.require)" prop="password" :disabled="disabled" :type="'password'"></field-input>
-                <field-checkbox  v-model="roleItems" label="角色" width="4.5" :disabled="disabled"
-                                 prop="position" :list="cRoleList" @change="changeCheckRole"></field-checkbox>
+                <el-form :model="roleFormGs" :rules="rulesG" ref="roleForm" style="margin-left: 65px;margin-top: 10px;">
+                    <el-form-item label="角色" prop="type">
+                        <el-checkbox-group v-model="roleFormGs.type" style="display: flex;flex-direction: column" :disabled="disabled" @change="changeCheckRole">
+                            <el-checkbox  v-for="item in cRoleList"  :label="item.val"  name="type"  style="margin-left: 50px;">{{item.key}}</el-checkbox>
+                        </el-checkbox-group>
+                    </el-form-item>
+                </el-form>
+                <!--<field-checkbox  v-model="roleItems" label="角色" width="4.5" :disabled="disabled" :rules="r(true).all(R.require)"-->
+                                 <!--prop="position" :list="cRoleList" @change="changeCheckRole"></field-checkbox>-->
                 <field-input class="field-input" v-model="form.idNumber" :disabled="disabled" label="身份证号" width="4.5"
                              :rules="r(true).all(R.cardId)" prop="idNumber"></field-input>
                 <field-input class="field-input" v-model="form.position" :disabled="disabled"  label="职位" width="4.5"
@@ -25,7 +39,7 @@
             </form-container>
             <div class="add-personneo-upload-img">
                 <div class="img-box" v-if="viewStatus.flag"></div>
-                <img :src="getSrc()" class="img" v-if="!viewStatus.flag">
+                <img :src="img" class="img" v-if="!viewStatus.flag">
                 <div :class="disabled?'span disabled':'span'">
                     <span v-text="'上传'" @click="uploadImg"></span>
                 </div>
@@ -34,9 +48,9 @@
                 </form>
             </div>
         </div>
-        <div class="add-personneo-bottom" v-if="!disabled" >
-            <el-button @click="black">返回</el-button>
-            <el-button type="primary" @click="confirm">确认</el-button>
+        <div class="add-personneo-bottom">
+            <!-- <el-button @click="black">返回</el-button> -->
+            <el-button type="primary" @click="confirm" :disabled="isClick" v-show="!disabled">确认</el-button>
         </div>
 
         <field-dialog title="提示" ref="dialog" @confirm="dialogConfirm">
@@ -56,17 +70,30 @@
     export default {
         data() {
             return {
+                form2:{},
                 form: {},
                 nanlist:[{val:'男',key:'男'},{val:'女',key:'女'}],
                 gender:[],
+                ruleForm:{},
                 roleItems:[],
                 cRoleList:[],
                 viewStatus:{
                     flag:true
                 },
+
+                ruleFormGs:{type: [
+                    ]},
+                roleFormGs:{type: [
+                    ]},
+                rulesG: {
+                    type: [
+                        { type: 'array', required: true, message: '请至少选择一个', trigger: 'change' }
+                    ]
+                },
                 src:baseURL+'/images/',
                 personnelImg:'',
                 judgeForm: {}, // 用于判断是否编辑内容
+                isClick: false,
             }
         },
         mixins: [formRulesMixin],
@@ -105,11 +132,25 @@
                }
             });
             // this.$set(this.form,'organUnit',{id:this.organUnit.value});
+            let _form = JSON.stringify(this.form)
+            this.form2 = JSON.parse(_form)
+        },
+        computed:{
+          img(){
+              let img;
+              if(this.personnelImg!=null||this.personnelImg!=''){
+                  img=this.src+this.personnelImg;
+              }else {
+                  img=require('@/assets/noImg.png');
+              }
+              return img
+          }
         },
         methods: {
             initForm(){
-                this.gender=[this.personenlData.gender];
-                this.$set(this.form,'gender',this.gender[0]);
+                this.ruleFormGs.type=[this.personenlData.gender];
+                console.log(this.ruleFormGs.type);
+                this.$set(this.form,'gender',this.ruleFormGs.type[0]);
                 this.$set(this.form,'name',this.personenlData.name);
                 this.$set(this.form,'password',this.personenlData.password);
                 this.$set(this.form,'position',this.personenlData.position);
@@ -123,7 +164,7 @@
                 // });
                 this.personnelImg=this.personenlData.faceInformation;
                 this.$set(this.form,'faceInformation',this.personnelImg);
-                this.roleItems.push(this.personenlData.role.id);
+                this.roleFormGs.type.push(this.personenlData.role.id);
                 this.viewStatus.flag=false;
                 this.judgeForm = JSON.parse(JSON.stringify(this.form))
             },
@@ -137,23 +178,34 @@
             dialogConfirm() {
                 this.$emit('black', true);
             },
+
             getSrc(){
-              let srcs;
-              srcs=this.src+this.personnelImg;
-              return srcs
+
             },
             changeCheck(data){
-               let cGender=[];
-               cGender.push(data[data.length-1]);
-               this.gender=cGender;
-               this.$set(this.form,'gender',this.gender[0]);
+                if(data.length==0){
+                    this.ruleFormGs.type=[];
+                    this.$set(this.form,'gender','');
+                }else {
+                    let cGender=[];
+                    cGender.push(data[data.length-1]);
+                    this.ruleFormGs.type=cGender;
+                    this.$set(this.form,'gender',this.ruleFormGs.type[0]);
+                }
+
             },
             changeCheckRole(data){
                 // this.$set(this.form,'roleItems', []);
-                let cRole=[];
-                cRole.push(data[data.length-1]);
-                this.roleItems=cRole;
-                this.form.role={id:cRole[0]};
+                if(data.length==0){
+                    this.roleFormGs.type=[];
+                    this.form.role={id:''};
+                }else {
+                    let cRole=[];
+                    cRole.push(data[data.length-1]);
+                    this.roleFormGs.type=cRole;
+                    this.form.role={id:cRole[0]};
+                }
+
                 // data.forEach(item=>{
                 //
                 // });
@@ -183,20 +235,38 @@
                     })
             },
             confirm(){
+                this.isClick = true
+                setTimeout(() => this.isClick = false, 1000)
                 if(this.disabled==false){
                     this.form.username=this.form.policeSign;
                     if(this.addType=='add'){}else {
                         this.form.id=this.personenlData.id
                     }
+                    let  flag=true;
                     this.form.unitId=JSON.parse(localStorage.getItem('user')).unitId;
+                    this.$refs['ruleForm'].validate((valid) => {
+                        console.log('ruleForm',valid)
+                        if(valid){}else {
+                            flag=false
+                        }
+                    });
+                    this.$refs['roleForm'].validate((valid) => {
+                        if(valid){}else {
+                            flag=false
+                        }
+                    });
                     this.$refs.form.validate.then((valid) => {
                         if(valid){
-                            this.$refs.form.gqlValidate(this.addType=='add'?user.identitySaveUser:user.identityUpdateUser, {
-                                user:this.form
-                            }, (res) => {
-                                this.$message.success('操作成功');
-                                this.$emit('addSucess',true);
-                            })
+                           if(flag){
+                               this.$refs.form.gqlValidate(this.addType=='add'?user.identitySaveUser:user.identityUpdateUser, {
+                                   user:this.form
+                               }, (res) => {
+                                   this.$message.success('操作成功');
+                                   this.$emit('addSucess',true);
+                               })
+                           }else {
+                               this.$message.error('请先填写完整表单')
+                           }
                         }else {
                             this.$message.error('请先填写完整表单')
                         }

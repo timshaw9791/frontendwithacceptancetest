@@ -28,6 +28,7 @@ let __RULES__ = {
         return outPutInfo(/^\d+\.*\d*$/.test(value))
     },
     require(value) {  //空字符串验证
+        console.log(value);
         return outPutInfo(value && value !== '')
     },
     rfid(value) {

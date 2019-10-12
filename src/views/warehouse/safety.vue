@@ -20,7 +20,7 @@
 
                 <el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
                           fit>
-                    <bos-table-column lable="装备大类" field="equipArg.category.name"></bos-table-column>
+                    <bos-table-column lable="装备类型" field="equipArg.category.name"></bos-table-column>
                     <bos-table-column lable="装备小类" field="equipArg.category.genre.name"></bos-table-column>
                     <bos-table-column lable="装备名称" field="equipArg.name"></bos-table-column>
                     <bos-table-column lable="装备型号" field="equipArg.model"></bos-table-column>
@@ -44,7 +44,7 @@
             </div>
         </el-card>
 
-        <serviceDialog title="提示" ref="dialogButton" @confirm="submit">
+        <serviceDialog title="提示" ref="dialogButton" @confirm="submit" :secondary="false">
             <div class="_dialogDiv">
                 <form-container ref="inlineForm" :model="inlineForm">
                     <field-input v-model="inlineForm.safeStock" label="标准库存" width="3"

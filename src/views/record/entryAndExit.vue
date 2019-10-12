@@ -29,7 +29,7 @@
                     flag: true,
                     labelList: [
                         {lable: '出入人员', field: 'name',sort:false},
-                        {lable: '出入时间', field: 'time', filter: this.filterTime},
+                        {lable: '出入时间', field: 'time', filter: (ns) => this.$filterTime(parseInt(ns.time))},
                         {lable: '出入状态', field: 'access', filter: this.filterStatus}
                     ],
                     graphqlTable: {
@@ -37,8 +37,8 @@
                         graphqlKey: {qfilter: {key: "id",operator: "ISNOTNULL"}}
                     },
                     tableAction:{
-                        label:'监控视频',
-                        button:['查看']
+                        label:'操作',
+                        button:['监控']
                     },
                     equipId:'',
                     haveButton: true,
@@ -70,9 +70,9 @@
                     this.$refs.recordVideo.show()
                 }
             },
-            filterTime(nS) {
-                return new Date(parseInt(nS.time)).toLocaleString().replace(/:\d{1,2}$/, ' ');
-            },
+            // filterTime(nS) {
+            //     return new Date(parseInt(nS.time)).toLocaleString().replace(/:\d{1,2}$/, ' ');
+            // },
             filterStatus(nS){
                 let status='出';
                 if(nS.access=='IN'){

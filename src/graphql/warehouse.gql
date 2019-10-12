@@ -201,6 +201,7 @@ query getEquipArgList($paginator: paginator, $qfilter: qfilter) {
     content {
       upkeepCycle
       id
+      time(OrderBy: DESC)
       imageAddress
       videoAddresses
       documentAddresses

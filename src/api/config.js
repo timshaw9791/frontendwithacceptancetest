@@ -22,7 +22,7 @@ if (process.env.NODE_ENV == "production") {
     baseURL = `http://${result.ORGAN_UNIT_IP}:8010/warehouse`;
     baseBURL = `http://${result.MAIN_SERVER_IP}/warehouse_server`
 }
- 
+
 export { baseURL, baseBURL}
 export const imgBaseUrl = `${baseURL}/images/`;
 export const pdfBaseUrl = `${baseURL}/pdfs/`;

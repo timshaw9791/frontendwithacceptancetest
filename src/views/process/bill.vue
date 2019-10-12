@@ -29,25 +29,24 @@
                 <div class="tr">
                     <div class="title">{{typeSingleFlag?`${billName}单号: `:'申请单号: '}}<span
                             v-text="billData.applyOrder.number"></span></div>
-                    <div class="title" v-if="typeSingleFlag">出库时间: <span v-text="filterTime(billData.outTime)"></span>
+                    <div class="title" v-if="typeSingleFlag">出库时间: <span v-text="$filterTime(billData.outTime)"></span>
                     </div>
-                    <div class="title" v-if="typeSingleFlag">接收时间: <span v-text="filterTime(billData.inTime)"></span>
+                    <div class="title" v-if="typeSingleFlag">接收时间: <span v-text="$filterTime(billData.inTime)"></span>
                     </div>
                 </div>
                 <div class="tr">
                     <div class="title">申请类型: <span v-text="applicationType(billData.applyOrder.type)"></span></div>
-                    <div class="title" v-if="typeSingleFlag">调拨机构: <span v-text="getOutUnit()"></span></div>
                     <div class="title">接收机构: <span v-text="billData.applyOrder.inHouse.organUnit.name"></span></div>
-                    <div class="title" v-if="!typeSingleFlag">出库机构: <span v-text="getOutUnit()"></span></div>
+                    <div class="title">出库机构: <span v-text="getOutUnit()"></span></div>
                 </div>
                 <div class="tr">
-                    <div class="title">申请时间: <span v-text="filterTime(billData.applyOrder.applyTime)"></span></div>
+                    <div class="title">申请时间: <span v-text="$filterTime(billData.applyOrder.applyTime)"></span></div>
                     <div class="title" v-if="typeSingleFlag">出库库房: <span v-text="getOutHouse()"></span></div>
                     <div class="title">接收库房: <span v-text="billData.applyOrder.inHouse.name"></span></div>
                 </div>
                 <div class="tr">
                     <div class="title">申请人员: <span v-text="billData.applyOrder.applicant.name"></span></div>
-                    <div class="title" v-if="typeSingleFlag">调拨人员: <span v-text="billData.outUser.name"></span></div>
+                    <div class="title" v-if="typeSingleFlag">出库人员: <span v-text="billData.outUser.name"></span></div>
                     <div class="title" v-if="typeSingleFlag">接收人员:<span
                             v-text="billData.applyOrder.applicant.name"></span></div>
                 </div>
@@ -68,7 +67,7 @@
                         <bos-table-column lable="装备名称" field="name"></bos-table-column>
                         <bos-table-column lable="装备型号" field="model"></bos-table-column>
                         <bos-table-column lable="装备数量" field="count"></bos-table-column>
-                        <el-table-column align="center" lable="总价"
+                        <el-table-column align="center" label="总价" prop="price"
                                          v-if="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?true:false:false">
                             <template slot-scope="scope">
                                 {{scope.row.price/100}}
@@ -92,7 +91,7 @@
                                                                                  @click="checkReason(item)"></span>
                         </div>
                         <div><span v-text="getOperate(item.level)+'时间:'"></span><span
-                                v-text="filterTime(item.time)"></span></div>
+                                v-text="$filterTime(item.time)"></span></div>
                     </div>
                 </div>
 
@@ -104,7 +103,7 @@
                     <div class="title">申请类型: <span v-text="applicationType(billData.applyOrder.type)"></span></div>
                 </div>
                 <div class="tr">
-                    <div class="title">申请时间: <span v-text="filterTime(billData.applyOrder.applyTime)"></span></div>
+                    <div class="title">申请时间: <span v-text="$filterTime(billData.applyOrder.applyTime)"></span></div>
                     <div class="title">申请人员: <span v-text="billData.applyOrder.applicant.name"></span></div>
                 </div>
                 <div class="tr">
@@ -149,7 +148,7 @@
                                                                                  @click="checkReason(item)"></span>
                         </div>
                         <div><span v-text="getOperate(item.level)+'时间:'"></span><span
-                                v-text="filterTime(item.time)"></span></div>
+                                v-text="$filterTime(item.time)"></span></div>
                     </div>
                 </div>
             </div>
@@ -454,7 +453,7 @@
                         return require('@/common/images/已作废.png')
                 }
             },
-            filterTime(date) {
+            //filterTime(date) {
                 // if (date != 0) {
                 //     let dates = new Date(date);
                 //     let year = dates.getFullYear();
@@ -467,8 +466,8 @@
                 // } else {
                 //     return ''
                 // }
-                return new Date(parseInt(date)).toLocaleString()
-            },
+             //   return new Date(parseInt(date)).toLocaleString()
+            //},
             getOutHouse() {
                 if (!this.typeSingleFlag) {
                     return ''
@@ -481,7 +480,11 @@
                     case 'DOWN_TO_UP':
                         return '调拨';
                     case 'BORROW':
-                        return '借调'
+                        if(this.typeSingle == "returns") {
+                            return '归还'
+                        } else {
+                            return '借调'
+                        }
                     case 'SCRAP':
                         return '报废';
                     case 'DIRECT_TRANSFER':

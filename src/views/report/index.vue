@@ -476,7 +476,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-top: 51px;
+        margin-top: 21px;
         padding-bottom: 5px;
     }
 </style>

@@ -21,7 +21,7 @@
 
             <div slot="footer" class="dialog-footer" v-if="button">
                 <el-button @click="cancelDb">取 消</el-button>
-                <el-button type="primary" @click="dialogConfirm">确 定</el-button>
+                <el-button type="primary" :disabled="disabled" @click="dialogConfirm">确 定</el-button>
             </div>
         </el-dialog>
     </div>
@@ -33,6 +33,7 @@
             return {
                 showFlag: false,
                 innerVisible: false,
+                disabled: false,
             }
         },
         props: {
@@ -60,6 +61,8 @@
                 this.showFlag = false;
             },
             dialogConfirm() {
+                this.disabled = true;
+                setTimeout(() => this.disabled = false, 1000)
                 this.$emit('confirm');
                 this.$emit('confirmWare')
             },

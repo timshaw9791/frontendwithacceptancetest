@@ -34,14 +34,14 @@
               :filter="(row)=>surface(row.equip.location?row.equip.location.surface:'暂无')"
             ></bos-table-column>
             <bos-table-column lable="保养周期/天" :filter="(row)=>milliToDay(row.upkeepCycle)"></bos-table-column>
-            <bos-table-column lable="上次保养时间" :filter="(row)=>formatTime(row.lastUpkeepTime)"></bos-table-column>
+            <bos-table-column lable="上次保养时间" :filter="(row)=>$filterTime(row.lastUpkeepTime)"></bos-table-column>
             <bos-table-column
               lable="保养倒计时"
               :filter="(row)=>countdown(row.lastUpkeepTime,row.upkeepCycle)"
             ></bos-table-column>
           </el-table>
 
-          <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage" />
+          <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage" v-if="this.list.length>0" />
 
           <serviceDialog title="确认保养装备清单" ref="maintenanceDialog" @cancel="quit" @confirm="submit" width="1040px">
               <el-table :data="maintenance.list" height="500" fit class="list maintenance-list-box">

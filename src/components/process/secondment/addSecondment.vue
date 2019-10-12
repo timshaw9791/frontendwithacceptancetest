@@ -10,7 +10,7 @@
                     </div>
                     <div class="label" v-if="taskType!='报废'">
                         <span v-text="`${ZhiDingOrJieShou}机构：`"></span>
-                        <div style="width: 181px">
+                        <div style="width: 185px">
                             <el-cascader
                                     size="large"
                                     :options="unitList"
@@ -134,7 +134,7 @@
                 </div>
                 <div class="addApply-bottom">
                     <el-button class="cancel" @click="cancel">取消</el-button>
-                    <el-button style="margin-left: 34px" class="submit" @click="submit">提交</el-button>
+                    <el-button style="margin-left: 34px" class="submit" :disabled="isClick" @click="submit">提交</el-button>
                 </div>
             </div>
         </serviceDialog>
@@ -244,7 +244,8 @@
                     leaderList: [],
                     leaderName: '', // 指定领导
                     leaderItem: {},
-                }
+                },
+                isClick: false
             }
         },
         created() {
@@ -540,6 +541,7 @@
                 // }).then(res=>{
                 //      })
                 let type='';
+                console.log('此时菜市场',id)
                 switch (this.taskType) {
                     case '报废':
                         type='SCRAP';
@@ -585,6 +587,8 @@
                 })
             },
             submit() {
+                this.isClick = true
+                setTimeout(() => this.isClick = false, 1000)
                 let url = '';
                 let orderItems=[];
                 let applyOrder = {};
@@ -593,11 +597,11 @@
                     this.$message.error("请选择指定领导")
                     return
                 }
-                if(this.hardware.hardwareSelect == '') {
+                if(this.hardware.hardwareSelect == '' && this.taskType=='报废') {
                     this.$message.error("请选择硬件")
                     return;
                 }
-                if(this.form.orderItems.length == 0) {
+                if(this.form.orderItems.length == 0 && this.taskType=='报废') {
                     this.$message.error("请扫入RFID")
                     return;
                 }
