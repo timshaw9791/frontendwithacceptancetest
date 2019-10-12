@@ -33,7 +33,7 @@ export const transformMixin = {
                     return '已驳回';
                 case 'PASS':
                     return '已通过';
-                case 'INVALLD':
+                case 'INVALID':
                     return '作废';
             }
         },

@@ -75,6 +75,10 @@
                             <field-input v-model="form.model" label="装备型号" width="3" :disabled="disabled||edit"
                                          :rules="r(true).all(R.require)" prop="model"></field-input>
 
+                             <field-input v-model="form.serial" label="装备序号" width="3" :disabled="disabled||edit"
+                                        :rules="form.serial!==null?r(true).all(R.integer):''" prop="serial"></field-input>
+                            
+
                             <field-input v-model="form.upkeepCycle" label="保养周期/天" width="3"
                                          :rules="r(true).all(R.integer)" prop="upkeepCycle"
                                          :disabled="disabled||edit"
@@ -366,6 +370,7 @@
 
 
                     let newData = JSON.parse(JSON.stringify(this.form));
+
                     newData.upkeepCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.upkeepCycle)));
                     newData.chargeCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.chargeCycle)));
 
@@ -592,11 +597,13 @@
                 }, (res) => {
                     this.index = 0;
                     let a = JSON.parse(JSON.stringify(res.data.EquipArg));
+                    
                     this.form['name'] = a.name;
                     this.form['upkeepCycle'] = this.milliToDay(a.upkeepCycle);
                     this.form['chargeCycle'] = this.milliToDay(a.chargeCycle);
                     this.form.vendorId = a.supplier.id;
                     this.$set(this.form, 'model', a.model);
+                   
                     this.$set(this.form, 'personM', a.supplier.person);
                     this.$set(this.form, 'phoneM', a.supplier.phone);
                     this.$set(this.form, 'eqBig', a.category.genre.name);
@@ -714,18 +721,21 @@
                     this.gqlQuery(api.getEquip, {
                         id: this.equipId
                     }, (res) => {
+                        
                         let eqData = JSON.parse(JSON.stringify(res.data.Equip));
+                     
                         this.zb = eqData;
                         this.form = eqData.equipArg;
+                       
                         this.form.vendorId = eqData.equipArg.supplier.id;
                         eqData.equipArg.imageAddress ? this.imageUrl = `${imgBaseUrl}${eqData.equipArg.imageAddress}` : '';
                         this.$set(this.form, 'eqBig', eqData.equipArg.category.genre.name);
                         this.$set(this.form, 'eqSmall', eqData.equipArg.category.name);
-
+                        this.$set(this.form, 'serial',eqData.serial)
                         this.$set(this.form, 'upkeepCycle', this.milliToDay(eqData.equipArg.upkeepCycle));
                         this.$set(this.form, 'chargeCycle', this.milliToDay(eqData.equipArg.chargeCycle));
                         this.$set(this.form, 'price', eqData.price / 100);
-
+                  
 
                         this.zb['shelfLifeQ'] = Math.round(eqData.quality.shelfLife / 24 / 60 / 60 / 1000);
                         this.zb['productDateQ'] = eqData.quality.productDate;
