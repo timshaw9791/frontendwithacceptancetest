@@ -76,16 +76,19 @@ a:hover {
 
 //main-container全局样式
 
+.el-card__body {
+  padding: 20px !important;
+}
 
 .app-main {
-  min-height: 84vh;
-  max-height: 84vh;
+  min-height: 87vh;
+  max-height: 87vh;
   margin: 2%;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
   position: relative;
 
   .list {
-    max-height: 84vh;
+    max-height: 87vh;
   }
 }
 
@@ -174,7 +177,7 @@ a:hover {
 ._box-bottom {
   @include center;
   width: 100%;
-  margin: 3% 0;
+  margin: 1% 0 0 0;
 }
 
 ._button {

@@ -329,7 +329,7 @@
     }
 
     .bodyContent {
-        padding: 30px 60px 0 60px;
+        padding: 0 60px;
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
@@ -339,7 +339,7 @@
             height: 343px;
             background: rgb(255, 255, 255);
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
-            margin-bottom: 38px;
+            margin-top: 27px;
 
             .top {
                 padding: 20px;
