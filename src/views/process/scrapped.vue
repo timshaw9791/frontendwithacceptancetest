@@ -27,7 +27,7 @@
                 </div>
             </div>
             <div class="scrapped-body">
-                <t_table ref="scrappedTable" :urlObject="urlObject.transferUrlObj" :typeSingle="select.typeSingle" :select="select.single" :havePage="havePage" :searchNumber="search" @toSee="toSee" ></t_table>
+                <t_table ref="scrappedTable" :urlObject="urlObject.transferUrlObj" :typeSingle="select.typeSingle" :select="select.single" :searchNumber="search" @toSee="toSee" ></t_table>
             </div>
         </div>
         <bills v-if="!viewStatus.flag" :billName="billName" :reSet="{unit:unit,restaurants:restaurants,myUnit:myUnit,house:house}" @closeBill="closeBill" :singleStatus="select.singleStatus" :billUrlObject="urlObject.billUrlObject" :typeSingle="select.typeSingle" :billData="billData" @toBack="haveBack"></bills>
@@ -129,7 +129,7 @@
         computed:{
             havePage(){
                 let flag;
-                if(this.viewStatus.singleFlag.apply&&this.select.single=='进行中'){
+                if(this.viewStatus.singleFlag.apply){
                     flag=true
                 }else {
                     flag=false

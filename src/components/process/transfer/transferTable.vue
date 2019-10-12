@@ -19,6 +19,7 @@
         },
         data() {
             return {
+                havePage:false,
                 list: [],
                 paginator: {
                     page: 1,
@@ -53,10 +54,10 @@
             state: {
                 type: String
             },
-            havePage: {
-                type: Boolean,
-                default: true
-            },
+            // havePage: {
+            //     type: Boolean,
+            //     default: true
+            // },
             select: {
                 type: String
             },
@@ -356,6 +357,11 @@
                         }
                         this.list = list;
                         console.log('this.list', this.list)
+                        if(this.list.length>0){
+                            this.havePage = true
+                        }else{
+                            this.havePage = false
+                        }
                     }
                 })
             },
