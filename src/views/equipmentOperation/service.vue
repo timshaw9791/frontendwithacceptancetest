@@ -34,6 +34,7 @@
                             type="selection"
                             width="55">
                     </el-table-column>
+                    <bos-table-column lable="rfid" field="rfid"></bos-table-column>
                     <bos-table-column lable="装备名称" field="name"></bos-table-column>
                     <bos-table-column lable="装备序号" field="serial"></bos-table-column>
                     <bos-table-column lable="架体编号" field="location.number"></bos-table-column>

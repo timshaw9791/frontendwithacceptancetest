@@ -237,7 +237,7 @@
             },
             submit() {
                 this.$refs.form.validate.then(res => {
-                    if (this.form.planEquips[this.form.planEquips.length - 1].equipModel === '') {
+                    if (this.form.planEquips[this.form.planEquips.length - 1].equipModel === ''&&this.form.planEquips.length!=1) {
                         this.form.planEquips.splice(this.form.planEquips.length - 1, 1);
                     }
                     if (this.title === '新增预案' && this.form.planEquips[0]) {
@@ -248,7 +248,6 @@
                             }
                         });
                         savePlan(this.form).then(item => {
-                            console.log(item);
                             this.$refs.dialog.hide();
                             this.getList();
                             this.$message.success('新增成功');

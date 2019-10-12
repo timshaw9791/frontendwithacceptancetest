@@ -229,7 +229,7 @@ query getPersonAccessRecordList($paginator: paginator, $qfilter: qfilter) {
       access
       videoAddress
 
-      time
+      time(OrderBy: DESC)
       userId
       name
       id

@@ -219,8 +219,7 @@
 
 
                 <div class="_box-bottom">
-                    <!-- <el-button @click="black">返回</el-button> -->
-                    <el-button type="primary" @click="addEquipArg" v-if="!edit">确认</el-button>
+                    <el-button type="primary" @click="addEquipArg" :disabled="isClick" v-if="!edit">提交</el-button>
                 </div>
             </div>
         </el-card>
@@ -254,7 +253,6 @@
     import serviceDialog from 'components/base/serviceDialog/index'
     import {transformMixin} from "common/js/transformMixin";
     import { start, startOne } from 'common/js/rfidReader'
-
 
     // const cmdPath = 'C:\\Users\\Administrator';
     // const exec = window.require('child_process').exec;
@@ -290,7 +288,8 @@
                 judgeEdit: { // 判断是否对数据进行修改
                     form: null,
                     zbForm: null
-                }
+                },
+                isClick: false // 避免提交按钮快速点击
             }
         },
         mixins: [formRulesMixin, transformMixin],
@@ -330,7 +329,7 @@
                 }
                 //killProcess();
             },
-            
+
             /* 判断两次数据是否相等 */
             isEqual() {
                 let flag1 = JSON.stringify(this.form) == JSON.stringify(this.judgeEdit.form)
@@ -340,6 +339,8 @@
 
             //点击提交后 根据从什么入口进入的执行对应的  新增  入库  装备基础信息修改 装备入库信息修改
             addEquipArg() {
+                this.isClick = true
+                setTimeout(() => {this.isClick = false}, 1600)
                 if (this.title.includes('新增')) {
                     this.form.videoAddresses ? this.form.videoAddresses = this.form.videoAddresses.join(',') : '';
                     this.form.documentAddresses ? this.form.documentAddresses = this.form.documentAddresses.join(',') : '';
@@ -382,7 +383,7 @@
                         this.$message.error("请扫入RFID")
                         return
                     }
-                    
+
 
                     this.$refs.form.validate.then((res1) => {
                         this.zbForm['location'] = {
@@ -580,7 +581,7 @@
             //图片上传成功暴露的方法
             successUp(data) {
                 console.log(data);
-              
+
                 this.form.imageAddress = data;
             },
 
@@ -606,7 +607,7 @@
                         this.imageUrl = '';
                         this.noimg=true;
                     }
-                    
+
                 });
 
                 start("java -jar scan.jar", (data) => {
@@ -619,7 +620,7 @@
                         this.index = this.index + 1;
                     } else {
                         let newData = JSON.parse(data);
-                        
+
                         newData.status === 'succeed' ? this.index = 1 : this.index = 0;
                     }
                 }, (fail) => {
@@ -708,7 +709,7 @@
 
             //进入页面获取数据
             getList() {
-               
+
                 if (this.equipId) {
                     this.gqlQuery(api.getEquip, {
                         id: this.equipId
@@ -859,7 +860,7 @@
         align-items: center;
         float: right;
     }
-    
+
     .black .svg-info {
         height: 20px;
         width: 20px;

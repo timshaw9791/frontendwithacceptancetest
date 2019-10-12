@@ -3,7 +3,7 @@
         <slot></slot>
         <div slot="footer" class="dialog-footer">
             <el-button @click="showFlag = false">取 消</el-button>
-            <el-button type="primary" @click="dialogConfirm">确 定</el-button>
+            <el-button type="primary" :disabled="isClick" @click="dialogConfirm">确 定</el-button>
         </div>
     </el-dialog>
 </template>
@@ -14,7 +14,8 @@
     export default {
         data() {
             return {
-                showFlag:false
+                showFlag:false,
+                isClick: false
             }
         },
         props: {
@@ -31,6 +32,8 @@
                 this.showFlag = false;
             },
             dialogConfirm() {
+                this.isClick = true
+                setTimeout(() => this.isClick = false, 1000)
                 this.$emit('confirm');
             }
         }

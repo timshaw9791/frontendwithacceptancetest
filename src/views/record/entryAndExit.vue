@@ -33,12 +33,12 @@
                         {lable: '出入状态', field: 'access', filter: this.filterStatus}
                     ],
                     graphqlTable: {
-                        graphqlApi: record.getPersonAccessRecordList,
+                        graphqlApi: record.getPersonAccessRecordListDESC,
                         graphqlKey: {qfilter: {key: "id",operator: "ISNOTNULL"}}
                     },
                     tableAction:{
-                        label:'监控视频',
-                        button:['查看']
+                        label:'操作',
+                        button:['监控']
                     },
                     equipId:'',
                     haveButton: true,
