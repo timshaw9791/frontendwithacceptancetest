@@ -338,7 +338,6 @@
                 // this.getOutDataCopy([19080012])
             },
             getListUsb() {//todo
-
                 start("java -jar scan.jar", (data) => {
                     let arr = [];
                     arr.push(data);

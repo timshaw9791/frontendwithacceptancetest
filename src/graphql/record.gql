@@ -34,9 +34,9 @@ query getEquipActionRecordList($paginator: paginator, $qfilter: qfilter) {
       }
       videoAddress
       duration
-
       action
       operator
+
       startTime
       id
     }

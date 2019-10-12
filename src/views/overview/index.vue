@@ -120,7 +120,7 @@
             </div>
         </el-card>
         <el-card shadow="never" :body-style="{ padding:'30px'}" v-else>
-            欢迎警员!
+            正在注销!
         </el-card>
 
         <service-dialog ref="dialogMaturity" title="到期报废装备" width="60%" :button="false" :secondary="false">

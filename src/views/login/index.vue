@@ -69,9 +69,7 @@
             windowClose() {
                 const process = exec(`java -jar SendCamSignal.jar ${-1}`, {cwd: cmdPath});
                 process.stderr.on('data', (err) => {
-                    setTimeout(()=>{
-                        window.close();
-                    },1000)
+
                 });
                 process.on('exit', (code) => {
                     // if (this.index === 0) {
@@ -79,6 +77,9 @@
                     //   }
                     console.log(`子进程退出 ${code}`);
                 });
+                setTimeout(()=>{
+                    window.close();
+                },500)
 
             },
             showPwd() {

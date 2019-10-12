@@ -17,9 +17,6 @@ Vue.prototype.$video = Video;
 
 import VideoPlayer from 'vue-video-player'
 
-const cmdPath = 'C:\\Users\\Administrator';
-const exec = window.require('child_process').exec;
-const spawn = window.require('child_process').spawn;
 
 
 
