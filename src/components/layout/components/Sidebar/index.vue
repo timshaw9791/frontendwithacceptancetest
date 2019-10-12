@@ -32,11 +32,28 @@
     import SidebarItem from './SidebarItem'
     import topInfo from './personal'
 
+    const cmdPath = 'C:\\Users\\Administrator';
+    const exec = window.require('child_process').exec;
+    const spawn = window.require('child_process').spawn;
     export default {
         components: {SidebarItem, topInfo},
         methods: {
             windowClose() {
-                window.close();
+                const process = exec(`java -jar SendCamSignal.jar ${-1}`, {cwd: cmdPath});
+                process.stderr.on('data', (err) => {
+
+                });
+                process.on('exit', (code) => {
+                    // if (this.index === 0) {
+                    //       this.$message.error('设备未插入或串口号错误,插入后请重新选择装备!');
+                    //   }
+                    console.log(`子进程退出 ${code}`);
+                });
+                setTimeout(()=>{
+                    window.close();
+                },500)
+
+
             },
         },
         computed: {

@@ -1,20 +1,20 @@
 <template>
     <div class="surrounding-video">
-        <div class="videoBlock" v-for="(item,index) in videoSrc">
-            <div class="header">
-               {{index+1}}号视频监控
-            </div>
-           <my-video :src="item" :autoplay="true" class="video"></my-video>
-        </div>
+        <!--<div class="videoBlock" v-for="(item,index) in videoSrc">-->
+            <!--<div class="header">-->
+               <!--{{index+1}}号视频监控-->
+            <!--</div>-->
+           <!--<my-video :src="item" :autoplay="true" class="video"></my-video>-->
+        <!--</div>-->
     </div>
 </template>
 
 <script>
-    import myVideo from '@/components/videoPlayer/live'
+    // import myVideo from '@/components/videoPlayer/live'
     export default {
         name: "s_video",
         components:{
-            myVideo
+            // myVideo
         },
         props:{
             videoSrc:{
@@ -30,7 +30,7 @@
                     'http://192.168.125.117/test.m3u8'
                 ]
             }
-        }
+        },
     }
 </script>
 

@@ -338,7 +338,6 @@
                 // this.getOutDataCopy([19080012])
             },
             getListUsb() {//todo
-
                 start("java -jar scan.jar", (data) => {
                     let arr = [];
                     arr.push(data);
@@ -441,6 +440,7 @@
             },
             handleUnitChange(data){
                 let unitId=data[data.length-1];
+                console.log(data);
                 let gethouseUnitId='';
                 // if(this.taskType=='直调'){
                 //     gethouseUnitId=JSON.parse(localStorage.getItem('user')).unitId;

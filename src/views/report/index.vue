@@ -181,7 +181,6 @@
              }
             },
             handleChangeGener(data){
-                console.log(data)
                 let src ='/statistic/genres/'+data;
                 this.getCategory(data);
                 this.getCategoryGener(src,'categoryStatisticList');
@@ -191,22 +190,33 @@
                 this.getCategoryGener(src,'equipArgStatisticList');
             },
             getCategoryGener(url,api){
+
                 this.ajax(url,'', (res) => {
-                    console.log(res);
                     let list=[];
                     res.data[api].forEach(item=>{
                         let percentage=0;
                         if(item.count!=0&&item.count!=null){
                             percentage=Math.round(((item.outHouseCount / item.count) * 100));
                         }
-                        list.push({
-                            name:item.name,
-                            number:item.outHouseCount,
-                            percentage: percentage,
-                            allCount:item.count,
-                            select:false,
-                            price:item.price
-                        })
+                       if(api=='equipArgStatisticList'){
+                           list.push({
+                               name:item.name+item.model,
+                               number:item.outHouseCount,
+                               percentage: percentage,
+                               allCount:item.count,
+                               select:false,
+                               price:item.price
+                           })
+                       }else {
+                           list.push({
+                               name:item.name,
+                               number:item.outHouseCount,
+                               percentage: percentage,
+                               allCount:item.count,
+                               select:false,
+                               price:item.price
+                           })
+                       }
                     });
                     list.sort(function (a, b) {
                         return b.percentage > a.percentage ? 1 : -1;

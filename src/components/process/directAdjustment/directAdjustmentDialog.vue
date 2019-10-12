@@ -127,7 +127,7 @@
     // const fs = window.require('fs');
     // const path = window.require('path');
     // const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
-    // import {killProcess} from "common/js/kill";
+    import {killProcess} from "common/js/kill";
 
     export default {
         name: "directAdjustmentDialog",
