@@ -1,6 +1,6 @@
 <template>
     <div>
-        <serviceDialog title="调拨申请" ref="checkTransferDialog" width="1040px" :button="false">
+        <serviceDialog title="调拨申请" ref="checkTransferDialog" width="1040px" :button="false" @cancel="resultData">
             <div class="addDirectAdjustment">
                 <div class="addDirectAdjustment-label">
                     <div class="label">
@@ -248,6 +248,13 @@
                 // this.$emit('submit',transferOrder)
 
             },
+            resultData() {
+                this.leader = {
+                    leaderList: [{value: '1', key: '21212'}, {value: '2', key: '12121'}, {value: '3', key: 'asas'}],
+                    leaderName: '',
+                    leaderItem: {},
+                }
+            },
             allocationApplication(url, transferApplyOrder) {
                 if(this.addType=='add'){
                     this.$ajax.post(url, transferApplyOrder).then(res => {
@@ -279,6 +286,7 @@
             sucesssAdd(){
               this.$message.success('申请成功');
               this.$emit('sucessAdd',true);
+              this.resultData()
             },
             showAdd() {
                 this.form = {};
