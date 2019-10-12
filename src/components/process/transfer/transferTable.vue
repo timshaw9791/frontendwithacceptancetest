@@ -22,7 +22,7 @@
                 list: [],
                 paginator: {
                     page: 1,
-                    totalPages: 10,
+                    totalPages: 1,
                     size: 9
                 },
 
