@@ -45,7 +45,7 @@
 
     }
     .timeSurroundings .time-box{
-        height: 173px;
+        height: 123px;
         display: flex;
         align-items: center;
         justify-content: center;

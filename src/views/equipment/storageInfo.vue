@@ -326,7 +326,7 @@
                 } else {
                     this.$refs.dialog.show();
                 }
-                killProcess();
+                // killProcess();
             },
 
             /* 判断两次数据是否相等 */

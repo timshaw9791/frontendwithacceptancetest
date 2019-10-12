@@ -5,9 +5,19 @@
                 <span class="_card-title">{{$route.meta.title}}</span>
             </div>
             <div>
+                <tabs>
+                    <div class="_buttons">
+                        <BosInput
+                                placeholder="大类/小类/名称/型号/供应商"
+                                suffix="el-icon-search"
+                                v-model="inquire"
+                                :wrapforlike="true"
+                                style=" width:285px;">
+                        </BosInput>
+                    </div>
+                </tabs>
                 <el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
                           fit>
-
                     <bos-table-column lable="装备类型" field="category.genre.name"></bos-table-column>
                     <bos-table-column lable="装备小类" field="category.name"></bos-table-column>
                     <bos-table-column lable="装备名称" field="name"></bos-table-column>

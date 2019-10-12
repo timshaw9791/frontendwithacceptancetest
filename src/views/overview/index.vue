@@ -113,7 +113,7 @@
                             <span @click="gotoInfo('video')" style="cursor:pointer">视频监控</span>
                         </div>
                         <div class="bk-content">
-                            <video-player width="454px" height="248px" :videoID="1"></video-player>
+                            <!--<video-player width="454px" height="248px" :videoID="1"></video-player>-->
                         </div>
                     </div>
                 </div>
@@ -151,6 +151,10 @@
     import serviceDialog from 'components/base/serviceDialog/index'
     import {equipmentScrappedInfo} from "api/statistics";
 
+    const cmdPath = 'C:\\Users\\Administrator';
+    const exec = window.require('child_process').exec;
+    const spawn = window.require('child_process').spawn;
+
     export default {
         data() {
             return {
@@ -171,6 +175,32 @@
         },
         mixins: [formRulesMixin, transformMixin],
         methods: {
+            controlVideo(a){
+                const process = exec(`java -jar SendCamSignal.jar ${a}`, {cwd: cmdPath});
+                process.stderr.on('data', (err) => {
+                    console.log(err);
+                });
+                // process.stdout.on('data', (data) => {
+                //     console.log(data);
+                //     if (this.index > 0) {
+                //         if (this.index == 1) {
+                //             this.list[0].rfid = data;
+                //         } else {
+                //             this.list.push({rfid: data});
+                //         }
+                //         this.index = this.index + 1;
+                //     } else {
+                //         let newData = JSON.parse(data);
+                //         newData.status === 'succeed' ? this.index = 1 : this.index = 0;
+                //     }
+                // });
+                process.on('exit', (code) => {
+                    // if (this.index === 0) {
+                    //       this.$message.error('设备未插入或串口号错误,插入后请重新选择装备!');
+                    //   }
+                    console.log(`子进程退出 ${code}`);
+                });
+            },
             getList() {
                 let data = {
                     page: 1,
@@ -345,11 +375,13 @@
         mounted() {
             this.getList();
             this.getHumiture();
+            this.controlVideo(1)
             // this.videoTime = setInterval(() => {
             //     window.location.reload();
             // }, 60000);  //180000
         },
         beforeDestroy() {
+            this.controlVideo(0)
             // clearTimeout(this.videoTime);
         },
 

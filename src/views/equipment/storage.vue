@@ -180,7 +180,7 @@
         },
         methods: {
             cancelPattern() {
-                killProcess();
+                // killProcess();
             },
             delEquip() {
                 request({

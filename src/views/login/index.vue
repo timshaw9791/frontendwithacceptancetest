@@ -44,6 +44,9 @@
 <script>
     import {startSocket} from "common/js/webSocket";
 
+    const cmdPath = 'C:\\Users\\Administrator';
+    const exec = window.require('child_process').exec;
+    const spawn = window.require('child_process').spawn;
     export default {
         name: 'login',
         data() {
@@ -62,7 +65,19 @@
         },
         methods: {
             windowClose() {
-                window.close();
+                const process = exec(`java -jar SendCamSignal.jar ${-1}`, {cwd: cmdPath});
+                process.stderr.on('data', (err) => {
+                    setTimeout(()=>{
+                        window.close();
+                    },1000)
+                });
+                process.on('exit', (code) => {
+                    // if (this.index === 0) {
+                    //       this.$message.error('设备未插入或串口号错误,插入后请重新选择装备!');
+                    //   }
+                    console.log(`子进程退出 ${code}`);
+                });
+
             },
             showPwd() {
                 if (this.pwdType === 'password') {
