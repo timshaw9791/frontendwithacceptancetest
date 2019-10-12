@@ -65,6 +65,7 @@
                 });
             },
             getChargingStationtList(){
+                this.select.selectList=[];
               this.ajax(baseURL+'/environment/getChargeCount','',(data)=>{
                   for (let i=1;i<=data.data.data;i++){
                       this.select.selectList.push({

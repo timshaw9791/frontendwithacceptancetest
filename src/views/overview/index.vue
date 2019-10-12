@@ -481,7 +481,7 @@
                     height: 321px;
                     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
                     // margin-bottom: 14px;
-                    margin-top: 30px;
+                    margin-top: 26px;
                     color: rgba(112, 112, 112, 1);
 
                     .bk-top {

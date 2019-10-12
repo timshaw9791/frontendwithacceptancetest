@@ -127,6 +127,6 @@
 <style scoped>
     .borrow{
         width: 100%;
-        min-height: 908px;
+        min-height: 851px;
     }
 </style>

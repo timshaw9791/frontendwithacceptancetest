@@ -5,6 +5,18 @@
                 <span class="_card-title">{{$route.meta.title}}</span>
             </div>
             <div>
+                <tabs>
+                    <!-- <tab-select :options="selectList" indexDefault="全部" @selected="selectValue"></tab-select> -->
+                    <div class="_buttons">
+                        <BosInput
+                                placeholder="大类/小类/名称/型号/供应商"
+                                suffix="el-icon-search"
+                                v-model="inquire"
+                                :wrapforlike="true"
+                                style=" width:285px;">
+                        </BosInput>
+                    </div>
+                </tabs>
                 <el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
                           fit>
 

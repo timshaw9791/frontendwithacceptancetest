@@ -3,9 +3,7 @@
         <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
 
         <!--<breadcrumb></breadcrumb>-->
-        <div class="logo">
-            龙湾区公安局应急装备物资管理系统
-        </div>
+        <div class="logo">{{ title }}</div>
 
         <div class="icons">
             <div @click="$router.push('/message/index')">
@@ -58,8 +56,14 @@
     import Breadcrumb from 'components/base/Breadcrumb'
     import Hamburger from 'components/base/Hamburger'
     import {startSocket} from "common/js/webSocket";
+    import { localTitle } from 'api/config'
 
     export default {
+        data() {
+            return {
+                title: localTitle
+            }
+        },
         components: {
             Breadcrumb,
             Hamburger
