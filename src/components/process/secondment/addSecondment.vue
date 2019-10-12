@@ -134,7 +134,7 @@
                 </div>
                 <div class="addApply-bottom">
                     <el-button class="cancel" @click="cancel">取消</el-button>
-                    <el-button style="margin-left: 34px" class="submit" @click="submit">提交</el-button>
+                    <el-button style="margin-left: 34px" class="submit" :disabled="isClick" @click="submit">提交</el-button>
                 </div>
             </div>
         </serviceDialog>
@@ -244,7 +244,8 @@
                     leaderList: [],
                     leaderName: '', // 指定领导
                     leaderItem: {},
-                }
+                },
+                isClick: false
             }
         },
         created() {
@@ -587,6 +588,8 @@
                 })
             },
             submit() {
+                this.isClick = true
+                setTimeout(() => this.isClick = false, 1000)
                 let url = '';
                 let orderItems=[];
                 let applyOrder = {};

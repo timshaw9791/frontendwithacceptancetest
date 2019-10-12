@@ -15,7 +15,7 @@
                 </div>
                 <div style="margin-left: 38px;cursor: pointer" @click="addDirectAdjustment" v-if="viewStatus.singleFlag.apply">
                     <svg-icon icon-class='加' class="icon-search"></svg-icon>
-                    <span style="color: #66b1ff">申请报废</span>
+                    <span style="color: #2F2F76">申请报废</span>
                 </div>
                 <div class="_buttons" style="margin-right: 18px" v-if="havePage">
                     <BosInput
@@ -27,7 +27,7 @@
                 </div>
             </div>
             <div class="scrapped-body">
-                <t_table ref="scrappedTable" :urlObject="urlObject.transferUrlObj" :typeSingle="select.typeSingle" :select="select.single" :havePage="havePage" :searchNumber="search" @toSee="toSee" ></t_table>
+                <t_table ref="scrappedTable" :urlObject="urlObject.transferUrlObj" :typeSingle="select.typeSingle" :select="select.single" :searchNumber="search" @toSee="toSee" ></t_table>
             </div>
         </div>
         <bills v-if="!viewStatus.flag" :billName="billName" :reSet="{unit:unit,restaurants:restaurants,myUnit:myUnit,house:house}" @closeBill="closeBill" :singleStatus="select.singleStatus" :billUrlObject="urlObject.billUrlObject" :typeSingle="select.typeSingle" :billData="billData" @toBack="haveBack"></bills>
@@ -129,7 +129,7 @@
         computed:{
             havePage(){
                 let flag;
-                if(this.viewStatus.singleFlag.apply&&this.select.single=='进行中'){
+                if(this.viewStatus.singleFlag.apply){
                     flag=true
                 }else {
                     flag=false

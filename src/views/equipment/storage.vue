@@ -180,7 +180,7 @@
         },
         methods: {
             cancelPattern() {
-                // killProcess();
+               // killProcess();
             },
             delEquip() {
                 request({
@@ -288,13 +288,13 @@
                     let epc = `0X${this.writeIndex.epc}`;
                     let newData = parseInt(epc) + 1;
                     saveRfid({"rfidGeneric": newData.toString(16)}).then(res1 => {
-                        spawn("taskkill", ["/PID", this.pid, "/T", "/F"]); //杀死进程
+                     //   spawn("taskkill", ["/PID", this.pid, "/T", "/F"]); //杀死进程
                         this.writeIndex = '';
                         this.writeAll = [];
                     })
 
                 } else {
-                    spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);//杀死进程
+                    // spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);//杀死进程
                     this.inlineForm = {
                         rfid: '',
                         newRfid: '',

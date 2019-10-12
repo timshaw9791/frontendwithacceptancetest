@@ -33,7 +33,7 @@
                         {lable: '出入状态', field: 'access', filter: this.filterStatus}
                     ],
                     graphqlTable: {
-                        graphqlApi: record.getPersonAccessRecordList,
+                        graphqlApi: record.getPersonAccessRecordListDESC,
                         graphqlKey: {qfilter: {key: "id",operator: "ISNOTNULL"}}
                     },
                     tableAction:{
@@ -94,6 +94,6 @@
 <style scoped>
     .entryAndExit{
         width: 100%;
-        min-height: 965px;
+        min-height: 851px;
     }
 </style>

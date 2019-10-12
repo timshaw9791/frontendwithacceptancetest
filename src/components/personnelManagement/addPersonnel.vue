@@ -50,7 +50,7 @@
         </div>
         <div class="add-personneo-bottom">
             <!-- <el-button @click="black">返回</el-button> -->
-            <el-button type="primary" @click="confirm" v-show="!disabled">确认</el-button>
+            <el-button type="primary" @click="confirm" :disabled="isClick" v-show="!disabled">确认</el-button>
         </div>
 
         <field-dialog title="提示" ref="dialog" @confirm="dialogConfirm">
@@ -93,6 +93,7 @@
                 src:baseURL+'/images/',
                 personnelImg:'',
                 judgeForm: {}, // 用于判断是否编辑内容
+                isClick: false,
             }
         },
         mixins: [formRulesMixin],
@@ -234,6 +235,8 @@
                     })
             },
             confirm(){
+                this.isClick = true
+                setTimeout(() => this.isClick = false, 1000)
                 if(this.disabled==false){
                     this.form.username=this.form.policeSign;
                     if(this.addType=='add'){}else {
