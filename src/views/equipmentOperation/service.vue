@@ -103,7 +103,7 @@
     import {transformMixin} from 'common/js/transformMixin'
     import {retirementApplication} from "api/operation";
     import {getRfidinfo} from "api/rfid";
-    import { start } from 'common/js/rfidReader'
+    import { start, killProcess } from 'common/js/rfidReader'
 
     // const cmdPath = 'C:\\Users\\Administrator';
     // const exec = window.require('child_process').exec;
@@ -273,6 +273,7 @@
                     this.callback('已经申请维修!');
                     this.$refs.dialog.hide();
                     //spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
+                    killProcess(this.pid)
                 })
             }
         },
@@ -317,6 +318,9 @@
 
             }
         },
+        beforeDestroy() {
+            killProcess(this.pid)
+        }
     }
 </script>
 

@@ -159,7 +159,7 @@
     import serviceDialog from 'components/base/gailiangban'
     import request from 'common/js/request'
     import {baseBURL,baseURL} from "../../../api/config";
-    import { start, delFile, handheld } from 'common/js/rfidReader'
+    import { start, delFile, handheld, killProcess } from 'common/js/rfidReader'
 
     // import {handheld} from 'common/js/pda'
     // const cmdPath = 'C:\\Users\\Administrator';
@@ -324,6 +324,7 @@
                 // this.closeUsb=true
                 if (pid) {
                     //spawn("taskkill", ["/PID", pid, "/T", "/F"]);
+                    killProcess(this.pid)
                     this.index = 0;
                 }
             },
@@ -794,6 +795,9 @@
             //         method.call(context)
             //     }, 1000)
             // }
+        },
+        beforeDestroy() {
+            killProcess(this.pid)
         }
     }
 </script>

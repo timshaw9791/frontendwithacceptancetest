@@ -162,7 +162,7 @@
     // import inventoryData from 'views/warehouse/inventoryData'
     import request from 'common/js/request'
     import {baseURL,baseBURL} from "../../../api/config"
-    import { start, delFile, handheld } from 'common/js/rfidReader'
+    import { start, delFile, handheld, killProcess } from 'common/js/rfidReader'
 
     // import {handheld} from 'common/js/pda'
     // const cmdPath = 'C:\\Users\\Administrator';
@@ -251,6 +251,7 @@
                 // this.closeUsb=true
                 if (pid) {
                 //    spawn("taskkill", ["/PID", pid, "/T", "/F"]);
+                killProcess(this.pid)
                 }
             },
             getListUsb() {//todo
@@ -637,6 +638,9 @@
             indexMethod(index) {
                 return index + 1;
             }
+        },
+        beforeDestroy() {
+            killProcess(this.pid)
         }
     }
 </script>

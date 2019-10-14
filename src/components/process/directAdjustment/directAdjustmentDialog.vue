@@ -118,7 +118,7 @@
     // import inventoryData from 'views/warehouse/inventoryData'
     import request from 'common/js/request'
     import {baseURL} from "../../../api/config";
-    import { start, delFile, handheld } from 'common/js/rfidReader'
+    import { start, delFile, handheld, killProcess } from 'common/js/rfidReader'
 
     // import {handheld} from 'common/js/pda'
     // const cmdPath = 'C:\\Users\\Administrator';
@@ -127,7 +127,7 @@
     // const fs = window.require('fs');
     // const path = window.require('path');
     // const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
-    import {killProcess} from "common/js/kill";
+    //import {killProcess} from "common/js/kill";
 
     export default {
         name: "directAdjustmentDialog",
@@ -193,6 +193,7 @@
                 // this.closeUsb=true
                 if (pid) {
                 //    spawn("taskkill", ["/PID", pid, "/T", "/F"]);
+                killProcess(this.pid)
                 }
             },
             getListUsb() {//todo
@@ -432,6 +433,9 @@
             indexMethod(index) {
                 return index + 1;
             },
+        },
+        beforeDestroy() {
+            killProcess(this.pid)
         }
     }
 </script>

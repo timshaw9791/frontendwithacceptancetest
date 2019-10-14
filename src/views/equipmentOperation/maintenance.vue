@@ -105,11 +105,11 @@ import api from "gql/operation.gql";
 import { transformMixin } from "common/js/transformMixin";
 import { getNeedUpkeep } from "api/needs";
 var _ = require("lodash");
-import { start } from "common/js/rfidReader"
+import { start, killProcess } from "common/js/rfidReader"
 
 // const exec = window.require('child_process').exec;
 // const spawn = window.require('child_process').spawn;
-import {killProcess} from "common/js/kill";
+// import {killProcess} from "common/js/kill";
 
 export default {
   data() {
@@ -247,6 +247,8 @@ export default {
     quit() {
       this.equipList = [];
       //spawn("taskkill", ["/PID", this.process.pid, "/T", "/F"]);
+      killProcess(this.process.pid)
+
     },
     /* 确认取消保养该装备 */
     dialogConfim() {
@@ -305,7 +307,10 @@ export default {
     tabs,
     right,
     serviceDialog
-  }
+  },
+  beforeDestroy() {
+            killProcess(this.process.pid)
+        }
 };
 </script>
 
