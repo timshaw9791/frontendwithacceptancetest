@@ -257,7 +257,7 @@
     import {delFile} from "api/basic";
     import serviceDialog from 'components/base/serviceDialog/index'
     import {transformMixin} from "common/js/transformMixin";
-    import { start, startOne } from 'common/js/rfidReader'
+    import { start, startOne, killProcess } from 'common/js/rfidReader'
 
     // const cmdPath = 'C:\\Users\\Administrator';
     // const exec = window.require('child_process').exec;
@@ -328,6 +328,7 @@
             //离开页面以后为父组件抛出black 杀死进程
             black() {
                 if(this.isEqual()) {
+                    killProcess(this.pid)
                     this.$emit('black', true);
                 } else {
                     this.$refs.dialog.show();
@@ -417,6 +418,7 @@
                         }, (res) => {
                             this.callback(`成功`);
                             //spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
+                            killProcess(this.pid)
                             this.$emit('black', true);
                         }, (errs) => {
                             console.log('errs', errs);
@@ -476,6 +478,7 @@
             },
 
             dialogConfirm() {
+                killProcess(this.pid)
                 this.$emit('black', true);
             },
 
@@ -634,7 +637,7 @@
                 }, (fail) => {
                     this.index = 1;
                     this.$message.error(fail)
-                }, (pid, err) => {pid?this.pid=pid:this.$message.error(err)})
+                }, (pid, err) => {pid?this.pid=pid:this.$message.error(err);})
 
                 // const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
 
@@ -848,6 +851,10 @@
 
             this.getList();
         },
+        beforeDestroy() {
+            console.log("页面退出");
+            killProcess(this.pid)
+        }
 
     }
 </script>
