@@ -127,7 +127,7 @@
     // const fs = window.require('fs');
     // const path = window.require('path');
     // const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
-    // import {killProcess} from "common/js/kill";
+    import {killProcess} from "common/js/kill";
 
     export default {
         name: "directAdjustmentDialog",
@@ -192,7 +192,7 @@
                 // alert('关掉了');
                 // this.closeUsb=true
                 if (pid) {
-                    spawn("taskkill", ["/PID", pid, "/T", "/F"]);
+                //    spawn("taskkill", ["/PID", pid, "/T", "/F"]);
                 }
             },
             getListUsb() {//todo

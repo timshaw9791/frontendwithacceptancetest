@@ -250,7 +250,7 @@
                 // alert('关掉了');
                 // this.closeUsb=true
                 if (pid) {
-                    spawn("taskkill", ["/PID", pid, "/T", "/F"]);
+                //    spawn("taskkill", ["/PID", pid, "/T", "/F"]);
                 }
             },
             getListUsb() {//todo

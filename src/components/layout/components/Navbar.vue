@@ -58,6 +58,10 @@
     import {startSocket} from "common/js/webSocket";
     import { localTitle } from 'api/config'
 
+
+    const cmdPath = 'C:\\Users\\Administrator';
+    // const exec = window.require('child_process').exec;
+    // const spawn = window.require('child_process').spawn;
     export default {
         data() {
             return {
@@ -80,13 +84,35 @@
             },
             logout() {
                 this.$store.dispatch('LogOut').then(() => {
+                    const process = exec(`java -jar SendCamSignal.jar ${0}`, {cwd: cmdPath});
+                    process.stderr.on('data', (err) => {
+
+                    });
+                    process.on('exit', (code) => {
+                        // if (this.index === 0) {
+                        //       this.$message.error('设备未插入或串口号错误,插入后请重新选择装备!');
+                        //   }
+                        console.log(`子进程退出 ${code}`);
+                    });
                     location.reload() // 为了重新实例化vue-router对象 避免bug
                     // this.$message.success('退出成功');
                 })
+
             },
             windowClose() {
-                window.close();
-            },
+                const process = exec(`java -jar SendCamSignal.jar ${-1}`, {cwd: cmdPath});
+                process.stderr.on('data', (err) => {
+                });
+                process.on('exit', (code) => {
+                    // if (this.index === 0) {
+                    //       this.$message.error('设备未插入或串口号错误,插入后请重新选择装备!');
+                    //   }
+                    console.log(`子进程退出 ${code}`);
+                });
+                setTimeout(() => {
+                    window.close();
+                }, 500)
+            }
         },
         mounted() {
             startSocket(JSON.parse(localStorage.getItem('user')).id);

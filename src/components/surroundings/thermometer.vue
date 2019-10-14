@@ -194,7 +194,7 @@
         width: 489px;
     }
     .thermometer .thermometer-body{
-        height: 788px;
+        height: 738px;
         display: flex;
         align-items: center;
         justify-content: center;

@@ -17,6 +17,9 @@ Vue.prototype.$video = Video;
 
 import VideoPlayer from 'vue-video-player'
 
+
+
+
 Vue.use(VideoPlayer);
 
 

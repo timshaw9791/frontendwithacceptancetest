@@ -100,12 +100,17 @@
             },
             handleClick(clickItem){
                 let clickRef;
-                this.clickRefList.forEach(item=>{
-                    if(clickItem==item.name){
-                        clickRef = item.ref;
-                        this.$refs[clickRef].show();
-                    }
-                });
+                if(clickItem=='视频监控'){
+                   this.$emit('toVideo')
+                }else {
+                    this.clickRefList.forEach(item=>{
+                        if(clickItem==item.name){
+                            clickRef = item.ref;
+                            this.$refs[clickRef].show();
+                        }
+                    });
+                }
+
             },
             clickFlag(ref){
                 for (let key in this.flag){

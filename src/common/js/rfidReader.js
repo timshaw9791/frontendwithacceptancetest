@@ -1,7 +1,7 @@
 if (process.env.NODE_ENV == "production") {
     var exec = window.require('child_process').exec;
     var spawn = window.require('child_process').spawn;
-    var cwd = "C:\\Users\\10359"; // 执行目录
+    var cwd = "C:\\Users\\Administrator"; // 执行目录
     var com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM']; // 端口 串口号
     var fs = window.require('fs')
 }
@@ -48,7 +48,7 @@ export function start(cmd, success, failure, callBack) {
         process.stderr.on("data", err => {
             console.log(err);
             if(!err.includes("Error"))  failure.call(this, err)
-            index = 1
+            index = 1;
             //callBack(null, "设备故障请重新插拔!插入后请重新选择装备")
             spawn("taskkill", ["/PID", process.pid, "/T", "/F"]);
             //killProcess();

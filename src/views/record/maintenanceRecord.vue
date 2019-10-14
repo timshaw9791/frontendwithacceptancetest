@@ -109,7 +109,8 @@
                         {lable: '装备名称', field: 'equipInfo.equipName',sort:false},
                         {lable: '装备序号', field: 'equipInfo.equipSerial',filter:this.filterSerial,sort:false},
                         {lable: '操作人员', field: 'operator',sort:false},
-                        {lable: '操作时间', field: 'startTime', filter: (ns) => this.$filterTime(parseInt(ns.startTime))},
+                        {lable: '开始时间', field: 'startTime', filter: (ns) => this.$filterTime(parseInt(ns.startTime)),},
+                        {lable: '结束时间', field: 'endTime', filter: (ns) => this.$filterTime(parseInt(ns.startTime+ns.duration)),sort:false},
                         {lable: '操作状态', field: 'action', filter: this.filterAction}
                     ];
                     this.$set(this.table.graphqlTable,'graphqlApi',record.getEquipActionRecordList);
