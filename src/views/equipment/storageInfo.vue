@@ -33,8 +33,6 @@
                             <svg-icon icon-class="编辑"/>
                             {{edit?'编辑':'取消编辑'}}
                         </el-button>
-
-
                     </div>
                     <div class="box-body">
                         <div class="imgUp">
@@ -75,7 +73,7 @@
                             <field-input v-model="form.model" label="装备型号" width="3" :disabled="disabled||edit"
                                          :rules="r(true).all(R.require)" prop="model"></field-input>
 
-                             <field-input v-model="form.serial" label="装备序号" width="3" :disabled="disabled||edit"
+                             <field-input v-if="title.includes('装备查看')||(title.includes('信息查看')&&edit)" v-model="form.serial" label="装备序号" width="3" :disabled="disabled||edit"
                                         :rules="form.serial!==null?r(true).all(R.integer):''" prop="serial"></field-input>
                             
 
