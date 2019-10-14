@@ -34,9 +34,13 @@ function killProcessSync() {
 
 }
 
+export function killProcess(pid) {
+    spawn("taskkill", ["/PID", pid, "/T", "/F"]);
+}
+
 /* 读卡器-连续 */
 export function start(cmd, success, failure, callBack) {
-    killProcessSync().then(() => {
+    //killProcessSync().then(() => {
         var index = 0; // 是否扫描过rfid
 
         let process = exec(`${cmd} ${com}`, {
@@ -66,7 +70,7 @@ export function start(cmd, success, failure, callBack) {
             
             console.log(`子进程退出，退出码 ${code}`);
         });
-    })
+    //})
 }
 
 /* 读卡器-单次 */

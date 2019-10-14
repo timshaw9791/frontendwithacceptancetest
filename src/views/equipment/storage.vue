@@ -132,7 +132,7 @@
     import {getRfid, saveRfid} from "api/rfid";
     import request from 'common/js/request'
     import {baseURL} from "../../api/config";
-    import { start, startOne } from 'common/js/rfidReader'
+    import { start, startOne, killProcess } from 'common/js/rfidReader'
 
     // nodejs调用子进程的方法
 
@@ -181,6 +181,7 @@
         methods: {
             cancelPattern() {
                // killProcess();
+               killProcess(this.pid)
             },
             delEquip() {
                 request({
@@ -289,12 +290,14 @@
                     let newData = parseInt(epc) + 1;
                     saveRfid({"rfidGeneric": newData.toString(16)}).then(res1 => {
                      //   spawn("taskkill", ["/PID", this.pid, "/T", "/F"]); //杀死进程
+                     killProcess(this.pid)
                         this.writeIndex = '';
                         this.writeAll = [];
                     })
 
                 } else {
                     // spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);//杀死进程
+                    killProcess(this.pid)
                     this.inlineForm = {
                         rfid: '',
                         newRfid: '',
@@ -401,6 +404,9 @@
                 };
 
             }
+        },
+        beforeDestroy() {
+            killProcess(this.pid)
         }
 
     }
