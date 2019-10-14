@@ -74,7 +74,7 @@
                                          :rules="r(true).all(R.require)" prop="model"></field-input>
 
                              <field-input v-model="form.serial" label="装备序号" width="3" :disabled="disabled||edit"
-                                        v-if="title.includes('装备查看')||(title.includes('信息查看')&&edit)"
+                                        v-if="title.includes('装备查看')"
                                         :rules="form.serial!==null?r(true).all(R.integer):''" prop="serial"></field-input>
                             
 
