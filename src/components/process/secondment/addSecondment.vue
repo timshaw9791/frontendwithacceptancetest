@@ -245,7 +245,8 @@
                     leaderName: '', // 指定领导
                     leaderItem: {},
                 },
-                isClick: false
+                isClick: false,
+                isZero:false
             }
         },
         created() {
@@ -607,6 +608,10 @@
                 }
                 if(this.taskType=='借调'){
                     this.form.orderItems.forEach(item=>{
+                        if(item.count==0)
+                        {
+                           this.isZero=1
+                        }
                         if(item.count!=undefined){
                             if(item.count!=''){
                                 orderItems.push(item)
@@ -709,7 +714,13 @@
                     applyOrder.id=this.applyOrderId;
                     url = baseBURL + `/${urlApi}/apply` + '?nextApproveId=' + this.leader.leaderItem.userId + '&taskId=' + this.taskId
                 }
-                this.allocationApplication(url, applyOrder);
+                if(!this.isZero)
+                {
+                 this.allocationApplication(url, applyOrder);
+                }
+                else {
+                 this.$message.error('申请失败')
+                }
                 // let transferOrder={};
                 // transferOrder.applicant=JSON.parse(localStorage.getItem('user')).name;
                 // transferOrder.inHouseName=this.inHouseName;
@@ -783,6 +794,10 @@
                 this.form.orderItems[row.$index].name = data.key.name;
             },
             changeCount(row, event) {
+                if(row.row.count==0)
+                {
+                    this.$message.error('装备数量不能为零')
+                }
                 if(row.row.count && row.row.count != 0) {
                     this.nowRow = row;
                     this.addRow()
