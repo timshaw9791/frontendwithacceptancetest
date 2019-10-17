@@ -36,8 +36,8 @@
     import {baseURL} from "../../api/config";
 
     // const cmdPath = 'C:\\Users\\Administrator';
-    const exec = window.require('child_process').exec;
-    const spawn = window.require('child_process').spawn;
+    //const exec = window.require('child_process').exec;
+    //const spawn = window.require('child_process').spawn;
 
     export default {
         name: "index",
