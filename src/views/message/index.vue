@@ -254,10 +254,11 @@
                 cursor: pointer;
 
                 span {
-                    display: flex;
-                    flex-direction: row-reverse;
+                    display: inline;
+                    float: right;
+                    // flex-direction: row-reverse;
                     color: rgb(195, 195, 195);
-                    margin-top: 10px;
+                    // margin-top: 10px;
                 }
             }
 
