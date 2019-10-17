@@ -88,8 +88,8 @@
 
 <script>
     //const cmdPath = 'C:\\Users\\Administrator';
-    // const exec = window.require('child_process').exec;
-    // const spawn = window.require('child_process').spawn;
+    //const exec = window.require('child_process').exec;
+    //const spawn = window.require('child_process').spawn;
     // import {killProcess} from "common/js/kill";
     import { startOne } from 'common/js/rfidReader'
     import dialogSvices from 'components/record/recordServiceDialog'
