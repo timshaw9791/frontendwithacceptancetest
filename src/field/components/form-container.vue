@@ -54,6 +54,20 @@
                     this.$message.error('未通过检验');
                 });
             },
+            restValidate(func, variables, sCallback) {
+                this.validate.then(() => {
+                    console.log("调用");
+                    let data = JSON.parse(JSON.stringify(variables))
+                    func(data).then(res => {
+                        sCallback(true)
+                    }).catch(err => {
+                        this.$message.error(err.response.data.message)
+                    })
+                }).catch(error => {
+                    console.log("未通过检测");
+                    this.$message.error("未通过检测")
+                })
+            },
 
 
             gqlValidateErr(graphql, variables, sCallback, errorBack) {

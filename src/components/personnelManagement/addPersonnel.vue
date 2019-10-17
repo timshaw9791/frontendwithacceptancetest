@@ -64,6 +64,7 @@
 <script>
     import {formRulesMixin} from 'field/common/mixinComponent';
     import user from 'gql/user.gql'
+    import { addUser, modifyUser } from "api/personnel"
     import {baseURL} from "../../api/config";
     /* import {scrappedUp} from "api/workflow";*/
 
@@ -258,12 +259,17 @@
                     this.$refs.form.validate.then((valid) => {
                         if(valid){
                            if(flag){
-                               this.$refs.form.gqlValidate(this.addType=='add'?user.identitySaveUser:user.identityUpdateUser, {
-                                   user:this.form
-                               }, (res) => {
-                                   this.$message.success('操作成功');
-                                   this.$emit('addSucess',true);
-                               })
+                            this.$refs.form.restValidate(this.addType == 'add'?addUser:modifyUser, this.form, res => {
+                                this.$message.success('操作成功')
+                                this.$emit('addSucess', true)
+                            })
+
+                            //    this.$refs.form.gqlValidate(this.addType=='add'?user.identitySaveUser:user.identityUpdateUser, {
+                            //        user:this.form
+                            //    }, (res) => {
+                            //        this.$message.success('操作成功');
+                            //        this.$emit('addSucess',true);
+                            //    })
                            }else {
                                this.$message.error('请先填写完整表单')
                            }
