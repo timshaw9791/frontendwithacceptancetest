@@ -246,7 +246,8 @@
                     leaderItem: {},
                 },
                 isClick: false,
-                isZero:false
+                isZero:false,
+                isIdentical:false,
             }
         },
         created() {
@@ -313,7 +314,9 @@
             },
             findId(item) {
                 if(item.id==JSON.parse(localStorage.getItem('user')).unitId){
+                   
                     this.$set(this,'unitList',[item]);
+                    
                 }else if(item.organUnitSet!=null&&item.organUnitSet!=[]&&item.level!='POLICE_STATION'){
                     item.organUnitSet.forEach(lowerItem=>{
                         this.findId(lowerItem)
@@ -441,14 +444,22 @@
             },
             handleUnitChange(data){
                 let unitId=data[data.length-1];
-                console.log(data);
+                console.log("领导")
+                console.log;
                 let gethouseUnitId='';
+                
                 // if(this.taskType=='直调'){
                 //     gethouseUnitId=JSON.parse(localStorage.getItem('user')).unitId;
                 // }else {
                 //     gethouseUnitId=unitId
                 // }
                 gethouseUnitId=JSON.parse(localStorage.getItem('user')).unitId;
+                if(data[data.length-1]==gethouseUnitId)
+                {
+                this.isIdentical=true;
+                }else {
+                this.isIdentical=false;
+                }
                 request({
                     method:'get',
                     url:baseBURL+'/architecture/houseByOrganUnitId',
@@ -542,7 +553,7 @@
                 // }).then(res=>{
                 //      })
                 let type='';
-                console.log('此时菜市场',id)
+              
                 switch (this.taskType) {
                     case '报废':
                         type='SCRAP';
@@ -562,7 +573,10 @@
                         transferType: type
                     }
                 }).then(res => {
+                
                     if(res){
+                        console.log("res")
+                        console.log(res)
                         this.leader.leaderList = [];
                         this.processLevelId = res.id;
                         if(res.levelLeaderMap!=null){
@@ -714,7 +728,7 @@
                     applyOrder.id=this.applyOrderId;
                     url = baseBURL + `/${urlApi}/apply` + '?nextApproveId=' + this.leader.leaderItem.userId + '&taskId=' + this.taskId
                 }
-                if(!this.isZero)
+                if(!this.isZero&&!this.isIdentical)
                 {
                  this.allocationApplication(url, applyOrder);
                 }
