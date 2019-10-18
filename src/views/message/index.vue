@@ -49,6 +49,7 @@
 
 <script>
     import api from 'gql/msg.gql'
+    import { readMsg, getMsgList } from 'api/message'
     import {formRulesMixin} from 'field/common/mixinComponent';
     import tabs from 'components/base/tabs/index'
     import {transformMixin} from 'common/js/transformMixin'
@@ -90,30 +91,34 @@
 
         methods: {
             getList() {
-
-                this.gqlQuery(api.getMessageList,
-                    {qfilter: this.qfilter}, (res) => {
-                        this.list = JSON.parse(JSON.stringify(res.data.MessageList.content));
-                        if (this.oldScrollTop) {
-                            this.$nextTick(() => {
-                                this.$refs.ulList.scrollTop = this.oldScrollTop;
-                            });
-                        }
-                    });
+                let data = {
+                    userId: JSON.parse(localStorage.getItem('user')).id
+                }
+                getMsgList(data).then(res => {
+                    this.list = JSON.parse(JSON.stringify(res.content))
+                    if (this.oldScrollTop) {
+                        this.$nextTick(() => {
+                            this.$refs.ulList.scrollTop = this.oldScrollTop;
+                        });
+                    }
+                })
             },
 
             read(data) {
                 this.oldScrollTop = this.$refs.ulList.scrollTop;
-                this.gqlMutate(api.houseUser_readMessage,
-                    {
-                        messageId: data.id
-                    }, (res) => {
-                        // 重新拉取消息数据，会刷新列表
-                        // this.list = [];
-                        // this.getList();
-                        // 只改变当前消息，不会刷新列表
-                        data.readed = true 
-                    });
+                readMsg(data.id).then(res => {
+                    data.readed = true
+                })
+                // this.gqlMutate(api.houseUser_readMessage,
+                //     {
+                //         messageId: data.id
+                //     }, (res) => {
+                //         // 重新拉取消息数据，会刷新列表
+                //         // this.list = [];
+                //         // this.getList();
+                //         // 只改变当前消息，不会刷新列表
+                //         data.readed = true 
+                //     });
             },
             ulClick(data, index) {
                 if (!data.readed) {
