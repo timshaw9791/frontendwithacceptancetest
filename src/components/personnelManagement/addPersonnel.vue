@@ -63,7 +63,6 @@
 
 <script>
     import {formRulesMixin} from 'field/common/mixinComponent';
-    import user from 'gql/user.gql'
     import { addUser, modifyUser } from "api/personnel"
     import {baseURL} from "../../api/config";
     /* import {scrappedUp} from "api/workflow";*/
@@ -160,9 +159,6 @@
                 this.$set(this.form,'phone',this.personenlData.phone);
                 this.$set(this.form,'fingerprintInformation',this.personenlData.fingerprintInformation);
                 this.$set(this.form,'role',{id:this.personenlData.role.id});
-                // this.personenlData.roleItems.forEach(item=>{
-                //
-                // });
                 this.personnelImg=this.personenlData.faceInformation;
                 this.$set(this.form,'faceInformation',this.personnelImg);
                 this.roleFormGs.type.push(this.personenlData.role.id);
@@ -178,10 +174,6 @@
             },
             dialogConfirm() {
                 this.$emit('black', true);
-            },
-
-            getSrc(){
-
             },
             changeCheck(data){
                 if(data.length==0){
@@ -263,13 +255,6 @@
                                 this.$message.success('操作成功')
                                 this.$emit('addSucess', true)
                             })
-
-                            //    this.$refs.form.gqlValidate(this.addType=='add'?user.identitySaveUser:user.identityUpdateUser, {
-                            //        user:this.form
-                            //    }, (res) => {
-                            //        this.$message.success('操作成功');
-                            //        this.$emit('addSucess',true);
-                            //    })
                            }else {
                                this.$message.error('请先填写完整表单')
                            }

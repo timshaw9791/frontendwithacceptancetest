@@ -40,3 +40,11 @@ export function modifyUser(data) {
         data
     })
 }
+
+export function getUserList(data) {
+    return axios({
+        url: `${baseURL}/identity/users`,
+        method: "GET",
+        params: data
+    })
+}

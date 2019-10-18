@@ -41,7 +41,8 @@ export let formRulesMixin = {
             R: __RULES__,
             partialPiginator: {totalPages: 5, totalElements: 5},
             param: {paginator: {size: 5, page: 1}},
-            historyPage: 'History-Page'
+            historyPage: 'History-Page',
+            oldPage: 1, // 旧page
         }
     },
     computed: {
@@ -100,23 +101,29 @@ export let formRulesMixin = {
         _initPage() {
             //监听param变化，如果发生变化,刷新
             this.$watch("param", function () {
-                if (this.param.namelike != this.copyNameLike && this.param.namelike != '%%') {
-                    if (this.param.paginator.page != 1) {
-                        this.param.paginator.page = 1
-                    }
-                } else if (this.param.namelike != this.copyNameLike && this.param.namelike == '%%') {
-                    this.param.paginator.page = this.getHistoryPage();
+                if(this.param.paginator.page == this.oldPage) {
+                    this.param.paginator.page = 1
                 }
-                this.refetch();
-                if (this.param.namelike != this.copyNameLike && this.param.namelike == '%%') {
-                    this.param.paginator.page = Number(this.getHistoryPage());
-                }
+                // if (this.param.query.queryValue != this.copyNameLike && this.param.namelike != '%%') {
+                //     if (this.param.paginator.page != 1) {
+                //         this.param.paginator.page = 1
+                //     }
+                // } else if (this.param.namelike != this.copyNameLike && this.param.namelike == '%%') {
+                //     this.param.paginator.page = this.getHistoryPage();
+                // }
+                // if (this.param.namelike != this.copyNameLike && this.param.namelike == '%%') {
+                //     this.param.paginator.page = Number(this.getHistoryPage());
+                // }
+                this.oldPage = this.param.paginator.page
             }, {deep: true});
+        },
+        setPageInfo(totalEle, totalPages) {
+            this.partialPiginator.totalElements = totalEle
+            this.partialPiginator.totalPages = totalPages
         },
         getHistoryPage() {
             return sessionStorage.getItem(this.historyPage);
         },
-
         setHistoryPage(page) {
             sessionStorage.setItem(this.historyPage, page);
         },
@@ -135,7 +142,6 @@ export let formRulesMixin = {
         },
         callback(message) {
             this.$message.success(message);
-            this.refetch();
         }
     },
     created() {
