@@ -1,6 +1,6 @@
 <template>
     <div class="overview">
-        <el-card shadow="never" :body-style="{ padding:'30px'}" v-if="$store.getters.roles.includes('ADMINISTRATOR')">
+        <el-card shadow="never" :body-style="{ padding:'0.156rem'}" v-if="$store.getters.roles.includes('ADMINISTRATOR')">
             <div slot="header">
                 <span class="_card-title">{{$route.meta.title}}</span>
             </div>
@@ -119,7 +119,7 @@
                 </div>
             </div>
         </el-card>
-        <el-card shadow="never" :body-style="{ padding:'30px'}" v-else>
+        <el-card shadow="never" :body-style="{ padding:'0.156rem'}" v-else>
             正在注销!
         </el-card>
 
@@ -401,6 +401,8 @@
     }
 
     .overview {
+        font-size: .1rem;
+        
         .el-card {
             border: none !important;
         }
@@ -415,35 +417,35 @@
 
             .statistics {
                 padding: 0 1vw;
-                box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+                box-shadow: 0 .01rem .03rem rgba(0, 0, 0, 0.16);
                 display: flex;
                 align-items: center;
-                height: 130px;
+                height: .67rem;
                 width: 100%;
                 flex-wrap: wrap;
                 justify-content: space-around;
 
                 .total {
-                    font-size: 16px;
+                    font-size: .08rem;
                     font-weight: bold;
                     color: rgba(77, 79, 92, 1);
 
                     div {
-                        padding-bottom: 10px;
+                        padding-bottom: .05rem;
                     }
 
                     span {
-                        margin-left: 14px;
-                        font-size: 20px;
+                        margin-left: .07rem;
+                        font-size: .1rem;
                     }
                 }
 
                 .ss-content {
                     .title {
                         text-align: center;
-                        font-size: 18px;
+                        font-size: .09rem;
                         color: rgba(77, 79, 92, 1);
-                        margin-bottom: 8px;
+                        margin-bottom: .041rem;
                     }
 
                     .bulk {
@@ -467,18 +469,18 @@
                         }
 
                         .inside-info {
-                            margin-left: 12px;
+                            margin-left: .06rem;
                             display: flex;
                             flex-direction: column;
 
                             .sort {
                                 display: flex;
                                 align-items: center;
-                                margin-bottom: 4px;
+                                margin-bottom: .02rem;
 
                                 .icon {
-                                    width: 10px;
-                                    height: 10px;
+                                    width: .052rem;
+                                    height: .05rem;
                                     border-radius: 50%;
 
                                 }
@@ -492,7 +494,7 @@
                                 }
 
                                 .piece {
-                                    margin-left: 10px;
+                                    margin-left: .05rem;
                                 }
 
                             }
@@ -509,35 +511,35 @@
                 justify-content: space-between;
 
                 .bk-style {
-                    width: 510px;
-                    height: 321px;
-                    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+                    width: 2.656rem;
+                    height: 1.671rem;
+                    box-shadow: 0 .015rem .031rem rgba(0, 0, 0, 0.16);
                     // margin-bottom: 14px;
-                    margin-top: 26px;
+                    margin-top: .135rem;
                     color: rgba(112, 112, 112, 1);
 
                     .bk-top {
-                        height: 42px;
-                        border-left: 4px solid rgba(47, 47, 118, 0.75);
-                        padding: 14px;
-                        margin-bottom: 10px;
+                        height: .218rem;
+                        border-left: .02rem solid rgba(47, 47, 118, 0.75);
+                        padding: .072rem;
+                        margin-bottom: .052rem;
 
                         span {
-                            font-size: 18px;
+                            font-size: .093rem;
 
                         }
                     }
 
                     .bk-content {
-                        padding: 0 30px;    
+                        padding: 0 .156rem;    
 
                         .monitor {
-                            width: 300px;
-                            height: 300px;
+                            width: 1.562rem;
+                            height: 1.562rem;
                         }
 
                         .scroll-bar {
-                            max-height: 250px;
+                            max-height: 1.302rem;
                             width: 100%;
                         }
 
@@ -552,16 +554,16 @@
                             }
 
                             div:first-child {
-                                font-size: 16px;
+                                font-size: .083rem;
                             }
 
                             div:nth-child(2) {
-                                font-size: 55px;
-                                margin-left: 18px;
+                                font-size: .286rem;
+                                margin-left: .093rem;
                             }
 
                             div:last-child {
-                                font-size: 14px;
+                                font-size: .072rem;
 
                             }
                         }

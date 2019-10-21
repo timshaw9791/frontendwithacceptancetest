@@ -11,7 +11,9 @@
     import {initmixinBosInput} from '../common/mixinBosInput';
   export default {
     data(){
-      return {}
+      return {
+        basePx: localStorage.getItem('fontSize')
+      }
     },
     mixins: [initmixinBosInput],
     props: {
