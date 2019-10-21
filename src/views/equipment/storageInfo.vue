@@ -39,7 +39,7 @@
                     <div class="box-body">
                         <div class="imgUp">
                             <imgUp @success="successUp" :disabled="disabled"
-                                   :image="imageUrl" :upload="title.includes('入库')?false:true" :noimg="noimg"></imgUp>
+                                   :image="imageUrl" :upload="title.includes('入库')||this.seeEqip?false:true" :noimg="noimg"></imgUp>
 
                         </div>
                         <form-container ref="form" :model="form" class="formList">
@@ -294,7 +294,8 @@
                     form: null,
                     zbForm: null
                 },
-                isClick: false // 避免提交按钮快速点击
+                isClick: false, // 避免提交按钮快速点击
+                seeEqip:false
             }
         },
         mixins: [formRulesMixin, transformMixin],
@@ -678,6 +679,7 @@
             editClick() {
                 this.edit = !this.edit;
                 this.disabled = !this.disabled;
+                this.seeEqip=!this.seeEqip
             },
 
             // qaq(row) {
@@ -764,7 +766,18 @@
                         let eqData = JSON.parse(JSON.stringify(res.data.EquipArg));
                         this.form = eqData;
                         this.form.vendorId = eqData.supplier.id;
-                        eqData.imageAddress ? this.imageUrl = `${imgBaseUrl}${eqData.imageAddress}` : '';
+                        this.seeEqip=true
+                        // eqData.imageAddress ? this.imageUrl = `${imgBaseUrl}${eqData.imageAddress}` : '';
+                        if(eqData.imageAddress)
+                        {
+                            this.imageUrl = `${imgBaseUrl}${eqData.imageAddress}` 
+                        }else{
+                            this.imageUrl = ''
+                            this.noimg=true
+                            console.log("没有图片")
+                            console.log(this.noimg)
+                             console.log(this.upload)
+                        }
                         this.form.videoAddresses = eqData.videoAddresses ? eqData.videoAddresses.split(",") : [];
                         this.form.documentAddresses = eqData.documentAddresses ? eqData.documentAddresses.split(",") : [];
 
