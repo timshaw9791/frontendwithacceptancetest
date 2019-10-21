@@ -108,7 +108,6 @@
                                          :rules="r(true).all(R.require)" prop="phoneM"></field-input>
                         </form-container>
                         <!--<el-button type="primary" class="button" @click="pushForm" v-if="!equipId">提交</el-button>-->
-
                     </div>
 
                 </el-card>
@@ -368,10 +367,12 @@
                         data:newData
                     }, (res) => {
                         // console.log('aaaa',res)
+                        console.log('res',res);
+                        this.$message.success('添加成功!');
                         this.dialogConfirm();
-                        this.$message.sucess('添加成功!');
                         // this.callback('添加成功!');
                     },(err)=>{
+                        this.$message.error('添加失败!');
                         console.log(err);
                     });
                 } else if (this.title.includes('信息查看')) {
