@@ -11,7 +11,8 @@
 
 <script>
     import p_template from './personnelTemplate'
-    import {formRulesMixin} from 'field/common/mixinTable';
+    import { getUserList } from 'api/personnel'
+    import { formRulesMixin } from 'field/common/mixinTableRest';
     export default {
         name: "personnelLsit",
         components:{
@@ -20,35 +21,45 @@
         mixins: [formRulesMixin],
         data(){
           return{
-              param:this.personnel.graphqlTable.graphqlKey,
+              param: this.personnel.table,
               partialPiginator: {totalPages: 10, totalElements: 10},//默认值
-              nameLike:''
+              nameLike:'',
+              list: []
           }
         },
         props:{
             personnel:{
                 type:Object
             },
-            searchName:{
-                type:String
-            }
         },
         watch:{
-          'searchName':{
-              handler(newVal){
-                  this.nameLike=newVal
-              }
-          }
-        },
-        apollo:{
-            list() {
-                return this.getEntityListWithPagintor(this.personnel.graphqlTable.graphqlApi);
-            },
+            'personnel': {
+                handler(newVal) {
+                    this.getUsersList()
+                },
+                deep: true
+            }
         },
         methods:{
             clickPersonnel(item){
                 this.$emit('clickPersonnel',item);
+            },
+            getUsersList() {
+                let data = Object.assign({}, this.personnel.table.paginator, this.personnel.table.query)
+                getUserList(data).then(res => {
+                    let result = JSON.parse(JSON.stringify(res.data.content)), arr = []
+                    result.forEach(item => {
+                        if(item.role.roleDescribe != "超级管理员") {
+                            arr.push(item)
+                        }
+                    })
+                    this.setPageInfo(res.data.totalElements, res.data.totalPages)
+                    this.list = arr;
+                })
             }
+        },
+        created() {
+            this.getUsersList()
         }
     }
 </script>
