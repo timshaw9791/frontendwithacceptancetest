@@ -10,7 +10,7 @@
            <el-progress :percentage="detailItem.percentage" :style="'width:'+width+'px;margin-left:'+marginLeft+'px'" color="#3B86FF" :stroke-width="Number(5)" v-if="status"></el-progress>
            <el-progress :percentage="detailItem.percentage" :style="'width:'+width+'px;margin-left:'+marginLeft+'px'" color="#3B86FF" :stroke-width="Number(5)" v-if="!status" :format="format"></el-progress>
        </el-tooltip>
-        <span v-text="'（'+detailItem.number+'件)'" style="margin-left: -15px" v-if="status&&!havePrice"></span>
+        <span v-text="'（总计'+detailItem.number+'件)'" style="margin-left: -15px" v-if="status&&!havePrice"></span>
         <div v-if="havePrice" style="width: 200px"><span v-text="'（装备总数：'+detailItem.allCount+'件/ ¥'+Number(detailItem.price/100)+')'" style="margin-left: -15px" ></span></div>
     </div>
 </template>
