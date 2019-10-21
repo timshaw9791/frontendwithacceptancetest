@@ -336,7 +336,7 @@
                 });
                 //todo 要换回来
                 // let data = inventoryData;
-                // this.getOutDataCopy([19080012])
+                // this.getOutDataCopy(['1908000E'])
             },
             getListUsb() {//todo
                 start("java -jar scan.jar", (data) => {
@@ -378,7 +378,7 @@
 
             },
             deleteFile() {
-                delFile(newFile_path, () => {})
+                 delFile(newFile_path, () => {})
                 // fs.unlink(newFile_path, function (error) {
                 //     if (error) {
                 //         return false;
@@ -443,12 +443,12 @@
                 let unitId=data[data.length-1];
                 console.log(data);
                 let gethouseUnitId='';
-                // if(this.taskType=='直调'){
-                //     gethouseUnitId=JSON.parse(localStorage.getItem('user')).unitId;
-                // }else {
-                //     gethouseUnitId=unitId
-                // }
-                gethouseUnitId=JSON.parse(localStorage.getItem('user')).unitId;
+                if(this.taskType=='直调'){
+                    gethouseUnitId=JSON.parse(localStorage.getItem('user')).unitId;
+                }else {
+                    gethouseUnitId=unitId
+                }
+                // gethouseUnitId=JSON.parse(localStorage.getItem('user')).unitId;
                 request({
                     method:'get',
                     url:baseBURL+'/architecture/houseByOrganUnitId',

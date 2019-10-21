@@ -7,10 +7,7 @@
             <r_inventory :tableData="inventory.equipList" :overview="inventory.overview" :size="String(inventory.overview.rfidCount)" :componentType="'see'"
              ref="recordInventory"></r_inventory>
         </div>
-
-        
-        <r_label :table="table" v-show="viewStatus.flag" @clickTable="clickTable" @sortCondition="sortGql"
-                 ref="las"></r_label>
+        <r_label :table="table" @clickTable="clickTable" v-show="viewStatus.flag" ref="las"></r_label>
     </div>
 </template>
 
@@ -18,9 +15,11 @@
     import myHeader from 'components/base/header/header'
     import r_search from 'components/record/recordSearch'
     import r_inventory from 'components/inventory/inventoryComponent'
-    import r_label from 'common/vue/label'
+    import r_label from 'common/vue/ajaxLabel'
     import record from 'gql/record.gql'
     import {fetchMixin} from 'field/common/mixinFetch'
+    import request from 'common/js/request'
+    import {baseURL} from "../../api/config";
 
     export default {
         name: "inventory",
@@ -34,7 +33,7 @@
         data() {
             return {
                 table: {
-                    flag: true,
+                    flag: false,
                     labelList: [
                         {lable: '操作人员', field: 'adminName', sort: false},
                         {lable: '盘点总数', field: 'rfidCount', sort: false},
@@ -43,17 +42,13 @@
                         {lable: '开始时间', field: 'startTime', filter: (ns) => this.$filterTime(parseInt(ns.startTime))},
                         {lable: '结束时间', field: 'endTime', filter: (ns) => this.$filterTime(parseInt(ns.endTime))},
                     ],
+                    url:'/inventories',
+                    search:'',
+                    params:{direction:'DESC',property:'endTime'},
                     tableAction: {
                         label: '操作',
-                        button: ['详情']
-                    },
-                    graphqlTable: {
-                        graphqlApi: record.getInventoryList,
-                        graphqlKey: {qfilter: {key: "id", operator: "ISNOTNULL"}}
-                    },
-                    equipId: '',
-                    haveButton: true,
-                    namelike:'',
+                        button:[{name:'详情',type:'primary'}]
+                    }
                 },
                 inventory: {
                     equipList: [],
@@ -66,19 +61,7 @@
         },
         methods: {
             handleSearch(data) {
-                let qfilter;
-                this.$set(this.table, 'namelike', data);
-                if (data == '') {
-                    qfilter = {key: "id", operator: "ISNOTNULL"}
-                } else {
-                    let that = this;
-                    qfilter = {
-                        key: 'adminName',
-                        value: '%' + data + '%',
-                        operator: 'LIKE'
-                    };
-                }
-                this.$set(this.table.graphqlTable.graphqlKey, 'qfilter', qfilter);
+                this.$set(this.table, 'search', data);
             },
             black(data) {
                 this.viewStatus.flag = !this.viewStatus.flag
@@ -93,11 +76,12 @@
                 }
             },
             getDetails(data) {
-                console.log(data);
-                this.gqlQuery(record.getInventoryItemList, {qfilter: {key: 'inventory.id', value: data.id, operator: 'EQUEAL'}
-                }, (res) => {
+                request({
+                    method: 'get',
+                    url: baseURL+`/inventories/${data.id}/items`,
+                }).then(res=>{
                     this.inventory.equipList=res;
-                }, true)
+                })
             },
             // filterStartTime(nS) {
             //     return new Date(parseInt(nS.startTime)).toLocaleString().replace(/:\d{1,2}$/, ' ');

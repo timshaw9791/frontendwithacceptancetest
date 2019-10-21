@@ -6,7 +6,7 @@
             <bos-table-column  v-for="item in labelList" :lable="item.lable" :sort="item.sort" :field="item.field" :filter="item.filter"></bos-table-column>
             <el-table-column v-if="flag" :label="tableAction.label" align="center">
                 <template slot-scope="scope">
-                    <el-button type="text" size="mini" class="actionButton" @click="someClick(scope.row,item)" v-for="item in tableAction.button" v-text="item"></el-button>
+                    <el-button :type="item.type" size="mini" class="actionButton" @click="someClick(scope.row,item.name)" v-for="item in tableAction.button" v-text="item.name"></el-button>
                 </template>
             </el-table-column>
         </el-table>

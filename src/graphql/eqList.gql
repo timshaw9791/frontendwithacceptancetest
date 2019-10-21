@@ -31,7 +31,6 @@ query getEquip($id: String!) {
       shelfLife
       productDate
     }
-
     equipArg {
       id
       name
@@ -302,14 +301,11 @@ query getGenreList {
     totalElements
     content {
       name
-
       id
       categories {
-
         name
         id
         equipArgs {
-
           category {
             id
           }

@@ -1,6 +1,6 @@
 if (process.env.NODE_ENV == "production") {
-    var exec = window.require('child_process').exec;
-    var spawn = window.require('child_process').spawn;
+    // var exec = window.require('child_process').exec;
+    // var spawn = window.require('child_process').spawn;
     // var cwd = "C:\\Users\\Administrator"; // 执行目录
     // var com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM']; // 端口 串口号
     // var fs = window.require('fs')

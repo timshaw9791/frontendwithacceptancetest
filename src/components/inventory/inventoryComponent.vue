@@ -49,6 +49,11 @@
         components:{
             inventoryTable
         },
+        data(){
+            return{
+                remark:''
+            }
+        },
         props:{
           tableData:{
               type:Array
@@ -95,11 +100,7 @@
                 return time
             }
         },
-        data(){
-            return{
-                remark:''
-            }
-        },
+
         methods:{
         //   filterTime(date){
         //      let time='';

@@ -107,8 +107,6 @@
                             <field-input v-model="form.phoneM" label="联系电话" width="3" :disabled="true"
                                          :rules="r(true).all(R.require)" prop="phoneM"></field-input>
                         </form-container>
-
-
                         <!--<el-button type="primary" class="button" @click="pushForm" v-if="!equipId">提交</el-button>-->
 
                     </div>
@@ -145,7 +143,6 @@
                                                :rules="r(true).all(R.require)" prop="productDateQ"></field-date-picker>
                         </form-container>
                         <!--<el-button type="primary" class="button" @click="pushzbForm" v-if="!equipId">提交</el-button>-->
-
                     </div>
                 </el-card>
 
@@ -249,6 +246,7 @@
     import {formRulesMixin} from 'field/common/mixinComponent';
     import api from 'gql/eqList.gql'
     import {scrappedUp} from "api/workflow";
+    import {getCategoryAndGenre,getSuppliers} from "api/storage"
     import imgUp from 'components/base/axiosImgUp';
     import axios from 'axios';
     import {imgUpUrl, pdfUpUrl, videoUpUrl, imgBaseUrl, pdfBaseUrl, videoBaseUrl} from "api/config";
@@ -256,7 +254,7 @@
     import serviceDialog from 'components/base/serviceDialog/index'
     import {transformMixin} from "common/js/transformMixin";
     import { start, startOne, killProcess } from 'common/js/rfidReader'
-
+    import request from 'common/js/request'
     // const cmdPath = 'C:\\Users\\Administrator';
     // const exec = window.require('child_process').exec;
     // const spawn = window.require('child_process').spawn;
@@ -343,26 +341,39 @@
 
             //点击提交后 根据从什么入口进入的执行对应的  新增  入库  装备基础信息修改 装备入库信息修改
             addEquipArg() {
-                this.isClick = true
-                setTimeout(() => {this.isClick = false}, 1600)
+                this.isClick = true;
+                setTimeout(() => {this.isClick = false}, 1600);
                 if (this.title.includes('新增')) {
                     this.form.videoAddresses ? this.form.videoAddresses = this.form.videoAddresses.join(',') : '';
                     this.form.documentAddresses ? this.form.documentAddresses = this.form.documentAddresses.join(',') : '';
-
                     let newData = JSON.parse(JSON.stringify(this.form));
                     newData.upkeepCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.upkeepCycle)));
                     newData.chargeCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.chargeCycle)));
+                    // this.$refs.form.gqlValidate(api.category_addEquipArg, {
+                    //     supplierId: this.form.vendorId ? this.form.vendorId : '',
+                    //     categoryId: this.form.nameId ? this.form.nameId[1] : '',
+                    //     equipArg: newData
+                    // }, (res) => {
+                    //     this.dialogConfirm();
+                    //     this.callback('添加成功!');
+                    // });
 
-
-                    this.$refs.form.gqlValidate(api.category_addEquipArg, {
-                        supplierId: this.form.vendorId ? this.form.vendorId : '',
-                        categoryId: this.form.nameId ? this.form.nameId[1] : '',
-                        equipArg: newData
+                    this.$refs.form.ajaxValidate({
+                        url: '/equip-args',
+                        method: 'post',
+                        params:{
+                                supplierId: this.form.vendorId ? this.form.vendorId : '',
+                                categoryId: this.form.nameId ? this.form.nameId[1] : '',
+                            },
+                        data:newData
                     }, (res) => {
+                        // console.log('aaaa',res)
                         this.dialogConfirm();
-                        this.callback('添加成功!');
+                        this.$message.sucess('添加成功!');
+                        // this.callback('添加成功!');
+                    },(err)=>{
+                        console.log(err);
                     });
-
                 } else if (this.title.includes('信息查看')) {
                     this.form.videoAddresses ? this.form.videoAddresses = this.form.videoAddresses.join(',') : '';
                     this.form.documentAddresses ? this.form.documentAddresses = this.form.documentAddresses.join(',') : '';
@@ -374,22 +385,34 @@
                     newData.upkeepCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.upkeepCycle)));
                     newData.chargeCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.chargeCycle)));
 
-
-                    this.$refs.form.gqlValidate(api.category_saveEquipArg, {
-                        categoryId: this.form.nameId ? this.form.nameId[1] : '',
-                        equipArg: newData
+                    this.$refs.form.ajaxValidate({
+                        url: '/equip-args',
+                        method: 'put',
+                        data:{
+                            categoryId: this.form.nameId ? this.form.nameId[1] : '',
+                            equipArg: newData
+                        }
                     }, (res) => {
-                        console.log(res);
+                        // console.log('aaaa',res)
                         this.dialogConfirm();
-                        this.callback('添加成功!');
-                    })
+                        this.$message.sucess('添加成功!');
+                        // this.callback('添加成功!');
+                    },(err)=>{
+                        console.log(err);
+                    });
+                    // this.$refs.form.gqlValidate(api.category_saveEquipArg, {
+                    //     categoryId: this.form.nameId ? this.form.nameId[1] : '',
+                    //     equipArg: newData
+                    // }, (res) => {
+                    //     console.log(res);
+                    //     this.dialogConfirm();
+                    //     this.callback('添加成功!');
+                    // })
                 } else if (this.title.includes('入库')) {
                     if(this.list[0].rfid == null) {
-                        this.$message.error("请扫入RFID")
+                        this.$message.error("请扫入RFID");
                         return
                     }
-
-
                     this.$refs.form.validate.then((res1) => {
                         this.zbForm['location'] = {
                             number: Number(this.zbForm.numberL),
@@ -401,20 +424,24 @@
                             shelfLife: this.zbForm.shelfLifeQ * 24 * 60 * 60 * 1000,
                             productDate: this.zbForm.productDateQ,
                         };
-
-                        this.$refs.zbForm.gqlValidateErr(api.admin_importEquips, {
-                            rfids: this.list.map((item) => {
-                                return item['rfid'];
-                            }),
-                            serialList: this.list.map((item) => {
-                                return item['serial'] == '' ? null : item['serial'];
-                            }),
-                            location: this.zbForm.location,
-                            equipArgId: this.form.nameId[2],
-                            quality: this.zbForm.quality,
-                            price: this.form.price * 100,
+                        this.$refs.form.ajaxValidate({
+                            url: '/equips/import',
+                            method: 'post',
+                            params:{
+                                rfids: this.list.map((item) => {
+                                    return item['rfid'];
+                                }),
+                                serialList: this.list.map((item) => {
+                                    return item['serial'] == '' ? null : item['serial'];
+                                }),
+                                location: this.zbForm.location,
+                                equipArgId: this.form.nameId[2],
+                                quality: this.zbForm.quality,
+                                price: this.form.price * 100,
+                            }
                         }, (res) => {
-                            this.callback(`成功`);
+                            // this.callback(`成功`);
+                            this.$message.sucess('成功');
                             //spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
                             killProcess(this.pid)
                             this.$emit('black', true);
@@ -437,9 +464,45 @@
                                     }
                                 })
                             });
-                            //console.log(newData);
-                            //console.log(this.list);
-                        })
+                        });
+                        // this.$refs.zbForm.gqlValidateErr(api.admin_importEquips, {
+                        //     rfids: this.list.map((item) => {
+                        //         return item['rfid'];
+                        //     }),
+                        //     serialList: this.list.map((item) => {
+                        //         return item['serial'] == '' ? null : item['serial'];
+                        //     }),
+                        //     location: this.zbForm.location,
+                        //     equipArgId: this.form.nameId[2],
+                        //     quality: this.zbForm.quality,
+                        //     price: this.form.price * 100,
+                        // }, (res) => {
+                        //     this.callback(`成功`);
+                        //     //spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
+                        //     killProcess(this.pid)
+                        //     this.$emit('black', true);
+                        // }, (errs) => {
+                        //     console.log('errs', errs);
+                        //     let newData = [],
+                        //         oldData = String(errs).split('[');
+                        //     for (let j = 1; j < oldData.length; j++) {
+                        //         if (oldData[j].includes(']')) {
+                        //             newData = oldData[j].split(']')[0].split(',').map(res => {
+                        //                 return res.trim();
+                        //             });
+                        //         }
+                        //     }
+                        //     newData.forEach(value => {
+                        //         this.list.some(value1 => {
+                        //             if (value === value1['rfid']) {
+                        //                 this.$set(value1, 'style', true);
+                        //                 return true
+                        //             }
+                        //         })
+                        //     });
+                        //     //console.log(newData);
+                        //     //console.log(this.list);
+                        // })
 
                     }).catch(err => {
                         this.$message.error('未通过检验');
@@ -456,18 +519,31 @@
                         shelfLife: this.zbForm.shelfLifeQ * 24 * 60 * 60 * 1000,
                         productDate: this.zbForm.productDateQ,
                     };
-                    this.$refs.zbForm.gqlValidate(api.admin_saveEquipInfo, {
-                        equipId: this.equipId,
-                        location: this.zbForm.location,
-                        quality: this.zbForm.quality,
+                    this.$refs.zbForm.ajaxValidate({
+                        url: '/equip-args',
+                        method: 'put',
+                        data:{
+                            equipId: this.equipId,
+                            location: this.zbForm.location,
+                            quality: this.zbForm.quality,
+                        }
                     }, (res) => {
-                        this.callback(`成功`);
+                        // console.log('aaaa',res)
+                        this.$message.sucess('成功');
                         this.$emit('black', true);
-                    })
+                    },(err)=>{
+                        console.log(err);
+                    });
+                    // this.$refs.zbForm.gqlValidate(api.admin_saveEquipInfo, {
+                    //     equipId: this.equipId,
+                    //     location: this.zbForm.location,
+                    //     quality: this.zbForm.quality,
+                    // }, (res) => {
+                    //     this.callback(`成功`);
+                    //     this.$emit('black', true);
+                    // })
                 }
             },
-
-
             tableRowClassName({row, rowIndex}) {
                 if (row.style) {
                     return 'err-row';
@@ -476,7 +552,7 @@
             },
 
             dialogConfirm() {
-                killProcess(this.pid)
+                // killProcess(this.pid)
                 this.$emit('black', true);
             },
 
@@ -536,7 +612,6 @@
 
             //上传pdf
             pdfFileChange(index) {
-
                 if (this.form.documentAddresses.length > 0) {
                     delFile({
                         filename: this.form.documentAddresses[index],
@@ -718,7 +793,6 @@
 
             //进入页面获取数据
             getList() {
-
                 if (this.equipId) {
                     this.gqlQuery(api.getEquip, {
                         id: this.equipId
@@ -733,7 +807,7 @@
                         eqData.equipArg.imageAddress ? this.imageUrl = `${imgBaseUrl}${eqData.equipArg.imageAddress}` : '';
                         this.$set(this.form, 'eqBig', eqData.equipArg.category.genre.name);
                         this.$set(this.form, 'eqSmall', eqData.equipArg.category.name);
-                        this.$set(this.form, 'serial',eqData.serial)
+                        this.$set(this.form, 'serial',eqData.serial);
                         this.$set(this.form, 'upkeepCycle', this.milliToDay(eqData.equipArg.upkeepCycle));
                         this.$set(this.form, 'chargeCycle', this.milliToDay(eqData.equipArg.chargeCycle));
                         this.$set(this.form, 'price', eqData.price / 100);
@@ -776,44 +850,78 @@
                         this.$set(this.form, 'phoneM', eqData.supplier.phone);
                     });
                 }
-
-
-                this.gqlQuery(api.getGenreList, {}, (res) => {
-                    let data = JSON.parse(JSON.stringify(res.data.GenreList.content));
-                    let newData = [];
-                    if (data) {
-                        data.forEach((item) => {
-                            if (item.categories.length > 0) {
-                                item.categories.forEach((item1, index1) => {
-                                    if (item1.equipArgs.length > 0) {
-                                        item1.equipArgs.forEach((item2, index2) => {
-                                            item1.equipArgs[index2] = {
-                                                value: item2.id,
-                                                label: item2.name,
-                                            };
-                                        })
-                                    }
-                                    item.categories[index1] = {
-                                        value: item1.id,
-                                        label: item1.name,
-                                        children: !this.title.includes('新增') && !this.title.includes('信息查看') ? item1.equipArgs : null
-                                    };
-                                })
-                            }
-                            newData.push(
-                                {
-                                    value: item.id,
-                                    label: item.name,
-                                    children: item.categories
+                getCategoryAndGenre().then(res => {
+                        let data = JSON.parse(JSON.stringify(res));
+                        let newData = [];
+                        if (data) {
+                            console.log(data);
+                            data.forEach((item) => {
+                                if (item.categories.length > 0) {
+                                    item.categories.forEach((item1, index1) => {
+                                        if (item1.equipArgs.length > 0) {
+                                            item1.equipArgs.forEach((item2, index2) => {
+                                                item1.equipArgs[index2] = {
+                                                    value: item2.id,
+                                                    label: item2.name,
+                                                };
+                                            })
+                                        }
+                                        item.categories[index1] = {
+                                            value: item1.id,
+                                            label: item1.name,
+                                            children: !this.title.includes('新增') && !this.title.includes('信息查看') ? item1.equipArgs : null
+                                        };
+                                    })
                                 }
-                            )
-                        });
-                        this.options = newData;
-                    }
+                                newData.push(
+                                    {
+                                        value: item.id,
+                                        label: item.name,
+                                        children: item.categories
+                                    }
+                                )
+                            });
+                            this.options = newData;
+                        }
+                }).catch(err => {
+                    console.log(err);
                 });
 
-                this.gqlQuery(api.getSupplierList, {}, (res) => {
-                    this.vendorId = res.data.SupplierList.content.map(item => {
+                // this.gqlQuery(api.getGenreList, {}, (res) => {
+                //     let data = JSON.parse(JSON.stringify(res.data.GenreList.content));
+                //     let newData = [];
+                //     if (data) {
+                //         data.forEach((item) => {
+                //             if (item.categories.length > 0) {
+                //                 item.categories.forEach((item1, index1) => {
+                //                     if (item1.equipArgs.length > 0) {
+                //                         item1.equipArgs.forEach((item2, index2) => {
+                //                             item1.equipArgs[index2] = {
+                //                                 value: item2.id,
+                //                                 label: item2.name,
+                //                             };
+                //                         })
+                //                     }
+                //                     item.categories[index1] = {
+                //                         value: item1.id,
+                //                         label: item1.name,
+                //                         children: !this.title.includes('新增') && !this.title.includes('信息查看') ? item1.equipArgs : null
+                //                     };
+                //                 })
+                //             }
+                //             newData.push(
+                //                 {
+                //                     value: item.id,
+                //                     label: item.name,
+                //                     children: item.categories
+                //                 }
+                //             )
+                //         });
+                //         this.options = newData;
+                //     }
+                // });
+                getSuppliers().then(res => {
+                    this.vendorId = res.map(item => {
                         return {
                             val: item.id,
                             key: item.name,
@@ -822,10 +930,26 @@
                                 phone: item.phone,
                             }
                         }
-                    })
+                    });
                     this.judgeEdit.form = JSON.parse(JSON.stringify(this.form))
                     this.judgeEdit.zbForm = JSON.parse(JSON.stringify(this.zbForm))
+                }).catch(err => {
+                    console.log(err);
                 });
+                // this.gqlQuery(api.getSupplierList, {}, (res) => {
+                //     this.vendorId = res.data.SupplierList.content.map(item => {
+                //         return {
+                //             val: item.id,
+                //             key: item.name,
+                //             data: {
+                //                 person: item.person,
+                //                 phone: item.phone,
+                //             }
+                //         }
+                //     });
+                //     this.judgeEdit.form = JSON.parse(JSON.stringify(this.form))
+                //     this.judgeEdit.zbForm = JSON.parse(JSON.stringify(this.zbForm))
+                // });
             }
         },
 

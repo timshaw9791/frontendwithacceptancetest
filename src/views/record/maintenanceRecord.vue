@@ -2,14 +2,14 @@
     <div>
         <my-header :title="'维保记录'" :searchFlag="false"></my-header>
         <r_search :placeholder="'装备名称'" @handleSearch="handleSearch" :haveAction="true" @handleSelect="handleSelect"></r_search>
-        <r_label :table="table" v-show="table.flag" @clickTable="clickTable" @sortCondition="sortGql" ref="las"></r_label>
+        <r_label :table="table" @clickTable="clickTable" ref="las"></r_label>
     </div>
 </template>
 
 <script>
     import myHeader from 'components/base/header/header'
     import r_search from 'components/record/recordSearch'
-    import r_label from 'common/vue/label'
+    import r_label from 'common/vue/ajaxLabel'
     import record from 'gql/record.gql'
     export default {
         name: "maintenanceRecord",
@@ -21,7 +21,7 @@
         data(){
             return{
                 table: {
-                    flag: true,
+                    flag: false,
                     labelList: [
                         {lable: 'RFID', field: 'rfid',sort:false},
                         {lable: '装备名称', field: 'equipName',sort:false},
@@ -30,45 +30,16 @@
                         {lable: '结束时间', field: 'duration', filter: (ns) => this.$filterTime(parseInt(ns.startTime+ns.duration)),sort:false},
                         {lable: '充电时长', field: 'duration',filter: this.filterLong,sort:false},
                     ],
-                    graphqlTable: {
-                        graphqlApi: record.getEquipChargeRecordList,
-                        graphqlKey: {qfilter:{key: "id",  operator: "ISNOTNULL"}},
-                    },
-                    equipId:'',
-                    haveButton: false,
-                    namelike:''
+                    url:'/equip-charge-records',
+                    params:{direction:'DESC',property:'time'},
+                    search:'',
                 },
-                selectData:'充电',
-                cKey:{key: "id",  operator: "ISNOTNULL"}
+                selectData:'充电'
             }
         },
         methods:{
             handleSearch(data){
-                let qfilter;
-                this.$set(this.table, 'namelike', data);
-                if (data == '') {
-                    qfilter = this.cKey
-                } else {
-                    let that = this;
-                    if(this.selectData=='充电'){
-                        qfilter = {
-                            key: 'equipName',
-                            value: '%' + data + '%',
-                            operator: 'LIKE',
-                            combinator: 'AND',
-                            next: this.cKey
-                        };
-                    }else {
-                        qfilter = {
-                            key: 'equipInfo.equipName',
-                            value: '%' + data + '%',
-                            operator: 'LIKE',
-                            combinator: 'AND',
-                            next: this.cKey
-                        };
-                    }
-                }
-                this.$set(this.table.graphqlTable.graphqlKey, 'qfilter', qfilter);
+                this.$set(this.table, 'search', data);
             },
             clickTable(table) {
                 let data = table.row;
@@ -78,7 +49,7 @@
                 }
             },
             handleSelect(data){
-                let list;
+                let list,url,params;
                 this.selectData=data;
                 if(data=='充电'){
                     list=[
@@ -89,8 +60,8 @@
                         {lable: '结束时间', field: 'duration', filter: (ns) => this.$filterTime(parseInt(ns.startTime+ns.duration)),sort:false},
                         {lable: '充电时长', field: 'duration',filter: this.filterLong,sort:false},
                         ];
-                    this.$set(this.table.graphqlTable,'graphqlApi',record.getEquipChargeRecordList);
-                    this.$set(this.table.graphqlTable.graphqlKey,'qfilter',{key: "id",  operator: "ISNOTNULL"});
+                       url='/equip-charge-records';
+                       params={direction:'DESC',property:'startTime'}
                 }else if(data=='保养'){
                     list=[
                         {lable: 'RFID', field: 'equipInfo.equipRfid',sort:false},
@@ -101,8 +72,8 @@
                         {lable: '结束时间', field: 'endTime', filter: (ns) => this.$filterTime(parseInt(ns.startTime+ns.duration)),sort:false},
                         {lable: '保养时长', field: 'duration',filter: this.filterLong,sort:false}
                     ];
-                    this.$set(this.table.graphqlTable,'graphqlApi',record.getEquipActionRecordList);
-                    this.$set(this.table.graphqlTable.graphqlKey,'qfilter',{key: "action", value: 'UPKEEP', operator: "EQUEAL"})
+                    url='/equip-action-records';
+                    params={direction:'DESC',property:'startTime',action:'UPKEEP'}
                 }else {
                     list=[
                         {lable: 'RFID', field: 'equipInfo.equipRfid',sort:false},
@@ -113,11 +84,13 @@
                         {lable: '结束时间', field: 'endTime', filter: (ns) => this.$filterTime(parseInt(ns.startTime+ns.duration)),sort:false},
                         {lable: '操作状态', field: 'action', filter: this.filterAction}
                     ];
-                    this.$set(this.table.graphqlTable,'graphqlApi',record.getEquipActionRecordList);
-                    this.$set(this.table.graphqlTable.graphqlKey,'qfilter',{key: "action", value: 'MAINTAIN', operator: "EQUEAL"})
+                    url='/equip-action-records';
+                    params={direction:'DESC',property:'startTime',action:'MAINTAIN'}
                 }
                 this.$set(this.table,'labelList',list);
-                this.cKey=this.table.graphqlTable.graphqlKey.qfilter;
+                this.$set(this.table,'url',url);
+                this.$set(this.table,'params',params);
+                this.$refs.las.getList();
             },
             sortGql(data){
                 if (data=='descending'){

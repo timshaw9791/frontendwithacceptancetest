@@ -89,9 +89,9 @@
             },
             methods: {
                 synchronization(){
-                    this.loading = true
+                    this.loading = true;
                     this.gqlMutateLoad(user.identityTriggerSyncFaceInfo,'',(data)=>{
-                      this.loading = false
+                      this.loading = false;
                       if(data.errors) {
                           this.$message.error(data.errors[0].message)
                       } else {

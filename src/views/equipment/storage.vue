@@ -20,7 +20,6 @@
                         <svg-icon icon-class="加"/>
                         装备入库
                     </el-button>
-
                     <el-button type="text" class="_textBt" @click="goInfo('rfid')" v-if="authentication">
                         <svg-icon icon-class="加"/>
                         修改RFID
@@ -29,32 +28,33 @@
                         <BosInput
                                 placeholder="RFID/大类/小类/名称/型号"
                                 suffix="el-icon-search"
-                                v-model="inquire"
+                                v-model="table.search"
                                 :wrapforlike="true"
-                                style=" width:285px;">
+                                style="width:285px;">
                         </BosInput>
                     </div>
                 </tabs>
             </div>
 
             <!--list列表-->
-
-            <el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
-                      fit>
-                <bos-table-column lable="RFID" field="rfid"></bos-table-column>
-                <bos-table-column lable="装备类型" field="equipArg.category.genre.name"></bos-table-column>
-                <bos-table-column lable="装备小类" field="equipArg.category.name"></bos-table-column>
-                <bos-table-column lable="装备名称" field="equipArg.name"></bos-table-column>
-                <bos-table-column lable="装备型号" field="equipArg.model"></bos-table-column>
-                <bos-table-column lable="供应商" field="equipArg.supplier.name"></bos-table-column>
-                <el-table-column label="操作" align="supplier" width="200">
-                    <template slot-scope="scope">
-                        <el-button type="primary" size="mini" @click="goInfo('look',scope.row)">查看</el-button>
-                        <el-button type="danger" size="mini" @click="toDel(scope.row)">删除</el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
-            <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
+            <r_label :table="table" @clickTable="clickTable"
+                     ref="las"></r_label>
+            <!--<el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"-->
+                      <!--fit>-->
+                <!--<bos-table-column lable="RFID" field="rfid"></bos-table-column>-->
+                <!--<bos-table-column lable="装备类型" field="equipArg.category.genre.name"></bos-table-column>-->
+                <!--<bos-table-column lable="装备小类" field="equipArg.category.name"></bos-table-column>-->
+                <!--<bos-table-column lable="装备名称" field="equipArg.name"></bos-table-column>-->
+                <!--<bos-table-column lable="装备型号" field="equipArg.model"></bos-table-column>-->
+                <!--<bos-table-column lable="供应商" field="equipArg.supplier.name"></bos-table-column>-->
+                <!--<el-table-column label="操作" align="supplier" width="200">-->
+                    <!--<template slot-scope="scope">-->
+                        <!--<el-button type="primary" size="mini" @click="goInfo('look',scope.row)">查看</el-button>-->
+                        <!--<el-button type="danger" size="mini" @click="toDel(scope.row)">删除</el-button>-->
+                    <!--</template>-->
+                <!--</el-table-column>-->
+            <!--</el-table>-->
+            <!--<bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>-->
         </el-card>
 
 
@@ -104,9 +104,7 @@
                     <el-button type="primary" size="medium" @click="saveOne(inlineForm.newRfid)">写入</el-button>
                 </div>
             </div>
-
         </service-dialog>
-
         <!--提示的遮罩层 -->
         <el-dialog
                 title="提示"
@@ -118,8 +116,6 @@
                <el-button type="primary" @click="delEquip">确 定</el-button>
             </span>
         </el-dialog>
-
-
     </div>
 </template>
 
@@ -128,12 +124,12 @@
     import storageInfo from 'views/equipment/storageInfo'
     import api from 'gql/eqList.gql'
     import serviceDialog from 'components/base/serviceDialog/index'
-    import {formRulesMixin} from "../../field/common/mixinComponent";
+    // import {formRulesMixin} from "../../field/common/mixinComponent";
     import {getRfid, saveRfid} from "api/rfid";
     import request from 'common/js/request'
     import {baseURL} from "../../api/config";
     import { start, startOne, killProcess } from 'common/js/rfidReader'
-
+    import r_label from 'common/vue/ajaxLabel'
     // nodejs调用子进程的方法
 
     // const cmdPath = 'C:\\Users\\Administrator';   //cmd命令的位置
@@ -151,6 +147,22 @@
                 title: '',
                 storageInfoShow: false,
                 list: [],
+                table: {
+                    labelList: [
+                        {lable: 'RFID', field: 'rfid'},
+                        {lable: '装备大类', field: 'equipArg.category.genre.name'},
+                        {lable: '装备小类', field: 'equipArg.category.name', },
+                        {lable: '装备名称', field: 'equipArg.name'},
+                        {lable: '装备型号', field: 'equipArg.model'},
+                        {lable: '供应商', field: 'equipArg.supplier.name'},
+                    ],
+                    url:'/equips',
+                    tableAction:{
+                        label:'操作',
+                        button:[{name:'查看',type:'primary'},{name:'删除',type:'danger'}]
+                    },
+                    search:'',
+                },
                 param: {
                     qfilter: {
                         "key": "rfid",
@@ -176,9 +188,40 @@
         components: {
             tabs,
             storageInfo,
-            serviceDialog
+            serviceDialog,
+            r_label
         },
         methods: {
+            clickTable(table) {
+                let  data = table.row;
+                if(this.table.name==='查看'){
+                    this.goInfo('look',data)
+                }else {
+                    this.toDel(scope.row)
+                }
+                // if(table.name=='详情'){
+                //     let dataCopy=JSON.parse(JSON.stringify(data));
+                //     this.equipList.list=dataCopy.equipActionRecords;
+                //     this.equipList.list.forEach((item,index)=>{
+                //         let number=index+1;
+                //         let serialNumber='';
+                //         if(number<10){
+                //             serialNumber='0'+'0'+number
+                //         }else if(10<number<100){
+                //             serialNumber='0'+number
+                //         }else {
+                //             serialNumber=number
+                //         }
+                //         item.serialNumber=serialNumber
+                //     });
+                //     this.$refs.dialogEquipTable.show();
+                // }else {
+                //     if (data) {
+                //         this.address=baseURL+'/records/'+data.videoAddress;
+                //         this.$refs.recordVideo.show()
+                //     }
+                // }
+            },
             cancelPattern() {
                // killProcess();
                killProcess(this.pid)
@@ -192,6 +235,9 @@
                     this.refetch();
                     this.dialogVisible = false;
                 });
+            },
+            refetch(){
+              this.$refs.las.getList();
             },
             toDel(data) {
                 this.delEquipObj = data;
@@ -228,7 +274,6 @@
             },
             serialRfid() {
                 getRfid().then(res => {
-
                     start("java -jar auto.jar", (data) => {
                         let newData = JSON.parse(data);
                         console.log(newData);
@@ -239,8 +284,8 @@
                             newData.status === 'succeed' && newData.epc === undefined? this.index = 1: this.index = 0;
                         }
                     }, (fail) => {
-                        this.index = 1
-                        this.$refs.dialogModify.hide()
+                        this.index = 1;
+                        this.$refs.dialogModify.hide();
                         this.$message.error(fail)
                     }, (pid, err) => {pid?this.pid = pid:this.$message.error(err);this.$refs.dialogModify.hide()})
 
@@ -340,24 +385,24 @@
                 );
 
             },
-            getConfig() {
-                this.$store.dispatch('LogOut').then(() => {
-                    location.reload() // 为了重新实例化vue-router对象 避免bug
-                    // this.$message.success('退出成功');
-                })
-            }
+            // getConfig() {
+            //     this.$store.dispatch('LogOut').then(() => {
+            //         location.reload() // 为了重新实例化vue-router对象 避免bug
+            //         // this.$message.success('退出成功');
+            //     })
+            // }
         },
-        apollo: {
-            list() {
-                return this.getEntityListWithPagintor(api.getEquipList); //  graphql结合自定义组件的mixin方法 传入语句即可
-            },
-        },
+        // apollo: {
+        //     list() {
+        //         return this.getEntityListWithPagintor(api.getEquipList); //  graphql结合自定义组件的mixin方法 传入语句即可
+        //     },
+        // },
         mounted() {
         },
         created() {
             this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];//获取到串口号
         },
-        mixins: [formRulesMixin],
+        // mixins: [formRulesMixin],
         computed: {
             authentication() {
                 let auth = JSON.parse(localStorage.getItem('user')).role;
@@ -370,40 +415,40 @@
         },
         watch: {
             //监听搜索关键词, 因为写过监听param所以修改param可以实现发送graphql请求
-            inquire(newVal, oldVal) {
-                this.param.namelike = newVal;
-                this.param['qfilter'] = {
-                    "combinator": "OR",
-                    "key": "rfid",
-                    "operator": "LIKE",
-                    value: newVal,
-                    "next": {
-                        "combinator": "OR",
-                        "key": "equipArg.category.genre.name",
-                        "operator": "LIKE",
-                        value: newVal,
-                        "next": {
-                            "combinator": "OR",
-                            "key": "equipArg.category.name",
-                            "operator": "LIKE",
-                            value: newVal,
-                            "next": {
-                                "combinator": "OR",
-                                "key": "name",
-                                "operator": "LIKE",
-                                value: newVal,
-                                "next": {
-                                    "combinator": "OR",
-                                    "key": "equipArg.model",
-                                    "operator": "LIKE",
-                                    value: newVal,
-                                }
-                            }
-                        }
-                    }
-                };
-
-            }
+            // inquire(newVal, oldVal) {
+            //     this.param.namelike = newVal;
+            //     this.param['qfilter'] = {
+            //         "combinator": "OR",
+            //         "key": "rfid",
+            //         "operator": "LIKE",
+            //         value: newVal,
+            //         "next": {
+            //             "combinator": "OR",
+            //             "key": "equipArg.category.genre.name",
+            //             "operator": "LIKE",
+            //             value: newVal,
+            //             "next": {
+            //                 "combinator": "OR",
+            //                 "key": "equipArg.category.name",
+            //                 "operator": "LIKE",
+            //                 value: newVal,
+            //                 "next": {
+            //                     "combinator": "OR",
+            //                     "key": "name",
+            //                     "operator": "LIKE",
+            //                     value: newVal,
+            //                     "next": {
+            //                         "combinator": "OR",
+            //                         "key": "equipArg.model",
+            //                         "operator": "LIKE",
+            //                         value: newVal,
+            //                     }
+            //                 }
+            //             }
+            //         }
+            //     };
+            //
+            // }
         },
         beforeDestroy() {
             killProcess(this.pid)

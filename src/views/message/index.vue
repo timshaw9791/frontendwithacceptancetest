@@ -90,7 +90,6 @@
 
         methods: {
             getList() {
-
                 this.gqlQuery(api.getMessageList,
                     {qfilter: this.qfilter}, (res) => {
                         this.list = JSON.parse(JSON.stringify(res.data.MessageList.content));
