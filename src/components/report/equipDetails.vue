@@ -54,6 +54,7 @@
             >
             </el-date-picker>
         </div>
+        
         <div class="equip-details-list">
             <div :class="item.select?'equip-details-item select-item':'equip-details-item'" v-for="item in detailsList">
                 <equip-progress :width="970" :detailItem="item" :status="title=='装备使用频次'?false:true"
@@ -264,6 +265,12 @@
 <style scoped>
     .equip-details-box {
         width: 100%;
+    }
+
+    .equip-details-list {
+        max-height: 730px;
+        overflow-x: hidden;
+        overflow-y: auto;
     }
 
     .equip-details-box .equip-details-list {
