@@ -45,9 +45,9 @@
                             <span>{{item.name}}</span>
                         </div>
                         <div class="bk-content">
-                            <el-scrollbar wrap-class="scroll-bar">
+                            <!-- <el-scrollbar wrap-class="scroll-bar"> -->
                                 <div class="scroll-bar">
-                                    <el-table :data="item.list" fit @row-click="gotoInfo">
+                                    <el-table :data="item.list" fit @row-click="gotoInfo" height="260">
                                         <div v-if="index===0">
                                             <bos-table-column lable="类型"
                                                               :filter="(row)=>workType(row.type)"></bos-table-column>
@@ -88,7 +88,7 @@
                                         </div>
                                     </el-table>
                                 </div>
-                            </el-scrollbar>
+                            <!-- </el-scrollbar> -->
                         </div>
                     </div>
 
@@ -152,8 +152,8 @@
     import {equipmentScrappedInfo} from "api/statistics";
 
     const cmdPath = 'C:\\Users\\Administrator';
-    const exec = window.require('child_process').exec;
-    const spawn = window.require('child_process').spawn;
+    // const exec = window.require('child_process').exec;
+    // const spawn = window.require('child_process').spawn;
 
     export default {
         data() {

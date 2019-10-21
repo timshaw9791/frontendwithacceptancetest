@@ -249,13 +249,14 @@
             },
             filterState(s) {
                 let state = s.variables.applyOrder.state;
+               
                 if (state == 'UNDER_REVIEW') {
                     return '审核中'
                 } else if (state == 'REJECTED') {
                     return '已驳回'
                 } else if (state == 'PASS') {
                     return '已通过'
-                } else {
+                } else{
                     return '作废'
                 }
             },

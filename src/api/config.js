@@ -9,8 +9,9 @@ export const ERR_OK = 0;
 
 
 
-var baseURL = 'http://10.128.1.198:8010/warehouse';
+var baseURL = 'http://10.30.103.237:8010/warehouse';
 var baseBURL = 'http://115.159.154.194/warehouse_server';
+//var messageURL = "http://10.30.103.237:8010/warehouse"
 var localTitle = "龙湾区公安局应急装备物资管理系统";
 
 // export let baseURL = 'http://192.168.50.14:8010/warehouse';
