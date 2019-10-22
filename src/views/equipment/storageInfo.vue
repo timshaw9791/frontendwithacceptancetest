@@ -790,12 +790,14 @@
                                             item1.equipArgs[index2] = {
                                                 value: item2.id,
                                                 label: item2.name,
+                                                model: item2.model,
                                             };
                                         })
                                     }
                                     item.categories[index1] = {
                                         value: item1.id,
                                         label: item1.name,
+                                        model: item1.model,
                                         children: !this.title.includes('新增') && !this.title.includes('信息查看') ? item1.equipArgs : null
                                     };
                                 })
@@ -804,11 +806,14 @@
                                 {
                                     value: item.id,
                                     label: item.name,
+                                    model: item.model,
                                     children: item.categories
                                 }
                             )
                         });
                         this.options = newData;
+                        console.log("data")
+                        console.log(data)
                     }
                 });
 
