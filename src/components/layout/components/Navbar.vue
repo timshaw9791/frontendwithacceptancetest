@@ -17,12 +17,12 @@
         <el-dropdown class="avatar-container" trigger="click">
             <div class="avatar-wrapper">
                 <!--<img class="user-avatar" src="./hqq.gif">-->
-                <svg-icon icon-class="设置" class="svg" style="font-size: 22px;"/>
+                <svg-icon icon-class="设置" class="svg" style="font-size: 0.1146rem;"/>
                 <!--<i class="el-icon-caret-bottom"></i>-->
             </div>
             <el-dropdown-menu class="user-dropdown" slot="dropdown">
                 <router-link class="inlineBlock" to="/overview/index">
-                    <el-dropdown-item>
+                    <el-dropdown-item class="menu-item">
                         主 页
                     </el-dropdown-item>
                 </router-link>
@@ -122,28 +122,31 @@
 
 <style rel="stylesheet/scss" lang="scss" scoped>
     .navbar {
-        height: 60px;
-        line-height: 60px;
+        font-size: .083rem;
+        height: 0.3125rem;
+        line-height: 0.3125rem;
         border-radius: 0px !important;
         position: relative;
 
         .logo {
-            font-size: 18px;
+            font-size: 0.0938rem;
             color: #707070;
         }
 
         .icons {
             display: flex;
             position: absolute;
-            right: 100px;
-            top: 8px;
-
+            right: 0.5208rem;
+            top: 0.026rem;
+            font-size: .083rem;
+            
             .item {
-                margin-left: 20px;
+                margin-left: 0.1042rem;
+                
 
                 .svg {
                     cursor: pointer;
-                    font-size: 22px;
+                    font-size: 0.1146rem;
                     color: rgba(47, 47, 118, 0.9);
                 }
             }
@@ -151,29 +154,32 @@
         }
 
         .hamburger-container {
-            line-height: 70px;
-            height: 50px;
+            height: 0.2604rem;
             float: left;
-            padding: 0 10px;
+            padding: 0 0.0521rem;
         }
 
         .screenfull {
             position: absolute;
-            right: 90px;
-            top: 16px;
+            right: 0.4688rem;
+            top: 0.0833rem;
             color: red;
         }
 
         .avatar-container {
-            height: 50px;
+            height: 0.2604rem;
             display: inline-block;
             position: absolute;
-            right: 35px;
-            top: 5px;
+            right: 0.1823rem;
+            top: 0.026rem;
+
+            .menu-item {
+                font-size: .083rem;
+            }
 
             .avatar-wrapper {
                 cursor: pointer;
-                margin-top: 5px;
+                margin-top: 0.026rem;
                 position: relative;
 
                 .user-avatar {

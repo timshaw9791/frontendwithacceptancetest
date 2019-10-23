@@ -94,7 +94,7 @@
                     {lable: '装备总数', field: 'equipInfo.total', sort:false},
                     {lable: '在库数量', field: 'equipInfo.inHouseCount'},
                     {lable: '出库数量', field: 'equipInfo.outHouseCount'},
-                    {lable: '装备价格', field: 'equipInfo.price'},
+                    {lable: '装备价格', field: 'equipInfo.price', filter: (row) => row.equipInfo.price/100},
                     {lable: '供应商', field: 'supplierName'}
                 ]
             }

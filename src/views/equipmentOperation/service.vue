@@ -222,23 +222,6 @@
             },
             scrapped(row) {
                 this.gqlQuery(api.getUserList, {
-                    "qfilter": {
-                        "key": "roleItems.roleEnum",
-                        "value": "LEADER",
-                        "operator": "EQUEAL",
-                        "combinator": "AND",
-                        "next": {
-                            "key": "organUnit.id",
-                            "value": this.unitId,
-                            "operator": "EQUEAL",
-                            "combinator": "OR",
-                            "next": {
-                                "key": "organUnit.organUnit.id",
-                                "value": this.unitId,
-                                "operator": "EQUEAL"
-                            }
-                        }
-                    }
                 }, (res) => {
                     let data = JSON.parse(JSON.stringify(res.data.UserList.content));
                     this.leadershipList = data.map((item) => {

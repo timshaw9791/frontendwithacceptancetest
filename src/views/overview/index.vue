@@ -16,7 +16,7 @@
                             {{item.name}}
                         </div>
                         <div class="bulk" @click="gotoInfo('statistics',item.name)">
-                            <progress-circular :width="76" :strokeWidth="6"
+                            <progress-circular :width="70" :strokeWidth="6"
                                                :percentage="item.percentage"
                                                color="#3B86FF">
                                 <div class="inside">
@@ -47,7 +47,7 @@
                         <div class="bk-content">
                             <!-- <el-scrollbar wrap-class="scroll-bar"> -->
                                 <div class="scroll-bar">
-                                    <el-table :data="item.list" fit @row-click="gotoInfo" height="260">
+                                    <el-table :data="item.list" @row-click="gotoInfo" height="1.4115rem">
                                         <div v-if="index===0">
                                             <bos-table-column lable="类型"
                                                               :filter="(row)=>workType(row.type)"></bos-table-column>
@@ -376,6 +376,7 @@
             this.getList();
             this.getHumiture();
             this.controlVideo(1)
+            this.$message.error("SprWu")
             // this.videoTime = setInterval(() => {
             //     window.location.reload();
             // }, 60000);  //180000
@@ -445,7 +446,7 @@
                         text-align: center;
                         font-size: .09rem;
                         color: rgba(77, 79, 92, 1);
-                        margin-bottom: .041rem;
+                        margin-bottom: 0.0879rem;
                     }
 
                     .bulk {
@@ -454,11 +455,15 @@
                         align-items: center;
                         cursor: pointer;
 
+                        .ProgressCircular {
+                            height: 0 !important;
+                        }
+
                         .inside {
                             display: grid;
                             color: rgba(77, 79, 92, 1);
                             text-align: center;
-
+                        
                             .percentage {
 
                             }
@@ -476,7 +481,7 @@
                             .sort {
                                 display: flex;
                                 align-items: center;
-                                margin-bottom: .02rem;
+                                margin-top: .02rem;
 
                                 .icon {
                                     width: .052rem;
@@ -512,7 +517,7 @@
 
                 .bk-style {
                     width: 2.656rem;
-                    height: 1.671rem;
+                    height: 1.6927rem;
                     box-shadow: 0 .015rem .031rem rgba(0, 0, 0, 0.16);
                     // margin-bottom: 14px;
                     margin-top: .135rem;
@@ -530,8 +535,10 @@
                         }
                     }
 
+
                     .bk-content {
                         padding: 0 .156rem;    
+
 
                         .monitor {
                             width: 1.562rem;
@@ -574,4 +581,10 @@
 
     }
 
+    .el-table__body-wrapper is-scrolling-left /deep/ .el-table__empty-block {
+        width: 2.25rem !important;
+    }
+
 </style>
+
+

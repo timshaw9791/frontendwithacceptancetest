@@ -79,7 +79,7 @@ query getEquipList($paginator: paginator, $qfilter: qfilter) {
 }
 
 query getUserList($qfilter: qfilter) {
-  UserList(qfilter: $qfilter) {
+   UserList(qfilter: $qfilter) {
     totalPages
     totalElements
     content {
@@ -88,30 +88,13 @@ query getUserList($qfilter: qfilter) {
       idNumber
       name
       password
-      username
       gender
-      fingerprintInformation
 
       faceInformation
-      organUnit {
-        id
-      }
+
       phone
       position
       id
-      roleItems {
-        roleDescribe
-        roleEnum
-        id
-        privilegeItems {
-          privilege {
-            id
-          }
-          id
-          constraintRule
-        }
-
-      }
     }
   }
 }

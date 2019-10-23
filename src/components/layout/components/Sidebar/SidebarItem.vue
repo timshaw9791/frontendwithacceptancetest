@@ -51,6 +51,10 @@
             isNest: {
                 type: Boolean,
                 default: false
+            },
+            collapse: {
+                type: Boolean,
+                default: false
             }
         },
         // created() {

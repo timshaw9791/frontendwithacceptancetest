@@ -7,7 +7,7 @@
             <topInfo class="topInfo"></topInfo>
         </div>
         <el-scrollbar wrapClass="scrollbar-wrapper">
-            <div class="menu">
+            <div :class="{'menu': true, 'collapse': !isCollapse}">
                 <el-menu
                         mode="vertical"
                         :show-timeout="200"
@@ -15,7 +15,7 @@
                         :collapse="isCollapse"
                         background-color="#f9f9f9"
                         text-color="#707070">
-                    <sidebar-item :routes="permission_routers"></sidebar-item>
+                    <sidebar-item :routes="permission_routers" :collapse="isCollapse"></sidebar-item>
                 </el-menu>
                 <div class="topBottom" v-if="!isCollapse">
                     服务热线:400-8265186
