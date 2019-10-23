@@ -155,13 +155,13 @@
                             this.listPush.push(res[0].id);
                         } else {
                             this.$message.error(`${data}该RFID不在库房内`);
-                            index = 1;
+                            //index = 1;
                         }
                     })
                 }, (fail) => {
                     this.$message.error(fail)
                     this.$refs.dialog.hide()
-                }, (pid, err) => {pid?this.pid = pid:this.$message.error(err);this.$refs.dialog.hide()})
+                }, (pid, err) => {pid?this.pid = pid:this.$message.error(err)})
 
                 // const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
                 // this.pid = process.pid;
@@ -205,7 +205,7 @@
 
             },
             cancel() {
-                //killProcess();
+                killProcess();
             },
 
             dialogConfirm() {
@@ -221,25 +221,7 @@
                 )
             },
             scrapped(row) {
-                this.gqlQuery(api.getUserList, {
-                    "qfilter": {
-                        "key": "roleItems.roleEnum",
-                        "value": "LEADER",
-                        "operator": "EQUEAL",
-                        "combinator": "AND",
-                        "next": {
-                            "key": "organUnit.id",
-                            "value": this.unitId,
-                            "operator": "EQUEAL",
-                            "combinator": "OR",
-                            "next": {
-                                "key": "organUnit.organUnit.id",
-                                "value": this.unitId,
-                                "operator": "EQUEAL"
-                            }
-                        }
-                    }
-                }, (res) => {
+                this.gqlQuery(api.getUserList, {}, (res) => {
                     let data = JSON.parse(JSON.stringify(res.data.UserList.content));
                     this.leadershipList = data.map((item) => {
                         return {key: item.name, val: item.id}

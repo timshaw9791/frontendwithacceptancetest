@@ -29,26 +29,25 @@
                 <div class="tr">
                     <div class="title">{{typeSingleFlag?`${billName}单号: `:'申请单号: '}}<span
                             v-text="billData.applyOrder.number"></span></div>
-                    <div class="title" v-if="typeSingleFlag">出库时间: <span v-text="$filterTime(billData.outTime)"></span>
+                    <div class="title" v-if="typeSingleFlag">出库时间: <span>{{billData.outTime==0?'--':$filterTime(billData.outTime)}}</span>
                     </div>
-                    <div class="title" v-if="typeSingleFlag">接收时间: <span v-text="$filterTime(billData.inTime)"></span>
+                    <div class="title" v-if="typeSingleFlag">接收时间: <span>{{billData.inTime==0?'--':$filterTime(billData.inTime)}}</span>
                     </div>
                 </div>
                 <div class="tr">
                     <div class="title">申请类型: <span v-text="applicationType(billData.applyOrder.type)"></span></div>
-                    <div class="title">接收机构: <span v-text="billData.applyOrder.inHouse.organUnit.name"></span></div>
                     <div class="title">出库机构: <span v-text="getOutUnit()"></span></div>
+                    <div class="title">接收机构: <span>{{typeSingle==='returns'?billData.receiveHouse.organUnit.name:billData.applyOrder.inHouse.organUnit.name}}</span></div>
                 </div>
                 <div class="tr">
                     <div class="title">申请时间: <span v-text="$filterTime(billData.applyOrder.applyTime)"></span></div>
                     <div class="title" v-if="typeSingleFlag">出库库房: <span v-text="getOutHouse()"></span></div>
-                    <div class="title">接收库房: <span v-text="billData.applyOrder.inHouse.name"></span></div>
+                    <div class="title">接收库房: <span>{{typeSingle==='returns'?billData.receiveHouse.name:billData.applyOrder.inHouse.name}}</span></div>
                 </div>
                 <div class="tr">
                     <div class="title">申请人员: <span v-text="billData.applyOrder.applicant.name"></span></div>
-                    <div class="title" v-if="typeSingleFlag">出库人员: <span v-text="billData.outUser.name"></span></div>
-                    <div class="title" v-if="typeSingleFlag">接收人员:<span
-                            v-text="billData.applyOrder.applicant.name"></span></div>
+                    <div class="title" v-if="typeSingleFlag">出库人员: <span>{{typeSingle==='returns'?billData.applyOrder.applicant.name:billData.outUser.name}}</span></div>
+                    <div class="title" v-if="typeSingleFlag">接收人员: <span>{{typeSingle==='returns'?billData.receiveUser.name:billName=='直调'?billData.applyOrder.inUser.name:billData.applyOrder.applicant.name}}</span></div>
                 </div>
                 <div class="equip-table-list" :style="transferEquipData.state=='ABNORMAL'?'cursor: pointer;':''"
                      @click="clickAbnormalTable(transferEquipData)">
@@ -307,16 +306,34 @@
             }
         },
         created() {
+            console.log(this.billData);
             if (this.singleStatus != '进行中') {
                 this.getHistroyApproval(this.billData.applyOrder.historyLeaderApprovalId)
             }
             if (this.typeSingle != 'apply') {
                 let myName = JSON.parse(localStorage.getItem('user')).name;
-                console.log('typeSingle',this.billData.outUser.name,myName );
-                if (this.billData.outUser.name == myName && this.billData.state == "WITHOUT_OUT_HOUSE") {
-                    this.typeOperational = '出库'
-                } else if (this.billData.applyOrder.applicant.name == myName && this.billData.state == "OUT_HOUSE") {
-                    this.typeOperational = '入库'
+
+                if(this.typeSingle!='returns'){
+                    if(this.billName=='直调'){
+                        if (this.billData.outUser.name == myName && this.billData.state == "WITHOUT_OUT_HOUSE") {
+                            this.typeOperational = '出库'
+                        } else if (this.billData.applyOrder.inUser.name == myName && this.billData.state == "OUT_HOUSE") {
+                            this.typeOperational = '入库'
+                        }
+                    }else {
+                        if (this.billData.outUser.name == myName && this.billData.state == "WITHOUT_OUT_HOUSE") {
+                            this.typeOperational = '出库'
+                        } else if (this.billData.applyOrder.applicant.name == myName && this.billData.state == "OUT_HOUSE") {
+                            this.typeOperational = '入库'
+                        }
+                    }
+
+                }else {
+                    if (this.billData.applyOrder.applicant.name == myName && this.billData.state == "WITHOUT_OUT_HOUSE") {
+                        this.typeOperational = '出库'
+                    } else if (this.billData.receiveUser.name == myName && this.billData.state == "OUT_HOUSE") {
+                        this.typeOperational = '入库'
+                    }
                 }
                 this.downloadSrc = baseBURL + this.billUrlObject.downloadSrcUrl + '?orderId=' + this.billData.id;
                 if (this.billData.state == 'IN_HOUSE') {
@@ -408,7 +425,7 @@
                 this.$refs.transferDialog.showDialog();
             },
             getOutUnit() {
-                return this.billData.applyOrder.outOrganUnit.name
+                return this.typeSingle==='returns'?this.billData.applyOrder.applicant.organUnit.name:this.billData.applyOrder.outOrganUnit.name
             },
             confirmREJECTED() {
                 if (this.reason != '') {
@@ -472,7 +489,7 @@
                 if (!this.typeSingleFlag) {
                     return ''
                 } else {
-                    return this.billData.outHouse.name
+                    return this.typeSingle=='returns'?this.billData.applyOrder.inHouse.name:this.billData.outHouse.name
                 }
             },
             applicationType(data) {
@@ -603,7 +620,7 @@
                     this.checkApproval.reverse()
                 })
             },
-            getTransferEquipData(url) {
+             getTransferEquipData(url) {
                 let params = {orderId: this.billData.id};
                 request({
                     method: 'get',

@@ -620,18 +620,24 @@
                 });
 
                 start("java -jar scan.jar", (data) => {
-                    if (this.index > 0) {
-                        if (this.index == 1) {
-                            this.list[0] = {rfid: data};
-                        } else {
-                            this.list.push({rfid: data});
-                        }
-                        this.index = this.index + 1;
+                    if (this.index == 0) {
+                        this.list[0] = {rfid: data};
                     } else {
-                        let newData = JSON.parse(data);
-
-                        newData.status === 'succeed' ? this.index = 1 : this.index = 0;
+                        this.list.push({rfid: data});
                     }
+                    this.index = this.index + 1;
+                    // if (this.index > 0) {
+                    //     if (this.index == 1) {
+                    //         this.list[0] = {rfid: data};
+                    //     } else {
+                    //         this.list.push({rfid: data});
+                    //     }
+                    //     this.index = this.index + 1;
+                    // } else {
+                    //     let newData = JSON.parse(data);
+                    //
+                    //     newData.status === 'succeed' ? this.index = 1 : this.index = 0;
+                    // }
                 }, (fail) => {
                     this.index = 1;
                     this.$message.error(fail)

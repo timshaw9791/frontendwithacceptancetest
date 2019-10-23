@@ -46,7 +46,7 @@
         data() {
             return {
                 tabsList: ['已提交', '已失效'],
-                list: [{id: 1, name: '恢复上市的风格化'}, {id: 2, name: 'wdnm'}]
+                list: []
             }
         },
         methods: {

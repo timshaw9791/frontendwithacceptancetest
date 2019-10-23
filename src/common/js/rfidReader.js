@@ -2,15 +2,20 @@ if (process.env.NODE_ENV == "production") {
     var exec = window.require('child_process').exec;
     var spawn = window.require('child_process').spawn;
     var cwd = "C:\\Users\\Administrator"; // 执行目录
-    var com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM']; // 端口 串口号
+    //var com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM']; // 端口 串口号
+    var com = 9
     var fs = window.require('fs')
 }
 
 var newFile_path = 'C:\\Users\\Administrator\\inventory.json'; // 手持机路径
 var cmdPath = 'C:\\Users\\Administrator'; // 读卡器路径
 var cmdStr = 'chcp 65001 && adb pull sdcard/inventoryData/inventory.json .';
-// var com = 4
+ // var com = 7
 var workerProcess; // 子进程名
+
+export  function setCom(data) {
+    com = data
+}
 
 /* 结束对应进程 */
 function killProcessSync() {
@@ -59,8 +64,9 @@ export function start(cmd, success, failure, callBack) {
         });
 
         process.stdout.on("data", data => {
-            success(data)
-            if (index == 0 && JSON.parse(data).status == "succeed") {
+            if(index == 1) {
+                success(data)
+            }else if (index == 0 && JSON.parse(data).status == "succeed") {
                 index = 1
             } 
         });
@@ -126,7 +132,7 @@ export function handheld() {
     // 退出之后的输出
     workerProcess.on('close', (code) => {
         console.log('out code：' + code);
-    })
+    });
 
     return start
 }

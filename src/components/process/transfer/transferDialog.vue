@@ -326,7 +326,8 @@
                     this.$message.info('备注不能为空!');
                 }else {
                     if(this.typeOperational=='出库'){
-                        this.$refs.transFerDialogApplyConfirm.show();
+                        this.transferEquipInOrOut('ABNORMAL');
+                        // this.$refs.transFerDialogApplyConfirm.show();
                     }else {
                         this.transferEquipInOrOut('ABNORMAL')
                     }
@@ -393,6 +394,9 @@
                     this.$ajax.delete(aUrl,{data:rfids}).then(res=>{
                         this.$message.success('出库成功');
                         this.sucessInOrOut()
+                    }).catch(err=>{
+                        console.log('err',err);
+                        this.$message.error(err.message)
                     });
                 }else {
                     request({
@@ -402,6 +406,9 @@
                     }).then(res => {
                         this.$message.success('入库成功');
                         this.sucessInOrOut()
+                    }).catch(err=>{
+                        console.log('err',err);
+                        this.$message.error(err.message)
                     })
                 }
 
@@ -414,7 +421,8 @@
             submit() {
                 if (this.submitFlag) {
                     if(this.typeOperational=='出库'){
-                        this.$refs.transFerDialogApplyConfirm.show();
+                        // this.$refs.transFerDialogApplyConfirm.show();
+                        this.transferEquipInOrOut('NORMAL')
                     }else {
                         this.transferEquipInOrOut('NORMAL')
                     }

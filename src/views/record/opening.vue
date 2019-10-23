@@ -29,7 +29,7 @@
                     flag: true,
                     labelList: [
                         {lable: '开门人员', field: 'policeName',sort:false},
-                        {lable: '开门时间', field: 'time', filter: (ns) => this.$filterTime(parseInt(nS.time))},
+                        {lable: '开门时间', field: 'time', filter: (ns) => this.$filterTime(parseInt(ns.time))},
                     ],
                     graphqlTable: {
                         graphqlApi: record.getGateOpenRecordList,

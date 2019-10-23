@@ -3,6 +3,18 @@ import {getToken, setToken, removeToken} from 'common/js/auth'
 import {Message} from 'element-ui'
 import {delectSocket} from "common/js/webSocket";
 import {getdeploy} from "api/login";
+import {baseBURL, baseURL, localTitle} from "../../api/config";
+
+
+function setDeploy() {
+    if (process.env.NODE_ENV == "production") {
+        let fs = window.require('fs'), result, path = 'C:\\config.json';
+        result = fs.readFileSync(path).toString()
+        result = eval(`(${result})`)
+        localStorage.setItem('deploy', JSON.stringify(result))
+    }
+}
+
 
 const user = {
     state: {
@@ -46,9 +58,15 @@ const user = {
                         response.role = ['ADMINISTRATOR'];
                     }
                     localStorage.setItem('user', JSON.stringify(response));
+                    setDeploy();
                     getdeploy().then((res) => {
                         console.log(res);
-                        localStorage.setItem('deploy', JSON.stringify(res.data));
+                        // localStorage.setItem('deploy', JSON.stringify(res.data));
+                        if (process.env.NODE_ENV == "production") {
+
+                        }else {
+                            localStorage.setItem('deploy', JSON.stringify(res.data));
+                        }
                         commit('SET_DEPLOY', res);
                     });
                     // commit('SET_USERID', response.id);
@@ -61,6 +79,8 @@ const user = {
                 })
             })
         },
+
+
 
         // 获取用户信息
         // GetInfo({commit, state}) {

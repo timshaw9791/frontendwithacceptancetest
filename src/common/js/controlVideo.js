@@ -37,17 +37,17 @@ function killProcessSync() {
 
 /* 读卡器-连续 */
 export function controlVideo(a){
-    const process = exec(`java -jar SendCamSignal.jar ${a}`, {cwd: cmdPath});
-    process.stderr.on('data', (err) => {
-        console.log(err);
-    });
-
-    process.on('exit', (code) => {
-        // if (this.index === 0) {
-        //       this.$message.error('设备未插入或串口号错误,插入后请重新选择装备!');
-        //   }
-        console.log(`子进程退出 ${code}`);
-    });
+    // const process = exec(`java -jar SendCamSignal.jar ${a}`, {cwd: cmdPath});
+    // process.stderr.on('data', (err) => {
+    //     console.log(err);
+    // });
+    //
+    // process.on('exit', (code) => {
+    //     // if (this.index === 0) {
+    //     //       this.$message.error('设备未插入或串口号错误,插入后请重新选择装备!');
+    //     //   }
+    //     console.log(`子进程退出 ${code}`);
+    // });
 }
 // /* 读卡器-单次 */
 // export function startOne(cmd, callBack, rfid=null) {

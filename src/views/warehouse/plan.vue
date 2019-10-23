@@ -144,7 +144,7 @@
                 form: {
                     planEquips: [{equipModel: '', location: {}}]
                 },
-                restaurants: [{value: 'wdnm', key: '2'}],
+                restaurants: [],
                 title: '',
                 delId: '',
             }

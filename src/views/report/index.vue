@@ -277,13 +277,13 @@
                         });
                         sCallback.call(this, userCountList);
                     }else {
-                        sCallback.call(this,[{
-                            name: 1,
-                            count:2,
-                            allCount:3,
-                            number:2,
-                            percentage: Math.round(((2 / 10) * 100)),
-                            select:false}]);
+                        // sCallback.call(this,[{
+                        //     name: 1,
+                        //     count:2,
+                        //     allCount:3,
+                        //     number:2,
+                        //     percentage: Math.round(((2 / 10) * 100)),
+                        //     select:false}]);
                     }
                     /*this.useCount.list = userCountList*/
                 });
@@ -329,12 +329,12 @@
                         });
                         sCallback.call(this,scrapList);
                     }else {
-                        sCallback.call(this,[{
-                            name: 1,
-                            allCount:1,
-                            number:3,
-                            percentage: Number((0.454545 * 100).toFixed(1)),
-                            select:false}]);
+                        // sCallback.call(this,[{
+                        //     name: 1,
+                        //     allCount:1,
+                        //     number:3,
+                        //     percentage: Number((0.454545 * 100).toFixed(1)),
+                        //     select:false}]);
                     }
 
                   /*  this.scrap.list = scrapList;
@@ -382,12 +382,12 @@
                         });
                         sCallback.call(this,maintenanceList)
                     }else {
-                        sCallback.call(this,[{
-                            name: 1,
-                            allCount:1,
-                            number:3,
-                            percentage: Number((0.23456*100).toFixed(1)),
-                            select:false}]);
+                        // sCallback.call(this,[{
+                        //     name: 1,
+                        //     allCount:1,
+                        //     number:3,
+                        //     percentage: Number((0.23456*100).toFixed(1)),
+                        //     select:false}]);
                     }
                 })
             },

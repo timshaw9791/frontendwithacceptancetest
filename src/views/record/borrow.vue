@@ -56,7 +56,7 @@
                 equipList:{
                     list:[],
                     labelList: [
-                        {lable: '序号', field: 'serialNumber',filter: this.filterSerialNumber, sort: false},
+                        {lable: '序号', field: 'serialNumber', sort: false},
                         {lable: '装备名称', field: 'equipInfo.equipName', sort: false},
                         {lable: 'RFID', field: 'equipInfo.equipRfid',sort: false},
                         {lable: '装备序号', field: 'equipInfo.equipSerial',sort: false}

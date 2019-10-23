@@ -5,7 +5,7 @@
             <span v-text="'视频监控'" v-if="isVideo"></span>
             <span v-text="title" v-if="isLineChart"></span>
         </div>
-        <div class="surroundings-body" v-if="flag">
+        <div class="surroundings-body" v-show="flag">
             <div class="_left">
                 <s_time></s_time>
                 <s_control @toVideo="toVideo"></s_control>
@@ -17,9 +17,9 @@
                 <s_humidity id="s_humidity" :monthDateH="dateH" :humidity="humidity" @humidity="getHumidity"></s_humidity>
             </div>
         </div>
-        <div class="surroundings-body" v-if="!flag">
+        <div class="surroundings-body" v-show="!flag">
             <s_video :videoSrc="videoSrc" v-if="isVideo"></s_video>
-            <s_line_chart v-if="isLineChart" :chartFlag="chartFlag" :svgData="svgData" :threshold="threshold" :initTime="initTime" :region="region" :ticksNumber="ticksNumber"
+            <s_line_chart v-show="isLineChart" :chartFlag="chartFlag" :svgData="svgData" :threshold="threshold" :initTime="initTime" :region="region" :ticksNumber="ticksNumber"
                           :characterType="characterType" :timeType="timeType" @changeDate="changeDate"></s_line_chart>
         </div>
     </div>
@@ -35,9 +35,9 @@
     import s_line_chart from 'components/surroundings/linChartView'
     import {baseURL} from "../../api/config";
 
-    const cmdPath = 'C:\\Users\\Administrator';
-    const exec = window.require('child_process').exec;
-    const spawn = window.require('child_process').spawn;
+    // const cmdPath = 'C:\\Users\\Administrator';
+    // const exec = window.require('child_process').exec;
+    // const spawn = window.require('child_process').spawn;todo
 
     export default {
         name: "index",
@@ -80,7 +80,6 @@
             setInterval(this.getHumiture,600000);
         },
         beforeDestroy() {
-            this.controlVideo(0)
             // clearTimeout(this.videoTime);
         },
         methods:{
@@ -88,32 +87,6 @@
                 if(this.$route.query.name=='video'){
                     this.toVideo()
                 }
-            },
-            controlVideo(a){
-                const process = exec(`java -jar SendCamSignal.jar ${a}`, {cwd: cmdPath});
-                process.stderr.on('data', (err) => {
-                    console.log(err);
-                });
-                // process.stdout.on('data', (data) => {
-                //     console.log(data);
-                //     if (this.index > 0) {
-                //         if (this.index == 1) {
-                //             this.list[0].rfid = data;
-                //         } else {
-                //             this.list.push({rfid: data});
-                //         }
-                //         this.index = this.index + 1;
-                //     } else {
-                //         let newData = JSON.parse(data);
-                //         newData.status === 'succeed' ? this.index = 1 : this.index = 0;
-                //     }
-                // });
-                process.on('exit', (code) => {
-                    // if (this.index === 0) {
-                    //       this.$message.error('设备未插入或串口号错误,插入后请重新选择装备!');
-                    //   }
-                    console.log(`子进程退出 ${code}`);
-                });
             },
             h_black(data){
                 let haveVideo=false;
@@ -124,7 +97,7 @@
                 this.isVideo=false;
                 this.isLineChart=false;
                 if (haveVideo){
-                    this.controlVideo(0)
+
                 }
             },
             changeDate(date){
@@ -139,7 +112,7 @@
               this.isVideo=!this.isVideo;
               this.isLineChart=false;
               if (this.isVideo){
-                  this.controlVideo(4);
+
               }
             },
             getHumidity(data){

@@ -102,11 +102,12 @@
         },
         created(){
             // this.getEquipInfo();
+            this.getUnitAndHouse();
             this.defaultList();
             if(this.$route.query.state!=null){
 
             }
-            this.getUnitAndHouse();
+
         },
         computed:{
             havePage(){

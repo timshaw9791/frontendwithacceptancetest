@@ -36,7 +36,11 @@
             'table.search':{
                 deep:true,
                 handler(newVal,oldVal) {
-                    this.getList()
+                    if(this.paginator.page!=1){
+                        this.paginator.page=1
+                    }else {
+                        this.getList()
+                    }
                 }
             },
             'paginator.page':{

@@ -2,14 +2,14 @@
  * Created by Administrator on 2018/6/5.
  */
 
-
+import { setCom } from 'common/js/rfidReader'
 export const ERR_OK = 0;
 
 
 
 
 
-var baseURL = 'http://10.128.1.198:8010/warehouse';
+var baseURL = 'http://10.128.1.233:8010/warehouse';
 var baseBURL = 'http://115.159.154.194/warehouse_server';
 var localTitle = "龙湾区公安局应急装备物资管理系统";
 
@@ -23,6 +23,7 @@ if (process.env.NODE_ENV == "production") {
     baseURL = `http://${result.HOUSE_SERVER}`;
     baseBURL = `http://${result.B_SERVER}`
     localTitle = `${result.A_CLIENT_TITLE}`
+    setCom(result.UHF_READ_COM)
 }
 
 export { baseURL, baseBURL, localTitle}

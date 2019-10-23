@@ -88,30 +88,11 @@ query getUserList($qfilter: qfilter) {
       idNumber
       name
       password
-      username
       gender
-      fingerprintInformation
-
       faceInformation
-      organUnit {
-        id
-      }
       phone
       position
       id
-      roleItems {
-        roleDescribe
-        roleEnum
-        id
-        privilegeItems {
-          privilege {
-            id
-          }
-          id
-          constraintRule
-        }
-
-      }
     }
   }
 }

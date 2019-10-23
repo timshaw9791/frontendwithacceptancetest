@@ -46,6 +46,7 @@
                         volumeMenuButton: false,
                     }
                 });
+
             },
             dome() {
                 this.player.play();

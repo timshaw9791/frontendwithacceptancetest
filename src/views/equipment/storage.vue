@@ -232,12 +232,14 @@
                     start("java -jar auto.jar", (data) => {
                         let newData = JSON.parse(data);
                         console.log(newData);
-                        if (this.index>0) {
-                            this.writeAll.unshift(newData);
-                            this.writeIndex = newData;
-                        } else {
-                            newData.status === 'succeed' && newData.epc === undefined? this.index = 1: this.index = 0;
-                        }
+                        this.writeAll.unshift(newData);
+                        this.writeIndex = newData;
+                        // if (this.index>0) {
+                        //     this.writeAll.unshift(newData);
+                        //     this.writeIndex = newData;
+                        // } else {
+                        //     newData.status === 'succeed' && newData.epc === undefined? this.index = 1: this.index = 0;
+                        // }
                     }, (fail) => {
                         this.index = 1
                         this.$refs.dialogModify.hide()

@@ -88,7 +88,6 @@
                         {lable: '装备名称', field: 'name', sort: false},
                         {lable: '装备型号', field: 'model', sort: false},
                         /* {lable: '数量', field: 'count', sort: false},*/
-
                     ],
                     graphqlTable: {
                         graphqlApi: warehouse.getHouseEquipArgList,

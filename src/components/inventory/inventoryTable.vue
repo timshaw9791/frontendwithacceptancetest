@@ -38,12 +38,12 @@
                     :align="align"
             >
             </el-table-column>
-            <el-table-column
-                    prop="location.surface"
-                    label="架体AB面"
-                    :align="align"
-            >
-            </el-table-column>
+            <!--<el-table-column-->
+                    <!--prop="location.surface"-->
+                    <!--label="架体AB面"-->
+                    <!--:align="align"-->
+            <!--&gt;-->
+            <!--</el-table-column>-->
             <el-table-column
                     prop="location.floor"
                     label="架体层号"
