@@ -23,14 +23,14 @@
         </el-table>
         <div class="_contentBt" v-if="batch">
             <el-button @click="$emit('cancel',false)">取 消</el-button>
-            <el-button type="primary" @click="DialogShow">提 交</el-button>
+            <el-button type="primary" @click="submit">提 交</el-button>
         </div>
         <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage" v-if="this.list.length>0"/>
       
        
       
 
-        <serviceDialog title="请确认入库装备清单" ref="StorageDialog" @confirm="submit" @cancel="cancelbatch" width="1040px">
+        <!-- <serviceDialog title="请确认入库装备清单" ref="StorageDialog" @confirm="submit" @cancel="cancelbatch" width="1040px">
             <el-table :data="moreList" height="500" fit >
               <el-table-column label="序号" width="60" align="center">
                 <template scope="scope">{{ scope.$index + 1 }}</template>
@@ -44,7 +44,7 @@
                 :filter="(row)=>surface(row.location?row.location.surface:'暂无')"
               ></bos-table-column>
             </el-table>
-        </serviceDialog>
+        </serviceDialog> -->
 
     </div>
 </template>
