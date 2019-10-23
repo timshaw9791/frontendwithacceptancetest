@@ -308,6 +308,7 @@
                 this.rightList.splice(index, 1)
             },
             close() {
+                this.hardware=''
                 this.closeUsb = true;
                 this.end(this.pid);
                 this.$refs.transFerDialogApply.cancelDb();
