@@ -147,6 +147,7 @@
                 restaurants: [{value: 'wdnm', key: '2'}],
                 title: '',
                 delId: '',
+                nowRow:{},
             }
         },
         mixins: [formRulesMixin, transformMixin],
@@ -161,8 +162,8 @@
             },
 
             qaq(row, data) {
-
-                this.form.planEquips[row.$index] = data.key;
+                this.nowRow=data.key
+                // this.form.planEquips[row.$index] = data.key;
 
                 if (row.$index === this.form.planEquips.length - 1) {
                     this.form.planEquips.push({equipModel: '', location: {}});
