@@ -10,7 +10,7 @@
                     </div>
                     <div class="label" v-if="taskType!='报废'">
                         <span v-text="`${ZhiDingOrJieShou}机构：`"></span>
-                        <div style="width: 185px">
+                        <div style="width: 228px">
                             <el-cascader
                                     size="large"
                                     :options="unitList"
