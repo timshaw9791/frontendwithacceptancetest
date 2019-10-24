@@ -55,7 +55,7 @@
             },
             restValidate(func, variables, sCallback) {
                 this.validate.then(() => {
-                    let data = JSON.parse(JSON.stringify(variables))
+                    let data = JSON.parse(JSON.stringify(variables));
                     func(data).then(res => {
                         sCallback(true)
                     }).catch(err => {
