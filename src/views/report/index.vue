@@ -59,7 +59,8 @@
     import report from 'gql/report.gql'
     import {fetchMixin} from 'field/common/mixinFetch'
     import {baseURL} from "../../api/config";
-
+    import {formRulesMixin} from 'field/common/mixinComponent';
+    import api from 'gql/warehouse.gql'
     export default {
         name: "index",
         mixins: [fetchMixin],
@@ -97,6 +98,8 @@
             this.getWareHouse();
             this.getMaintain('',data=>{
                 this.maintenance = data
+                console.log("wwwwwwwwwwwwwwwwwwwwwwww")
+                console.log(this.maintenance)
             });
             this.getScrap('',data=>{
                 this.scrap = data
@@ -105,6 +108,14 @@
                 this.useCount = data
             });
             this.getGenreList();
+        },
+         mixins: [formRulesMixin],
+         apollo: {
+            list() {
+                console.log("this.getEntityListWithPagintor(api.getHouseStockList)")
+                console.log(this.getEntityListWithPagintor(api.getHouseStockList))
+                return this.getEntityListWithPagintor(api.getHouseStockList);
+            },
         },
         methods: {
             getMing() {
@@ -138,7 +149,10 @@
                 this.equipDetails.title=data;
                 if(data=='装备维修率'){
                     this.getMaintain('',data=>{
+                        
                         this.$set(this.equipDetails,'list',data);
+                        console.log("装备维修率")
+                        console.log(this.equipDetails.list)
                     });
                     this.equipDetails.toolTip=['装备名称','维修数量','维修率']
                 }else if(data=='装备损耗率'){
@@ -192,8 +206,12 @@
             getCategoryGener(url,api){
 
                 this.ajax(url,'', (res) => {
+                     console.log("item")
+                        console.log(res.data)
+                        console.log("LSDKAKFHKFHAK")
                     let list=[];
                     res.data[api].forEach(item=>{
+                       
                         let percentage=0;
                         if(item.count!=0&&item.count!=null){
                             percentage=Math.round(((item.outHouseCount / item.count) * 100));
@@ -205,7 +223,8 @@
                                percentage: percentage,
                                allCount:item.count,
                                select:false,
-                               price:item.price
+                               price:item.price,
+
                            })
                        }else {
                            list.push({
@@ -214,7 +233,8 @@
                                percentage: percentage,
                                allCount:item.count,
                                select:false,
-                               price:item.price
+                               price:item.price,
+                               safeStock:this.list.safeStock
                            })
                        }
                     });
@@ -272,7 +292,8 @@
                                 allCount:item.name,
                                 number:item.count,
                                 percentage: Math.round(((item.count / rate) * 100)),
-                                select:false
+                                select:false,
+                                
                             })
                         });
                         sCallback.call(this, userCountList);
@@ -284,6 +305,7 @@
                             number:2,
                             percentage: Math.round(((2 / 10) * 100)),
                             select:false}]);
+                            
                     }
                     /*this.useCount.list = userCountList*/
                 });
@@ -334,6 +356,7 @@
                             allCount:1,
                             number:3,
                             percentage: Number((0.454545 * 100).toFixed(1)),
+                            safeStock:100,
                             select:false}]);
                     }
 
@@ -366,9 +389,13 @@
                     }
                 }
                 this.ajax('/statistic/maintain',param, (res) => {
+                    
+                    
+                           
                     if(res.data.length!=0){
                         let maintenanceList = [];
                         res.data.forEach(item => {
+                            console.log(item)
                             maintenanceList.push({
                                 name: item.name,
                                 number: item.maintainCount,
@@ -387,6 +414,7 @@
                             allCount:1,
                             number:3,
                             percentage: Number((0.23456*100).toFixed(1)),
+                            safeStock:100,
                             select:false}]);
                     }
                 })
