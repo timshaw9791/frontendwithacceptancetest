@@ -103,6 +103,8 @@
         display: flex;
         font-size: 14px;
         color: #4D4F5C;
+        height: 25px;
+        margin-bottom: 5px;
     }
     .progress-box .progress-name{
         width: 70px;

@@ -153,7 +153,7 @@
 
                 <el-card class="box-card" shadow="never" v-if="title.includes('新增')||title.includes('信息查看')">
                     <div slot="header">
-                        <span>教学视频路径</span>
+                        <span>教学视频</span>
                     </div>
                     <div class="box-body">
                         <div class="video" v-for="(item,index) in 3" @click="videoUp(index)">
