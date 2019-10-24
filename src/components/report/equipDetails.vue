@@ -57,7 +57,7 @@
         
         <div class="equip-details-list">
             <div :class="item.select?'equip-details-item select-item':'equip-details-item'" v-for="item in detailsList">
-                <equip-progress :width="500" :detailItem="item" :status="title=='装备使用频次'?false:true"
+                <equip-progress :width="1000" :detailItem="item" :status="title=='装备使用频次'?false:true"
                                  :havePrice="viewStatus.flag">
                     <span v-text="toolTip[0]+'：'+item.allCount" style="margin-top: 8px"></span>
                     <span v-text="toolTip[1]+'：'+item.number" style="margin-top: 8px"></span>
@@ -274,7 +274,7 @@
     }
 
     .equip-details-box .equip-details-list {
-        width: 90%;
+        width: 100%;
         margin-top: 20px;
     }
 
@@ -288,7 +288,7 @@
     }
 
     .equip-details-list .equip-details-item {
-        width: 70%;
+        width: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
