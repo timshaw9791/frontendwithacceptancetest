@@ -133,8 +133,8 @@
     // nodejs调用子进程的方法
 
     // const cmdPath = 'C:\\Users\\Administrator';   //cmd命令的位置
-    // const exec = window.require('child_process').exec;
-    // const spawn = window.require('child_process').spawn;
+    //const exec = window.require('child_process').exec;
+    //const spawn = window.require('child_process').spawn;
     // import {killProcess} from "common/js/kill";
 
     export default {

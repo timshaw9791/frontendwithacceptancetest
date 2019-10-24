@@ -5,8 +5,8 @@ if (process.env.NODE_ENV == "production") {
     // var com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM']; // 端口 串口号
     // var fs = window.require('fs')
     // const cmdPath = 'C:\\Users\\Administrator';
-    // const exec = window.require('child_process').exec;
-    // const spawn = window.require('child_process').spawn;
+    //const exec = window.require('child_process').exec;
+    //const spawn = window.require('child_process').spawn;
 }
 
 var cmdPath = 'C:\\Users\\Administrator'; // 读卡器路径

@@ -163,8 +163,8 @@
 
     // import {handheld} from 'common/js/pda'
     // const cmdPath = 'C:\\Users\\Administrator';
-    // const exec = window.require('child_process').exec;
-    // const spawn = window.require('child_process').spawn;
+    //const exec = window.require('child_process').exec;
+    //const spawn = window.require('child_process').spawn;
     // const fs = window.require('fs');
     // const path = window.require('path');
     // const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
@@ -245,7 +245,9 @@
                     leaderName: '', // 指定领导
                     leaderItem: {},
                 },
-                isClick: false
+                isClick: false,
+                isZero:false,
+                isIdentical:false,
             }
         },
         created() {
@@ -312,7 +314,9 @@
             },
             findId(item) {
                 if(item.id==JSON.parse(localStorage.getItem('user')).unitId){
+                   
                     this.$set(this,'unitList',[item]);
+                    
                 }else if(item.organUnitSet!=null&&item.organUnitSet!=[]&&item.level!='POLICE_STATION'){
                     item.organUnitSet.forEach(lowerItem=>{
                         this.findId(lowerItem)
@@ -336,7 +340,7 @@
                 });
                 //todo 要换回来
                 // let data = inventoryData;
-                // this.getOutDataCopy(['1908000E'])
+                // this.getOutDataCopy([19080012])
             },
             getListUsb() {//todo
                 start("java -jar scan.jar", (data) => {
@@ -378,7 +382,7 @@
 
             },
             deleteFile() {
-                 delFile(newFile_path, () => {})
+                delFile(newFile_path, () => {})
                 // fs.unlink(newFile_path, function (error) {
                 //     if (error) {
                 //         return false;
@@ -441,14 +445,22 @@
             },
             handleUnitChange(data){
                 let unitId=data[data.length-1];
-                console.log(data);
+                console.log("领导")
+                console.log;
                 let gethouseUnitId='';
-                if(this.taskType=='直调'){
-                    gethouseUnitId=JSON.parse(localStorage.getItem('user')).unitId;
+                
+                // if(this.taskType=='直调'){
+                //     gethouseUnitId=JSON.parse(localStorage.getItem('user')).unitId;
+                // }else {
+                //     gethouseUnitId=unitId
+                // }
+                gethouseUnitId=JSON.parse(localStorage.getItem('user')).unitId;
+                if(data[data.length-1]==gethouseUnitId)
+                {
+                this.isIdentical=true;
                 }else {
-                    gethouseUnitId=unitId
+                this.isIdentical=false;
                 }
-                // gethouseUnitId=JSON.parse(localStorage.getItem('user')).unitId;
                 request({
                     method:'get',
                     url:baseBURL+'/architecture/houseByOrganUnitId',
@@ -542,7 +554,7 @@
                 // }).then(res=>{
                 //      })
                 let type='';
-                console.log('此时菜市场',id)
+              
                 switch (this.taskType) {
                     case '报废':
                         type='SCRAP';
@@ -562,7 +574,10 @@
                         transferType: type
                     }
                 }).then(res => {
+                
                     if(res){
+                        console.log("res")
+                        console.log(res)
                         this.leader.leaderList = [];
                         this.processLevelId = res.id;
                         if(res.levelLeaderMap!=null){
@@ -608,6 +623,10 @@
                 }
                 if(this.taskType=='借调'){
                     this.form.orderItems.forEach(item=>{
+                        if(item.count==0)
+                        {
+                           this.isZero=1
+                        }
                         if(item.count!=undefined){
                             if(item.count!=''){
                                 orderItems.push(item)
@@ -710,7 +729,13 @@
                     applyOrder.id=this.applyOrderId;
                     url = baseBURL + `/${urlApi}/apply` + '?nextApproveId=' + this.leader.leaderItem.userId + '&taskId=' + this.taskId
                 }
-                this.allocationApplication(url, applyOrder);
+                if(!this.isZero&&!this.isIdentical)
+                {
+                 this.allocationApplication(url, applyOrder);
+                }
+                else {
+                 this.$message.error('申请失败')
+                }
                 // let transferOrder={};
                 // transferOrder.applicant=JSON.parse(localStorage.getItem('user')).name;
                 // transferOrder.inHouseName=this.inHouseName;
@@ -784,6 +809,10 @@
                 this.form.orderItems[row.$index].name = data.key.name;
             },
             changeCount(row, event) {
+                if(row.row.count==0)
+                {
+                    this.$message.error('装备数量不能为零')
+                }
                 if(row.row.count && row.row.count != 0) {
                     this.nowRow = row;
                     this.addRow()

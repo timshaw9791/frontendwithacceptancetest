@@ -26,8 +26,8 @@
             <el-button type="primary" @click="DialogShow">提 交</el-button>
         </div>
         <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage" v-if="this.list.length>0"/>
-
-
+      
+       
       
 
         <serviceDialog title="请确认入库装备清单" ref="StorageDialog" @confirm="submit" @cancel="cancelbatch" width="1040px">

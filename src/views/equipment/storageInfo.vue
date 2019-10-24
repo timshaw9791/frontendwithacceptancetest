@@ -73,7 +73,7 @@
                             <field-input v-model="form.model" label="装备型号" width="3" :disabled="disabled||edit"
                                          :rules="r(true).all(R.require)" prop="model"></field-input>
 
-                             <field-input v-model="form.serial" label="装备序号" width="3" :disabled="disabled||edit"
+                             <field-input v-model="form.serial" label="装备序号" width="3" :disabled="disabled||edit"   
                                         v-if="title.includes('装备查看')"
                                         :rules="form.serial!==null?r(true).all(R.integer):''" prop="serial"></field-input>
                             
@@ -166,7 +166,7 @@
 
                 <el-card class="box-card" shadow="never" v-if="title.includes('新增')||title.includes('信息查看')">
                     <div slot="header">
-                        <span>文档信息</span>
+                        <span>说明书</span>
                     </div>
                     <div class="box-body">
                         <div class="video" v-for="(item,index) in 3" @click="pdfUp(index)">
@@ -255,8 +255,8 @@
     import { start, startOne, killProcess } from 'common/js/rfidReader'
     import request from 'common/js/request'
     // const cmdPath = 'C:\\Users\\Administrator';
-    // const exec = window.require('child_process').exec;
-    // const spawn = window.require('child_process').spawn;
+    //const exec = window.require('child_process').exec;
+    //const spawn = window.require('child_process').spawn;
     // import {killProcess, killProcessSync} from "common/js/kill";
 
     export default {
