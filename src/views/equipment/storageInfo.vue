@@ -618,6 +618,14 @@
                     }
 
                 });
+               // for (let i=0;i<2;i++){
+               //     if (this.index == 0) {
+               //         this.list[0].rfid = 1222;
+               //     } else {
+               //         this.list.push({rfid: 2333});
+               //     }
+               //     this.index = this.index + 1;
+               // }
 
                 start("java -jar scan.jar", (data) => {
                     if (this.index == 0) {
