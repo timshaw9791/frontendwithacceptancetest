@@ -623,7 +623,7 @@
                 start("java -jar scan.jar", (data) => {
                     if (this.index > 0) {
                         if (this.index == 1) {
-                            this.list[0] = {rfid: data};
+                            this.list[0].rfid = data;
                         } else {
                             this.list.push({rfid: data});
                         }
