@@ -75,7 +75,7 @@
 
                              <field-input v-model="form.serial" label="装备序号" width="3" :disabled="disabled||edit"   
                                         v-if="title.includes('装备查看')"
-                                        :rules="form.serial!==null?r(true).all(R.integer):''" prop="serial"></field-input>
+                                         prop="serial"></field-input>
                             
 
                             <field-input v-model="form.upkeepCycle" label="保养周期/天" width="3"
