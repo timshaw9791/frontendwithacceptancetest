@@ -210,7 +210,12 @@
             }
         },
         created() {
-            this.getApplyList('doing', '');
+            if(this.$route.query.state!=null){
+
+            }else {
+                this.getApplyList('doing', '');
+            }
+
         },
         methods: {
             sortChange(data) {
@@ -342,7 +347,6 @@
                             //     list.push(items)
                             // });
                             if (res != []) {
-
                                 res.forEach(item => {
                                     list.push({
                                         variables: {
@@ -359,7 +363,6 @@
                                 list.sort(this.compare('createTime'));
                                 console.log('list',list)
                             }
-
                         } else {
                             res.content.forEach(item => {
                                 list.push({variables: {applyOrder: item}})
@@ -367,7 +370,6 @@
                             this.paginator.totalPages = res.totalPages;
                         }
                         this.list = list;
-                        console.log('this.list', this.list)
                         if(this.list.length>0){
                             this.havePage = true
                         }else{

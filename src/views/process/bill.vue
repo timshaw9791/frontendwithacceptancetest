@@ -80,7 +80,7 @@
                     <div style="margin-bottom: 12px;"><span
                             v-text="getBillTitle(billData.applyOrder.type)"></span></div>
                     <div class="row" v-for="item in checkApproval">
-                        <div style="color:rgb(47,47,118);width: 100px;text-align: center"><span v-text="getOperateLevel(item.level)"></span></div>
+                        <div style="color:rgb(47,47,118);width: 100px;text-align: center"><span v-text="getOperateLevel(item)"></span></div>
                         <div style="width: 150px;text-align: center"><span v-text="'['+item.leader.position+']'" style="margin-right: 5px"></span><span
                                 v-text="item.leader.name"></span></div>
                         <div style="width: 150px;text-align: center"><span :style="item.approval?'color:#009B4C':'color:#EF4545'"
@@ -137,7 +137,7 @@
                     <div style="margin-bottom: 12px;"><span
                             v-text="getBillTitle(billData.applyOrder.type)"></span></div>
                     <div class="row" v-for="item in checkApproval">
-                        <div style="color:rgb(47,47,118);width: 100px;text-align: center"><span v-text="getOperateLevel(item.level)"></span></div>
+                        <div style="color:rgb(47,47,118);width: 100px;text-align: center"><span v-text="getOperateLevel(item)"></span></div>
                         <div style="width: 150px;text-align: center"><span v-text="'['+item.leader.position+']'" style="margin-right: 5px"></span><span
                                 v-text="item.leader.name"></span></div>
                         <div style="width: 150px;text-align: center"><span :style="item.approval?'color:#009B4C':'color:#EF4545'"
@@ -600,14 +600,27 @@
                 }
                 return chnStr;
             },
-            getOperateLevel(currentLevel) {
-                let maxLeve = this.billData.maxLevel;
+            getOperateLevel(item) {
                 let operateLevel = '';
-                if (currentLevel > maxLeve) {
-                    operateLevel =  '审批'
-                } else {
-                    operateLevel = this.transformToChinese(currentLevel) + '级' + '审核'
+                let approvalType=this.getApplyType(item.approvalType);
+                if(approvalType=='审批') {
+                    operateLevel=approvalType
+                }else {
+                    operateLevel = this.transformToChinese(item.level) + '级' + '审核'
                 }
+               //  console.log('getOperateLevel',item);
+               // if(this.typeSingleFlag){
+               //
+               //     let currentLevel = item.level;
+               //     let maxLeve = this.billData.maxLevel;
+               //     if (currentLevel > maxLeve) {
+               //         operateLevel =  '审批'
+               //     } else {
+               //         operateLevel = this.transformToChinese(currentLevel) + '级' + '审核'
+               //     }
+               // }else {
+               //
+               // }
                 return operateLevel
             },
             getHistroyApproval(id) {
