@@ -155,13 +155,13 @@
                             this.listPush.push(res[0].id);
                         } else {
                             this.$message.error(`${data}该RFID不在库房内`);
-                            index = 1;
+                            //index = 1;
                         }
                     })
                 }, (fail) => {
                     this.$message.error(fail)
                     this.$refs.dialog.hide()
-                }, (pid, err) => {pid?this.pid = pid:this.$message.error(err);this.$refs.dialog.hide()})
+                }, (pid, err) => {pid?this.pid = pid:this.$message.error(err)})
 
                 // const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
                 // this.pid = process.pid;
@@ -205,7 +205,7 @@
 
             },
             cancel() {
-                //killProcess();
+                killProcess();
             },
 
             dialogConfirm() {

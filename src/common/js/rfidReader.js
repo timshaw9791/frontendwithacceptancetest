@@ -1,9 +1,9 @@
 if (process.env.NODE_ENV == "production") {
-    // var exec = window.require('child_process').exec;
-    // var spawn = window.require('child_process').spawn;
-    // var cwd = "C:\\Users\\Administrator"; // 执行目录
-    // var com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM']; // 端口 串口号
-    // var fs = window.require('fs')
+    var exec = window.require('child_process').exec;
+    var spawn = window.require('child_process').spawn;
+    var cwd = "C:\\Users\\Administrator"; // 执行目录
+    var com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM']; // 端口 串口号
+    var fs = window.require('fs')
 }
 
 var newFile_path = 'C:\\Users\\Administrator\\inventory.json'; // 手持机路径
@@ -59,8 +59,9 @@ export function start(cmd, success, failure, callBack) {
         });
 
         process.stdout.on("data", data => {
-            success(data)
-            if (index == 0 && JSON.parse(data).status == "succeed") {
+            if(index == 1) {
+                success(data)
+            }else if (index == 0 && JSON.parse(data).status == "succeed") {
                 index = 1
             } 
         });
