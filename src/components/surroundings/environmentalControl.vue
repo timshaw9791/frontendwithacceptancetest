@@ -128,10 +128,10 @@
 <style scoped>
     .environmentalControl{
         width: 100%;
-        margin-top: 30px;
+        margin-top: 0.1563rem;
     }
     .environmentalControl .control-box{
-        height: 527px;
+        height: 2.7448rem;
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;

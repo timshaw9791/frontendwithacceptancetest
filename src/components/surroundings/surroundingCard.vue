@@ -1,6 +1,6 @@
 <template>
     <div class="surroundingCard">
-        <div class="surroundingCard-head" :style="'height:'+height+'px'" v-text="header"></div>
+        <div class="surroundingCard-head" :style="'height:'+cHeight+'px'" v-text="header"></div>
         <div class="surroundingCard-body">
             <slot>
             </slot>
@@ -20,7 +20,13 @@
                 type:Number,
                 default:57
             }
-        }
+        },
+        computed: {
+            cHeight() {
+                let fontSize = localStorage.getItem('fontSize')
+                return (this.height/192*fontSize).toFixed(2)
+            }
+        },
     }
 </script>
 

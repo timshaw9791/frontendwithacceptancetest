@@ -38,11 +38,11 @@
             },
             height:{
                 type:Number,
-                default:550
+                default:620
             },
             yHeight:{
                 type:Number,
-                default:400
+                default:400/192*localStorage.getItem('fontSize')
             },
             ticksNumber:{
                 type:Number,
@@ -119,8 +119,8 @@
 <style scoped>
     .up-box{
         width: 100%;
-        padding-left: 33px;
-        padding-right: 50px;
+        padding-left: 0.1719rem;
+        padding-right: 0.2604rem;
         display: flex;
         align-items: center;
         justify-content: space-between;

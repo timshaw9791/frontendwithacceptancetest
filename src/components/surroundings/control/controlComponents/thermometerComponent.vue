@@ -6,9 +6,9 @@
                     <div class="temperature-scale-item" v-for="(item,index) in scale">
                         <div class="temperature-scale-short" style="position: absolute;top: 0px" v-if="index!=0"></div>
                         <div class="temperature-scale-long"></div>
-                        <div style="width:33px"></div>
-                        <span style="position: absolute;right: -5px" v-text="item"></span>
-                        <div  style="width: 17px"></div>
+                        <div style="width:0.1719rem"></div>
+                        <span style="position: absolute;right: -8px" v-text="item"></span>
+                        <div  style="width: 0.0885rem"></div>
                         <div class="temperature-scale-short" style="position: absolute;bottom: 0px"></div>
                     </div>
                     <div style="width: 10px;height: 0.5px;background: black;margin-left: 10px;"></div>
@@ -63,8 +63,13 @@
         },
         methods:{
             modifytemperature(){
-                let height=0;
-                height=((this.temperature-(this.scale[this.scale.length-1]-10))/100*400)+20.5;
+                let height=0, multi = 0, add = 0,
+                    rootFontSize = localStorage.getItem('fontSize');
+                multi = (400*rootFontSize/192).toFixed(1)
+                add = (20.5*rootFontSize/192).toFixed(1)
+                height=((this.temperature-(this.scale[this.scale.length-1]-10))/100*multi)+(+add);
+                console.log('multi' + multi);
+                console.log('add' + add);
                 document.getElementById(this.id).style.height=height+'px';
                 document.getElementById(this.id).style.background=this.color
             },
@@ -77,8 +82,8 @@
 
 <style scoped>
     .temperature-shell{
-        width: 120px;
-        height: 527px;
+        width: 0.625rem;
+        height: 2.7448rem;
         border: #2F2F76 4px solid;
         border-radius: 25px;
         display: flex;
@@ -91,21 +96,21 @@
         flex-direction: column;
     }
     .temperature-theme .temperature-body{
-        height: 420px;
+        height: 2.1875rem;
         display: flex;
         justify-content: center;
         position: relative;
-        font-size: 14px;
+        font-size: 0.0729rem;
     }
     .temperature-body .temperature-column{
-        height: 420px;
-        width: 30px;
+        height: 2.1875rem;
+        width: 0.1563rem;
         border-radius: 15px;
         background:rgba(112,112,112,0.23);
         position: absolute;
     }
     .temperature-body .temperature-columnTwo{
-        width: 30px;
+        width: 0.1563rem;
         position: absolute;
         bottom: 0px;
     }
@@ -115,30 +120,30 @@
     .temperature-body .temperature-scale{
         display: flex;
         flex-direction: column;
-        height: 400px;
-        padding-top: 20px;
+        height: 2.0833rem;
+        padding-top: 0.1042rem;
     }
     .temperature-scale .temperature-scale-item{
-        height: 40px;
+        height: 0.2083rem;
         display: flex;
         align-items: center;
         position: relative;
     }
     .temperature-scale-item .temperature-scale-long{
-        width: 20px;
+        width: 0.1042rem;
         height: 1px;
         background: black;
     }
     .temperature-scale-item .temperature-scale-short{
-        width: 10px;
+        width: 0.0521rem;
         height: 0.5px;
         background: black;
-        left: 10px;
+        left: 0.0521rem;
     }
     .temperature-theme .temperature-ball{
-        width: 70px;
-        height: 70px;
+        width: 0.3646rem;
+        height: 0.3646rem;
         border-radius: 40px;
-        margin-top: -20px;
+        margin-top: -0.1042rem;
     }
 </style>

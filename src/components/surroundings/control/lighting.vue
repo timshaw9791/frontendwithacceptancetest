@@ -1,10 +1,10 @@
 <template>
     <div class="lighting">
-        <dialogs ref="dialog" :width="1040" :title="'灯光控制'">
+        <dialogs ref="dialog" :width="900" :title="'灯光控制'">
             <div class="lighting-box">
                 <div class="lighting-select">
                    <div style="width: 210px">
-                       <switch-control :active="active.all" :inactive="inactive.all" @handleChange="changeAll"></switch-control>
+                       <switch-control width="0.3646rem" :active="active.all" :inactive="inactive.all" @handleChange="changeAll"></switch-control>
                    </div>
                 </div>
                 <div class="lighting-controls">
@@ -124,26 +124,27 @@
 
 <style>
     .lighting{
-        width: 1040px;
+        font-size: 16px;
+        width: 4.6875rem;
     }
     .lighting-box{
         width: 100%;
-        height: 697px;
+        height: 3.6302rem;
     }
     .lighting-box .lighting-controls{
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
-        padding-left: 60px;
+        padding-left: 0.3125rem;
 
     }
     .lighting-box .lighting-select{
-        padding-top: 28px;
-        padding-bottom: 8px;
-        padding-left: 23px;
+        padding-top: 0.1458rem;
+        padding-bottom: 0.0417rem;
+        padding-left: 0.1198rem;
     }
     .lighting-select #chargingSationSelect .el-select {
-        width: 202px;
+        width: 1.0521rem;
         background:rgba(47,47,118,1);
         opacity:1;
         border-radius:16px;
@@ -153,7 +154,7 @@
         color: white;
     }
     .lighting-select #chargingSationSelect .el-input__inner{
-        width: 202px;
+        width: 1.0521rem;
         height: 32px;
         background:rgba(47,47,118,1);
         opacity:1;

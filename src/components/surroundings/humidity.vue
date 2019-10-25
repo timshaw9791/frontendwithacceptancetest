@@ -4,10 +4,10 @@
             <div class="humidity-body">
                 <div class="humidity-top">
                     <span v-text="'当前湿度： '"></span>
-                    <span style="font-size: 30px" v-text="humidity"></span>
+                    <span style="font-size: 0.1563rem" v-text="humidity"></span>
                 </div>
-                <s_humidity-component style="margin-top: 47px" :scale="scale" :temperature="humidity" :id="'humidity'" :color="color"></s_humidity-component>
-                <span v-text="'查看湿度曲线'" style="margin-top: 62px;color: blue" @click="toLineChart"></span>
+                <s_humidity-component style="margin-top: 0.2448rem" :scale="scale" :temperature="humidity" :id="'humidity'" :color="color"></s_humidity-component>
+                <span v-text="'查看湿度曲线'" style="margin-top: 0.3229rem;color: blue" @click="toLineChart"></span>
                 <!--<s_line-chart ref="line" :characterType="'%'" :svgData="svgData" :region="region" :initTime="initTime" :threshold="threshold" :title="'湿度'" :ticksNumber="6"></s_line-chart>-->
             </div>
         </s_card>
@@ -189,10 +189,10 @@
 
 <style scoped>
     .humidity{
-        width: 489px;
+        width: 2.5469rem;
     }
     .humidity .humidity-body{
-        height: 738px;
+        height: 3.8438rem;
         display: flex;
         align-items: center;
         justify-content: center;

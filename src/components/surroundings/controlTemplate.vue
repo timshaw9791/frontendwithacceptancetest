@@ -24,7 +24,7 @@
 <style scoped>
     .c_template{
         width: 50%;
-        height: 132px;
+        height: 0.6875rem;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -33,13 +33,13 @@
         border-left:1px solid rgba(112,112,112,0.13);
     }
     .c_template .svg{
-        width: 60px;
-        height: 60px;
+        width: 0.3125rem;
+        height: 0.3125rem;
     }
     .c_template .span{
-        font-size:16px;
-        line-height:20px;
-        margin-top: 10px;
+        font-size:0.0833rem;
+        line-height:0.1042rem;
+        margin-top: 0.0521rem;
         color: #707070
     }
 </style>
