@@ -59,7 +59,7 @@
     import report from 'gql/report.gql'
     import {fetchMixin} from 'field/common/mixinFetch'
     import {baseURL} from "../../api/config";
-
+    
     export default {
         name: "index",
         mixins: [fetchMixin],
@@ -106,6 +106,7 @@
             });
             this.getGenreList();
         },
+         
         methods: {
             getMing() {
                 this.viewStatus.backFlag = !this.viewStatus.backFlag;
@@ -136,6 +137,8 @@
             },
             toDetails(data) {
                 this.equipDetails.title=data;
+                console.log("data")
+                console.log(data)
                 if(data=='装备维修率'){
                     this.getMaintain('',data=>{
                         this.$set(this.equipDetails,'list',data);
@@ -168,6 +171,8 @@
              };
              if(this.equipDetails.title=='装备维修率'){
                  this.getMaintain(date,res=>{
+                     console.log("res")
+                     console.log(res)
                      this.$set(this.equipDetails,'list',res);
                  });
              }else if(this.equipDetails.title=='装备损耗率'){
@@ -199,13 +204,16 @@
                             percentage=Math.round(((item.outHouseCount / item.count) * 100));
                         }
                        if(api=='equipArgStatisticList'){
+                           
                            list.push({
                                name:item.name+item.model,
                                number:item.outHouseCount,
                                percentage: percentage,
                                allCount:item.count,
                                select:false,
-                               price:item.price
+                               price:item.price,
+                               equipId:item.equipArgId,
+                               safeStock:0,
                            })
                        }else {
                            list.push({
@@ -215,6 +223,7 @@
                                allCount:item.count,
                                select:false,
                                price:item.price
+                               
                            })
                        }
                     });
