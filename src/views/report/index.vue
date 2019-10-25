@@ -433,11 +433,11 @@
 
     .report-body .report-top {
         width: 7.8542rem;
-        height: 494px;
+        height: 2.5729rem;
         background: rgba(255, 255, 255, 1);
         box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
         opacity: 1;
-        margin-top: 0.2344rem;
+        margin-top: 0.151rem;
     }
 
     .report-top .report-top-title {

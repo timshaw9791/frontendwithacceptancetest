@@ -414,6 +414,10 @@
             border: none !important;
         }
 
+        ._card-title {
+            font-size: 0.0938rem;
+        }
+    
         .center {
             display: flex;
             justify-content: center;

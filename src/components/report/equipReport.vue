@@ -55,10 +55,10 @@
 
 <style scoped>
     .progress-box /deep/ .el-progress {
-        width: 1.3333rem !important;
+        width: 1.0417rem !important;
     }
     .progress-box /deep/ .progress-name {
-        width: auto;
+        font-size: 0.0729rem;
     }
     .equipReport{
         width:2.4271rem;

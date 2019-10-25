@@ -36,6 +36,6 @@
         display: flex;
         align-items: center;
         justify-content: space-around;
-        margin-top: 0.3073rem;
+        margin-top: 0.2083rem;
     }
 </style>
