@@ -19,7 +19,7 @@
 
 
                 <el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
-                          fit>
+                         height="740px">
                     <bos-table-column lable="装备类型" field="equipArg.category.name"></bos-table-column>
                     <bos-table-column lable="装备小类" field="equipArg.category.genre.name"></bos-table-column>
                     <bos-table-column lable="装备名称" field="equipArg.name"></bos-table-column>
