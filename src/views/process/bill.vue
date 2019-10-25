@@ -80,16 +80,16 @@
                     <div style="margin-bottom: 12px;"><span
                             v-text="getBillTitle(billData.applyOrder.type)"></span></div>
                     <div class="row" v-for="item in checkApproval">
-                        <div style="color:rgb(47,47,118)"><span v-text="getOperateLevel(item.level)"></span></div>
-                        <div><span v-text="'['+item.leader.position+']'" style="margin-right: 5px"></span><span
+                        <div style="color:rgb(47,47,118);width: 100px;text-align: center"><span v-text="getOperateLevel(item.level)"></span></div>
+                        <div style="width: 150px;text-align: center"><span v-text="'['+item.leader.position+']'" style="margin-right: 5px"></span><span
                                 v-text="item.leader.name"></span></div>
-                        <div><span :style="item.approval?'color:#009B4C':'color:#EF4545'"
+                        <div style="width: 150px;text-align: center"><span :style="item.approval?'color:#009B4C':'color:#EF4545'"
                                    v-text="item.approval?'通过':'驳回'"></span><span v-if="!item.approval"
                                                                                  style="color:#2F2F76;cursor: pointer;margin-left: 12px"
                                                                                  v-text="'[查看原因]'"
                                                                                  @click="checkReason(item)"></span>
                         </div>
-                        <div><span v-text="getOperate(item.level)+'时间:'"></span><span
+                        <div style="width: 250px;"><span v-text="getOperate(item.level)+'时间:'"></span><span
                                 v-text="$filterTime(item.time)"></span></div>
                     </div>
                 </div>
@@ -137,16 +137,16 @@
                     <div style="margin-bottom: 12px;"><span
                             v-text="getBillTitle(billData.applyOrder.type)"></span></div>
                     <div class="row" v-for="item in checkApproval">
-                        <div style="color:rgb(47,47,118)"><span v-text="getApplyType(item.approvalType)"></span></div>
-                        <div><span v-text="'['+item.leader.position+']'" style="margin-right: 5px"></span><span
+                        <div style="color:rgb(47,47,118);width: 100px;text-align: center"><span v-text="getOperateLevel(item.level)"></span></div>
+                        <div style="width: 150px;text-align: center"><span v-text="'['+item.leader.position+']'" style="margin-right: 5px"></span><span
                                 v-text="item.leader.name"></span></div>
-                        <div><span :style="item.approval?'color:#009B4C':'color:#EF4545'"
+                        <div style="width: 150px;text-align: center"><span :style="item.approval?'color:#009B4C':'color:#EF4545'"
                                    v-text="item.approval?'通过':'驳回'"></span><span v-if="!item.approval"
                                                                                  style="color:#2F2F76;cursor: pointer;margin-left: 12px"
                                                                                  v-text="'[查看原因]'"
                                                                                  @click="checkReason(item)"></span>
                         </div>
-                        <div><span v-text="getOperate(item.level)+'时间:'"></span><span
+                        <div style="width: 250px;"><span v-text="getOperate(item.level)+'时间:'"></span><span
                                 v-text="$filterTime(item.time)"></span></div>
                     </div>
                 </div>
@@ -604,7 +604,7 @@
                 let maxLeve = this.billData.maxLevel;
                 let operateLevel = '';
                 if (currentLevel > maxLeve) {
-                    operateLevel = this.transformToChinese(currentLevel) + '级' + '审批'
+                    operateLevel =  '审批'
                 } else {
                     operateLevel = this.transformToChinese(currentLevel) + '级' + '审核'
                 }
