@@ -43,7 +43,7 @@
 
           <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage" v-if="this.list.length>0" />
 
-          <serviceDialog title="确认保养装备清单" ref="maintenanceDialog" @cancel="quit" @confirm="submit" width="1040px">
+          <serviceDialog title="确认保养装备清单" ref="maintenanceDialog" @cancel="quit" @confirm="submit" width="5.4167rem">
               <el-table :data="maintenance.list" height="500" fit class="list maintenance-list-box">
                 <el-table-column label="序号" width="60" align="center">
                   <template scope="scope">{{ scope.$index + 1 }}</template>
@@ -317,17 +317,18 @@ export default {
 <style lang="scss" scoped>
 .el-card {
   border: none !important;
+  font-size: 16px;
 }
 .maintenance-list-box {
   border:1px solid rgba(112,112,112,1);
   border-radius: 5px;
 }
 .bottom-tip {
-  margin-top: 10px;
-  font-size: 16px;
+  margin-top: 0.0521rem;
+  font-size: 0.0833rem;
   font-family: PingFang SC;
   font-weight: 400;
-  line-height: 20px;
+  line-height: 0.1042rem;
   color: rgba(112, 112, 112, 1);
 }
 </style>

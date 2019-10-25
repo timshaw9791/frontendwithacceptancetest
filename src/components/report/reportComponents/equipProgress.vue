@@ -7,8 +7,8 @@
            <div slot="content" class="mouseCard">
               <slot></slot>
            </div>
-           <el-progress :percentage="detailItem.percentage" :style="'width:'+width+'px;margin-left:'+marginLeft+'px'" color="#3B86FF" :stroke-width="Number(5)" v-if="status"></el-progress>
-           <el-progress :percentage="detailItem.percentage" :style="'width:'+width+'px;margin-left:'+marginLeft+'px'" color="#3B86FF" :stroke-width="Number(5)" v-if="!status" :format="format"></el-progress>
+           <el-progress :percentage="detailItem.percentage" :style="'width:'+width+'rem;margin-left:'+marginLeft+'px'" color="#3B86FF" :stroke-width="Number(5)" v-if="status"></el-progress>
+           <el-progress :percentage="detailItem.percentage" :style="'width:'+width+'rem;margin-left:'+marginLeft+'px'" color="#3B86FF" :stroke-width="Number(5)" v-if="!status" :format="format"></el-progress>
        </el-tooltip>
         <span v-text="'（'+detailItem.number+'件)'" style="margin-left: -15px" v-if="status&&!havePrice"></span>
         <div v-if="havePrice" style="width: 200px"><span v-text="'（装备总数：'+detailItem.allCount+'件/ ¥'+Number(detailItem.price/100)+')'" style="margin-left: -15px" ></span></div>
@@ -96,9 +96,7 @@
         font-size: 16px!important;
         color: #4D4F5C!important;
     }
-    .transion-toolTip{
 
-    }
     .progress-box {
         display: flex;
         font-size: 14px;

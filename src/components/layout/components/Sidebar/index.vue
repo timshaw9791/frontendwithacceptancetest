@@ -15,7 +15,7 @@
                         :collapse="isCollapse"
                         background-color="#f9f9f9"
                         text-color="#707070">
-                    <sidebar-item :routes="permission_routers" :collapse="isCollapse"></sidebar-item>
+                    <sidebar-item :routes="permission_routers"></sidebar-item>
                 </el-menu>
                 <div class="topBottom" v-if="!isCollapse">
                     服务热线:400-8265186

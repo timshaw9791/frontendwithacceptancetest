@@ -91,6 +91,7 @@
 
 <style lang="scss" scoped>
     .dialog {
+        font-size: 0.0833rem;
         /deep/ .el-dialog__header {
             background: #2F2F76 !important;
         }

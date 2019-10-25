@@ -4,7 +4,7 @@
             <span v-text="title"></span>
         </div>
         <div class="equip-progress-list">
-            <equip-progress style="margin-top: 25px"   v-for="(item,index) in equipData" v-if="index<4" :from="title"
+            <equip-progress style="margin-top: 0.1302rem"   v-for="(item,index) in equipData" v-if="index<4" :from="title"
                             :detailItem="item" :status="title=='装备使用频次'?false:true" :havePrice="false">
                 <span v-text="toolTip[0]+'：'+item.allCount" style="margin-top: 8px"></span>
                 <span v-text="toolTip[1]+'：'+item.number" style="margin-top: 8px"></span>
@@ -54,19 +54,25 @@
 </script>
 
 <style scoped>
+    .progress-box /deep/ .el-progress {
+        width: 1.3333rem !important;
+    }
+    .progress-box /deep/ .progress-name {
+        width: auto;
+    }
     .equipReport{
-        width:466px;
-        height:251px;
+        width:2.4271rem;
+        height:1.3073rem;
         background:rgba(255,255,255,1);
         box-shadow:0px 3px 6px rgba(0,0,0,0.16);
         opacity:1;
     }
     .equipReport .title{
         width: 100%;
-        padding-left: 15px;
-        padding-top: 17px;
-        padding-bottom: 17px;
-        font-size: 18px;
+        padding-left: 0.0781rem;
+        padding-top: 0.0885rem;
+        padding-bottom: 0.0885rem;
+        font-size: 0.0938rem;
         color: #707070;
     }
     .equip-progress-list{

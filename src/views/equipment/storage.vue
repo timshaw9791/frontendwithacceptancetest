@@ -13,16 +13,16 @@
             <div>
                 <tabs>
                     <el-button type="text" class="_textBt" @click="goInfo('add')">
-                        <svg-icon icon-class="加"/>
+                        <svg-icon icon-class="加" class="textBt"/>
                         新增装备信息
                     </el-button>
                     <el-button type="text" class="_textBt" @click="goInfo('storage')">
-                        <svg-icon icon-class="加"/>
+                        <svg-icon icon-class="加" class="textBt"/>
                         装备入库
                     </el-button>
 
                     <el-button type="text" class="_textBt" @click="goInfo('rfid')" v-if="authentication">
-                        <svg-icon icon-class="加"/>
+                        <svg-icon icon-class="加" class="textBt"/>
                         修改RFID
                     </el-button>
                     <div class="_buttons">
@@ -65,17 +65,17 @@
 
         <!--RFID遮罩层 -->
 
-        <service-dialog ref="dialogPattern" title="选择模式" width="634px" :button="false" @cancel="cancelPattern">
+        <service-dialog ref="dialogPattern" title="选择模式" width="3.3021rem" :button="false" @cancel="cancelPattern">
             <div class="pattern-box">
                 <el-button class="pattern" v-text="'连号模式'" @click="rfidMode('serial')"></el-button>
-                <el-button class="pattern" style="margin-left: 109px" v-text="'单件模式'"
+                <el-button class="pattern" style="margin-left: 0.5677rem" v-text="'单件模式'"
                            @click="rfidMode('singleton')"></el-button>
             </div>
         </service-dialog>
 
         <!--RFID遮罩层 -->
 
-        <service-dialog ref="dialogModify" title="修改RFID" width="634px" :button="false" @cancel="cancel">
+        <service-dialog ref="dialogModify" title="修改RFID" width="3.3021rem" :button="false" @cancel="cancel">
 
             <div v-if="modeType=='serial'">
                 <div class='rfidList'>
@@ -415,18 +415,28 @@
 <style lang="scss" scoped>
     .el-card {
         border: none !important;
+        font-size: 0.0833rem;
     }
-
+    
+    // 可调整
+    ._card-title {
+        font-size: 0.0938rem;
+    } 
+    // 可调整
+    ._textBt {
+        font-size: 0.0833rem !important;
+    }
+    
     .pattern-box {
         display: flex;
         align-items: center;
         justify-content: center;
         width: 100%;
-        height: 302px;
+        height: 1.5729rem;
 
         .pattern {
-            width: 122px;
-            height: 93px;
+            width: 0.6354rem;
+            height: 0.4844rem;
             background: rgba(255, 255, 255, 1);
             box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
             opacity: 1;
@@ -438,8 +448,8 @@
     }
 
     .dialogButton {
-        margin-left: 29px;
-        font-size: 16px;
+        margin-left: 0.151rem;
+        font-size: 0.0833rem;
 
         .icon {
             vertical-align: top !important;
@@ -448,17 +458,17 @@
 
     .rfidList {
         border: 1px solid rgba(112, 112, 112, 1);
-        width: 522px;
-        max-height: 179px;
-        min-height: 179px;
+        width: 2.7188rem;
+        max-height: 0.9323rem;
+        min-height: 0.9323rem;
         margin: auto;
         overflow: auto;
-        padding: 16px;
+        padding: 0.0833rem;
 
         .rfid {
-            margin-bottom: 10px;
+            margin-bottom: 0.0521rem;
             color: rgba(112, 112, 112, 1);
-            font-size: 16px;
+            font-size: 0.0833rem;
             display: flex;
 
             .rfid-left {

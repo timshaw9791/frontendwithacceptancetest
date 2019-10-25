@@ -94,6 +94,6 @@
 <style scoped>
     .entryAndExit{
         width: 100%;
-        min-height: 851px;
+        min-height: 4.4323rem;
     }
 </style>

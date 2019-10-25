@@ -6,10 +6,7 @@
 export const ERR_OK = 0;
 
 
-
-
-
-var baseURL = 'http://192.168.50.227:8010/warehouse';
+var baseURL = 'http://10.128.1.233:8010/warehouse';
 var baseBURL = 'http://115.159.154.194/warehouse_server';
 //var messageURL = "http://10.30.103.237:8010/warehouse"
 var localTitle = "龙湾区公安局应急装备物资管理系统";
@@ -18,7 +15,8 @@ var localTitle = "龙湾区公安局应急装备物资管理系统";
 
 // export let baseBURL = 'http://115.159.154.194/warehouse_server';
 if (process.env.NODE_ENV == "production") {
-    let fs = window.require('fs'), result, path = 'C:\\config.json';
+    let fs = window.require('fs'),
+        result, path = 'C:\\config.json';
     result = fs.readFileSync(path).toString()
     result = eval(`(${result})`)
     baseURL = `http://${result.HOUSE_SERVER}`;
@@ -26,7 +24,11 @@ if (process.env.NODE_ENV == "production") {
     localTitle = `${result.A_CLIENT_TITLE}`
 }
 
-export { baseURL, baseBURL, localTitle}
+export {
+    baseURL,
+    baseBURL,
+    localTitle
+}
 export const imgBaseUrl = `${baseURL}/images/`;
 export const pdfBaseUrl = `${baseURL}/pdfs/`;
 export const videoBaseUrl = `${baseURL}/videos/`;
@@ -38,4 +40,3 @@ export const videoUpUrl = `${baseURL}/upload/video`;
 export const websocketUrl = `${baseURL}/websocket`;
 
 export const tokenName = 'x-auth-token';
-

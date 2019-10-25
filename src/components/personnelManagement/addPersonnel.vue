@@ -8,19 +8,19 @@
                              :rules="r(true).all(R.require)" prop="policeSign"></field-input>
                 <!--<field-checkbox  v-model="gender" label="性别" width="4.5" :rules="r(true).all(R.require)"-->
                                 <!--prop="position" :list="nanlist" @change="changeCheck" :disabled="disabled"></field-checkbox>-->
-                <el-form :model="ruleFormGs" :rules="rulesG" ref="ruleForm" style="margin-left: 65px;margin-top: 10px;">
+                <el-form :model="ruleFormGs" :rules="rulesG" ref="ruleForm" style="margin-left: 0.3385rem;margin-top: 10px;">
                     <el-form-item label="性别" prop="type">
                         <el-checkbox-group v-model="ruleFormGs.type" style="display: flex;flex-direction: column" :disabled="disabled" @change="changeCheck">
-                            <el-checkbox  v-for="item in nanlist" :label="item.val" name="type"  style="margin-left: 50px;">{{item.val}}</el-checkbox>
+                            <el-checkbox  v-for="item in nanlist" :label="item.val" name="type"  style="margin-left: 0.2604rem;">{{item.val}}</el-checkbox>
                         </el-checkbox-group>
                     </el-form-item>
                 </el-form>
                 <field-input class="field-input" v-model="form.password" label="密码" width="4.5"
                              :rules="r(true).all(R.require)" prop="password" :disabled="disabled" :type="'password'"></field-input>
-                <el-form :model="roleFormGs" :rules="rulesG" ref="roleForm" style="margin-left: 65px;margin-top: 10px;">
+                <el-form :model="roleFormGs" :rules="rulesG" ref="roleForm" style="margin-left: 0.3385rem;margin-top: 10px;">
                     <el-form-item label="角色" prop="type">
                         <el-checkbox-group v-model="roleFormGs.type" style="display: flex;flex-direction: column" :disabled="disabled" @change="changeCheckRole">
-                            <el-checkbox  v-for="item in cRoleList"  :label="item.val"  name="type"  style="margin-left: 50px;">{{item.key}}</el-checkbox>
+                            <el-checkbox  v-for="item in cRoleList"  :label="item.val"  name="type"  style="margin-left: 0.2604rem;">{{item.key}}</el-checkbox>
                         </el-checkbox-group>
                     </el-form-item>
                 </el-form>
@@ -284,20 +284,20 @@
         flex-direction: row;
     }
     .add-personneo-body-from{
-        width: 738px;
+        width: 3.8438rem;
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
         align-items: center;
         justify-content: space-between;
-        margin-left: 100px;
-        margin-top: 30px;
+        margin-left: 0.5208rem;
+        margin-top: 0.1563rem;
         font-size: 16px;
     }
     .add-personneo-upload-img{
-        margin-left: 164px;
-        margin-top: 35px;
-        width: 137px;
+        margin-left: 164.0064px;
+        margin-top: 35.0016px;
+        width: 0.7135rem;
         display: flex;
        align-items: center;
         flex-direction: column;
@@ -313,7 +313,7 @@
         opacity:0.5;
     }
     .add-personneo-upload-img .span{
-        margin-top: 33px;
+        margin-top: 0.1719rem;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -341,7 +341,8 @@
 
     }
     #myFrom .el-form-item__error {
-       margin-left: 52px;
+       margin-left: 0.2708rem;
+       min-width: 116px;
     }
     #myFrom .el-form-item__label {
         text-align: right;

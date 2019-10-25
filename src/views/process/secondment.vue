@@ -320,6 +320,7 @@
     .secondment-box{
         width: 100%;
         color: #707070;
+        font-size: 16px;
     }
     .secondment-box .secondment-body {
         width: 100%;

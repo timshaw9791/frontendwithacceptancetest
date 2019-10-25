@@ -170,7 +170,6 @@
                     [{name: '调拨通知'}, {name: '保养/充电通知'}, {name: '到期报废提醒'}, {name: '未归还提醒'}],
                 videoTime: '',
                 maturityList: [],
-
             }
         },
         mixins: [formRulesMixin, transformMixin],
@@ -376,7 +375,6 @@
             this.getList();
             this.getHumiture();
             this.controlVideo(1)
-            this.$message.error("SprWu")
             // this.videoTime = setInterval(() => {
             //     window.location.reload();
             // }, 60000);  //180000
@@ -394,6 +392,14 @@
 
     }
 </script>
+
+<style lang="scss">
+    @import '~common/css/Adaptive';
+    .el-message {
+        font-size: 0.0833rem;
+    }
+    
+</style>
 
 <style lang="scss" scoped>
 

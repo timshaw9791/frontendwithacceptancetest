@@ -1,7 +1,7 @@
 <template>
   <el-form-item :class="['_form-item',inputBorderClass]"
                 :label="label" :prop="prop" :rules="rules"
-                :style="boxWidth" :label-width="labelWidth"
+                :style="boxWidth"  :label-width="labelWidth"
   >
     <slot></slot>
   </el-form-item>
@@ -29,6 +29,10 @@
       width: {
         type: [Number, String],
         default: 3.3,
+      },
+      useRem: {
+        type: Boolean,
+        default: false
       }
     },
     computed: {
@@ -41,7 +45,8 @@
       },
       boxWidth(){
           let width=+this.width;
-        return `width:${(width-0.05)* 10}%`;
+
+        return this.useRem?`width: ${width}`:`width:${(width-0.05)* 10}%`;
       }
     }
 

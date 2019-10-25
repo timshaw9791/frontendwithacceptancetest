@@ -143,6 +143,7 @@
 
 <style lang="scss" scoped>
     .el-card {
+        font-size: 0.0833rem;
         border: none !important;
     }
 

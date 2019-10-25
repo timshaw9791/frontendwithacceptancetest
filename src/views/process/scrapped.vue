@@ -310,6 +310,7 @@
 <style scoped>
     .scrapped-box{
         width: 100%;
+        font-size: 16px;
         color: #707070;
     }
     .scrapped-box .scrapped-body {
@@ -336,7 +337,7 @@
         display: flex;
         position: relative;
         align-items: center;
-        margin-right: 34px;
+        margin-right: 0.1771rem;
         cursor: pointer;
     }
     .single-box-item .single-box-item-line{

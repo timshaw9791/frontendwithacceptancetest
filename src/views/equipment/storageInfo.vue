@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="storage-info">
         <el-card shadow="never" :body-style="{ padding:'0'}">
             <div slot="header" class="header">
                 <span class="_card-title">{{title}}</span>
@@ -861,6 +861,10 @@
     @import "common/css/mixin.scss";
     @import "common/css/variables.scss";
 
+    .storage-info {
+        font-size: 0.0833rem;
+    }
+
     .el-card:not(:nth-last-child(2)) {
         border-bottom: none !important;
     }
@@ -870,30 +874,34 @@
         border-top: none !important;
     }
 
+    ._card-title {
+        font-size: 0.0938rem;
+    }
+
     .black {
-        font-size: 20px;
+        font-size: 0.1042rem;
         display: flex;
         align-items: center;
         float: right;
     }
 
     .black .svg-info {
-        height: 20px;
-        width: 20px;
-        margin-right: 10px;
+        height: 0.1042rem;
+        width: 0.1042rem;
+        margin-right: 0.0521rem;
     }
 
     .box-card {
         .topIcon {
-            font-size: 16px;
-            margin-left: 50px;
+            font-size: 0.0833rem;
+            margin-left: 0.2604rem;
         }
 
         .box-body {
             display: flex;
 
             .imgUp {
-                margin-left: 45px;
+                margin-left: 0.2344rem;
             }
 
             .formList {
@@ -902,7 +910,7 @@
             }
 
             .video {
-                margin: 0 50px 20px 50px;
+                margin: 0 0.2604rem 0.1042rem 0.2604rem;
                 cursor: pointer;
                 text-align: center;
 
@@ -911,7 +919,7 @@
                 }
 
                 .icon {
-                    font-size: 50px;
+                    font-size: 0.2604rem;
                     color: #2f2f76;
                 }
 

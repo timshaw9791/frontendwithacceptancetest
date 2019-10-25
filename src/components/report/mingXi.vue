@@ -281,23 +281,19 @@
 
 <style scoped>
 
-    .table-box{
-
-
-    }
     .ming-xi-box {
         width: 100%;
     }
     .ming-xi-box .ming-xi-list {
         width: 100%;
-        margin-top: 20px;
+        margin-top: 20.0064px;
     }
 
     .ming-xi-box .ming-xi-date {
         display: flex;
         align-items: center;
-        padding-left: 18px;
-        padding-top: 17px;
+        padding-left: 0.0938rem;
+        padding-top: 0.0885rem;
 
         color: #707070;
     }
@@ -315,7 +311,7 @@
     }
 
     .ming-xi-box .action-bar {
-        padding-right: 23px;
+        padding-right: 0.1198rem;
         margin-top: 8px;
         border-top: rgba(112, 112, 112, 0.13) solid 1px;
         border-bottom: rgba(112, 112, 112, 0.13) solid 1px;

@@ -37,7 +37,7 @@
             <el-input v-model="remark" placeholder="请输入内容" style="" :disabled="componentType!='warehouse'"></el-input>
         </div>
         <div class="bottom" style="justify-content: center" v-if="componentType=='warehouse'">
-            <el-button style="margin-left: 34px" class="submit" @click="submission">提交</el-button>
+            <el-button style="margin-left: 0.1771rem" class="submit" @click="submission">提交</el-button>
         </div>
     </div>
 </template>
@@ -136,16 +136,16 @@
         align-items: center;
         justify-content: center;
         flex-direction: column;
-        font-size: 16px;
+        font-size: 0.0833rem;
         color: #707070;
         height: 100%;
     }
     .inventory-box .header{
-        width: 1244px;
-        height: 30px;
+        width: 6.4792rem;
+        height: 30.0096px;
         display: flex;
         justify-content: space-between;
-        margin: 24px 0px;
+        margin: 0.125rem 0px;
     }
     .header .header-item{
         height: 100%;
@@ -154,16 +154,16 @@
         justify-content: center;
     }
     .header-item .header-content{
-        width:217px;
-        height:30px;
+        width:1.1302rem;
+        height:0.1563rem;
         background:rgba(235,235,235,1);
         display: flex;
         align-items: center;
         justify-content: center;
     }
     .inventory-box .title{
-        width:1244px;
-        height:46px;
+        width:6.4792rem;
+        height:0.2396rem;
         background:rgba(47,47,118,0.03);
         border:1px solid rgba(112,112,112,0.03);
         display: flex;
@@ -179,24 +179,24 @@
         color: #2F2F76;
     }
     .inventory-box .body{
-        width:1244px;
+        width:6.4792rem;
         display: flex;
         flex-direction:column;
-        margin-top: 25px;
-        margin-bottom: 15px;
+        margin-top: 0.1302rem;
+        margin-bottom: 0.0781rem;
     }
     .inventory-box .bottom{
-        width: 1244px;
-        margin-top: 15px;
+        width: 6.4792rem;
+        margin-top: 0.0781rem;
         display: flex;
         align-items: center;
-        height: 30px;
-        margin-bottom: 15px;
+        height: 0.1563rem;
+        margin-bottom: 0.0781rem;
     }
 
     .bottom .submit{
-        width:70px;
-        height:30px;
+        width:70.0032px;
+        height:30.0096px;
         background:rgba(47,47,118,1);
         color: white;
         line-height: 0px;
