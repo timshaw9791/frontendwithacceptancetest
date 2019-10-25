@@ -23,7 +23,7 @@ export const transformMixin = {
                 case 'SCRAP':
                     return '报废';
                 case 'DIRECT_TRANSFER':
-                    return '报废';
+                    return '直调';
             }
         },
         workState(data) {
