@@ -54,9 +54,10 @@
             >
             </el-date-picker>
         </div>
+        
         <div class="equip-details-list">
             <div :class="item.select?'equip-details-item select-item':'equip-details-item'" v-for="item in detailsList">
-                <equip-progress :width="970" :detailItem="item" :status="title=='装备使用频次'?false:true"
+                <equip-progress :width="500" :detailItem="item" :status="title=='装备使用频次'?false:true"
                                  :havePrice="viewStatus.flag">
                     <span v-text="toolTip[0]+'：'+item.allCount" style="margin-top: 8px"></span>
                     <span v-text="toolTip[1]+'：'+item.number" style="margin-top: 8px"></span>
@@ -266,8 +267,14 @@
         width: 100%;
     }
 
+    .equip-details-list {
+        max-height: 730px;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
     .equip-details-box .equip-details-list {
-        width: 100%;
+        width: 90%;
         margin-top: 20px;
     }
 
@@ -281,7 +288,7 @@
     }
 
     .equip-details-list .equip-details-item {
-        width: 100%;
+        width: 70%;
         display: flex;
         align-items: center;
         justify-content: center;
