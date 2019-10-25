@@ -50,5 +50,8 @@
         align-items: center;
         padding-left: 11px;
         padding-right: 11px;
+        max-height: 800px;
+        overflow-x: hidden;
+        overflow-y: auto;
     }
 </style>
