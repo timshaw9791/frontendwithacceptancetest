@@ -31,18 +31,18 @@
         align-items: center;
         justify-content: center;
         flex-direction: column;
-        height: 180px;
-        margin-left: 60px;
+        height: 0.9375rem;
+        margin-left: 0.3125rem;
     }
     .resourcesMaterialTemplate .r-m-img-box{
-        width: 120px;
-        height: 120px;
+        width: 0.625rem;
+        height: 0.625rem;
     }
     .r-m-img-box .icon-img{
         width: 100%;
         height: 100%;
     }
     .resourcesMaterialTemplate .r-m-span-box{
-        margin-top: 14px;
+        margin-top: 0.0729rem;
     }
 </style>

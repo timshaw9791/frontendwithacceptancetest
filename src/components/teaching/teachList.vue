@@ -48,7 +48,10 @@
         justify-content: flex-start;
         flex-wrap:wrap;
         align-items: center;
-        padding-left: 11px;
-        padding-right: 11px;
+        padding-left: 0.0573rem;
+        padding-right: 0.0573rem;
+        max-height: 4.1667rem;
+        overflow-x: hidden;
+        overflow-y: auto;
     }
 </style>

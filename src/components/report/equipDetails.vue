@@ -265,6 +265,12 @@
     .equip-details-box {
         width: 100%;
     }
+    
+    .equip-details-list {
+        max-height: 3.8021rem;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
 
     .equip-details-box .equip-details-list {
         width: 100%;
