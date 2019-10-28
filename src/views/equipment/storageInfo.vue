@@ -349,6 +349,7 @@
                     this.form.videoAddresses ? this.form.videoAddresses = this.form.videoAddresses.join(',') : '';
                     this.form.documentAddresses ? this.form.documentAddresses = this.form.documentAddresses.join(',') : '';
                     this.form.name = this.form.name.trim()
+                    this.form.model = this.form.model.trim()
 
                     let newData = JSON.parse(JSON.stringify(this.form));
                     newData.upkeepCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.upkeepCycle)));
@@ -369,6 +370,7 @@
                     this.form.documentAddresses ? this.form.documentAddresses = this.form.documentAddresses.join(',') : '';
                     this.form.supplier.id ? this.form.supplier.id = this.form.vendorId : '';
                     this.form.name = this.form.name.trim()
+                    this.form.model = this.form.model.trim()
 
 
                     let newData = JSON.parse(JSON.stringify(this.form));
