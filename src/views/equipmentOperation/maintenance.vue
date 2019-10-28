@@ -18,7 +18,7 @@
               placeholder="rfid"
               suffix="el-icon-search"
               v-model="inquire"
-              :wrapforlike="true"
+              :wrapforlike="false"
               style=" width:285px;"
             ></BosInput>
           </div>
@@ -146,6 +146,7 @@ export default {
     this.batch=!this.batch
     },
     selected(data) {
+      console.log("触发到我了")
       console.log(data);
       this.type = data;
       if (data === "需要保养") {
@@ -169,6 +170,7 @@ export default {
 
     async getList() {
       this.list = await this.getAxiosList1(getNeedUpkeep);
+      console.log("this.list======");
       console.log(this.list);
     },
     /* 显示具体的保养列表 */
