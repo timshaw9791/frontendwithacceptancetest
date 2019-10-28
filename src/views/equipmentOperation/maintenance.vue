@@ -150,7 +150,7 @@ export default {
       this.type = data;
       if (data === "需要保养") {
         this.show = true;
-        this.getList();
+        // this.getList();
       } else if (data === "正在保养") {
         this.show = false;
       }

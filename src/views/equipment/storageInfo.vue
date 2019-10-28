@@ -326,10 +326,10 @@
             //离开页面以后为父组件抛出black 杀死进程
             black() {
                 if(this.isEqual()) {
-                    killProcess(this.pid)
+                    // killProcess(this.pid)
                     this.$emit('black', true);
                 } else {
-                    this.$refs.dialog.show();
+                        this.$refs.dialog.show();
                 }
                 //killProcess();
             },
@@ -348,7 +348,7 @@
                 if (this.title.includes('新增')) {
                     this.form.videoAddresses ? this.form.videoAddresses = this.form.videoAddresses.join(',') : '';
                     this.form.documentAddresses ? this.form.documentAddresses = this.form.documentAddresses.join(',') : '';
-                    this.form.name = this.form.name.trim()
+                    this.form.name = this.form.name.trim();
 
                     let newData = JSON.parse(JSON.stringify(this.form));
                     newData.upkeepCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.upkeepCycle)));
@@ -368,7 +368,7 @@
                     this.form.videoAddresses ? this.form.videoAddresses = this.form.videoAddresses.join(',') : '';
                     this.form.documentAddresses ? this.form.documentAddresses = this.form.documentAddresses.join(',') : '';
                     this.form.supplier.id ? this.form.supplier.id = this.form.vendorId : '';
-                    this.form.name = this.form.name.trim()
+                    this.form.name = this.form.name.trim();
 
 
                     let newData = JSON.parse(JSON.stringify(this.form));
@@ -867,7 +867,7 @@
         },
         beforeDestroy() {
             console.log("页面退出");
-            killProcess(this.pid)
+            // killProcess(this.pid)
         }
 
     }
