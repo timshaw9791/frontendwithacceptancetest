@@ -37,8 +37,7 @@
                     url:baseURL+'/environment/lightSingleSwitch',
                     params:params
                 }).then((res)=>{
-                    this.$message.sucess('成功')
-                    console.log(res)
+                    this.$message.success('成功')
                 }).catch(err=>{
                     this.$message.error(err);
                 });
