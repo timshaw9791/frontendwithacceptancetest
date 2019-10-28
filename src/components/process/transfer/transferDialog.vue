@@ -17,7 +17,7 @@
                         </div>
                     </div>
                     <div class="header-item"><span v-text="'装备清单：'"></span>
-                        <el-button class="resultButton" v-text="'重新读取数据'" v-if="!submitFlag"
+                        <el-button class="resultButton" v-text="'重新读取数据'"
                                    @click="clickResult"></el-button>
                     </div>
                 </div>
@@ -394,9 +394,8 @@
                     this.$ajax.delete(aUrl,{data:rfids}).then(res=>{
                         this.$message.success('出库成功');
                         this.sucessInOrOut()
-                    }).catch(err=>{
-                        console.log('err',err);
-                        this.$message.error(err.message)
+                    }).catch(error=>{
+                        this.$message.error(error.response.data.message)
                     });
                 }else {
                     request({
@@ -406,9 +405,8 @@
                     }).then(res => {
                         this.$message.success('入库成功');
                         this.sucessInOrOut()
-                    }).catch(err=>{
-                        console.log('err',err);
-                        this.$message.error(err.message)
+                    }).catch(error=>{
+                        this.$message.error(error.response.data.message)
                     })
                 }
 
@@ -489,11 +487,11 @@
                 }
             },
             handheldMachine() {
-                handheld().then((data) => {
-                    let json = JSON.parse(data);
-                    this.getOutDataCopy(json.rfid);
-                    this.deleteFile();
-                });
+                // handheld().then((data) => {
+                //     let json = JSON.parse(data);
+                //     this.getOutDataCopy(json.rfid);
+                //     this.deleteFile();
+                // });
                 //todo 要换回来
                 // let data = inventoryData;
                 // if(this.typeOperational=='出库'){
@@ -508,7 +506,7 @@
                 // }else {
                 //     this.getOutDataCopy(['222','19080012']);
                 // }
-                // this.getOutDataCopy(['19071110'])
+                this.getOutDataCopy(['1908000A0231342309382742'])
             },
             // getOutData(data){
             //     console.log(data);

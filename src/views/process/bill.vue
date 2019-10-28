@@ -25,132 +25,141 @@
         <div class="bill">
             <img :src="typeSingleFlag?getStatesTransferImg(billData.state):getStatesImg(billData.applyOrder.state)"
                  class="icon"/>
-            <div class="content" v-if="billName!='报废'">
-                <div class="tr">
-                    <div class="title">{{typeSingleFlag?`${billName}单号: `:'申请单号: '}}<span
-                            v-text="billData.applyOrder.number"></span></div>
-                    <div class="title" v-if="typeSingleFlag">出库时间: <span>{{billData.outTime==0?'--':$filterTime(billData.outTime)}}</span>
-                    </div>
-                    <div class="title" v-if="typeSingleFlag">接收时间: <span>{{billData.inTime==0?'--':$filterTime(billData.inTime)}}</span>
-                    </div>
-                </div>
-                <div class="tr">
-                    <div class="title">申请类型: <span v-text="applicationType(billData.applyOrder.type)"></span></div>
-                    <div class="title">出库机构: <span v-text="getOutUnit()"></span></div>
-                    <div class="title">接收机构: <span>{{typeSingle==='returns'?billData.receiveHouse.organUnit.name:billData.applyOrder.inHouse.organUnit.name}}</span></div>
-                </div>
-                <div class="tr">
-                    <div class="title">申请时间: <span v-text="$filterTime(billData.applyOrder.applyTime)"></span></div>
-                    <div class="title" v-if="typeSingleFlag">出库库房: <span v-text="getOutHouse()"></span></div>
-                    <div class="title">接收库房: <span>{{typeSingle==='returns'?billData.receiveHouse.name:billData.applyOrder.inHouse.name}}</span></div>
-                </div>
-                <div class="tr">
-                    <div class="title">申请人员: <span v-text="billData.applyOrder.applicant.name"></span></div>
-                    <div class="title" v-if="typeSingleFlag">出库人员: <span>{{typeSingle==='returns'?billData.applyOrder.applicant.name:billData.outUser.name}}</span></div>
-                    <div class="title" v-if="typeSingleFlag">接收人员: <span>{{typeSingle==='returns'?billData.receiveUser.name:billName=='直调'?billData.applyOrder.inUser.name:billData.applyOrder.applicant.name}}</span></div>
-                </div>
-                <div class="equip-table-list" :style="transferEquipData.state=='ABNORMAL'?'cursor: pointer;':''"
-                     @click="clickAbnormalTable(transferEquipData)">
-                    <div>装备统计:</div>
-                    <svg-icon icon-class="异常" v-if="transferEquipData.state=='ABNORMAL'?true:false"
-                              class="icon-ABNORMAL"/>
-
-                    <el-table
-                            :data="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?transferEquipData.equips:billData.applyOrder.applyNeedEquips:billData.applyOrder.applyNeedEquips"
-                            class="list" fit height="420">
-                        <el-table-column label="序号" align="center">
-                            <template slot-scope="scope">
-                                {{scope.$index+1}}
-                            </template>
-                        </el-table-column>
-                        <bos-table-column lable="装备名称" field="name"></bos-table-column>
-                        <bos-table-column lable="装备型号" field="model"></bos-table-column>
-                        <bos-table-column lable="装备数量" field="count"></bos-table-column>
-                        <el-table-column align="center" label="总价" prop="price"
-                                         v-if="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?true:false:false">
-                            <template slot-scope="scope">
-                                {{scope.row.price/100}}
-                            </template>
-                        </el-table-column>
-                        <!--<bos-table-column lable="总价" field="price" v-if="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?true:false:false"></bos-table-column>-->
-                    </el-table>
-                </div>
-
-                <div class="bottom" v-if="bottomCheckFlag">
-                    <div style="margin-bottom: 12px;"><span
-                            v-text="getBillTitle(billData.applyOrder.type)"></span></div>
-                    <div class="row" v-for="item in checkApproval">
-                        <div style="color:rgb(47,47,118)"><span v-text="getOperateLevel(item.level)"></span></div>
-                        <div><span v-text="'['+item.leader.position+']'" style="margin-right: 5px"></span><span
-                                v-text="item.leader.name"></span></div>
-                        <div><span :style="item.approval?'color:#009B4C':'color:#EF4545'"
-                                   v-text="item.approval?'通过':'驳回'"></span><span v-if="!item.approval"
-                                                                                 style="color:#2F2F76;cursor: pointer;margin-left: 12px"
-                                                                                 v-text="'[查看原因]'"
-                                                                                 @click="checkReason(item)"></span>
+            <div class="content">
+                <div v-if="billName!='报废'">
+                    <div class="tr">
+                        <div class="title">{{typeSingleFlag?`${billName}单号: `:'申请单号: '}}<span
+                                v-text="billData.applyOrder.number"></span></div>
+                        <div class="title" v-if="typeSingleFlag">出库时间: <span>{{billData.outTime==0?'--':$filterTime(billData.outTime)}}</span>
                         </div>
-                        <div><span v-text="getOperate(item.level)+'时间:'"></span><span
-                                v-text="$filterTime(item.time)"></span></div>
+                        <div class="title" v-if="typeSingleFlag">接收时间: <span>{{billData.inTime==0?'--':$filterTime(billData.inTime)}}</span>
+                        </div>
+                    </div>
+                    <div class="tr">
+                        <div class="title">申请类型: <span v-text="applicationType(billData.applyOrder.type)"></span></div>
+                        <div class="title">出库机构: <span v-text="getOutUnit()"></span></div>
+                        <div class="title">接收机构: <span>{{typeSingle==='returns'?billData.receiveHouse.organUnit.name:billData.applyOrder.inHouse.organUnit.name}}</span></div>
+                    </div>
+                    <div class="tr">
+                        <div class="title">申请时间: <span v-text="$filterTime(billData.applyOrder.applyTime)"></span></div>
+                        <div class="title" v-if="typeSingleFlag">出库库房: <span v-text="getOutHouse()"></span></div>
+                        <div class="title">接收库房: <span>{{typeSingle==='returns'?billData.receiveHouse.name:billData.applyOrder.inHouse.name}}</span></div>
+                    </div>
+                    <div class="tr">
+                        <div class="title">申请人员: <span v-text="billData.applyOrder.applicant.name"></span></div>
+                        <div class="title" v-if="typeSingleFlag">出库人员: <span>{{typeSingle==='returns'?billData.applyOrder.applicant.name:billData.outUser.name}}</span></div>
+                        <div class="title" v-if="typeSingleFlag">接收人员: <span>{{typeSingle==='returns'?billData.receiveUser.name:billName=='直调'?billData.applyOrder.inUser.name:billData.applyOrder.applicant.name}}</span></div>
+                    </div>
+                    <div class="equip-table-list" :style="transferEquipData.state=='ABNORMAL'?'cursor: pointer;':''"
+                         @click="clickAbnormalTable(transferEquipData)">
+                        <div>装备统计:</div>
+                        <svg-icon icon-class="异常" v-if="transferEquipData.state=='ABNORMAL'?true:false"
+                                  class="icon-ABNORMAL"/>
+
+                        <el-table
+                                :data="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?transferEquipData.equips:billData.applyOrder.applyNeedEquips:billData.applyOrder.applyNeedEquips"
+                                class="list" fit height="420">
+                            <el-table-column label="序号" align="center">
+                                <template slot-scope="scope">
+                                    {{scope.$index+1}}
+                                </template>
+                            </el-table-column>
+                            <bos-table-column lable="装备名称" field="name"></bos-table-column>
+                            <bos-table-column lable="装备型号" field="model"></bos-table-column>
+                            <bos-table-column lable="装备数量" field="count"></bos-table-column>
+                            <el-table-column align="center" label="总价" prop="price"
+                                             v-if="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?true:false:false">
+                                <template slot-scope="scope">
+                                    {{scope.row.price/100}}
+                                </template>
+                            </el-table-column>
+                            <!--<bos-table-column lable="总价" field="price" v-if="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?true:false:false"></bos-table-column>-->
+                        </el-table>
                     </div>
                 </div>
-
-            </div>
-            <div class="content" v-if="billName=='报废'">
-                <div class="tr">
-                    <div class="title">{{typeSingleFlag?`${billName}单号: `:'申请单号: '}}<span
-                            v-text="billData.applyOrder.number"></span></div>
-                    <div class="title">申请类型: <span v-text="applicationType(billData.applyOrder.type)"></span></div>
-                </div>
-                <div class="tr">
-                    <div class="title">申请时间: <span v-text="$filterTime(billData.applyOrder.applyTime)"></span></div>
-                    <div class="title">申请人员: <span v-text="billData.applyOrder.applicant.name"></span></div>
-                </div>
-                <div class="tr">
-                    <div class="title">申请原因: <span v-text="billData.applyOrder.reason"></span></div>
-                </div>
-                <div class="equip-table-list">
-                    <div>装备统计:</div>
-                    <el-table :data="billData.applyOrder.scrapEquips" class="list" fit height="420">
-                        <el-table-column label="序号" align="center">
-                            <template slot-scope="scope">
-                                {{scope.$index+1}}
-                            </template>
-                        </el-table-column>
-                        <bos-table-column lable="装备名称" field="name"></bos-table-column>
-                        <bos-table-column lable="装备型号" field="model"></bos-table-column>
-                        <bos-table-column lable="装备序号" field="serial"></bos-table-column>
-                        <el-table-column label="装备数量" align="center">
-                            <template slot-scope="scope">
-                                {{1}}
-                            </template>
-                        </el-table-column>
-                        <el-table-column align="center" lable="总价"
-                                         v-if="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?true:false:false">
-                            <template slot-scope="scope">
-                                {{scope.row.price/100}}
-                            </template>
-                        </el-table-column>
-                        <!--<bos-table-column lable="总价" field="price" v-if="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?true:false:false"></bos-table-column>-->
-                    </el-table>
+                <div v-if="billName=='报废'">
+                    <div class="tr">
+                        <div class="title">{{typeSingleFlag?`${billName}单号: `:'申请单号: '}}<span
+                                v-text="billData.applyOrder.number"></span></div>
+                        <div class="title">申请类型: <span v-text="applicationType(billData.applyOrder.type)"></span></div>
+                    </div>
+                    <div class="tr">
+                        <div class="title">申请时间: <span v-text="$filterTime(billData.applyOrder.applyTime)"></span></div>
+                        <div class="title">申请人员: <span v-text="billData.applyOrder.applicant.name"></span></div>
+                    </div>
+                    <div class="tr">
+                        <div class="title">申请原因: <span v-text="billData.applyOrder.reason"></span></div>
+                    </div>
+                    <div class="equip-table-list">
+                        <div>装备统计:</div>
+                        <el-table :data="billData.applyOrder.scrapEquips" class="list" fit height="420">
+                            <el-table-column label="序号" align="center">
+                                <template slot-scope="scope">
+                                    {{scope.$index+1}}
+                                </template>
+                            </el-table-column>
+                            <bos-table-column lable="装备名称" field="name"></bos-table-column>
+                            <bos-table-column lable="装备型号" field="model"></bos-table-column>
+                            <bos-table-column lable="装备序号" field="serial"></bos-table-column>
+                            <el-table-column label="装备数量" align="center">
+                                <template slot-scope="scope">
+                                    {{1}}
+                                </template>
+                            </el-table-column>
+                            <el-table-column align="center" lable="总价"
+                                             v-if="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?true:false:false">
+                                <template slot-scope="scope">
+                                    {{scope.row.price/100}}
+                                </template>
+                            </el-table-column>
+                            <!--<bos-table-column lable="总价" field="price" v-if="typeSingleFlag?billData.state!='WITHOUT_OUT_HOUSE'?true:false:false"></bos-table-column>-->
+                        </el-table>
+                    </div>
                 </div>
                 <div class="bottom" v-if="bottomCheckFlag">
                     <div style="margin-bottom: 12px;"><span
                             v-text="getBillTitle(billData.applyOrder.type)"></span></div>
                     <div class="row" v-for="item in checkApproval">
-                        <div style="color:rgb(47,47,118)"><span v-text="getApplyType(item.approvalType)"></span></div>
-                        <div><span v-text="'['+item.leader.position+']'" style="margin-right: 5px"></span><span
+                        <div style="color:rgb(47,47,118);width: 100px;text-align: center"><span v-text="getOperateLevel(item)"></span></div>
+                        <div style="width: 150px;text-align: center"><span v-text="'['+item.leader.position+']'" style="margin-right: 5px"></span><span
                                 v-text="item.leader.name"></span></div>
-                        <div><span :style="item.approval?'color:#009B4C':'color:#EF4545'"
+                        <div style="width: 150px;text-align: center"><span :style="item.approval?'color:#009B4C':'color:#EF4545'"
                                    v-text="item.approval?'通过':'驳回'"></span><span v-if="!item.approval"
                                                                                  style="color:#2F2F76;cursor: pointer;margin-left: 12px"
                                                                                  v-text="'[查看原因]'"
                                                                                  @click="checkReason(item)"></span>
                         </div>
-                        <div><span v-text="getOperate(item.level)+'时间:'"></span><span
+                        <div style="width: 250px;"><span v-text="getOperate(item.level)+'时间:'"></span><span
                                 v-text="$filterTime(item.time)"></span></div>
                     </div>
                 </div>
+
             </div>
+
+
+
+
+
+            <!--<div class="content" v-if="billName=='报废'">-->
+               <!---->
+                <!--<div class="bottom" v-if="bottomCheckFlag">-->
+                    <!--<div style="margin-bottom: 12px;"><span-->
+                            <!--v-text="getBillTitle(billData.applyOrder.type)"></span></div>-->
+                    <!--<div class="row" v-for="item in checkApproval">-->
+                        <!--<div style="color:rgb(47,47,118);width: 100px;text-align: center"><span v-text="getOperateLevel(item)"></span></div>-->
+                        <!--<div style="width: 150px;text-align: center"><span v-text="'['+item.leader.position+']'" style="margin-right: 5px"></span><span-->
+                                <!--v-text="item.leader.name"></span></div>-->
+                        <!--<div style="width: 150px;text-align: center"><span :style="item.approval?'color:#009B4C':'color:#EF4545'"-->
+                                   <!--v-text="item.approval?'通过':'驳回'"></span><span v-if="!item.approval"-->
+                                                                                 <!--style="color:#2F2F76;cursor: pointer;margin-left: 12px"-->
+                                                                                 <!--v-text="'[查看原因]'"-->
+                                                                                 <!--@click="checkReason(item)"></span>-->
+                        <!--</div>-->
+                        <!--<div style="width: 250px;"><span v-text="getOperate(item.level)+'时间:'"></span><span-->
+                                <!--v-text="$filterTime(item.time)"></span></div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
         </div>
 
         <serviceDialog title="出库异常详情单" ref="dialogAbnormalTable" width="1529px" :button="false">
@@ -600,14 +609,27 @@
                 }
                 return chnStr;
             },
-            getOperateLevel(currentLevel) {
-                let maxLeve = this.billData.maxLevel;
+            getOperateLevel(item) {
                 let operateLevel = '';
-                if (currentLevel > maxLeve) {
-                    operateLevel = this.transformToChinese(currentLevel) + '级' + '审批'
-                } else {
-                    operateLevel = this.transformToChinese(currentLevel) + '级' + '审核'
+                let approvalType=this.getApplyType(item.approvalType);
+                if(approvalType=='审批') {
+                    operateLevel=approvalType
+                }else {
+                    operateLevel = this.transformToChinese(item.level) + '级' + '审核'
                 }
+               //  console.log('getOperateLevel',item);
+               // if(this.typeSingleFlag){
+               //
+               //     let currentLevel = item.level;
+               //     let maxLeve = this.billData.maxLevel;
+               //     if (currentLevel > maxLeve) {
+               //         operateLevel =  '审批'
+               //     } else {
+               //         operateLevel = this.transformToChinese(currentLevel) + '级' + '审核'
+               //     }
+               // }else {
+               //
+               // }
                 return operateLevel
             },
             getHistroyApproval(id) {
@@ -616,6 +638,7 @@
                     method: 'get',
                     url: url
                 }).then(res => {
+
                     this.checkApproval = res.leaderApprovalList;
                     this.checkApproval.reverse()
                 })

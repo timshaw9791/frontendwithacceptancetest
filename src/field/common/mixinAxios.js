@@ -65,8 +65,7 @@ export let formRulesMixin = {
             var add = function (trigger, checkerandtiparray) {
                 var addItem = function (rule, errormsg, trigger) {
                     this.rules.push({checker: rule, required: this.defaultRequired, context, errormsg, trigger});
-                }
-
+                };
                 var tip = null, checker = null;
                 for (var i = 0; i < checkerandtiparray.length; i++) {
 

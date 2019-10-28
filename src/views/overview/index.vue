@@ -250,7 +250,7 @@
                 });
             },
             gotoInfo(row, route) {
-                console.log(row);
+                console.log(row,route);
                 if (row.type === '充电') {
                     this.$router.push({path: '/equipmentOperation/charging', query: {name: row.equipRfid}});
                 } else if (row.type === '保养') {
