@@ -289,8 +289,12 @@
                 com: 0,
                 copyRfidList: {},
                 judgeEdit: { // 判断是否对数据进行修改
-                    form: null,
-                    zbForm: null
+                    form: {
+                        videoAddresses: [],
+                        documentAddresses: [],
+                        imageAddress: 'noImg.jpg',
+                    },
+                    zbForm: {}
                 },
                 isClick: false // 避免提交按钮快速点击
             }
@@ -325,8 +329,17 @@
 
             //离开页面以后为父组件抛出black 杀死进程
             black() {
-                if(this.isEqual()) {
-                    killProcess(this.pid)
+                let flag = this.isEqual()
+                if(flag) {
+                    //killProcess(this.pid)
+                    this.judgeEdit = { 
+                        form: {
+                            videoAddresses: [],
+                            documentAddresses: [],
+                            imageAddress: 'noImg.jpg',
+                        },
+                        zbForm: {}
+                    },
                     this.$emit('black', true);
                 } else {
                     this.$refs.dialog.show();
@@ -479,6 +492,14 @@
 
             dialogConfirm() {
                 killProcess(this.pid)
+                this.judgeEdit = { 
+                    form: {
+                        videoAddresses: [],
+                        documentAddresses: [],
+                        imageAddress: 'noImg.jpg',
+                    },
+                    zbForm: {}
+                },
                 this.$emit('black', true);
             },
 
@@ -767,6 +788,8 @@
                         this.$set(this.copyRfidList, 'rfid', eqData.rfid);
 
                         this.zbForm = this.zb;
+                        this.judgeEdit.form = JSON.parse(JSON.stringify(this.form))
+                        this.judgeEdit.zbForm = JSON.parse(JSON.stringify(this.zbForm))
                     });
                 }
 
@@ -790,6 +813,8 @@
                         this.$set(this.form, 'eqSmall', eqData.category.name);
                         this.$set(this.form, 'personM', eqData.supplier.person);
                         this.$set(this.form, 'phoneM', eqData.supplier.phone);
+                        this.judgeEdit.form = JSON.parse(JSON.stringify(this.form))
+                        this.judgeEdit.zbForm = JSON.parse(JSON.stringify(this.zbForm))
                     });
                 }
 
@@ -866,7 +891,6 @@
             this.getList();
         },
         beforeDestroy() {
-            console.log("页面退出");
             killProcess(this.pid)
         }
 
