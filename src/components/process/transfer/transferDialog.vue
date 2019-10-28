@@ -476,6 +476,7 @@
             },
             clickResult() {
                 if (this.hardware == '手持机') {
+                    this.rightList=[];
                     this.handheldMachine();
                 } else {
                     this.closeUsb = true;
@@ -487,11 +488,11 @@
                 }
             },
             handheldMachine() {
-                // handheld().then((data) => {
-                //     let json = JSON.parse(data);
-                //     this.getOutDataCopy(json.rfid);
-                //     this.deleteFile();
-                // });
+                handheld().then((data) => {
+                    let json = JSON.parse(data);
+                    this.getOutDataCopy(json.rfid);
+                    this.deleteFile();
+                });
                 //todo 要换回来
                 // let data = inventoryData;
                 // if(this.typeOperational=='出库'){
@@ -506,7 +507,7 @@
                 // }else {
                 //     this.getOutDataCopy(['222','19080012']);
                 // }
-                this.getOutDataCopy(['1908000A0231342309382742'])
+                // this.getOutDataCopy(['1908000A0231342309382742'])
             },
             // getOutData(data){
             //     console.log(data);
@@ -519,8 +520,10 @@
                         url: url,
                         data: data
                     }).then(res => {
-                        if (res) {
+                        if (res.length!=0) {
                             this.getCategroy(res);
+                        }else {
+                            this.$message.error(`无法识别当前装备的RFID:[${data}]`)
                         }
                     })
                 }else {

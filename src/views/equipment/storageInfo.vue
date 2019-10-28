@@ -331,7 +331,7 @@
             black() {
                 let flag = this.isEqual()
                 if(flag) {
-                    //killProcess(this.pid)
+                    killProcess(this.pid)
                     this.judgeEdit = { 
                         form: {
                             videoAddresses: [],
