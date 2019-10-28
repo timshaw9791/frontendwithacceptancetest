@@ -166,6 +166,7 @@
                  startTime:data.startTime.valueOf(),
                  endTime:data.endTime.valueOf()
              };
+
              if(this.equipDetails.title=='装备维修率'){
                  this.getMaintain(date,res=>{
                      this.$set(this.equipDetails,'list',res);
@@ -277,6 +278,7 @@
                         });
                         sCallback.call(this, userCountList);
                     }else {
+                        sCallback.call(this, []);
                         // sCallback.call(this,[{
                         //     name: 1,
                         //     count:2,
@@ -329,6 +331,7 @@
                         });
                         sCallback.call(this,scrapList);
                     }else {
+                        sCallback.call(this, []);
                         // sCallback.call(this,[{
                         //     name: 1,
                         //     allCount:1,
@@ -382,6 +385,7 @@
                         });
                         sCallback.call(this,maintenanceList)
                     }else {
+                        sCallback.call(this, []);
                         // sCallback.call(this,[{
                         //     name: 1,
                         //     allCount:1,

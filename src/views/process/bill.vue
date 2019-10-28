@@ -129,7 +129,7 @@
                                                                                  v-text="'[查看原因]'"
                                                                                  @click="checkReason(item)"></span>
                         </div>
-                        <div style="width: 250px;"><span v-text="getOperate(item.level)+'时间:'"></span><span
+                        <div style="width: 250px;"><span v-text="getApplyType(item.approvalType)+'时间:'"></span><span
                                 v-text="$filterTime(item.time)"></span></div>
                     </div>
                 </div>
@@ -241,7 +241,7 @@
     import request from 'common/js/request'
     import t_dialog from 'components/process/transfer/transferDialog'
     // import {baseBURL} from "../../../api/config";
-    import {baseBURL} from "../../api/config"
+    import {baseBURL,baseURL} from "../../api/config"
     import addDirectAdjustmentBill from 'components/process/directAdjustment/addDirectAdjustment'
     import addApplyBill from 'components/process/secondment/addSecondment'
 
@@ -443,6 +443,19 @@
                         method: 'DELETE',
                         url: url
                     }).then(res => {
+                        if(this.billName=='报废'){
+                            let equipList=[];
+                            this.billData.applyOrder.scrapEquips.forEach(item=>{
+                                equipList.push(item.id)
+                            });
+                            request({
+                                method: 'put',
+                                url: baseURL + '/equips/remove-tag-need-scrap',
+                                data:equipList
+                            }).then(res => {
+                                console.log('取消成功')
+                            })
+                        }
                         this.$message.success('作废成功');
                         this.$emit('toBack', '进行中')
                     })

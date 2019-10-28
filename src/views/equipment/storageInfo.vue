@@ -14,7 +14,6 @@
                 <el-card class="box-card" shadow="never">
                     <div slot="header">
                         <span>装备参数</span>
-
                         <el-button type="text" class="topIcon" @click="$refs.copyRfidDialog.show()"
                                    v-if="title.includes('装备查看')">
                             <svg-icon icon-class="加"/>
@@ -331,7 +330,7 @@
             black() {
                 let flag = this.isEqual()
                 if(flag) {
-                    killProcess(this.pid)
+                    // killProcess(this.pid)
                     this.judgeEdit = { 
                         form: {
                             videoAddresses: [],
@@ -636,7 +635,8 @@
                     this.$set(this.form, 'eqBig', a.category.genre.name);
                     this.$set(this.form, 'eqSmall', a.category.name);
                     if (a.imageAddress) {
-                        this.imageUrl = `${imgBaseUrl}${a.imageAddress}`
+                        this.imageUrl = `${imgBaseUrl}${a.imageAddress}`;
+                        console.log('imageUrl',this.imageUrl)
                     } else {
                         this.imageUrl = '';
                         this.noimg=true;
@@ -788,9 +788,8 @@
                         this.$set(this.form, 'phoneM', eqData.equipArg.supplier.phone);
 
                         this.$set(this.copyRfidList, 'rfid', eqData.rfid);
-
                         this.zbForm = this.zb;
-                        this.judgeEdit.form = JSON.parse(JSON.stringify(this.form))
+                        this.judgeEdit.form = JSON.parse(JSON.stringify(this.form));
                         this.judgeEdit.zbForm = JSON.parse(JSON.stringify(this.zbForm))
                     });
                 }
@@ -804,6 +803,7 @@
                         this.form = eqData;
                         this.form.vendorId = eqData.supplier.id;
                         eqData.imageAddress ? this.imageUrl = `${imgBaseUrl}${eqData.imageAddress}` : '';
+
                         this.form.videoAddresses = eqData.videoAddresses ? eqData.videoAddresses.split(",") : [];
                         this.form.documentAddresses = eqData.documentAddresses ? eqData.documentAddresses.split(",") : [];
 
@@ -893,7 +893,7 @@
             this.getList();
         },
         beforeDestroy() {
-            killProcess(this.pid)
+            // killProcess(this.pid)
         }
 
     }

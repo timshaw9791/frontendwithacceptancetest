@@ -107,7 +107,8 @@
                 }).then((res)=>{
                    this.lightList.forEach(item=>{
                        item.status=flag
-                   })
+                   });
+                   this.$message.sucess('成功')
                 }).catch(err=>{
                     this.$message.error(err);
                 });

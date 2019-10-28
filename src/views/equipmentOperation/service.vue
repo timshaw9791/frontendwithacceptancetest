@@ -41,7 +41,7 @@
                     <bos-table-column lable="架体AB面"
                                       :filter="(row)=>surface(row.location?row.location.surface:'暂无')"></bos-table-column>
 
-                    <bos-table-column lable="上次维修时间" field="name"></bos-table-column>
+                    <bos-table-column lable="上次维修时间" field="time" :filter="(row) => this.$filterTime(row.receiveTime)"></bos-table-column>
                     <el-table-column label="操作" align="center" width="200">
                         <template slot-scope="scope">
                             <el-button type="primary" size="mini" @click="scrapped(scope.row)">报 废</el-button>
@@ -216,6 +216,7 @@
                         reason: this.inlineForm.reason,
                     }).then((res) => {
                         console.log(res);
+                        this.$refs.dialog1.hide()
                         this.callback('报废已经申请');
                     })
                 )

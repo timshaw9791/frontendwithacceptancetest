@@ -39,11 +39,13 @@
             },
             getSrc(){
                 let srcs;
-                if(this.item.faceInformation){
-                    srcs=this.src+this.item.faceInformation
+                if(this.item.faceInformation===null){
+                    srcs=require('./无头像.png')
                 }else {
-                    srcs='./timg.png'
+                    srcs=this.src+this.item.faceInformation
+
                 }
+                console.log(srcs)
                 return srcs
 
             }

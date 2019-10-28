@@ -58,7 +58,7 @@
                 <div class="addApply-label" v-if="taskType=='直调'" :style="taskType=='报废'?'justify-content: left!important;margin-top: 17px;margin-bottom: 12px;':''">
                     <div class="label" style="margin-top: 18px">
                         <span v-text="'指定领导：'"></span>
-                        <field-input-query size="large" v-model="leader.leaderName"
+                        <field-input-query style="width: 185px" size="large" v-model="leader.leaderName"
                                            :inputList="leader.leaderList"
                                            @select="getLeaderSelect"></field-input-query>
                     </div>
@@ -336,7 +336,7 @@
                 });
                 //todo 要换回来
                 // let data = inventoryData;
-                // this.getOutDataCopy([19080012])
+                // this.getOutDataCopy(['123456781112131415161718','19080019'])
             },
             getListUsb() {//todo
                 start("java -jar scan.jar", (data) => {
@@ -719,25 +719,57 @@
                 // this.$emit('submit',transferOrder)
 
             },
-            allocationApplication(url, borrowApplyOrder) {
-                if(this.addType=='add'){
-                    this.$ajax.post(url, borrowApplyOrder).then(res => {
-                        this.sucesssAdd()
-                    }, err => {
-                        this.$message.error("申请失败")
+            allocationApplication(url, applyOrder) {
+                if(this.taskType=='报废'){
+                    let equipList=[];
+                    applyOrder.scrapEquips.forEach(item=>{
+                        equipList.push(item.id);
+                    });
+                    request({
+                        method: 'put',
+                        url: baseURL + '/equips/tag-need-scrap',
+                        data:equipList
+                    }).then(res => {
+                        if(this.addType=='add'){
+                            this.$ajax.post(url, applyOrder).then(res => {
+                                this.sucesssAdd();
+                            }, err => {
+                                this.$message.error("申请失败")
+                            })
+                        }else {
+                            request({
+                                method: 'PUT',
+                                url: url,
+                                data: applyOrder
+                            }).then(res => {
+                                this.sucesssAdd()
+                            }, err => {
+                                this.$message.error("申请失败")
+                            });
+                        }
+                    }).catch(err=>{
+                        this.$message.error(err.response.data.message);
                     })
                 }else {
-                    request({
-                        method: 'PUT',
-                        url: url,
-                        data: borrowApplyOrder
-                    }).then(res => {
-                        this.sucesssAdd()
-                    }, err => {
-                        this.$message.error("申请失败")
-                    });
-
+                    if(this.addType=='add'){
+                        this.$ajax.post(url, applyOrder).then(res => {
+                            this.sucesssAdd();
+                        }, err => {
+                            this.$message.error("申请失败")
+                        })
+                    }else {
+                        request({
+                            method: 'PUT',
+                            url: url,
+                            data: applyOrder
+                        }).then(res => {
+                            this.sucesssAdd()
+                        }, err => {
+                            this.$message.error("申请失败")
+                        });
+                    }
                 }
+
 
                 // this.$ajax({
                 //     method:'post',

@@ -138,10 +138,11 @@
         computed:{
           img(){
               let img;
-              if(this.personnelImg!=null||this.personnelImg!=''){
+              console.log('this.personnelImg',this.personnelImg);
+              if(this.personnelImg!=null&&this.personnelImg!=''){
                   img=this.src+this.personnelImg;
               }else {
-                  img=require('@/assets/noImg.png');
+                  img=require('./无头像.png');
               }
               return img
           }

@@ -4,7 +4,7 @@
             <span v-text="title"></span>
         </div>
         <div class="equip-progress-list">
-            <equip-progress style="margin-top: 25px"   v-for="(item,index) in equipData" v-if="index<4" :from="title"
+            <equip-progress style="margin-top: 25px"   v-for="(item,index) in equipData" v-if="index<3" :from="title"
                             :detailItem="item" :status="title=='装备使用频次'?false:true" :havePrice="false">
                 <span v-text="toolTip[0]+'：'+item.allCount" style="margin-top: 8px"></span>
                 <span v-text="toolTip[1]+'：'+item.number" style="margin-top: 8px"></span>
