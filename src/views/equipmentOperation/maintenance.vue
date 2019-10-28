@@ -150,7 +150,12 @@ export default {
       this.type = data;
       if (data === "需要保养") {
         this.show = true;
-        this.getList();
+          if (this.$route.query['name']) {
+                        this.inquire = this.$route.query.name;
+                    } else {
+                        this.getList();
+                    }
+        // this.getList();
       } else if (data === "正在保养") {
         this.show = false;
       }
@@ -288,18 +293,21 @@ export default {
     }
   },
 
-  mounted() {
-    if (this.$route.query) {
-      this.inquire = this.$route.query.name;
-    }
-    this.getList();
-  },
+  // mounted() {
+  //   if (this.$route.query) {
+  //     this.inquire = this.$route.query.name;
+  //   }
+  //   this.getList();
+  // },
 
   watch: {
     inquire(newVal) {
       if (newVal) {
         this.$set(this.param, "rfid", newVal);
       }
+       else {
+                    this.$set(this.param, 'rfid', null);
+                }
     }
   },
 
