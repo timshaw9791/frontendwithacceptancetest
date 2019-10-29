@@ -59,7 +59,7 @@
         methods:{
             getList(){
                 let url=baseURL+'/equip-records';
-                let params={page:this.paginator.page,size: this.paginator.size,search:this.table.search}
+                let params={page:this.paginator.page,size: this.paginator.size,search:this.table.search,direction:'DESC',property:'time'}
                 request({
                     method: 'get',
                     url: url,

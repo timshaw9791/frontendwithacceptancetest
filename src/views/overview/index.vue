@@ -217,7 +217,7 @@
 
                 equipmentAmount().then(res => {
                     res.genreStatisticList.forEach((item, index) => {
-                        res.genreStatisticList[index]['percentage'] = item.inHouseCount !== 0 ? Math.round((item.outHouseCount / item.inHouseCount) * 100) : 0;
+                        res.genreStatisticList[index]['percentage'] = item.outHouseCount !== 0 ? Math.round((item.outHouseCount / item.count) * 100) : 0;
                     });
                     this.topList = res;
                 }).catch(err => {

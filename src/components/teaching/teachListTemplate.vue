@@ -33,10 +33,8 @@
         computed:{
           img:function () {
               let img;
-            
-              console.log(this.item)
               if(this.item.imageAddress==''||this.item.imageAddress==null||this.item.imageAddress=='noImg.jpg'){
-                  this.showText=true
+                  this.showText=true;
                   img=require('@/assets/noThumbnails.png');
               }else{
                   img=baseURL+'/images/'+this.item.imageAddress

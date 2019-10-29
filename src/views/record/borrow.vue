@@ -74,7 +74,7 @@
                 let data = table.row;
                 if(table.name=='详情'){
                     let dataCopy=JSON.parse(JSON.stringify(data));
-                    this.equipList.list=dataCopy.equipActionRecords;
+                    this.equipList.list=dataCopy.equipActionRecords.reverse();
                     this.equipList.list.forEach((item,index)=>{
                          let number=index+1;
                          let serialNumber='';
