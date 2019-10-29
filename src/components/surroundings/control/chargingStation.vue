@@ -243,20 +243,20 @@
     .charging-sation-box{
         width: 100%;
         height: 3.6302rem;
+        padding: 0 0.1563rem;
     }
     .charging-sation-box .charging-sation-controls{
         display: flex;
         /* flex-direction: row; */
         flex-wrap: wrap;
-        justify-content: space-around;
-        padding-right: 0.1563rem;
+        justify-content: space-between;
         /* padding-left: 0.1042rem; */
     }
 
     .charging-sation-box .charging-sation-select{
         padding-top: 0.1458rem;
         padding-bottom: 0.0417rem;
-        padding-left: 0.1198rem;
+        
     }
     .charging-sation-select #chargingSationSelect .el-select {
         width: 202px;

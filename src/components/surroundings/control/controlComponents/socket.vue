@@ -1,5 +1,5 @@
 <template>
-    <div style="width: 180px;margin-left: 0.1563rem;margin-top: 0.1042rem">
+    <div style="width: 180px;margin-top: 0.1042rem">
         <surrounding-card :header="socket.socketName" :height="39">
             <div class="charging-sation-control-body">
                 <div class="c_s_c_upper">
