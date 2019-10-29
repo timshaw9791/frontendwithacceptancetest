@@ -419,13 +419,13 @@
     }
     
     // 可调整
-    ._card-title {
-        font-size: 0.0938rem;
-    } 
+    // ._card-title {
+    //     font-size: 0.0938rem;
+    // } 
     // 可调整
-    ._textBt {
-        font-size: 0.0833rem !important;
-    }
+    // ._textBt {
+    //     font-size: 0.0833rem !important;
+    // }
     
     .pattern-box {
         display: flex;

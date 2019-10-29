@@ -53,6 +53,8 @@
         },
         mounted(){
             this.modifytemperature();
+            /* 随html元素变化(网页页面大小改变)响应式计算 */
+            window.addEventListener('resize', this.modifytemperature)
         },
         watch: {
             'temperature':{

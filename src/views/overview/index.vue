@@ -47,9 +47,12 @@
                         <div class="bk-content">
                             <!-- <el-scrollbar wrap-class="scroll-bar"> -->
                                 <div class="scroll-bar">
-                                    <el-table :data="item.list" @row-click="gotoInfo" height="1.4115rem">
+                                    <el-table :data="item.list" :cell-style="{}"
+                                    :header-cell-style="setWidth"
+                                    @row-click="gotoInfo" height="1.4115rem">
                                         <div v-if="index===0">
                                             <bos-table-column lable="类型"
+                                                              remWidth="170px"
                                                               :filter="(row)=>workType(row.type)"></bos-table-column>
                                             <bos-table-column lable="编号" field="number"></bos-table-column>
                                             <bos-table-column lable="状态"
@@ -174,6 +177,10 @@
         },
         mixins: [formRulesMixin, transformMixin],
         methods: {
+            setWidth({row, column, rowIndex, columnIndex}) {
+              
+                return 'table-header'
+            },
             controlVideo(a){
                 const process = exec(`java -jar SendCamSignal.jar ${a}`, {cwd: cmdPath});
                 process.stderr.on('data', (err) => {
@@ -398,6 +405,9 @@
     .el-message {
         font-size: 0.0833rem;
     }
+    // .el-table__header {
+    //     display: flex;
+    // }
     
 </style>
 
@@ -414,10 +424,9 @@
             border: none !important;
         }
 
-        ._card-title {
-            font-size: 0.0938rem;
-        }
-    
+        // ._card-title {
+        //     font-size: 0.0938rem;
+        // }
         .center {
             display: flex;
             justify-content: center;
@@ -546,9 +555,33 @@
                     }
 
 
-                    .bk-content {
-                        padding: 0 .156rem;    
+                    .bk-content {  
 
+                        .el-table {
+                            font-size: 0.0729rem;
+                        }
+
+                        .el-table /deep/ th.is-leaf, 
+                        .el-table td {
+                            font-size: 0.0833rem;
+                        }
+
+                        // .el-table /deep/ .el-table__header {
+                        //     width: 100% !important;
+                        //     display: flex;
+                        // }
+
+                        .el-table /deep/ th {
+                            padding: 3px 0;
+                        }
+
+                        .el-table /deep/ div.cell {
+                            padding: 0;
+                        }
+
+
+                        
+                        
 
                         .monitor {
                             width: 1.562rem;

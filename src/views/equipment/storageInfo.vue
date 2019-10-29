@@ -862,7 +862,8 @@
     @import "common/css/variables.scss";
 
     .storage-info {
-        font-size: 0.0833rem;
+        /* 可调整 */
+        font-size: 16px;
     }
 
     .el-card:not(:nth-last-child(2)) {
@@ -874,26 +875,29 @@
         border-top: none !important;
     }
 
-    ._card-title {
-        font-size: 0.0938rem;
-    }
+    /* 可调整 */
+    // ._card-title {
+    //     font-size: 0.0938rem;
+    // }
 
     .black {
-        font-size: 0.1042rem;
+        /* 可调整 */
+        font-size: 20px;
         display: flex;
         align-items: center;
         float: right;
     }
 
     .black .svg-info {
-        height: 0.1042rem;
-        width: 0.1042rem;
+        height: 20px;
+        width: 20px;
         margin-right: 0.0521rem;
     }
 
     .box-card {
         .topIcon {
-            font-size: 0.0833rem;
+            /* 可调整 */
+            // font-size: 0.0833rem;
             margin-left: 0.2604rem;
         }
 
