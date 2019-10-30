@@ -82,6 +82,8 @@
         mixins: [formRulesMixin],
         apollo: {
             list() {
+                console.log("this.getEntityListWithPagintor(api.getHouseStockList)")
+                console.log(this.getEntityListWithPagintor(api.getHouseStockList))
                 return this.getEntityListWithPagintor(api.getHouseStockList);
             },
         },

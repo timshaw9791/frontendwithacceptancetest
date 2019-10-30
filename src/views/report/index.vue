@@ -59,7 +59,7 @@
     import report from 'gql/report.gql'
     import {fetchMixin} from 'field/common/mixinFetch'
     import {baseURL} from "../../api/config";
-
+    
     export default {
         name: "index",
         mixins: [fetchMixin],
@@ -106,6 +106,7 @@
             });
             this.getGenreList();
         },
+         
         methods: {
             getMing() {
                 this.viewStatus.backFlag = !this.viewStatus.backFlag;
@@ -136,9 +137,14 @@
             },
             toDetails(data) {
                 this.equipDetails.title=data;
+                console.log("data")
+                console.log(data)
                 if(data=='装备维修率'){
                     this.getMaintain('',data=>{
+                        
                         this.$set(this.equipDetails,'list',data);
+                        console.log("装备维修率")
+                        console.log(this.equipDetails.list)
                     });
                     this.equipDetails.toolTip=['装备名称','维修数量','维修率']
                 }else if(data=='装备损耗率'){
@@ -168,6 +174,8 @@
              };
              if(this.equipDetails.title=='装备维修率'){
                  this.getMaintain(date,res=>{
+                     console.log("res")
+                     console.log(res)
                      this.$set(this.equipDetails,'list',res);
                  });
              }else if(this.equipDetails.title=='装备损耗率'){
@@ -192,20 +200,27 @@
             getCategoryGener(url,api){
 
                 this.ajax(url,'', (res) => {
+                     console.log("item")
+                        console.log(res.data)
+                        console.log("LSDKAKFHKFHAK")
                     let list=[];
                     res.data[api].forEach(item=>{
+                       
                         let percentage=0;
                         if(item.count!=0&&item.count!=null){
                             percentage=Math.round(((item.outHouseCount / item.count) * 100));
                         }
                        if(api=='equipArgStatisticList'){
+                           
                            list.push({
                                name:item.name+item.model,
                                number:item.outHouseCount,
                                percentage: percentage,
                                allCount:item.count,
                                select:false,
-                               price:item.price
+                               price:item.price,
+                               equipId:item.equipArgId,
+                               safeStock:0,
                            })
                        }else {
                            list.push({
@@ -215,6 +230,7 @@
                                allCount:item.count,
                                select:false,
                                price:item.price
+                               
                            })
                        }
                     });
@@ -272,7 +288,8 @@
                                 allCount:item.name,
                                 number:item.count,
                                 percentage: Math.round(((item.count / rate) * 100)),
-                                select:false
+                                select:false,
+                                
                             })
                         });
                         sCallback.call(this, userCountList);
@@ -284,6 +301,7 @@
                             number:2,
                             percentage: Math.round(((2 / 10) * 100)),
                             select:false}]);
+                            
                     }
                     /*this.useCount.list = userCountList*/
                 });
@@ -365,10 +383,11 @@
                         v:2
                     }
                 }
-                this.ajax('/statistic/maintain',param, (res) => {
+                this.ajax('/statistic/maintain',param, (res) => {   
                     if(res.data.length!=0){
                         let maintenanceList = [];
                         res.data.forEach(item => {
+                            console.log(item)
                             maintenanceList.push({
                                 name: item.name,
                                 number: item.maintainCount,
