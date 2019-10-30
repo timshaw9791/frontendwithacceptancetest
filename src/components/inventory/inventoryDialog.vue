@@ -30,7 +30,7 @@
                     </el-table>
                 </div>
                 <div class="d_bottom">
-                    <el-button class="cancel" @click="cancel">取消</el-button><el-button style="margin-left: 34px" class="submits" @click="submit">提交</el-button>
+                    <el-button class="cancel" @click="cancel">取消</el-button><el-button style="margin-left: 34px" class="submits" @click="submit">确定</el-button>
                 </div>
             </div>
         </dialog-svices>

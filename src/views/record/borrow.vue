@@ -32,7 +32,7 @@
         },
         created(){
             if(this.$route.query.name!=null){
-                this.defaultSearch=this.$route.query.name
+                this.defaultSearch=this.$route.query.name;
                 this.table.flag=true
             }
         },
