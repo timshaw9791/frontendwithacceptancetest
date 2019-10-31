@@ -20,7 +20,7 @@
             <!--</BosInput>-->
           </div>
         </div>
-        <div class="ulList" ref="ulList" :v-loading="true">
+        <div class="ulList" ref="ulList" :v-loading="true" v-infinite-scroll="getnextPagemessage" infinite-scroll-distance="1">
           <div
             v-for="(item,index) in list"
             :key="index"
@@ -65,6 +65,9 @@ export default {
   data() {
     return {
       list: [],
+      page:1,
+      totalElements:0,
+      maxpage:0,
       userId: JSON.parse(localStorage.getItem("user")).id,
       content: null,
       contentTrue: null,
@@ -93,13 +96,20 @@ export default {
       return this.$store.state.socket.message;
     }
   },
+  created:{
+    page:1
+  },
   methods: {
     getList() {
       let data = {
-        userId: JSON.parse(localStorage.getItem("user")).id
+        userId: JSON.parse(localStorage.getItem("user")).id,
+        page:this.page,
       };
+      this.page++;
       getMsgList(data).then(res => {
         this.list = JSON.parse(JSON.stringify(res.content));
+        this.totalElements = res.totalElements
+        this.maxpage = res.totalPages
         if (this.oldScrollTop) {
           this.$nextTick(() => {
             this.$refs.ulList.scrollTop = this.oldScrollTop;
@@ -108,6 +118,21 @@ export default {
       });
     },
 
+    getnextPagemessage(){
+      let data = {
+        userId: JSON.parse(localStorage.getItem("user")).id,
+        page:this.page,
+      };
+      if(this.page<=this.maxpage){
+        this.page++;
+        getMsgList(data).then(res => {
+          let a = JSON.parse(JSON.stringify(res.content))
+          for(let index=0;a[index];index++){
+            this.list.push(a[index])
+          }
+        });
+      }
+    },
     read(data) {
       this.oldScrollTop = this.$refs.ulList.scrollTop;
       readMsg(data.id).then(res => {
