@@ -1,6 +1,6 @@
 <template>
     <div class="overview">
-        <el-card shadow="never" :body-style="{ padding:'30px'}" v-if="$store.getters.roles.includes('ADMINISTRATOR')">
+        <el-card shadow="never" :body-style="{ padding:'0.1563rem'}" v-if="$store.getters.roles.includes('ADMINISTRATOR')">
             <div slot="header">
                 <span class="_card-title">{{$route.meta.title}}</span>
             </div>
@@ -16,7 +16,7 @@
                             {{item.name}}
                         </div>
                         <div class="bulk" @click="gotoInfo('statistics',item.name)">
-                            <progress-circular :width="76" :strokeWidth="6"
+                            <progress-circular :width="70" :strokeWidth="6"
                                                :percentage="item.percentage"
                                                color="#3B86FF">
                                 <div class="inside">
@@ -47,7 +47,7 @@
                         <div class="bk-content">
                             <el-scrollbar wrap-class="scroll-bar">
                                 <div class="scroll-bar">
-                                    <el-table :data="item.list" fit @row-click="gotoInfo">
+                                    <el-table :data="item.list" fit @row-click="gotoInfo" height="1.4115rem">
                                         <div v-if="index===0">
                                             <bos-table-column lable="类型"
                                                               :filter="(row)=>workType(row.type)"></bos-table-column>
@@ -366,6 +366,17 @@
     }
 </script>
 
+<style lang="scss">
+    @import '~common/css/Adaptive';
+    .el-message {
+        font-size: 0.0833rem;
+    }
+    // .el-table__header {
+    //     display: flex;
+    // }
+    
+</style>
+
 <style lang="scss" scoped>
 
     /deep/ .hover-row {
@@ -373,6 +384,8 @@
     }
 
     .overview {
+        font-size: .1rem;
+
         .el-card {
             border: none !important;
         }
@@ -387,35 +400,35 @@
 
             .statistics {
                 padding: 0 1vw;
-                box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+                box-shadow: 0 0.0156rem 0.0313rem rgba(0, 0, 0, 0.16);
                 display: flex;
                 align-items: center;
-                height: 130px;
+                height: 0.6771rem;
                 width: 100%;
                 flex-wrap: wrap;
                 justify-content: space-around;
 
                 .total {
-                    font-size: 16px;
+                    font-size: 0.0833rem;
                     font-weight: bold;
                     color: rgba(77, 79, 92, 1);
 
                     div {
-                        padding-bottom: 10px;
+                        padding-bottom: 0.0521rem;
                     }
 
                     span {
-                        margin-left: 14px;
-                        font-size: 20px;
+                        margin-left: 0.0729rem;
+                        font-size: 0.1042rem;
                     }
                 }
 
                 .ss-content {
                     .title {
                         text-align: center;
-                        font-size: 18px;
+                        font-size: 0.0938rem;
                         color: rgba(77, 79, 92, 1);
-                        margin-bottom: 8px;
+                        margin-bottom: 0.0417rem;
                     }
 
                     .bulk {
@@ -439,14 +452,14 @@
                         }
 
                         .inside-info {
-                            margin-left: 12px;
+                            margin-left: 0.0625rem;
                             display: flex;
                             flex-direction: column;
 
                             .sort {
                                 display: flex;
                                 align-items: center;
-                                margin-bottom: 4px;
+                                margin-bottom: 0.0208rem;
 
                                 .icon {
                                     width: 10px;
@@ -464,7 +477,7 @@
                                 }
 
                                 .piece {
-                                    margin-left: 10px;
+                                    margin-left: 0.0521rem;
                                 }
 
                             }
@@ -481,35 +494,34 @@
                 justify-content: space-between;
 
                 .bk-style {
-                    width: 510px;
-                    height: 321px;
-                    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+                    width: 2.6563rem;
+                    height: 1.6719rem;
+                    box-shadow: 0 0.0156rem 0.0313rem rgba(0, 0, 0, 0.16);
                     // margin-bottom: 14px;
-                    margin-top: 26px;
+                    margin-top: 0.1354rem;
                     color: rgba(112, 112, 112, 1);
 
                     .bk-top {
-                        height: 42px;
+                        height: 0.2188rem;
                         border-left: 4px solid rgba(47, 47, 118, 0.75);
-                        padding: 14px;
-                        margin-bottom: 10px;
+                        padding: 0.0729rem;
+                        margin-bottom: 0.0521rem;
 
                         span {
-                            font-size: 18px;
+                            font-size: 0.0938rem;
 
                         }
                     }
 
-                    .bk-content {
-                        padding: 0 30px;    
+                    .bk-content { 
 
                         .monitor {
-                            width: 300px;
-                            height: 300px;
+                            width: 1.5625rem;
+                            height: 1.5625rem;
                         }
 
                         .scroll-bar {
-                            max-height: 250px;
+                            max-height: 1.3021rem;
                             width: 100%;
                         }
 
@@ -524,16 +536,16 @@
                             }
 
                             div:first-child {
-                                font-size: 16px;
+                                font-size: 0.0833rem;
                             }
 
                             div:nth-child(2) {
-                                font-size: 55px;
-                                margin-left: 18px;
+                                font-size: 0.2865rem;
+                                margin-left: 0.0938rem;
                             }
 
                             div:last-child {
-                                font-size: 14px;
+                                font-size: 0.0729rem;
 
                             }
                         }
@@ -542,6 +554,10 @@
             }
         }
 
+    }
+
+    .el-table__body-wrapper is-scrolling-left /deep/ .el-table__empty-block {
+        width: 2.25rem !important;
     }
 
 </style>
