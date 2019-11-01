@@ -39,7 +39,7 @@
                                           :filter="(row)=>countdown(row.lastChargeTime,row.chargeCycle)"></bos-table-column>
                     </el-table>
 
-                    <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
+                    <bos-paginator v-if="this.list!=''" :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
 
                 </div>
 

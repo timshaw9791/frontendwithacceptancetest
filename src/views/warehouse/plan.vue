@@ -61,7 +61,7 @@
                         </div>
                     </div>
 
-                    <div class="_box-bottom">
+                    <div class="_box-bottom" v-if="this.list!=''">
                         <el-pagination
                                 background
                                 layout="prev, pager, next"
@@ -189,6 +189,7 @@
                     this.title = '编辑预案';
                     console.log(item);
                     this.form = JSON.parse(JSON.stringify(item));
+                    this.form.planEquips.push({equipModel: '', location: {}});
                 }
                 this.getEquipInfo();
 

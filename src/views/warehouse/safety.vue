@@ -40,7 +40,7 @@
                     </el-table-column>
 
                 </el-table>
-                <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
+                <bos-paginator v-if="this.list" :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
             </div>
         </el-card>
 
@@ -82,8 +82,6 @@
         mixins: [formRulesMixin],
         apollo: {
             list() {
-                console.log("this.getEntityListWithPagintor(api.getHouseStockList)")
-                console.log(this.getEntityListWithPagintor(api.getHouseStockList))
                 return this.getEntityListWithPagintor(api.getHouseStockList);
             },
         },
