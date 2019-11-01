@@ -55,7 +55,7 @@
                     <el-button type="primary" @click="submit">提 交</el-button>
                 </div>
 
-                <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
+                <bos-paginator v-if="this.list!=''" :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
             </div>
         </el-card>
 

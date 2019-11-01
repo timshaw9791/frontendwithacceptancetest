@@ -1,7 +1,7 @@
 <template>
     <div class="warehousingComponents" @click="toInventory">
         <span v-text="equipment.name"></span>
-        <progress-circular :width="142/192*fontSize" :percentage="getPercentage()" style="margin-top: 0.1042rem">
+        <progress-circular :width="142/192*fontSize" :strokeWidth="6" :percentage="getPercentage()" style="margin-top: 0.1042rem">
             <span v-text="equipment.outHouseCount" class="inCircular"></span>
             <span v-text="'出库'" class="inCircular" style="margin-top: 0.026rem"></span>
         </progress-circular>

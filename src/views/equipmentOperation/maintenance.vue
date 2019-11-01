@@ -41,7 +41,7 @@
             ></bos-table-column>
           </el-table>
 
-          <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage" v-if="this.list.length>0" />
+          <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage" v-if="this.list!=''" />
 
           <serviceDialog title="确认保养装备清单" ref="maintenanceDialog" @cancel="quit" @confirm="submit" width="5.4167rem">
               <el-table :data="maintenance.list" height="500" fit class="list maintenance-list-box">
