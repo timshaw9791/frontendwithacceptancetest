@@ -82,7 +82,7 @@
                 searchPage:'',
                 tableAction:{
                     label:'领取记录',
-                    button:['查看']
+                    button:[{name:'查看',type:'primary'}]
                 },
                 tableData: [],
                 tableEquipName:'',
