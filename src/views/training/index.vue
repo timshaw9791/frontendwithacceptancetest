@@ -207,38 +207,38 @@
         width: 100%;
     }
     .teaching .action-bar {
-        margin-top: 8px;
+        margin-top: 0.0417rem;
         border-top: rgba(112, 112, 112, 0.13) solid 1px;
         border-bottom: rgba(112, 112, 112, 0.13) solid 1px;
-        height: 57px;
+        height: 0.2969rem;
         display: flex;
         align-items: center;
         justify-content: space-between;
         flex-direction: row;
-        padding-left: 20px;
+        padding-left: 0.1042rem;
         width: 100%;
     }
     .action-bar .input-box{
-        width:285px;
+        width:1.4844rem;
         position: relative;
     }
     .input-box .input{
         width: 100%;
-        height:38px;
+        height:0.1979rem;
         background:rgba(255,255,255,1);
         border:1px solid rgba(112,112,112,1);
         opacity:1;
         border-radius:19px;
-        padding-left: 15px;
+        padding-left: 0.0781rem;
         outline:medium;
     }
     .input-box .icon-search{
         position: absolute;
-        right: 10px;
+        right: 0.0521rem;
         z-index: 1;
         top: 50%; /*偏移*/
-        width: 25px;
-        height: 25px;
+        width: 0.1302rem;
+        height: 0.1302rem;
         transform: translateY(-50%);
     }
 </style>

@@ -45,11 +45,11 @@
 
     }
     .timeSurroundings .time-box{
-        height: 123px;
+        height: 0.6406rem;
         display: flex;
         align-items: center;
         justify-content: center;
         color: #2F2F76;
-        font-size:72px;
+        font-size:0.375rem;
     }
 </style>

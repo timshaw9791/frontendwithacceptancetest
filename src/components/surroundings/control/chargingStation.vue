@@ -1,6 +1,6 @@
 <template>
     <div class="charging-sation">
-        <dialogs ref="dialog" :width="1040" :title="'智能充电台'">
+        <dialogs ref="dialog" :width="920" :title="'智能充电台'">
             <div class="charging-sation-box">
                 <div class="charging-sation-select">
                     <select-charging-station id="chargingSationSelect" :placeholder="'请选择充电台'" :select="select.selectList"
@@ -237,23 +237,26 @@
 
 <style>
     .charging-sation{
-        width: 1040px;
+        width: 5.4167rem;
+        font-size: 16px;
     }
     .charging-sation-box{
         width: 100%;
-        height: 697px;
+        height: 3.6302rem;
+        padding: 0 0.1563rem;
     }
     .charging-sation-box .charging-sation-controls{
         display: flex;
-        flex-direction: row;
+        /* flex-direction: row; */
         flex-wrap: wrap;
-        padding-left: 60px;
+        justify-content: space-between;
+        /* padding-left: 0.1042rem; */
     }
 
     .charging-sation-box .charging-sation-select{
-        padding-top: 28px;
-        padding-bottom: 8px;
-        padding-left: 23px;
+        padding-top: 0.1458rem;
+        padding-bottom: 0.0417rem;
+        
     }
     .charging-sation-select #chargingSationSelect .el-select {
         width: 202px;

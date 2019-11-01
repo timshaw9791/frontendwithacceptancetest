@@ -316,6 +316,7 @@
     .transfer-box{
         width: 100%;
         color: #707070;
+        font-size: 16px;
     }
     .transfer-box .transfer-body {
         width: 100%;

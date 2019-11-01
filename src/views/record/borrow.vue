@@ -5,7 +5,7 @@
         <r_label :table="table" @clickTable="clickTable"
                  ref="las"></r_label>
         <r_video ref="recordVideo" :src="address"></r_video>
-        <serviceDialog title="装备详情" ref="dialogEquipTable" width="1040px" :button="false">
+        <serviceDialog title="装备详情" ref="dialogEquipTable" width="900px" :button="false">
             <field-table :list="equipList.list" :labelList="equipList.labelList"
                           :havePage="false"  style="width: 100%">
             </field-table>
@@ -128,7 +128,8 @@
 
 <style scoped>
     .borrow{
+        font-size: 16px;
         width: 100%;
-        min-height: 851px;
+        min-height: 4.4323rem;
     }
 </style>

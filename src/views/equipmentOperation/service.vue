@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="service">
         <el-card shadow="never">
             <div slot="header">
                 <span class="_card-title">{{$route.meta.title}}</span>
@@ -310,6 +310,7 @@
 <style lang="scss" scoped>
     .el-card {
         border: none !important;
+        font-size: 16px;
     }
 
 </style>

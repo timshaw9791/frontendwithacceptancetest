@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="supplier">
         <el-card shadow="never">
             <div slot="header">
                 <span class="_card-title">{{$route.meta.title}}</span>
@@ -27,7 +27,7 @@
                     <bos-table-column lable="供应商" field="name"></bos-table-column>
                     <bos-table-column lable="联系人" field="person"></bos-table-column>
                     <bos-table-column lable="联系方式" field="phone"></bos-table-column>
-                    <el-table-column label="操作" align="center" width="200">
+                    <el-table-column label="操作" align="center" width="200px">
                         <template slot-scope="scope">
                             <el-button type="primary" size="mini" @click="addChanger('修改供应商',scope.row)">编辑</el-button>
                             <el-button type="danger" size="mini" @click="delList(scope.row)">删除</el-button>
@@ -170,13 +170,17 @@
 </script>
 
 <style lang="scss" scoped>
+    .supplier {
+        font-size: 0.0833rem;
+    }
+
     .secondaryTitle {
         position: relative;
         border-bottom: 1px solid #EBEEF5;
         display: flex;
         align-items: center;
         padding-bottom: 16px;
-        height: 44px;
+        height: 0.2292rem;
     }
 
     .el-card {

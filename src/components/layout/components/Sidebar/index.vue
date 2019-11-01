@@ -7,7 +7,7 @@
             <topInfo class="topInfo"></topInfo>
         </div>
         <el-scrollbar wrapClass="scrollbar-wrapper">
-            <div class="menu">
+            <div :class="{'menu': true, 'collapse': !isCollapse}">
                 <el-menu
                         mode="vertical"
                         :show-timeout="200"

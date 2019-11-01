@@ -1,6 +1,6 @@
 <template>
     <div>
-        <serviceDialog :title="`${taskType}申请`" ref="checkTransferDialog" width="1040px" :button="false" @cancel="resultData">
+        <serviceDialog :title="`${taskType}申请`" ref="checkTransferDialog" width="900px" :button="false" @cancel="resultData">
             <div class="addApply">
                 <div class="addApply-label" >
                     <div class="label" v-if="taskType!='直调'">
@@ -12,7 +12,7 @@
                         <span v-text="`${ZhiDingOrJieShou}机构：`"></span>
                         <div style="width: 228px">
                             <el-cascader
-                                    size="large"
+                                    size="middle"
                                     :options="unitList"
                                     v-model="selectUnit"
                                     :props="selectProp"
@@ -56,7 +56,7 @@
                     </div>
                 </div>
                 <div class="addApply-label" v-if="taskType=='直调'" :style="taskType=='报废'?'justify-content: left!important;margin-top: 17px;margin-bottom: 12px;':''">
-                    <div class="label" style="margin-top: 18px">
+                    <div class="label" style="margin-top: 18.0096px">
                         <span v-text="'指定领导：'"></span>
                         <field-input-query style="width: 185px" size="large" v-model="leader.leaderName"
                                            :inputList="leader.leaderList"
@@ -65,7 +65,7 @@
                 </div>
                 <div class="addApply-label" v-if="taskType=='报废'" :style="taskType=='报废'?'justify-content: left!important;margin-top: 17px;margin-bottom: 12px;':''">
                     <span v-text="'申请原因：'"></span>
-                    <div style="width: 92.9%">
+                    <div style="width: 90%">
                         <el-input
                                 type="textarea"
                                 :autosize="{ minRows: 2, maxRows:2}"
@@ -877,7 +877,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        bottom: 54px;
+        bottom: 0.2813rem;
     }
 
     .addApply-bottom .cancel {
@@ -901,9 +901,9 @@
     }
 
     .addApply-table {
-        width: 974px;
+        width: 834px;
         height: 492px;
-        margin-top: 30px;
+        margin-top: 30.0096px;
         background: rgba(255, 255, 255, 1);
         border: 1px solid rgba(112, 112, 112, 1);
         opacity: 1;
@@ -938,8 +938,8 @@
     }
 
     .label .input {
-        width: 217px;
-        line-height: 30px;
+        width: 216.9984px;
+        line-height: 30.0096px;
         background: rgba(255, 255, 255, 1);
         opacity: 1;
         font-size: 16px;

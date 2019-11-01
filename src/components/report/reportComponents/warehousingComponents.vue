@@ -1,21 +1,21 @@
 <template>
     <div class="warehousingComponents" @click="toInventory">
         <span v-text="equipment.name"></span>
-        <progress-circular :width="142" :percentage="getPercentage()" style="margin-top: 31px">
+        <progress-circular :width="142/192*fontSize" :percentage="getPercentage()" style="margin-top: 0.1042rem">
             <span v-text="equipment.outHouseCount" class="inCircular"></span>
-            <span v-text="'出库'" class="inCircular" style="margin-top: 5px"></span>
+            <span v-text="'出库'" class="inCircular" style="margin-top: 0.026rem"></span>
         </progress-circular>
-        <div class="warehousingData" style="margin-top: 27px">
+        <div class="warehousingData" style="margin-top: 0.1042rem">
             <div class="circular"></div>
-            <span v-text="'在库'" style="margin-left: 6px"></span>
-            <span v-text="equipment.inHouseCount+'件'" style="margin-left: 10px"></span>
+            <span v-text="'在库'" style="margin-left: 0.0313rem"></span>
+            <span v-text="equipment.inHouseCount+'件'" style="margin-left: 0.0521rem"></span>
         </div>
-        <div class="warehousingData" style="margin-top: 17px">
+        <div class="warehousingData" style="margin-top: 0.0885rem">
             <div class="circular" style="background:rgba(59,134,255,1);"></div>
-            <span v-text="'出库'" style="margin-left: 6px"></span>
-            <span v-text="equipment.outHouseCount+'件'" style="margin-left: 10px"></span>
+            <span v-text="'出库'" style="margin-left: 0.0313rem"></span>
+            <span v-text="equipment.outHouseCount+'件'" style="margin-left: 0.0521rem"></span>
         </div>
-        <div class="warehousingDataPrice" style="margin-top: 27px">
+        <div class="warehousingDataPrice" style="margin-top: 0.1042rem">
             <span v-text="'装备总价：¥'+Number(Number(equipment.price)/100)"></span>
         </div>
     </div>
@@ -25,6 +25,11 @@
     import ProgressCircular from "../../base/progressCircular";
     export default {
         name: "warehousingComponents",
+        data() {
+            return {
+                fontSize: localStorage.getItem('fontSize')
+            }
+        },
         components: {ProgressCircular},
         props:{
             equipment:{
@@ -58,25 +63,25 @@
         flex-direction: column;
     }
     .warehousingComponents .warehousingDataPrice{
-        width: 142px;
+        width: 0.7396rem;
         display: flex;
         align-items: center;
         justify-content: center;
     }
     .warehousingComponents .warehousingData{
-        width: 142px;
+        width: 0.7396rem;
         display: flex;
         align-items: center;
     }
     .warehousingComponents .inCircular{
-        font-size: 18px;
+        font-size: 0.0938rem;
         color: #4D4F5C;
     }
     .warehousingData .circular{
-        width:10px;
-        height:10px;
+        width:0.0521rem;
+        height:0.0521rem;
         border-radius:50%;
         background:rgba(232,234,239,1);
-        margin-left: 23px;
+        margin-left: 0.1198rem;
     }
 </style>

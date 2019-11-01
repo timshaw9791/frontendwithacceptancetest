@@ -10,7 +10,7 @@
             <el-table-column
                     prop="rfid"
                     label="RFID"
-                    width="180"
+                    width="0.9375rem"
                     :align="align"
              >
             </el-table-column>
@@ -66,11 +66,11 @@
                 </template>
             </el-table-column>操作
         </el-table>
-        <dialog-svices title="复制RFID" ref="copyRfidDialog" width="634px" :button="false" @cancel="cancel">
+        <dialog-svices title="复制RFID" ref="copyRfidDialog" width="3.3021rem" :button="false" @cancel="cancel">
             <div class="copyRfid">
                 <div class="copyRfid-content">
                     <span v-text="'RFID:'"></span>
-                    <div style="width: 218px;margin-left: 10px">
+                    <div style="width: 1.1354rem;margin-left: 0.0521rem">
                         <el-input
                                 placeholder="请输入内容"
                                 v-model="cRfid"
@@ -154,18 +154,18 @@
     flex-direction: column;
 }
     .copyRfid .copyRfid-content{
-        font-size: 18px;
+        font-size: 0.0938rem;
         display: flex;
         flex-direction: row;
         align-items: center;
-        margin-top: 91px;
+        margin-top: 0.474rem;
     }
     .copyRfid .copyRfid-button{
-        margin-top: 116px;
+        margin-top: 0.6042rem;
     }
     .copyRfid-button .copyRfid-button-cancel{
-        width:70px;
-        height:32px;
+        width:0.3646rem;
+        height:0.1667rem;
         border:1px solid rgba(47,47,118,1);
         opacity:1;
         line-height: 0px;
@@ -173,9 +173,9 @@
     }
     .copyRfid-button .copyRfid-button-submits{
         color: white;
-        margin-left: 12px;
-        width:70px;
-        height:32px;
+        margin-left: 0.0625rem;
+        width:0.3646rem;
+        height:0.1667rem;
         line-height: 0px;
         background:rgba(47,47,118,1);
         opacity:1;

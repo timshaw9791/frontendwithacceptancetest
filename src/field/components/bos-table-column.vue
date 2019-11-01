@@ -1,5 +1,5 @@
 <template>
-  <el-table-column :label="lable" :align="align" :width="cWidth" :sortable="sort">
+  <el-table-column :label="lable" :align="align" :width="cWidth" :min-width="'60px'" :sortable="sort">
     <template slot-scope="scope">
       {{getResult(scope.row,field)}}
     </template>
@@ -11,7 +11,9 @@
     import {initmixinBosInput} from '../common/mixinBosInput';
   export default {
     data(){
-      return {}
+      return {
+        basePx: localStorage.getItem('fontSize')
+      }
     },
     mixins: [initmixinBosInput],
     props: {

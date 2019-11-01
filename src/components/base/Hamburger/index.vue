@@ -30,10 +30,10 @@ export default {
 
 <style scoped>
 .hamburger {
-	display: inline-block;
+	display: block;
 	cursor: pointer;
-	width: 20px;
-	height: 20px;
+	width: 0.1042rem;
+  height: 0.2604rem;
 	transform: rotate(90deg);
 	transition: .38s;
 	transform-origin: 50% 50%;

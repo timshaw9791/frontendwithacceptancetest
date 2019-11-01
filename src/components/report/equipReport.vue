@@ -54,19 +54,25 @@
 </script>
 
 <style scoped>
+    .progress-box /deep/ .el-progress {
+        width: 1.0417rem !important;
+    }
+    .progress-box /deep/ .progress-name {
+        font-size: 0.0729rem;
+    }
     .equipReport{
-        width:466px;
-        height:251px;
+        width:2.4271rem;
+        height:1.3073rem;
         background:rgba(255,255,255,1);
         box-shadow:0px 3px 6px rgba(0,0,0,0.16);
         opacity:1;
     }
     .equipReport .title{
         width: 100%;
-        padding-left: 15px;
-        padding-top: 17px;
-        padding-bottom: 17px;
-        font-size: 18px;
+        padding-left: 0.0781rem;
+        padding-top: 0.0885rem;
+        padding-bottom: 0.0885rem;
+        font-size: 0.0938rem;
         color: #707070;
     }
     .equip-progress-list{

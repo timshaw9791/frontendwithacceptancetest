@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <svg id="visualisation" width="1500" :height="height"></svg>
+        <svg id="visualisation" width="7.8125rem" :height="cHeight"></svg>
     </div>
 </template>
 <script>
@@ -9,7 +9,7 @@
         name: "lineChartComponent",
         data(){
             return{
-
+                rootFontSize: localStorage.getItem('fontSize')
             }
         },
         props:{
@@ -42,8 +42,10 @@
                 default:'hour'
             }
         },
-        created(){
-
+        computed: {
+            cHeight() {
+                return this.height/192*this.rootFontSize
+            }
         },
         mounted(){
             let that = this;
@@ -55,7 +57,7 @@
             }
             var svg = d3.select("#visualisation"),
                 margin = {top: 60, right: 50, bottom: 60, left: 70},
-                width = +svg.attr("width") - margin.left - margin.right,
+                width = (1500 - margin.left - margin.right)/192*this.rootFontSize,
                 height = +svg.attr("height") - margin.top - margin.bottom,
                 g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 

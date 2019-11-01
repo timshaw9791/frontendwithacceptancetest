@@ -15,15 +15,15 @@
                     <div class="r_t_title-right">
                         <div class="title-right">
                             <div class="content">
-                                <span v-text="allOutHouseCount" style="font-size:25px"></span>
-                                <span v-text="'出库总数'" style="margin-top: 4px;font-size: 14px"></span>
+                                <span v-text="allOutHouseCount" style="font-size:0.1302rem"></span>
+                                <span v-text="'出库总数'" style="margin-top: 4px;font-size: 0.0729rem"></span>
                             </div>
                             <img src="../../components/icons/svg/柱形图蓝.png" class="title-img"/>
                         </div>
                         <div class="title-right" style="margin-left: 32px">
                             <div class="content">
-                                <span v-text="allInHouseCount" style="font-size:25px"></span>
-                                <span v-text="'在库总数'" style="margin-top: 4px;font-size: 14px"></span>
+                                <span v-text="allInHouseCount" style="font-size:0.1302rem"></span>
+                                <span v-text="'在库总数'" style="margin-top: 4px;font-size: 0.0729rem"></span>
                             </div>
                             <img src="../../components/icons/svg/柱形图灰.png" class="title-img"/>
                         </div>
@@ -434,6 +434,7 @@
 <style scoped>
     .report-box {
         width: 100%;
+        font-size: 0.0833rem;
     }
 
     .report-box .report-body {
@@ -445,25 +446,25 @@
     }
 
     .report-body .report-top {
-        width: 1508px;
-        height: 494px;
+        width: 7.8542rem;
+        height: 2.5729rem;
         background: rgba(255, 255, 255, 1);
         box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
         opacity: 1;
-        margin-top: 45px;
+        margin-top: 0.151rem;
     }
 
     .report-top .report-top-title {
-        padding-left: 17px;
-        padding-right: 36px;
-        padding-top: 18px;
+        padding-left: 0.0885rem;
+        padding-right: 0.1875rem;
+        padding-top: 0.0938rem;
         display: flex;
         justify-content: space-between;
     }
 
     .report-top-title .r_t_title-left {
-        font-size: 18px;
-        height: 20px;
+        font-size: 0.0938rem;
+        height: 0.1042rem;
         display: flex;
         align-items: center;
         color: rgba(112, 112, 112, 1);
@@ -477,30 +478,30 @@
 
     .r_t_title-right .title-right {
         display: flex;
-        height: 60px;
+        height: 0.3125rem;
         align-items: center;
     }
 
     .title-right .content {
-        height: 60px;
+        height: 0.3125rem;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        margin-right: 24px;
+        margin-right: 0.125rem;
         font-weight: bold;
     }
 
     .title-right .title-img {
-        margin-top: 4px;
+        margin-top: 0.0208rem;
     }
 
     .report-body .report-bottom {
-        width: 1508px;
+        width: 7.8542rem;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-top: 21px;
-        padding-bottom: 5px;
+        margin-top: 0.1094rem;
+        padding-bottom: 0.026rem;
     }
 </style>

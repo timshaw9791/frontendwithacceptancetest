@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="safety">
         <el-card shadow="never">
             <div slot="header">
                 <span class="_card-title">{{$route.meta.title}}</span>
@@ -47,7 +47,7 @@
         <serviceDialog title="提示" ref="dialogButton" @confirm="submit" :secondary="false">
             <div class="_dialogDiv">
                 <form-container ref="inlineForm" :model="inlineForm">
-                    <field-input v-model="inlineForm.safeStock" label="标准库存" width="3"
+                    <field-input v-model="inlineForm.safeStock" label="标准库存" width="5"
                                  :rules="r(true).all(R.integer)" prop="safeStock"></field-input>
                 </form-container>
             </div>
@@ -148,13 +148,16 @@
 </script>
 
 <style lang="scss" scoped>
+    .safety {
+        font-size: 0.0833rem;
+    }
     .secondaryTitle {
         position: relative;
         border-bottom: 1px solid #EBEEF5;
         display: flex;
         align-items: center;
         padding-bottom: 16px;
-        height: 44px;
+        height: 0.2292rem;
     }
 
     .el-card {

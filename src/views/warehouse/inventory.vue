@@ -194,13 +194,13 @@
     }
 
     .inventory .action-bar {
-        height: 58px;
+        height: 0.3021rem;
         width: 100%;
         display: flex;
         align-items: center;
         border-bottom: 1px solid rgba(112, 112, 112, 0.13);
         border-top: 1px solid rgba(112, 112, 112, 0.13);
-        padding-left: 18px;
+        padding-left: 0.0938rem;
     }
 
     .action-bar .in_button {

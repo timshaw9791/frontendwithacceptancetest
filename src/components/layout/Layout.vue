@@ -61,12 +61,12 @@ export default {
     position: relative;
     .main-bottom {
       text-align: center;
-      font-size: 12px;
+      font-size: .06rem;
       color: #707070;
       position: absolute;
       left: 0;
       right: 0;
-      bottom: 1vh;
+      bottom: .04rem;
     }
   }
 }

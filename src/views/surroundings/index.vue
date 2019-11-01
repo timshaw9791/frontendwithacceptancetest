@@ -168,6 +168,7 @@
 
 <style scoped>
     .surroundings-box{
+        font-size: 16px;
         width: 100%;
     }
     .surroundings-box .title{
@@ -182,27 +183,27 @@
     }
     .surroundings-box .surroundings-body{
         width: 100%;
-        min-height: 830px;
+        min-height: 4.1667rem;
         border:1px solid rgba(112,112,112,0.13);
-        padding-right: 30px;
-        padding-left: 30px;
-        padding-top: 30px;
+        padding-right: 0.1563rem;
+        padding-left: 0.1563rem;
+        padding-top: 0.1563rem;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
     }
     .surroundings-body ._left{
-        width: 548px;
+        width: 2.8542rem;
         height: 100%;
         display: flex;
         flex-direction: column;
     }
     .surroundings-body ._middle{
-        width: 489px;
+        width: 2.5469rem;
         height: 100%;
     }
     .surroundings-body ._right{
-        width: 489px;
+        width: 2.5469rem;
         height: 100%;
     }
 </style>

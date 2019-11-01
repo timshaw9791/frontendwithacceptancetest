@@ -14,6 +14,7 @@ export const transformMixin = {
             }
         },
         workType(data) {
+            console.log("--------SprWu--------");
             switch (data) {
                 case 'DOWN_TO_UP':
                     return '调拨';

@@ -1,6 +1,6 @@
 <template>
     <div class="overview">
-        <el-card shadow="never" :body-style="{ padding:'30px'}" v-if="$store.getters.roles.includes('ADMINISTRATOR')">
+        <el-card shadow="never" :body-style="{ padding:'0.156rem'}" v-if="$store.getters.roles.includes('ADMINISTRATOR')">
             <div slot="header">
                 <span class="_card-title">{{$route.meta.title}}</span>
             </div>
@@ -16,7 +16,7 @@
                             {{item.name}}
                         </div>
                         <div class="bulk" @click="gotoInfo('statistics',item.name)">
-                            <progress-circular :width="76" :strokeWidth="6"
+                            <progress-circular :width="70" :strokeWidth="6"
                                                :percentage="item.percentage"
                                                color="#3B86FF">
                                 <div class="inside">
@@ -47,9 +47,12 @@
                         <div class="bk-content">
                             <!-- <el-scrollbar wrap-class="scroll-bar"> -->
                                 <div class="scroll-bar">
-                                    <el-table :data="item.list" fit @row-click="gotoInfo" height="260">
+                                    <el-table :data="item.list" :cell-style="{}"
+                                    :header-cell-style="setWidth"
+                                    @row-click="gotoInfo" height="1.4115rem">
                                         <div v-if="index===0">
                                             <bos-table-column lable="类型"
+                                                              remWidth="170px"
                                                               :filter="(row)=>workType(row.type)"></bos-table-column>
                                             <bos-table-column lable="编号" field="number"></bos-table-column>
                                             <bos-table-column lable="状态"
@@ -119,7 +122,7 @@
                 </div>
             </div>
         </el-card>
-        <el-card shadow="never" :body-style="{ padding:'30px'}" v-else>
+        <el-card shadow="never" :body-style="{ padding:'0.156rem'}" v-else>
             正在注销!
         </el-card>
 
@@ -170,7 +173,6 @@
                     [{name: '调拨通知'}, {name: '保养/充电通知'}, {name: '到期报废提醒'}, {name: '未归还提醒'}],
                 videoTime: '',
                 maturityList: [],
-
             }
         },
         mixins: [formRulesMixin, transformMixin],
@@ -366,6 +368,17 @@
     }
 </script>
 
+<style lang="scss">
+    @import '~common/css/Adaptive';
+    .el-message {
+        font-size: 0.0833rem;
+    }
+    // .el-table__header {
+    //     display: flex;
+    // }
+
+</style>
+
 <style lang="scss" scoped>
 
     /deep/ .hover-row {
@@ -373,10 +386,15 @@
     }
 
     .overview {
+        font-size: .1rem;
+
         .el-card {
             border: none !important;
         }
 
+        // ._card-title {
+        //     font-size: 0.0938rem;
+        // }
         .center {
             display: flex;
             justify-content: center;
@@ -387,35 +405,35 @@
 
             .statistics {
                 padding: 0 1vw;
-                box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+                box-shadow: 0 .01rem .03rem rgba(0, 0, 0, 0.16);
                 display: flex;
                 align-items: center;
-                height: 130px;
+                height: .67rem;
                 width: 100%;
                 flex-wrap: wrap;
                 justify-content: space-around;
 
                 .total {
-                    font-size: 16px;
+                    font-size: .08rem;
                     font-weight: bold;
                     color: rgba(77, 79, 92, 1);
 
                     div {
-                        padding-bottom: 10px;
+                        padding-bottom: .05rem;
                     }
 
                     span {
-                        margin-left: 14px;
-                        font-size: 20px;
+                        margin-left: .07rem;
+                        font-size: .1rem;
                     }
                 }
 
                 .ss-content {
                     .title {
                         text-align: center;
-                        font-size: 18px;
+                        font-size: .09rem;
                         color: rgba(77, 79, 92, 1);
-                        margin-bottom: 8px;
+                        margin-bottom: 0.0879rem;
                     }
 
                     .bulk {
@@ -423,6 +441,10 @@
                         justify-content: center;
                         align-items: center;
                         cursor: pointer;
+
+                        .ProgressCircular {
+                            height: 0 !important;
+                        }
 
                         .inside {
                             display: grid;
@@ -439,18 +461,18 @@
                         }
 
                         .inside-info {
-                            margin-left: 12px;
+                            margin-left: .06rem;
                             display: flex;
                             flex-direction: column;
 
                             .sort {
                                 display: flex;
                                 align-items: center;
-                                margin-bottom: 4px;
+                                margin-top: .02rem;
 
                                 .icon {
-                                    width: 10px;
-                                    height: 10px;
+                                    width: .052rem;
+                                    height: .05rem;
                                     border-radius: 50%;
 
                                 }
@@ -464,7 +486,7 @@
                                 }
 
                                 .piece {
-                                    margin-left: 10px;
+                                    margin-left: .05rem;
                                 }
 
                             }
@@ -481,35 +503,61 @@
                 justify-content: space-between;
 
                 .bk-style {
-                    width: 510px;
-                    height: 321px;
-                    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+                    width: 2.656rem;
+                    height: 1.6927rem;
+                    box-shadow: 0 .015rem .031rem rgba(0, 0, 0, 0.16);
                     // margin-bottom: 14px;
-                    margin-top: 26px;
+                    margin-top: .135rem;
                     color: rgba(112, 112, 112, 1);
 
                     .bk-top {
-                        height: 42px;
-                        border-left: 4px solid rgba(47, 47, 118, 0.75);
-                        padding: 14px;
-                        margin-bottom: 10px;
+                        height: .218rem;
+                        border-left: .02rem solid rgba(47, 47, 118, 0.75);
+                        padding: .072rem;
+                        margin-bottom: .052rem;
 
                         span {
-                            font-size: 18px;
+                            font-size: .093rem;
 
                         }
                     }
 
+
                     .bk-content {
-                        padding: 0 30px;    
+
+                        .el-table {
+                            font-size: 0.0729rem;
+                        }
+
+                        .el-table /deep/ th.is-leaf,
+                        .el-table td {
+                            font-size: 0.0833rem;
+                        }
+
+                        // .el-table /deep/ .el-table__header {
+                        //     width: 100% !important;
+                        //     display: flex;
+                        // }
+
+                        .el-table /deep/ th {
+                            padding: 3px 0;
+                        }
+
+                        .el-table /deep/ div.cell {
+                            padding: 0;
+                        }
+
+
+
+
 
                         .monitor {
-                            width: 300px;
-                            height: 300px;
+                            width: 1.562rem;
+                            height: 1.562rem;
                         }
 
                         .scroll-bar {
-                            max-height: 250px;
+                            max-height: 1.302rem;
                             width: 100%;
                         }
 
@@ -524,16 +572,16 @@
                             }
 
                             div:first-child {
-                                font-size: 16px;
+                                font-size: .083rem;
                             }
 
                             div:nth-child(2) {
-                                font-size: 55px;
-                                margin-left: 18px;
+                                font-size: .286rem;
+                                margin-left: .093rem;
                             }
 
                             div:last-child {
-                                font-size: 14px;
+                                font-size: .072rem;
 
                             }
                         }
@@ -544,4 +592,10 @@
 
     }
 
+    .el-table__body-wrapper is-scrolling-left /deep/ .el-table__empty-block {
+        width: 2.25rem !important;
+    }
+
 </style>
+
+

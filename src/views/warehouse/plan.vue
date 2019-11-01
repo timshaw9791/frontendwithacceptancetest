@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="plan">
         <el-card shadow="never">
             <div slot="header">
                 <span class="_card-title">{{$route.meta.title}}</span>
@@ -26,13 +26,13 @@
                         <div class="top">
                             <div style="width: 96%;display: flex;align-items: center;">
                                 <el-button type="text" @click="dialogShow('up',item)">
-                                    <svg-icon icon-class="编辑" style="margin-right: 12px;font-size: 16px"/>
+                                    <svg-icon icon-class="编辑" style="margin-right: 0.0625rem;font-size: 0.0833rem"/>
                                 </el-button>
                                 <span>预案名称:</span>
-                                <span style="margin-left: 10px">{{item.name}}</span>
+                                <span style="margin-left: 0.0521rem">{{item.name}}</span>
                             </div>
                             <el-button type="text" icon="el-icon-close" @click="delList(item)"
-                                       style="color: #7f7f7f;font-size: 20px">
+                                       style="color: #7f7f7f;font-size: 0.1042rem">
                             </el-button>
                         </div>
 
@@ -75,7 +75,7 @@
             </div>
         </el-card>
 
-        <servicedialog :title="title" ref="dialog" @confirm="submit">
+        <servicedialog :title="title" ref="dialog" @confirm="submit" width="900px">
             <form-container ref="form" :model="form" class="formList">
                 <field-input v-model="form.name" label="预案名称 :" width="4" :rules="r(true).all(R.require)"
                              prop="name"></field-input>
@@ -164,6 +164,7 @@
             qaq(row, data) {
                 this.nowRow=data.key
                 // this.form.planEquips[row.$index] = data.key;
+                // this.form.planEquips[row.$index] = JSON.parse(JSON.stringify(data.key));
 
                 if (row.$index === this.form.planEquips.length - 1) {
                     this.form.planEquips.push({equipModel: '', location: {}});
@@ -307,6 +308,10 @@
 </script>
 
 <style lang="scss" scoped>
+    .plan {
+        font-size: 0.0833rem;
+    }
+
     .el-card {
         border: none !important;
     }
@@ -326,36 +331,36 @@
         display: flex;
         align-items: center;
         padding-bottom: 16px;
-        height: 44px;
+        height: 0.2292rem;
     }
 
     .bodyContent {
-        padding: 0 60px;
+        padding: 0 0.3125rem;
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
 
         .pieceList {
-            width: 710px;
-            height: 343px;
+            width: 3.6979rem;
+            height: 1.7865rem;
             background: rgb(255, 255, 255);
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
-            margin-top: 27px;
+            margin-top: 0.1406rem;
 
             .top {
-                padding: 20px;
-                height: 40px;
+                padding: 0.1042rem;
+                height: 0.2083rem;
                 width: 100%;
                 display: flex;
                 align-items: center;
-                font-size: 16px;
+                font-size: 0.0833rem;
                 color: rgba(112, 112, 112, 1);
             }
 
             .list {
                 .scroll-bar {
-                    max-height: 250px;
-                    min-height: 250px;
+                    max-height: 1.3021rem;
+                    min-height: 1.3021rem;
                     width: 100%;
                     padding: 0 8%;
                 }
@@ -363,14 +368,14 @@
 
             .bottom {
                 display: flex;
-                margin-top: 10px;
-                height: 40px;
-                padding: 0 50px;
+                margin-top: 0.0521rem;
+                height: 0.2083rem;
+                padding: 0 0.2604rem;
                 color: rgba(112, 112, 112, 1);
 
                 .bottomInfo {
                     width: 80%;
-                    height: 38px;
+                    height: 0.1979rem;
                     overflow: hidden;
                     text-overflow: ellipsis;
                     display: -webkit-box;

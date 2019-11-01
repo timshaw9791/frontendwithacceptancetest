@@ -54,7 +54,7 @@
             >
             </el-date-picker>
         </div>
-        
+
         <div class="equip-details-list">
             <div :class="item.select?'equip-details-item select-item':'equip-details-item'" v-for="item in detailsList">
                 <equip-progress :width="500" :detailItem="item" :status="title=='装备使用频次'?false:true"
@@ -145,13 +145,13 @@
          mixins: [formRulesMixin],
          apollo: {
             list() {
-               
+
                 return this.getEntityListWithPagintor(api.getHouseStockList);
             },
         },
         created() {
             this.init()
-             
+
         },
         updated() {
             this.getSafeStcok()
@@ -256,7 +256,7 @@
                      return true
                  }
             },
-            getSafeStcok(){            
+            getSafeStcok(){
             this.detailsList.forEach((item=>{
                 this.list.forEach((ass=>{
                     if(item.equipId!=null)
@@ -266,12 +266,12 @@
                         item.safeStock=ass.safeStock
                      }
                     }
-                   
+
                 }))
             }))
             },
             init() {
-                
+
                 if (this.title == '装备使用频次'||this.title == '装备损耗率'||this.title == '装备维修率') {
                     let date0 = new Date();
                     let date1 = new Date();
@@ -298,14 +298,19 @@
     }
 
     .equip-details-list {
+        max-height: 3.8021rem;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .equip-details-list {
         max-height: 730px;
         overflow-x: hidden;
         overflow-y: auto;
     }
 
     .equip-details-box .equip-details-list {
-        margin-left:300px;
-        width: 70%;
+        width: 100%;
         margin-top: 20px;
     }
 
@@ -319,9 +324,9 @@
 
     .equip-details-list .equip-details-item {
         width: 100%;
-        display: flex; 
-        /* align-items: center;
-        justify-content: center; */
+        display: flex;
+        align-items: center;
+        justify-content: center;
         height: 32px;
     }
 

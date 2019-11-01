@@ -1,6 +1,6 @@
 <template>
     <div>
-        <serviceDialog title="调拨申请" ref="checkTransferDialog" width="1040px" :button="false" @cancel="resultData">
+        <serviceDialog title="调拨申请" ref="checkTransferDialog" width="900px" :button="false" @cancel="resultData">
             <div class="addDirectAdjustment">
                 <div class="addDirectAdjustment-label">
                     <div class="label">
@@ -62,7 +62,7 @@
                     </div>
                     <div class="addDirectAdjustment-bottom">
                         <el-button class="cancel" @click="cancel">取消</el-button>
-                        <el-button style="margin-left: 34px" class="submit" :disabled="isClick" @click="submit">提交</el-button>
+                        <el-button style="margin-left: 0.1771rem" class="submit" :disabled="isClick" @click="submit">提交</el-button>
                     </div>
                 </div>
             </div>
@@ -347,7 +347,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-top: 53px;
+        margin-top: 0.276rem;
     }
 
     .addDirectAdjustment-bottom .cancel {
@@ -370,9 +370,9 @@
     }
 
     .addDirectAdjustment-table {
-        width: 974px;
+        width: 834px;
         height: 492px;
-        margin-top: 30px;
+        margin-top: 0.1563rem;
         background: rgba(255, 255, 255, 1);
         border: 1px solid rgba(112, 112, 112, 1);
         opacity: 1;

@@ -1,8 +1,7 @@
 <template>
-    <div :style="'height:'+width+'px;'+'width:'+width+'px;'" class="ProgressCircular">
-        <el-progress type="circle" :percentage="percentage" :width="width" :stroke-width="strokeWidth" :color="color"></el-progress>
-        <div class="cover"
-             :style="'height:'+(width-strokeWidth*2)+'px;'+'width:'+(width-strokeWidth*2)+'px;'+'border-radius:'+(width-strokeWidth*2)/2+'px;'">
+    <div :style="'height:'+width/basePx+'rem;'+'width:'+width/basePx+'rem;'" class="ProgressCircular">
+        <el-progress type="circle" :percentage="percentage" :width="width/192*basePx" :stroke-width="strokeWidth/192*basePx" :color="color"></el-progress>
+        <div class="cover" style="height:auto; width: auto; border-radius: 50%">
             <slot></slot>
         </div>
     </div>
@@ -11,6 +10,11 @@
 <script>
     export default {
         name: "progressCircular",
+        data() {
+            return {
+                basePx: localStorage.getItem('fontSize')
+            }
+        },
         props: {
             width: {
                 type: Number,

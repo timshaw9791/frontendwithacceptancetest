@@ -33,11 +33,9 @@
 <style scoped>
     .warehousing-box{
         width: 100%;
-        padding-left: 67px;
-        padding-right: 87px;
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        margin-top: 59px;
+        justify-content: space-around;
+        margin-top: 0.2083rem;
     }
 </style>

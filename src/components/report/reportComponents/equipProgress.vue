@@ -97,7 +97,7 @@
                 type:Boolean
             },
             isDetail:{
-                type:Boolean 
+                type:Boolean
             },
             noShowText:{
                 type:Boolean
@@ -113,11 +113,11 @@
          mixins: [formRulesMixin],
          apollo: {
             list() {
-               
+
                 return this.getEntityListWithPagintor(api.getHouseStockList);
             },
         },
-        
+
         mounted(){
            /* let mouse = document.getElementById(this.category+this.from);
             let that = this;
@@ -132,7 +132,7 @@
             mOver(){
                 console.log('mOver');
             },
-            format() {  
+            format() {
                 return this.detailItem.number+'次'
             },
             statistics(){
@@ -154,12 +154,12 @@
             //             item.safeStock=ass.safeStock
             //          }
             //         }
-                   
+
             //     }))
             // }))
             }
         },
-       
+
     }
 </script>
 
@@ -174,9 +174,7 @@
         font-size: 16px!important;
         color: #4D4F5C!important;
     }
-    .transion-toolTip{
 
-    }
     .progress-box {
         display: flex;
         font-size: 14px;

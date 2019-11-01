@@ -4,7 +4,7 @@
             <div class="thermometer-body">
                 <div class="thermometer-top">
                     <span v-text="'当前温度： '"></span>
-                    <span style="font-size: 30px" v-text="temperature+'°'"></span>
+                    <span style="font-size:  0.1563rem" v-text="temperature+'°'"></span>
                 </div>
                 <s_thermometer-component style="margin-top: 47px" :scale="scale" :temperature="temperature" :color="color"></s_thermometer-component>
                 <span v-text="'查看温度曲线'" style="margin-top: 62px; color:blue;cursor: pointer" @click="toTemLineChart"></span>
@@ -192,10 +192,10 @@
 
 <style scoped>
     .thermometer{
-        width: 489px;
+        width: 2.5469rem;
     }
     .thermometer .thermometer-body{
-        height: 738px;
+        height: 3.8438rem;
         display: flex;
         align-items: center;
         justify-content: center;

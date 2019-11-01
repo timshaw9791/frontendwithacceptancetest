@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="charging">
         <el-card shadow="never">
             <div slot="header">
                 <span class="_card-title">{{$route.meta.title}}</span>
@@ -114,6 +114,9 @@
 </script>
 
 <style lang="scss" scoped>
+    .charging {
+        font-size: 16px;
+    }
     .el-card {
         border: none !important;
     }

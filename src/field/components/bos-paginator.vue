@@ -1,5 +1,5 @@
 <template>
-  <div style="position:fixed;left:50%;bottom:8%" v-if="paginationFlag">
+  <div style="margin: 8% auto" v-if="paginationFlag">
     <el-pagination
       class="pagination"
       background

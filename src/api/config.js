@@ -38,4 +38,3 @@ export const videoUpUrl = `${baseURL}/upload/video`;
 export const websocketUrl = `${baseURL}/websocket`;
 
 export const tokenName = 'x-auth-token';
-

@@ -56,18 +56,18 @@
 
 <style scoped>
     .t-template{
-        width: 255px;
-        height: 350px;
+        width: 1.3281rem;
+        height: 1.8229rem;
         display: flex;
         flex-direction: column;
-        margin-left: 10px;
+        margin-left: 0.0521rem;
         box-shadow:0px 3px 6px rgba(0,0,0,0.16);
         opacity:1;
-        margin-top: 21px;
-        margin-bottom: 21px;
+        margin-top: 0.1094rem;
+        margin-bottom: 0.1094rem;
     }
     .t-template .t-t-img-box{
-        height: 273px;
+        height: 1.4219rem;
         width: 100%;
         display: flex;
         align-items: center;
@@ -75,7 +75,7 @@
         position: relative;
     }
     .t-t-img-box .t-t-line{
-        width: 225px;
+        width: 1.1719rem;
         position: absolute;
         height: 1px;
         bottom: 0px;
@@ -84,21 +84,21 @@
     }
     .t-template .t-t-span-box{
         width: 100%;
-        height: 77px;
+        height: 0.401rem;
         display: flex;
         align-items: center;
         justify-content: center;
     }
     .t-t-img-box .t-t-img{
-        width: 248px;
-        height: 164px;
+        width: 1.2917rem;
+        height: 0.8542rem;
     }
     ._suo{
         display:flex;
         justify-content:center;
         align-items:center;
-        width: 248px;
-        height: 164px;
+        width: 1.2917rem;
+        height: 0.8542rem;
         
     }
 </style>

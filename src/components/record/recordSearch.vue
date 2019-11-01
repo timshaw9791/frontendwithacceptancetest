@@ -81,6 +81,7 @@
         margin-top: 8px;
         border-top: rgba(112, 112, 112, 0.13) solid 1px;
         border-bottom: rgba(112, 112, 112, 0.13) solid 1px;
+        font-size: 16px;
         font-family: "PingFang SC";
         height: 57px;
         display: flex;
@@ -92,7 +93,7 @@
         color: #707070;
     }
     .action-bar .input-box{
-        width:285px;
+        width:285.0048px;
         position: relative;
     }
     .action-bar .action-select{

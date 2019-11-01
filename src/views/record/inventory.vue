@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="inventory">
         <my-header :title="'盘点记录'" :searchFlag="false" :haveBlack="!viewStatus.flag" @h_black="black"></my-header>
         <r_search :placeholder="'人员姓名'" @handleSearch="handleSearch" v-show="viewStatus.flag"></r_search>
         <div v-show="!viewStatus.flag">
@@ -129,6 +129,9 @@
 </script>
 
 <style scoped>
+    .inventory {
+        font-size: 16px;
+    }
     .line {
         border-top: rgba(112, 112, 112, 0.13) solid 1px;
     }
