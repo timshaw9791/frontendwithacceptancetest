@@ -25,7 +25,7 @@
             <el-button @click="$emit('cancel',false)">取 消</el-button>
             <el-button type="primary" @click="submit">提 交</el-button>
         </div>
-        <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage" v-if="this.list.length>0"/>
+        <bos-paginator v-if="this.list!=''" :pageInfo="paginator" @bosCurrentPageChanged="changePage" />
       
        
       
