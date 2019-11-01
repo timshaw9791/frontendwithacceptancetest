@@ -252,10 +252,11 @@
     import axios from 'axios';
     import {imgUpUrl, pdfUpUrl, videoUpUrl, imgBaseUrl, pdfBaseUrl, videoBaseUrl} from "api/config";
     import {delFile} from "api/basic";
+    import {getGenreList,addEquipInfo} from "api/storage"
     import serviceDialog from 'components/base/serviceDialog/index'
     import {transformMixin} from "common/js/transformMixin";
     import { start, startOne, killProcess } from 'common/js/rfidReader'
-
+    import request from 'common/js/request'
     // const cmdPath = 'C:\\Users\\Administrator';
     // const exec = window.require('child_process').exec;
     // const spawn = window.require('child_process').spawn;
@@ -356,26 +357,29 @@
 
             //点击提交后 根据从什么入口进入的执行对应的  新增  入库  装备基础信息修改 装备入库信息修改
             addEquipArg() {
-                this.isClick = true
+                this.isClick = true;
                 setTimeout(() => {this.isClick = false}, 1600)
                 if (this.title.includes('新增')) {
                     this.form.videoAddresses ? this.form.videoAddresses = this.form.videoAddresses.join(',') : '';
                     this.form.documentAddresses ? this.form.documentAddresses = this.form.documentAddresses.join(',') : '';
                     this.form.name = this.form.name.trim()
                     this.form.model = this.form.model.trim()
-
                     let newData = JSON.parse(JSON.stringify(this.form));
                     newData.upkeepCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.upkeepCycle)));
                     newData.chargeCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.chargeCycle)));
-
-
-                    this.$refs.form.gqlValidate(api.category_addEquipArg, {
-                        supplierId: this.form.vendorId ? this.form.vendorId : '',
-                        categoryId: this.form.nameId ? this.form.nameId[1] : '',
-                        equipArg: newData
+                    this.$refs.form.ajaxValidate({
+                        url: '/equip-args',
+                        method: 'post',
+                        params:{
+                            supplierId: this.form.vendorId ? this.form.vendorId : '',
+                            categoryId: this.form.nameId ? this.form.nameId[1] : '',
+                        },
+                        data:newData
                     }, (res) => {
                         this.dialogConfirm();
                         this.callback('添加成功!');
+                    },(err)=>{
+                        this.$message.error(err.response.data.message);
                     });
 
                 } else if (this.title.includes('信息查看')) {
@@ -392,14 +396,23 @@
                     newData.chargeCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.chargeCycle)));
 
 
-                    this.$refs.form.gqlValidate(api.category_saveEquipArg, {
-                        categoryId: this.form.nameId ? this.form.nameId[1] : '',
-                        equipArg: newData
-                    }, (res) => {
+                    this.$refs.form.ajaxValidate({
+                        url: '/equip-args',
+                        method: 'put',
+                        params:{
+                            categoryId: this.form.nameId ? this.form.nameId[1] : '',
+                        },
+                        data:newData
+                    },  (res) => {
                         console.log(res);
+                        this.$message.success('修改成功')
                         this.dialogConfirm();
-                        this.callback('添加成功!');
-                    })
+
+                        // this.callback('添加成功!');
+                    },
+                        (err)=>{
+                        console.log(err)
+                        })
                 } else if (this.title.includes('入库')) {
                     if(this.list[0].rfid == null) {
                         this.$message.error("请扫入RFID")
@@ -418,22 +431,27 @@
                             shelfLife: this.zbForm.shelfLifeQ * 24 * 60 * 60 * 1000,
                             productDate: this.zbForm.productDateQ,
                         };
-
-                        this.$refs.zbForm.gqlValidateErr(api.admin_importEquips, {
-                            rfids: this.list.map((item) => {
-                                return item['rfid'];
-                            }),
-                            serialList: this.list.map((item) => {
-                                return item['serial'] == '' ? null : item['serial'];
-                            }),
-                            location: this.zbForm.location,
-                            equipArgId: this.form.nameId[2],
-                            quality: this.zbForm.quality,
-                            price: this.form.price * 100,
+                        let equipList=[];
+                        this.list.forEach(item=>{
+                            equipList.push({
+                                rfid: item['rfid'],
+                                serial: item['serial'] == '' ? null : item['serial'],
+                                location: this.zbForm.location,
+                                quality: this.zbForm.quality,
+                                price: this.form.price * 100
+                            })
+                        });
+                        this.$refs.zbForm.ajaxValidate({
+                            url: '/equips/import',
+                            method: 'post',
+                            params:{
+                                equipArgId: this.form.nameId[2]
+                            },
+                            data:equipList
                         }, (res) => {
-                            this.callback(`成功`);
+                            this.$message.success('入库成功');
                             //spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
-                            killProcess(this.pid)
+                            killProcess(this.pid);
                             this.$emit('black', true);
                         }, (errs) => {
                             console.log('errs', errs);
@@ -473,12 +491,12 @@
                         shelfLife: this.zbForm.shelfLifeQ * 24 * 60 * 60 * 1000,
                         productDate: this.zbForm.productDateQ,
                     };
-                    this.$refs.zbForm.gqlValidate(api.admin_saveEquipInfo, {
+                    this.$refs.zbForm.ajax(api.admin_saveEquipInfo, {
                         equipId: this.equipId,
                         location: this.zbForm.location,
                         quality: this.zbForm.quality,
                     }, (res) => {
-                        this.callback(`成功`);
+                        this.$message.success('修改成功');
                         this.$emit('black', true);
                     })
                 }
@@ -493,7 +511,7 @@
             },
 
             dialogConfirm() {
-                killProcess(this.pid)
+                killProcess(this.pid);
                 this.judgeEdit = {
                     form: {
                         videoAddresses: [],
@@ -820,46 +838,43 @@
                         this.judgeEdit.form = JSON.parse(JSON.stringify(this.form))
                         this.judgeEdit.zbForm = JSON.parse(JSON.stringify(this.zbForm))
                     });
-                }
-
-
-                this.gqlQuery(api.getGenreList, {}, (res) => {
-                    let data = JSON.parse(JSON.stringify(res.data.GenreList.content));
-                    let newData = [];
-                    if (data) {
-                        data.forEach((item) => {
-                            if (item.categories.length > 0) {
-                                item.categories.forEach((item1, index1) => {
-                                    if (item1.equipArgs.length > 0) {
-                                        item1.equipArgs.forEach((item2, index2) => {
-                                            item1.equipArgs[index2] = {
-                                                value: item2.id,
-                                                label: item2.name,
-                                                model: item2.model,
-                                            };
-                                        })
-                                    }
-                                    item.categories[index1] = {
-                                        value: item1.id,
-                                        label: item1.name,
-                                        model: item1.model,
-                                        children: !this.title.includes('新增') && !this.title.includes('信息查看') ? item1.equipArgs : null
-                                    };
-                                })
-                            }
-                            newData.push(
-                                {
-                                    value: item.id,
-                                    label: item.name,
-                                    model: item.model,
-                                    children: item.categories
+                };
+                getGenreList().then(res => {
+                        let data = JSON.parse(JSON.stringify(res));
+                        let newData = [];
+                        if (data) {
+                            data.forEach((item) => {
+                                if (item.categories.length > 0) {
+                                    item.categories.forEach((item1, index1) => {
+                                        if (item1.equipArgs.length > 0) {
+                                            item1.equipArgs.forEach((item2, index2) => {
+                                                item1.equipArgs[index2] = {
+                                                    value: item2.id,
+                                                    label: item2.name,
+                                                    model: item2.model,
+                                                };
+                                            })
+                                        }
+                                        item.categories[index1] = {
+                                            value: item1.id,
+                                            label: item1.name,
+                                            model: item1.model,
+                                            children: !this.title.includes('新增') && !this.title.includes('信息查看') ? item1.equipArgs : null
+                                        };
+                                    })
                                 }
-                            )
-                        });
-                        this.options = newData;
-                    }
+                                newData.push(
+                                    {
+                                        value: item.id,
+                                        label: item.name,
+                                        model: item.model,
+                                        children: item.categories
+                                    }
+                                )
+                            });
+                            this.options = newData;
+                        }
                 });
-
                 this.gqlQuery(api.getSupplierList, {}, (res) => {
                     this.vendorId = res.data.SupplierList.content.map(item => {
                         return {
@@ -870,7 +885,7 @@
                                 phone: item.phone,
                             }
                         }
-                    })
+                    });
                     this.judgeEdit.form = JSON.parse(JSON.stringify(this.form))
                     this.judgeEdit.zbForm = JSON.parse(JSON.stringify(this.zbForm))
                 });

@@ -31,3 +31,18 @@ export function searchPlan(data) {
         params:data
     })
 }
+export function getGenreList() {
+    return request({
+        url: '/equip-args/contain-category-and-genre',
+        method: 'get',
+    })
+}
+
+export function addEquipInfo(params,data) {
+    return request({
+        url: '/equip-args',
+        method: 'post',
+        params:params,
+        data:data
+    })
+}

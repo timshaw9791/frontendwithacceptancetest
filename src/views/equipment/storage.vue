@@ -194,10 +194,12 @@
         methods: {
             clickTable(table) {
                 let  data = table.row;
-                if(this.table.name==='查看'){
+
+                if(table.name==='查看'){
+                    console.log(table)
                     this.goInfo('look',data)
                 }else {
-                    this.toDel(scope.row)
+                    this.toDel(data)
                 }
                 // if(table.name=='详情'){
                 //     let dataCopy=JSON.parse(JSON.stringify(data));
