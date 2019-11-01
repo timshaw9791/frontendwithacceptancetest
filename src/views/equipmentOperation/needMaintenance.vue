@@ -34,7 +34,7 @@
         </div>
 
 
-        <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
+        <bos-paginator v-if="this.list!=''" :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
 
 
         <serviceDialog title="提示" ref="dialogButton" @confirm="submit">
