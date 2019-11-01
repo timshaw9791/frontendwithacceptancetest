@@ -21,11 +21,6 @@
                 <!--<i class="el-icon-caret-bottom"></i>-->
             </div>
             <el-dropdown-menu class="user-dropdown" slot="dropdown">
-                <router-link class="inlineBlock" to="/overview/index">
-                    <el-dropdown-item>
-                        主 页
-                    </el-dropdown-item>
-                </router-link>
                 <router-link class="inlineBlock" to="/private/index">
                     <el-dropdown-item>
                         个人中心

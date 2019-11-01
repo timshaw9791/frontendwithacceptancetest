@@ -189,6 +189,7 @@
                     console.log(item);
                     this.form = JSON.parse(JSON.stringify(item));
                     this.form.planEquips.push({equipModel: '', location: {}});
+                    this.form['planEquips'] = [{equipModel: '', location: {}}];
                 }
                 this.getEquipInfo();
 
