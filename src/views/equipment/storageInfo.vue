@@ -349,8 +349,11 @@
                 if (this.title.includes('新增')) {
                     this.form.videoAddresses ? this.form.videoAddresses = this.form.videoAddresses.join(',') : '';
                     this.form.documentAddresses ? this.form.documentAddresses = this.form.documentAddresses.join(',') : '';
-
-                    let newData = JSON.parse(JSON.stringify(this.form));
+                     if (this.form.upkeepCycle == undefined || this.form.model == undefined || this.form.chargeCycle == undefined || this.form.name == undefined || this.form.personM == undefined || this.form.nameId==undefined) {
+                    this.$message.error('请填写完整')
+                } else 
+                {
+                let newData = JSON.parse(JSON.stringify(this.form));
                     newData.upkeepCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.upkeepCycle)));
                     newData.chargeCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.chargeCycle)));
 
@@ -363,6 +366,8 @@
                         this.dialogConfirm();
                         this.callback('添加成功!');
                     });
+                }
+                    
 
                 } else if (this.title.includes('信息查看')) {
                     this.form.videoAddresses ? this.form.videoAddresses = this.form.videoAddresses.join(',') : '';

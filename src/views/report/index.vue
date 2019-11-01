@@ -9,7 +9,7 @@
                         <div style="margin-left: 30px;cursor:pointer;display: flex;align-items: center" @click="getMing">
                             <!--<a :href="mingXiSrc" style="display: none" ref="mingXiDownload">a标签</a>-->
                             <svg-icon icon-class="明细" style="font-size: 20px;margin-right: 5px"  ></svg-icon>
-                            <span v-text="'装备明细'"></span>
+                            <span v-text="'装备清单'"></span>
                         </div>
                     </div>
                     <div class="r_t_title-right">

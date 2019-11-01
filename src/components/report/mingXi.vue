@@ -2,7 +2,7 @@
     <div class="ming-xi-box">
         <div class="action-bar">
            <div class="download-box">
-               <span v-text="'装备明细'" style="font-size:16px;"></span>
+               <span v-text="'装备清单'" style="font-size:16px;"></span>
                <div style="margin-left: 30px;cursor:pointer;display: flex;align-items: center" @click="downloadDetails">
                    <a :href="downloadSrc" style="display: none" ref="downloadRefs">a标签</a>
                    <svg-icon icon-class="导出" style="font-size: 20px;margin-right: 5px"  ></svg-icon>
@@ -94,7 +94,7 @@
                     {lable: '装备总数', field: 'equipInfo.total', sort:false},
                     {lable: '在库数量', field: 'equipInfo.inHouseCount'},
                     {lable: '出库数量', field: 'equipInfo.outHouseCount'},
-                    {lable: '装备价格', field: 'equipInfo.price'},
+                    {lable: '装备总价', field: 'equipInfo.price'},
                     {lable: '供应商', field: 'supplierName'}
                 ]
             }
