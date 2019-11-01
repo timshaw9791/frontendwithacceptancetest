@@ -20,7 +20,7 @@
             <!--</BosInput>-->
           </div>
         </div>
-        <div class="ulList" ref="ulList" :v-loading="true">
+        <div class="ulList" ref="ulList" v-loading="false" v-infinite-scroll="scrollGet" infinite-scroll-delay="500" infinite-scroll-immediate="false" infinite-scroll-distance="10">
           <div
             v-for="(item,index) in list"
             :key="index"
@@ -33,6 +33,7 @@
             <span>{{$filterTime(item.time)}} {{conversion(item.readed)}}</span>
           </div>
         </div>
+        <div class="tip" v-show="loading">正在加载...</div>
         <div class="msgBottom">消息只保存三个月，请及时查看</div>
       </div>
 
@@ -66,6 +67,11 @@ export default {
     return {
       list: [],
       userId: JSON.parse(localStorage.getItem("user")).id,
+      page: 1,
+      selectedVal: "全部",
+      isSelect: false, // 判断是否是选择变动，如是则禁止scroll获取数据
+      getScrollDate: true, // 如果返回值为空，则滚动不再发起请求
+      loading: false,
       content: null,
       contentTrue: null,
       inquire: "",
@@ -93,29 +99,65 @@ export default {
     }
   },
   methods: {
-    getList() {
+    getList(state) {
       let data = {
-        userId: JSON.parse(localStorage.getItem("user")).id
+        userId: JSON.parse(localStorage.getItem("user")).id,
+        page: this.page
       };
       getMsgList(data).then(res => {
-        this.list = JSON.parse(JSON.stringify(res.content));
-        if (this.oldScrollTop) {
-          this.$nextTick(() => {
-            this.$refs.ulList.scrollTop = this.oldScrollTop;
-          });
+        this.loading = false
+        let result = JSON.parse(JSON.stringify(res.content))
+        if(state) {
+          this.list = result;
+        } else {
+          this.list.push(result)
         }
+        // if(res.content.length == 0) {
+        //   this.getScrollDate = false
+        // }
+        // if (this.oldScrollTop) {
+        //   this.$nextTick(() => {
+        //     this.$refs.ulList.scrollTop = this.oldScrollTop;
+        //   });
+        // }
       });
     },
 
-    getListWithType(type) {
+    getListWithType(type, state) {
       let data = {
         userId: JSON.parse(localStorage.getItem('user')).id, 
-        type: type
+        type: type,
+        page: this.page
       }
       getMsgListWithType(data).then(res => {
-        this.list = JSON.parse(JSON.stringify(res.content))
+        this.loading = false
+        let result = JSON.parse(JSON.stringify(res.content))
+        if(state) {
+          this.list = result
+        } else {
+          this.list.push(result)
+        }
+        // if(res.content.length == 0) {
+        //   this.getScrollDate = false
+        // }
       })
     },
+
+    scrollGet() {
+      if(this.isSelect) {
+        this.isSelect = false
+        return
+      }
+      this.loading = true
+      // if(!this.getScrollDate) return
+      this.page++
+      if(this.selectedVal == "全部") {
+        this.getList(false)
+      } else {
+        this.getList(this.selectedVal, false)
+      }
+    },
+
 
     read(data) {
       this.oldScrollTop = this.$refs.ulList.scrollTop;
@@ -148,10 +190,13 @@ export default {
       }
     },
     selected(data) {
+      this.isSelect = true
+      this.page = 1
+      // this.getScrollDate = true
       if (data === "全部") {
-        this.getList()
+        this.getList(true)
       } else {
-        this.getListWithType(data)
+        this.getListWithType(data, true)
       }
     },
     fontNumber(date) {
@@ -168,7 +213,7 @@ export default {
   watch: {
     isOpened(newer, older) {
       if (newer) {
-        this.getList();
+        this.getList(true);
       }
     }
 
@@ -199,7 +244,7 @@ export default {
 
 .msgContents {
   display: flex;
-  height: 82vh;
+  height: 85vh;
   .top {
     display: flex;
     align-items: center;
@@ -242,6 +287,14 @@ export default {
     margin-left: 16px;
     background: white;
   }
+
+  .tip {
+      width: 100%;
+      height: 25px;
+      text-align: center;
+      line-height: 25px;
+      background-color: rgba(204, 204, 204, 0.2)
+  }
   .ulList {
     min-width: 23vw;
     max-width: 23vw;
@@ -261,6 +314,7 @@ export default {
         color: rgb(195, 195, 195); // margin-top: 10px;
       }
     }
+    
     div:hover {
       color: #409eff;
     }
