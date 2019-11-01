@@ -35,7 +35,7 @@
                     </el-table-column>
 
                 </el-table>
-                <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
+                <bos-paginator v-if="this.list" :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
             </div>
         </el-card>
 
