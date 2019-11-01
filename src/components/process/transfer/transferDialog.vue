@@ -166,8 +166,8 @@
 
     // import {handheld} from 'common/js/pda'
     // const cmdPath = 'C:\\Users\\Administrator';
-    // const exec = window.require('child_process').exec;
-    // const spawn = window.require('child_process').spawn;
+    //const exec = window.require('child_process').exec;
+    //const spawn = window.require('child_process').spawn;
     // const fs = window.require('fs');
     // const path = window.require('path');
     // const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
@@ -308,6 +308,7 @@
                 this.rightList.splice(index, 1)
             },
             close() {
+                this.hardware=''
                 this.closeUsb = true;
                 this.end(this.pid);
                 this.$refs.transFerDialogApply.cancelDb();

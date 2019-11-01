@@ -46,10 +46,12 @@
                         {lable: '操作时间', field: 'startTime', filter: (ns) => this.$filterTime(ns.time), sort: false},
                         {lable: '操作状态', field: 'action', filter: this.filterAction}
                     ],
+                    url:'/equip-records',
                     tableAction:{
                         label:'操作',
-                        button:['详情','监控']
+                        button:[{name:'详情',type:'primary'},{name:'监控',type:'primary'}]
                     },
+                    params:{direction:'DESC',property:'time'},
                     search:'',
                     flag:false
                 },

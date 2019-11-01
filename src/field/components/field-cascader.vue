@@ -7,6 +7,10 @@
                 filterable
                 :show-all-levels="showLast"
                 @change="change">
+                <template slot-scope="{ node, data }" v-if="data.model">
+                    <span>{{ data.label }}</span>
+                    <span>({{ data.model }})</span>
+                </template>
         </el-cascader>
     </form-item>
 </template>

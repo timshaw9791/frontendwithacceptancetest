@@ -38,6 +38,7 @@ query getCategoryList($id: String) {
       }
       name
       id
+      safeStock
       genre {
         id
       }

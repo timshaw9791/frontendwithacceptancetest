@@ -1,3 +1,7 @@
+import request from 'common/js/request'
+
+
+
 function outPutInfo(flag) {
     return flag ? true : "%s格式不正确";
 }
@@ -106,6 +110,13 @@ export let formRulesMixin = {
                 }
             };
             return ruler.r(required);
+        },
+        requestFunction(config, sCallback,errorBack) {
+            request(config).then(res => {
+                sCallback.call(this, res);
+            }).catch(err=>{
+                    errorBack.call(this,err)
+                })
         },
         mutate(mutation, variables) {//声明手动修改的方法
             return this.$apollo.mutate({

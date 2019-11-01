@@ -2,7 +2,8 @@
     <div class="opening-box">
         <my-header :title="'开门记录'" :searchFlag="false"></my-header>
         <r_search :placeholder="'人员姓名'" @handleSearch="handleSearch"></r_search>
-        <r_label :table="table" v-show="table.flag" @clickTable="clickTable" @sortCondition="sortGql" ref="las"></r_label>
+        <r_label :table="table" @clickTable="clickTable"
+                 ref="las"></r_label>
         <r_video ref="recordVideo" :src="address"></r_video>
     </div>
 </template>
@@ -11,8 +12,7 @@
     import myHeader from 'components/base/header/header'
     import r_search from 'components/record/recordSearch'
     import r_video from 'components/record/recordDialog'
-    import r_label from 'common/vue/label'
-    import record from 'gql/record.gql'
+    import r_label from 'common/vue/ajaxLabel'
     import {baseURL} from "../../api/config";
 
     export default {
@@ -26,18 +26,17 @@
         data(){
             return{
                 table: {
-                    flag: true,
+                    flag: false,
                     labelList: [
                         {lable: '开门人员', field: 'policeName',sort:false},
                         {lable: '开门时间', field: 'time', filter: (ns) => this.$filterTime(parseInt(ns.time))},
                     ],
-                    graphqlTable: {
-                        graphqlApi: record.getGateOpenRecordList,
-                        graphqlKey: {qfilter: {key: "id", operator: "ISNOTNULL"}}
-                    },
+                    url:'/gate-open-records',
+                    search:'',
+                    params:{direction:'DESC',property:'time'},
                     tableAction:{
                         label:'操作',
-                        button:['监控']
+                        button:[{name:'监控',type:'primary'}]
                     },
                 },
                 address:''
@@ -45,20 +44,7 @@
         },
         methods:{
             handleSearch(data) {
-                let qfilter;
-                if (data == '') {
-                    qfilter = {key: "id", operator: "ISNOTNULL"};
-                } else {
-                    let that = this;
-                    qfilter = {
-                        key: 'policeName',
-                        value: '%' + data + '%',
-                        operator: 'LIKE',
-                        combinator: 'AND',
-                        next: this.table.graphqlTable.graphqlKey.qfilter
-                    };
-                }
-                this.$set(this.table.graphqlTable.graphqlKey, 'qfilter', qfilter);
+                this.$set(this.table, 'search', data);
             },
             clickTable(table) {
                 let data = table.row;

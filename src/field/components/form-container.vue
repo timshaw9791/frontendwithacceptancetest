@@ -7,7 +7,6 @@
 
 <script>
     import {formRulesMixin} from '../common/mixinComponent';
-
     export default {
         mixins: [formRulesMixin],
         computed: {
@@ -45,6 +44,32 @@
                 this.validate.then(() => {
                     try {
                         this.gqlMutate(graphql, variables, sCallback);
+                    } catch (error) {
+                        console.error(error);   //语法问题检测
+                        this.$message.error(`${error}`);
+                    }
+                }).catch((error) => {
+                    console.log('未通过检验');   //未通过客户端的表单验证
+                    this.$message.error('未通过检验');
+                });
+            },
+            restValidate(func, variables, sCallback) {
+                this.validate.then(() => {
+                    let data = JSON.parse(JSON.stringify(variables));
+                    func(data).then(res => {
+                        sCallback(true)
+                    }).catch(err => {
+                        this.$message.error(err.response.data.message)
+                    })
+                }).catch(error => {
+                    console.log("未通过检测");
+                    this.$message.error("未通过检测")
+                })
+            },
+            ajaxValidate(config,sCallback,errorBack) {
+                this.validate.then(() => {
+                    try {
+                        this.requestFunction(config,sCallback,errorBack)
                     } catch (error) {
                         console.error(error);   //语法问题检测
                         this.$message.error(`${error}`);

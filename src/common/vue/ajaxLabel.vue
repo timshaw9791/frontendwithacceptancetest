@@ -58,10 +58,16 @@
         },
         methods:{
             getList(){
-                let url=baseURL+'/equip-records';
-                let params={page:this.paginator.page,size: this.paginator.size,search:this.table.search,direction:'DESC',property:'time'}
+                let url=baseURL+this.table.url;
+                let paramskey={page:this.paginator.page,size: this.paginator.size,search:this.table.search};
+                let params={};
+                if(this.table.params!=null){
+                    params={...paramskey,...this.table.params};
+                }else {
+                    params={...paramskey};
+                }
                 request({
-                    method: 'get',
+                    method:'get',
                     url: url,
                     params: params
                 }).then(res=>{

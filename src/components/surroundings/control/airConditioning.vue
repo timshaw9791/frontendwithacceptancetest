@@ -17,6 +17,8 @@
                         <svg-icon icon-class="编辑" style="width: 18px;height: 18px;margin-left: 24px"></svg-icon>
                     </div>
                 </div>
+                    <span class="tip" v-if="num">请输入-100~100以内的数值</span>
+                    <span class="tip" v-if="order">请从低到高输入温度</span>
                 <div class="airConditioning-button" v-if="!flag">
                     <span v-text="'取消'" @click="cancel" class="cancel"></span><span v-text="'提交'" @click="submission" class="submission"></span>
                 </div>
@@ -40,6 +42,8 @@
         },
         data() {
             return {
+                num:false,
+                order:false,
                 refrigerationActive:{
                     text:'',
                     color:'#39BC53',
@@ -154,16 +158,27 @@
                 this.submissionThreshold()
             },
             submissionThreshold(){
-                this.$ajax({
-                    method:'post',
-                    url:baseURL+'/environment/temperatureThresholdSet',
-                    params:{max:this.threshold.max,min:this.threshold.min}
-                }).then((res)=>{
-                    this.flag=!this.flag;
-                    this.$message.success('提交成功');
-                }).catch(err=>{
-                    this.$message.error(err);
-                });
+                if(this.threshold.min>this.threshold.max){
+                    this.num = false
+                    this.order = true
+                }else if(this.threshold.min<-100||this.threshold.max>100){
+                    this.order = false
+                    this.num = true
+                }else{
+                    this.order = false
+                    this.num = false
+                    this.$ajax({
+                        method:'post',
+                        url:baseURL+'/environment/temperatureThresholdSet',
+                        params:{max:this.threshold.max,min:this.threshold.min}
+                    }).then((res)=>{
+                        this.flag=!this.flag;
+                        this.$message.success('提交成功');
+                    }).catch(err=>{
+                        this.$message.error(err);
+                    });
+                }
+
             },
             getThreshold(){
                 this.$ajax({
@@ -276,5 +291,9 @@
         align-items: center;
         justify-content: center;
         margin-left: 27px;
+    }
+    .tip{
+        color: red;
+        margin-top: 10px
     }
 </style>

@@ -59,7 +59,8 @@
     import report from 'gql/report.gql'
     import {fetchMixin} from 'field/common/mixinFetch'
     import {baseURL} from "../../api/config";
-
+    import {formRulesMixin} from 'field/common/mixinComponent';
+    import api from 'gql/warehouse.gql'
     export default {
         name: "index",
         mixins: [fetchMixin],
@@ -105,6 +106,14 @@
                 this.useCount = data
             });
             this.getGenreList();
+        },
+         mixins: [formRulesMixin],
+         apollo: {
+            list() {
+                console.log("this.getEntityListWithPagintor(api.getHouseStockList)")
+                console.log(this.getEntityListWithPagintor(api.getHouseStockList))
+                return this.getEntityListWithPagintor(api.getHouseStockList);
+            },
         },
         methods: {
             getMing() {
@@ -166,7 +175,6 @@
                  startTime:data.startTime.valueOf(),
                  endTime:data.endTime.valueOf()
              };
-
              if(this.equipDetails.title=='装备维修率'){
                  this.getMaintain(date,res=>{
                      this.$set(this.equipDetails,'list',res);
@@ -215,7 +223,8 @@
                                percentage: percentage,
                                allCount:item.count,
                                select:false,
-                               price:item.price
+                               price:item.price,
+                               safeStock:this.list.safeStock
                            })
                        }
                     });
