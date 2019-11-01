@@ -22,7 +22,7 @@
                 </div>
 
 
-                <el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
+                <el-table :data="list" v-loading.body="false" element-loading-text="Loading"
                           fit>
                     <bos-table-column lable="供应商" field="name"></bos-table-column>
                     <bos-table-column lable="联系人" field="person"></bos-table-column>
@@ -65,7 +65,8 @@
 </template>
 
 <script>
-    import {formRulesMixin} from 'field/common/mixinComponent';
+    import {formRulesMixin} from 'field/common/mixinTableRest';
+    import { getSuppliers, modifySupplier, deleteSupplier } from "api/warehouse"
     import api from 'gql/warehouse.gql'
     import servicedialog from 'components/base/serviceDialog'
 
@@ -74,45 +75,43 @@
             return {
                 title: '',
                 inlineForm: {},
+                list: [],
                 inquire: '',
                 delId: '',
-                param: {
-                    "qfilter": {
-                        "combinator": "OR",
-                        "key": "name",
-                        "operator": "LIKE",
-                        "value": "%%",
-                        "next": {
-                            "combinator": "OR",
-                            "key": "person",
-                            "operator": "LIKE",
-                            "value": "%%",
-                            "next": {
-                                "combinator": "OR",
-                                "key": "phone",
-                                "operator": "LIKE",
-                                "value": "%%"
-                            }
-                        }
-                    }
-                }
+                paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
             }
         },
         mixins: [formRulesMixin],
-        apollo: {
-            list() {
-                return this.getEntityListWithPagintor(api.getSupplierList);
-            },
-        },
         methods: {
-            dialogConfirm() {
-                this.$refs.inlineForm.gqlValidate(api.suppliers_saveSupplier, {
-                    supplier: this.inlineForm
-                }, (res) => {
-                    console.log(res);
-                    this.callback(`${this.title}成功!`);
-                    this.$refs.dialog.hide();
+            getSupplierList() {
+                let params = {page: this.paginator.page, size: this.paginator.size}
+                getSuppliers(params).then(res => {
+                    let result = JSON.parse(JSON.stringify(res))
+                    this.list = result.content
+                    this.paginator.totalPages = res.totalPages
+                    this.paginator.totalElements = res.totalElements
                 })
+            },
+            changePage(page) {
+                this.paginator.page = page
+                this.getSupplierList()
+            },
+            dialogConfirm() {
+                let obj = JSON.parse(JSON.stringify(this.inlineForm))
+                this.$refs.inlineForm.restValidate(modifySupplier, obj, res => {
+                    this.$message.success(`${this.title}成功`)
+                    this.$refs.dialog.hide()
+                    this.paginator.page = 1
+                    this.getSupplierList()
+                })
+
+                // this.$refs.inlineForm.gqlValidate(api.suppliers_saveSupplier, {
+                //     supplier: this.inlineForm
+                // }, (res) => {
+                //     console.log(res);
+                //     this.callback(`${this.title}成功!`);
+                //     this.$refs.dialog.hide();
+                // })
             },
             addChanger(title, row) {
                 this.title = title;
@@ -129,42 +128,24 @@
                 this.delId = row.id;
             },
             submit1() {
-                this.gqlMutate(api.suppliers_deleteSupplier, {supplierId: this.delId}, (res) => {
-                    this.$refs.dialog1.hide();
-                    this.callback(`删除成功!`);
+                deleteSupplier(this.delId).then(res => {
+                    this.$message.success("删除成功")
+                    this.$refs.dialog1.hide()
+                    this.paginator.page = 1
+                    this.getSupplierList()
                 })
+                // this.gqlMutate(api.suppliers_deleteSupplier, {supplierId: this.delId}, (res) => {
+                //     this.$refs.dialog1.hide();
+                //     this.callback(`删除成功!`);
+                // })
             }
         },
         components: {
             servicedialog
         },
-
-
-        watch: {
-            inquire(newVal, oldVal) {
-                this.param.namelike = newVal;
-                this.param.namelike = newVal;
-                this.param['qfilter'] = {
-                    "combinator": "OR",
-                    "key": "name",
-                    "operator": "LIKE",
-                    value: newVal,
-                    "next": {
-                        "combinator": "OR",
-                        "key": "person",
-                        "operator": "LIKE",
-                        value: newVal,
-                        "next": {
-                            "combinator": "OR",
-                            "key": "phone",
-                            "operator": "LIKE",
-                            value: newVal,
-                        }
-                    }
-                }
-
-            }
-        }
+        created() {
+            this.getSupplierList()
+        },
 
     }
 </script>

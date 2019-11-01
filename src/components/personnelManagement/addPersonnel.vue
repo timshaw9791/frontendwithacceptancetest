@@ -124,7 +124,7 @@
             }
             console.log(this.roleList);
             this.roleList.forEach(item=>{
-               if(item.value!='ALL'&&item.label!='超级管理员'){
+               if(item.value!=''&&item.label!='超级管理员'){
                    this.cRoleList.push({
                        val:item.value,
                        key:item.label
