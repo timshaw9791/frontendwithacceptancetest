@@ -55,7 +55,7 @@
 
 <script>
 import api from "gql/msg.gql";
-import { readMsg, getMsgList } from "api/message";
+import { readMsg, getMsgList, getMsgListWithType } from "api/message";
 import { formRulesMixin } from "field/common/mixinComponent";
 import tabs from "components/base/tabs/index";
 import { transformMixin } from "common/js/transformMixin";
@@ -79,7 +79,6 @@ export default {
         { label: "过保", value: "PERIOD_EXCEED_SHELF_LIFE" },
         { label: "标准库存", value: "SAFE_SOCK_REMIND" }
       ],
-      qfilter: {}
     };
   },
   mixins: [formRulesMixin, transformMixin],
@@ -106,6 +105,16 @@ export default {
           });
         }
       });
+    },
+
+    getListWithType(type) {
+      let data = {
+        userId: JSON.parse(localStorage.getItem('user')).id, 
+        type: type
+      }
+      getMsgListWithType(data).then(res => {
+        this.list = JSON.parse(JSON.stringify(res.content))
+      })
     },
 
     read(data) {
@@ -140,26 +149,10 @@ export default {
     },
     selected(data) {
       if (data === "全部") {
-        this.qfilter = {
-          key: "userId",
-          operator: "EQUEAL",
-          value: this.userId
-        };
+        this.getList()
       } else {
-        this.qfilter = {
-          combinator: "AND",
-          key: "userId",
-          operator: "EQUEAL",
-          value: this.userId,
-          next: {
-            key: "type",
-            operator: "EQUEAL",
-            value: data,
-            combinator: "OR"
-          }
-        };
+        this.getListWithType(data)
       }
-      this.getList();
     },
     fontNumber(date) {
       const length = date.length;

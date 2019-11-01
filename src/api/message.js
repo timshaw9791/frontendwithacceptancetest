@@ -15,3 +15,11 @@ export function getMsgList(data) {
         params: data
     })
 }
+
+export function getMsgListWithType(data) {
+    return request({
+        url: `${baseURL}/messages/by-user-and-type`,
+        method: "GET",
+        params: data
+    })
+}
