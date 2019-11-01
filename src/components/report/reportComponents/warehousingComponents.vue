@@ -55,7 +55,13 @@
     }
 </script>
 
+
 <style scoped>
+
+    .ProgressCircular /deep/  .el-progress__text {
+        display: none;
+    }
+
     .warehousingComponents{
         display: flex;
         justify-content: center;

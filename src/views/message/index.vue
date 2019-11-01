@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <div class="message">
     <div class="msgContents">
       <div>
         <div class="top">
           <tb-select
             :options="options"
             indexDefault="全部"
-            style="margin-left: 1vw"
+            style="margin-left: 1vw; min-width: 100px"
             @selected="selected"
           ></tb-select>
 
@@ -193,13 +193,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.message {
+  font-size: 16px;
+}
+
 .msgContents {
   display: flex;
   height: 82vh;
   .top {
     display: flex;
     align-items: center;
-    padding: 16px 0;
+    padding: 0.0833rem 0;
     border-bottom: 1px solid rgb(228, 231, 237);
   }
   .left-tab {

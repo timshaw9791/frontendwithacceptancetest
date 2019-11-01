@@ -113,6 +113,7 @@
     .info-box {
         width: 100%;
         min-height: 600px;
+        font-size: 16px;
     }
 
     .info-box .header {
