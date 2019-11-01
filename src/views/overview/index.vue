@@ -45,11 +45,9 @@
                             <span>{{item.name}}</span>
                         </div>
                         <div class="bk-content">
-                            <!-- <el-scrollbar wrap-class="scroll-bar"> -->
+                            <el-scrollbar wrap-class="scroll-bar">
                                 <div class="scroll-bar">
-                                    <el-table :data="item.list" :cell-style="{}"
-                                    :header-cell-style="setWidth"
-                                    @row-click="gotoInfo" height="1.4115rem">
+                                    <el-table :data="item.list" fit @row-click="gotoInfo">
                                         <div v-if="index===0">
                                             <bos-table-column lable="类型"
                                                               remWidth="170px"
@@ -91,7 +89,7 @@
                                         </div>
                                     </el-table>
                                 </div>
-                            <!-- </el-scrollbar> -->
+                            </el-scrollbar>
                         </div>
                     </div>
 

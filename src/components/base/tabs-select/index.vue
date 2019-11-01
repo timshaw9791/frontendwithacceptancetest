@@ -53,6 +53,7 @@
             border-radius: 24px;
             text-align: center;
             width: 6vw;
+            min-width: 100px;
             font-size: 16px;
         }
 
