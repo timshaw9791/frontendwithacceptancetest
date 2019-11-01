@@ -8,7 +8,19 @@
     <title>华安后台管理系统</title>
 </head>
 <body>
-<div id="app"></div>
+
+<div id="app">
+
+</div>
+<script>
+    function getBase() {
+        let width = document.documentElement.clientWidth;
+        document.documentElement.style.fontSize = width/10 + 'px';
+        localStorage.setItem('fontSize', width/10)
+    }
+    window.addEventListener('resize', getBase)
+    getBase()
+</script>
 <!-- built files will be auto injected -->
 </body>
 </html>
