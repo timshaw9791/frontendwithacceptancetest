@@ -58,7 +58,7 @@
         <div class="equip-details-list">
             <div :class="item.select?'equip-details-item select-item':'equip-details-item'" v-for="item in detailsList">
                 <equip-progress :width="500" :detailItem="item" :status="title=='装备使用频次'?false:true"
-                                 :havePrice="viewStatus.flag">
+                                 :havePrice="viewStatus.flag" :title="title" :list="list" :isDetail="isDetail":noShowText="true">
                     <span v-text="toolTip[0]+'：'+item.allCount" style="margin-top: 8px"></span>
                     <span v-text="toolTip[1]+'：'+item.number" style="margin-top: 8px"></span>
                     <span v-text="toolTip[2]+'：'+item.percentage+'%'" style="margin-top: 8px"
@@ -71,7 +71,8 @@
 
 <script>
     import equipProgress from './reportComponents/equipProgress'
-
+    import {formRulesMixin} from 'field/common/mixinComponent';
+    import api from 'gql/warehouse.gql'
     export default {
         name: "equipDetails",
         components: {
@@ -131,6 +132,7 @@
                         }
                     }]
                 },
+                isDetail:false
             }
         },
         watch: {
@@ -140,15 +142,28 @@
                 }
             }
         },
+         mixins: [formRulesMixin],
+         apollo: {
+            list() {
+               
+                return this.getEntityListWithPagintor(api.getHouseStockList);
+            },
+        },
         created() {
             this.init()
+             
+        },
+        updated() {
+            this.getSafeStcok()
         },
         methods: {
             toChange(data) {
+                this.isDetail=false
                 this.selectCategory = '';
                 this.$emit('changeGener', data);
             },
             toChangeCategory(data) {
+                this.isDetail=true
                 this.$emit('changeCategory', data);
             },
             changeDate(date) {
@@ -241,7 +256,22 @@
                      return true
                  }
             },
+            getSafeStcok(){            
+            this.detailsList.forEach((item=>{
+                this.list.forEach((ass=>{
+                    if(item.equipId!=null)
+                    {
+                     if(ass.equipArg.id==item.equipId)
+                     {
+                        item.safeStock=ass.safeStock
+                     }
+                    }
+                   
+                }))
+            }))
+            },
             init() {
+                
                 if (this.title == '装备使用频次'||this.title == '装备损耗率'||this.title == '装备维修率') {
                     let date0 = new Date();
                     let date1 = new Date();
@@ -274,7 +304,8 @@
     }
 
     .equip-details-box .equip-details-list {
-        width: 90%;
+        margin-left:300px;
+        width: 70%;
         margin-top: 20px;
     }
 
@@ -283,15 +314,14 @@
         align-items: center;
         padding-left: 18px;
         padding-top: 17px;
-
         color: #707070;
     }
 
     .equip-details-list .equip-details-item {
-        width: 70%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        width: 100%;
+        display: flex; 
+        /* align-items: center;
+        justify-content: center; */
         height: 32px;
     }
 

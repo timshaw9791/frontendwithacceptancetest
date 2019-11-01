@@ -59,8 +59,7 @@
     import report from 'gql/report.gql'
     import {fetchMixin} from 'field/common/mixinFetch'
     import {baseURL} from "../../api/config";
-    import {formRulesMixin} from 'field/common/mixinComponent';
-    import api from 'gql/warehouse.gql'
+
     export default {
         name: "index",
         mixins: [fetchMixin],
@@ -107,14 +106,7 @@
             });
             this.getGenreList();
         },
-         mixins: [formRulesMixin],
-         apollo: {
-            list() {
-                console.log("this.getEntityListWithPagintor(api.getHouseStockList)")
-                console.log(this.getEntityListWithPagintor(api.getHouseStockList))
-                return this.getEntityListWithPagintor(api.getHouseStockList);
-            },
-        },
+
         methods: {
             getMing() {
                 this.viewStatus.backFlag = !this.viewStatus.backFlag;
@@ -145,6 +137,8 @@
             },
             toDetails(data) {
                 this.equipDetails.title=data;
+                console.log("data")
+                console.log(data)
                 if(data=='装备维修率'){
                     this.getMaintain('',data=>{
                         this.$set(this.equipDetails,'list',data);
@@ -201,20 +195,27 @@
             getCategoryGener(url,api){
 
                 this.ajax(url,'', (res) => {
+                     console.log("item")
+                        console.log(res.data)
+                        console.log("LSDKAKFHKFHAK")
                     let list=[];
                     res.data[api].forEach(item=>{
+                       
                         let percentage=0;
                         if(item.count!=0&&item.count!=null){
                             percentage=Math.round(((item.outHouseCount / item.count) * 100));
                         }
                        if(api=='equipArgStatisticList'){
+
                            list.push({
                                name:item.name+item.model,
                                number:item.outHouseCount,
                                percentage: percentage,
                                allCount:item.count,
                                select:false,
-                               price:item.price
+                               price:item.price,
+                               equipId:item.equipArgId,
+                               safeStock:0,
                            })
                        }else {
                            list.push({
@@ -223,8 +224,8 @@
                                percentage: percentage,
                                allCount:item.count,
                                select:false,
-                               price:item.price,
-                               safeStock:this.list.safeStock
+                               price:item.price
+
                            })
                        }
                     });

@@ -3,18 +3,45 @@
        <div class="progress-name">
            <span v-text="detailItem.name" style="right: 0px;position: absolute"></span>
        </div>
-       <el-tooltip  placement="bottom" popper-class="progress-box-mouse-card-text" :open-delay="200" :visible-arrow="false" transition="transion-toolTip">
-           <div slot="content" class="mouseCard">
+       <el-tooltip  placement="bottom" popper-class="progress-box-mouse-card-text" :open-delay="200" :visible-arrow="false" transition="transion-toolTip" :disabled="noShowText">
+           <div slot="content" class="mouseCard"  >
               <slot></slot>
            </div>
-           <el-progress :percentage="detailItem.percentage" :style="'width:'+width+'px;margin-left:'+marginLeft+'px'" color="#3B86FF" :stroke-width="Number(5)" :format="format"></el-progress>
+           <el-progress :percentage="detailItem.percentage" :style="'width:'+width+'px;margin-left:'+marginLeft+'px'" color="#3B86FF" :stroke-width="Number(5)" v-if="status" :format="statistics"></el-progress>
            <el-progress :percentage="detailItem.percentage" :style="'width:'+width+'px;margin-left:'+marginLeft+'px'" color="#3B86FF" :stroke-width="Number(5)" v-if="!status" :format="format"></el-progress>
+           <el-progress :percentage="detailItem.percentage" :style="'width:'+width+'px;margin-left:'+marginLeft+'px'" color="#3B86FF" :stroke-width="Number(5)" v-if="status&&isReport" ></el-progress>
+           <el-progress :percentage="detailItem.percentage" :style="'width:'+width+'px;margin-left:'+marginLeft+'px'" color="#3B86FF" :stroke-width="Number(5)" v-if="!status&&noShowText" :format="statistics"></el-progress>
        </el-tooltip>
-        <span v-text="'维修率: '+detailItem.percentage+'%'" style="margin-left:0px" v-if="status&&!havePrice"></span>
-        <span v-text="'（装备总数: '+detailItem.number+'件)'" style="margin-left: 0px" v-if="status&&!havePrice"></span>
-        <span v-text="'/维修数量: '+detailItem.number+'件)'" style="margin-left: 0px" v-if="status&&!havePrice"></span>
-         <span v-text="'[标准库存: '+detailItem.safeStock+'件]'" style="margin-left: 0px" v-if="status&&!havePrice"></span>
-        <div v-if="havePrice" style="width: 200px"><span v-text="'（装备总数：'+detailItem.allCount+'件/ ¥'+Number(detailItem.price/100)+')'" style="margin-left: -15px" ></span></div>
+        <!-- <span v-text="'（总计'+detailItem.number+'件)'" style="margin-left: 0px" v-if="status&&!havePrice"></span> -->
+        <!-- <div v-if="havePrice" style="width: 200px"><span v-text="'（装备总数：'+detailItem.allCount+'件/ ¥'+Number(detailItem.price/100)+')'" style="margin-left: -15px" ></span></div> -->
+        <div v-if="title=='库存统计'">
+         <span v-text="'出库率：'+detailItem.percentage+'%'" style="margin-left:-15px"></span>
+         <span v-text="' (装备总数: '+detailItem.allCount+'件/'+'出库: '+detailItem.number +'件)' " style="margin-left: 0px"></span>
+         <span v-if="isDetail" v-text="'【标准库存: '+detailItem.safeStock+'件】'" style="margin-left: 15px"></span>
+         <span v-if="havePrice&&!isDetail" v-text="'【¥: '+Number(detailItem.price/100)*detailItem.allCount+'】'" style="margin-left: 10px"></span>
+         <span v-if="havePrice&&isDetail" v-text="'【¥: '+Number(detailItem.price/100)+'】'" style="margin-left: 10px"></span>
+        </div>
+        <div v-if="title=='装备维修率'">
+         <span v-text="'维修率：'+detailItem.percentage+'%'" style="margin-left:-15px"></span>
+         <span v-text="' (装备总数: '+detailItem.allCount+'件/'+'出库: '+detailItem.number +'件)' " style="margin-left: 0px"></span>
+         <span v-if="isDetail" v-text="'【标准库存: '+detailItem.safeStock+'件】'" style="margin-left: 15px"></span>
+         <span v-if="havePrice&&!isDetail" v-text="'【¥: '+Number(detailItem.price/100)*detailItem.allCount+'】'" style="margin-left: -5px"></span>
+         <span v-if="havePrice&&isDetail" v-text="'【¥: '+Number(detailItem.price/100)+'】'" style="margin-left: -5px"></span>
+        </div>
+        <div v-if="title=='装备损耗率'">
+         <span v-text="'损耗率：'+detailItem.percentage+'%'" style="margin-left:-15px"></span>
+         <span v-text="' (装备总数: '+detailItem.allCount+'件/'+'损耗数量: '+detailItem.number +'件)' " style="margin-left: 0px"></span>
+         <span v-if="isDetail" v-text="'【标准库存: '+detailItem.safeStock+'件】'" style="margin-left: 15px"></span>
+         <span v-if="havePrice&&!isDetail" v-text="'【¥: '+Number(detailItem.price/100)*detailItem.allCount+'】'" style="margin-left: 3px"></span>
+         <span v-if="havePrice&&isDetail" v-text="'【¥: '+Number(detailItem.price/100)+'】'" style="margin-left: 3px"></span>
+        </div>
+        <div v-if="title=='装备使用频次'">
+         <span v-text="detailItem.number+'次'" style="margin-left:-15px"></span>
+         <span v-text="' (装备总数: '+detailItem.allCount+'件）'" style="margin-left: 0px"></span>
+         <span v-if="isDetail" v-text="'【标准库存: '+detailItem.safeStock+'件】'" style="margin-left: 15px"></span>
+         <span v-if="havePrice&&!isDetail" v-text="'【¥: '+Number(detailItem.price/100)*detailItem.allCount+'】'" style="margin-left: 3px"></span>
+         <span v-if="havePrice&&isDetail" v-text="'【¥: '+Number(detailItem.price/100)+'】'" style="margin-left: 3px"></span>
+        </div>
     </div>
 </template>
 <script>
@@ -25,6 +52,7 @@
         data(){
           return{
               flag:false,
+              safeStock:0
           }
         },
         props: {
@@ -43,6 +71,9 @@
             //     type:Number,
             //     default:890
             // },
+            title:{
+                type:String,
+            },
             width:{
               type:Number,
                default:256
@@ -61,12 +92,32 @@
             havePrice:{
                 type:Boolean
             },
+            isReport:
+            {
+                type:Boolean
+            },
+            isDetail:{
+                type:Boolean 
+            },
+            noShowText:{
+                type:Boolean
+            },
+            list:{
+                type:Array
+            }
             // allCount:{
             //     type:Number,
             //     default:10
             // }
         },
-       
+         mixins: [formRulesMixin],
+         apollo: {
+            list() {
+               
+                return this.getEntityListWithPagintor(api.getHouseStockList);
+            },
+        },
+        
         mounted(){
            /* let mouse = document.getElementById(this.category+this.from);
             let that = this;
@@ -81,21 +132,34 @@
             mOver(){
                 console.log('mOver');
             },
-            format() {
-                if(this.status)
-                {
-                    return ''
-                }
-                else{
-                 return this.detailItem.number+'次'
-                }
-               
+            format() {  
+                return this.detailItem.number+'次'
+            },
+            statistics(){
+            return ''
             },
             mOut(){
                 console.log('mOut');
             },
-           
-        }
+           getSafeStcok(){
+                console.log("执行到我了xiaoji")
+                console.log(this.detailsList)
+                console.log(this.list)
+            // this.detailsList.forEach((item=>{
+            //     this.list.forEach((ass=>{
+            //         if(item.equipId!=null)
+            //         {
+            //          if(ass.equipArg.id==item.equipId)
+            //          {
+            //             item.safeStock=ass.safeStock
+            //          }
+            //         }
+                   
+            //     }))
+            // }))
+            }
+        },
+       
     }
 </script>
 
