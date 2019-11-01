@@ -17,7 +17,7 @@
         <el-dropdown class="avatar-container" trigger="click">
             <div class="avatar-wrapper">
                 <!--<img class="user-avatar" src="./hqq.gif">-->
-                <svg-icon icon-class="设置" class="svg" style="font-size: 0.1146rem;"/>
+                <svg-icon icon-class="设置" class="svg" style="font-size: 22px;"/>
                 <!--<i class="el-icon-caret-bottom"></i>-->
             </div>
             <el-dropdown-menu class="user-dropdown" slot="dropdown">
@@ -124,30 +124,28 @@
 
 <style rel="stylesheet/scss" lang="scss" scoped>
     .navbar {
-        font-size: .083rem;
-        height: 0.3125rem;
-        line-height: 0.3125rem;
+        height: 60px;
+        line-height: 60px;
         border-radius: 0px !important;
         position: relative;
 
         .logo {
-            font-size: 0.0938rem;
+            font-size: 18px;
             color: #707070;
         }
 
         .icons {
             display: flex;
             position: absolute;
-            right: 0.5208rem;
-            top: 0.026rem;
-            font-size: .083rem;
-            
+            right: 100px;
+            top: 8px;
+
             .item {
-                margin-left: 0.1042rem;
+                margin-left: 20px;
 
                 .svg {
                     cursor: pointer;
-                    font-size: 0.1146rem;
+                    font-size: 22px;
                     color: rgba(47, 47, 118, 0.9);
                 }
             }
@@ -155,32 +153,29 @@
         }
 
         .hamburger-container {
-            height: 0.2604rem;
+            line-height: 70px;
+            height: 50px;
             float: left;
-            padding: 0 0.0521rem;
+            padding: 0 10px;
         }
 
         .screenfull {
             position: absolute;
-            right: 0.4688rem;
-            top: 0.0833rem;
+            right: 90px;
+            top: 16px;
             color: red;
         }
 
         .avatar-container {
-            height: 0.2604rem;
+            height: 50px;
             display: inline-block;
             position: absolute;
-            right: 0.1823rem;
-            top: 0.026rem;
-
-            .menu-item {
-                font-size: .083rem;
-            }
+            right: 35px;
+            top: 5px;
 
             .avatar-wrapper {
                 cursor: pointer;
-                margin-top: 0.026rem;
+                margin-top: 5px;
                 position: relative;
 
                 .user-avatar {

@@ -4,7 +4,6 @@ if (process.env.NODE_ENV == "production") {
     var cwd = "C:\\Users\\Administrator"; // 执行目录
     //var com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM']; // 端口 串口号
     var com = 9
-    var fs = window.require('fs')
 }
 
 var newFile_path = 'C:\\Users\\Administrator\\inventory.json'; // 手持机路径

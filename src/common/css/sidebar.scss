@@ -3,13 +3,13 @@
   .main-container {
     min-height: 100%;
     transition: margin-left .28s;
-    margin-left: 1.1719rem;
+    margin-left: 225px;
   }
 
   // 侧边栏
   .sidebar-container {
     transition: width 0.28s;
-    width: 1.1719rem !important;
+    width: 225px !important;
     height: 100%;
     position: fixed;
     font-size: 0px;
@@ -25,28 +25,10 @@
     }
 
     .scrollbar-wrapper {
-      height: calc(100% + 0.0781rem);
+      height: calc(100% + 15px);
+
       .el-scrollbar__view {
         height: 100%;
-        
-        .submenu-title-noDropdown {
-          padding-left: 0.1042rem !important;
-        }
-        
-        .collapse {
-          .el-submenu__title {
-            padding-left: 0.1042rem !important;
-          }
-        }
-          
-
-        
-        .el-menu .el-menu--inline {
-          .el-menu-item {
-            padding-left: 0.2083rem !important;
-          }
-        }
-        
       }
     }
 
@@ -61,8 +43,8 @@
     }
 
     .svg-icon {
-      margin-right: 0.0417rem;
-      font-size: 0.125rem;
+      margin-right: 8px;
+      font-size: 24px;
       color: rgb(47, 47, 118);
     }
 
@@ -92,25 +74,25 @@
     }
 
     .topInfo {
-      height: 1.1458rem;
+      height: 220px;
       border-bottom: 1px solid rgba(112, 112, 112, 0.24);
-      font-size: 0.0833rem;
+      font-size: 16px;
       color: #707070;
       text-align: center;
       background: $menuBg;
 
       img {
-        width: 0.4792rem;
-        height: 0.4792rem;
+        width: 92px;
+        height: 92px;
         border-radius: 50%;
-        margin: 0.125rem 0 0.0833rem 0;
+        margin: 24px 0 16px 0;
       }
 
       .info {
         display: grid;
 
         span {
-          margin-bottom: 0.026rem;
+          margin-bottom: 10px;
         }
       }
 
@@ -118,44 +100,44 @@
 
     .topBottom {
       transition: all 0.28s;
-      width: 1.0417rem;
+      width: 225px;
       text-align: center;
       color: #707070;
       position: fixed;
       bottom: 0;
       background: #f9f9f9;
-      font-size: 0.0625rem;
-      padding-bottom: 0.1042rem;
-      line-height: 0.2083rem;
-      //height: 0.2292rem;
+      font-size: 12px;
+      padding-bottom: 20px;
+      line-height: 40px;
+      height: 44px;
     }
   }
 
-  // @media only screen and (max-height: 900px) {
-  //   .sidebar-container .topBottom {
-  //     display: none;
-  //   }
-  // }
+  @media only screen and (max-height: 900px) {
+    .sidebar-container .topBottom {
+      display: none;
+    }
+  }
 
 
   .hideSidebar {
     .sidebar-container {
-      width: 0.1875rem !important;
+      width: 36px !important;
 
     }
 
     .main-container {
-      margin-left: 0.1875rem;
+      margin-left: 36px;
 
     }
 
 
     .submenu-title-noDropdown {
-      padding-left: 0.0521rem !important;
+      padding-left: 10px !important;
       position: relative;
 
       .el-tooltip {
-        padding: 0 0.026rem !important;
+        padding: 0 5px !important;
       }
     }
 
@@ -164,7 +146,7 @@
 
 
       & > .el-submenu__title {
-        padding-left: 0.026rem !important;
+        padding-left: 5px !important;
 
         .el-submenu__icon-arrow {
           display: none;
@@ -173,7 +155,6 @@
     }
 
     .el-menu--collapse {
-      padding-left: 0 !important;
       .el-submenu {
         & > .el-submenu__title {
           & > span {
@@ -188,10 +169,9 @@
     }
   }
 
-
   .sidebar-container .nest-menu .el-submenu > .el-submenu__title,
   .sidebar-container .el-submenu .el-menu-item {
-    min-width: 0.9375rem !important;
+    min-width: 180px !important;
     background-color: $subMenuBg !important;
 
     &:hover {
@@ -200,7 +180,7 @@
   }
 
   .el-menu--collapse .el-menu .el-submenu {
-    min-width: 0.9375rem !important;
+    min-width: 180px !important;
   }
 
   //适配移动端

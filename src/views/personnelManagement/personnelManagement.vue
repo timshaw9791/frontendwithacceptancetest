@@ -11,6 +11,8 @@
                     </div>
                     <div class="add-personnel-item"><svg-icon icon-class='同步' style="margin-left: 38px" class="icon-search"></svg-icon>
                         <span style="color: #2F2F76" @click="synchronization">信息头像同步</span></div>
+                    <div class="add-personnel-item"><svg-icon icon-class='同步' style="margin-left: 38px" class="icon-search"></svg-icon>
+                        <span style="color: #2F2F76" @click="syncuser">用户同步</span></div>
                 </div>
                 <div class="input-box">
                     <svg-icon icon-class="搜索" class="icon-search"></svg-icon>
@@ -26,7 +28,7 @@
             </div>
         </div>
         <div class="personnelManagement-body"  v-loading="loading" element-loading-text="正在同步中..." element-loading-background="rgba(255,255,255, 0.8)">
-            <personnel-list ref="personList" :searchName="search" @clickPersonnel="selectPersonnel" :personnel="personnel" v-show="viewStatus.flag"></personnel-list>
+            <personnel-list ref="personList" @clickPersonnel="selectPersonnel" :personnel="personnel" v-show="viewStatus.flag"></personnel-list>
             <add-personnel ref="addPerson" @black="black" :addType="type" :personenlData="personnel.personenlData" :disabled="disabled" v-if="!viewStatus.flag" :organUnit="unit" @addSucess="addPersonnelSucess" :roleList="select.selectList"></add-personnel>
         </div>
     </div>
@@ -37,7 +39,8 @@
     import selectPersonel from 'components/personnelManagement/personnelSelect'
     import {fetchMixin} from 'field/common/mixinFetch'
     import personnelList from 'components/personnelManagement/personnelLsit'
-    import user from 'gql/user.gql'
+    import { getRolesList, syncFaceInfo, syncUser } from 'api/personnel'
+    import { baseURL } from "api/config"
     import addPersonnel from 'components/personnelManagement/addPersonnel'
     export default {
         name: "personnelManagement",
@@ -56,15 +59,22 @@
                     selectList: [],
                     selectItem: ''
                 },
+                // personnel: {
+                //     graphqlTable: {
+                //         graphqlKey: {
+                //             qfilter: {key: "role.roleEnum", value: "SUPER_ADMINISTRATOR", operator: "NOTEQUEAL"},
+                //             paginator: {size: 12, page: 1}
+                //         },
+                //         graphqlApi: user.getUserList
+                //     },
+                //     personenlData:{} // 具体人员信息
+                // },
                 personnel: {
-                    graphqlTable: {
-                        graphqlKey: {
-                            qfilter: {key: "role.roleEnum", value: "SUPER_ADMINISTRATOR", operator: "NOTEQUEAL"},
-                            paginator: {size: 12, page: 1}
-                        },
-                        graphqlApi: user.getUserList
+                    table: {
+                        paginator: {size: 12, page: 1},
+                        query: {queryValue: '', roleId: ''}
                     },
-                    personenlData:{} // 具体人员信息
+                    personenlData: {}
                 },
                 viewStatus: {
                     flag: true,
@@ -78,31 +88,46 @@
         watch: {
             'search':{
                 handler(){
-                  this.searchGql()
+                    this.personnel.table.query.queryValue = this.search
                 }
             }
         },
             created() {
-                this.getRoleGql({});
+                this.getRoles();
                 let unit = JSON.parse(localStorage.getItem('user')).unitId;
                 this.getUnit(unit)
             },
             methods: {
+                /* 需要改 */
                 synchronization(){
                     this.loading = true
-                    this.gqlMutateLoad(user.identityTriggerSyncFaceInfo,'',(data)=>{
-                      this.loading = false
-                      if(data.errors) {
-                          this.$message.error(data.errors[0].message)
-                      } else {
-                          this.$message.success("同步成功")
-                      }
-                    }, () => { this.loading = false },true)
+                    syncFaceInfo().then(res => {
+                        this.loading = false
+                        if(res.status === 200) {
+                            this.$message.success("同步成功")
+                        }
+                    }).catch(err => {
+                        this.loading = false
+                        this.$message.error("同步更新失败，无法连接到人脸设备，请检查网络连接")
+                    })
+                },
+                syncuser() {
+                    this.loading = true
+                    syncUser().then(res => {
+                        this.loading = false
+                        this.$message.success("同步成功")
+                    }).catch(err => {
+                        this.loading = false
+                        this.$message.error("同步失败")
+                    })
                 },
                 getUnit(id){
-                    this.gqlQuery(user.getOrganUnit, {id:id}, (data) => {
-                       this.unit=data;
-                    }, true)
+                    this.$ajax({
+                        url: `${baseURL}/architecture/organUnit/${id}`,
+                        method: "GET"
+                    }).then(res => {
+                        this.unit = res.data
+                    })
                 },
                 toModify(){
                   this.disabled=!this.disabled;
@@ -116,7 +141,7 @@
                 },
                 addPersonnelSucess(){
                     this.viewStatus.flag=true;
-                    this.$refs.personList.refetch();
+                    this.$refs.personList.getUsersList()
                 },
                 // 由于要加数据是否编辑的判断，而数据在子组件中，所以调用子组件方法
                 blackJudge() {
@@ -132,52 +157,15 @@
                     this.viewStatus.flag=false;
                 },
                 selectRole(data) {
-                    this.select.selectItem=data;
-                    this.searchGql()
-                    },
-                searchGql() {
-                    let next = {};
-                    let that =this;
-                    if(this.select.selectItem&&this.select.selectItem!='ALL'){
-                        next={
-                            key:'role.id',
-                            value:this.select.selectItem,
-                            operator:'EQUEAL'
-                        }
-                    }
-                    this.searchKey.forEach(item => {
-                        getNext(next,item);
-                    });
-                    let qfilter={key: "role.roleEnum", value: "SUPER_ADMINISTRATOR", operator: "NOTEQUEAL",next:next,combinator:"AND"};
-                    this.$set(this.personnel.graphqlTable.graphqlKey,'qfilter', qfilter);
-                    function getNext(next, key) {
-                        if (next.next) {
-                            getNext(next.next,key)
-                        } else if (Object.keys(next).length!=0) {
-                            next.next = {
-                                key: key,
-                                value: '%'+String(that.search)+'%',
-                                operator: 'LIKE'
-                            }
-                            if(next.operator=='EQUEAL'){
-                                next.combinator = 'AND'
-                            }else {
-                                next.combinator = 'OR'
-                            }
-                        } else {
-                            next.key=key;
-                            next.value='%'+String(that.search)+'%';
-                            next.operator='LIKE'
-                        }
-                    }
+                    this.personnel.table.query.roleId = data
                 },
-                getRoleGql(qfilter) {
-                    this.gqlQuery(user.getRoleList, qfilter, (data) => {
-                        this.select.selectList=[];
-                        this.select.selectList.push({
+                getRoles(qfilter) {
+                    getRolesList().then(res => {
+                        this.select.selectList = [{
                             label: '全部',
-                            value: 'ALL'
-                        });
+                            value: ''
+                        }];
+                        let data = JSON.parse(JSON.stringify(res.data))
                         data.forEach(item => {
                             if(item.roleEnum!='SUPER_ADMINISTRATOR'){
                                 this.select.selectList.push({
@@ -186,7 +174,7 @@
                                 })
                             }
                         })
-                    }, true)
+                    })
                 },
             }
     }

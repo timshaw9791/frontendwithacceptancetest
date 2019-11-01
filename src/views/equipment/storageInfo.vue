@@ -72,7 +72,7 @@
                             <field-input v-model="form.model" label="装备型号" width="3" :disabled="disabled||edit"
                                          :rules="r(true).all(R.require)" prop="model"></field-input>
 
-                             <field-input v-model="form.serial" label="装备序号" width="3" :disabled="disabled||edit"
+                             <field-input v-model="form.serial" label="装备序号" width="3" :disabled="disabled||edit"   
                                         v-if="title.includes('装备查看')"
                                       prop="serial"></field-input>
                             
@@ -257,8 +257,8 @@
     import { start, startOne, killProcess } from 'common/js/rfidReader'
 
     // const cmdPath = 'C:\\Users\\Administrator';
-    // const exec = window.require('child_process').exec;
-    // const spawn = window.require('child_process').spawn;
+    //const exec = window.require('child_process').exec;
+    //const spawn = window.require('child_process').spawn;
     // import {killProcess, killProcessSync} from "common/js/kill";
 
     export default {
