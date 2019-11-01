@@ -29,7 +29,7 @@
 
                 tableAction: {
                     label: '操作',
-                    button: ['查看']
+                    button: [{name:'查看',type:'primary'}]
                 },
                 labelList: [
                     {lable: '申请单号', field: 'variables.applyOrder.number', sort: false},
@@ -211,8 +211,11 @@
         },
         created() {
             if(this.$route.query.state!=null){
-
+                if(this.select=='进行中'){
+                    this.getApplyList('doing', '');
+                }
             }else {
+                console.log(this.$route.query.state);
                 this.getApplyList('doing', '');
             }
 

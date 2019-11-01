@@ -102,8 +102,8 @@
         },
         created(){
             // this.getEquipInfo();
-            this.getUnitAndHouse();
             this.defaultList();
+            this.getUnitAndHouse();
             if(this.$route.query.state!=null){
 
             }
