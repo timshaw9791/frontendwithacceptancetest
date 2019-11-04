@@ -10,6 +10,15 @@
                 <div class="smokeAlarm-bottom">
                     <span v-text="'当前浓度：'+concentration+'%'"></span>
                 </div>
+                <div class="dehumidification-bottom">
+                   <span v-text="'烟雾阈值：'"></span><input class="input" :style="notModify?'border:none;':''" v-model="threshold" :disabled="notModify"/><span v-text="'%'"></span>
+                   <div @click="notModify = !notModify">
+                       <svg-icon icon-class="编辑" style="width: 18px;height: 18px;margin-left: 24px;cursor: pointer"></svg-icon>
+                   </div>
+               </div>
+               <div class="dehumidification-button" v-if="!notModify">
+                    <span v-text="'取消'" @click="notModify = !notModify" class="cancel"></span><span v-text="'提交'" @click="submission" class="submission"></span>
+                </div>
             </div>
         </dialogs>
     </div>
@@ -19,6 +28,7 @@
     import dialogs from '../surroundingDialog'
     import surroundingCard from '../surroundingCard'
     import switchControl from './controlComponents/switchControl'
+    import { smokeThreshold, setSmokeThreshold } from "api/surroundings"
     import {baseURL} from "../../../api/config";
 
     export default {
@@ -38,7 +48,9 @@
                     text:'关闭',
                     color:'#B8B8B8',
                 },
-                concentration:''
+                concentration:'',
+                notModify: true,
+                threshold: 0, // 烟雾阈值
             }
         },
         created(){
@@ -60,6 +72,16 @@
                 }).catch(err=>{
                     this.$message.error(err);
                 });
+                
+                smokeThreshold().then(res => {
+                    this.threshold = res.data
+                })
+            },
+            submission() {
+                setSmokeThreshold({max: this.threshold}).then(res => {
+                    this.$message.success("设置成功")
+                    this.notModify = true
+                })
             }
         }
     }
@@ -68,6 +90,55 @@
 <style scoped>
     .smokeAlarm {
         width: 100%;
+    }
+
+     .dehumidification-bottom{
+        height: 22px;
+        margin-top: 0.0885rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .input{
+        width: 41px;
+        outline:none;
+        line-height: 30px;
+        text-align: center;
+        color: #707070;
+    }
+
+    .dehumidification-button{
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        bottom: 16px;
+    }
+    
+    .cancel{
+        width:70px;
+        height:30px;
+        background:rgba(255,255,255,1);
+        box-shadow:0px 3px 6px rgba(0,0,0,0.16);
+        opacity:1;
+        border-radius:6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #707070;
+    }
+    .submission{
+        width:70px;
+        height:30px;
+        background:rgba(47,47,118,1);
+        box-shadow:0px 3px 6px rgba(0,0,0,0.16);
+        opacity:1;
+        border-radius:6px;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 27px;
     }
 
     .smokeAlarm .smokeAlarm-body {
