@@ -7,3 +7,19 @@ export function retirementApplication(data) {
         params: data
     })
 }
+
+export function maintainEquipApplyOrders(params) {
+    return request({
+        url: "/maintain-equip-apply-orders",
+        method: "GET",
+        params
+    })
+}
+
+export function equipsMaintain(data) {
+    return request({
+        url: "/equips/maintain",
+        method: "PUT",
+        data
+    })
+}
