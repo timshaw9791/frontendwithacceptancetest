@@ -17,7 +17,7 @@
                         </BosInput>
                     </div>
                 </tabs>
-                <el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
+                <el-table :data="list" v-loading.body="false" element-loading-text="Loading"
                           fit>
 
                     <bos-table-column lable="装备类型" field="category.genre.name"></bos-table-column>
@@ -47,6 +47,7 @@
     import tabs from 'components/base/tabs/index'
     import {formRulesMixin} from 'field/common/mixinComponent';
     import api from 'gql/warehouse.gql'
+    import { getHouse } from "api/warehouse"
     import {transformMixin} from 'common/js/transformMixin'
     import {retirementApplication} from "api/operation";
     import tabSelect from 'components/base/tabs-select'
@@ -66,12 +67,19 @@
                 },
                 selectList: [{label: '全部', value: '全部'}],
                 equipId: '',
+                list: [],
                 title: '',
                 equipShow: false,
                 inquire: '%%',
             }
         },
         methods: {
+            getHouseList() {
+                getHouse().then(res => {
+                    console.log('-------------');
+                    console.log(res);
+                })
+            },
             selectValue(data) {
                 console.log(data);
             },
@@ -85,17 +93,15 @@
                 this.equipShow = true;
             }
         },
-        apollo: {
-            list() {
-                return this.getEntityListWithPagintor(api.getEquipArgList);
-            },
-        },
         mixins: [formRulesMixin, transformMixin],
 
         components: {
             equip,
             tabs,
             tabSelect
+        },
+        mounted() {
+            this.getHouseList()
         },
         watch: {
             inquire(newVal, oldVal) {
