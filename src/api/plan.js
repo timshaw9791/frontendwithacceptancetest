@@ -33,3 +33,11 @@ export function searchPlan(data) {
         params:data
     })
 }
+
+//equipList
+export function getEquipList() {
+    return request({
+        url: "/equips",
+        method: "GET"
+    })
+}

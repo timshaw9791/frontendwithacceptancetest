@@ -94,13 +94,14 @@
                 }, res => {
                     console.log(res);
                     this.$refs.dialogButton.hide();
-                    this.callback('修改成功!');
+                    this.$message.success('修改成功!')
+                    this.getHouseStocksList()
                 })
             },
 
             dialogShow(data) {
                 console.log(data);
-                this.inlineForm.id = data.id;
+                this.inlineForm.id = data.equipArg.id;
                 this.$set(this.inlineForm, 'safeStock', data.safeStock);
                 this.$refs.dialogButton.show();
             }

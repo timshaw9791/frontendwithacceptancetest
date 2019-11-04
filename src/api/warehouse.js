@@ -25,10 +25,11 @@ export function deleteSupplier(id) {
 }
 
 /* 库房信息 */
-export function getHouse() {
+export function getHouse(params) {
     return request({
-        url: "/house",
-        method: "GET"
+        url: "/equip-args",
+        method: "GET",
+        params
     })
 }
 
