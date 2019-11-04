@@ -340,7 +340,7 @@
                             imageAddress: 'noImg.jpg',
                         },
                         zbForm: {}
-                    },
+                    };
                     this.$emit('black', true);
                 } else {
                     this.$refs.dialog.show();
@@ -511,7 +511,12 @@
             },
 
             dialogConfirm() {
-                killProcess(this.pid);
+                console.log(this.$route);
+               if(this.$route.name=='warehouse/info'){
+
+               }else {
+                   killProcess(this.pid);
+               }
                 this.judgeEdit = {
                     form: {
                         videoAddresses: [],

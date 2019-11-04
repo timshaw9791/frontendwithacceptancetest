@@ -151,7 +151,7 @@
     import {baseURL} from "api/config";
     import serviceDialog from 'components/base/serviceDialog/index'
     import {equipmentScrappedInfo} from "api/statistics";
-
+    import {getReceiveList} from 'api/overview'
     // const cmdPath = 'C:\\Users\\Administrator';
     // const exec = window.require('child_process').exec;
     // const spawn = window.require('child_process').spawn;todo
@@ -223,31 +223,39 @@
                 }).catch(err => {
                     console.log(err);
                 });
-
-                this.gqlQuery(api.getEquipList, {
-                    "paginator": {
-                        "page": 1,
-                        "size": 20
-                    },
-                    "qfilter": {
-                        "key": "receiveTime",
-                        "operator": "GREATTHAN",
-                        "value": "0",
-                        "combinator": "AND",
-                        "next": {
-                            "key": "receiveTime",
-                            "operator": "GREATTHAN",
-                            "value": new Date - 1000 * 60 * 60 * 24 * 3
-                        }
-                    }
-                }, (res) => {
+                getReceiveList().then(res=>{
+                    console.log(res);
                     this.contentList[3] = {
-                        list: JSON.parse(JSON.stringify(res.data.EquipList.content)),
+                        list: JSON.parse(JSON.stringify(res)),
                         name: '未归还提醒',
                     };
                     this.contentList.push('');
                     this.contentList.pop();
                 });
+                // this.gqlQuery(api.getEquipList, {
+                //     "paginator": {
+                //         "page": 1,
+                //         "size": 20
+                //     },
+                //     "qfilter": {
+                //         "key": "receiveTime",
+                //         "operator": "GREATTHAN",
+                //         "value": "0",
+                //         "combinator": "AND",
+                //         "next": {
+                //             "key": "receiveTime",
+                //             "operator": "GREATTHAN",
+                //             "value": new Date - 1000 * 60 * 60 * 24 * 3
+                //         }
+                //     }
+                // }, (res) => {
+                //     this.contentList[3] = {
+                //         list: JSON.parse(JSON.stringify(res.data.EquipList.content)),
+                //         name: '未归还提醒',
+                //     };
+                //     this.contentList.push('');
+                //     this.contentList.pop();
+                // });
             },
             gotoInfo(row, route) {
                 console.log(row,route);

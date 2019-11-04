@@ -3,9 +3,9 @@ import request from "common/js/request"
 import {baseURL} from "./config";
 
 export function temperatureValue(data) {
-    return axios({
+    return request({
         method: 'post',
-        url: `${baseURL}/environment/humitureQuery`,
+        url: '/environment/humitureQuery',
         params: data
     })
 }
@@ -25,3 +25,11 @@ export function setSmokeThreshold(params) {
         params
     })
 }
+export function getEquipChargeRecordList(params) {
+    return request({
+        url: '/equip-charge-records/charging',
+        method: 'get',
+        params:params
+    })
+}
+

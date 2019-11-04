@@ -21,6 +21,7 @@
     import {fetchMixin} from 'field/common/mixinFetch'
     import  surroundings from 'gql/surroundings.gql'
     import {baseURL} from "../../../api/config";
+    import {getEquipChargeRecordList} from 'api/surroundings'
 
     export default {
         name: "chargingStation",
@@ -163,23 +164,39 @@
                 })*/
             },
             getContextGql(number,copyList){
-                this.qfilter.value=String(number);
-                this.gqlQuery(surroundings.getEquipChargeRecordList,{qfilter:this.qfilter}, (data) => {
-                    data.forEach(item=>{
-                        let number = Number(item.chargeNumber)-1;
-                        if(copyList[number].name==''){
-                            copyList[number].name=item.equipName;
-                            copyList[number].number=item.chargeNumber;
-                            copyList[number].route=item.chargeStation;
-                            copyList[number].chargingTime=item.startTime;
-                        }
-                    });
-                    this.socketList=copyList;
-                    this.flag=false;
-                    setTimeout(()=>{
-                        this.flag=true;
-                    },0)
-                }, true)
+                getEquipChargeRecordList({chargeStation:number}).then(res=>{
+                    res.forEach(item=>{
+                            let number = Number(item.chargeNumber)-1;
+                            if(copyList[number].name==''){
+                                copyList[number].name=item.equipName;
+                                copyList[number].number=item.chargeNumber;
+                                copyList[number].route=item.chargeStation;
+                                copyList[number].chargingTime=item.startTime;
+                            }
+                        });
+                        this.socketList=copyList;
+                        this.flag=false;
+                        setTimeout(()=>{
+                            this.flag=true;
+                        },0)
+                })
+                // this.qfilter.value=String(number);
+                // this.gqlQuery(surroundings.getEquipChargeRecordList,{qfilter:this.qfilter}, (data) => {
+                //     data.forEach(item=>{
+                //         let number = Number(item.chargeNumber)-1;
+                //         if(copyList[number].name==''){
+                //             copyList[number].name=item.equipName;
+                //             copyList[number].number=item.chargeNumber;
+                //             copyList[number].route=item.chargeStation;
+                //             copyList[number].chargingTime=item.startTime;
+                //         }
+                //     });
+                //     this.socketList=copyList;
+                //     this.flag=false;
+                //     setTimeout(()=>{
+                //         this.flag=true;
+                //     },0)
+                // }, true)
             },
             change(data){
 

@@ -145,25 +145,23 @@
          mixins: [formRulesMixin],
          apollo: {
             list() {
-
                 return this.getEntityListWithPagintor(api.getHouseStockList);
             },
         },
         created() {
             this.init()
-
         },
         updated() {
             this.getSafeStcok()
         },
         methods: {
             toChange(data) {
-                this.isDetail=false
+                this.isDetail=false;
                 this.selectCategory = '';
                 this.$emit('changeGener', data);
             },
             toChangeCategory(data) {
-                this.isDetail=true
+                this.isDetail=true;
                 this.$emit('changeCategory', data);
             },
             changeDate(date) {
@@ -271,7 +269,6 @@
             }))
             },
             init() {
-
                 if (this.title == '装备使用频次'||this.title == '装备损耗率'||this.title == '装备维修率') {
                     let date0 = new Date();
                     let date1 = new Date();
