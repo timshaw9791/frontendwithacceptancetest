@@ -14,5 +14,11 @@ export function getCategoryList(params) {
         params:params
     })
 }
+export function getSafeStockList() {
+    return request({
+        url: '/house-stocks',
+        method: 'get'
+    })
+}
 
 
