@@ -56,13 +56,14 @@
     import equipReport from 'components/report/equipReport'
     import equipDetails from 'components/report/equipDetails'
     import mingXi from 'components/report/mingXi'
-    import report from 'gql/report.gql'
+    // import report from 'gql/report.gql'
+    import {getGenreList,getCategoryList} from 'api/report'
     import {fetchMixin} from 'field/common/mixinFetch'
     import {baseURL} from "../../api/config";
 
     export default {
         name: "index",
-        mixins: [fetchMixin],
+        // mixins: [fetchMixin],
         components: {
             myHeader,
             warehoused,
@@ -113,7 +114,6 @@
                 this.viewStatus.mingXiFlag = !this.viewStatus.mingXiFlag;
             },
             toSearch(data){
-                console.log(data);
                 this.equipDetails.list.forEach(item=>{
                     if(data!=''){
                         if(String(item.name).indexOf(data)!=-1){
@@ -159,9 +159,9 @@
                 this.viewStatus.detailesFlag = !this.viewStatus.detailesFlag;
             },
             getGenreList() {
-                this.gqlQuery(report.getGenreList, '', (data) => {
-                    this.equipDetails.genre=data;
-                }, true)
+                getGenreList().then(res=>{
+                    this.equipDetails.genre=res;
+                })
             },
             handleDate(data){
              let date;
@@ -193,7 +193,6 @@
                 this.getCategoryGener(src,'equipArgStatisticList');
             },
             getCategoryGener(url,api){
-
                 this.ajax(url,'', (res) => {
                      console.log("item")
                         console.log(res.data)
@@ -236,10 +235,9 @@
                 });
             },
             getCategory(data){
-                this.gqlQuery(report.getCategoryList, {id:data}, (data) => {
-                   this.$set(this.equipDetails,'categoryList',data)
-                   console.log(this.equipDetails.categoryList)
-                }, true)
+                getCategoryList({genreId:data}).then(res=>{
+                    this.$set(this.equipDetails,'categoryList',res)
+                })
             },
             responseInventory(data) {
                 this.equipDetails.title='库存统计';

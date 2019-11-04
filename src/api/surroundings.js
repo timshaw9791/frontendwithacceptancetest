@@ -1,10 +1,17 @@
-import axios from 'axios'
-import {baseURL} from "./config";
-
+import request from 'common/js/request'
 export function temperatureValue(data) {
-    return axios({
+    return request({
         method: 'post',
-        url: `${baseURL}/environment/humitureQuery`,
+        url: '/environment/humitureQuery',
         params: data
     })
 }
+
+export function getEquipChargeRecordList(params) {
+    return request({
+        url: '/equip-charge-records/charging',
+        method: 'get',
+        params:params
+    })
+}
+
