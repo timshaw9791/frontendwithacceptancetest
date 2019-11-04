@@ -130,7 +130,7 @@
     import {formRulesMixin} from 'field/common/mixinComponent';
     import {transformMixin} from 'common/js/transformMixin'
     import servicedialog from 'components/base/serviceDialog'
-    import {getPlanList, savePlan, delectPlan, searchPlan} from "api/plan"
+    import {getPlanList, savePlan, delectPlan, searchPlan, getEquipList} from "api/plan"
     import api from 'gql/home.gql'
 
     export default {
@@ -210,7 +210,7 @@
                 }
             },
             getEquipInfo() {
-                this.gqlQuery(api.getEquipList1, {}, (res) => {
+                getEquipList().then(res => {
                     let newData = JSON.parse(JSON.stringify(res.data.EquipList.content));
                     let eqName = newData.map(res => {
                         return res.equipArg.model
@@ -237,6 +237,7 @@
                     });
                     this.restaurants = endData;
                 })
+
             },
             submit() {
                 this.$refs.form.validate.then(res => {

@@ -18,7 +18,7 @@
                 </div>
 
 
-                <el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
+                <el-table :data="list" v-loading.body="false" element-loading-text="Loading"
                          height="740px">
                     <bos-table-column lable="装备类型" field="equipArg.category.name"></bos-table-column>
                     <bos-table-column lable="装备小类" field="equipArg.category.genre.name"></bos-table-column>
@@ -56,9 +56,10 @@
 </template>
 
 <script>
-    import {formRulesMixin} from 'field/common/mixinComponent';
+    import {formRulesMixin} from 'field/common/mixinTableRest';
     import api from 'gql/warehouse.gql'
     import serviceDialog from 'components/base/serviceDialog'
+    import { getHouseStocks, setSafeStock } from "api/warehouse"
 
 
     export default {
@@ -67,45 +68,47 @@
                 title: '',
                 inlineForm: {},
                 inquire: '',
-                param: {
-                    "qfilter": {
-                        "key": "equipArg.category.genre.name",
-                        "operator": "LIKE",
-                        "value": "%%",
-                    }
-                }
+                list: [],
+                paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
             }
         },
         components: {
             serviceDialog
         },
         mixins: [formRulesMixin],
-        apollo: {
-            list() {
-                return this.getEntityListWithPagintor(api.getHouseStockList);
-            },
-        },
         methods: {
+            getHouseStocksList() {
+                let params = {page: this.paginator.page, size: this.paginator.size};
+                getHouseStocks(params).then(res => {
+                    let result = JSON.parse(JSON.stringify(res));
+                    this.paginator.totalPages = res.totalPages
+                    this.paginator.totalElements = res.totalElements
+                    this.list = res.content
+                })
+            },
             submit() {
                 console.log(this.inlineForm.safeStock);
-                this.$refs.inlineForm.gqlValidate(api.house_changeSafeSock, {
-                    safeSock: this.inlineForm.safeStock,
-                    houseEquipArgId: this.inlineForm.id,
-                }, (res) => {
+                this.$refs.inlineForm.restValidate(setSafeStock, {
+                    safeStock: this.inlineForm.safeStock,
+                    equipArgId: this.inlineForm.id,
+                }, res => {
                     console.log(res);
                     this.$refs.dialogButton.hide();
-                    this.callback('修改成功!');
+                    this.$message.success('修改成功!')
+                    this.getHouseStocksList()
                 })
             },
 
             dialogShow(data) {
                 console.log(data);
-                this.inlineForm.id = data.id;
+                this.inlineForm.id = data.equipArg.id;
                 this.$set(this.inlineForm, 'safeStock', data.safeStock);
                 this.$refs.dialogButton.show();
             }
         },
-
+        mounted() {
+            this.getHouseStocksList()
+        },
         watch: {
             inquire(newVal, oldVal) {
                 this.param.namelike = newVal;

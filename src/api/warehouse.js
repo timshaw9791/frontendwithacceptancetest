@@ -24,3 +24,29 @@ export function deleteSupplier(id) {
     })
 }
 
+/* 库房信息 */
+export function getHouse(params) {
+    return request({
+        url: "/equip-args",
+        method: "GET",
+        params
+    })
+}
+
+/* 标准库存 */
+export function getHouseStocks(params) {
+    return request({
+        url: "/house-stocks",
+        method: "GET",
+        params
+    })
+}
+
+export function setSafeStock(params) {
+    return request({
+        url: "/house-stocks/set-safe-stock",
+        method: "PUT",
+        params
+    })
+
+}

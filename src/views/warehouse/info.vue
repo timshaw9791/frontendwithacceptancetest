@@ -17,7 +17,7 @@
                         </BosInput>
                     </div>
                 </tabs>
-                <el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
+                <el-table :data="list" v-loading.body="false" element-loading-text="Loading"
                           fit>
 
                     <bos-table-column lable="装备类型" field="category.genre.name"></bos-table-column>
@@ -45,8 +45,9 @@
 <script>
 
     import tabs from 'components/base/tabs/index'
-    import {formRulesMixin} from 'field/common/mixinComponent';
+    import {formRulesMixin} from 'field/common/mixinTableRest';
     import api from 'gql/warehouse.gql'
+    import { getHouse } from "api/warehouse"
     import {transformMixin} from 'common/js/transformMixin'
     import {retirementApplication} from "api/operation";
     import tabSelect from 'components/base/tabs-select'
@@ -57,21 +58,29 @@
 
         data() {
             return {
-                param: {
-                    "qfilter": {
-                        "key": "category.genre.name",
-                        "operator": "LIKE",
-                        "value": "%%",
-                    }
-                },
+                paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
                 selectList: [{label: '全部', value: '全部'}],
                 equipId: '',
+                list: [],
                 title: '',
+                inquire: '',
                 equipShow: false,
-                inquire: '%%',
             }
         },
         methods: {
+            getHouseList() {
+                let params = {
+                    page: this.paginator.page, 
+                    size: this.paginator.size,
+                    search: this.inquire
+                };
+                getHouse(params).then(res => {
+                    let result = JSON.parse(JSON.stringify(res))
+                    this.paginator.totalPages = res.totalPages
+                    this.paginator.totalElements = res.totalElements
+                    this.list = res.content
+                })
+            },
             selectValue(data) {
                 console.log(data);
             },
@@ -85,11 +94,6 @@
                 this.equipShow = true;
             }
         },
-        apollo: {
-            list() {
-                return this.getEntityListWithPagintor(api.getEquipArgList);
-            },
-        },
         mixins: [formRulesMixin, transformMixin],
 
         components: {
@@ -97,44 +101,12 @@
             tabs,
             tabSelect
         },
+        mounted() {
+            this.getHouseList()
+        },
         watch: {
             inquire(newVal, oldVal) {
-                if(newVal==''){
-                    this.param.namelike = '%%';
-                }else {
-                    this.param.namelike = newVal
-                }
-                this.param['qfilter'] = {
-                    "combinator": "OR",
-                    "key": "category.genre.name",
-                    "operator": "LIKE",
-                    value: newVal,
-                    "next": {
-                        "combinator": "OR",
-                        "key": "category.name",
-                        "operator": "LIKE",
-                        value: newVal,
-                        "next": {
-                            "combinator": "OR",
-                            "key": "name",
-                            "operator": "LIKE",
-                            value: newVal,
-                            "next": {
-                                "combinator": "OR",
-                                "key": "model",
-                                "operator": "LIKE",
-                                value: newVal,
-                                "next": {
-                                    "combinator": "OR",
-                                    "key": "supplier.name",
-                                    "operator": "LIKE",
-                                    value: newVal,
-                                }
-                            }
-                        }
-                    }
-                }
-
+                this.getHouseList()
             }
         }
 

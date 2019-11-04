@@ -37,10 +37,10 @@
 
                 defaultHandler: {
                     strip: function (value) {
-                        return this.wrapforlike ? likerHandler.strip(value) : value;
+                        return value;
                     },
                     wrap: function (value) {
-                        return this.wrapforlike ? likerHandler.wrap(value) : value;
+                        return value;
                     }
                 }
             };
