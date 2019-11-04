@@ -82,9 +82,14 @@
             }
         },
         mixins: [formRulesMixin],
+        watch: {
+            inquire(newVal, oldVal) {
+                this.getSupplierList()
+            }
+        },
         methods: {
             getSupplierList() {
-                let params = {page: this.paginator.page, size: this.paginator.size}
+                let params = {page: this.paginator.page, size: this.paginator.size, search: this.inquire}
                 getSuppliers(params).then(res => {
                     let result = JSON.parse(JSON.stringify(res))
                     this.list = result.content

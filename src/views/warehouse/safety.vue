@@ -78,7 +78,7 @@
         mixins: [formRulesMixin],
         methods: {
             getHouseStocksList() {
-                let params = {page: this.paginator.page, size: this.paginator.size};
+                let params = {page: this.paginator.page, size: this.paginator.size, search: this.inquire};
                 getHouseStocks(params).then(res => {
                     let result = JSON.parse(JSON.stringify(res));
                     this.paginator.totalPages = res.totalPages
@@ -111,37 +111,7 @@
         },
         watch: {
             inquire(newVal, oldVal) {
-                this.param.namelike = newVal;
-                this.param['qfilter'] = {
-                    "combinator": "OR",
-                    "key": "equipArg.category.genre.name",
-                    "operator": "LIKE",
-                    value: newVal,
-                    "next": {
-                        "combinator": "OR",
-                        "key": "equipArg.category.name",
-                        "operator": "LIKE",
-                        value: newVal,
-                        "next": {
-                            "combinator": "OR",
-                            "key": "equipArg.name",
-                            "operator": "LIKE",
-                            value: newVal,
-                            "next": {
-                                "combinator": "OR",
-                                "key": "equipArg.model",
-                                "operator": "LIKE",
-                                value: newVal,
-                                "next": {
-                                    "combinator": "OR",
-                                    "key": "equipArg.supplier.name",
-                                    "operator": "LIKE",
-                                    value: newVal,
-                                }
-                            }
-                        }
-                    }
-                }
+                this.getHouseStocksList()
             }
         }
 
