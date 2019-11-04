@@ -36,6 +36,9 @@
             <span v-text="'备注：'"></span>
             <el-input v-model="remark" placeholder="请输入内容" style="" :disabled="componentType!='warehouse'"></el-input>
         </div>
+        <div class="tip">
+            <span class="tip-span">提示：未找到的装备提交后自动转为报废流程报废！</span>
+        </div>
         <div class="bottom" style="justify-content: center" v-if="componentType=='warehouse'">
             <el-button style="margin-left: 0.1771rem" class="submit" @click="submission">提交</el-button>
         </div>
@@ -204,5 +207,14 @@
         box-shadow:0px 3px 6px rgba(0,0,0,0.16);
         opacity:1;
         border-radius:6px;
+    }
+    .tip{
+        width:6.4792rem;
+        margin-top: 0.0781rem;
+        height:0.2396rem;
+    }
+    .tip-span{
+        float: right;
+        color: red;
     }
 </style>

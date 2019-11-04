@@ -15,7 +15,7 @@
           <div class="_buttons">
             <BosInput
               v-if="type==='需要保养'"
-              placeholder="rfid"
+              placeholder="rfid/装备/序号/编号"
               suffix="el-icon-search"
               v-model="inquire"
               :wrapforlike="false"
@@ -303,10 +303,10 @@ export default {
   watch: {
     inquire(newVal) {
       if (newVal) {
-        this.$set(this.param, "rfid", newVal);
+        this.$set(this.param, "search", newVal);
       }
        else {
-                    this.$set(this.param, 'rfid', null);
+                    this.$set(this.param, 'search', null);
                 }
     }
   },
