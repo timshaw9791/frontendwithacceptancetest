@@ -32,7 +32,7 @@
                              :rules="r(true).all(R.require)" prop="position"></field-input>
                 <field-input class="field-input" v-model="form.phone"  :disabled="disabled" label="联系方式" width="4.5"
                              :rules="r(true).all(R.mobile)" prop="phone"></field-input>
-                <field-input class="field-input" v-model="organUnit.name" label="机构单位" width="4.5"
+                <field-input class="field-input" v-model="form.unitName" label="机构单位" width="4.5"
                              prop="organUnit" :disabled="true"></field-input>
                 <field-input class="field-input" v-model="form.fingerprintInformation" :disabled="disabled" :type="'textarea'" label="指纹信息" width="10"
                              prop="fingerprintInformation"></field-input>
@@ -119,6 +119,7 @@
         },
         created(){
             if(this.addType=='add'){
+                this.$set(this.form,'unitName',this.organUnit.name)
             }else {
                 this.initForm()
             }
@@ -160,6 +161,7 @@
                 this.$set(this.form,'phone',this.personenlData.phone);
                 this.$set(this.form,'fingerprintInformation',this.personenlData.fingerprintInformation);
                 this.$set(this.form,'role',{id:this.personenlData.role.id});
+                this.$set(this.form,'unitName',this.personenlData.unitName);
                 this.personnelImg=this.personenlData.faceInformation;
                 this.$set(this.form,'faceInformation',this.personnelImg);
                 this.roleFormGs.type.push(this.personenlData.role.id);

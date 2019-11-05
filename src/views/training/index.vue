@@ -64,7 +64,6 @@
         },
         methods:{
             clickCard(data){ // 这里点击后，组件/页面没有变化，只是数据变化
-            console.log(data)
                 if (this.condition.length==0){
                     this.viewStatus.searchFlag=false;
                     this.list = data.modelList;
