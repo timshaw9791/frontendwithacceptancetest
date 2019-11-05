@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
+        <el-table :data="list" v-loading.body="loading" element-loading-text="Loading"
                   fit highlight-current-row
                   @selection-change="handleSelectionChange">
             <el-table-column
@@ -52,7 +52,7 @@
 <script>
     import {formRulesMixin} from 'field/common/mixinComponent';
     import serviceDialog from 'components/base/serviceDialog'
-    import api from 'gql/operation.gql'
+    import { getEquipsList, equipsReturn } from "api/operation"
     import {transformMixin} from 'common/js/transformMixin'
 
     export default {
@@ -60,13 +60,8 @@
             return {
                 moreList:[],
                 equipList: [],
-                param: {
-                    qfilter: {
-                        "key": "state",
-                        "operator": "EQUEAL",
-                        "value": "UPKEEP"
-                    },
-                },
+                loading: true,
+                paginator: {page: 1, size: 10, totalPages: 5, totalElements: 5}
             }
         },
         mixins: [formRulesMixin, transformMixin],
@@ -81,24 +76,33 @@
         components: {
             serviceDialog
         },
-        apollo: {
-            list() {
-                return this.getEntityListWithPagintor(api.getEquipList);
-            },
-        },
         methods: {
+            getList() {
+                let params = {
+                    page: this.paginator.page,
+                    size: this.paginator.size,
+                    state: "UPKEEP"
+                };
+                this.loading = true
+                getEquipsList(params).then(res => {
+                    this.list = JSON.parse(JSON.stringify(res.content))
+                    this.paginator.totalPages = res.totalPages
+                    this.paginator.totalElements = res.totalElements
+                    this.loading = false
+                }).catch(res => {
+                    this.loading = false
+                })
+            },
             confirmWare(){
             this.$refs.isWarehouse.show();
             },
             submit() {
                 
                 if (0 in this.equipList) {
-                    this.gqlMutate(api.houseUser_returnEquip, {
-                        equipIds: this.equipList,
-                    }, (res) => {
-                        console.log(res);
-                        this.callback('入库成功!');
-                        this.equipList = [];
+                    equipsReturn(this.equipList).then(res => {
+                        this.$message.success("入库成功!")
+                        this.equipList = []
+                        this.getList()
                         this.$refs.StorageDialog.hide()
                     })
                 } else {
@@ -122,8 +126,15 @@
             },
             cancelbatch(){
                 this.$emit('cancel',false)
+            },
+            changePage(page) {
+                this.paginator.page = page
+                this.getList()
             }
-        }
+        },
+        mounted() {
+            this.getList()
+        },
     }
 </script>
 

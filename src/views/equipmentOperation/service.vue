@@ -25,7 +25,7 @@
                         </BosInput>
                     </div>
                 </tabs>
-                <el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
+                <el-table :data="list" v-loading.body="loading" element-loading-text="Loading"
                           fit highlight-current-row
                           @selection-change="handleSelectionChange">
 
@@ -101,7 +101,7 @@
     import servicedialog from 'components/base/serviceDialog'
     import api from 'gql/operation.gql'
     import {transformMixin} from 'common/js/transformMixin'
-    import {retirementApplication} from "api/operation";
+    import { retirementApplication, getEquipsList, equipsMaintain, equipsReturn } from "api/operation";
     import {getRfidinfo} from "api/rfid";
     import { start, killProcess } from 'common/js/rfidReader'
 
@@ -115,21 +115,17 @@
             return {
                 tabsList: ['正在维修'],
                 equipList: [],
+                list: [],
                 batch: false,
-                param: {
-                    qfilter: {
-                        "operator": "EQUEAL",
-                        "key": "state",
-                        "value": "MAINTAIN",
-                    }
-                },
+                loading: true,
                 inlineForm: {
                     auditor: JSON.parse(localStorage.getItem('user')).name,
                 },
+                paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
                 leadershipList: [],
                 unitId: JSON.parse(localStorage.getItem('user')).unitId,
                 equipId: '',
-                inquire: '%%',
+                inquire: '',
                 pid: '',
                 dialogList: [],
                 listPush: [],
@@ -137,6 +133,9 @@
         },
         created() {
             this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];
+        },
+        mounted() {
+            this.getEquipServiceList()
         },
 
         methods: {
@@ -233,12 +232,12 @@
             },
             submit() {
                 if (0 in this.equipList) {
-                    this.gqlMutate(api.houseUser_returnEquip, {
-                        equipIds: this.equipList,
-                    }, (res) => {
+                    equipsReturn(this.equipList).then(res => {
                         console.log(res);
-                        this.callback('入库成功!');
-                        this.equipList = [];
+                        this.$message.success("入库成功")
+                        this.equipList = []
+                        // 刷新列表
+                        this.getEquipServiceList()
                     })
                 } else {
                     this.$message.error('未选择装备!')
@@ -250,21 +249,49 @@
                 });
             },
             repairPush() {
-                this.gqlMutate(api.admin_maintainEquips, {
-                    equipIdList: this.listPush
-                }, (res) => {
-                    this.callback('已经申请维修!');
-                    this.$refs.dialog.hide();
-                    //spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
+                equipsMaintain(this.listPush).then(res => {
+                    this.$message.success("已经申请维修!")
+                    this.$refs.dialog.hide()
                     killProcess(this.pid)
                 })
+                // this.gqlMutate(api.admin_maintainEquips, {
+                //     equipIdList: this.listPush
+                // }, (res) => {
+                //     this.callback('已经申请维修!');
+                //     this.$refs.dialog.hide();
+                //     //spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
+                //     killProcess(this.pid)
+                // })
+            },
+            getEquipServiceList() {
+                let params = {
+                    page: this.paginator.page, 
+                    size: this.paginator.size, 
+                    search: this.inquire, 
+                    state: "MAINTAIN"
+                };
+                this.loading = true
+                getEquipsList(params).then(res => {
+                    let result = JSON.parse(JSON.stringify(res.content))
+                    this.loading = false
+                    this.list = result
+                    this.paginator.totalPages = res.totalPages
+                    this.paginator.totalElements = res.totalElements
+                }).catch(e => {
+                    this.loading = false
+                })
+            },
+            changePage(page) {
+                this.paginator.page = page
+                this.getEquipServiceList()
             }
         },
-        apollo: {
-            list() {
-                return this.getEntityListWithPagintor(api.getEquipList);
-            },
-        },
+        
+        // apollo: {
+        //     list() {
+        //         return this.getEntityListWithPagintor(api.getEquipList);
+        //     },
+        // },
         mixins: [formRulesMixin, transformMixin],
 
         components: {
@@ -274,31 +301,7 @@
         },
         watch: {
             inquire(newVal, oldVal) {
-                this.param.namelike = newVal;
-                this.param['qfilter'] = {
-                    "operator": "EQUEAL",
-                    "key": "state",
-                    "value": "MAINTAIN",
-                    "combinator": "AND",
-                    "next": {
-                        "combinator": "OR",
-                        "key": "name",
-                        "operator": "LIKE",
-                        value: newVal,
-                        "next": {
-                            "combinator": "OR",
-                            "key": "serial",
-                            "operator": "LIKE",
-                            value: newVal,
-                            "next": {
-                                "key": "location.number",
-                                "operator": "LIKE",
-                                value: newVal,
-                            }
-                        }
-                    }
-                }
-
+                this.getEquipServiceList()
             }
         },
         beforeDestroy() {

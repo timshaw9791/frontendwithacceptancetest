@@ -101,9 +101,9 @@ import right from "./rightMaintenance";
 
 import { formRulesMixin } from "field/common/mixinAxios";
 import serviceDialog from "components/base/serviceDialog";
-import api from "gql/operation.gql";
 import { transformMixin } from "common/js/transformMixin";
 import { getNeedUpkeep } from "api/needs";
+import { equipsUpkeep } from "api/operation"
 var _ = require("lodash");
 import { start, killProcess } from "common/js/rfidReader"
 
@@ -270,19 +270,13 @@ export default {
     /* 确认保养 */
     submit() {
       if (0 in this.equipList) {
-        this.gqlMutate(
-          api.admin_upkeepEquips,
-          {
-            equipIdList: this.equipList
-          },
-          res => {
-            this.$refs.maintenanceDialog.hide();
+        equipsUpkeep(this.equipList).then(res => {
+           this.$refs.maintenanceDialog.hide();
             this.$message.success("正在保养了!");
-            //this.cancel(true);
             this.getList();
             this.equipList = [];
-          }
-        );
+            this.getList()
+        })
       } else {
         this.$message.error("未选择装备!");
       }

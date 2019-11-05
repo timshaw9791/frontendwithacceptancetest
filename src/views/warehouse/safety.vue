@@ -18,7 +18,7 @@
                 </div>
 
 
-                <el-table :data="list" v-loading.body="false" element-loading-text="Loading"
+                <el-table :data="list" v-loading.body="loading" element-loading-text="Loading"
                          height="740px">
                     <bos-table-column lable="装备类型" field="equipArg.category.name"></bos-table-column>
                     <bos-table-column lable="装备小类" field="equipArg.category.genre.name"></bos-table-column>
@@ -70,6 +70,7 @@
                 inquire: '',
                 list: [],
                 paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
+                loading: true,
             }
         },
         components: {
@@ -78,12 +79,16 @@
         mixins: [formRulesMixin],
         methods: {
             getHouseStocksList() {
-                let params = {page: this.paginator.page, size: this.paginator.size};
+                let params = {page: this.paginator.page, size: this.paginator.size, search: this.inquire};
+                this.loading = true
                 getHouseStocks(params).then(res => {
                     let result = JSON.parse(JSON.stringify(res));
+                    this.loading = false
                     this.paginator.totalPages = res.totalPages
                     this.paginator.totalElements = res.totalElements
                     this.list = res.content
+                }).catch(e => {
+                    this.loading = false
                 })
             },
             submit() {
@@ -111,37 +116,7 @@
         },
         watch: {
             inquire(newVal, oldVal) {
-                this.param.namelike = newVal;
-                this.param['qfilter'] = {
-                    "combinator": "OR",
-                    "key": "equipArg.category.genre.name",
-                    "operator": "LIKE",
-                    value: newVal,
-                    "next": {
-                        "combinator": "OR",
-                        "key": "equipArg.category.name",
-                        "operator": "LIKE",
-                        value: newVal,
-                        "next": {
-                            "combinator": "OR",
-                            "key": "equipArg.name",
-                            "operator": "LIKE",
-                            value: newVal,
-                            "next": {
-                                "combinator": "OR",
-                                "key": "equipArg.model",
-                                "operator": "LIKE",
-                                value: newVal,
-                                "next": {
-                                    "combinator": "OR",
-                                    "key": "equipArg.supplier.name",
-                                    "operator": "LIKE",
-                                    value: newVal,
-                                }
-                            }
-                        }
-                    }
-                }
+                this.getHouseStocksList()
             }
         }
 

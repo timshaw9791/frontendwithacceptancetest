@@ -17,7 +17,7 @@
                         </BosInput>
                     </div>
                 </tabs>
-                <el-table :data="list" v-loading.body="false" element-loading-text="Loading"
+                <el-table :data="list" v-loading.body="loading" element-loading-text="Loading"
                           fit>
 
                     <bos-table-column lable="装备类型" field="category.genre.name"></bos-table-column>
@@ -65,6 +65,7 @@
                 title: '',
                 inquire: '',
                 equipShow: false,
+                loading: true
             }
         },
         methods: {
@@ -74,11 +75,15 @@
                     size: this.paginator.size,
                     search: this.inquire
                 };
+                this.loading = true
                 getHouse(params).then(res => {
                     let result = JSON.parse(JSON.stringify(res))
+                    this.loading = false
                     this.paginator.totalPages = res.totalPages
                     this.paginator.totalElements = res.totalElements
                     this.list = res.content
+                }).catch(e => {
+                    this.loading = false
                 })
             },
             selectValue(data) {

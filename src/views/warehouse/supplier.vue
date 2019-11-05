@@ -22,7 +22,7 @@
                 </div>
 
 
-                <el-table :data="list" v-loading.body="false" element-loading-text="Loading"
+                <el-table :data="list" v-loading.body="loading" element-loading-text="Loading"
                           fit>
                     <bos-table-column lable="供应商" field="name"></bos-table-column>
                     <bos-table-column lable="联系人" field="person"></bos-table-column>
@@ -79,17 +79,27 @@
                 inquire: '',
                 delId: '',
                 paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
+                loading: true
             }
         },
         mixins: [formRulesMixin],
+        watch: {
+            inquire(newVal, oldVal) {
+                this.getSupplierList()
+            }
+        },
         methods: {
             getSupplierList() {
-                let params = {page: this.paginator.page, size: this.paginator.size}
+                let params = {page: this.paginator.page, size: this.paginator.size, search: this.inquire};
+                this.loading = true
                 getSuppliers(params).then(res => {
                     let result = JSON.parse(JSON.stringify(res))
+                    this.loading = false
                     this.list = result.content
                     this.paginator.totalPages = res.totalPages
                     this.paginator.totalElements = res.totalElements
+                }).catch(e => {
+                    this.loading = false
                 })
             },
             changePage(page) {
