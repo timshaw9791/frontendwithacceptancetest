@@ -18,7 +18,7 @@
                                     size="middle"
                                     :options="unitList"
                                     v-model="selectUnit"
-                                    :props="selectProp"
+                                    :props="{value: 'id', label: 'name', children: 'organUnitSet'}"
                                     change-on-select
                                     :show-all-levels="false"
                                     @change="handleUnitChange">
@@ -145,24 +145,11 @@
                 </div>
             </div>
         </serviceDialog>
-        <!--<a_dialog :width="1040" ref="dialog" :title="'调拨申请'">-->
 
-        <!--</a_dialog>-->
     </div>
 </template>
 
 <script>
-    function debounce(fun, delay) {
-        return function (args) {
-            let that = this;
-            let _args = args;
-            clearTimeout(fun.id);
-            fun.id = setTimeout(function () {
-                fun.call(that, _args)
-            }, delay)
-        }
-    }
-
     import a_dialog from 'components/surroundings/surroundingDialog'
     import serviceDialog from 'components/base/gailiangban'
     import request from 'common/js/request'
@@ -170,13 +157,6 @@
     import {start, delFile, handheld, killProcess} from 'common/js/rfidReader'
     import {findHouseByOrganUnitId, equipArgListByHouseIds,getOrganUnitById,findByUnitAdmin,
         byOrganUnitAndTransferType,organUnitInfo,equipsByRfidList,tagNeedScrap} from 'api/process'
-    // import {handheld} from 'common/js/pda'
-    // const cmdPath = 'C:\\Users\\Administrator';
-    //const exec = window.require('child_process').exec;
-    //const spawn = window.require('child_process').spawn;
-    // const fs = window.require('fs');
-    // const path = window.require('path');
-    // const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
 
     export default {
         name: "addApply",
@@ -230,7 +210,6 @@
                 },
                 nowRow: {},
                 restaurants: [],
-                selectProp: {value: 'id', label: 'name', children: 'organUnitSet'},
                 unitList: [],
                 houseObj: {
                     houseList: [],
@@ -291,11 +270,6 @@
                     this.$emit('getInHouse', newVal)
                 }
             },
-            // 'nowCount': {
-            //     handler(newVal) {
-            //         this.throttle(this.addRow, 1000)
-            //     }
-            // },
             'hardware.hardwareSelect': {
                 deep: true,
                 handler(newVal, oldVal) {
@@ -319,7 +293,6 @@
             getLowerLevelUnitList() {
                 organUnitInfo().then(res => {
                     this.findId(res);
-                    // this.$set(this,'unitList',[res]);
                 })
             },
             findId(item) {
@@ -332,8 +305,6 @@
                 }
             },
             end(pid) {
-                // alert('关掉了');
-                // this.closeUsb=true
                 if (pid) {
                     //spawn("taskkill", ["/PID", pid, "/T", "/F"]);
                     killProcess(this.pid)
@@ -360,45 +331,9 @@
                 }, (pid, err) => {
                     pid ? this.pid = pid : this.$message.error(err)
                 })
-                // const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
-                // this.pid = process.pid;
-                // process.stderr.on('data', (err) => {
-                //     this.$message.error('设备故障请重新插拔!');
-                //     console.log(err);
-                // });
-
-                // process.stdout.on('data', (data) => {
-                //     console.log(data);
-                //     if (this.index > 0) {
-                //         let arr = [];
-                //         arr.push(data);
-                //         this.getOutDataCopy(arr);
-                //     } else {
-                //         let newData = JSON.parse(data);
-                //         newData.status === 'succeed' ? this.index = 1 : this.index = 0;
-                //     }
-                // });
-
-                // process.on('exit', (code) => {
-                //     console.log(`子进程退出，退出码 ${code}`);
-                // });
-                // let intercal=setInterval(()=>{
-                //     if(this.closeUsb){
-                //         clearInterval(intercal);
-                //         return;
-                //     }
-                //     this.getOutDataCopy(['q2', '3', '4', '55','6','7','8','9','11','天下第一','sdfa','10','222','23252s'])
-                // },1000)
-
             },
             deleteFile() {
                 delFile(newFile_path, () => {})
-                // fs.unlink(newFile_path, function (error) {
-                //     if (error) {
-                //         return false;
-                //     }
-                // })
-
             },
             getOutDataCopy(data) {
                 equipsByRfidList(data).then(res => {
@@ -448,7 +383,6 @@
             handleUnitChange(data) {
                 let unitId = data[data.length - 1];
                 let gethouseUnitId = '';
-
                 if(this.taskType=='直调'){
                     gethouseUnitId=JSON.parse(localStorage.getItem('user')).unitId;
                 }else {
@@ -506,23 +440,12 @@
             },
             getHouseSelect(data) {
                 this.houseObj.houseItem = data.key;
-                console.log('this.houseObj.houseItem', this.houseObj.houseItem)
             },
             getAdminSelect(data) {
                 this.adminUser.adminItem = data.key
             },
             getLeader(id) {
-                // this.$ajax({
-                //     method:'get',
-                //     url:baseBURL+'/process-level/by-organ-unit-and-transfer-type',
-                //     params:{
-                //         organUnitId:this.unit.id,
-                //         transferType:'DOWN_TO_UP'
-                //     }
-                // }).then(res=>{
-                //      })
                 let type = '';
-
                 switch (this.taskType) {
                     case '报废':
                         type = 'SCRAP';
@@ -564,35 +487,36 @@
                 })
             },
             submit() {
-                this.isClick = true
+                this.isClick = true;
                 setTimeout(() => this.isClick = false, 1000);
                 let url = '';
                 let orderItems = [];
                 let applyOrder = {};
                 let urlApi = '';
                 if (this.leader.leaderName.trim() == '') {
-                    this.$message.error("请选择指定领导")
+                    this.$message.error("请选择指定领导");
                     return
                 }
                 if (this.hardware.hardwareSelect == '' && this.taskType == '报废') {
-                    this.$message.error("请选择硬件")
+                    this.$message.error("请选择硬件");
                     return;
                 }
                 if (this.form.orderItems.length == 0 && this.taskType == '报废') {
-                    this.$message.error("请扫入RFID")
+                    this.$message.error("请扫入RFID");
                     return;
                 }
-                if (this.taskType == '借调') {
+
+                if(this.taskType=='报废'){
                     this.form.orderItems.forEach(item => {
                         if (item.count == 0) {
                             this.isZero = 1
                         }
-                        if (item.count != undefined) {
-                            if (item.count != '') {
-                                orderItems.push(item)
-                            }
+                        if (item.count != undefined&&item.count != '') {
+                            orderItems.push(item)
                         }
                     });
+                }
+                if (this.taskType == '借调') {
                     urlApi = 'borrow';
                     applyOrder = {
                         "applicant": {
@@ -619,7 +543,6 @@
                         "applyNeedEquips": orderItems,
                     };
                 } else if (this.taskType == '报废') {
-                    orderItems = this.form.orderItems;
                     urlApi = 'scrap';
                     applyOrder = {
                         "applicant": {
@@ -639,17 +562,10 @@
                                 "name": this.myUnit.name
                             }
                         },
-                        "scrapEquips": orderItems,
+                        "scrapEquips": JSON.parse(JSON.stringify(this.form.orderItems)),
                     }
                 } else if (this.taskType == '直调') {
                     urlApi = 'direct-transfer';
-                    this.form.orderItems.forEach(item => {
-                        if (item.count != undefined) {
-                            if (item.count != '') {
-                                orderItems.push(item)
-                            }
-                        }
-                    });
                     applyOrder = {
                         "applicant": {
                             "name": JSON.parse(localStorage.getItem('user')).name,
@@ -684,13 +600,6 @@
 
                 }else if(this.taskType=='调拨'){
                     urlApi = 'transfer';
-                    this.form.orderItems.forEach(item=>{
-                        if(item.count!=undefined){
-                            if(item.count!=''){
-                                orderItems.push(item)
-                            }
-                        }
-                    });
                     applyOrder = {
                         "applicant": {
                             "name": JSON.parse(localStorage.getItem('user')).name,
@@ -727,13 +636,6 @@
                 } else {
                     this.$message.error('申请失败')
                 }
-                // let transferOrder={};
-                // transferOrder.applicant=JSON.parse(localStorage.getItem('user')).name;
-                // transferOrder.inHouseName=this.inHouseName;
-                // transferOrder.outHouseName=this.house.name;
-                // transferOrder.orderItems = this.form.orderItems;
-                // this.$emit('submit',transferOrder)
-
             },
             allocationApplication(url, applyOrder) {
                 if (this.taskType == '报废') {
@@ -781,15 +683,6 @@
                         });
                     }
                 }
-
-
-                // this.$ajax({
-                //     method:'post',
-                //     url:url,
-                //     params:{transferApplyOrder:transferApplyOrder},
-                // }).then(res=>{
-                //    console.log(res);
-                // })
             },
             sucesssAdd() {
                 this.$message.success('申请成功');
@@ -836,12 +729,6 @@
                     this.addRow()
                 }
             },
-            // throttle(method, context) {
-            //     clearTimeout(method.tId);
-            //     method.tId = setTimeout( ()=>{
-            //         method.call(context)
-            //     }, 1000)
-            // }
         },
         beforeDestroy() {
             killProcess(this.pid)

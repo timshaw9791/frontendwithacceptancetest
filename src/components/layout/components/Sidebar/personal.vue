@@ -12,28 +12,29 @@
 <script>
     import {imgBaseUrl} from "api/config";
     import {formRulesMixin} from 'field/common/mixinComponent';
-    import api from 'gql/admin.gql'
+    import {getUserInfo} from 'api/layout'
+    import {getOrganUnitById} from 'api/process'
 
     export default {
         data() {
             return {
-                form: {},
+                form: {unitName:'',name:'',position:"啊啊啊"},
                 disabled: true,
                 imageUrl: '',
             }
         },
         mixins: [formRulesMixin],
-
         methods: {
             getList() {
                 let data = JSON.parse(localStorage.getItem('user'));
-                this.gqlQuery(api.getUser, {
-                    id: data.unitId
-                }, (res) => {
-                    this.form = data;
-                    this.form['unitName'] = `${res.data.OrganUnit.location}${res.data.OrganUnit.name}`;
-                    this.imageUrl = `${imgBaseUrl}${data.faceInformation}`;
-                })
+                getUserInfo(data.id).then(res=>{
+                    this.$set(this.form,'name',res.name);
+                    this.$set(this.form,'position',res.position);
+                    this.imageUrl = `${imgBaseUrl}${res.faceInformation}`;
+                });
+                getOrganUnitById({id:data.unitId}).then(res=>{
+                    this.$set(this.form,'unitName',`${res.location}${res.name}`)
+                });
             },
         },
         mounted() {

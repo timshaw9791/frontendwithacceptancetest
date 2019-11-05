@@ -51,7 +51,7 @@
     import addApply from 'components/process/secondment/addSecondment'
     // import api from 'gql/home.gql'
     // import secondmentApi from 'gql/transfer.gql'
-    import {fetchMixin} from 'field/common/mixinFetch'
+    // import {fetchMixin} from 'field/common/mixinFetch'
     // import request from 'common/js/request'
     // import {baseBURL,baseURL} from "../../api/config";
     import {getOrganUnitById,getMyhouse} from 'api/process'
@@ -190,7 +190,7 @@
                         })
                     }
                 });
-                // this.gqlQuery(secondmentApi.getOrganUnit, {
+                // this.gqlQuery(secondmentApi.getOrganUnit,{
                 //     key: 'id',
                 //     value: JSON.parse(localStorage.getItem('user')).unitId
                 // }, (data) => {
