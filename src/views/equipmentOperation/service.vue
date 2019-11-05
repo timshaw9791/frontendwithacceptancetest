@@ -101,7 +101,7 @@
     import servicedialog from 'components/base/serviceDialog'
     import api from 'gql/operation.gql'
     import {transformMixin} from 'common/js/transformMixin'
-    import { retirementApplication, maintainEquipApplyOrders, equipsMaintain } from "api/operation";
+    import { retirementApplication, getEquipsList, equipsMaintain, equipsReturn } from "api/operation";
     import {getRfidinfo} from "api/rfid";
     import { start, killProcess } from 'common/js/rfidReader'
 
@@ -232,12 +232,12 @@
             },
             submit() {
                 if (0 in this.equipList) {
-                    this.gqlMutate(api.houseUser_returnEquip, {
-                        equipIds: this.equipList,
-                    }, (res) => {
+                    equipsReturn(this.equipList).then(res => {
                         console.log(res);
-                        this.callback('入库成功!');
-                        this.equipList = [];
+                        this.$message.success("入库成功")
+                        this.equipList = []
+                        // 刷新列表
+                        this.getEquipServiceList()
                     })
                 } else {
                     this.$message.error('未选择装备!')
@@ -249,7 +249,7 @@
                 });
             },
             repairPush() {
-                equipsMaintain({equipIdList: this.listPush}).then(res => {
+                equipsMaintain(this.listPush).then(res => {
                     this.$message.success("已经申请维修!")
                     this.$refs.dialog.hide()
                     killProcess(this.pid)
@@ -264,15 +264,26 @@
                 // })
             },
             getEquipServiceList() {
-                let params = {page: this.paginator.page, size: this.paginator.size};
+                let params = {
+                    page: this.paginator.page, 
+                    size: this.paginator.size, 
+                    search: this.inquire, 
+                    state: "MAINTAIN"
+                };
                 this.loading = true
-                maintainEquipApplyOrders(params).then(res => {
+                getEquipsList(params).then(res => {
+                    let result = JSON.parse(JSON.stringify(res.content))
                     this.loading = false
-                    console.log('---------------');
-                    console.log(res);
+                    this.list = result
+                    this.paginator.totalPages = res.totalPages
+                    this.paginator.totalElements = res.totalElements
                 }).catch(e => {
                     this.loading = false
                 })
+            },
+            changePage(page) {
+                this.paginator.page = page
+                this.getEquipServiceList()
             }
         },
         
@@ -290,31 +301,7 @@
         },
         watch: {
             inquire(newVal, oldVal) {
-                this.param.namelike = newVal;
-                this.param['qfilter'] = {
-                    "operator": "EQUEAL",
-                    "key": "state",
-                    "value": "MAINTAIN",
-                    "combinator": "AND",
-                    "next": {
-                        "combinator": "OR",
-                        "key": "name",
-                        "operator": "LIKE",
-                        value: newVal,
-                        "next": {
-                            "combinator": "OR",
-                            "key": "serial",
-                            "operator": "LIKE",
-                            value: newVal,
-                            "next": {
-                                "key": "location.number",
-                                "operator": "LIKE",
-                                value: newVal,
-                            }
-                        }
-                    }
-                }
-
+                this.getEquipServiceList()
             }
         },
         beforeDestroy() {
