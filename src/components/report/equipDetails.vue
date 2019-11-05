@@ -71,8 +71,9 @@
 
 <script>
     import equipProgress from './reportComponents/equipProgress'
-    import {formRulesMixin} from 'field/common/mixinComponent';
-    import api from 'gql/warehouse.gql'
+    // import {formRulesMixin} from 'field/common/mixinComponent';
+    // import api from 'gql/warehouse.gql'
+    import {getSafeStockList} from 'api/report'
     export default {
         name: "equipDetails",
         components: {
@@ -108,6 +109,7 @@
                     flag: true,
                     dateFlag: false
                 },
+                list:[],
                 date: '',
                 pickerOptions: {
                     shortcuts: [{
@@ -142,13 +144,14 @@
                 }
             }
         },
-         mixins: [formRulesMixin],
-         apollo: {
-            list() {
-                return this.getEntityListWithPagintor(api.getHouseStockList);
-            },
-        },
+         // mixins: [formRulesMixin],
+        //  apollo: {
+        //     list() {
+        //         return this.getEntityListWithPagintor(api.getHouseStockList);
+        //     },
+        // },
         created() {
+            this.getSafeList();
             this.init()
         },
         updated() {
@@ -163,6 +166,11 @@
             toChangeCategory(data) {
                 this.isDetail=true;
                 this.$emit('changeCategory', data);
+            },
+            getSafeList(){
+                getSafeStockList().then(res=>{
+                    this.list=res.content;
+                })
             },
             changeDate(date) {
                 let flag=false;

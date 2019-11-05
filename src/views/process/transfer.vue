@@ -35,7 +35,8 @@
             </div>
         </div>
         <bills v-if="!viewStatus.flag" :reSet="{unit:unit,restaurants:restaurants,myUnit:myUnit,house:house}" @closeBill="closeBill" :singleStatus="select.singleStatus" :typeSingle="select.typeSingle" :billData="billData" @toBack="haveBack"></bills>
-        <add-direct-adjustment ref="addDirectAdjustment" @sucessAdd="closeAddDialog" :restaurants="restaurants" :myUnit="myUnit" :unit="unit" :house="house" @submit="submit"></add-direct-adjustment>
+        <!--<add-direct-adjustment ref="addDirectAdjustment" @sucessAdd="closeAddDialog" :restaurants="restaurants" :myUnit="myUnit" :unit="unit" :house="house" @submit="submit"></add-direct-adjustment>-->
+        <add-apply ref="addDirectAdjustment" @sucessAdd="closeAddDialog" :taskType="'调拨'" :myUnit="myUnit" :unit="unit" :house="house" @submit="submit" ></add-apply>
     </div>
 </template>
 
@@ -45,11 +46,13 @@
     import tabSelect from 'components/base/tableSelect'
     import t_table from 'components/process/transfer/transferTable'
     import addDirectAdjustment from 'components/process/directAdjustment/addDirectAdjustment'
+    import addApply from 'components/process/secondment/addSecondment'
     import api from 'gql/home.gql'
     import transferApi from 'gql/transfer.gql'
     import {fetchMixin} from 'field/common/mixinFetch'
     import request from 'common/js/request'
     import {baseBURL,baseURL} from "../../api/config";
+    import {getOrganUnitById,getMyhouse} from 'api/process'
     export default {
         name: "transfer",
         components:{
@@ -57,7 +60,8 @@
             myHeader,
             tabSelect,
             t_table,
-            addDirectAdjustment
+            addDirectAdjustment,
+            addApply
         },
         mixins: [fetchMixin],
         data(){
@@ -155,52 +159,41 @@
 
             },
             getUnitAndHouse(){
-                this.gqlQuery(transferApi.getOrganUnit, {
-                    key: 'id',
-                    value: JSON.parse(localStorage.getItem('user')).unitId
-                }, (data) => {
-                        this.myUnit=data[0];
-                        if(this.myUnit.level!="MUNICIPAL"){
-                            request({
-                                method:'get',
-                                url:baseBURL+'/architecture/findById',
-                                params:{id:data[0].upperId}
-                            }).then(res=>{
-                                this.unit={
-                                    name:res.name,
-                                    id:res.id
-                                };
-                                console.log(res.id)
-                            });
-                            request({
-                                method:'get',
-                                url:baseBURL+'/architecture/houseByOrganUnitId',
-                                params:{organUnitId:data[0].upperId}
-                            }).then(houseRes=>{
-                                console.log('houseRes',houseRes);
-                                let houseId='';
-                                houseRes.forEach(item=>{
-                                    if(houseId==''){
-                                        houseId=item.id
-                                    }else {
-                                        houseId=houseId+','+item.id
-                                    }
-                                });
-                                this.getRestaurants(houseId)
-                            });
-                        }
-                }, true);
-                let url=baseURL+'/house';
-                request({
-                    method:'get',
-                    url:baseBURL+ '/architecture/houseByOrganUnitId',
-                    params:{organUnitId:JSON.parse(localStorage.getItem('user')).unitId}
-                }).then(res=>{
-                    this.house.id= res[0].id;
-                    this.house.name=res[0].name;
+                getOrganUnitById({id:JSON.parse(localStorage.getItem('user')).unitId}).then(res=>{
+                    this.myUnit=res;
+                    if(this.myUnit.level!="MUNICIPAL"){
+                        getOrganUnitById({
+                            id:res.upperId
+                        }).then(res=>{
+                            this.unit={
+                                name:res.name,
+                                id:res.id
+                            };
+                        })
+                    }
+                });
+                getMyhouse().then(res=>{
+                    this.house.id= res.id;
+                    this.house.name=res.name;
                 });
             },
             getRestaurants(houseId){
+                // request({
+                //     method:'get',
+                //     url:baseBURL+'/architecture/houseByOrganUnitId',
+                //     params:{organUnitId:data[0].upperId}
+                // }).then(houseRes=>{
+                //     console.log('houseRes',houseRes);
+                //     let houseId='';
+                //     houseRes.forEach(item=>{
+                //         if(houseId==''){
+                //             houseId=item.id
+                //         }else {
+                //             houseId=houseId+','+item.id
+                //         }
+                //     });
+                //     this.getRestaurants(houseId)
+                // });
                 request({
                     method: 'get',
                     url: baseBURL + '/equip-arg/by-houseIds/list',
