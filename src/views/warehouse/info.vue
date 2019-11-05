@@ -18,7 +18,7 @@
                     </div>
                 </tabs>
                 <el-table :data="list" v-loading.body="false" element-loading-text="Loading"
-                          fit>
+                          fit height="3.75rem">
 
                     <bos-table-column lable="装备类型" field="category.genre.name"></bos-table-column>
                     <bos-table-column lable="装备小类" field="category.name"></bos-table-column>
@@ -80,6 +80,10 @@
                     this.paginator.totalElements = res.totalElements
                     this.list = res.content
                 })
+            },
+            changePage(data){
+                this.paginator.page=data
+                this.getHouseList()
             },
             selectValue(data) {
                 console.log(data);

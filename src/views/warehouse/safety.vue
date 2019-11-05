@@ -19,7 +19,7 @@
 
 
                 <el-table :data="list" v-loading.body="false" element-loading-text="Loading"
-                         height="740px">
+                        fit height="3.75rem">
                     <bos-table-column lable="装备类型" field="equipArg.category.name"></bos-table-column>
                     <bos-table-column lable="装备小类" field="equipArg.category.genre.name"></bos-table-column>
                     <bos-table-column lable="装备名称" field="equipArg.name"></bos-table-column>
@@ -85,6 +85,10 @@
                     this.paginator.totalElements = res.totalElements
                     this.list = res.content
                 })
+            },
+            changePage(data) {
+                this.paginator.page = data;
+                this.getHouseStocksList()
             },
             submit() {
                 console.log(this.inlineForm.safeStock);
