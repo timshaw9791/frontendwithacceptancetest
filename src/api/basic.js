@@ -6,6 +6,7 @@ export function delFile(data) {
         method: 'post',
         params: data
     })
+    
 }
 
 
