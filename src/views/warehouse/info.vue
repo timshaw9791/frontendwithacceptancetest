@@ -17,8 +17,8 @@
                         </BosInput>
                     </div>
                 </tabs>
-                <el-table :data="list" v-loading.body="loading" element-loading-text="Loading"
-                          fit>
+                <el-table :data="list" v-loading.body="false" element-loading-text="Loading"
+                          fit height="3.75rem">
 
                     <bos-table-column lable="装备类型" field="category.genre.name"></bos-table-column>
                     <bos-table-column lable="装备小类" field="category.name"></bos-table-column>
@@ -32,7 +32,7 @@
                     </el-table-column>
                 </el-table>
 
-                <bos-paginator v-if="this.list" :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
+                <bos-paginator v-if="this.list!=''" :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
             </div>
         </el-card>
 
@@ -65,7 +65,6 @@
                 title: '',
                 inquire: '',
                 equipShow: false,
-                loading: true
             }
         },
         methods: {
@@ -77,16 +76,16 @@
                     property: "time",
                     direction: "DESC"
                 };
-                this.loading = true
                 getHouse(params).then(res => {
                     let result = JSON.parse(JSON.stringify(res))
-                    this.loading = false
                     this.paginator.totalPages = res.totalPages
                     this.paginator.totalElements = res.totalElements
                     this.list = res.content
-                }).catch(e => {
-                    this.loading = false
                 })
+            },
+            changePage(data){
+                this.paginator.page=data
+                this.getHouseList()
             },
             selectValue(data) {
                 console.log(data);

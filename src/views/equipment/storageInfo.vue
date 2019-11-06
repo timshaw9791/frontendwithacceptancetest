@@ -40,7 +40,7 @@
 
                         </div>
                         <form-container ref="form" :model="form" class="formList">
-                            <field-cascader label="装备名称" :options="options" v-model="form.nameId" prop="nameId"
+                            <field-cascader label="装备大小类" :options="options" v-model="form.nameId" prop="nameId"
                                             width="3" :rules="r(true).all(R.require)"
                                             v-if="title.includes('入库')"
                                             @change="getEquipInfo(form.nameId[2])">

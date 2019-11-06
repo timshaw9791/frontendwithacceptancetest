@@ -13,7 +13,7 @@
                         <span v-text="`${ZhiDingOrJieShou}机构：`"></span>
                         <el-input class="input" :disabled="true" size="large" v-model="unit.name"
                                   v-if="taskType=='调拨'"></el-input>
-                        <div style="width: 228px" v-else>
+                        <div style="width: 185px" v-else>
                             <el-cascader
                                     size="middle"
                                     :options="unitList"
