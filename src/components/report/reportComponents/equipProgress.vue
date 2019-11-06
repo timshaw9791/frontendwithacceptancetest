@@ -45,14 +45,15 @@
     </div>
 </template>
 <script>
-    import {formRulesMixin} from 'field/common/mixinComponent';
-    import api from 'gql/warehouse.gql'
+    // import {formRulesMixin} from 'field/common/mixinComponent';
+    // import api from 'gql/warehouse.gql'
+    // import {getSafeStockList} from 'api/report'
     export default {
         name: "equipProgress",
         data(){
           return{
               flag:false,
-              safeStock:0
+              safeStock:0,
           }
         },
         props: {
@@ -110,13 +111,12 @@
             //     default:10
             // }
         },
-         mixins: [formRulesMixin],
-         apollo: {
-            list() {
-
-                return this.getEntityListWithPagintor(api.getHouseStockList);
-            },
-        },
+        //  mixins: [formRulesMixin],
+        //  apollo: {
+        //     list() {
+        //         return this.getEntityListWithPagintor(api.getHouseStockList);
+        //     },
+        // },
 
         mounted(){
            /* let mouse = document.getElementById(this.category+this.from);

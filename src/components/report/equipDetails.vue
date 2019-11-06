@@ -276,6 +276,10 @@
                 }))
             }))
             },
+
+
+
+            
             init() {
                 if (this.title == '装备使用频次'||this.title == '装备损耗率'||this.title == '装备维修率') {
                     let date0 = new Date();
