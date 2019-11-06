@@ -148,6 +148,7 @@
                 this.listPush = [];
 
                 start("java -jar scan.jar", (data) => {
+                    data = data.replace(/[\r\n]/g, "")
                     getRfidinfo([`${data}`]).then(res => {
                         if (0 in res) {
                             this.dialogList.push(res[0]);
@@ -204,7 +205,7 @@
 
             },
             cancel() {
-                killProcess();
+                 killProcess(this.pid)
             },
 
             dialogConfirm() {
