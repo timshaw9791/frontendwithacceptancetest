@@ -67,3 +67,11 @@ export function getUserList(data) {
         params: data
     })
 }
+
+// 通过id获取机构信息
+export function getUnitInfo(id) {
+    return request({
+        url: `/architecture/organUnit/${id}`,
+        method: "GET"
+    })
+}

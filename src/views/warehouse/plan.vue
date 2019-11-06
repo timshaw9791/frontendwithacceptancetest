@@ -211,6 +211,8 @@
             },
             getEquipInfo() {
                 getEquipList().then(res => {
+                    console.log('--------------------------');
+                    console.log(res);
                     let newData = JSON.parse(JSON.stringify(res.content));
                     let eqName = newData.map(res => {
                         return res.equipArg.model

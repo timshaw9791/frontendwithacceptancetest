@@ -272,10 +272,10 @@ export default {
       if (0 in this.equipList) {
         equipsUpkeep(this.equipList).then(res => {
            this.$refs.maintenanceDialog.hide();
-            this.$message.success("正在保养了!");
+            this.$message.success("保养成功");
             this.getList();
             this.equipList = [];
-            this.getList()
+            killProcess(this.process.pid)
         })
       } else {
         this.$message.error("未选择装备!");
