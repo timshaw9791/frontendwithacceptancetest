@@ -73,7 +73,9 @@
                 let params = {
                     page: this.paginator.page, 
                     size: this.paginator.size,
-                    search: this.inquire
+                    search: this.inquire,
+                    property: "time",
+                    direction: "DESC"
                 };
                 this.loading = true
                 getHouse(params).then(res => {
@@ -97,6 +99,10 @@
                 this.equipId = data.id;
                 this.title = '装备信息查看';
                 this.equipShow = true;
+            },
+            changePage(page) {
+                this.paginator.page = page
+                this.getHouseList()
             }
         },
         mixins: [formRulesMixin, transformMixin],

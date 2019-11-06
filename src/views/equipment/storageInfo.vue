@@ -377,7 +377,7 @@
                         data:newData
                     }, (res) => {
                         this.dialogConfirm();
-                        this.callback('添加成功!');
+                        this.$message.success("添加成功")
                     },(err)=>{
                         this.$message.error(err.response.data.message);
                     });
@@ -515,7 +515,7 @@
                if(this.$route.name=='warehouse/info'){
 
                }else {
-                   killProcess(this.pid);
+                  killProcess(this.pid);
                }
                 this.judgeEdit = {
                     form: {
