@@ -216,6 +216,7 @@
                     }).then((res) => {
                         console.log(res);
                         this.$refs.dialog1.hide()
+                        this.getEquipServiceList()
                         this.callback('报废已经申请');
                     })
                 )
@@ -250,8 +251,9 @@
             },
             repairPush() {
                 equipsMaintain(this.listPush).then(res => {
-                    this.$message.success("已经申请维修!")
+                    this.$message.success("申请维修成功")
                     this.$refs.dialog.hide()
+                    this.getEquipServiceList()
                     killProcess(this.pid)
                 })
                 // this.gqlMutate(api.admin_maintainEquips, {
