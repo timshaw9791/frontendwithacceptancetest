@@ -239,6 +239,7 @@
                         console.log(res);
                         this.callback('入库成功!');
                         this.equipList = [];
+                        this.batch = !this.batch
                     })
                 } else {
                     this.$message.error('未选择装备!')
