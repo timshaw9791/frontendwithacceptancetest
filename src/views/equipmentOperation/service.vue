@@ -27,7 +27,7 @@
                 </tabs>
                 <el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
                           fit highlight-current-row
-                          @selection-change="handleSelectionChange">
+                          @selection-change="handleSelectionChange" height="3.55rem">
 
                     <el-table-column
                             v-if="batch"
