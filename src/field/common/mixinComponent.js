@@ -55,14 +55,14 @@ export let formRulesMixin = {
             loading: false,
         }
     },
-    computed: {
-        paginator() {//获取分页信息
-            return Object.assign({},
-                this.partialPiginator,
-                this.param.paginator
-            );
-        }
-    },
+    // computed: {
+    //     paginator() {//获取分页信息
+    //         return Object.assign({},
+    //             this.partialPiginator,
+    //             this.param.paginator
+    //         );
+    //     }
+    // },
     created() {
         this._initPage();
     },
@@ -249,10 +249,10 @@ export let formRulesMixin = {
             this.$router.back();
         },
         //
-        changePage(page) {
-            this.param.paginator.page = page;
-            this.setHistoryPage(page);
-        },
+        // changePage(page) {
+        //     this.param.paginator.page = page;
+        //     this.setHistoryPage(page);
+        // },
         callback(message) {
             this.$message.success(message);
             this.refetch();

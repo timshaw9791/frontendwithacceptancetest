@@ -60,6 +60,7 @@
             return {
                 moreList:[],
                 equipList: [],
+                list: [],
                 loading: true,
                 paginator: {page: 1, size: 10, totalPages: 5, totalElements: 5}
             }
