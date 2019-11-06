@@ -238,13 +238,13 @@
             }
         },
         created() {
-            this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];
             this.unitName = this.unit.name;
             if (this.taskType == '报废') {
                 this.getLeader(JSON.parse(localStorage.getItem('user')).unitId);
                 // this.handleUnitChange([JSON.parse(localStorage.getItem('user')).unitId])
             } else if (this.taskType == '借调') {
                 this.getUnitList();
+
             } else if (this.taskType == '直调') {
                 this.getLowerLevelUnitList()
             } else if (this.taskType == '调拨') {
@@ -253,7 +253,7 @@
                 });
 
             }
-
+            this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];
         },
         computed: {
             ZhiDingOrJieShou() {
@@ -377,7 +377,8 @@
             },
             getUnitList() {
                 organUnitInfo().then(res => {
-                    this.$set(this, 'unitList', [res]);
+                    this.$set(this,'unitList', [res]);
+                    console.log('getUnitList',this.unitList)
                 })
             },
             handleUnitChange(data) {

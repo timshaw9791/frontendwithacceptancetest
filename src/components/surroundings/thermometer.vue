@@ -30,7 +30,7 @@
         data(){
             return{
                 scale:[-10,0,10,20,30,40,50,60,70],
-                color:'#2F2F76',
+                color:'#EF4545',
                 svgData:[],
                 threshold:{
                   max:0,min:0
