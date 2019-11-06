@@ -143,6 +143,10 @@
                     this.$refs.dialog1.hide()
                     this.paginator.page = 1
                     this.getSupplierList()
+                }).catch(err => {
+                    this.$message.error(err.response.data.message)
+                    this.$refs.dialog1.hide()
+                    
                 })
                 // this.gqlMutate(api.suppliers_deleteSupplier, {supplierId: this.delId}, (res) => {
                 //     this.$refs.dialog1.hide();

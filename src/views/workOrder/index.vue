@@ -46,12 +46,16 @@
         data() {
             return {
                 tabsList: ['已提交', '已失效'],
-                list: []
+                list: [],
+                paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
             }
         },
         methods: {
             selected(data) {
                 console.log(data);
+            },
+            changePage() {
+                
             }
         },
 

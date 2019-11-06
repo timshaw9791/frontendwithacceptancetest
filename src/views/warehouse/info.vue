@@ -83,10 +83,6 @@
                     this.list = res.content
                 })
             },
-            changePage(data){
-                this.paginator.page=data
-                this.getHouseList()
-            },
             selectValue(data) {
                 console.log(data);
             },
