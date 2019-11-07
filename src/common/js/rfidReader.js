@@ -102,24 +102,22 @@ export function delFile(path, callBack) {
 /* 手持机 */
 export function handheld() {
     // 执行命令行，如果命令不需要路径，或就是项目根目录，则不需要cwd参数：
-    
-    fs.exists(newFile_path, exists => {
+    let inventoryFile=newFile_path+'inventory.json';
+    console.log('inventoryFile',inventoryFile,'newFile_path',newFile_path)
+    fs.exists(inventoryFile, exists => {
         if(exists) {
-            fs.unlinkSync(newFile_path);
+            fs.unlinkSync(inventoryFile);
         }
     });
 
-    workerProcess = exec(cmdStr, {cwd: cmdPath});
+    workerProcess = exec(cmdStr, {cwd: newFile_path});
 
-    // 不受child_process默认的缓冲区大小的使用方法，没参数也要写上{}：workerProcess = exec(cmdStr, {})
-
-    // 打印正常的后台可执行程序输出
     let start = new Promise((resolve, reject) => {
         workerProcess.stdout.on('data', (data) => {
-            fs.exists(newFile_path, (exists) => {
+            fs.exists(inventoryFile, (exists) => {
                 //读取本地的json文件
                 if (exists) {
-                    let result = JSON.parse(fs.readFileSync(newFile_path));
+                    let result = JSON.parse(fs.readFileSync(inventoryFile));
                     resolve(JSON.stringify(result));
                 } else {
                     console.log(exists)
