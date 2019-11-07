@@ -2,7 +2,7 @@
  * Created by Administrator on 2018/6/5.
  */
 
-import { setCom } from 'common/js/rfidReader'
+import { setCom, getHandheldPath } from 'common/js/rfidReader'
 export const ERR_OK = 0;
 
 
@@ -27,6 +27,7 @@ if (process.env.NODE_ENV == "production") {
     baseBURL = `http://${result.B_SERVER}`;
     localTitle = `${result.A_CLIENT_TITLE}`;
     setCom(result.UHF_READ_COM)
+    getHandheldPath(result.INVENTORY_PATH)
 }
 
 export { baseURL, baseBURL, localTitle}

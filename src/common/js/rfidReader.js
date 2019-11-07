@@ -5,17 +5,24 @@ if (process.env.NODE_ENV == "production") {
     //var com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM']; // 端口 串口号
     var com = 9
     var fs = window.require('fs')
+    var newFile_path = 'C:\\Users\\Administrator\\inventory.json'; // 手持机路径
 }
 
-var newFile_path = 'C:\\Users\\Administrator\\inventory.json'; // 手持机路径
 var cmdPath = 'C:\\Users\\Administrator'; // 读卡器路径
 var cmdStr = 'chcp 65001 && adb pull sdcard/inventoryData/inventory.json .';
  // var com = 7
 var workerProcess; // 子进程名
 
+// 配置读取
 export  function setCom(data) {
     com = data
 }
+
+/* 获取手持机路径 */
+export function getHandheldPath(path) {
+    newFile_path = path
+}
+
 
 /* 结束对应进程 */
 function killProcessSync() {
