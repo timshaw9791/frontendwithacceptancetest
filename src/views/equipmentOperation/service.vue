@@ -17,7 +17,7 @@
 
                     <div class="_buttons">
                         <BosInput
-                                placeholder="rfid/装备/序号/编号"
+                                placeholder="装备名称/序号/编号"
                                 suffix="el-icon-search"
                                 v-model="inquire"
                                 :wrapforlike="true"

@@ -78,10 +78,16 @@
                 })
             },
             submission() {
-                setSmokeThreshold({max: this.threshold}).then(res => {
-                    this.$message.success("设置成功")
-                    this.notModify = true
-                })
+                if(this.threshold < 0) {
+                    this.$message.error("烟雾浓度不可小于0%")
+                } else if(this.threshold > 100) {
+                    this.$message.error("烟雾浓度不可大于100%")
+                } else {
+                    setSmokeThreshold({max: this.threshold}).then(res => {
+                        this.$message.success("设置成功")
+                        this.notModify = true
+                    })
+                }
             }
         }
     }
