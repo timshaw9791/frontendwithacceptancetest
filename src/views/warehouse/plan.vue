@@ -61,7 +61,7 @@
                         </div>
                     </div>
 
-                    <div class="_box-bottom" v-if="this.list!=''">
+                    <!-- <div class="_box-bottom" v-if="this.list!=''">1111
                         <el-pagination
                                 background
                                 layout="prev, pager, next"
@@ -69,7 +69,8 @@
                                 @current-change="paginationChange"
                                 :total="total">
                         </el-pagination>
-                    </div>
+                    </div> -->
+                <bos-paginator v-if="this.list!=''" :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
 
                 </div>
             </div>
@@ -137,10 +138,8 @@
         data() {
             return {
                 inquire: '',
+                paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
                 list: [],
-                page: 1,
-                size: 4,
-                total: 10,
                 form: {
                     planEquips: [{equipModel: '', location: {}}]
                 },
@@ -155,10 +154,9 @@
             servicedialog
         },
         methods: {
-            paginationChange(val) {
-                console.log(val);
-                this.page = val;
-                this.getList();
+            changePage(page) {
+                this.paginator.page = page
+                this.getSupplierList()
             },
 
             qaq(row, data) {
@@ -196,18 +194,15 @@
                 this.$refs.dialog.show();
             },
             getList() {
-                getPlanList(this.getPagination(this.page, this.size)).then(res => {
+                let params = {page: this.paginator.page, size: this.paginator.size}
+                getPlanList(params).then(res => {
                     this.list = res.content;
                     this.total = res.totalElements;
+                    this.paginator.totalPages = res.totalPages
+                    this.paginator.totalElements = res.totalElements
                 }).catch(err => {
                     console.log(err);
                 })
-            },
-            getPagination(page, size) {
-                return {
-                    size: size,
-                    page: page
-                }
             },
             getEquipInfo() {
                 getEquipList().then(res => {
@@ -339,6 +334,7 @@
     }
 
     .bodyContent {
+        height: 3.55rem;
         padding: 0 0.3125rem;
         display: flex;
         flex-wrap: wrap;

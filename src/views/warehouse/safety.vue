@@ -19,7 +19,7 @@
 
 
                 <el-table :data="list" v-loading.body="false" element-loading-text="Loading"
-                        fit height="3.75rem">
+                        fit height="3.64rem">
                     <bos-table-column lable="装备类型" field="equipArg.category.name"></bos-table-column>
                     <bos-table-column lable="装备小类" field="equipArg.category.genre.name"></bos-table-column>
                     <bos-table-column lable="装备名称" field="equipArg.name"></bos-table-column>

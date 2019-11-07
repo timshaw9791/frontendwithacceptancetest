@@ -27,7 +27,7 @@
                 </tabs>
                 <el-table :data="list" v-loading.body="loading" element-loading-text="Loading"
                           fit highlight-current-row
-                          @selection-change="handleSelectionChange">
+                          @selection-change="handleSelectionChange" height="3.55rem">
 
                     <el-table-column
                             v-if="batch"
@@ -238,6 +238,7 @@
                         console.log(res);
                         this.$message.success("入库成功")
                         this.equipList = []
+                        this.batch = !this.batch
                         // 刷新列表
                         this.getEquipServiceList()
                     })

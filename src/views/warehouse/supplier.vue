@@ -22,8 +22,8 @@
                 </div>
 
 
-                <el-table :data="list" v-loading.body="loading" element-loading-text="Loading"
-                          fit>
+                <el-table :data="list" v-loading.body="false" element-loading-text="Loading"
+                          fit height="3.64rem">
                     <bos-table-column lable="供应商" field="name"></bos-table-column>
                     <bos-table-column lable="联系人" field="person"></bos-table-column>
                     <bos-table-column lable="联系方式" field="phone"></bos-table-column>
