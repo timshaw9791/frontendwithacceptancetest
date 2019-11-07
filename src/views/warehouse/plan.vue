@@ -146,7 +146,6 @@
                 restaurants: [],
                 title: '',
                 delId: '',
-                nowRow:{},
             }
         },
         mixins: [formRulesMixin, transformMixin],
@@ -160,13 +159,16 @@
             },
 
             qaq(row, data) {
-                this.nowRow=data.key;
-                // this.form.planEquips[row.$index] = data.key;
-                // this.form.planEquips[row.$index] = JSON.parse(JSON.stringify(data.key));
+                let tempData = JSON.parse(JSON.stringify(data))
+                //this.form.planEquips[row] = data.key;
+                this.form.planEquips[row.$index].equipModel = data.key.equipModel
+                this.form.planEquips[row.$index].equipName = data.key.equipName
+                this.form.planEquips[row.$index].location = data.key.location
+                
                 if (row.$index === this.form.planEquips.length - 1) {
-                    this.form.planEquips[row.$index] = data.key
                     this.form.planEquips.push({equipModel: '', location: {}});
                 }
+
             },
 
             delqaq(row) {
@@ -206,8 +208,6 @@
             },
             getEquipInfo() {
                 getEquipList().then(res => {
-                    console.log('--------------------------');
-                    console.log(res);
                     let newData = JSON.parse(JSON.stringify(res.content));
                     let eqName = newData.map(res => {
                         return res.equipArg.model

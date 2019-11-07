@@ -486,8 +486,9 @@
                 })
             },
             submit() {
+                if(this.isClick) return
                 this.isClick = true;
-                setTimeout(() => this.isClick = false, 1000);
+                setTimeout(() => this.isClick = false, 1500);
                 let url = '';
                 let orderItems = [];
                 let applyOrder = {};
