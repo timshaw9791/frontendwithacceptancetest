@@ -17,7 +17,7 @@
                         </div>
                     </div>
                     <div class="header-item"><span v-text="'装备清单：'"></span>
-                        <el-button class="resultButton" v-text="'重新读取数据'"
+                        <el-button class="resultButton" v-text="actionReset"
                                    @click="clickResult"></el-button>
                     </div>
                 </div>
@@ -234,6 +234,17 @@
         },
         created() {
             this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];
+        },
+        computed: {
+            actionReset(){
+                let name = '重新读取数据';
+                if(this.hardware=='RFID读写器'){
+                    name = '重启读写器'
+                }else {
+                    name = '重新读取数据'
+                }
+                return name
+            }
         },
         methods: {
             deleteFile() {

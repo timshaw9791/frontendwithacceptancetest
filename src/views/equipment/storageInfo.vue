@@ -330,7 +330,7 @@
 
             //离开页面以后为父组件抛出black 杀死进程
             black() {
-                let flag = this.isEqual()
+                let flag = this.isEqual();
                 if(flag) {
                     // killProcess(this.pid)
                     this.judgeEdit = {
@@ -358,7 +358,7 @@
             //点击提交后 根据从什么入口进入的执行对应的  新增  入库  装备基础信息修改 装备入库信息修改
             addEquipArg() {
                 this.isClick = true;
-                setTimeout(() => {this.isClick = false}, 1600)
+                setTimeout(() => {this.isClick = false}, 1600);
                 if (this.title.includes('新增')) {
                     this.form.videoAddresses ? this.form.videoAddresses = this.form.videoAddresses.join(',') : '';
                     this.form.documentAddresses ? this.form.documentAddresses = this.form.documentAddresses.join(',') : '';
@@ -383,17 +383,18 @@
                     });
 
                 } else if (this.title.includes('信息查看')) {
-                    this.form.videoAddresses ? this.form.videoAddresses = this.form.videoAddresses.join(',') : '';
-                    this.form.documentAddresses ? this.form.documentAddresses = this.form.documentAddresses.join(',') : '';
-                    this.form.supplier.id ? this.form.supplier.id = this.form.vendorId : '';
-                    this.form.name = this.form.name.trim()
-                    this.form.model = this.form.model.trim()
+                    let modifyForm = JSON.parse(JSON.stringify(this.form));
+                    modifyForm.videoAddresses ? modifyForm.videoAddresses = modifyForm.videoAddresses.join(',') : '';
+                    modifyForm.documentAddresses ? modifyForm.documentAddresses = modifyForm.documentAddresses.join(',') : '';
+                    modifyForm.supplier.id ? this.form.supplier.id = this.form.vendorId : '';
+                    modifyForm.name = modifyForm.name.trim();
+                    modifyForm.model = modifyForm.model.trim();
 
 
-                    let newData = JSON.parse(JSON.stringify(this.form));
+                    let newData = JSON.parse(JSON.stringify(modifyForm));
 
-                    newData.upkeepCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.upkeepCycle)));
-                    newData.chargeCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.chargeCycle)));
+                    newData.upkeepCycle = this.dayToMilli(JSON.parse(JSON.stringify(modifyForm.upkeepCycle)));
+                    newData.chargeCycle = this.dayToMilli(JSON.parse(JSON.stringify(modifyForm.chargeCycle)));
 
 
                     this.$refs.form.ajaxValidate({
@@ -411,7 +412,7 @@
                         // this.callback('添加成功!');
                     },
                         (err)=>{
-                        console.log(err)
+                            this.$message.error(err.response.data.message);
                         })
                 } else if (this.title.includes('入库')) {
                     if(this.list[0].rfid == null) {

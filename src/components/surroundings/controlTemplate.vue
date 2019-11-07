@@ -31,6 +31,7 @@
         flex-direction: column;
         border-bottom:1px solid rgba(112,112,112,0.13);
         border-left:1px solid rgba(112,112,112,0.13);
+        cursor: pointer;
     }
     .c_template .svg{
         width: 0.3125rem;

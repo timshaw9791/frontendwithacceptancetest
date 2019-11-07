@@ -77,10 +77,10 @@
                     direction: "DESC"
                 };
                 getHouse(params).then(res => {
-                    let result = JSON.parse(JSON.stringify(res))
-                    this.paginator.totalPages = res.totalPages
-                    this.paginator.totalElements = res.totalElements
-                    this.list = res.content
+                    // let result = JSON.parse(JSON.stringify(res))
+                    this.$set(this.paginator,'totalPages',res.totalPages);
+                    this.$set(this.paginator,'totalElements',res.totalElements);
+                    this.$set(this,'list',res.content)
                 })
             },
             selectValue(data) {
@@ -90,13 +90,16 @@
                 this.equipShow = false;
                 this.refetch();
             },
+            refetch(){
+                this.getHouseList();
+            },
             goInfo(data) {
                 this.equipId = data.id;
                 this.title = '装备信息查看';
                 this.equipShow = true;
             },
             changePage(page) {
-                this.paginator.page = page
+                this.paginator.page = page;
                 this.getHouseList()
             }
         },

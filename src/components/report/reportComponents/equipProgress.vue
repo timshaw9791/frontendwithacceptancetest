@@ -17,28 +17,28 @@
         <div v-if="title=='库存统计'">
          <span v-text="'出库率：'+detailItem.percentage+'%'" style="margin-left:-15px"></span>
          <span v-text="' (装备总数: '+detailItem.allCount+'件/'+'出库: '+detailItem.number +'件)' " style="margin-left: 0px"></span>
-         <span v-if="isDetail" v-text="'【标准库存: '+detailItem.safeStock+'件】'" style="margin-left: 15px"></span>
+         <span v-if="isDetail" v-text="'【标准库存: '+safeNumber(detailItem.safeStock)+'件】'" style="margin-left: 15px"></span>
          <span v-if="havePrice&&!isDetail" v-text="'【¥: '+Number(detailItem.price/100)*detailItem.allCount+'】'" style="margin-left: 10px"></span>
          <span v-if="havePrice&&isDetail" v-text="'【¥: '+Number(detailItem.price/100)+'】'" style="margin-left: 10px"></span>
         </div>
         <div v-if="title=='装备维修率'">
          <span v-text="'维修率：'+detailItem.percentage+'%'" style="margin-left:-15px"></span>
          <span v-text="' (装备总数: '+detailItem.allCount+'件/'+'出库: '+detailItem.number +'件)' " style="margin-left: 0px"></span>
-         <span v-if="isDetail" v-text="'【标准库存: '+detailItem.safeStock+'件】'" style="margin-left: 15px"></span>
+         <span v-if="isDetail" v-text="'【标准库存: '+safeNumber(detailItem.safeStock)+'件】'" style="margin-left: 15px"></span>
          <span v-if="havePrice&&!isDetail" v-text="'【¥: '+Number(detailItem.price/100)*detailItem.allCount+'】'" style="margin-left: -5px"></span>
          <span v-if="havePrice&&isDetail" v-text="'【¥: '+Number(detailItem.price/100)+'】'" style="margin-left: -5px"></span>
         </div>
         <div v-if="title=='装备损耗率'">
          <span v-text="'损耗率：'+detailItem.percentage+'%'" style="margin-left:-15px"></span>
          <span v-text="' (装备总数: '+detailItem.allCount+'件/'+'损耗数量: '+detailItem.number +'件)' " style="margin-left: 0px"></span>
-         <span v-if="isDetail" v-text="'【标准库存: '+detailItem.safeStock+'件】'" style="margin-left: 15px"></span>
+         <span v-if="isDetail" v-text="'【标准库存: '+safeNumber(detailItem.safeStock)+'件】'" style="margin-left: 15px"></span>
          <span v-if="havePrice&&!isDetail" v-text="'【¥: '+Number(detailItem.price/100)*detailItem.allCount+'】'" style="margin-left: 3px"></span>
          <span v-if="havePrice&&isDetail" v-text="'【¥: '+Number(detailItem.price/100)+'】'" style="margin-left: 3px"></span>
         </div>
         <div v-if="title=='装备使用频次'">
          <span v-text="detailItem.number+'次'" style="margin-left:-15px"></span>
          <span v-text="' (装备总数: '+detailItem.allCount+'件）'" style="margin-left: 0px"></span>
-         <span v-if="isDetail" v-text="'【标准库存: '+detailItem.safeStock+'件】'" style="margin-left: 15px"></span>
+         <span v-if="isDetail" v-text="'【标准库存: '+safeNumber(detailItem.safeStock)+'件】'" style="margin-left: 15px"></span>
          <span v-if="havePrice&&!isDetail" v-text="'【¥: '+Number(detailItem.price/100)*detailItem.allCount+'】'" style="margin-left: 3px"></span>
          <span v-if="havePrice&&isDetail" v-text="'【¥: '+Number(detailItem.price/100)+'】'" style="margin-left: 3px"></span>
         </div>
@@ -134,6 +134,13 @@
             },
             format() {
                 return this.detailItem.number+'次'
+            },
+            safeNumber(safe){
+                let safeNumber='--';
+               if(safe){
+                   safeNumber=safe;
+               }
+                return safeNumber
             },
             statistics(){
             return ''
