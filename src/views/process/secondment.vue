@@ -49,11 +49,12 @@
     import tabSelect from 'components/base/tableSelect'
     import t_table from 'components/process/transfer/transferTable'
     import addApply from 'components/process/secondment/addSecondment'
-    import api from 'gql/home.gql'
-    import secondmentApi from 'gql/transfer.gql'
-    import {fetchMixin} from 'field/common/mixinFetch'
-    import request from 'common/js/request'
-    import {baseBURL,baseURL} from "../../api/config";
+    // import api from 'gql/home.gql'
+    // import secondmentApi from 'gql/transfer.gql'
+    // import {fetchMixin} from 'field/common/mixinFetch'
+    // import request from 'common/js/request'
+    // import {baseBURL,baseURL} from "../../api/config";
+    import {getOrganUnitById,getMyhouse} from 'api/process'
     export default {
         name: "secondment",
         components:{
@@ -63,7 +64,7 @@
             t_table,
             addApply
         },
-        mixins: [fetchMixin],
+        // mixins: [fetchMixin],
         data(){
             return{
                 selectList:[
@@ -131,7 +132,7 @@
         },
         created(){
             this.defaultList();
-            this.getEquipInfo();
+            // this.getEquipInfo();
             this.getUnitAndHouse();
         },
         computed:{
@@ -175,16 +176,12 @@
                 this.$refs.addDirectAdjustment.showAdd()
             },
             getUnitAndHouse(){
-                this.gqlQuery(secondmentApi.getOrganUnit, {
-                    key: 'id',
-                    value: JSON.parse(localStorage.getItem('user')).unitId
-                }, (data) => {
-                    this.myUnit=data[0];
+                getOrganUnitById({id:JSON.parse(localStorage.getItem('user')).unitId}).then(res=>{
+                    this.myUnit=res;
+                    console.log(res);
                     if(this.myUnit.level!="MUNICIPAL"){
-                        request({
-                            method:'get',
-                            url:baseBURL+'/architecture/findById',
-                            params:{id:data[0].upperId}
+                        getOrganUnitById({
+                            id:res.upperId
                         }).then(res=>{
                             this.unit={
                                 name:res.name,
@@ -192,12 +189,26 @@
                             };
                         })
                     }
-                }, true);
-                let url=baseURL+'/house';
-                request({
-                    method:'get',
-                    url:url,
-                }).then(res=>{
+                });
+                // this.gqlQuery(secondmentApi.getOrganUnit,{
+                //     key: 'id',
+                //     value: JSON.parse(localStorage.getItem('user')).unitId
+                // }, (data) => {
+                //     this.myUnit=data[0];
+                //     if(this.myUnit.level!="MUNICIPAL"){
+                //         request({
+                //             method:'get',
+                //             url:baseBURL+'/architecture/findById',
+                //             params:{id:data[0].upperId}
+                //         }).then(res=>{
+                //             this.unit={
+                //                 name:res.name,
+                //                 id:res.id
+                //             };
+                //         })
+                //     }
+                // }, true);
+                getMyhouse().then(res=>{
                     this.house.id= res.id;
                     this.house.name=res.name;
                 })
@@ -226,31 +237,31 @@
                 //     }
                 // })
             },
-            getEquipInfo() {
-                this.gqlQuery(api.getEquipList1, '', (res) => {
-                    let newData = res;
-                    let eqName = newData.map(res => {
-                        return res.name
-                    });
-                    let endData = [];
-                    eqName = Array.from(new Set(eqName));
-                    eqName.forEach(item => {
-                        newData.some(item1 => {
-                            if (item === item1.name) {
-                                endData.push({
-                                    value: item1.equipArg.model,
-                                    key: {
-                                        name: item1.name,
-                                        model: item1.equipArg.model,
-                                    }
-                                });
-                                return true
-                            }
-                        })
-                    });
-                    this.restaurants = endData;
-                },true)
-            },
+            // getEquipInfo() {
+            //     this.gqlQuery(api.getEquipList1, '', (res) => {
+            //         let newData = res;
+            //         let eqName = newData.map(res => {
+            //             return res.name
+            //         });
+            //         let endData = [];
+            //         eqName = Array.from(new Set(eqName));
+            //         eqName.forEach(item => {
+            //             newData.some(item1 => {
+            //                 if (item === item1.name) {
+            //                     endData.push({
+            //                         value: item1.equipArg.model,
+            //                         key: {
+            //                             name: item1.name,
+            //                             model: item1.equipArg.model,
+            //                         }
+            //                     });
+            //                     return true
+            //                 }
+            //             })
+            //         });
+            //         this.restaurants = endData;
+            //     },true)
+            // },
             toSee(data){
                 // this.directDefault=data.row;
                 // this.downloadSrc=baseURL+'/secondments/up-to-down/export-excel'+'?secondmentOrderId='+this.directDefault.id;

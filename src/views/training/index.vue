@@ -21,8 +21,10 @@
     import list from 'components/teaching/teachList'
     import resourcesMaterial from 'components/teaching/resourcesMaterial'
     import instructional from 'components/teaching/instructional'
-    import teaching from 'gql/teaching.gql'
-    import {fetchMixin} from 'field/common/mixinFetch'
+    import {getEquipArgs} from 'api/teach'
+    // import teaching from 'gql/teaching.gql'
+    // import {fetchMixin} from 'field/common/mixinFetch'
+
     export default {
         name: "index",
         components:{
@@ -31,7 +33,7 @@
             resourcesMaterial,
             instructional
         },
-        mixins: [fetchMixin],
+        // mixins: [fetchMixin],
         data(){
             return{
                 title:'装备的使用',
@@ -53,26 +55,15 @@
         watch: {
             'search':{
                 handler(newval){
-                    let qfilter={qfilter:{
-                            key:'name',
-                            operator:'LIKE',
-                            value:'%'+newval+'%'
-                        }};
-                    this.getListGql(qfilter);
+                    this.getListGql(newval);
                 }
             }
         },
         created(){
-          let qfilter={qfilter:{
-                  key:'id',
-                  operator:'LIKE',
-                  value:'%%'
-              }};
-          this.getListGql(qfilter);
+          this.getListGql('');
         },
         methods:{
             clickCard(data){ // 这里点击后，组件/页面没有变化，只是数据变化
-            console.log(data)
                 if (this.condition.length==0){
                     this.viewStatus.searchFlag=false;
                     this.list = data.modelList;
@@ -145,22 +136,37 @@
                 this.viewStatus.insFlag=true;
                 this.condition.push(data);
             },
-            getListGql(qfilter){
-                this.gqlQuery(teaching.getEquipArgList,qfilter, (data) => {
-                    this.gqlList=this.inintList(data);
-                    this.list=this.gqlList;
-                    this.list.forEach(item=>{
-                        item.modelList.forEach(modelItem=>{
-                            if(modelItem.videoAddresses!=null&&modelItem.videoAddresses!=''){
-                                modelItem.videoAddresses=modelItem.videoAddresses.split(',');
+            getListGql(search){
+                getEquipArgs({search:search}).then(res=>{
+                        this.gqlList=this.inintList(JSON.parse(JSON.stringify(res.content)));
+                        this.list=this.gqlList;
+                        this.list.forEach(item=>{
+                            item.modelList.forEach(modelItem=>{
+                                if(modelItem.videoAddresses!=null&&modelItem.videoAddresses!=''){
+                                    modelItem.videoAddresses=modelItem.videoAddresses.split(',');
 
-                            }
-                            if(modelItem.documentAddresses!=null&&modelItem.documentAddresses!=''){
-                                modelItem.documentAddresses=modelItem.documentAddresses.split(',')
-                            }
+                                }
+                                if(modelItem.documentAddresses!=null&&modelItem.documentAddresses!=''){
+                                    modelItem.documentAddresses=modelItem.documentAddresses.split(',')
+                                }
+                            })
                         })
-                    })
-                }, true)
+                })
+                // this.gqlQuery(teaching.getEquipArgList,qfilter, (data) => {
+                //     this.gqlList=this.inintList(data);
+                //     this.list=this.gqlList;
+                //     this.list.forEach(item=>{
+                //         item.modelList.forEach(modelItem=>{
+                //             if(modelItem.videoAddresses!=null&&modelItem.videoAddresses!=''){
+                //                 modelItem.videoAddresses=modelItem.videoAddresses.split(',');
+                //
+                //             }
+                //             if(modelItem.documentAddresses!=null&&modelItem.documentAddresses!=''){
+                //                 modelItem.documentAddresses=modelItem.documentAddresses.split(',')
+                //             }
+                //         })
+                //     })
+                // }, true)
             },
             inintList(list){
                 let newList=[];

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="instructional-box">
         <div id="pdf-viewer" v-if="getFlag()"></div>
         <div v-if="!getFlag()" class="instructional-video">
             <my-new-video :src="mp4Src" :autoplay="true"></my-new-video>
@@ -80,7 +80,12 @@
 </script>
 
 <style scoped>
-    .instructional-video{
+    .instructional-box{
+        width: 100%;
+        height: 4.1667rem;
+        overflow:auto
+    }
+    .instructional-box .instructional-video{
         margin: auto;
         width: 80%;
     }

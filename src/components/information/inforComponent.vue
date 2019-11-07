@@ -55,6 +55,7 @@
 <script>
     import {formRulesMixin} from 'field/common/mixinComponent';
     import user from 'gql/user.gql'
+    import { modifyUser } from "api/personnel"
     import tips from 'components/base/tips'
     import {baseURL} from "../../api/config";
     /* import {scrappedUp} from "api/workflow";*/
@@ -254,7 +255,7 @@
                         idNumber:data.idNumber,
                         id:data.id
                     };
-                    this.gqlMutate(user.identityUpdateUser,{user:users}, (data) => {
+                    modifyUser(users).then(res => {
                         this.$message.success('修改成功');
                         setTimeout(()=>{
                             this.$store.dispatch('LogOut').then(() => {

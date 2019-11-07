@@ -1,7 +1,7 @@
 <template>
     <div>
-        <el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
-                  fit highlight-current-row height="3.55rem">
+        <el-table :data="list" v-loading.body="loading" element-loading-text="Loading"
+                  fit highlight-current-row  height="3.55rem">
             <bos-table-column lable="rfid" field="equip.rfid"></bos-table-column>
             <bos-table-column lable="装备名称" field="name"></bos-table-column>
             <bos-table-column lable="装备序号" field="serial"></bos-table-column>
@@ -23,25 +23,42 @@
 <script>
 
     import {formRulesMixin} from 'field/common/mixinComponent';
-    import api from 'gql/operation.gql'
+    import { getEquipsList } from "api/operation"
     import {transformMixin} from 'common/js/transformMixin'
 
     export default {
         data() {
             return {
-                param: {
-                    qfilter: {
-                        "key": "state",
-                        "operator": "EQUEAL",
-                        "value": "CHARGE"
-                    },
-                },
+                loading: true,
+                list: [],
+                paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
             }
         },
-        apollo: {
-            list() {
-                return this.getEntityListWithPagintor(api.getEquipList);
+        methods: {
+            getList() {
+                let params = {
+                    page: this.paginator.page,
+                    size: this.paginator.size,
+                    state: "CHARGE"
+                };
+                this.loading = true
+                getEquipsList(params).then(res => {
+                    this.list = JSON.parse(JSON.stringify(res.content))  
+                    this.paginator.totalPages = res.totalPages
+                    this.paginator.totalElements = res.totalElements
+                    this.loading = false  
+                }).catch(e => {
+                    this.loading = false
+                })
+                
             },
+            changePage(page) {
+                this.paginator.page = page
+                this.getList()
+            }
+        },
+        mounted() {
+            this.getList()
         },
         mixins: [formRulesMixin, transformMixin],
     }

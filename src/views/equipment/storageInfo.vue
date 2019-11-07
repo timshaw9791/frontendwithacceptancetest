@@ -40,7 +40,7 @@
 
                         </div>
                         <form-container ref="form" :model="form" class="formList">
-                            <field-cascader label="装备名称" :options="options" v-model="form.nameId" prop="nameId"
+                            <field-cascader label="装备大小类" :options="options" v-model="form.nameId" prop="nameId"
                                             width="3" :rules="r(true).all(R.require)"
                                             v-if="title.includes('入库')"
                                             @change="getEquipInfo(form.nameId[2])">
@@ -340,7 +340,7 @@
                             imageAddress: 'noImg.jpg',
                         },
                         zbForm: {}
-                    },
+                    };
                     this.$emit('black', true);
                 } else {
                     this.$refs.dialog.show();
@@ -377,7 +377,7 @@
                         data:newData
                     }, (res) => {
                         this.dialogConfirm();
-                        this.callback('添加成功!');
+                        this.$message.success("添加成功")
                     },(err)=>{
                         this.$message.error(err.response.data.message);
                     });
@@ -511,7 +511,12 @@
             },
 
             dialogConfirm() {
-                killProcess(this.pid);
+                console.log(this.$route);
+               if(this.$route.name=='warehouse/info'){
+
+               }else {
+                  killProcess(this.pid);
+               }
                 this.judgeEdit = {
                     form: {
                         videoAddresses: [],

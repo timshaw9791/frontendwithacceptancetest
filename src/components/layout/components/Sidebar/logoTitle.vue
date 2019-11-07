@@ -6,25 +6,23 @@
 
 <script>
 
-    import {formRulesMixin} from 'field/common/mixinComponent';
-    import api from 'gql/admin.gql'
-
-
+    import {getOrganUnitById} from 'api/process'
     export default {
         data() {
             return {
                 name: '',
             }
         },
-        mixins: [formRulesMixin],
         methods: {
             getList() {
                 let data = JSON.parse(localStorage.getItem('user'));
-                this.gqlQuery(api.getUser, {
-                    id: data.unitId
-                }, (res) => {
-                    this.name = res.data.OrganUnit.name;
-                })
+                getOrganUnitById({id:data.unitId}).then(res=>{
+                    this.name = res.name;
+                });
+                console.log('this.name',this.name)
+                // getUserInfo(data.id).then(res=>{
+                //     this.name = res.data.OrganUnit.name;
+                // })
             }
         },
 

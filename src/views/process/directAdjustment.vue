@@ -49,6 +49,7 @@
     import secondmentApi from 'gql/transfer.gql'
     import {fetchMixin} from 'field/common/mixinFetch'
     import request from 'common/js/request'
+    import {getOrganUnitById,getMyhouse} from 'api/process'
     import {baseBURL,baseURL} from "../../api/config";
     export default {
         name: "secondment",
@@ -171,30 +172,18 @@
                 this.$refs.addDirectAdjustment.showAdd()
             },
             getUnitAndHouse(){
-                this.gqlQuery(secondmentApi.getOrganUnit, {
-                    key: 'id',
-                    value: JSON.parse(localStorage.getItem('user')).unitId
-                }, (data) => {
-                    this.myUnit=data[0];
+                getOrganUnitById({id:JSON.parse(localStorage.getItem('user')).unitId}).then(res=>{
+                    this.myUnit=res;
                     if(this.myUnit.level!="MUNICIPAL"){
-                        request({
-                            method:'get',
-                            url:baseBURL+'/architecture/findById',
-                            params:{id:data[0].upperId}
-                        }).then(res=>{
+                        getOrganUnitById({id:res.upperId}).then(res=>{
                             this.unit={
                                 name:res.name,
                                 id:res.id
                             };
                         })
                     }
-                }, true);
-                let url=baseURL+'/house';
-                request({
-                    method:'get',
-                    url:url,
-                }).then(res=>{
-                    console.log('baseURLHouse',res);
+                });
+                getMyhouse().then(res=>{
                     this.house.id= res.id;
                     this.house.name=res.name;
                 })

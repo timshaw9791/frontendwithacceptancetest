@@ -36,6 +36,7 @@
     import tabs from 'components/base/tabs/index'
     import imgUp from 'components/base/axiosImgUp';
     import {imgBaseUrl} from "api/config";
+    import { getRolesList, getUnitInfo } from "api/personnel"
     import {fetchMixin} from "field/common/mixinFetch";
     import info from 'components/information/inforComponent'
     import user from 'gql/user.gql'
@@ -66,13 +67,12 @@
                 this.personenlData = data;
                 this.getUnit(this.personenlData.unitId);
                 this.getRoleGql(this.personenlData.role[0]);
-                console.log(data);
                 // this.imageUrl = `${imgBaseUrl}${data.faceInformation}`;
             },
             getUnit(id){
-                this.gqlQuery(user.getOrganUnit, {id:id}, (data) => {
-                    this.unit=data;
-                }, true)
+                getUnitInfo(id).then(data => {
+                    this.unit = data
+                })
             },
             pushButton() {
 
@@ -84,13 +84,23 @@
               this.toBack=false
             },
             getRoleGql(roleEnum) {
-                this.gqlQuery(user.getRoleList,'', (data) => {
-                    data.forEach(item=>{
+                getRolesList().then(res => {
+                    let result = JSON.parse(JSON.stringify(res.data))
+                    result.forEach(item => {
                         if(item.roleEnum==roleEnum){
                             this.role={roleDescribe:item.roleDescribe,id:item.id};
                         }
                     })
-                }, true)
+                })
+                // this.gqlQuery(user.getRoleList,'', (data) => {
+                //     console.log('---------------------');
+                //     console.log(data);
+                //     data.forEach(item=>{
+                //         if(item.roleEnum==roleEnum){
+                //             this.role={roleDescribe:item.roleDescribe,id:item.id};
+                //         }
+                //     })
+                // }, true)
                 // this.gqlQuery(user.getRoleList, qfilter, (data) => {
                 //     data.forEach(item => {
                 //         if(item.roleEnum!='SUPER_ADMINISTRATOR'){
@@ -103,8 +113,6 @@
                 // }, true)
             },
         },
-        mounted() {
-        }
 
     }
 </script>

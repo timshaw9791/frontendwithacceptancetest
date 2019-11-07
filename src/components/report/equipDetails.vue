@@ -71,8 +71,9 @@
 
 <script>
     import equipProgress from './reportComponents/equipProgress'
-    import {formRulesMixin} from 'field/common/mixinComponent';
-    import api from 'gql/warehouse.gql'
+    // import {formRulesMixin} from 'field/common/mixinComponent';
+    // import api from 'gql/warehouse.gql'
+    import {getSafeStockList} from 'api/report'
     export default {
         name: "equipDetails",
         components: {
@@ -108,6 +109,7 @@
                     flag: true,
                     dateFlag: false
                 },
+                list:[],
                 date: '',
                 pickerOptions: {
                     shortcuts: [{
@@ -142,29 +144,33 @@
                 }
             }
         },
-         mixins: [formRulesMixin],
-         apollo: {
-            list() {
-
-                return this.getEntityListWithPagintor(api.getHouseStockList);
-            },
-        },
+         // mixins: [formRulesMixin],
+        //  apollo: {
+        //     list() {
+        //         return this.getEntityListWithPagintor(api.getHouseStockList);
+        //     },
+        // },
         created() {
+            this.getSafeList();
             this.init()
-
         },
         updated() {
             this.getSafeStcok()
         },
         methods: {
             toChange(data) {
-                this.isDetail=false
+                this.isDetail=false;
                 this.selectCategory = '';
                 this.$emit('changeGener', data);
             },
             toChangeCategory(data) {
-                this.isDetail=true
+                this.isDetail=true;
                 this.$emit('changeCategory', data);
+            },
+            getSafeList(){
+                getSafeStockList().then(res=>{
+                    this.list=res.content;
+                })
             },
             changeDate(date) {
                 let flag=false;
@@ -270,8 +276,11 @@
                 }))
             }))
             },
-            init() {
 
+
+
+            
+            init() {
                 if (this.title == '装备使用频次'||this.title == '装备损耗率'||this.title == '装备维修率') {
                     let date0 = new Date();
                     let date1 = new Date();

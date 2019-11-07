@@ -45,14 +45,14 @@ export let formRulesMixin = {
             oldPage: 1, // 旧page
         }
     },
-    computed: {
-        paginator() {//获取分页信息
-            return Object.assign({},
-                this.partialPiginator,
-                this.param.paginator
-            );
-        }
-    },
+    // computed: {
+    //     paginator() {//获取分页信息
+    //         return Object.assign({},
+    //             this.partialPiginator,
+    //             this.param.paginator
+    //         );
+    //     }
+    // },
     methods: {
         r(required) {//规则组合器
             var context = this;

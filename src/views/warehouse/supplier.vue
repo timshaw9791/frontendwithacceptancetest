@@ -79,17 +79,27 @@
                 inquire: '',
                 delId: '',
                 paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
+                loading: true
             }
         },
         mixins: [formRulesMixin],
+        watch: {
+            inquire(newVal, oldVal) {
+                this.getSupplierList()
+            }
+        },
         methods: {
             getSupplierList() {
-                let params = {page: this.paginator.page, size: this.paginator.size}
+                let params = {page: this.paginator.page, size: this.paginator.size, search: this.inquire};
+                this.loading = true
                 getSuppliers(params).then(res => {
                     let result = JSON.parse(JSON.stringify(res))
+                    this.loading = false
                     this.list = result.content
                     this.paginator.totalPages = res.totalPages
                     this.paginator.totalElements = res.totalElements
+                }).catch(e => {
+                    this.loading = false
                 })
             },
             changePage(page) {
@@ -133,6 +143,10 @@
                     this.$refs.dialog1.hide()
                     this.paginator.page = 1
                     this.getSupplierList()
+                }).catch(err => {
+                    this.$message.error(err.response.data.message)
+                    this.$refs.dialog1.hide()
+                    
                 })
                 // this.gqlMutate(api.suppliers_deleteSupplier, {supplierId: this.delId}, (res) => {
                 //     this.$refs.dialog1.hide();
