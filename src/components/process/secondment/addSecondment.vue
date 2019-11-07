@@ -121,6 +121,12 @@
                                     <el-input v-model="scope.row.count" size="small"
                                               @blur="changeCount(scope,$event)"></el-input>
                                 </template>
+
+
+
+
+
+
                             </el-table-column>
                             <el-table-column label="操作" width="120" align="center">
                                 <template scope="scope">
