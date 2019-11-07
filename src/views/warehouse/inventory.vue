@@ -64,7 +64,6 @@
                 // this.getInventoryRfCopy();
                 //todo 记得合并前换回来
                 // this.getInventoryRf({rfid:['19080020','12312141'],size:2});
-                this.$refs['inventory_dialog'].show();
             },
             getNote(data) {
                 if (Object.keys(this.inventoryObj.inventoryData.inventory).length != 0) {
@@ -162,13 +161,16 @@
             },
             /* 处理获得的rfid JSON数据 */
             getInventoryRf(data) {
-                this.inventoryObj.getInventory = data;
-                this.size = String(data.size);
-                data.rfid.forEach((item, index) => {
-                    this.inventoryObj.rflist.push({
-                        rfId: item
-                    })
-                });
+                if(data){
+                    this.inventoryObj.getInventory = data;
+                    this.size = String(data.size);
+                    data.rfid.forEach((item, index) => {
+                        this.inventoryObj.rflist.push({
+                            rfId: item
+                        })
+                    });
+                    this.$refs['inventory_dialog'].show();
+                }
                 // this.inventory.endTime=data.endTime;
                 // this.inventory.startTime=data.startTime;
                 // this.inventory.size=data.size;

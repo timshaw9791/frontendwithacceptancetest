@@ -139,9 +139,9 @@
             },
             submit1() {
                 deleteSupplier(this.delId).then(res => {
-                    this.$message.success("删除成功")
-                    this.$refs.dialog1.hide()
-                    this.paginator.page = 1
+                    this.$message.success("删除成功");
+                    this.$refs.dialog1.hide();
+                    this.paginator.page = 1;
                     this.getSupplierList()
                 }).catch(err => {
                     this.$message.error(err.response.data.message)

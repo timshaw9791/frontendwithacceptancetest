@@ -162,11 +162,11 @@
             },
 
             qaq(row, data) {
-                this.nowRow=data.key
+                this.nowRow=data.key;
                 // this.form.planEquips[row.$index] = data.key;
                 // this.form.planEquips[row.$index] = JSON.parse(JSON.stringify(data.key));
-
                 if (row.$index === this.form.planEquips.length - 1) {
+                    this.form.planEquips[row.$index] = data.key
                     this.form.planEquips.push({equipModel: '', location: {}});
                 }
             },
