@@ -492,6 +492,16 @@
                 let orderItems = [];
                 let applyOrder = {};
                 let urlApi = '';
+                if(this.taskType != '报废') {
+                    let haveZero = false;
+                    this.form.orderItems.forEach(item => {
+                        if(item.model && (item.count == 0 || item.count == undefined)) haveZero = true
+                    })    
+                    if(haveZero) {
+                        this.$message.error("装备数量不能为0")
+                        return
+                    }
+                }
                 if (this.leader.leaderName.trim() == '') {
                     this.$message.error("请选择指定领导");
                     return

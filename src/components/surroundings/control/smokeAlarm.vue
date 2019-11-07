@@ -11,7 +11,7 @@
                     <span v-text="'当前浓度：'+concentration+'%'"></span>
                 </div>
                 <div class="dehumidification-bottom">
-                   <span v-text="'烟雾阈值：'"></span><input class="input" :style="notModify?'border:none;':''" v-model="threshold" :disabled="notModify"/><span v-text="'%'"></span>
+                   <span v-text="'烟雾阈值：'"></span><input class="input" :style="notModify?'border:none;':''" v-model="threshold" :disabled="notModify"/><span v-text="'ppm'"></span>
                    <div @click="notModify = !notModify">
                        <svg-icon icon-class="编辑" style="width: 18px;height: 18px;margin-left: 24px;cursor: pointer"></svg-icon>
                    </div>
@@ -78,10 +78,16 @@
                 })
             },
             submission() {
-                setSmokeThreshold({max: this.threshold}).then(res => {
-                    this.$message.success("设置成功")
-                    this.notModify = true
-                })
+                if(this.threshold < 0) {
+                    this.$message.error("烟雾浓度不可小于0%")
+                } else if(this.threshold > 100) {
+                    this.$message.error("烟雾浓度不可大于100%")
+                } else {
+                    setSmokeThreshold({max: this.threshold}).then(res => {
+                        this.$message.success("设置成功")
+                        this.notModify = true
+                    })
+                }
             }
         }
     }

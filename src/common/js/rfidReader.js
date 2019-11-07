@@ -53,7 +53,6 @@ export function start(cmd, success, failure, callBack) {
         });
 
         callBack(process.pid, null)
-
         process.stderr.on("data", err => {
             console.log(err);
             if(!err.includes("Error"))  failure.call(this, err)
