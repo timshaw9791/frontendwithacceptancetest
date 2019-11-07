@@ -4,7 +4,7 @@
             <span class="_card-title">{{$route.meta.title}}</span>
         </div>
         <div>
-            <info :personenlData="personenlData" :toBack="toBack" @noBack="noBack" :organUnit="unit" :role="role"></info>
+            <info v-if="flag" :personenlData="personenlData" :toBack="toBack" @noBack="noBack" :organUnit="unit" :role="role"></info>
             <!--<div class="privateInfo">-->
             <!--&lt;!&ndash;<div class="imgUp">&ndash;&gt;-->
             <!--&lt;!&ndash;<imgUp :disabled="true" :image="imageUrl"></imgUp>&ndash;&gt;-->
@@ -36,11 +36,10 @@
     import tabs from 'components/base/tabs/index'
     import imgUp from 'components/base/axiosImgUp';
     import {imgBaseUrl} from "api/config";
-    import { getRolesList, getUnitInfo } from "api/personnel"
     import {fetchMixin} from "field/common/mixinFetch";
     import info from 'components/information/inforComponent'
     import user from 'gql/user.gql'
-
+    import { getRolesList,getOrganUnitById,getIdentityUserById} from 'api/personnel'
     export default {
         components: {
             tabs,
@@ -54,7 +53,8 @@
                 personenlData:{},
                 unit:'',
                 role:{},
-                toBack:false
+                toBack:false,
+                flag:false
             }
         },
         mixins: [fetchMixin],
@@ -64,14 +64,18 @@
         methods: {
             getList() {
                 let data = JSON.parse(localStorage.getItem('user'));
-                this.personenlData = data;
-                this.getUnit(this.personenlData.unitId);
-                this.getRoleGql(this.personenlData.role[0]);
+                getIdentityUserById(data.id).then(res=>{
+                    this.$set(this,'personenlData',res.data);
+                    this.getUnit(this.personenlData.unitId);
+                    this.getRoleGql(this.personenlData.role.roleEnum);
+                    this.flag=true
+                });
                 // this.imageUrl = `${imgBaseUrl}${data.faceInformation}`;
             },
             getUnit(id){
-                getUnitInfo(id).then(data => {
-                    this.unit = data
+                getOrganUnitById(id).then(res=>{
+                    this.unit=res.data;
+                    console.log(this.unit)
                 })
             },
             pushButton() {
@@ -84,23 +88,15 @@
               this.toBack=false
             },
             getRoleGql(roleEnum) {
-                getRolesList().then(res => {
-                    let result = JSON.parse(JSON.stringify(res.data))
-                    result.forEach(item => {
+                getRolesList().then(res=>{
+                    console.log('getRoleGql',roleEnum);
+                    res.data.forEach(item=>{
                         if(item.roleEnum==roleEnum){
                             this.role={roleDescribe:item.roleDescribe,id:item.id};
                         }
-                    })
+                    });
+                    console.log('this.role',this.role);
                 })
-                // this.gqlQuery(user.getRoleList,'', (data) => {
-                //     console.log('---------------------');
-                //     console.log(data);
-                //     data.forEach(item=>{
-                //         if(item.roleEnum==roleEnum){
-                //             this.role={roleDescribe:item.roleDescribe,id:item.id};
-                //         }
-                //     })
-                // }, true)
                 // this.gqlQuery(user.getRoleList, qfilter, (data) => {
                 //     data.forEach(item => {
                 //         if(item.roleEnum!='SUPER_ADMINISTRATOR'){
@@ -113,6 +109,8 @@
                 // }, true)
             },
         },
+        mounted() {
+        }
 
     }
 </script>

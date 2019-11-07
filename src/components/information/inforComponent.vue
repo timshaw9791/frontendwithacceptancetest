@@ -55,11 +55,10 @@
 <script>
     import {formRulesMixin} from 'field/common/mixinComponent';
     import user from 'gql/user.gql'
-    import { modifyUser } from "api/personnel"
     import tips from 'components/base/tips'
     import {baseURL} from "../../api/config";
     /* import {scrappedUp} from "api/workflow";*/
-
+    import {saveUser} from 'api/personnel'
     export default {
         data() {
             return {
@@ -168,6 +167,7 @@
                }
             },
             initForm(){
+                console.log('this.personenlData',this.personenlData);
                 this.$set(this.form,'gender',this.personenlData.gender);
                 this.$set(this.form,'name',this.personenlData.name);
                 this.$set(this.form,'password',this.personenlData.password);
@@ -255,7 +255,7 @@
                         idNumber:data.idNumber,
                         id:data.id
                     };
-                    modifyUser(users).then(res => {
+                    saveUser(users).then(res=>{
                         this.$message.success('修改成功');
                         setTimeout(()=>{
                             this.$store.dispatch('LogOut').then(() => {

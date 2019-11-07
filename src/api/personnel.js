@@ -9,7 +9,26 @@ export function getRolesList() {
         method: 'GET'
     })
 }
+export function saveUser(data) {
+    return request({
+        url: '/identity/user',
+        method: 'put',
+        data
+    })
+}
 
+export function getIdentityUserById(id) {
+    return axios({
+        url: `${baseURL}/identity/user/${id}`,
+        method: 'GET'
+    })
+}
+export function getOrganUnitById(id) {
+    return axios({
+        url: `${baseURL}/architecture/organUnit/${id}`,
+        method: 'GET'
+    })
+}
 export function syncFaceInfo() {
     return request({
         url: `${baseURL}/identity/syncFaceInfo`,

@@ -238,7 +238,6 @@
             }
         },
         created() {
-            this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];
             this.unitName = this.unit.name;
             if (this.taskType == '报废') {
                 this.getLeader(JSON.parse(localStorage.getItem('user')).unitId);
@@ -253,7 +252,7 @@
                 });
 
             }
-
+            this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];
         },
         computed: {
             ZhiDingOrJieShou() {
@@ -377,7 +376,7 @@
             },
             getUnitList() {
                 organUnitInfo().then(res => {
-                    this.$set(this, 'unitList', [res]);
+                    this.$set(this,'unitList', [res]);
                 })
             },
             handleUnitChange(data) {
@@ -413,7 +412,7 @@
                         });
                     })
                 });
-                this.getLeader(gethouseUnitId);
+                this.getLeader(JSON.parse(localStorage.getItem('user')).unitId);
                 if(this.taskType!='调拨'){
                     getOrganUnitById({id: unitId}).then(res => {
                         this.selectUnitNow = {
@@ -516,7 +515,7 @@
                     return;
                 }
 
-                if(this.taskType=='报废'){
+                if(this.taskType!='报废'){
                     this.form.orderItems.forEach(item => {
                         if (item.count == 0) {
                             this.isZero = 1

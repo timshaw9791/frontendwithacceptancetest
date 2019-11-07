@@ -2,7 +2,7 @@
     <div>
         <el-table
                 :data="list"
-                style="width: 100%" id="table" @sort-change="sortChange">
+                style="width: 100%" id="table" @sort-change="sortChange" height="3.55rem">
             <bos-table-column  v-for="item in labelList" :lable="item.lable" :sort="item.sort" :field="item.field" :filter="item.filter"></bos-table-column>
             <el-table-column v-if="flag" :label="tableAction.label" align="center">
                 <template slot-scope="scope">

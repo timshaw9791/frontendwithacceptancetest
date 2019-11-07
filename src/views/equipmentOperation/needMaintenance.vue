@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-table :data="list" fit highlight-current-row
-                  @selection-change="handleSelectionChange">
+                  @selection-change="handleSelectionChange" height="3.55rem">
             <el-table-column
                     type="selection"
                     v-if="batch"

@@ -22,8 +22,8 @@
                 </div>
 
 
-                <el-table :data="list" v-loading.body="loading" element-loading-text="Loading"
-                          fit>
+                <el-table :data="list" v-loading.body="false" element-loading-text="Loading"
+                          fit height="3.64rem">
                     <bos-table-column lable="供应商" field="name"></bos-table-column>
                     <bos-table-column lable="联系人" field="person"></bos-table-column>
                     <bos-table-column lable="联系方式" field="phone"></bos-table-column>
@@ -139,9 +139,9 @@
             },
             submit1() {
                 deleteSupplier(this.delId).then(res => {
-                    this.$message.success("删除成功")
-                    this.$refs.dialog1.hide()
-                    this.paginator.page = 1
+                    this.$message.success("删除成功");
+                    this.$refs.dialog1.hide();
+                    this.paginator.page = 1;
                     this.getSupplierList()
                 }).catch(err => {
                     this.$message.error(err.response.data.message)
