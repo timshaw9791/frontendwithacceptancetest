@@ -292,7 +292,7 @@
                 }
             },
             handheldMachine() {
-                handheld().then((data) => {
+                handheld((err) => this.$message.error(err)).then((data) => {
                     let json = JSON.parse(data);
                     console.log(data);
                     this.getOutDataCopy(json.rfid);

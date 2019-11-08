@@ -57,7 +57,7 @@
         methods: {
             toInventory() {
                 this.inventoryObj.rflist = [];
-                handheld().then(data => {
+                handheld((err) => this.$message.error(err)).then(data => {
                     this.getInventoryRf(JSON.parse(data));
                 });
                 // this.getInventoryRf();

@@ -110,13 +110,13 @@ export function delFile(path, callBack) {
 }
 
 /* 手持机 */
-export function handheld() {
+export function handheld(errCB) {
     // 执行命令行，如果命令不需要路径，或就是项目根目录，则不需要cwd参数：
 
     if (fs.existsSync(inventoryFile)) {
         fs.unlinkSync(inventoryFile);
     }
-
+    let errTip = true
     workerProcess = exec(cmdStr, {
         cwd: newFile_path
     });
@@ -147,6 +147,10 @@ export function handheld() {
 
     // 打印错误的后台可执行程序输出
     workerProcess.stderr.on('data', (data) => {
+        if(data.includes("device")) { 
+            errCB("未发现设备，请检查设备连接是否正常")
+            errTip = false
+        }
         console.log('stderr: ' + data);
     });
     let start = new Promise((resolve, reject) => {
@@ -156,6 +160,7 @@ export function handheld() {
                 let result = JSON.parse(fs.readFileSync(inventoryFile));
                 resolve(JSON.stringify(result));
             } else {
+                if(errTip) errCB("文件不存在")
                 console.log("文件不存在");
             }
             console.log('out code：' + code);
