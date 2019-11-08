@@ -252,7 +252,7 @@
     import axios from 'axios';
     import {imgUpUrl, pdfUpUrl, videoUpUrl, imgBaseUrl, pdfBaseUrl, videoBaseUrl} from "api/config";
     import {delFile} from "api/basic";
-    import {getGenreList,addEquipInfo} from "api/storage"
+    import {getGenreList,addEquipInfo,getSuppliers,getEquipById} from "api/storage"
     import serviceDialog from 'components/base/serviceDialog/index'
     import {transformMixin} from "common/js/transformMixin";
     import { start, startOne, killProcess } from 'common/js/rfidReader'
@@ -782,18 +782,14 @@
             },
 
             //进入页面获取数据
-            getList() {
-
+            getEquipInfo() {
                 if (this.equipId) {
-                    this.gqlQuery(api.getEquip, {
-                        id: this.equipId
-                    }, (res) => {
-                        
-                        let eqData = JSON.parse(JSON.stringify(res.data.Equip));
-                     
+                    getEquipById(this.equipId).then(res=>{
+                        let eqData = JSON.parse(JSON.stringify(res));
+
                         this.zb = eqData;
                         this.form = eqData.equipArg;
-                       
+
                         this.form.vendorId = eqData.equipArg.supplier.id;
                         eqData.equipArg.imageAddress ? this.imageUrl = `${imgBaseUrl}${eqData.equipArg.imageAddress}` : '';
                         this.$set(this.form, 'eqBig', eqData.equipArg.category.genre.name);
@@ -802,7 +798,7 @@
                         this.$set(this.form, 'upkeepCycle', this.milliToDay(eqData.equipArg.upkeepCycle));
                         this.$set(this.form, 'chargeCycle', this.milliToDay(eqData.equipArg.chargeCycle));
                         this.$set(this.form, 'price', eqData.price / 100);
-                  
+
 
                         this.zb['shelfLifeQ'] = Math.round(eqData.quality.shelfLife / 24 / 60 / 60 / 1000);
                         this.zb['productDateQ'] = eqData.quality.productDate;
@@ -817,7 +813,7 @@
                         this.zbForm = this.zb;
                         this.judgeEdit.form = JSON.parse(JSON.stringify(this.form));
                         this.judgeEdit.zbForm = JSON.parse(JSON.stringify(this.zbForm))
-                    });
+                    })
                 }
 
                 if (this.equipArgId) {
@@ -881,8 +877,9 @@
                             this.options = newData;
                         }
                 });
-                this.gqlQuery(api.getSupplierList, {}, (res) => {
-                    this.vendorId = res.data.SupplierList.content.map(item => {
+
+                getSuppliers().then(res=>{
+                    this.vendorId = res.map(item => {
                         return {
                             val: item.id,
                             key: item.name,
@@ -892,7 +889,7 @@
                             }
                         }
                     });
-                    this.judgeEdit.form = JSON.parse(JSON.stringify(this.form))
+                    this.judgeEdit.form = JSON.parse(JSON.stringify(this.form));
                     this.judgeEdit.zbForm = JSON.parse(JSON.stringify(this.zbForm))
                 });
             }
@@ -916,7 +913,7 @@
                 this.disabled = true;
             }
 
-            this.getList();
+            this.getEquipInfo();
         },
         beforeDestroy() {
             // killProcess(this.pid)

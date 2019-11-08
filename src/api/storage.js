@@ -8,6 +8,13 @@ export function getCategoryAndGenre() {
     })
 }
 
+export function saveEquipInfo(categoryId,data) {
+    return request({
+        url: `/equip-args/${categoryId}`,
+        method: 'put',
+        data:data
+    })
+}
 
 export function getSuppliers() {
     return request({
@@ -15,6 +22,7 @@ export function getSuppliers() {
         method: 'get',
     })
 }
+
 
 
 export function delectPlan(data) {
@@ -44,5 +52,12 @@ export function addEquipInfo(params,data) {
         method: 'post',
         params:params,
         data:data
+    })
+}
+
+export function getEquipById(id) {
+    return request({
+        url: `/equips/${id}`,
+        method: 'get',
     })
 }
