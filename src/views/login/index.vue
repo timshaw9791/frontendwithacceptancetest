@@ -31,7 +31,7 @@
             </el-form-item>
 
             <el-form-item>
-                <el-button type="primary" style="width:192px;height:44px;font-size: 20px" :loading="loading"
+                <el-button type="primary" style="width:1rem;font-size: 0.1042rem" :loading="loading"
                            @click.native.prevent="handleLogin">
                     登 录
                 </el-button>
@@ -110,10 +110,14 @@
     }
 </script>
 
+
 <style rel="stylesheet/scss" lang="scss">
     $bg: #2d3a4b;
     $light_gray: #eee;
 
+    .el-message {
+        font-size: 0.0833rem;
+    }
 
     /* reset element-ui css */
     .login-container {
@@ -151,10 +155,10 @@
             border-radius: 5px;
             color: #454545;
             text-align: center;
-            margin-bottom: 44px;
+            margin-bottom: 0.2292rem;
 
             .el-form-item__label {
-                font-size: 24px !important;
+                font-size: 0.125rem !important;
                 font-weight: 400 !important;
             }
         }
@@ -201,45 +205,46 @@
             position: absolute;
             left: 0;
             right: 0;
-            width: 716px;
-            height: 402px;
+            width: 3.7292rem;
+            height: 2.0938rem;
+            min-height: 300px;
             background: white;
             margin: 0 auto;
             box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
             border-radius: 30px;
-            padding: 0 114px;
+            padding: 0 0.5938rem;
         }
 
         .tips {
-            font-size: 14px;
+            font-size: 0.0729rem;
             color: #fff;
-            margin-bottom: 10px;
+            margin-bottom: 0.0521rem;
 
             span {
                 &:first-of-type {
-                    margin-right: 16px;
+                    margin-right: 0.0833rem;
                 }
             }
         }
 
         .svg-container {
-            padding: 6px 5px 6px 15px;
+            padding: 0.0313rem 0.026rem 0.0313rem 0.0781rem;
             color: $dark_gray;
             vertical-align: middle;
-            width: 30px;
+            width: 0.1563rem;
             display: inline-block;
 
             &_login {
-                font-size: 20px;
+                font-size: 0.1042rem;
             }
         }
 
 
         .show-pwd {
             position: absolute;
-            right: 10px;
-            top: 7px;
-            font-size: 16px;
+            right: 0.0521rem;
+            top: 0.0365rem;
+            font-size: 0.0833rem;
             color: $dark_gray;
             cursor: pointer;
             user-select: none;
@@ -247,13 +252,13 @@
 
         .content-title {
             text-align: center;
-            font-size: 28px;
+            font-size: 0.1458rem;
             color: rgba(67, 66, 93, 1);
-            padding: 20px 0 66px 0;
+            padding: 0.1042rem 0 0.3438rem 0;
         }
 
         .input {
-            width: 380px;
+            width: 1.9792rem;
             background: rgba(255, 255, 255, 1);
             border: 1px solid rgba(112, 112, 112, 1);
             color: black;
@@ -263,14 +268,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 160px 0 0 0;
+            margin: 0.8333rem 0 0 0;
 
             .title {
-                font-size: 48px;
+                font-size: 0.25rem;
                 font-weight: 400;
                 color: $light_gray;
                 text-align: center;
-                margin-left: 16px;
+                margin-left: 0.0833rem;
 
             }
         }
