@@ -121,12 +121,6 @@
                                     <el-input v-model="scope.row.count" size="small"
                                               @blur="changeCount(scope,$event)"></el-input>
                                 </template>
-
-
-
-
-
-
                             </el-table-column>
                             <el-table-column label="操作" width="120" align="center">
                                 <template scope="scope">
@@ -395,6 +389,8 @@
                 }
                 if (data[data.length - 1] == JSON.parse(localStorage.getItem('user')).unitId) {
                     this.isIdentical = true;
+                    this.$message.info('出库机构不能为本机构!');
+                    return
                 } else {
                     this.isIdentical = false;
                 }
@@ -503,7 +499,7 @@
                     let haveZero = false;
                     this.form.orderItems.forEach(item => {
                         if(item.model && (item.count == 0 || item.count == undefined)) haveZero = true
-                    })    
+                    })
                     if(haveZero) {
                         this.$message.error("装备数量不能为0")
                         return

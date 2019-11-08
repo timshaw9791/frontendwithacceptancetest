@@ -37,8 +37,8 @@
             </div>
 
             <!--list列表-->
-            <r_label :table="table" @clickTable="clickTable"
-                     ref="las"></r_label>
+            <r_label :table="table" ref="lable" @clickTable="clickTable"
+                     ></r_label>
             <!--<el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"-->
                       <!--fit>-->
                 <!--<bos-table-column lable="RFID" field="rfid"></bos-table-column>-->
@@ -194,9 +194,7 @@
         methods: {
             clickTable(table) {
                 let  data = table.row;
-
                 if(table.name==='查看'){
-                    console.log(table)
                     this.goInfo('look',data)
                 }else {
                     this.toDel(data)
@@ -239,7 +237,7 @@
                 });
             },
             refetch(){
-              this.$refs.las.getList();
+              this.$refs.lable.getList();
             },
             toDel(data) {
                 this.delEquipObj = data;
@@ -330,8 +328,8 @@
                 });
             },
             black(data) {
+                // this.refetch()
                 this.storageInfoShow = false;
-                this.refetch();
             },
             cancel(data) {
                 if (this.writeIndex) {

@@ -211,11 +211,10 @@
         },
         created() {
             if(this.$route.query.state!=null){
-                if(this.select=='进行中'){
+                if(this.$route.query.state=='UNDER_REVIEW'||this.$route.query.state=='REJECTED'){
                     this.getApplyList('doing', '');
                 }
             }else {
-                console.log(this.$route.query.state);
                 this.getApplyList('doing', '');
             }
 
