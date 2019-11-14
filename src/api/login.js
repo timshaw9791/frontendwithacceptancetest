@@ -30,6 +30,6 @@ export function logout() {
 export function getdeploy () {
   return request({
     url:'/environment/deviceConfig',
-    method:'get',
+    method:'post',
   })
 }

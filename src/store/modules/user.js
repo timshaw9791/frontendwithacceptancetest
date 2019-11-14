@@ -53,8 +53,12 @@ const user = {
             const username = userInfo.username.trim()
             return new Promise((resolve, reject) => {
                 login(username, userInfo.password).then(response => {
-                    let newVal = JSON.stringify(response.role);
-                    if (newVal.includes('SUPER_ADMINISTRATOR') || newVal.includes('LEADER') || newVal.includes('ADMINISTRATOR')) {
+                    // let newVal = JSON.stringify(response.role);
+                    // if (newVal.includes('SUPER_ADMINISTRATOR') || newVal.includes('LEADER') || newVal.includes('ADMINISTRATOR')) {
+                    //     response.role = ['ADMINISTRATOR'];
+                    // }
+                    let newVal = response.role;
+                    if (newVal == 'SUPER_ADMINISTRATOR'|| newVal=='LEADER' || newVal=='ADMIN') {
                         response.role = ['ADMINISTRATOR'];
                     }
                     localStorage.setItem('user', JSON.stringify(response));
