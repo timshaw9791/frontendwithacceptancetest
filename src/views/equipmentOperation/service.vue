@@ -15,15 +15,15 @@
                         批量入库
                     </el-button>
 
-                    <div class="_buttons">
-                        <BosInput
-                                placeholder="装备名称/序号/编号"
-                                suffix="el-icon-search"
-                                v-model="inquire"
-                                :wrapforlike="true"
-                                style=" width:285px;">
-                        </BosInput>
-                    </div>
+                    <!--<div class="_buttons">-->
+                        <!--<BosInput-->
+                                <!--placeholder="装备名称/序号/编号"-->
+                                <!--suffix="el-icon-search"-->
+                                <!--v-model="inquire"-->
+                                <!--:wrapforlike="true"-->
+                                <!--style=" width:285px;">-->
+                        <!--</BosInput>-->
+                    <!--</div>-->
                 </tabs>
                 <el-table :data="list" v-loading.body="loading" element-loading-text="Loading"
                           fit highlight-current-row
@@ -34,20 +34,22 @@
                             type="selection"
                             width="55">
                     </el-table-column>
-                    <bos-table-column lable="rfid" field="rfid"></bos-table-column>
-                    <bos-table-column lable="装备名称" field="name"></bos-table-column>
+                    <bos-table-column lable="RFID" field="rfid"></bos-table-column>
                     <bos-table-column lable="装备序号" field="serial"></bos-table-column>
-                    <bos-table-column lable="架体编号" field="location.number"></bos-table-column>
-                    <bos-table-column lable="架体AB面"
-                                      :filter="(row)=>surface(row.location?row.location.surface:'暂无')"></bos-table-column>
-
-                    <bos-table-column lable="上次维修时间" field="time" :filter="(row) => this.$filterTime(row.receiveTime)"></bos-table-column>
+                    <bos-table-column lable="装备名称" field="name"></bos-table-column>
+                    <bos-table-column lable="装备型号" field="model"></bos-table-column>
+                    <bos-table-column lable="装备位置"
+                                      :filter="(row)=>surface(row)"></bos-table-column>
+                    <bos-table-column lable="供应商" field="supplier.name"></bos-table-column>
+                    <bos-table-column lable="联系人" field="supplier.person"></bos-table-column>
+                    <bos-table-column lable="联系方式" field="supplier.phone"></bos-table-column>
+                    <bos-table-column lable="维修时长" :filter="(row)=>repairTime(row.repairTime)"></bos-table-column>
+                    <!--<bos-table-column lable="上次维修时间" field="time" :filter="(row) => this.$filterTime(row.receiveTime)"></bos-table-column>-->
                     <el-table-column label="操作" align="center" width="200">
                         <template slot-scope="scope">
                             <el-button type="primary" size="mini" @click="scrapped(scope.row)">报 废</el-button>
                         </template>
                     </el-table-column>
-
                 </el-table>
 
                 <div class="_contentBt" v-if="batch">
@@ -55,7 +57,7 @@
                     <el-button type="primary" @click="submit">提 交</el-button>
                 </div>
 
-                <bos-paginator v-if="this.list!=''" :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
+                <!--<bos-paginator v-if="this.list!=''" :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>-->
             </div>
         </el-card>
 
@@ -101,7 +103,7 @@
     import servicedialog from 'components/base/serviceDialog'
     import api from 'gql/operation.gql'
     import {transformMixin} from 'common/js/transformMixin'
-    import { retirementApplication, getEquipsList, equipsMaintain, equipsReturn } from "api/operation";
+    import { retirementApplication, getEquipsList, equipsMaintain, equipsReturn,findrepairingEquips } from "api/operation";
     import {getRfidinfo} from "api/rfid";
     import { start, killProcess } from 'common/js/rfidReader'
 
@@ -141,6 +143,14 @@
         methods: {
             selected(data) {
                 console.log(data);
+            },
+            repairTime(repairTime){
+                let repairTimes = repairTime/ 1000 / 60 / 60;
+                if(repairTimes<1){
+                    return '不足一小时'
+                }else {
+                    return Math.round(repairTimes)+'小时'
+                }
             },
             service() {
                 this.$refs.dialog.show();
@@ -268,19 +278,19 @@
                 // })
             },
             getEquipServiceList() {
-                let params = {
-                    page: this.paginator.page, 
-                    size: this.paginator.size, 
-                    search: this.inquire, 
-                    state: "MAINTAIN"
-                };
-                this.loading = true
-                getEquipsList(params).then(res => {
-                    let result = JSON.parse(JSON.stringify(res.content))
-                    this.loading = false
+                // let params = {
+                //     page: this.paginator.page,
+                //     size: this.paginator.size,
+                //     search: this.inquire,
+                //     state: "MAINTAIN"
+                // };
+                this.loading = true;
+                findrepairingEquips().then(res => {
+                    let result = JSON.parse(JSON.stringify(res));
+                    this.loading = false;
                     this.list = result
-                    this.paginator.totalPages = res.totalPages
-                    this.paginator.totalElements = res.totalElements
+                    // this.paginator.totalPages = res.totalPages
+                    // this.paginator.totalElements = res.totalElements
                 }).catch(e => {
                     this.loading = false
                 })

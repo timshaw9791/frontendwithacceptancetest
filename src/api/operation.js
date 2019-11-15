@@ -17,11 +17,16 @@ export function retirementApplication(data) {
 // }
 
 // 查询不同状态的装备列表(正在充电、维修、保养)
-export function getEquipsList(params) {
+export function getEquipsList() {
     return request({
-        url: "/equips/by-state",
-        method: "GET",
-        params
+        url: "/equip/findchargeingequips",
+        method: "GET"
+    })
+}
+export function findrepairingEquips() {
+    return request({
+        url: "/equip/findrepairingequips",
+        method: "GET"
     })
 }
 
