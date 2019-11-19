@@ -52,6 +52,13 @@ export function addUser(data) {
     })
 }
 
+export function delectUser(id) {
+    return request({
+        url: `${baseURL}/identity/user/${id}`,
+        method: "delete",
+    })
+}
+
 export function modifyUser(data) {
     return request({
         url: `${baseURL}/identity/user`,

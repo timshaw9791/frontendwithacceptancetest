@@ -4,8 +4,6 @@
             <form-container ref="form" :model="form" class="add-personneo-body-from">
                 <field-input class="field-input" v-model="form.name" label="姓名" width="4.5"
                              :rules="r(true).all(R.require)" prop="name" :disabled="disabled"></field-input>
-                <field-input class="field-input" v-model="form.policeSign" :disabled="disabled"  label="警号(账号)" width="4.5"
-                             :rules="r(true).all(R.require)" prop="policeSign"></field-input>
                 <!--<field-checkbox  v-model="gender" label="性别" width="4.5" :rules="r(true).all(R.require)"-->
                                 <!--prop="position" :list="nanlist" @change="changeCheck" :disabled="disabled"></field-checkbox>-->
                 <el-form :model="ruleFormGs" :rules="rulesG" ref="ruleForm" style="margin-left: 0.3385rem;margin-top: 10px;">
@@ -15,8 +13,12 @@
                         </el-checkbox-group>
                     </el-form-item>
                 </el-form>
-                <field-input class="field-input" v-model="form.password" label="密码" width="4.5"
-                             :rules="r(true).all(R.require)" prop="password" :disabled="disabled" :type="'password'"></field-input>
+                <field-input class="field-input" v-model="form.idNumber" :disabled="disabled" label="身份证号" width="4.5"
+                             :rules="r(true).all(R.cardId)" prop="idNumber"></field-input>
+                <field-input class="field-input" v-model="form.phone"  :disabled="disabled" label="联系方式" width="4.5"
+                             :rules="r(true).all(R.mobile)" prop="phone"></field-input>
+                <field-input class="field-input" v-model="form.unitName" label="机构单位" width="4.5"
+                             prop="organUnit" :disabled="true"></field-input>
                 <el-form :model="roleFormGs" :rules="rulesG" ref="roleForm" style="margin-left: 0.3385rem;margin-top: 10px;">
                     <el-form-item label="角色" prop="type">
                         <el-checkbox-group v-model="roleFormGs.type" style="display: flex;flex-direction: column" :disabled="disabled" @change="changeCheckRole">
@@ -24,25 +26,30 @@
                         </el-checkbox-group>
                     </el-form-item>
                 </el-form>
-                <!--<field-checkbox  v-model="roleItems" label="角色" width="4.5" :disabled="disabled" :rules="r(true).all(R.require)"-->
-                                 <!--prop="position" :list="cRoleList" @change="changeCheckRole"></field-checkbox>-->
-                <field-input class="field-input" v-model="form.idNumber" :disabled="disabled" label="身份证号" width="4.5"
-                             :rules="r(true).all(R.cardId)" prop="idNumber"></field-input>
+                <el-form :model="raleFormGs" ref="raleForm" style="margin-left: 0.3385rem;margin-top: 10px;">
+                    <el-form-item label="权限" prop="type">
+                        <el-checkbox-group  v-model="raleFormGs.type" style="display: flex;flex-direction: column" :disabled="disabled" @change="changeCheckPermission">
+                            <el-checkbox  v-for="item in cRaleList"  :label="item.val"  name="type"  style="margin-left: 0.2604rem;">{{item.key}}</el-checkbox>
+                        </el-checkbox-group>
+                    </el-form-item>
+                </el-form>
                 <field-input class="field-input" v-model="form.position" :disabled="disabled"  label="职位" width="4.5"
                              :rules="r(true).all(R.require)" prop="position"></field-input>
-                <field-input class="field-input" v-model="form.phone"  :disabled="disabled" label="联系方式" width="4.5"
-                             :rules="r(true).all(R.mobile)" prop="phone"></field-input>
-                <field-input class="field-input" v-model="form.unitName" label="机构单位" width="4.5"
-                             prop="organUnit" :disabled="true"></field-input>
+                <field-input class="field-input" v-model="form.policeSign" :disabled="disabled"  label="警号(账号)" width="4.5"
+                             :rules="r(true).all(R.require)" prop="policeSign"></field-input>
+                <field-input class="field-input" v-model="form.password" label="密码" width="4.5"
+                             :rules="r(true).all(R.require)" prop="password" :disabled="disabled" :type="'password'"></field-input>
+                <!--<field-checkbox  v-model="roleItems" label="角色" width="4.5" :disabled="disabled" :rules="r(true).all(R.require)"-->
+                                 <!--prop="position" :list="cRoleList" @change="changeCheckRole"></field-checkbox>-->
                 <field-input class="field-input" v-model="form.fingerprintInformation" :disabled="disabled" :type="'textarea'" label="指纹信息" width="10"
                              prop="fingerprintInformation"></field-input>
             </form-container>
             <div class="add-personneo-upload-img">
-                <div class="img-box" v-if="viewStatus.flag"></div>
-                <img :src="img" class="img" v-if="!viewStatus.flag">
-                <div :class="disabled?'span disabled':'span'">
+                <div class="img-box" v-if="viewStatus.flag" @click="uploadImg"></div>
+                <img :src="img" class="img" v-if="!viewStatus.flag" @click="uploadImg">
+                <!-- <div :class="disabled?'span disabled':'span'">
                     <span v-text="'上传'" @click="uploadImg"></span>
-                </div>
+                </div> -->
                 <form method="post" class="img-form"  enctype="multipart/form-data">
                     <input type="file" name="file" @change="PreviewImage" class="input-file" id="personnelImg"/>
                 </form>
@@ -76,7 +83,12 @@
                 gender:[],
                 ruleForm:{},
                 roleItems:[],
-                cRoleList:[],
+                cRoleList:[
+                    {val: 'LEADER',key: '领导',},
+                    {val: 'POLICE',key: '警员',},
+                    {val: 'ADMIN',key: '管理员',}
+                ],
+                cRaleList:[{val:'进入库房',key:'进入库房'}],
                 viewStatus:{
                     flag:true
                 },
@@ -84,6 +96,8 @@
                 ruleFormGs:{type: [
                     ]},
                 roleFormGs:{type: [
+                    ]},
+                raleFormGs:{type: [
                     ]},
                 rulesG: {
                     type: [
@@ -123,15 +137,17 @@
             }else {
                 this.initForm()
             }
+            console.log("this.form")
+            console.log(this.form)
             console.log(this.roleList);
-            this.roleList.forEach(item=>{
-               if(item.value!=''&&item.label!='超级管理员'){
-                   this.cRoleList.push({
-                       val:item.value,
-                       key:item.label
-                   })
-               }
-            });
+            // this.roleList.forEach(item=>{
+            //    if(item.value!=''&&item.label!='超级管理员'){
+            //        this.cRoleList.push({
+            //            val:item.value,
+            //            key:item.label
+            //        })
+            //    }
+            // });
             // this.$set(this.form,'organUnit',{id:this.organUnit.value});
             let _form = JSON.stringify(this.form)
             this.form2 = JSON.parse(_form)
@@ -150,23 +166,32 @@
         },
         methods: {
             initForm(){
-                this.ruleFormGs.type=[this.personenlData.gender];
-                console.log(this.ruleFormGs.type);
+                this.ruleFormGs.type=[this.personenlData.row.gender];
                 this.$set(this.form,'gender',this.ruleFormGs.type[0]);
-                this.$set(this.form,'name',this.personenlData.name);
-                this.$set(this.form,'password',this.personenlData.password);
-                this.$set(this.form,'position',this.personenlData.position);
-                this.$set(this.form,'idNumber',this.personenlData.idNumber);
-                this.$set(this.form,'policeSign',this.personenlData.policeSign);
-                this.$set(this.form,'phone',this.personenlData.phone);
-                this.$set(this.form,'fingerprintInformation',this.personenlData.fingerprintInformation);
-                this.$set(this.form,'role',{id:this.personenlData.role.id});
-                this.$set(this.form,'unitName',this.personenlData.unitName);
-                this.personnelImg=this.personenlData.faceInformation;
+                this.$set(this.form,'name',this.personenlData.row.name);
+                this.$set(this.form,'password',this.personenlData.row.password);
+                this.$set(this.form,'position',this.personenlData.row.position);
+                this.$set(this.form,'idNumber',this.personenlData.row.idNumber);
+                this.$set(this.form,'policeSign',this.personenlData.row.policeSign);
+                this.$set(this.form,'enterHouse',this.personenlData.row.enterHouse);
+                this.$set(this.form,'phone',this.personenlData.row.phone);
+                this.$set(this.form,'fingerprintInformation',this.personenlData.row.fingerprintInformation);
+                this.$set(this.form,'role',{id:this.personenlData.row.role});
+                this.$set(this.form,'unitName',this.personenlData.row.unitName);
+                this.personnelImg=this.personenlData.row.faceInformation;
                 this.$set(this.form,'faceInformation',this.personnelImg);
-                this.roleFormGs.type.push(this.personenlData.role.id);
+                if(this.personenlData.row.role=="警员"){
+                    this.roleFormGs.type.push("POLICE");
+                }else if(this.personenlData.row.role=="管理员"){
+                    this.roleFormGs.type.push("ADMIN");
+                }else if(this.personenlData.row.role=="领导"){
+                    this.roleFormGs.type.push("LEADER");
+                }
+                this.raleFormGs.type = this.form.enterHouse
                 this.viewStatus.flag=false;
                 this.judgeForm = JSON.parse(JSON.stringify(this.form))
+                console.log("this.roleFormGs.type")
+                console.log(this.roleFormGs.type)
             },
             black(){
                 if(JSON.stringify(this.form) == JSON.stringify(this.judgeForm)) {
@@ -192,6 +217,8 @@
             },
             changeCheckRole(data){
                 // this.$set(this.form,'roleItems', []);
+                console.log("data")
+                console.log(data[data.length-1])
                 if(data.length==0){
                     this.roleFormGs.type=[];
                     this.form.role={id:''};
@@ -199,12 +226,21 @@
                     let cRole=[];
                     cRole.push(data[data.length-1]);
                     this.roleFormGs.type=cRole;
-                    this.form.role={id:cRole[0]};
+                    this.form.role=cRole[0];
                 }
-
                 // data.forEach(item=>{
                 //
                 // });
+            },
+            changeCheckPermission(data){
+                if(data==''){
+                    this.raleFormGs.type=false;
+                }else{
+                    this.raleFormGs.type=true;
+                }
+                console.log("this.raleFormGs.type")
+                console.log(this.raleFormGs.type)
+                this.form.enterHouse = this.raleFormGs.type
             },
             PreviewImage(event){
                 let formData = new FormData();
@@ -236,7 +272,7 @@
                 if(this.disabled==false){
                     this.form.username=this.form.policeSign;
                     if(this.addType=='add'){}else {
-                        this.form.id=this.personenlData.id
+                        this.form.id=this.personenlData.row.id
                     }
                     let  flag=true;
                     this.form.unitId=JSON.parse(localStorage.getItem('user')).unitId;
@@ -246,11 +282,10 @@
                             flag=false
                         }
                     });
-                    this.$refs['roleForm'].validate((valid) => {
-                        if(valid){}else {
-                            flag=false
-                        }
-                    });
+                    this.form.role = this.roleFormGs.type[0]
+                    this.form.enterHouse = this.raleFormGs.type
+                    console.log("this.form")
+                    console.log(this.form)
                     this.$refs.form.validate.then((valid) => {
                         if(valid){
                            if(flag){
@@ -314,18 +349,6 @@
         height:192px;
         background:rgba(112,112,112,1);
         opacity:0.5;
-    }
-    .add-personneo-upload-img .span{
-        margin-top: 0.1719rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width:70px;
-        height:30px;
-        background:rgba(255,255,255,1);
-        box-shadow:0px 3px 6px rgba(0,0,0,0.16);
-        opacity:1;
-        border-radius:6px;
     }
     .add-personneo-upload-img .disabled{
         background:#C0C4CC;
