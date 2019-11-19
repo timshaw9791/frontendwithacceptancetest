@@ -9,7 +9,7 @@
                 <el-form :model="ruleFormGs" :rules="rulesG" ref="ruleForm" style="margin-left: 0.3385rem;margin-top: 10px;">
                     <el-form-item label="性别" prop="type">
                         <el-checkbox-group v-model="ruleFormGs.type" style="display: flex;flex-direction: column" :disabled="disabled" @change="changeCheck">
-                            <el-checkbox  v-for="item in nanlist" :label="item.val" name="type"  style="margin-left: 0.2604rem;">{{item.val}}</el-checkbox>
+                            <el-checkbox  v-for="item in nanlist" :label="item.val" name="type"  style="margin-left: 0.2604rem;" data-test="check">{{item.val}}</el-checkbox>
                         </el-checkbox-group>
                     </el-form-item>
                 </el-form>
@@ -22,14 +22,14 @@
                 <el-form :model="roleFormGs" :rules="rulesG" ref="roleForm" style="margin-left: 0.3385rem;margin-top: 10px;">
                     <el-form-item label="角色" prop="type">
                         <el-checkbox-group v-model="roleFormGs.type" style="display: flex;flex-direction: column" :disabled="disabled" @change="changeCheckRole">
-                            <el-checkbox  v-for="item in cRoleList"  :label="item.val"  name="type"  style="margin-left: 0.2604rem;">{{item.key}}</el-checkbox>
+                            <el-checkbox  v-for="item in cRoleList"  :label="item.val"  name="type"  style="margin-left: 0.2604rem;" data-test="check">{{item.key}}</el-checkbox>
                         </el-checkbox-group>
                     </el-form-item>
                 </el-form>
                 <el-form :model="raleFormGs" ref="raleForm" style="margin-left: 0.3385rem;margin-top: 10px;">
                     <el-form-item label="权限" prop="type">
                         <el-checkbox-group  v-model="raleFormGs.type" style="display: flex;flex-direction: column" :disabled="disabled" @change="changeCheckPermission">
-                            <el-checkbox  v-for="item in cRaleList"  :label="item.val"  name="type"  style="margin-left: 0.2604rem;">{{item.key}}</el-checkbox>
+                            <el-checkbox  v-for="item in cRaleList"  :label="item.val"  name="type"  style="margin-left: 0.2604rem;" data-test="check">{{item.key}}</el-checkbox>
                         </el-checkbox-group>
                     </el-form-item>
                 </el-form>
@@ -51,13 +51,13 @@
                     <span v-text="'上传'" @click="uploadImg"></span>
                 </div> -->
                 <form method="post" class="img-form"  enctype="multipart/form-data">
-                    <input type="file" name="file" @change="PreviewImage" class="input-file" id="personnelImg"/>
+                    <input type="file" name="file" @change="PreviewImage" class="input-file" id="personnelImg" data-test="upImg"/>
                 </form>
             </div>
         </div>
         <div class="add-personneo-bottom">
             <!-- <el-button @click="black">返回</el-button> -->
-            <el-button type="primary" @click="confirm" :disabled="isClick" v-show="!disabled">确认</el-button>
+            <el-button data-test="button" type="primary" @click="confirm" :disabled="isClick" v-show="!disabled">确认</el-button>
         </div>
 
         <field-dialog title="提示" ref="dialog" @confirm="dialogConfirm">

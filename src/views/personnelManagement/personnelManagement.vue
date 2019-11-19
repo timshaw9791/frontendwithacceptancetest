@@ -6,13 +6,13 @@
                 <div class="add-personnel">
                     <select-personel id="personnelManagementSelect" :select="select.selectList" @selectRole="selectRole"></select-personel>
                     <div class="checkbox">
-                        <el-checkbox v-model="showEnter" label="进入库房权限"  style="margin-left: 0.2604rem;" @change="showEnterpeople">进入库房权限</el-checkbox>
+                        <el-checkbox v-model="showEnter" label="进入库房权限"  style="margin-left: 0.2604rem;" @change="showEnterpeople" data-test="check">进入库房权限</el-checkbox>
                     </div>
                     <div class="add-personnel-item"><svg-icon icon-class='同步' style="margin-left: 38px" class="icon-search"></svg-icon>
-                        <span style="color: #2F2F76" @click="synchronization">信息头像同步</span></div>
+                        <span style="color: #2F2F76" @click="synchronization" data-test="button">信息头像同步</span></div>
                     <div class="add-personnel-item">
                         <svg-icon icon-class='加' style="margin-left: 38px" class="icon-search"></svg-icon>
-                        <span style="color: #2F2F76" @click="addPersonnel">新增人员</span>
+                        <span style="color: #2F2F76" @click="addPersonnel" data-test="button" >新增人员</span>
                     </div>
                     <!-- <div class="add-personnel-item"><svg-icon icon-class='同步' style="margin-left: 38px" class="icon-search"></svg-icon>
                         <span style="color: #2F2F76" @click="syncuser">用户同步</span></div> -->
@@ -24,7 +24,7 @@
             </div>
             <div class="modify" v-if="!viewStatus.flag">
                 <span>基础信息</span>
-                <div class="modify-box" v-if="type=='add'?false:true" @click="toModify">
+                <div class="modify-box" v-if="type=='add'?false:true" @click="toModify" data-test="button">
                     <svg-icon icon-class="编辑" class="icon-modify"></svg-icon>
                     <span>{{disabled?'编辑':'取消编辑'}}</span>
                 </div>
