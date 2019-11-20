@@ -107,6 +107,12 @@ export const asyncRouterMap = [
                 meta: {title: '标准库存'},
             },
             {
+                path: 'consumables',
+                name: 'warehouse/consumable',
+                component: _import('warehouse/consumable'),
+                meta: {title: '耗材管理'},
+            },
+            {
                 path: 'plan',
                 name: 'warehouse/plan',
                 component: _import('warehouse/plan'),
