@@ -99,42 +99,55 @@
             },
             submit() {
                 if(this.title == "新增耗材"){
-                    this.from.name = this.name
-                    this.from.describes = this.describes
-                    this.from.count = this.count
-                    let param = JSON.parse(JSON.stringify(this.from))
-                    addConsumable(param).then((res)=>{
-                        this.$message.success('操作成功')
-                        this.$refs.dialog.hide();
-                        this.getConsumableList()
-                    }).catch(err=>{
-                        this.$message.error(err.response.data.message)
-                    });
+                    if(this.name == '' || this.describes==''||this.count==''){
+                        this.$message.error("请填写完整！")
+                    }else{
+                        this.from.name = this.name
+                        this.from.describes = this.describes
+                        this.from.count = this.count
+                        let param = JSON.parse(JSON.stringify(this.from))
+                        addConsumable(param).then((res)=>{
+                            this.$message.success('操作成功')
+                            this.$refs.dialog.hide();
+                            this.getConsumableList()
+                        }).catch(err=>{
+                            this.$message.error(err.response.data.message)
+                        });
+                    }
+                    
                 }else if(this.title == "补充耗材"){
-                    this.from.name = this.name
-                    this.from.describes = this.describes
-                    this.from.count = this.count
-                    let param = JSON.parse(JSON.stringify(this.from))
-                    updateConsumable(param).then((res)=>{
-                        this.$message.success('操作成功')
-                        this.$refs.dialog.hide();
-                        this.getConsumableList()
-                    }).catch(err=>{
-                        this.$message.error(err.response.data.message)
-                    });
+                    if(this.name == '' || this.count==''){
+                        this.$message.error("请填写完整！")
+                    }else{
+                        this.from.name = this.name
+                        this.from.describes = this.describes
+                        this.from.count = this.count
+                        let param = JSON.parse(JSON.stringify(this.from))
+                        updateConsumable(param).then((res)=>{
+                            this.$message.success('操作成功')
+                            this.$refs.dialog.hide();
+                            this.getConsumableList()
+                        }).catch(err=>{
+                            this.$message.error(err.response.data.message)
+                        });
+                    }
                 }else if(this.title == "领取耗材"){
-                    this.from.name = this.name
-                    this.from.describes = this.describes
-                    this.from.count = this.count
-                    let data = JSON.parse(JSON.stringify(this.from))
-                    let params = {remark: this.remark}
-                    receiveConsumable(data,params).then((res)=>{
-                        this.$message.success('操作成功')
-                        this.$refs.dialog.hide();
-                        this.getConsumableList()
-                    }).catch(err=>{
-                        this.$message.error(err.response.data.message)
-                    });
+                    if(this.name == '' || this.count==''){
+                        this.$message.error("请填写完整！")
+                    }else{
+                        this.from.name = this.name
+                        this.from.describes = this.describes
+                        this.from.count = this.count
+                        let data = JSON.parse(JSON.stringify(this.from))
+                        let params = {remark: this.remark}
+                        receiveConsumable(data,params).then((res)=>{
+                            this.$message.success('操作成功')
+                            this.$refs.dialog.hide();
+                            this.getConsumableList()
+                        }).catch(err=>{
+                            this.$message.error(err.response.data.message)
+                        });
+                    }
                 }
             },
             dialogShow(data) {
