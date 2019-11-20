@@ -14,8 +14,8 @@
                     您确定要放弃本次操作吗?
                 </div>
                 <div slot="footer" class="dialog-footer">
-                    <el-button @click="innerVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="cancel">确 定</el-button>
+                    <el-button @click="innerVisible = false" data-test="button">取 消</el-button>
+                    <el-button type="primary" @click="cancel" data-test="button">确 定</el-button>
                 </div>
             </el-dialog>
 

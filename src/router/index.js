@@ -107,6 +107,12 @@ export const asyncRouterMap = [
                 meta: {title: '标准库存'},
             },
             {
+                path: 'consumables',
+                name: 'warehouse/consumable',
+                component: _import('warehouse/consumable'),
+                meta: {title: '耗材管理'},
+            },
+            {
                 path: 'plan',
                 name: 'warehouse/plan',
                 component: _import('warehouse/plan'),
@@ -210,12 +216,20 @@ export const asyncRouterMap = [
                 name: 'opening',
                 component: _import('record/opening'),
                 meta: {title: '开门记录', roles: ['ADMINISTRATOR']},
-            }, {
-                path: 'entryAndExit',
-                name: 'entryAndExit',
-                component: _import('record/entryAndExit'),
-                meta: {title: '人员出入记录', roles: ['POLICE_OFFICER', 'ADMINISTRATOR']},
-            }, {
+            }, 
+            {
+                path: 'consumablerecord',
+                name: 'consumablerecord',
+                component: _import('record/consumablerecord'),
+                meta: {title: '耗材记录', roles: ['ADMINISTRATOR']},
+            }, 
+            // {
+            //     path: 'entryAndExit',
+            //     name: 'entryAndExit',
+            //     component: _import('record/entryAndExit'),
+            //     meta: {title: '人员出入记录', roles: ['POLICE_OFFICER', 'ADMINISTRATOR']},
+            // }, 
+            {
                 path: 'maintenanceRecord',
                 name: 'maintenanceRecord',
                 component: _import('record/maintenanceRecord'),
