@@ -64,16 +64,40 @@ export const asyncRouterMap = [
     {
         path: '/equipment',
         component: Layout,
-        redirect: '/equipment/warehouse',
         name: 'equipment',
-        meta: {title: '装备管理', icon: '账号', roles: ['ADMINISTRATOR']},
+        meta: {title: '装备出入库', icon: '装备信息', roles: ['ADMINISTRATOR']},
         children: [
             {
                 path: 'storage',
                 name: 'equipment/storage',
                 component: _import('equipment/storage'),
-                meta: {title: '装备入库', icon: '装备信息'},
-            }
+                meta: {title: '装备入库'},
+            },
+            {
+                path: 'outstorage',
+                name: 'equipment/outstorage',
+                component: _import('equipment/outStorageInfo'),
+                meta: {title: '装备出库'},
+            },
+            {
+                path: 'paramstorage',
+                name: 'equipment/parameter',
+                component: _import('equipment/paramStorageInfo'),
+                meta: {title: '装备参数'},
+            },
+            {
+                path: 'searchstorage',
+                name: 'equipment/search',
+                component: _import('equipment/searchStorageInfo'),
+                meta: {title: '装备搜索'},
+            },
+            {
+                path: 'supplier',
+                name: 'equipment/supplier',
+                component: _import('equipment/supplier'),
+                meta: {title: '供应商管理'},
+            },
+            
         ]
     },
     {
@@ -93,12 +117,6 @@ export const asyncRouterMap = [
                 name: 'warehouse/inventory',
                 component: _import('warehouse/inventory'),
                 meta: {title: '盘点'},
-            },
-            {
-                path: 'supplier',
-                name: 'warehouse/supplier',
-                component: _import('warehouse/supplier'),
-                meta: {title: '供应商'},
             },
             {
                 path: 'safety',

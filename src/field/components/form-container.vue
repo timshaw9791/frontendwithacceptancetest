@@ -16,7 +16,6 @@
             validate() {
                 return new Promise((resolve, reject) => {
                     this.$refs.form.validate((valid) => {
-                        console.log(valid);
                         if (valid) {
                             resolve(true);
                         } else {
@@ -54,8 +53,6 @@
                 });
             },
             restValidate(func, variables, sCallback) {
-                console.log('-------------------');
-                console.log(variables);
                 this.validate.then(() => {
                     let data = JSON.parse(JSON.stringify(variables));
                     func(data).then(res => {
