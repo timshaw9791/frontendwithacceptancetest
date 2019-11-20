@@ -12,7 +12,7 @@
                     </el-button>
                     <div class="_buttons">
                         <BosInput
-                                placeholder="供应商/联系人/联系方式"
+                                placeholder="供应商"
                                 suffix="el-icon-search"
                                 v-model="inquire"
                                 :wrapforlike="true"
@@ -20,8 +20,6 @@
                         </BosInput>
                     </div>
                 </div>
-
-
                 <el-table :data="list" v-loading.body="false" element-loading-text="Loading"
                           fit height="3.64rem">
                     <bos-table-column lable="供应商" field="name"></bos-table-column>
@@ -30,10 +28,8 @@
                     <el-table-column label="操作" align="center" width="200px">
                         <template slot-scope="scope">
                             <el-button type="primary" size="mini" @click="addChanger('修改供应商',scope.row)">编辑</el-button>
-                            <el-button type="danger" size="mini" @click="delList(scope.row)">删除</el-button>
                         </template>
                     </el-table-column>
-
                 </el-table>
                 <bos-paginator v-if="this.list!=''" :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
             </div>
@@ -54,21 +50,12 @@
                 ></field-input>
             </form-container>
         </field-dialog>
-
-        <servicedialog title="提示" ref="dialog1" @confirm="submit1">
-            <div class="_dialogDiv">
-                您确定要删除此条供应商吗!?
-            </div>
-        </servicedialog>
-
     </div>
 </template>
 
 <script>
     import {formRulesMixin} from 'field/common/mixinTableRest';
-    import { getSuppliers, modifySupplier, deleteSupplier } from "api/warehouse"
-    import api from 'gql/warehouse.gql'
-    import servicedialog from 'components/base/serviceDialog'
+    import { supplierFindByName, saveSupplier, updateSupplier } from "api/equip"
 
     export default {
         data() {
@@ -77,7 +64,6 @@
                 inlineForm: {},
                 list: [],
                 inquire: '',
-                delId: '',
                 paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
                 loading: true
             }
@@ -90,9 +76,9 @@
         },
         methods: {
             getSupplierList() {
-                let params = {page: this.paginator.page, size: this.paginator.size, search: this.inquire};
+                let params = {page: this.paginator.page, size: this.paginator.size, name: this.inquire};
                 this.loading = true
-                getSuppliers(params).then(res => {
+                supplierFindByName(params).then(res => {
                     let result = JSON.parse(JSON.stringify(res))
                     this.loading = false
                     this.list = result.content
@@ -108,20 +94,12 @@
             },
             dialogConfirm() {
                 let obj = JSON.parse(JSON.stringify(this.inlineForm))
-                this.$refs.inlineForm.restValidate(modifySupplier, obj, res => {
+                this.$refs.inlineForm.restValidate(this.title.includes('修改')?updateSupplier:saveSupplier, obj, res => {
                     this.$message.success(`${this.title}成功`)
                     this.$refs.dialog.hide()
                     this.paginator.page = 1
                     this.getSupplierList()
                 })
-
-                // this.$refs.inlineForm.gqlValidate(api.suppliers_saveSupplier, {
-                //     supplier: this.inlineForm
-                // }, (res) => {
-                //     console.log(res);
-                //     this.callback(`${this.title}成功!`);
-                //     this.$refs.dialog.hide();
-                // })
             },
             addChanger(title, row) {
                 this.title = title;
@@ -130,32 +108,8 @@
                 } else {
                     this.inlineForm = {};
                 }
-
                 this.$refs.dialog.show();
-            },
-            delList(row) {
-                this.$refs.dialog1.show();
-                this.delId = row.id;
-            },
-            submit1() {
-                deleteSupplier(this.delId).then(res => {
-                    this.$message.success("删除成功");
-                    this.$refs.dialog1.hide();
-                    this.paginator.page = 1;
-                    this.getSupplierList()
-                }).catch(err => {
-                    this.$message.error(err.response.data.message)
-                    this.$refs.dialog1.hide()
-                    
-                })
-                // this.gqlMutate(api.suppliers_deleteSupplier, {supplierId: this.delId}, (res) => {
-                //     this.$refs.dialog1.hide();
-                //     this.callback(`删除成功!`);
-                // })
             }
-        },
-        components: {
-            servicedialog
         },
         created() {
             this.getSupplierList()

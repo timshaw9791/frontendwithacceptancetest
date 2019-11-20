@@ -12,21 +12,13 @@
             <!--操作拦-->
             <div>
                 <tabs>
-                    <el-button type="text" class="_textBt" @click="goInfo('add')">
-                        <svg-icon icon-class="加" class="textBt"/>
-                        新增装备信息
-                    </el-button>
                     <el-button type="text" class="_textBt" @click="goInfo('storage')">
                         <svg-icon icon-class="加" class="textBt"/>
-                        装备入库
-                    </el-button>
-                    <el-button type="text" class="_textBt" @click="goInfo('rfid')" v-if="authentication">
-                        <svg-icon icon-class="加" class="textBt"/>
-                        修改RFID
+                        入库装备
                     </el-button>
                     <div class="_buttons">
                         <BosInput
-                                placeholder="RFID/大类/小类/名称/型号"
+                                placeholder="单号"
                                 suffix="el-icon-search"
                                 v-model="table.search"
                                 :wrapforlike="true"
@@ -121,7 +113,7 @@
 
 <script>
     import tabs from 'components/base/tabs/index'
-    import storageInfo from 'views/equipment/storageInfo'
+    import storageInfo from 'views/equipment/storageInfos'
     import api from 'gql/eqList.gql'
     import serviceDialog from 'components/base/serviceDialog/index'
     // import {formRulesMixin} from "../../field/common/mixinComponent";
@@ -149,12 +141,10 @@
                 list: [],
                 table: {
                     labelList: [
-                        {lable: 'RFID', field: 'rfid'},
-                        {lable: '装备大类', field: 'equipArg.category.genre.name'},
-                        {lable: '装备小类', field: 'equipArg.category.name', },
-                        {lable: '装备名称', field: 'equipArg.name'},
-                        {lable: '装备型号', field: 'equipArg.model'},
-                        {lable: '供应商', field: 'equipArg.supplier.name'},
+                        {lable: '入库单号', field: 'rfid'},
+                        {lable: '装备数量', field: 'equipArg.category.genre.name'},
+                        {lable: '操作人员', field: 'equipArg.category.name', },
+                        {lable: '入库时间', field: 'equipArg.name'},
                     ],
                     url:'/equips',
                     tableAction:{
@@ -259,7 +249,7 @@
                         break;
                     case 'storage':
                         this.storageInfoShow = true;
-                        this.title = '装备入库';
+                        this.title = '入库装备';
                         this.equipId = '';
                         break;
                     case 'look':
