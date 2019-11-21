@@ -82,27 +82,35 @@
                              prop="name"></field-input>
 
                 <el-table :data="form.planEquips" fit class="dialogList" height="360">
-                    <el-table-column label="装备型号" align="center">
+                     <el-table-column label="序号" align="center">
                         <template scope="scope">
-                            <field-input-query size="small" v-model="scope.row.equipModel"
-                                               :inputList="restaurants"
-                                               @select="qaq(scope,$event)"></field-input-query>
+                            <span>001</span>
                         </template>
                     </el-table-column>
 
                     <el-table-column label="装备名称" align="center">
                         <template scope="scope">
-                            {{scope.row.equipName}}
+                            <el-select v-model="value" value-key="id" > 
+                                <el-option
+                                v-for="item in equipList"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.model">
+                                </el-option>
+                            </el-select>
                         </template>
                     </el-table-column>
-                    <el-table-column label="架体编号" align="center">
+
+                     <el-table-column label="装备型号" align="center">
                         <template scope="scope">
-                            {{scope.row.location? scope.row.location.number:'暂无'}}
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="架体AB面" align="center">
-                        <template scope="scope">
-                            {{surface(scope.row.location?scope.row.location.surface:'暂无')}}
+                          <el-select v-model="modelValue" value-key="id">
+                                <el-option
+                                v-for="item in value"
+                                :key="item.id"
+                                :label="item.model"
+                                :value="item">
+                                </el-option>
+                            </el-select>
                         </template>
                     </el-table-column>
 
@@ -146,6 +154,9 @@
                 restaurants: [],
                 title: '',
                 delId: '',
+                equipList:[],
+                value:'',
+                modelValue:''
             }
         },
         mixins: [formRulesMixin, transformMixin],
@@ -208,7 +219,10 @@
             },
             getEquipInfo() {
                 getEquipList().then(res => {
-                    let newData = JSON.parse(JSON.stringify(res.content));
+                    this.equipList=res;
+                    console.log("this.equipList");
+                    console.log(this.equipList);
+                    let newData =res.content;
                     let eqName = newData.map(res => {
                         return res.equipArg.model
                     });

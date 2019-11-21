@@ -37,7 +37,7 @@ export function searchPlan(data) {
 //equipList
 export function getEquipList() {
     return request({
-        url: "/equips",
-        method: "GET"
+        url: "/equip/equipArgsByName",
+        method: "GET",
     })
 }
