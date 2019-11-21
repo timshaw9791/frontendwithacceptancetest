@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-card shadow="never" v-if="!storageInfoShow">
+        <el-card shadow="never" v-if="!storageInfoShow&&storageListShow">
 
             <!--element card 的头部-->
 
@@ -12,7 +12,7 @@
             <!--操作拦-->
             <div>
                 <tabs>
-                    <el-button type="text" class="_textBt" @click="goInfo('storage')">
+                    <el-button type="text" class="_textBt" @click="goInfo">
                         <svg-icon icon-class="加" class="textBt"/>
                         入库装备
                     </el-button>
@@ -53,6 +53,7 @@
         <!--内部业务组件-->
 
         <storageInfo :equipId="equipId" v-if="storageInfoShow" :title="title" @black="black"></storageInfo>
+        <in-storage-list v-if="!storageListShow" title="入库单详情" @black="storageListShow=true"></in-storage-list>
 
 
         <!--RFID遮罩层 -->
@@ -114,6 +115,7 @@
 <script>
     import tabs from 'components/base/tabs/index'
     import storageInfo from 'views/equipment/storageInfos'
+    import inStorageList from 'components/equipment/inStorageList'
     import api from 'gql/eqList.gql'
     import serviceDialog from 'components/base/serviceDialog/index'
     // import {formRulesMixin} from "../../field/common/mixinComponent";
@@ -138,6 +140,7 @@
                 equipId: '',
                 title: '',
                 storageInfoShow: false,
+                storageListShow: true,
                 list: [],
                 table: {
                     labelList: [
@@ -178,6 +181,7 @@
         components: {
             tabs,
             storageInfo,
+            inStorageList,
             serviceDialog,
             r_label
         },
@@ -185,9 +189,9 @@
             clickTable(table) {
                 let  data = table.row;
                 if(table.name==='查看'){
-                    this.goInfo('look',data)
+                    
                 }else {
-                    this.toDel(data)
+                   // this.toDel(data)
                 }
                 // if(table.name=='详情'){
                 //     let dataCopy=JSON.parse(JSON.stringify(data));
@@ -240,27 +244,11 @@
                 }
                 this.$refs.dialogModify.show();
             },
-            goInfo(data, row) {
-                switch (data) {
-                    case 'add':
-                        this.storageInfoShow = true;
-                        this.title = '新增装备信息';
-                        this.equipId = '';
-                        break;
-                    case 'storage':
-                        this.storageInfoShow = true;
-                        this.title = '入库装备';
-                        this.equipId = '';
-                        break;
-                    case 'look':
-                        this.storageInfoShow = true;
-                        this.title = '装备查看';
-                        this.equipId = row.id;
-                        break;
-                    case 'rfid':
-                        this.$refs.dialogPattern.show();
-                        break;
-                }
+            goInfo() {
+                this.storageInfoShow = true;
+                // this.storageListShow = false
+                 this.title = '入库装备';
+                // this.equipId = '';
             },
             serialRfid() {
                 getRfid().then(res => {

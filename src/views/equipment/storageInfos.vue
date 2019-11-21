@@ -48,11 +48,11 @@
                             <field-input v-model="form.upkeepCycle" label="装备型号" width="3"
                                          :rules="r(true).all(R.require)" prop="upkeepCycle"
                                          v-if="['新增装备信息', '装备参数详情', '装备信息详情'].includes(title)"
-                                         :disabled="edit"
+                                         :disabled="edit" :class="{'occupy-position': !title.includes('装备信息详情')}"
                             ></field-input>
                             <field-cascader label="装备型号" :options="options" v-model="form.nameId" prop="nameId"
                                             width="3" :rules="r(true).all(R.require)"
-                                            @change="getEquipInfo(form.nameId[2])" v-else>
+                                            @change="getEquipInfo(form.nameId[2])" :class="{'occupy-position': !title.includes('装备信息详情')}" v-else>
                             </field-cascader>
 
                             <field-input v-model="form.serial" label="装备序号" width="3" :disabled="true"
@@ -968,6 +968,8 @@
         }
 
     }
-
+    .occupy-position {
+        margin-right: 1.0417rem
+    }
 
 </style>
