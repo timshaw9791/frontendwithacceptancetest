@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-card shadow="never" v-if="!storageInfoShow">
+        <el-card shadow="never" v-if="storageListShow">
 
             <!--element card 的头部-->
 
@@ -32,12 +32,15 @@
             <r_label :table="table" ref="lable" @clickTable="clickTable"
                      ></r_label>
         </el-card>
+
+        <in-storage-list v-if="!storageListShow" :title="title" @black="storageListShow=true"></in-storage-list>
     </div>
 </template>
 
 <script>
     import tabs from 'components/base/tabs/index'
     import serviceDialog from 'components/base/serviceDialog/index'
+    import inStorageList from 'components/equipment/inStorageList'
     import r_label from 'common/vue/ajaxLabel'
     // nodejs调用子进程的方法
 
@@ -54,8 +57,6 @@
                 commonHouseId: '',
                 equipId: '',
                 title: '',
-                storageInfoShow: false,
-                list: [],
                 table: {
                     labelList: [
                         {lable: '出库单号', field: 'rfid'},
@@ -77,6 +78,7 @@
                 },
                 delEquipObj: {},
                 dialogVisible: false,
+                storageListShow: true,
                 writeAll: [],
                 writeIndex: '',
                 pid: '',
@@ -87,31 +89,22 @@
         },
         components: {
             tabs,
-            r_label
+            r_label,
+            inStorageList
         },
         methods: {
             clickTable(table) {
-              
+               this.goInfo('look', table.row)
             },
             goInfo(data, row) {
                 switch (data) {
-                    case 'add':
-                        this.storageInfoShow = true;
-                        this.title = '新增装备信息';
-                        this.equipId = '';
-                        break;
-                    case 'storage':
-                        this.storageInfoShow = true;
-                        this.title = '入库装备';
-                        this.equipId = '';
+                    case 'out':
+                        this.storageListShow = false;
+                        this.title = "出库装备";
                         break;
                     case 'look':
-                        this.storageInfoShow = true;
-                        this.title = '装备查看';
-                        this.equipId = row.id;
-                        break;
-                    case 'rfid':
-                        this.$refs.dialogPattern.show();
+                        this.storageListShow = false;
+                        this.title = '出库单详情';
                         break;
                 }
             },
