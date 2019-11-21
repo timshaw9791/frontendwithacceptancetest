@@ -1,0 +1,144 @@
+<template>
+    <div class="safety_table_box">
+        <div v-if="table.tableType==='unallocated'" :class="distribution?'unallocated':''" >
+            <el-table :data="table.tableData" height="3.78125rem" ref="unallocated"
+                      @selection-change="handleSelectionChange">
+                <el-table-column type="selection" v-if="distribution"></el-table-column>
+                <bos-table-column lable="装备名称" field="equipArg.name"></bos-table-column>
+                <bos-table-column lable="装备型号" field="equipArg.model"></bos-table-column>
+                <bos-table-column lable="装备数量" field="count"></bos-table-column>
+            </el-table>
+        </div>
+        <div v-if="table.tableType==='genre'" >
+            <el-table :data="table.tableData" height="3.78125rem" ref="genre">
+                <bos-table-column lable="装备小类" field="category.name"></bos-table-column>
+                <bos-table-column lable="装备总数" field="count"></bos-table-column>
+                <el-table-column label="安全库存">
+                    <template slot-scope="scope">
+                        <div>
+                            <el-input
+                                    v-model="scope.row.category.stock"
+                                    :disabled="disable" style="width: 0.34375rem;">
+                            </el-input>
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column label=" ">
+                    <template slot-scope="scope">
+                        <div style="cursor: pointer;width: 0.2604rem" @click="deleteButton('category',scope.row)">
+                            <svg-icon icon-class="减" class="icon-search"></svg-icon>
+                        </div>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
+        <div v-if="table.tableType==='category'">
+            <el-table :data="table.tableData" height="3.78125rem" ref="category">
+                <bos-table-column lable="装备名称" field="equipArg.name"></bos-table-column>
+                <bos-table-column lable="装备型号" field="equipArg.model"></bos-table-column>
+                <bos-table-column lable="装备数量" field="count"></bos-table-column>
+                <el-table-column label=" ">
+                    <template slot-scope="scope">
+                        <div style="cursor: pointer;width: 0.2604rem" @click="deleteButton('equipArg',scope.row)">
+                            <svg-icon icon-class="减" class="icon-search"></svg-icon>
+                        </div>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
+        <tips ref="deleteEquipArg" :contentText="'您确定要解除装备类别绑定吗'" @confirm="deleteEquipArgId"></tips>
+    </div>
+</template>
+
+<script>
+    import {deleteCategory,relateCategory} from "api/warehouse"
+    import tips from "components/base/tips"
+
+    export default {
+        name: "safetyTable",
+        components: {tips},
+        data() {
+            return {
+                equipArg: {},
+            }
+        },
+        props: {
+            table: {
+                type: Object
+            },
+            disable: {
+                type: Boolean,
+                default: true
+            },
+            distribution: {
+                type: Boolean,
+                default: false
+            },
+            currentNode:{
+                type: Object
+            }
+        },
+        methods: {
+            handleSelectionChange(val) {
+               this.table.checkBoxData=val
+                console.log('this.table.checkBoxData',this.table.checkBoxData)
+            },
+            deleteButton(type, row) {
+                if (type === 'category') {
+                    deleteCategory(row.category.id).then(res => {
+                        this.$emit('success', 'category');
+                    })
+                } else {
+                    this.equipArg = row.equipArg;
+                    this.$refs.deleteEquipArg.show();
+                    // deleteCategory(row.category.id).then(res=>{
+                    //     this.$emit('success','category');
+                    // })
+                }
+            },
+            resultCheckBox(){
+                this.$refs.unallocated.clearSelection();
+            },
+            deleteEquipArgId() {
+                console.log(this.equipArg);
+                relateCategory({categoryId:this.currentNode.id,equipArgId:this.equipArg.id,flag:false}).then(res=>{
+                    this.$emit('success', 'equipArg');
+                    this.$refs.deleteEquipArg.hide();
+                });
+                // deleteCategory(row.category.id).then(res=>{
+                //     this.$emit('success','category');
+                // })
+            }
+        }
+    }
+</script>
+
+<style lang="scss" scoped>
+    /deep/ .el-table th.is-leaf, .el-table td {
+        padding-left: 0.3021rem;
+        border-bottom: 0.0052rem solid #EBEEF5;
+    }
+    /deep/ .el-table--enable-row-transition .el-table__body td {
+        padding-left: 0.3021rem;
+    }
+
+    /deep/ .el-input__inner {
+        text-align: center;
+
+    }
+    /deep/ .el-table-column--selection{
+margin-left: 200px;
+    }
+    .safety_table_box {
+        width: 100%;
+    }
+    .unallocated{
+        /deep/ .el-table th.is-leaf, .el-table td {
+            padding-left: 0.0521rem;
+            border-bottom: 0.0052rem solid #EBEEF5;
+        }
+        /deep/ .el-table--enable-row-transition .el-table__body td {
+            padding-left: 0.0521rem;
+        }
+    }
+</style>

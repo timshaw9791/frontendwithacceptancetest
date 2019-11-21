@@ -10,7 +10,7 @@
                 </template>
             </el-table-column>
         </el-table>
-        <bos-paginator v-if="list!=''"  :pageInfo="pageInfo" @bosCurrentPageChanged="tableChangePage"></bos-paginator>
+        <bos-paginator v-if="list!=''&&havePage"  :pageInfo="pageInfo" @bosCurrentPageChanged="tableChangePage"></bos-paginator>
     </div>
 </template>
 
