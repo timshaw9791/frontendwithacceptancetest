@@ -149,7 +149,7 @@
                         {lable: '操作人员', field: 'equipArg.category.name', },
                         {lable: '入库时间', field: 'equipArg.name'},
                     ],
-                    url:'/equips',
+                    url:'/inouthouse/findInHouseNumberLike',
                     tableAction:{
                         label:'操作',
                         button:[{name:'查看',type:'primary'},{name:'删除',type:'danger'}]

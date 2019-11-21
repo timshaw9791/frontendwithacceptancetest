@@ -9,7 +9,6 @@
             </div>
             </div>
             <div>
-
                 <!--装备参数-->
                 <el-card class="box-card" shadow="never">
                     <div slot="header">
@@ -40,27 +39,27 @@
                                          v-if="['新增装备信息', '装备参数详情', '装备信息详情'].includes(title)"
                                          :disabled="edit"
                             ></field-input>
-                            <field-cascader label="装备名称" :options="options" v-model="form.nameId" prop="nameId"
-                                            width="3" :rules="r(true).all(R.require)"
-                                            @change="getEquipInfo(form.nameId[2])" v-else>
-                            </field-cascader>
+                            <field-select label="装备名称" v-model="form.name" width="3" name="装备名称"
+                                          :list="equipment.name" :rules="r(true).all(R.require)"
+                                          @change="getEquipInfo" placeholder="请选择" prop="name"
+                                          v-else></field-select>
             
                             <field-input v-model="form.upkeepCycle" label="装备型号" width="3"
                                          :rules="r(true).all(R.require)" prop="upkeepCycle"
                                          v-if="['新增装备信息', '装备参数详情', '装备信息详情'].includes(title)"
                                          :disabled="edit" :class="{'occupy-position': !title.includes('装备信息详情')}"
                             ></field-input>
-                            <field-cascader label="装备型号" :options="options" v-model="form.nameId" prop="nameId"
-                                            width="3" :rules="r(true).all(R.require)"
-                                            @change="getEquipInfo(form.nameId[2])" :class="{'occupy-position': !title.includes('装备信息详情')}" v-else>
-                            </field-cascader>
+                            <field-select label="装备型号" v-model="form.model" width="3" name="装备型号" prop="model"
+                                          :list="equipment.model" :rules="r(true).all(R.require)"
+                                          @change="equipSelected" placeholder="请选择"
+                                          :class="{'occupy-position': !title.includes('装备信息详情')}" v-else></field-select>
 
                             <field-input v-model="form.serial" label="装备序号" width="3" :disabled="true"
                                         :rules="r(true).all(R.require)"
                                         v-if="title.includes('装备信息详情')"
                                       prop="serial"></field-input>
                             
-                            <field-input v-model="zbForm.shelfLifeQ" label="保质期" width="3" :disabled="edit"
+                            <field-input v-model="form.shelfLifeQ" label="保质期" width="3" :disabled="edit"
                                          :rules="r(true).all(R.integer)" prop="shelfLifeQ"></field-input>
 
                             <field-input v-model="form.chargeCycle" label="充电周期" width="3"
@@ -73,12 +72,15 @@
                                          :disabled="edit"
                             ></field-input>
 
+                            <field-input v-model="form.vendorId" label="供应商" width="3"
+                                         :rules="r(true).all(R.require)" prop="vendorId"
+                                         :disabled="true" v-if="['入库装备', '装备信息详情'].includes(title)"
+                            ></field-input>
                             <field-select label="供应商" v-model="form.vendorId" width="3" name="供应商"
                                           :rules="r(true).all(R.require)"
-                                          prop="vendorId"
-                                          @change="vendor(form.vendorId)"
-                                          :disabled="edit"
-                                          :list="vendorId"></field-select>
+                                          prop="vendorId" @change="vendor(form.vendorId)"
+                                          :disabled="edit" :list="vendorId"
+                                          v-else></field-select>
 
                             <field-input v-model="form.personM" label="联系人员" width="3" :disabled="true"
                                          :rules="r(true).all(R.require)" prop="personM"></field-input>
@@ -203,7 +205,7 @@
     import axios from 'axios';
     import {imgUpUrl, pdfUpUrl, videoUpUrl, imgBaseUrl, pdfBaseUrl, videoBaseUrl} from "api/config";
     import {delFile} from "api/basic";
-    import {getGenreList,addEquipInfo,getSuppliers,getEquipById} from "api/storage"
+    import {getGenreList,addEquipInfo,getSuppliers,getEquipById, equipArgsByName} from "api/storage"
     import serviceDialog from 'components/base/serviceDialog/index'
     import {transformMixin} from "common/js/transformMixin";
     import { start, startOne, killProcess } from 'common/js/rfidReader'
@@ -217,9 +219,19 @@
         data() {
             return {
                 form: {
-                    videoAddresses: [],
-                    documentAddresses: [],
-                    imageAddress: 'noImg.jpg',
+                    name: '', // 装备名称
+                    model: '', // 装备型号
+                    shelfLifeQ: '', // 装备保质期
+                    chargeCycle: '', // 装备充电周期
+                    upkeepCycle: '', // 装备保养周期
+                    vendorId: '' , // 装备供应商
+                    personM: '', // 装备联系人员
+                    phoneM: '', // 装备联系方式
+                },
+                equipment: {
+                    name: [],
+                    model: [],
+                    allEquip: []
                 },
                 zbForm: {},
                 list: [{rfid: null, serial: null}],
@@ -278,24 +290,34 @@
 
 
         methods: {
-
+            init() {
+                this.form = Object.assign(this.form, {
+                    model: '', 
+                    shelfLifeQ: '',
+                    chargeCycle: '',
+                    upkeepCycle: '',
+                    vendorId: '' ,
+                    personM: '',
+                    phoneM: '',
+                })
+            },
             //离开页面以后为父组件抛出black 杀死进程
             black() {
-                let flag = this.isEqual();
-                if(flag) {
-                    // killProcess(this.pid)
-                    this.judgeEdit = {
-                        form: {
-                            videoAddresses: [],
-                            documentAddresses: [],
-                            imageAddress: 'noImg.jpg',
-                        },
-                        zbForm: {}
-                    };
+                // let flag = this.isEqual();
+                // if(flag) {
+                //     // killProcess(this.pid)
+                //     this.judgeEdit = {
+                //         form: {
+                //             videoAddresses: [],
+                //             documentAddresses: [],
+                //             imageAddress: 'noImg.jpg',
+                //         },
+                //         zbForm: {}
+                //     };
                     this.$emit('black', true);
-                } else {
-                    this.$refs.dialog.show();
-                }
+                // } else {
+                //     this.$refs.dialog.show();
+                // }
                 //killProcess();
             },
 
@@ -594,99 +616,6 @@
             },
 
             //选择完装备后执行 显示对应数据 和开启读卡器的使用
-            getEquipInfo(data) {
-                this.gqlQuery(api.getEquipArg, {
-                    id: data
-                }, (res) => {
-                    this.index = 0;
-                    let a = JSON.parse(JSON.stringify(res.data.EquipArg));
-                    
-                    this.form['name'] = a.name;
-                    this.form['upkeepCycle'] = this.milliToDay(a.upkeepCycle);
-                    this.form['chargeCycle'] = this.milliToDay(a.chargeCycle);
-                    this.form.vendorId = a.supplier.id;
-                    this.$set(this.form, 'model', a.model);
-                   
-                    this.$set(this.form, 'personM', a.supplier.person);
-                    this.$set(this.form, 'phoneM', a.supplier.phone);
-                    this.$set(this.form, 'eqBig', a.category.genre.name);
-                    this.$set(this.form, 'eqSmall', a.category.name);
-                    if (a.imageAddress) {
-                        this.imageUrl = `${imgBaseUrl}${a.imageAddress}`;
-                        console.log('imageUrl',this.imageUrl)
-                    } else {
-                        this.imageUrl = '';
-                        this.noimg=true;
-                    }
-
-                });
-               // for (let i=0;i<2;i++){
-               //     if (this.index == 0) {
-               //         this.list[0].rfid = 1222;
-               //     } else {
-               //         this.list.push({rfid: 2333});
-               //     }
-               //     this.index = this.index + 1;
-               // }
-
-                start("java -jar scan.jar", (data) => {
-                    if (this.index == 0) {
-                        this.list[0].rfid = data;
-                    } else {
-                        this.list.push({rfid: data});
-                    }
-                    this.index = this.index + 1;
-                    // if (this.index > 0) {
-                    //     if (this.index == 1) {
-                    //         this.list[0] = {rfid: data};
-                    //     } else {
-                    //         this.list.push({rfid: data});
-                    //     }
-                    //     this.index = this.index + 1;
-                    // } else {
-                    //     let newData = JSON.parse(data);
-                    //
-                    //     newData.status === 'succeed' ? this.index = 1 : this.index = 0;
-                    // }
-                }, (fail) => {
-                    this.index = 1;
-                    this.$message.error(fail)
-                }, (pid, err) => {pid?this.pid=pid:this.$message.error(err);})
-
-                // const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
-
-                // this.pid = process.pid;
-
-                // process.stderr.on('data', (err) => {
-                //     console.log(err);
-                //     this.$message.error('设备故障请重新插拔!插入后请重新选择装备');
-                //     this.index = 1;
-                //     killProcess();
-                // });
-
-                // process.stdout.on('data', (data) => {
-                //     console.log(data);
-                //     if (this.index > 0) {
-                //         if (this.index == 1) {
-                //             this.list[0].rfid = data;
-                //         } else {
-                //             this.list.push({rfid: data});
-                //         }
-                //         this.index = this.index + 1;
-                //     } else {
-                //         let newData = JSON.parse(data);
-                //         newData.status === 'succeed' ? this.index = 1 : this.index = 0;
-                //     }
-                // });
-
-                // process.on('exit', (code) => {
-                //     if (this.index === 0) {
-                //         this.$message.error('设备未插入或串口号错误,插入后请重新选择装备!');
-                //     }
-                //     console.log(`子进程退出，退出码 ${code}`);
-                // });
-
-            },
 
             //点击编辑后状态改变
             editClick() {
@@ -699,15 +628,6 @@
             //     }
             // },
 
-            //删除读卡后的当前选择数据
-            delqaq(row) {
-                this.list.splice(row.$index, 1);
-                // if (this.list.length > 1) {
-                //     this.list.splice(row.$index, 1);
-                // } else {
-                //     this.$message.error('不能删除最后一个');
-                // }
-            },
 
             // 复制RFID
             copyRfid() {
@@ -730,118 +650,143 @@
                 //     }
                 // })
             },
-
+            // 选择型号完成，显示对应装备参数
+            equipSelected() {
+                let temp = this.equipment.allEquip.find(equip => equip.model == this.form.model)
+                this.form = Object.assign(this.form, {
+                    shelfLifeQ: temp.shelfLife/3600/24,
+                    chargeCycle: temp.chargeCycle/3600/24,
+                    upkeepCycle: temp.upkeepCycle/3600/24,
+                    vendorId: temp.supplier.name,
+                    personM: temp.supplier.person,
+                    phoneM: temp.supplier.phone
+                })
+            },
             //进入页面获取数据
             getEquipInfo() {
-                if (this.equipId) {
-                    getEquipById(this.equipId).then(res=>{
-                        let eqData = JSON.parse(JSON.stringify(res));
+                this.init()
+                equipArgsByName({name: this.form.name}).then(res => {
+                   let result = JSON.parse(JSON.stringify(res)), nameArr = [], modelArr = [];
+                   result.forEach(equip => {
+                       nameArr.push(equip.name)
+                       modelArr.push(equip.model)
+                   })
+                   if(this.equipment.name != "") {
+                       this.equipment.model = Array.from(new Set(modelArr))
+                       this.equipment.allEquip = res
+                   } else {
+                       this.equipment.name = Array.from(new Set(nameArr))
+                   }
+                })
+                // if (this.equipId) {
+                //     getEquipById(this.equipId).then(res=>{
+                //         let eqData = JSON.parse(JSON.stringify(res));
 
-                        this.zb = eqData;
-                        this.form = eqData.equipArg;
+                //         this.zb = eqData;
+                //         this.form = eqData.equipArg;
 
-                        this.form.vendorId = eqData.equipArg.supplier.id;
-                        eqData.equipArg.imageAddress ? this.imageUrl = `${imgBaseUrl}${eqData.equipArg.imageAddress}` : '';
-                        this.$set(this.form, 'eqBig', eqData.equipArg.category.genre.name);
-                        this.$set(this.form, 'eqSmall', eqData.equipArg.category.name);
-                        this.$set(this.form, 'serial',eqData.serial)
-                        this.$set(this.form, 'upkeepCycle', this.milliToDay(eqData.equipArg.upkeepCycle));
-                        this.$set(this.form, 'chargeCycle', this.milliToDay(eqData.equipArg.chargeCycle));
-                        this.$set(this.form, 'price', eqData.price / 100);
+                //         this.form.vendorId = eqData.equipArg.supplier.id;
+                //         eqData.equipArg.imageAddress ? this.imageUrl = `${imgBaseUrl}${eqData.equipArg.imageAddress}` : '';
+                //         this.$set(this.form, 'eqBig', eqData.equipArg.category.genre.name);
+                //         this.$set(this.form, 'eqSmall', eqData.equipArg.category.name);
+                //         this.$set(this.form, 'serial',eqData.serial)
+                //         this.$set(this.form, 'upkeepCycle', this.milliToDay(eqData.equipArg.upkeepCycle));
+                //         this.$set(this.form, 'chargeCycle', this.milliToDay(eqData.equipArg.chargeCycle));
+                //         this.$set(this.form, 'price', eqData.price / 100);
 
 
-                        this.zb['shelfLifeQ'] = Math.round(eqData.quality.shelfLife / 24 / 60 / 60 / 1000);
-                        this.zb['productDateQ'] = eqData.quality.productDate;
-                        this.zb['floorL'] = eqData.location ? eqData.location.floor : '';
-                        this.zb['numberL'] = eqData.location ? eqData.location.number : '';
-                        this.zb['surfaceL'] = eqData.location ? eqData.location.surface : '';
-                        this.zb['sectionL'] = eqData.location ? eqData.location.section : '';
-                        this.$set(this.form, 'personM', eqData.equipArg.supplier.person);
-                        this.$set(this.form, 'phoneM', eqData.equipArg.supplier.phone);
+                //         this.zb['shelfLifeQ'] = Math.round(eqData.quality.shelfLife / 24 / 60 / 60 / 1000);
+                //         this.zb['productDateQ'] = eqData.quality.productDate;
+                //         this.zb['floorL'] = eqData.location ? eqData.location.floor : '';
+                //         this.zb['numberL'] = eqData.location ? eqData.location.number : '';
+                //         this.zb['surfaceL'] = eqData.location ? eqData.location.surface : '';
+                //         this.zb['sectionL'] = eqData.location ? eqData.location.section : '';
+                //         this.$set(this.form, 'personM', eqData.equipArg.supplier.person);
+                //         this.$set(this.form, 'phoneM', eqData.equipArg.supplier.phone);
 
-                        this.$set(this.copyRfidList, 'rfid', eqData.rfid);
-                        this.zbForm = this.zb;
-                        this.judgeEdit.form = JSON.parse(JSON.stringify(this.form));
-                        this.judgeEdit.zbForm = JSON.parse(JSON.stringify(this.zbForm))
-                    })
-                }
+                //         this.$set(this.copyRfidList, 'rfid', eqData.rfid);
+                //         this.zbForm = this.zb;
+                //         this.judgeEdit.form = JSON.parse(JSON.stringify(this.form));
+                //         this.judgeEdit.zbForm = JSON.parse(JSON.stringify(this.zbForm))
+                //     })
+                // }
 
-                if (this.equipArgId) {
-                    this.gqlQuery(api.getEquipArg, {
-                        id: this.equipArgId
-                    }, (res) => {
-                        let zb = {};
-                        let eqData = JSON.parse(JSON.stringify(res.data.EquipArg));
-                        this.form = eqData;
-                        this.form.vendorId = eqData.supplier.id;
-                        eqData.imageAddress ? this.imageUrl = `${imgBaseUrl}${eqData.imageAddress}` : '';
+                // if (this.equipArgId) {
+                //     this.gqlQuery(api.getEquipArg, {
+                //         id: this.equipArgId
+                //     }, (res) => {
+                //         let zb = {};
+                //         let eqData = JSON.parse(JSON.stringify(res.data.EquipArg));
+                //         this.form = eqData;
+                //         this.form.vendorId = eqData.supplier.id;
+                //         eqData.imageAddress ? this.imageUrl = `${imgBaseUrl}${eqData.imageAddress}` : '';
 
-                        this.form.videoAddresses = eqData.videoAddresses ? eqData.videoAddresses.split(",") : [];
-                        this.form.documentAddresses = eqData.documentAddresses ? eqData.documentAddresses.split(",") : [];
+                //         this.form.videoAddresses = eqData.videoAddresses ? eqData.videoAddresses.split(",") : [];
+                //         this.form.documentAddresses = eqData.documentAddresses ? eqData.documentAddresses.split(",") : [];
 
-                        this.$set(this.form, 'upkeepCycle', this.milliToDay(eqData.upkeepCycle));
-                        this.$set(this.form, 'chargeCycle', this.milliToDay(eqData.chargeCycle));
+                //         this.$set(this.form, 'upkeepCycle', this.milliToDay(eqData.upkeepCycle));
+                //         this.$set(this.form, 'chargeCycle', this.milliToDay(eqData.chargeCycle));
 
-                        this.form.nameId = [eqData.category.genre.id, eqData.category.id];
-                        this.$set(this.form, 'eqBig', eqData.category.genre.name);
-                        this.$set(this.form, 'eqSmall', eqData.category.name);
-                        this.$set(this.form, 'personM', eqData.supplier.person);
-                        this.$set(this.form, 'phoneM', eqData.supplier.phone);
-                        this.judgeEdit.form = JSON.parse(JSON.stringify(this.form))
-                        this.judgeEdit.zbForm = JSON.parse(JSON.stringify(this.zbForm))
-                    });
-                };
-                getGenreList().then(res => {
-                        let data = JSON.parse(JSON.stringify(res));
-                        let newData = [];
-                        if (data) {
-                            data.forEach((item) => {
-                                if (item.categories.length > 0) {
-                                    item.categories.forEach((item1, index1) => {
-                                        if (item1.equipArgs.length > 0) {
-                                            item1.equipArgs.forEach((item2, index2) => {
-                                                item1.equipArgs[index2] = {
-                                                    value: item2.id,
-                                                    label: item2.name,
-                                                    model: item2.model,
-                                                };
-                                            })
-                                        }
-                                        item.categories[index1] = {
-                                            value: item1.id,
-                                            label: item1.name,
-                                            model: item1.model,
-                                            children: !this.title.includes('新增') && !this.title.includes('信息查看') ? item1.equipArgs : null
-                                        };
-                                    })
-                                }
-                                newData.push(
-                                    {
-                                        value: item.id,
-                                        label: item.name,
-                                        model: item.model,
-                                        children: item.categories
-                                    }
-                                )
-                            });
-                            this.options = newData;
-                        }
-                });
+                //         this.form.nameId = [eqData.category.genre.id, eqData.category.id];
+                //         this.$set(this.form, 'eqBig', eqData.category.genre.name);
+                //         this.$set(this.form, 'eqSmall', eqData.category.name);
+                //         this.$set(this.form, 'personM', eqData.supplier.person);
+                //         this.$set(this.form, 'phoneM', eqData.supplier.phone);
+                //         this.judgeEdit.form = JSON.parse(JSON.stringify(this.form))
+                //         this.judgeEdit.zbForm = JSON.parse(JSON.stringify(this.zbForm))
+                //     });
+                // };
+                // getGenreList().then(res => {
+                //         let data = JSON.parse(JSON.stringify(res));
+                //         let newData = [];
+                //         if (data) {
+                //             data.forEach((item) => {
+                //                 if (item.categories.length > 0) {
+                //                     item.categories.forEach((item1, index1) => {
+                //                         if (item1.equipArgs.length > 0) {
+                //                             item1.equipArgs.forEach((item2, index2) => {
+                //                                 item1.equipArgs[index2] = {
+                //                                     value: item2.id,
+                //                                     label: item2.name,
+                //                                     model: item2.model,
+                //                                 };
+                //                             })
+                //                         }
+                //                         item.categories[index1] = {
+                //                             value: item1.id,
+                //                             label: item1.name,
+                //                             model: item1.model,
+                //                             children: !this.title.includes('新增') && !this.title.includes('信息查看') ? item1.equipArgs : null
+                //                         };
+                //                     })
+                //                 }
+                //                 newData.push(
+                //                     {
+                //                         value: item.id,
+                //                         label: item.name,
+                //                         model: item.model,
+                //                         children: item.categories
+                //                     }
+                //                 )
+                //             });
+                //             this.options = newData;
+                //         }
+                // });
 
-                getSuppliers().then(res=>{
-                    this.vendorId = res.map(item => {
-                        return {
-                            val: item.id,
-                            key: item.name,
-                            data: {
-                                person: item.person,
-                                phone: item.phone,
-                            }
-                        }
-                    });
-                    this.judgeEdit.form = JSON.parse(JSON.stringify(this.form));
-                    this.judgeEdit.zbForm = JSON.parse(JSON.stringify(this.zbForm))
-                });
+                // getSuppliers().then(res=>{
+                //     this.vendorId = res.map(item => {
+                //         return {
+                //             val: item.id,
+                //             key: item.name,
+                //             data: {
+                //                 person: item.person,
+                //                 phone: item.phone,
+                //             }
+                //         }
+                //     });
+                //     this.judgeEdit.form = JSON.parse(JSON.stringify(this.form));
+                //     this.judgeEdit.zbForm = JSON.parse(JSON.stringify(this.zbForm))
+                // });
             }
         },
 

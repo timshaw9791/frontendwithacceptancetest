@@ -61,3 +61,13 @@ export function getEquipById(id) {
         method: 'get',
     })
 }
+
+
+/* 查询装备参数 */
+export function equipArgsByName(params) {
+    return request({
+        url: "/equip/equipArgsByName",
+        method: "GET",
+        params
+    })
+}
