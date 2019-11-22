@@ -64,6 +64,11 @@ export function parseTime(time, cFormat) {
   return time_str
 }
 
+// 架体格式化
+export function filterFrame(data) {
+  return `${data.number}架/${data.surface}面/${data.section}节/${data.floor}层`
+}
+
 export function formatTime(time, option) {
   time = +time * 1000
   const d = new Date(time)

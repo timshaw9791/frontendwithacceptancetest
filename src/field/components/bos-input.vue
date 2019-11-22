@@ -5,6 +5,7 @@
               :readonly="cReadonly" :disabled="cDisabled"
               :autofocus="cAutofocus"
               @change="change" @blur="blur" @focus="focus"
+              data-test="search"
     ></el-input>
 </template>
 

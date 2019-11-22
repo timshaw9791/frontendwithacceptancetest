@@ -5,7 +5,7 @@
             <svg-icon icon-class="搜索" class="icon-search"></svg-icon>
             <input class="input" v-model="searchHeader" :placeholder="placeholder" ></input>
         </div>
-        <div class="black" v-if="haveBlack" @click="h_black">
+        <div class="black" v-if="haveBlack" @click="h_black" data-test="button">
             <svg-icon icon-class="返回" class="icon-black"></svg-icon>
             <span class="b-span" v-text="'返回'"></span>
         </div>

@@ -1,18 +1,21 @@
 <template>
     <div class="personnelManagement">
-        <my-header :title="'人员信息管理'" :searchFlag="false" :haveBlack="!viewStatus.flag" @h_black="blackJudge"></my-header>
+        <my-header :title="'人员管理'" :searchFlag="false" :haveBlack="!viewStatus.flag" @h_black="blackJudge"></my-header>
         <div class="personnel-action-bar">
             <div v-show="viewStatus.flag" class="add">
                 <div class="add-personnel">
                     <select-personel id="personnelManagementSelect" :select="select.selectList" @selectRole="selectRole"></select-personel>
-                    <div class="add-personnel-item">
-                        <svg-icon icon-class='加' style="margin-left: 38px" class="icon-search"></svg-icon>
-                        <span style="color: #2F2F76" @click="addPersonnel">新增人员</span>
+                    <div class="checkbox">
+                        <el-checkbox v-model="showEnter" label="进入库房权限"  style="margin-left: 0.2604rem;" @change="showEnterpeople" data-test="check">进入库房权限</el-checkbox>
                     </div>
                     <div class="add-personnel-item"><svg-icon icon-class='同步' style="margin-left: 38px" class="icon-search"></svg-icon>
-                        <span style="color: #2F2F76" @click="synchronization">信息头像同步</span></div>
-                    <div class="add-personnel-item"><svg-icon icon-class='同步' style="margin-left: 38px" class="icon-search"></svg-icon>
-                        <span style="color: #2F2F76" @click="syncuser">用户同步</span></div>
+                        <span style="color: #2F2F76" @click="synchronization" data-test="button">信息头像同步</span></div>
+                    <div class="add-personnel-item">
+                        <svg-icon icon-class='加' style="margin-left: 38px" class="icon-search"></svg-icon>
+                        <span style="color: #2F2F76" @click="addPersonnel" data-test="button" >新增人员</span>
+                    </div>
+                    <!-- <div class="add-personnel-item"><svg-icon icon-class='同步' style="margin-left: 38px" class="icon-search"></svg-icon>
+                        <span style="color: #2F2F76" @click="syncuser">用户同步</span></div> -->
                 </div>
                 <div class="input-box">
                     <svg-icon icon-class="搜索" class="icon-search"></svg-icon>
@@ -21,14 +24,14 @@
             </div>
             <div class="modify" v-if="!viewStatus.flag">
                 <span>基础信息</span>
-                <div class="modify-box" v-if="type=='add'?false:true" @click="toModify">
+                <div class="modify-box" v-if="type=='add'?false:true" @click="toModify" data-test="button">
                     <svg-icon icon-class="编辑" class="icon-modify"></svg-icon>
                     <span>{{disabled?'编辑':'取消编辑'}}</span>
                 </div>
             </div>
         </div>
         <div class="personnelManagement-body"  v-loading="loading" element-loading-text="正在同步中..." element-loading-background="rgba(255,255,255, 0.8)">
-            <personnel-list ref="personList" @clickPersonnel="selectPersonnel" :personnel="personnel" v-show="viewStatus.flag"></personnel-list>
+            <personnel-list ref="personList" @clickPersonnel="selectPersonnel" :personnel="personnel" :showEnter="showEnter" v-show="viewStatus.flag"></personnel-list>
             <add-personnel ref="addPerson" @black="black" :addType="type" :personenlData="personnel.personenlData" :disabled="disabled" v-if="!viewStatus.flag" :organUnit="unit" @addSucess="addPersonnelSucess" :roleList="select.selectList"></add-personnel>
         </div>
     </div>
@@ -39,7 +42,7 @@
     import selectPersonel from 'components/personnelManagement/personnelSelect'
     import {fetchMixin} from 'field/common/mixinFetch'
     import personnelList from 'components/personnelManagement/personnelLsit'
-    import { getRolesList, syncFaceInfo, syncUser } from 'api/personnel'
+    import { syncFaceInfo, syncUser } from 'api/personnel'
     import { baseURL } from "api/config"
     import addPersonnel from 'components/personnelManagement/addPersonnel'
     export default {
@@ -56,9 +59,15 @@
                 loading: false,
                 search: '',
                 select: {
-                    selectList: [],
+                    selectList: [
+                        {label: '全部',value: '',},
+                        {label: '领导 ',value: 'LEADER',},
+                        {label: '警员',value: 'POLICE',},
+                        {label: '管理员',value: 'ADMIN',}
+                    ],
                     selectItem: ''
                 },
+                showEnter:false,
                 // personnel: {
                 //     graphqlTable: {
                 //         graphqlKey: {
@@ -72,7 +81,7 @@
                 personnel: {
                     table: {
                         paginator: {size: 12, page: 1},
-                        query: {queryValue: '', roleId: ''}
+                        query: {queryValue: '', role: ''}
                     },
                     personenlData: {}
                 },
@@ -93,7 +102,6 @@
             }
         },
             created() {
-                this.getRoles();
                 let unit = JSON.parse(localStorage.getItem('user')).unitId;
                 this.getUnit(unit)
             },
@@ -157,25 +165,32 @@
                     this.viewStatus.flag=false;
                 },
                 selectRole(data) {
-                    this.personnel.table.query.roleId = data
+                    console.log("data")
+                    console.log(data)
+                    console.log("this.personnel.table.query.roleId")
+                    console.log(this.personnel.table.query.roleId)
+                    this.personnel.table.query.role = data
                 },
-                getRoles(qfilter) {
-                    getRolesList().then(res => {
-                        this.select.selectList = [{
-                            label: '全部',
-                            value: ''
-                        }];
-                        let data = JSON.parse(JSON.stringify(res.data))
-                        data.forEach(item => {
-                            if(item.roleEnum!='SUPER_ADMINISTRATOR'){
-                                this.select.selectList.push({
-                                    label: item.roleDescribe,
-                                    value: item.id
-                                })
-                            }
-                        })
-                    })
-                },
+                // getRoles(qfilter) {
+                //     getRolesList().then(res => {
+                //         this.select.selectList = [{
+                //             label: '全部',
+                //             value: ''
+                //         }];
+                //         let data = JSON.parse(JSON.stringify(res.data))
+                //         data.forEach(item => {
+                //             if(item.roleEnum!='SUPER_ADMINISTRATOR'){
+                //                 this.select.selectList.push({
+                //                     label: item.roleDescribe,
+                //                     value: item.id
+                //                 })
+                //             }
+                //         })
+                //     })
+                // },
+                showEnterpeople(data){
+                    this.showEnter = data
+                }
             }
     }
 </script>
@@ -288,5 +303,8 @@
     .el-loading-spinner .el-loading-text {
     color: #2f2f76 !important;
     font-size: 18px !important;
+}
+.checkbox{
+    margin-left: 0.151rem;
 }
 </style>

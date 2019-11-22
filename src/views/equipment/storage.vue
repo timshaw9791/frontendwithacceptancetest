@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-card shadow="never" v-if="!storageInfoShow">
+        <el-card shadow="never" v-if="!storageInfoShow&&storageListShow">
 
             <!--element card 的头部-->
 
@@ -12,21 +12,13 @@
             <!--操作拦-->
             <div>
                 <tabs>
-                    <el-button type="text" class="_textBt" @click="goInfo('add')">
+                    <el-button type="text" class="_textBt" @click="goInfo">
                         <svg-icon icon-class="加" class="textBt"/>
-                        新增装备信息
-                    </el-button>
-                    <el-button type="text" class="_textBt" @click="goInfo('storage')">
-                        <svg-icon icon-class="加" class="textBt"/>
-                        装备入库
-                    </el-button>
-                    <el-button type="text" class="_textBt" @click="goInfo('rfid')" v-if="authentication">
-                        <svg-icon icon-class="加" class="textBt"/>
-                        修改RFID
+                        入库装备
                     </el-button>
                     <div class="_buttons">
                         <BosInput
-                                placeholder="RFID/大类/小类/名称/型号"
+                                placeholder="单号"
                                 suffix="el-icon-search"
                                 v-model="table.search"
                                 :wrapforlike="true"
@@ -61,6 +53,7 @@
         <!--内部业务组件-->
 
         <storageInfo :equipId="equipId" v-if="storageInfoShow" :title="title" @black="black"></storageInfo>
+        <in-storage-list v-if="!storageListShow" title="入库单详情" :equipData="equipData" @black="storageListShow=true"></in-storage-list>
 
 
         <!--RFID遮罩层 -->
@@ -121,11 +114,12 @@
 
 <script>
     import tabs from 'components/base/tabs/index'
-    import storageInfo from 'views/equipment/storageInfo'
-    import api from 'gql/eqList.gql'
+    import storageInfo from 'views/equipment/storageInfos'
+    import inStorageList from 'components/equipment/inStorageList'
     import serviceDialog from 'components/base/serviceDialog/index'
     // import {formRulesMixin} from "../../field/common/mixinComponent";
     import {getRfid, saveRfid} from "api/rfid";
+    import { inHouseOrder } from "api/storage"
     import request from 'common/js/request'
     import {baseURL} from "../../api/config";
     import { start, startOne, killProcess } from 'common/js/rfidReader'
@@ -144,32 +138,26 @@
                 options: [],
                 commonHouseId: '',
                 equipId: '',
+                delEquipId: '',
                 title: '',
                 storageInfoShow: false,
+                storageListShow: true,
                 list: [],
                 table: {
                     labelList: [
-                        {lable: 'RFID', field: 'rfid'},
-                        {lable: '装备大类', field: 'equipArg.category.genre.name'},
-                        {lable: '装备小类', field: 'equipArg.category.name', },
-                        {lable: '装备名称', field: 'equipArg.name'},
-                        {lable: '装备型号', field: 'equipArg.model'},
-                        {lable: '供应商', field: 'equipArg.supplier.name'},
+                        {lable: '入库单号', field: 'orderNumber'},
+                        {lable: '装备数量', field: 'count'},
+                        {lable: '操作人员', field: 'operatorInfo.operator', },
+                        {lable: '入库时间', filter: (row) => this.$filterTime(row.createTime)},
                     ],
-                    url:'/equips',
+                    url:'/inouthouse/findInHouseNumberLike',
                     tableAction:{
                         label:'操作',
                         button:[{name:'查看',type:'primary'},{name:'删除',type:'danger'}]
                     },
                     search:'',
                 },
-                param: {
-                    qfilter: {
-                        "key": "rfid",
-                        "operator": "LIKE",
-                        value: '%%',
-                    }
-                },
+                equipData: {}, // 入库单数据
                 mode: true,
                 inlineForm: {
                     rfid: '',
@@ -188,61 +176,37 @@
         components: {
             tabs,
             storageInfo,
+            inStorageList,
             serviceDialog,
             r_label
         },
         methods: {
             clickTable(table) {
-                let  data = table.row;
                 if(table.name==='查看'){
-                    this.goInfo('look',data)
+                    this.equipData = table.row
+                    this.storageListShow = false
                 }else {
-                    this.toDel(data)
+                    this.delEquipId = table.row.id
+                    this.dialogVisible = true
                 }
-                // if(table.name=='详情'){
-                //     let dataCopy=JSON.parse(JSON.stringify(data));
-                //     this.equipList.list=dataCopy.equipActionRecords;
-                //     this.equipList.list.forEach((item,index)=>{
-                //         let number=index+1;
-                //         let serialNumber='';
-                //         if(number<10){
-                //             serialNumber='0'+'0'+number
-                //         }else if(10<number<100){
-                //             serialNumber='0'+number
-                //         }else {
-                //             serialNumber=number
-                //         }
-                //         item.serialNumber=serialNumber
-                //     });
-                //     this.$refs.dialogEquipTable.show();
-                // }else {
-                //     if (data) {
-                //         this.address=baseURL+'/records/'+data.videoAddress;
-                //         this.$refs.recordVideo.show()
-                //     }
-                // }
             },
             cancelPattern() {
                // killProcess();
                killProcess(this.pid)
             },
             delEquip() {
-                request({
-                    method: 'DELETE',
-                    url: baseURL + '/equips/' + this.delEquipObj.id,
-                }).then(res => {
-                    this.$message.success('删除成功');
-                    this.refetch();
-                    this.dialogVisible = false;
-                });
+                this.dialogVisible = false
+                inHouseOrder(this.delEquipId).then(res => {
+                    this.$message.success("删除成功")
+                    this.$refs.lable.getList()
+                }).catch(err => {
+                    this.$message.error(err)
+                })
             },
-            refetch(){
-              this.$refs.lable.getList();
-            },
-            toDel(data) {
-                this.delEquipObj = data;
-                this.dialogVisible = true
-            },
+            // toDel(data) {
+            //     this.delEquipObj = data;
+            //     this.dialogVisible = true
+            // },
             rfidMode(mode) {
                 this.modeType = mode;
                 if (this.modeType == 'serial') {
@@ -250,27 +214,11 @@
                 }
                 this.$refs.dialogModify.show();
             },
-            goInfo(data, row) {
-                switch (data) {
-                    case 'add':
-                        this.storageInfoShow = true;
-                        this.title = '新增装备信息';
-                        this.equipId = '';
-                        break;
-                    case 'storage':
-                        this.storageInfoShow = true;
-                        this.title = '装备入库';
-                        this.equipId = '';
-                        break;
-                    case 'look':
-                        this.storageInfoShow = true;
-                        this.title = '装备查看';
-                        this.equipId = row.id;
-                        break;
-                    case 'rfid':
-                        this.$refs.dialogPattern.show();
-                        break;
-                }
+            goInfo() {
+                this.storageInfoShow = true;
+                // this.storageListShow = false
+                 this.title = '入库装备';
+                // this.equipId = '';
             },
             serialRfid() {
                 getRfid().then(res => {
