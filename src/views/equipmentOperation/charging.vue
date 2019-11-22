@@ -6,40 +6,37 @@
             </div>
             <div>
                 <tabs :list="tabsList" :indexDefault="0" @selected="selected">
-                    <div class="_buttons">
-                        <BosInput
-                                v-if="type==='需要充电'"
-                                placeholder="rfid/装备/序号/编号"
-                                suffix="el-icon-search"
-                                v-model="inquire"
-                                :wrapforlike="false"
-                                style=" width:285px;">
-                        </BosInput>
-                    </div>
+                    <!--<div class="_buttons">-->
+                        <!--<BosInput-->
+                                <!--v-if="type==='需要充电'"-->
+                                <!--placeholder="rfid/装备/序号/编号"-->
+                                <!--suffix="el-icon-search"-->
+                                <!--v-model="inquire"-->
+                                <!--:wrapforlike="false"-->
+                                <!--style=" width:285px;">-->
+                        <!--</BosInput>-->
+                    <!--</div>-->
                 </tabs>
 
                 <div v-if="show">
                     <el-table :data="list" fit highlight-current-row height="3.55rem">
-                        <bos-table-column lable="rfid" field="equip.rfid"></bos-table-column>
-                        <bos-table-column lable="装备名称" field="equip.name"></bos-table-column>
-                        <bos-table-column lable="装备序号" field="equip.serial"></bos-table-column>
-                        <bos-table-column lable="架体编号" field="equip.location.number"></bos-table-column>
+                        <bos-table-column lable="RFID" field="rfid"></bos-table-column>
+                        <bos-table-column lable="装备序号" field="serial"></bos-table-column>
+                        <bos-table-column lable="装备名称" field="equipArg.name"></bos-table-column>
+                        <bos-table-column lable="装备型号" field="equipArg.model"></bos-table-column>
+                        <bos-table-column lable="装备位置"
+                                          :filter="(row)=>surface(row.location)"></bos-table-column>
 
-                        <bos-table-column lable="架体AB面"
-                                          :filter="(row)=>surface(row.equip.location?row.equip.location.surface:'暂无')"></bos-table-column>
-
-                        <bos-table-column lable="充电周期" :filter="(row)=>milliToDay(row.chargeCycle)"></bos-table-column>
+                        <bos-table-column lable="充电周期" :filter="(row)=>milliToDay(row.equipArg.chargeCycle)"></bos-table-column>
 
                         <!--<bos-table-column lable="充电周期" field="chargeCycle"></bos-table-column>-->
 
-                        <bos-table-column lable="上次充电时间"
-                                          :filter="(row)=>$filterTime(row.lastChargeTime)"></bos-table-column>
                         <bos-table-column lable="电量倒计时"
                                           v-if="type!=='正在充电'"
-                                          :filter="(row)=>countdown(row.lastChargeTime,row.chargeCycle)"></bos-table-column>
+                                          :filter="(row)=>chargeCountdown(row.chargeCountdown)"></bos-table-column>
                     </el-table>
 
-                    <bos-paginator v-if="this.list!=''" :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
+                    <!--<bos-paginator v-if="this.list!=''" :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>-->
 
                 </div>
 
@@ -91,7 +88,9 @@
                 }
             },
             async getList() {
-                this.list = await this.getAxiosList1(getNeedCharge);
+                 getNeedCharge().then(res=>{
+                     this.list = res
+                });
             }
         },
 
