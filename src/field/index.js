@@ -21,6 +21,7 @@ import FieldTree from './components/field-tree.vue';
 import FieldTable from './components/field-table.vue'
 import FieldCascader from './components/field-cascader'
 import FieldInputQuery from './components/field-input-query'
+import TeachTableColumn from './components/teach-table-column.vue';
 
 import BosPaginator from './components/bos-paginator';
 import BosTableColumn from './components/bos-table-column.vue';
@@ -47,6 +48,7 @@ let componentsList = {
     'FieldCascader': FieldCascader,
     'BosInput': BosInput,
     'FieldInputQuery': FieldInputQuery,
+    'TeachTableColumn':TeachTableColumn,
 
 };
 
