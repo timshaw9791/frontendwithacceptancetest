@@ -148,6 +148,9 @@
                 <servicedialog title="开始保养装备清单" ref="maintenanceDialog" :width="'4.151rem'" @cancel="cancel"
                                @confirm="repairPush">
                     <div class="maintenance_start_table">
+                        <div class="maintenance__start_table_head">
+                            {{`本次保养装备合计：${equipMaintenance}(件)`}}
+                        </div>
                         <el-table :data="dialogList" max-height="2.7917rem">
                             <bos-table-column lable="装备名称" field="name"></bos-table-column>
                             <bos-table-column lable="装备型号" field="model"></bos-table-column>
@@ -202,6 +205,7 @@
                 batch: false, // 是否显示多选框(正在保养)
                 show: true,
                 title: "",
+                equipMaintenance:'',
                 dialogList: [],
                 equipList: [], // 保存确认保养的装备id
                 param: {
@@ -613,7 +617,17 @@
         margin-top: 0.1458rem;
         background: rgba(255, 255, 255, 1);
     }
-
+    .maintenance_start_table .maintenance__start_table_head{
+        width:100%;
+        height:0.34375rem;
+        background:rgba(224,224,224,0.32);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight:400;
+        font-size: 24px;
+        color: #EF4545;
+    }
     .maintenance_end_table {
         width: 4.349rem;
         height: 3.776rem;
