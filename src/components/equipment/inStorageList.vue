@@ -25,21 +25,19 @@
                   <el-input v-model="hardware.operator" :disabled="true" style="width: 220px"></el-input></div>
               </div>
               <div class="list-info" v-else>
-                <div class="list-number">{{ typeName }}单号： 20190630567</div>
-                <div class="operator">操作人员： 王小明</div>
-                <div class="time"> {{ typeName }}时间： 2019-6-30 15:00:09</div>
+                <div class="list-number">{{ typeName }}单号： {{ equipList.orderNumber }}</div>
+                <div class="operator">操作人员： {{ equipList.operator }}</div>
+                <div class="time"> {{ typeName }}时间： {{ equipList.createTime }}</div>
               </div>
               <div v-if="!title.includes('装备')">装备统计：</div>
               <el-table :data="list" height="529px" style="border: 1px solid #ccc; margin-top: 10px">
                 <bos-table-column lable="装备名称" field="name"></bos-table-column>
-                <bos-table-column lable="装备型号" field="xinhao"></bos-table-column>
-                <bos-table-column lable="装备位置" field="position"></bos-table-column>
-                <bos-table-column lable="装备数量" field="num"></bos-table-column>
+                <bos-table-column lable="装备型号" field="model"></bos-table-column>
+                <bos-table-column lable="装备位置" :filter="(row) => $filterFrame(row.locationInfo)"></bos-table-column>
+                <bos-table-column lable="装备数量" :filter="(row) => 1"></bos-table-column>
               </el-table>
             </div>
         </el-card>
-
-      
     </div>
 </template>
 
@@ -47,17 +45,8 @@
     export default {
         data() {
             return {
-                list: [{
-                  name: "充电警棍",
-                  xinhao: "HDG02",
-                  position: "10架/A面/2节/6层",
-                  num: '1'
-                },{
-                  name: "充电警棍",
-                  xinhao: "HDG02",
-                  position: "10架/A面/2节/6层",
-                  num: '1'
-                }],
+                equipList: [],
+                list: [],
                 typeName: '', // 显示什么类型(入库/出库)
                 hardware: {
                   selectArr: [{
@@ -78,9 +67,15 @@
               type: String,
               default: "入库单详情"
             },
-            lsitNumber: {
+            listNumber: {
               type: [Number, String],
               default: 0
+            },
+            equipData: {
+              type: Object,
+              default() {
+                return {}
+              }
             }
         },
 
@@ -103,9 +98,15 @@
 
         created() {
           this.typeName = this.title.slice(0, 2)
+          this.equipList = {
+            orderNumber: this.equipData.orderNumber,
+            operator: this.equipData.operatorInfo?this.equipData.operatorInfo.operator: '',
+            createTime: this.$filterTime(this.equipData.createTime),
+          }
+          this.list = this.equipData.equipInOutHouseDetails
         },
         mounted() {
-
+          
         },
 
 

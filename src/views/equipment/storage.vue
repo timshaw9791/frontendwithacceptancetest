@@ -53,7 +53,7 @@
         <!--内部业务组件-->
 
         <storageInfo :equipId="equipId" v-if="storageInfoShow" :title="title" @black="black"></storageInfo>
-        <in-storage-list v-if="!storageListShow" title="入库单详情" @black="storageListShow=true"></in-storage-list>
+        <in-storage-list v-if="!storageListShow" title="入库单详情" :equipData="equipData" @black="storageListShow=true"></in-storage-list>
 
 
         <!--RFID遮罩层 -->
@@ -116,10 +116,10 @@
     import tabs from 'components/base/tabs/index'
     import storageInfo from 'views/equipment/storageInfos'
     import inStorageList from 'components/equipment/inStorageList'
-    import api from 'gql/eqList.gql'
     import serviceDialog from 'components/base/serviceDialog/index'
     // import {formRulesMixin} from "../../field/common/mixinComponent";
     import {getRfid, saveRfid} from "api/rfid";
+    import { inHouseOrder } from "api/storage"
     import request from 'common/js/request'
     import {baseURL} from "../../api/config";
     import { start, startOne, killProcess } from 'common/js/rfidReader'
@@ -138,31 +138,26 @@
                 options: [],
                 commonHouseId: '',
                 equipId: '',
+                delEquipId: '',
                 title: '',
                 storageInfoShow: false,
                 storageListShow: true,
                 list: [],
                 table: {
                     labelList: [
-                        {lable: '入库单号', field: 'rfid'},
-                        {lable: '装备数量', field: 'equipArg.category.genre.name'},
-                        {lable: '操作人员', field: 'equipArg.category.name', },
-                        {lable: '入库时间', field: 'equipArg.name'},
+                        {lable: '入库单号', field: 'orderNumber'},
+                        {lable: '装备数量', field: 'count'},
+                        {lable: '操作人员', field: 'operatorInfo.operator', },
+                        {lable: '入库时间', filter: (row) => this.$filterTime(row.createTime)},
                     ],
-                    url:'/equips',
+                    url:'/inouthouse/findInHouseNumberLike',
                     tableAction:{
                         label:'操作',
                         button:[{name:'查看',type:'primary'},{name:'删除',type:'danger'}]
                     },
                     search:'',
                 },
-                param: {
-                    qfilter: {
-                        "key": "rfid",
-                        "operator": "LIKE",
-                        value: '%%',
-                    }
-                },
+                equipData: {}, // 入库单数据
                 mode: true,
                 inlineForm: {
                     rfid: '',
@@ -187,56 +182,31 @@
         },
         methods: {
             clickTable(table) {
-                let  data = table.row;
                 if(table.name==='查看'){
-                    
+                    this.equipData = table.row
+                    this.storageListShow = false
                 }else {
-                   // this.toDel(data)
+                    this.delEquipId = table.row.id
+                    this.dialogVisible = true
                 }
-                // if(table.name=='详情'){
-                //     let dataCopy=JSON.parse(JSON.stringify(data));
-                //     this.equipList.list=dataCopy.equipActionRecords;
-                //     this.equipList.list.forEach((item,index)=>{
-                //         let number=index+1;
-                //         let serialNumber='';
-                //         if(number<10){
-                //             serialNumber='0'+'0'+number
-                //         }else if(10<number<100){
-                //             serialNumber='0'+number
-                //         }else {
-                //             serialNumber=number
-                //         }
-                //         item.serialNumber=serialNumber
-                //     });
-                //     this.$refs.dialogEquipTable.show();
-                // }else {
-                //     if (data) {
-                //         this.address=baseURL+'/records/'+data.videoAddress;
-                //         this.$refs.recordVideo.show()
-                //     }
-                // }
             },
             cancelPattern() {
                // killProcess();
                killProcess(this.pid)
             },
             delEquip() {
-                request({
-                    method: 'DELETE',
-                    url: baseURL + '/equips/' + this.delEquipObj.id,
-                }).then(res => {
-                    this.$message.success('删除成功');
-                    this.refetch();
-                    this.dialogVisible = false;
-                });
+                this.dialogVisible = false
+                inHouseOrder(this.delEquipId).then(res => {
+                    this.$message.success("删除成功")
+                    this.$refs.lable.getList()
+                }).catch(err => {
+                    this.$message.error(err)
+                })
             },
-            refetch(){
-              this.$refs.lable.getList();
-            },
-            toDel(data) {
-                this.delEquipObj = data;
-                this.dialogVisible = true
-            },
+            // toDel(data) {
+            //     this.delEquipObj = data;
+            //     this.dialogVisible = true
+            // },
             rfidMode(mode) {
                 this.modeType = mode;
                 if (this.modeType == 'serial') {

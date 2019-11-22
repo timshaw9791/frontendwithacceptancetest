@@ -12,7 +12,7 @@
             <!--操作拦-->
             <div>
                 <tabs>
-                    <el-button type="text" class="_textBt" @click="goInfo('look')">
+                    <el-button type="text" class="_textBt" @click="goInfo('add')">
                         <svg-icon icon-class="加" class="textBt"/>
                         新增装备参数
                     </el-button>
@@ -61,11 +61,11 @@
                 list: [],
                 table: {
                     labelList: [
-                        {lable: '装备名称', field: 'rfid'},
-                        {lable: '装备型号', field: 'equipArg.category.genre.name'},
-                        {lable: '供应商', field: 'equipArg.category.name' },
+                        {lable: '装备名称', field: 'name'},
+                        {lable: '装备型号', field: 'model'},
+                        {lable: '供应商', field: 'supplier.name' },
                     ],
-                    url:'/equips',
+                    url:'/equip/findByNameOrModelLike',
                     tableAction:{
                         label:'操作',
                         button:[{name:'查看',type:'primary'}]

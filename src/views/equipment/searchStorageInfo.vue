@@ -12,10 +12,6 @@
             <!--操作拦-->
             <div>
                 <tabs>
-                  <el-button type="text" class="_textBt" @click="goInfo('look')">
-                        <svg-icon icon-class="加" class="textBt"/>
-                        新增装备参数
-                    </el-button>
                     <div class="_buttons">
                         <BosInput
                                 placeholder="RFID/名称/型号"
@@ -62,15 +58,15 @@
                 table: {
                     labelList: [
                         {lable: 'RFID', field: 'rfid'},
-                        {lable: '装备序号', field: 'number'},
-                        {lable: '装备名称', field: 'rfid'},
-                        {lable: '装备型号', field: 'equipArg.category.genre.name'},
-                        {lable: '供应商', field: 'equipArg.category.name' },
+                        {lable: '装备序号', field: 'serial'},
+                        {lable: '装备名称', field: 'equipArg.name'},
+                        {lable: '装备型号', field: 'equipArg.model'},
+                        {lable: '供应商', field: 'equipArg.supplier.name' },
                     ],
-                    url:'/equips',
+                    url:'/equip/findEquipsByRfidAndNameAndModel',
                     tableAction:{
                         label:'操作',
-                        button:[{name:'查看',type:'primary'}, {name: '查看', type: 'primary'}]
+                        button:[{name:'查看',type:'primary'}, {name: '历史', type: 'primary'}]
                     },
                     search:'',
                 },

@@ -59,12 +59,12 @@
                 title: '',
                 table: {
                     labelList: [
-                        {lable: '出库单号', field: 'rfid'},
-                        {lable: '装备数量', field: 'equipArg.category.genre.name'},
-                        {lable: '操作人员', field: 'equipArg.category.name', },
-                        {lable: '出库时间', field: 'equipArg.name'},
+                        {lable: '出库单号', field: 'orderNumber'},
+                        {lable: '装备数量', field: 'count'},
+                        {lable: '操作人员', field: 'operatorInfo.operator', },
+                        {lable: '出库时间', filter: (row) => this.$filterTime(row.createTime)},
                     ],
-                    url:'/equips',
+                    url: '/inouthouse/findOutHouseNumberLike',
                     tableAction:{
                         label:'操作',
                         button:[{name:'查看',type:'primary'}]
