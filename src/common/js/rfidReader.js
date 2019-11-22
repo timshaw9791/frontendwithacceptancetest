@@ -21,7 +21,6 @@ export function setCom(data) {
 
 /* 获取手持机路径 */
 export function getHandheldPath(path) {
-    newFile_path = path.replace(/\\/g, "/")
     inventoryFile = `${newFile_path}/inventory.json`;
 }
 
