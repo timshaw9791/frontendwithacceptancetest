@@ -338,8 +338,9 @@ export default {
                     })
               
                 this.list = JSON.parse(JSON.stringify(res.content));
+                console.log(this.list)
                 this.list.forEach(item => {
-                    if (item.video!= null &&item.pdf!='' ) {
+                    if (item.video!= null &&item.video!='' ) {
                             item.video = item.video.split(',');
                            
                     }else{
@@ -391,7 +392,7 @@ export default {
                 else{
                      instance.post(videoUpUrl, fileFormData, requestConfig).then(res => {
                     this.videoNum++
-                    this.equipName.video.push(files.name)
+                    this.equipModel.video.push(files.name)
                     loading.close();
                 }).catch(err => {
                     loading.close();
@@ -410,7 +411,7 @@ export default {
                      instance.post(pdfUpUrl, fileFormData, requestConfig).then(res => {
                     console.log("上传成功")
                     this.pdfNum++
-                    this.equipName.pdf.push(files.name)
+                    this.equipModel.pdf.push(files.name)
                      loading.close();
                 }).catch(err => {
                     loading.close();
