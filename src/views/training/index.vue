@@ -341,26 +341,19 @@ export default {
               
                 this.list = JSON.parse(JSON.stringify(res));
                 this.list.forEach(item => {
-                    console.log(item)
-                    console.log("item.video--------------"+item.video)
-        
-                    console.log("item.pdf--------------------")
-                    console.log(item.pdf)
-                    if (item.video!= null  ) {
+                    if (item.video!= null &&item.pdf!='' ) {
                             item.video = item.video.split(',');
-                            console.log("item.video--------------------+++++++++")
+                           
                     }else{
                              item.video = [];
-                             console.log("item.video--------------------kkkkkkkkk")
+                           
                         }
                     if (item.pdf != null &&item.pdf!='') {
-                        console.log(typeof(item.pdf))
+                       
                             item.pdf = item.pdf.split(',');
-                            console.log(typeof(item.pdf))
                             
                     }else{
                              item.pdf = [];
-                             console.log("item.pdf---------------------ffff"+item.pdf)
                         }
                 })
                
