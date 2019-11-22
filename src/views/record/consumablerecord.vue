@@ -1,6 +1,6 @@
 <template>
     <div class="opening-box">
-        <my-header :title="'开门记录'" :searchFlag="false" ></my-header>
+        <my-header :title="'耗材记录'" :searchFlag="false"></my-header>
         <div class="action-bar">
             <div style="width:400px" data-test="time_search">
                 <el-date-picker
@@ -14,7 +14,7 @@
             </div>
             <div class="_buttons" style="margin-right: 18px">
                 <BosInput
-                        placeholder="开门人员"
+                        placeholder="装备名称/操作状态/操作人员"
                         suffix="el-icon-search"
                         v-model="table.search"
                         style="width:285px;">
@@ -23,41 +23,33 @@
             </div>
         </div>
         <field-table :list="list" :labelList="table.labelList"
-                    :tableAction="table.tableAction"  :pageInfo="paginator" @tableCurrentPageChanged="changePage" @clickTableCloum="clickTableCloum" style="width: 100%">
+                    :tableAction="table.tableAction"  :pageInfo="paginator" @tableCurrentPageChanged="changePage" style="width: 100%">
         </field-table>
-        <r_video ref="recordVideo" :src="address"></r_video>
     </div>
 </template>
 
 <script>
     import myHeader from 'components/base/header/header'
-    import r_search from 'components/record/recordSearch'
-    import r_video from 'components/record/recordDialog'
-    import r_label from 'common/vue/ajaxLabel'
-    import {baseURL} from "../../api/config";
-    import {gateOpenRecord,findByTimeBetween,findByOperatorName} from "api/openrecord"
+    import {findConsumableByName,findByTimeBetween} from "api/equiprecord"
 
     export default {
-        name: "opening",
+        name: "consumablerecord",
         components:{
             myHeader,
-            r_search,
-            r_label,
-            r_video
         },
         data(){
             return{
                 table: {
                     flag: false,
                     labelList: [
-                        {lable: '开门人员', field: 'operatorInfo.operator',sort:false},
-                        {lable: '开门时间', field: 'creatTime' ,filter: (ns) => this.$filterTime(parseInt(ns.creatTime))},
+                        {lable: '装备名称', field: 'name',sort:false},
+                        {lable: '装备数量', field: 'count',sort:false},
+                        {lable: '备注', field: 'remark',sort:false},
+                        {lable: '操作状态', field: 'category',sort:false},
+                        {lable: '操作人员', field: 'operatorInfo.operator',sort:false},
+                        {lable: '操作时间', field: 'creatTime' ,filter: (ns) => this.$filterTime(parseInt(ns.creatTime))},
                     ],
                     search:'',
-                    tableAction:{
-                        label:'监控视频',
-                        button:[{name:'查看',type:'primary'}]
-                    },
                     time:''
                 },
                 list:[],
@@ -70,27 +62,18 @@
             }
         },
         methods:{
-            clickTableCloum(table) {
-                let data = table.row;
-                if (data) {
-                    console.log(data);
-                    this.address=baseURL+'/records/'+data.videoAddress;
-                    this.$refs.recordVideo.show()
-                }
-            },
             
-            getList(){
+            getList(data){
                 let params = this.paginator
-                gateOpenRecord(params).then(res=>{
+                findConsumableByName(params).then(res=>{
                     this.list=[];
-                    this.list=res.content;
+                    this.list=JSON.parse(JSON.stringify(res.content));
                     this.paginator.totalPages=res.totalPages
                 })
             },
             changePage(data){
                 this.paginator.page = data
                 this.getList()
-
             }
         },
         created(){
@@ -99,23 +82,41 @@
         watch:{
             'table.search':{
                 handler(data){
-                    let params = {operator:data}
-                    findByOperatorName(params).then((res)=>{
-                        this.list=JSON.parse(JSON.stringify(res.content))
-                    })
+                    this.paginator.name = data
+                    this.getList()
+
                 }
             },
             'table.time':{
                 handler(data){
-                    data[0] = data[0].replace(new RegExp("-","gm"),"/");
-                    let starttime = (new Date(data[0])).getTime();
-                     data[1] = data[1].replace(new RegExp("-","gm"),"/");
-                    let endtime = (new Date(data[1])).getTime();
-                    let params = {endTime:endtime,startTime:starttime}
-                    console.log("params",params)
-                    findByTimeBetween(params).then((res)=>{
-                        this.list=JSON.parse(JSON.stringify(res.content))
-                    })
+                    if(data){
+                        data[0] = data[0].replace(new RegExp("-","gm"),"/");
+                        let starttime = (new Date(data[0])).getTime();
+                        data[1] = data[1].replace(new RegExp("-","gm"),"/");
+                        let endtime = (new Date(data[1])).getTime();
+                        let params = {endTime:endtime,startTime:starttime}
+                        findByTimeBetween(params).then((res)=>{
+                            this.list=JSON.parse(JSON.stringify(res.content))
+                        })
+                    }else{
+                        this.getList()
+                    }
+                    
+                }
+            },
+            'list':{
+                handler(data){
+                    for(let i in this.list){
+                        if(this.list[i].category=="INCREASE"){
+                            this.list[i].category="新增"
+                        }else if(this.list[i].category=="UPDATE"){
+                            this.list[i].category="补充"
+                        }else if(this.list[i].category=="RECEIVE"){
+                            this.list[i].category="领取"
+                        }
+                        console.log("++++")
+                    }
+
                 }
             }
         }

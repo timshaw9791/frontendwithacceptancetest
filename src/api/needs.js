@@ -1,10 +1,9 @@
 import request from 'common/js/request'
 
-export function getNeedCharge(data) {
+export function getNeedCharge() {
     return request({
-        url: '/equip-remind/charge-need',
-        method: 'get',
-        params: data
+        url: '/equip/findneedchargeequips',
+        method: 'get'
     })
 }
 
@@ -15,3 +14,11 @@ export function getNeedUpkeep(data) {
         params: data
     })
 }
+
+export function findneedkeepEquips() {
+    return request({
+        url: '/equip/findneedkeepEquips',
+        method: 'get',
+    })
+}
+

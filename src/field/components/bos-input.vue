@@ -1,10 +1,11 @@
 <template>
-    <el-input :type="type" v-model="copyVal"
+    <el-input  :type="type" v-model="copyVal"
               :suffix-icon="suffix"
               :placeholder="placeholder"
               :readonly="cReadonly" :disabled="cDisabled"
               :autofocus="cAutofocus"
               @change="change" @blur="blur" @focus="focus"
+              data-test="search"
     ></el-input>
 </template>
 

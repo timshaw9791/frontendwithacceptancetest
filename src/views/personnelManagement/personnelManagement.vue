@@ -1,6 +1,6 @@
 <template>
     <div class="personnelManagement">
-        <my-header :title="'人员信息管理'" :searchFlag="false" :haveBlack="!viewStatus.flag" @h_black="blackJudge"></my-header>
+        <my-header :title="'人员管理'" :searchFlag="false" :haveBlack="!viewStatus.flag" @h_black="blackJudge"></my-header>
         <div class="personnel-action-bar">
             <div v-show="viewStatus.flag" class="add">
                 <div class="add-personnel">
