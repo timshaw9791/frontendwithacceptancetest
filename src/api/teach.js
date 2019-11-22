@@ -3,7 +3,7 @@ import request from 'common/js/request'
 
 export function getEquipArgs(params) {
     return request({
-        url: '/equip-args',
+        url: '/equip/equipArgsByName',
         method: 'get',
         params:params
     })
