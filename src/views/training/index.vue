@@ -59,8 +59,8 @@
                     <span>视频限制{{equipModel.video?equipModel.video.length:0}}/3</span>
                     <span style="margin-left:33px;">文档限制{{equipModel.pdf?equipModel.pdf.length:0}}/3</span>
                    
-                    <div @click="videoUp" class="up-box">
-                        <input type="file" ref="fileVideo" @change="videoFileChange" >
+                    <div @click="videoUp" class="up-box" >
+                        <input type="file" ref="fileVideo" @change="videoFileChange" data-test="upFile" >
                         <span>上传</span>
                     </div>
 
@@ -320,7 +320,7 @@ export default {
             }).then(res => {
                 console.log("res")
                 console.log(res)
-                  res.forEach(item=>{
+                  res.content.forEach(item=>{
                       
                         let flag=false;
                         for(var i=0;i<this.nameList.length;i++)
@@ -337,7 +337,7 @@ export default {
                         
                     })
               
-                this.list = JSON.parse(JSON.stringify(res));
+                this.list = JSON.parse(JSON.stringify(res.content));
                 this.list.forEach(item => {
                     if (item.video!= null &&item.pdf!='' ) {
                             item.video = item.video.split(',');
