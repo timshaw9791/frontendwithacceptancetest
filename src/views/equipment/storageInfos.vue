@@ -34,7 +34,7 @@
                     </div>
                     <div class="box-body">
                         <form-container ref="form" :model="form" class="formList">
-                           <field-input v-model="form.upkeepCycle" label="装备名称" width="3"
+                           <field-input v-model="form.name" label="装备名称" width="3"
                                          :rules="r(true).all(R.require)" prop="upkeepCycle"
                                          v-if="['新增装备信息', '装备参数详情', '装备信息详情'].includes(title)"
                                          :disabled="edit"
@@ -44,7 +44,7 @@
                                           @change="getEquipInfo" placeholder="请选择" prop="name"
                                           v-else></field-select>
             
-                            <field-input v-model="form.upkeepCycle" label="装备型号" width="3"
+                            <field-input v-model="form.model" label="装备型号" width="3"
                                          :rules="r(true).all(R.require)" prop="upkeepCycle"
                                          v-if="['新增装备信息', '装备参数详情', '装备信息详情'].includes(title)"
                                          :disabled="edit" :class="{'occupy-position': !title.includes('装备信息详情')}"
@@ -115,7 +115,7 @@
 
                             <field-select label="架体AB面" v-model="zbForm.surfaceL" width="2.5"
                                           :disabled="extendEdit"
-                                          :list="[{val:'A_SURFACE',key:'A面'},{val:'B_SURFACE',key:'B面'}]"></field-select>
+                                          :list="[{val:'A',key:'A面'},{val:'B',key:'B面'}]"></field-select>
                             <field-input v-model="zbForm.sectionL" label="架体节号" width="2.5"
                                          :disabled="extendEdit"></field-input>
 
@@ -205,7 +205,7 @@
     import axios from 'axios';
     import {imgUpUrl, pdfUpUrl, videoUpUrl, imgBaseUrl, pdfBaseUrl, videoBaseUrl} from "api/config";
     import {delFile} from "api/basic";
-    import {getGenreList,addEquipInfo,getSuppliers,getEquipById, equipArgsByName} from "api/storage"
+    import {getGenreList,addEquipInfo,getSuppliers,getEquipById, equipArgsByName, inHouse, findEquip} from "api/storage"
     import serviceDialog from 'components/base/serviceDialog/index'
     import {transformMixin} from "common/js/transformMixin";
     import { start, startOne, killProcess } from 'common/js/rfidReader'
@@ -307,6 +307,15 @@
                     personM: '',
                     phoneM: '',
                 })
+                this.zbForm = {
+                    numberL: '', 
+                    surfaceL: '',
+                    sectionL: '', 
+                    extendEdit: '', 
+                    productDateQ: '', 
+                    price: '', 
+                }
+                this.list = [{rfid: null, serial: null}]
             },
             //离开页面以后为父组件抛出black 杀死进程
             black() {
@@ -340,6 +349,10 @@
             addEquipArg() {
                 this.isClick = true;
                 setTimeout(() => {this.isClick = false}, 1600);
+                if(this.list.length == 0 || this.list[0].rfid == null || this.list[0].rfid == undefined) {
+                    this.$message.error("未扫入装备")
+                    return
+                }
                 let tempForm = JSON.parse(JSON.stringify(this.form)),
                     tempZbForm = JSON.parse(JSON.stringify(this.zbForm))
                 if(this.title.includes('入库装备')) {
@@ -356,7 +369,9 @@
                             number: tempZbForm.numberL,
                             section: tempZbForm.sectionL,
                             surface: tempZbForm.surfaceL
-                        }
+                        },
+                        price: tempZbForm.price * 100,
+                        productDate: tempZbForm.productDateQ
                     },
                     rfidList = [],
                     serialList = [];
@@ -364,9 +379,15 @@
                         rfidList.push(equip.rfid)
                         serialList.push(equip.serial)
                     })
-                    console.log(requestBody);
-                    console.log(rfidList);
-                    console.log(serialList);
+                    this.$refs.form.postValidate(inHouse, {
+                        rfids: rfidList,
+                        serials: serialList
+                    }, requestBody, (state, res) => {
+                        this.init()
+                        this.$message.success("入库成功")
+                        this.$emit('black')
+                        // 关闭硬件
+                    })
                 }
                 // if (this.title.includes('新增')) {
                 //     this.form.videoAddresses ? this.form.videoAddresses = this.form.videoAddresses.join(',') : '';
@@ -706,23 +727,54 @@
                     phoneM: temp.supplier.phone,
                     id: temp.id
                 })
+                // 硬件开启
+            setTimeout(() => {
+                list: [{rfid: null, serial: null}],
+            this.list[0].rfid = "00008"
+            this.list[0].serial = "88888"
+            }, 1000)
             },
             //进入页面获取数据
             getEquipInfo() {
                 this.init()
-                equipArgsByName({name: this.form.name}).then(res => {
-                   let result = JSON.parse(JSON.stringify(res)), nameArr = [], modelArr = [];
-                   result.forEach(equip => {
-                       nameArr.push(equip.name)
-                       modelArr.push(equip.model)
-                   })
-                   if(this.equipment.name != "") {
-                       this.equipment.model = Array.from(new Set(modelArr))
-                       this.equipment.allEquip = res
-                   } else {
-                       this.equipment.name = Array.from(new Set(nameArr))
-                   }
-                })
+                if(this.title.includes('入库装备')) {
+                    equipArgsByName({name: this.form.name}).then(res => {
+                        let result = JSON.parse(JSON.stringify(res)), nameArr = [], modelArr = [];
+                        result.forEach(equip => {
+                            nameArr.push(equip.name)
+                            modelArr.push(equip.model)
+                        })
+                        if(this.equipment.name != "") {
+                            this.equipment.model = Array.from(new Set(modelArr))
+                            this.equipment.allEquip = res
+                        } else {
+                            this.equipment.name = Array.from(new Set(nameArr))
+                        }
+                    })
+                } else if(this.title.includes('装备信息详情')) {
+                    findEquip(this.equipId).then(res => {
+                        let result = JSON.parse(JSON.stringify(res))
+                        this.form = {
+                            name: result.equipArg.name,
+                            model: result.equipArg.model,
+                            serial: result.serial,
+                            shelfLifeQ: result.equipArg.shelfLife/3600/24,
+                            chargeCycle: result.equipArg.chargeCycle/3600/24,
+                            upkeepCycle: result.equipArg.upkeepCycle/3600/24,
+                            vendorId: result.equipArg.supplier.name,
+                            personM: result.equipArg.supplier.person,
+                            phoneM: result.equipArg.supplier.phone
+                        }
+                        this.zbForm = {
+                            numberL: result.location.number,
+                            surfaceL: result.location.surface,
+                            sectionL: result.location.section,
+                            floorL: result.location.floor,
+                            productDateQ: result.productDate,
+                            price: result.price/100
+                        }
+                    })
+                }
                 // if (this.equipId) {
                 //     getEquipById(this.equipId).then(res=>{
                 //         let eqData = JSON.parse(JSON.stringify(res));
@@ -852,10 +904,6 @@
             } else if (this.title.includes('装备参数详情')) {
                 
             }
-            list: [{rfid: null, serial: null}],
-            this.list[0].rfid = "00001"
-            this.list[0].serial = "00001"
-            this.list.push({rfid: "00002", serial: "00002"})
             this.getEquipInfo();
         },
         beforeDestroy() {

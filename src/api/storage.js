@@ -1,4 +1,5 @@
 import request from 'common/js/request'
+var qs = require('qs')
 
 
 export function getCategoryAndGenre() {
@@ -69,5 +70,30 @@ export function equipArgsByName(params) {
         url: "/equip/equipArgsByName",
         method: "GET",
         params
+    })
+}
+
+/* 入库装备 */
+export function inHouse(params ,data) {
+    return request({
+        url: `/equip/inHouse?${qs.stringify(params, { indices: false })}`,
+        method: "POST",
+        data
+    })
+}
+
+/* 入库单删除 */
+export function inHouseOrder(id) {
+    return request({
+        url: `/inouthouse/inHouseOrder/${id}`,
+        method: "DELETE"
+    })
+}
+
+/* 通过id找实体装备 */
+export function findEquip(id) {
+    return request({
+        url: `/equip/equipById?id=${id}`,
+        method: "GET"
     })
 }
