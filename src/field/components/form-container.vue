@@ -52,6 +52,21 @@
                     this.$message.error('未通过检验');
                 });
             },
+            // 同时传 params和data
+            postValidate(func, params, data, sCallback) {
+                 this.validate.then(() => {
+                    let nPramas = JSON.parse(JSON.stringify(params)),
+                        nData = JSON.parse(JSON.stringify(data));
+                    func(nPramas, nData).then(res => {
+                        sCallback(true, res)
+                    }).catch(err => {
+                        this.$message.error(err.response.data.message)
+                    })
+                }).catch(error => {
+                    console.log("未通过检测");
+                    this.$message.error("未通过检测")
+                })
+            },
             restValidate(func, variables, sCallback) {
                 this.validate.then(() => {
                     let data = JSON.parse(JSON.stringify(variables));

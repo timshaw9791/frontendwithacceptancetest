@@ -27,7 +27,7 @@
                     <bos-table-column lable="联系方式" field="phone"></bos-table-column>
                     <el-table-column label="操作" align="center" width="200px">
                         <template slot-scope="scope">
-                            <el-button type="primary" size="mini" @click="addChanger('修改供应商',scope.row)">编辑</el-button>
+                            <el-button type="primary" size="mini" @click="addChanger('编辑供应商信息',scope.row)">编辑</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
