@@ -282,13 +282,11 @@ export default {
         this.pdfNum=this.equipModel.pdf.length;
         this.equipModel.pdf.splice(index,1)
         this.getListGql('')
-        console.log("this.equipModel.pdf")
-        console.log(this.equipModel.pdf)
+
         },
         videoname(data){
         this.title=data.name+data.model
-        console.log(this.title)
-        console.log("data")
+      
         },
         isvideo(data) {
             console.log(data)
