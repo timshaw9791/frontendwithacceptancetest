@@ -8,37 +8,42 @@
                 <tabs :list="tabsList" :indexDefault="0" @selected="selected">
                     <el-button type="text" class="_textBt" @click="maintenanceShow" v-if="show">
                         <svg-icon icon-class="批量"/>
-                        批量保养
+                        开始保养
                     </el-button>
                     <el-button type="text" class="_textBt" @click="batchstorage" v-else>
                         <svg-icon icon-class="批量"/>
-                        {{this.batch?"取消":"批量"}}入库
+                        结束保养
                     </el-button>
                     <!--<div class="_buttons">-->
-                        <!--<BosInput-->
-                                <!--v-if="type==='需要保养'"-->
-                                <!--placeholder="rfid/装备/序号/编号"-->
-                                <!--suffix="el-icon-search"-->
-                                <!--v-model="inquire"-->
-                                <!--:wrapforlike="false"-->
-                                <!--style=" width:285px;"-->
-                        <!--&gt;</BosInput>-->
+                    <!--<BosInput-->
+                    <!--v-if="type==='需要保养'"-->
+                    <!--placeholder="rfid/装备/序号/编号"-->
+                    <!--suffix="el-icon-search"-->
+                    <!--v-model="inquire"-->
+                    <!--:wrapforlike="false"-->
+                    <!--style=" width:285px;"-->
+                    <!--&gt;</BosInput>-->
                     <!--</div>-->
                 </tabs>
                 <div v-if="show" class="maintenance_body">
                     <div class="maintenance_body_table_box">
                         <el-table class="maintenance_table" :data="list" fit
                                   :row-class-name="tableRowClassName">
-                            <bos-table-column lable="装备名称" field="name" :align="'left'"></bos-table-column>
-                            <bos-table-column lable="装备型号" field="model" :align="'left'"></bos-table-column>
-                            <bos-table-column lable="供应商" field="supplier" :align="'left'"></bos-table-column>
-                            <bos-table-column lable="联系人" field="liaison" :align="'left'"></bos-table-column>
-                            <bos-table-column lable="联系方式" field="phone" :align="'left'"></bos-table-column>
-                            <bos-table-column lable="保养周期" field="interval" :align="'left'"></bos-table-column>
-                            <bos-table-column lable="可用/领用"
-                                              :filter="(row)=>row.approve+'/'+row.neckband"
+                            <bos-table-column lable="装备名称" field="equipArg.name" :align="'left'"></bos-table-column>
+                            <bos-table-column lable="装备型号" field="equipArg.model" :align="'left'"></bos-table-column>
+                            <bos-table-column lable="供应商" field="equipArg.supplier.name"
                                               :align="'left'"></bos-table-column>
-                            <bos-table-column lable="待保养" field="waiting" :align="'left'"></bos-table-column>
+                            <bos-table-column lable="联系人" field="equipArg.supplier.person"
+                                              :align="'left'"></bos-table-column>
+                            <bos-table-column lable="联系方式" field="equipArg.supplier.phone"
+                                              :align="'left'"></bos-table-column>
+                            <bos-table-column lable="保养周期" :filter="(row)=>milliToDay(row.equipArg.upkeepCycle)"
+                                              :align="'left'"></bos-table-column>
+                            <bos-table-column lable="可用/领用"
+                                              :filter="(row)=>row.inHouseCount+'/'+row.receiveHouseCount"
+                                              :align="'left'"></bos-table-column>
+                            <bos-table-column lable="待保养" :filter="(row)=>row.needKeepCount+'件'"
+                                              :align="'left'"></bos-table-column>
 
                             <el-table-column type="expand">
                                 <template slot-scope="props">
@@ -48,32 +53,34 @@
                                             <div class="fold_title_item">数量</div>
                                         </div>
                                         <div class="fold_body">
-                                        <div class="fold_item" v-for="(item,index) in props.row.location" :style="index==0?'padding-left: 0.038rem;':''">
-                                            <div class="fold_body_item"> {{item.locations}}</div>
-                                            <div class="fold_body_item"> {{item.number}}</div>
-                                        </div>
+                                            <div class="fold_item"
+                                                 v-for="(item,index) in props.row.equipCountByLocations"
+                                                 :style="index==0?'padding-left: 0.038rem;':''">
+                                                <div class="fold_body_item" v-text="surface(item)"></div>
+                                                <div class="fold_body_item"> {{item.number}}</div>
+                                            </div>
 
                                         </div>
                                         <!--<div class="fold">-->
-                                            <!--<div class="fold_title">-->
-                                                <!--装备位置-->
-                                            <!--</div>-->
-                                            <!--<div class="fold_body">-->
-                                                <!--<div class="fold_item" v-for="item in props.row.location">-->
-                                                    <!--{{item.locations}}-->
-                                                <!--</div>-->
-                                            <!--</div>-->
+                                        <!--<div class="fold_title">-->
+                                        <!--装备位置-->
+                                        <!--</div>-->
+                                        <!--<div class="fold_body">-->
+                                        <!--<div class="fold_item" v-for="item in props.row.location">-->
+                                        <!--{{item.locations}}-->
+                                        <!--</div>-->
+                                        <!--</div>-->
                                         <!--</div>-->
                                         <div class="fold-line"></div>
                                         <!--<div class="fold">-->
-                                            <!--<div class="fold_title">-->
-                                                <!--数量-->
-                                            <!--</div>-->
-                                            <!--<div class="fold_body">-->
-                                                <!--<div class="fold_item" v-for="item in props.row.location">-->
-                                                    <!--{{item.number}}-->
-                                                <!--</div>-->
-                                            <!--</div>-->
+                                        <!--<div class="fold_title">-->
+                                        <!--数量-->
+                                        <!--</div>-->
+                                        <!--<div class="fold_body">-->
+                                        <!--<div class="fold_item" v-for="item in props.row.location">-->
+                                        <!--{{item.number}}-->
+                                        <!--</div>-->
+                                        <!--</div>-->
                                         <!--</div>-->
                                     </div>
                                 </template>
@@ -138,7 +145,30 @@
                 </div>
 
                 <right :batch="batch" @cancel="cancel" @tobatch="change" v-if="!show"></right>
-
+                <servicedialog title="开始保养装备清单" ref="maintenanceDialog" :width="'4.151rem'" @cancel="cancel"
+                               @confirm="repairPush">
+                    <div class="maintenance_start_table">
+                        <el-table :data="dialogList" max-height="2.7917rem">
+                            <bos-table-column lable="装备名称" field="name"></bos-table-column>
+                            <bos-table-column lable="装备型号" field="model"></bos-table-column>
+                            <bos-table-column lable="待保养/本次保养"
+                                              :filter="(row)=>row.inHouseCount+'/'+row.receiveHouseCount"
+                                              :align="'left'"></bos-table-column>
+                        </el-table>
+                    </div>
+                </servicedialog>
+                <servicedialog title="结束维修装备清单" ref="maintenanceEndDialog" :width="'4.7552rem'" @cancel="cancel"
+                               @confirm="repairPush">
+                    <div class="maintenance_end_table">
+                        <el-table :data="dialogList" max-height="2.7865rem">
+                            <bos-table-column lable="装备名称" field="name"></bos-table-column>
+                            <bos-table-column lable="装备型号" field="model"></bos-table-column>
+                            <bos-table-column lable="装备位置"
+                                              :filter="(row)=>surface(row)"></bos-table-column>
+                            <bos-table-column lable="装备件数" field="Number"></bos-table-column>
+                        </el-table>
+                    </div>
+                </servicedialog>
             </div>
         </el-card>
     </div>
@@ -150,9 +180,10 @@
     import right from "./rightMaintenance";
 
     import {formRulesMixin} from "field/common/mixinAxios";
+    import servicedialog from "components/base/gailiangban";
     import serviceDialog from "components/base/serviceDialog";
     import {transformMixin} from "common/js/transformMixin";
-    import {getNeedUpkeep} from "api/needs";
+    import {getNeedUpkeep, findneedkeepEquips} from "api/needs";
     import {equipsUpkeep} from "api/operation"
 
     var _ = require("lodash");
@@ -171,6 +202,7 @@
                 batch: false, // 是否显示多选框(正在保养)
                 show: true,
                 title: "",
+                dialogList: [],
                 equipList: [], // 保存确认保养的装备id
                 param: {
                     property: "lastUpkeepTime",
@@ -194,7 +226,8 @@
 
         methods: {
             batchstorage() {
-                this.batch = !this.batch
+                this.$refs.maintenanceEndDialog.show();
+                this.batch = !this.batch;
             },
             selected(data) {
                 console.log("触发到我了")
@@ -220,61 +253,70 @@
             },
 
             async getList() {
+                findneedkeepEquips().then(res => {
+                    this.list = res
+                });
                 // this.list = await this.getAxiosList1(getNeedUpkeep);
-                this.list = [{
-                    name: '金属手铐',
-                    model: '装备型号',
-                    approve: 3,
-                    neckband: 1,
-                    waiting: 1,
-                    interval: 30,
-                    supplier: '浙江华安安全设备有限公司'
-                    ,
-                    liaison: '周行行',
-                    phone: '18923453436',
-                    location: [{locations: '10架/A面/2节/6层', number: 10}, {
-                        locations: '10架/A面/2节/6层',
-                        number: 10
-                    }, {locations: '10架/A面/2节/6层', number: 10}, {
-                        locations: '10架/A面/2节/6层',
-                        number: 10
-                    }, {locations: '10架/A面/2节/6层', number: 10},]
-                },
-                    {
-                        name: '金属手铐',
-                        model: '装备型号',
-                        approve: 3,
-                        neckband: 1,
-                        waiting: 1,
-                        interval: 30,
-                        supplier: '浙江华安安全设备有限公司'
-                        ,
-                        liaison: '周行行',
-                        phone: '18923453436',
-                        location: [{locations: '10架/A面/2节/6层', number: 10}, {
-                            locations: '10架/A面/2节/6层',
-                            number: 10
-                        }, {locations: '10架/A面/2节/6层', number: 10}, {
-                            locations: '10架/A面/2节/6层',
-                            number: 10
-                        }, {locations: '10架/A面/2节/6层', number: 10}]
-                    },
-                    , {
-                        name: '金属手铐',
-                        model: '装备型号',
-                        approve: 3,
-                        neckband: 1,
-                        waiting: 1,
-                        interval: 30,
-                        supplier: '浙江华安安全设备有限公司'
-                        ,
-                        liaison: '周行行',
-                        phone: '18923453436',
-                        location: [{locations: '10架/A面/2节/6层', number: 10}, {
-                            locations: '10架/A面/2节/6层',
-                            number: 10
-                        }, {locations: '10架/A面/2节/6层', number: 10}]
-                    }]
+                // this.list = [{
+                //     name: '金属手铐',
+                //     model: '装备型号',
+                //     approve: 3,
+                //     neckband: 1,
+                //     waiting: 1,
+                //     interval: 30,
+                //     supplier: '浙江华安安全设备有限公司'
+                //     ,
+                //     liaison: '周行行',
+                //     phone: '18923453436',
+                //     location: [{locations: '10架/A面/2节/6层', number: 10}, {
+                //         locations: '10架/A面/2节/6层',
+                //         number: 10
+                //     }, {locations: '10架/A面/2节/6层', number: 10}, {
+                //         locations: '10架/A面/2节/6层',
+                //         number: 10
+                //     }, {locations: '10架/A面/2节/6层', number: 10},]
+                // },
+                //     {
+                //         name: '金属手铐',
+                //         model: '装备型号',
+                //         approve: 3,
+                //         neckband: 1,
+                //         waiting: 1,
+                //         interval: 30,
+                //         supplier: '浙江华安安全设备有限公司'
+                //         ,
+                //         liaison: '周行行',
+                //         phone: '18923453436',
+                //         location: [{locations: '10架/A面/2节/6层', number: 10}, {
+                //             locations: '10架/A面/2节/6层',
+                //             number: 10
+                //         }, {locations: '10架/A面/2节/6层', number: 10}, {
+                //             locations: '10架/A面/2节/6层',
+                //             number: 10
+                //         }, {locations: '10架/A面/2节/6层', number: 10}]
+                //     },
+                //     , {
+                //         name: '金属手铐',
+                //         model: '装备型号',
+                //         approve: 3,
+                //         neckband: 1,
+                //         waiting: 1,
+                //         interval: 30,
+                //         supplier: '浙江华安安全设备有限公司'
+                //         ,
+                //         liaison: '周行行',
+                //         phone: '18923453436',
+                //         location: [{locations: '10架/A面/2节/6层', number: 10}, {
+                //             locations: '10架/A面/2节/6层',
+                //             number: 10
+                //         }, {locations: '10架/A面/2节/6层', number: 10}]
+                //     }]
+            },
+            cancel() {
+
+            },
+            repairPush() {
+
             },
             /* 显示具体的保养列表 */
             maintenanceShow() {
@@ -419,6 +461,7 @@
         components: {
             tabs,
             right,
+            servicedialog,
             serviceDialog
         },
         beforeDestroy() {
@@ -456,7 +499,6 @@
 
     .maintenance_body .maintenance_body_table_box {
         width: 7.8698rem;
-        height: 3.55rem
     }
 
     .maintenance_body_table_box .maintenance_table {
@@ -471,7 +513,7 @@
         flex-direction: row;
         color: black;
         position: relative;
-        background:  #F5F5F5;
+        background: #F5F5F5;
     }
 
     .fold_box .fold-line {
@@ -479,7 +521,7 @@
         width: 100%;
         background: rgba(112, 112, 112, 0.15);
         position: absolute;
-        margin-top:calc(0.4323rem/2);
+        margin-top: calc(0.4323rem / 2);
     }
 
     .fold_box .fold {
@@ -494,13 +536,15 @@
         height: 100%;
         margin-left: 0.023rem;
     }
-    .fold_title .fold_title_item{
+
+    .fold_title .fold_title_item {
         height: 50%;
         display: flex;
         align-items: center;
         justify-content: left;
         padding-left: 0.032rem;
     }
+
     .fold_box .fold_body {
         max-width: calc(7.8698rem / 8 * 7);
         min-width: calc(7.8698rem / 8 * 7);
@@ -510,29 +554,34 @@
         flex-direction: row;
         flex-wrap: nowrap;
     }
+
     .fold_body::-webkit-scrollbar {
         width: 2px;
         height: 5px;
 
     }
+
     .fold_body::-webkit-scrollbar-thumb {
-        background-color:rgba(144, 147, 153, 0.1);
+        background-color: rgba(144, 147, 153, 0.1);
     }
-    .fold_body::-webkit-scrollbar-track {/*滚动条里面轨道*/
+
+    .fold_body::-webkit-scrollbar-track { /*滚动条里面轨道*/
         -webkit-box-shadow: #F5F5F5;
         border-radius: 10px;
         background: #F5F5F5;
     }
+
     .fold_body::-webkit-scrollbar-thumb:hover {
         background: rgba(144, 147, 153, 0.3);
     }
 
-    .fold_item .fold_body_item{
+    .fold_item .fold_body_item {
         height: 50%;
         display: flex;
         align-items: center;
         justify-content: left;
     }
+
     .fold_body .fold_item {
         display: flex;
         min-width: calc(7.6198rem / 8 * 2);
@@ -555,7 +604,25 @@
     }
 </style>
 
-<style>
+<style scoped>
+    .maintenance_start_table {
+        width: 3.75rem;
+        height: 3.776rem;
+        margin-left: 0.25rem;
+        margin-right: 0.25rem;
+        margin-top: 0.1458rem;
+        background: rgba(255, 255, 255, 1);
+    }
+
+    .maintenance_end_table {
+        width: 4.349rem;
+        height: 3.776rem;
+        margin-left: 0.25rem;
+        margin-right: 0.25rem;
+        margin-top: 0.1458rem;
+        background: rgba(255, 255, 255, 1);
+    }
+
     ::-webkit-scrollbar {
         width: 6px;
         height: 10px;

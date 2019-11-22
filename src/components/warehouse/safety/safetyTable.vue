@@ -3,7 +3,7 @@
         <div v-if="table.tableType==='unallocated'" :class="distribution?'unallocated':''" >
             <el-table :data="table.tableData" height="3.78125rem" ref="unallocated"
                       @selection-change="handleSelectionChange">
-                <el-table-column type="selection" v-if="distribution"></el-table-column>
+                <el-table-column type="selection" v-if="distribution" data-test="check_box"></el-table-column>
                 <bos-table-column lable="装备名称" field="equipArg.name"></bos-table-column>
                 <bos-table-column lable="装备型号" field="equipArg.model"></bos-table-column>
                 <bos-table-column lable="装备数量" field="count"></bos-table-column>
@@ -25,7 +25,7 @@
                 </el-table-column>
                 <el-table-column label=" ">
                     <template slot-scope="scope">
-                        <div style="cursor: pointer;width: 0.2604rem" @click="deleteButton('category',scope.row)">
+                        <div style="cursor: pointer;width: 0.2604rem" @click="deleteButton('category',scope.row)" data-test="减_icon">
                             <svg-icon icon-class="减" class="icon-search"></svg-icon>
                         </div>
                     </template>
@@ -39,7 +39,7 @@
                 <bos-table-column lable="装备数量" field="count"></bos-table-column>
                 <el-table-column label=" ">
                     <template slot-scope="scope">
-                        <div style="cursor: pointer;width: 0.2604rem" @click="deleteButton('equipArg',scope.row)">
+                        <div style="cursor: pointer;width: 0.2604rem" @click="deleteButton('equipArg',scope.row)" data-test="减_icon">
                             <svg-icon icon-class="减" class="icon-search"></svg-icon>
                         </div>
                     </template>

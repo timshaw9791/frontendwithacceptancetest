@@ -7,7 +7,12 @@ export function retirementApplication(data) {
         params: data
     })
 }
-
+export function findrepairingequips() {
+    return request({
+        url: '/equip/findrepairingequips',
+        method: 'get',
+    })
+}
 // export function maintainEquipApplyOrders(params) {
 //     return request({
 //         url: "/maintain-equip-apply-orders",

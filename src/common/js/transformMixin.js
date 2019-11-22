@@ -87,7 +87,15 @@ export const transformMixin = {
         },
 
         milliToDay(data) {
-            return Math.round(data / 24 / 60 / 60 / 1000)+'天'
+            let date = JSON.parse(JSON.stringify(data));
+            let day = Math.round(date / 24 / 60 / 60 / 1000);
+            if(day<1){
+                let time=(date / 60 / 60 / 1000).toFixed(1);
+                return time+'小时'
+            }else {
+                return day+'天'
+            }
+
         },
 
         applicationType(data) {

@@ -4,12 +4,12 @@
                   fit highlight-current-row  height="3.55rem">
             <bos-table-column lable="RFID" field="rfid"></bos-table-column>
             <bos-table-column lable="装备序号" field="serial"></bos-table-column>
-            <bos-table-column lable="装备名称" field="name"></bos-table-column>
-            <bos-table-column lable="装备型号" field="model"></bos-table-column>
+            <bos-table-column lable="装备名称" field="equipArg.name"></bos-table-column>
+            <bos-table-column lable="装备型号" field="equipArg.model"></bos-table-column>
             <bos-table-column lable="装备位置"
-                              :filter="(row)=>surface(row)"></bos-table-column>
+                              :filter="(row)=>surface(row.location)"></bos-table-column>
 
-            <bos-table-column lable="充电周期" :filter="(row)=>milliToDay(row.chargeCycle)"></bos-table-column>
+            <bos-table-column lable="充电周期" :filter="(row)=>milliToDay(row.equipArg.chargeCycle)"></bos-table-column>
             <bos-table-column lable="充电台位置" field="chargeLocation"></bos-table-column>
             <bos-table-column lable="已充时间" :filter="(row)=>chargeingTime(row.chargeingTime)"></bos-table-column>
         </el-table>

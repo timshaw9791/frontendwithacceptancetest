@@ -14,3 +14,11 @@ export function getNeedUpkeep(data) {
         params: data
     })
 }
+
+export function findneedkeepEquips() {
+    return request({
+        url: '/equip/findneedkeepEquips',
+        method: 'get',
+    })
+}
+

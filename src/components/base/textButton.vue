@@ -1,5 +1,5 @@
 <template>
-    <div class="button_box" :style="havePoint?'cursor: pointer;':'cursor: no-drop;'"  data-test="button" @click="clickButton">
+    <div class="button_box" :style="havePoint?'cursor: pointer;':'cursor: no-drop;'"  :data-test="dataTest" @click="clickButton">
         <svg-icon  :icon-class="iconClass" ></svg-icon>
         <label :class="havePoint?'cursor_point':''" :style="'margin-left:'+marginLeft+'rem'" v-text="buttonName"></label>
     </div>
@@ -21,6 +21,10 @@
             marginLeft:{
                 type:Number,
                 default: 0.0417
+            },
+            dataTest:{
+                type:String,
+                default:'button'
             },
             havePoint:{
                 type:Boolean,

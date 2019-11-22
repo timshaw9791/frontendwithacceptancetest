@@ -3,17 +3,17 @@
         <div class="maintenance_body_table_box">
             <el-table class="maintenance_table" :data="list" fit
                       :row-class-name="tableRowClassName">
-                <bos-table-column lable="装备名称" field="name" :align="'left'"></bos-table-column>
-                <bos-table-column lable="装备型号" field="model" :align="'left'"></bos-table-column>
-                <bos-table-column lable="供应商" field="supplier" :align="'left'"></bos-table-column>
-                <bos-table-column lable="联系人" field="liaison" :align="'left'"></bos-table-column>
-                <bos-table-column lable="联系方式" field="phone" :align="'left'"></bos-table-column>
-                <bos-table-column lable="保养周期" field="interval" :align="'left'"></bos-table-column>
+                <bos-table-column lable="装备名称" field="equipArg.name" :align="'left'"></bos-table-column>
+                <bos-table-column lable="装备型号" field="equipArg.model" :align="'left'"></bos-table-column>
+                <bos-table-column lable="供应商" field="equipArg.supplier.name" :align="'left'"></bos-table-column>
+                <bos-table-column lable="联系人" field="equipArg.supplier.person" :align="'left'"></bos-table-column>
+                <bos-table-column lable="联系方式" field="equipArg.supplier.phone" :align="'left'"></bos-table-column>
+                <bos-table-column lable="保养周期" :filter="(row)=>milliToDay(row.equipArg.upkeepCycle)" :align="'left'"></bos-table-column>
                 <bos-table-column lable="可用/领用"
-                :filter="(row)=>row.approve+'/'+row.neckband"
+                :filter="(row)=>row.inHouseCount+'/'+row.receiveHouseCount"
                 :align="'left'"></bos-table-column>
-                <bos-table-column lable="正在保养" field="waiting" :align="'left'"></bos-table-column>
-                <bos-table-column lable="保养时长" field="waiting" :align="'left'"></bos-table-column>
+                <bos-table-column lable="正在保养" field="keepingCount" :align="'left'"></bos-table-column>
+                <bos-table-column lable="保养时长" :filter="(row)=>milliToDay(row.keepingTime)" :align="'left'"></bos-table-column>
                 <el-table-column type="expand">
                     <template slot-scope="props">
                         <div class="fold_box">
@@ -22,8 +22,8 @@
                                 <div class="fold_title_item">数量</div>
                             </div>
                             <div class="fold_body">
-                                <div class="fold_item" v-for="(item,index) in props.row.location" :style="index==0?'padding-left: 0.038rem;':''">
-                                    <div class="fold_body_item"> {{item.locations}}</div>
+                                <div class="fold_item" v-for="(item,index) in props.row.equipCountByLocations" :style="index==0?'padding-left: 0.038rem;':''">
+                                    <div class="fold_body_item" v-text="surface(item)"></div>
                                     <div class="fold_body_item"> {{item.number}}</div>
                                 </div>
 
@@ -116,7 +116,7 @@
 <script>
     import {formRulesMixin} from 'field/common/mixinComponent';
     import serviceDialog from 'components/base/serviceDialog'
-    import { getEquipsList, equipsReturn } from "api/operation"
+    import { getEquipsList, equipsReturn,findrepairingequips } from "api/operation"
     import {transformMixin} from 'common/js/transformMixin'
 
     export default {
@@ -143,60 +143,63 @@
         },
         methods: {
             getList() {
-                this.list = [{
-                    name: '金属手铐',
-                    model: '装备型号',
-                    approve: 3,
-                    neckband: 1,
-                    waiting: 1,
-                    interval: 30,
-                    supplier: '浙江华安安全设备有限公司'
-                    ,
-                    liaison: '周行行',
-                    phone: '18923453436',
-                    location: [{locations: '10架/A面/2节/6层', number: 10}, {
-                        locations: '10架/A面/2节/6层',
-                        number: 10
-                    }, {locations: '10架/A面/2节/6层', number: 10}, {
-                        locations: '10架/A面/2节/6层',
-                        number: 10
-                    }, {locations: '10架/A面/2节/6层', number: 10},]
-                },
-                    {
-                        name: '金属手铐',
-                        model: '装备型号',
-                        approve: 3,
-                        neckband: 1,
-                        waiting: 1,
-                        interval: 30,
-                        supplier: '浙江华安安全设备有限公司'
-                        ,
-                        liaison: '周行行',
-                        phone: '18923453436',
-                        location: [{locations: '10架/A面/2节/6层', number: 10}, {
-                            locations: '10架/A面/2节/6层',
-                            number: 10
-                        }, {locations: '10架/A面/2节/6层', number: 10}, {
-                            locations: '10架/A面/2节/6层',
-                            number: 10
-                        }, {locations: '10架/A面/2节/6层', number: 10}]
-                    },
-                    , {
-                        name: '金属手铐',
-                        model: '装备型号',
-                        approve: 3,
-                        neckband: 1,
-                        waiting: 1,
-                        interval: 30,
-                        supplier: '浙江华安安全设备有限公司'
-                        ,
-                        liaison: '周行行',
-                        phone: '18923453436',
-                        location: [{locations: '10架/A面/2节/6层', number: 10}, {
-                            locations: '10架/A面/2节/6层',
-                            number: 10
-                        }, {locations: '10架/A面/2节/6层', number: 10}]
-                    }]
+                findrepairingequips().then(res=>{
+                    this.list=res
+                });
+                // this.list = [{
+                //     name: '金属手铐',
+                //     model: '装备型号',
+                //     approve: 3,
+                //     neckband: 1,
+                //     waiting: 1,
+                //     interval: 30,
+                //     supplier: '浙江华安安全设备有限公司'
+                //     ,
+                //     liaison: '周行行',
+                //     phone: '18923453436',
+                //     location: [{locations: '10架/A面/2节/6层', number: 10}, {
+                //         locations: '10架/A面/2节/6层',
+                //         number: 10
+                //     }, {locations: '10架/A面/2节/6层', number: 10}, {
+                //         locations: '10架/A面/2节/6层',
+                //         number: 10
+                //     }, {locations: '10架/A面/2节/6层', number: 10},]
+                // },
+                //     {
+                //         name: '金属手铐',
+                //         model: '装备型号',
+                //         approve: 3,
+                //         neckband: 1,
+                //         waiting: 1,
+                //         interval: 30,
+                //         supplier: '浙江华安安全设备有限公司'
+                //         ,
+                //         liaison: '周行行',
+                //         phone: '18923453436',
+                //         location: [{locations: '10架/A面/2节/6层', number: 10}, {
+                //             locations: '10架/A面/2节/6层',
+                //             number: 10
+                //         }, {locations: '10架/A面/2节/6层', number: 10}, {
+                //             locations: '10架/A面/2节/6层',
+                //             number: 10
+                //         }, {locations: '10架/A面/2节/6层', number: 10}]
+                //     },
+                //     , {
+                //         name: '金属手铐',
+                //         model: '装备型号',
+                //         approve: 3,
+                //         neckband: 1,
+                //         waiting: 1,
+                //         interval: 30,
+                //         supplier: '浙江华安安全设备有限公司'
+                //         ,
+                //         liaison: '周行行',
+                //         phone: '18923453436',
+                //         location: [{locations: '10架/A面/2节/6层', number: 10}, {
+                //             locations: '10架/A面/2节/6层',
+                //             number: 10
+                //         }, {locations: '10架/A面/2节/6层', number: 10}]
+                //     }]
                 // let params = {
                 //     page: this.paginator.page,
                 //     size: this.paginator.size,

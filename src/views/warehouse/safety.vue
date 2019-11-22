@@ -10,7 +10,7 @@
                         <s_search @search="getSearch" :placeholder="'小类'"></s_search>
                     </div>
                 </div>
-                <div class="safety_tree_body">
+                <div class="safety_tree_body" data-test="tree_box">
                     <el-tree
                             :data="tree.treeData"
                             class="tree_setting"
@@ -34,7 +34,7 @@
             <div class="safety_table" data-test="table_box">
                 <div class="safety_table_action">
                     <div class="action_button_box_right">
-                        <label v-text="title.tableTitle" @click="test"></label>
+                        <label v-text="title.tableTitle"></label>
                         <div v-if="table.tableType==='category'" style="margin-left: 0.5208rem"><label v-text="'装备总数：'" ></label><label v-text="table.totalCount"></label></div>
                         <div v-if="table.tableType==='category'" style="margin-left: 0.5208rem"><label v-text="'安全库存：'" ></label><label v-text="table.stock"></label></div>
                     </div>
@@ -50,13 +50,13 @@
                         <div style="display: flex;" v-if="table.tableType!=='category'">
                             <text-button v-if="table.tableType==='unallocated'":iconClass="'分配'" :buttonName="'装备分类'"
                                          @click="distributionClick" style="margin-right: 0.0921rem"></text-button>
-                            <text-button :iconClass="'取消1'" v-if="status.buttonDisable" :havePoint="false"
+                            <text-button :iconClass="'取消1'" :dataTest="'disable'" v-if="status.buttonDisable" :havePoint="false"
                                          :buttonName="' '"></text-button>
-                            <text-button :iconClass="'确定1'" v-if="status.buttonDisable" :havePoint="false"
+                            <text-button :iconClass="'确定1'" :dataTest="'disable'" v-if="status.buttonDisable" :havePoint="false"
                                          :buttonName="' '"></text-button>
-                            <text-button :iconClass="'取消'" v-if="!status.buttonDisable" :buttonName="' '"
+                            <text-button :iconClass="'取消'" :dataTest="'取消_icon'" v-if="!status.buttonDisable" :buttonName="' '"
                                          @click="modifyStock('result')"></text-button>
-                            <text-button :iconClass="'确定'" v-if="!status.buttonDisable" :buttonName="' '"
+                            <text-button :iconClass="'确定'" :dataTest="'确定_icon'" v-if="!status.buttonDisable" :buttonName="' '"
                                          @click="modifyStock('modify')"></text-button>
                         </div>
                     </div>
@@ -136,53 +136,53 @@
             }
         },
         methods: {
-            test(){
-                let rfids='121212,232343',serials='1212,1212',equip={
-                    "charge": true,
-                    "chargeTime": 0,
-                    "equipArg": {
-                        "alphabetic": "string",
-                        "categoryId": "string",
-                        "chargeCycle": 0,
-                        "creatTime": 0,
-                        "id": "string",
-                        "image": "string",
-                        "model": "string",
-                        "name": "string",
-                        "pdf": "string",
-                        "shelfLife": 0,
-                        "supplier": {
-                            "creatTime": 0,
-                            "id": "string",
-                            "name": "string",
-                            "person": "string",
-                            "phone": "string",
-                            "updateTime": 0
-                        },
-                        "updateTime": 0,
-                        "upkeepCycle": 0,
-                        "video": "string"
-                    },
-                    "keep": true,
-                    "keepTime": 0,
-                    "location": {
-                        "creatTime": 0,
-                        "floor": "string",
-                        "id": "string",
-                        "number": "string",
-                        "section": "string",
-                        "surface": "A",
-                        "updateTime": 0
-                    },
-                    "price": 0,
-                    "productDate": 0,
-                    "repairTime": 0,
-                    "updateTime": 0
-                }
-                inHouse(rfids,serials,equip).then(res=>{
-
-                })
-            },
+            // test(){
+            //     let rfids='121212,232343',serials='1212,1212',equip={
+            //         "charge": true,
+            //         "chargeTime": 0,
+            //         "equipArg": {
+            //             "alphabetic": "string",
+            //             "categoryId": "string",
+            //             "chargeCycle": 0,
+            //             "creatTime": 0,
+            //             "id": "string",
+            //             "image": "string",
+            //             "model": "string",
+            //             "name": "string",
+            //             "pdf": "string",
+            //             "shelfLife": 0,
+            //             "supplier": {
+            //                 "creatTime": 0,
+            //                 "id": "string",
+            //                 "name": "string",
+            //                 "person": "string",
+            //                 "phone": "string",
+            //                 "updateTime": 0
+            //             },
+            //             "updateTime": 0,
+            //             "upkeepCycle": 0,
+            //             "video": "string"
+            //         },
+            //         "keep": true,
+            //         "keepTime": 0,
+            //         "location": {
+            //             "creatTime": 0,
+            //             "floor": "string",
+            //             "id": "string",
+            //             "number": "string",
+            //             "section": "string",
+            //             "surface": "A",
+            //             "updateTime": 0
+            //         },
+            //         "price": 0,
+            //         "productDate": 0,
+            //         "repairTime": 0,
+            //         "updateTime": 0
+            //     }
+            //     inHouse(rfids,serials,equip).then(res=>{
+            //
+            //     })
+            // },
             distributionClick(){
                 this.status.buttonDisable=!this.status.buttonDisable;
                 this.status.distribution=!this.status.buttonDisable;
