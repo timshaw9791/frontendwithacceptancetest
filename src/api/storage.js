@@ -90,6 +90,14 @@ export function inHouseOrder(id) {
     })
 }
 
+/* 出库装备 */
+export function outHouse(params) {
+    return request({
+        url: `/equip/outHouse?${qs.stringify(params, { indices: false })}`,
+        method: "POST"
+    })
+}
+
 /* 通过id找实体装备 */
 export function findEquip(id) {
     return request({

@@ -45,11 +45,12 @@
 </template>
 
 <script>
+import { outHouse } from "api/storage"
+
     export default {
         data() {
             return {
                 equipList: [],
-                list: [],
                 typeName: '', // 显示什么类型(入库/出库)
                 hardware: {
                   selectArr: [{
@@ -60,8 +61,10 @@
                     key: '读卡器'
                   }],
                   selected: '', // 所选用的硬件
-                  operator: "王小明"
-                }
+                  operator: ""
+                },
+                list: [],
+                rfidList: ["11111111", "1132"],
             }
         },
 
@@ -81,8 +84,6 @@
               }
             }
         },
-
-
         methods: {
 
             //离开页面以后为父组件抛出black 杀死进程
@@ -93,23 +94,43 @@
             // 切换硬件后
             selectHardware(val) {
               console.log(val);
+            },
+            submit() {
+              if(this.list.length == 0) {
+                this.$message.error("未扫入装备")
+                return
+              }
+              outHouse({rfids: this.rfidList}).then(res => {
+                console.log(res);
+                this.$message.success("出库成功")
+                // 关闭硬件
+
+                setTimeout(() => {
+                  this.$emit('black')
+                }, 3000)
+              })
             }
-
-
-            
         },
 
         created() {
           this.typeName = this.title.slice(0, 2)
-          this.equipList = {
-            orderNumber: this.equipData.orderNumber,
-            operator: this.equipData.operatorInfo?this.equipData.operatorInfo.operator: '',
-            createTime: this.$filterTime(this.equipData.createTime),
+          this.hardware.operator = JSON.parse(localStorage.getItem('user')).username
+          if(!this.title.includes("出库装备")) {
+            this.equipList = {
+              orderNumber: this.equipData.orderNumber,
+              operator: this.equipData.operatorInfo?this.equipData.operatorInfo.operator: '',
+              createTime: this.$filterTime(this.equipData.createTime),
+            }
+            this.list = this.equipData.equipInOutHouseDetails
           }
-          this.list = this.equipData.equipInOutHouseDetails
         },
         mounted() {
-          
+          this.list.push({
+            rfid: "00001",
+            name: "防暴服（快穿式）",
+            model: "FBF-J-HH02",
+            locationInfo: ""
+          })
         },
 
 

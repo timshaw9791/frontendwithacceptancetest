@@ -259,6 +259,7 @@
                 edit: true, // 装备参数详情的编辑
                 extendEdit: true, // 装备信息详情的编辑
                 submitShow: false, // 提交按钮是否显示
+                hardwareOpen: false, // 硬件是否启动
                 imageUrl: '',
                 rfids: [],
                 serialList: [],
@@ -332,6 +333,7 @@
                     price: '', 
                 }
                 this.list = [{rfid: null, serial: null}]
+                this.hardwareOpen = false
             },
             //离开页面以后为父组件抛出black 杀死进程
             black() {
@@ -346,6 +348,10 @@
                 //         },
                 //         zbForm: {}
                 //     };
+                    
+                    if(this.title.includes('入库装备')) {
+                        killProcess(this.pid)
+                    }
                     this.$emit('black', true);
                 // } else {
                 //     this.$refs.dialog.show();
@@ -401,6 +407,7 @@
                         serials: serialList
                     }, requestBody, (state, res) => {
                         this.init()
+                        killProcess(this.pid)
                         this.$message.success("入库成功")
                         this.$emit('black')
                         // 关闭硬件
@@ -820,12 +827,21 @@
                     phoneM: temp.supplier.phone,
                     id: temp.id
                 })
-                // 硬件开启
-            setTimeout(() => {
-                list: [{rfid: null, serial: null}],
-            this.list[0].rfid = "00008"
-            this.list[0].serial = "88888"
-            }, 1000)
+                // 硬件开启 hardwareOpen
+                if(!this.hardwareOpen) {
+                    start("java -jar scan.jar", (data) => {
+                        if(this.index == 0) {
+                            this.list[0].rfid = data;
+                        } else {
+                            this.list.push({ rfid: data });
+                        }
+                        this.index = this.index + 1
+                        this.hardwareOpen = true
+                    }, (fail) => {
+                        this.index = 1;
+                        this.$message.error(fail);
+                    }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
+                }
             },
             //进入页面获取数据
             getEquipInfo() {
@@ -1048,7 +1064,9 @@
             this.getEquipInfo();
         },
         beforeDestroy() {
-            // killProcess(this.pid)
+            if(this.hardwareOpen) {
+                killProcess(this.pid)
+            }
         }
 
     }
