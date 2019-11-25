@@ -18,8 +18,13 @@
                         <span style="color: #2F2F76" @click="syncuser">用户同步</span></div> -->
                 </div>
                 <div class="input-box">
-                    <svg-icon icon-class="搜索" class="icon-search"></svg-icon>
-                    <input class="input" v-model="search" :placeholder="'姓名/职位/警号'"></input>
+                    <BosInput
+                            placeholder="姓名/职位/警号"
+                            suffix="el-icon-search"
+                            v-model="search"
+                            :wrapforlike="true"
+                            style="width:285px;">
+                    </BosInput>
                 </div>
             </div>
             <div class="modify" v-if="!viewStatus.flag">
