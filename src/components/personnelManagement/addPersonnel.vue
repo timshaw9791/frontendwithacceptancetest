@@ -6,9 +6,9 @@
                              :rules="r(true).all(R.require)" prop="name" :disabled="disabled"></field-input>
                 <!--<field-checkbox  v-model="gender" label="性别" width="4.5" :rules="r(true).all(R.require)"-->
                                 <!--prop="position" :list="nanlist" @change="changeCheck" :disabled="disabled"></field-checkbox>-->
-                <el-form :model="ruleFormGs" :rules="rulesG" ref="ruleForm" style="margin-left: 0.3385rem;margin-top: 10px;">
+                <el-form :model="ruleFormGs" :rules="rulesG" ref="ruleForm" style="margin-left: 0.35rem;margin-top: 10px;">
                     <el-form-item label="性别" prop="type">
-                        <el-checkbox-group v-model="ruleFormGs.type" style="display: flex;flex-direction: column" :disabled="disabled" @change="changeCheck">
+                        <el-checkbox-group v-model="ruleFormGs.type" style="display: flex;flex-direction: row" :disabled="disabled" @change="changeCheck">
                             <el-checkbox  v-for="item in nanlist" :label="item.val" name="type"  style="margin-left: 0.2604rem;" data-test="check">{{item.val}}</el-checkbox>
                         </el-checkbox-group>
                     </el-form-item>
@@ -19,16 +19,16 @@
                              :rules="r(true).all(R.mobile)" prop="phone"></field-input>
                 <field-input class="field-input" v-model="form.unitName" label="机构单位" width="4.5"
                              prop="organUnit" :disabled="true"></field-input>
-                <el-form :model="roleFormGs" :rules="rulesG" ref="roleForm" style="margin-left: 0.3385rem;margin-top: 10px;">
+                <el-form :model="roleFormGs" :rules="rulesG" ref="roleForm" style="margin-left: 1.5rem;margin-top: 10px;">
                     <el-form-item label="角色" prop="type">
-                        <el-checkbox-group v-model="roleFormGs.type" style="display: flex;flex-direction: column" :disabled="disabled" @change="changeCheckRole">
+                        <el-checkbox-group v-model="roleFormGs.type" style="display: flex;flex-direction: row" :disabled="disabled" @change="changeCheckRole">
                             <el-checkbox  v-for="item in cRoleList"  :label="item.val"  name="type"  style="margin-left: 0.2604rem;" data-test="check">{{item.key}}</el-checkbox>
                         </el-checkbox-group>
                     </el-form-item>
                 </el-form>
-                <el-form :model="raleFormGs" ref="raleForm" style="margin-left: 0.3385rem;margin-top: 10px;">
+                <el-form :model="raleFormGs" ref="raleForm" style="margin-left: 0.15rem;margin-top: 10px;">
                     <el-form-item label="权限" prop="type">
-                        <el-checkbox-group  v-model="raleFormGs.type" style="display: flex;flex-direction: column" :disabled="disabled" @change="changeCheckPermission">
+                        <el-checkbox-group  v-model="raleFormGs.type" style="display: flex;flex-direction: row" :disabled="disabled" @change="changeCheckPermission">
                             <el-checkbox  v-for="item in cRaleList"  :label="item.val"  name="type"  style="margin-left: 0.2604rem;" data-test="check">{{item.key}}</el-checkbox>
                         </el-checkbox-group>
                     </el-form-item>
@@ -41,7 +41,7 @@
                              :rules="r(true).all(R.require)" prop="password" :disabled="disabled" :type="'password'"></field-input>
                 <!--<field-checkbox  v-model="roleItems" label="角色" width="4.5" :disabled="disabled" :rules="r(true).all(R.require)"-->
                                  <!--prop="position" :list="cRoleList" @change="changeCheckRole"></field-checkbox>-->
-                <field-input class="field-input" v-model="form.fingerprintInformation" :disabled="disabled" :type="'textarea'" label="指纹信息" width="10"
+                <field-input class="field-input" v-model="form.fingerprintInformation" :disabled="disabled" :type="'textarea'" label="指纹信息" width="7" style="margin-left:1.225rem"
                              prop="fingerprintInformation"></field-input>
             </form-container>
             <div class="add-personneo-upload-img">
@@ -322,13 +322,13 @@
         flex-direction: row;
     }
     .add-personneo-body-from{
-        width: 3.8438rem;
+        width: 5rem;
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         flex-wrap: wrap;
         align-items: center;
         justify-content: space-between;
-        margin-left: 0.5208rem;
+        // margin-left: 0.5208rem;
         margin-top: 0.1563rem;
         font-size: 16px;
     }
