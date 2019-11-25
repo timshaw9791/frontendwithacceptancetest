@@ -8,46 +8,47 @@
                 <tabs :list="tabsList" :indexDefault="0" @selected="selected">
                     <el-button type="text" class="_textBt" @click="service">
                         <svg-icon icon-class="维修"/>
-                        维修
+                        开始维修
                     </el-button>
-                    <el-button type="text" class="_textBt" @click="batch=!batch">
+                    <el-button type="text" class="_textBt" @click="serviceEnd">
                         <svg-icon icon-class="批量"/>
-                        批量入库
+                        结束维修
                     </el-button>
 
-                    <div class="_buttons">
-                        <BosInput
-                                placeholder="装备名称/序号/编号"
-                                suffix="el-icon-search"
-                                v-model="inquire"
-                                :wrapforlike="true"
-                                style=" width:285px;">
-                        </BosInput>
-                    </div>
+                    <!--<div class="_buttons">-->
+                    <!--<BosInput-->
+                    <!--placeholder="装备名称/序号/编号"-->
+                    <!--suffix="el-icon-search"-->
+                    <!--v-model="inquire"-->
+                    <!--:wrapforlike="true"-->
+                    <!--style=" width:285px;">-->
+                    <!--</BosInput>-->
+                    <!--</div>-->
                 </tabs>
                 <el-table :data="list" v-loading.body="loading" element-loading-text="Loading"
                           fit highlight-current-row
                           @selection-change="handleSelectionChange" height="3.55rem">
-
                     <el-table-column
                             v-if="batch"
                             type="selection"
                             width="55">
                     </el-table-column>
-                    <bos-table-column lable="rfid" field="rfid"></bos-table-column>
-                    <bos-table-column lable="装备名称" field="name"></bos-table-column>
+                    <bos-table-column lable="RFID" field="rfid"></bos-table-column>
                     <bos-table-column lable="装备序号" field="serial"></bos-table-column>
-                    <bos-table-column lable="架体编号" field="location.number"></bos-table-column>
-                    <bos-table-column lable="架体AB面"
-                                      :filter="(row)=>surface(row.location?row.location.surface:'暂无')"></bos-table-column>
-
-                    <bos-table-column lable="上次维修时间" field="time" :filter="(row) => this.$filterTime(row.receiveTime)"></bos-table-column>
+                    <bos-table-column lable="装备名称" field="name"></bos-table-column>
+                    <bos-table-column lable="装备型号" field="model"></bos-table-column>
+                    <bos-table-column lable="装备位置"
+                                      :filter="(row)=>surface(row)"></bos-table-column>
+                    <bos-table-column lable="供应商" field="supplier.name"></bos-table-column>
+                    <bos-table-column lable="联系人" field="supplier.person"></bos-table-column>
+                    <bos-table-column lable="联系方式" field="supplier.phone"></bos-table-column>
+                    <bos-table-column lable="维修时长" :filter="(row)=>repairTime(row.repairTime)"></bos-table-column>
+                    <!--<bos-table-column lable="上次维修时间" field="time" :filter="(row) => this.$filterTime(row.receiveTime)"></bos-table-column>-->
                     <el-table-column label="操作" align="center" width="200">
                         <template slot-scope="scope">
                             <el-button type="primary" size="mini" @click="scrapped(scope.row)">报 废</el-button>
                         </template>
                     </el-table-column>
-
                 </el-table>
 
                 <div class="_contentBt" v-if="batch">
@@ -55,29 +56,39 @@
                     <el-button type="primary" @click="submit">提 交</el-button>
                 </div>
 
-                <bos-paginator v-if="this.list!=''" :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
+                <!--<bos-paginator v-if="this.list!=''" :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>-->
             </div>
         </el-card>
 
-        <servicedialog title="请确认维修装备清单" ref="dialog" @cancel="cancel" @confirm="repairPush">
-            <el-table :data="dialogList">
-                <el-table-column label="序号" align="center">
-                    <template scope="scope">
-                        {{scope.$index+1}}
-                    </template>
-                </el-table-column>
-                <bos-table-column lable="装备名称" field="name"></bos-table-column>
-                <bos-table-column lable="装备序号" field="serial"></bos-table-column>
-                <bos-table-column lable="架体编号" field="location.number"></bos-table-column>
-                <bos-table-column lable="架体AB面"
-                                  :filter="(row)=>surface(row.location?row.location.surface:'暂无')"></bos-table-column>
-            </el-table>
+        <servicedialog title="开始维修装备清单" ref="dialog" :width="'6.921875rem'" @cancel="cancel" @confirm="repairPush">
+            <div class="start_table">
+                <el-table :data="dialogList" max-height="2.7917rem">
+                    <bos-table-column lable="装备名称" field="name"></bos-table-column>
+                    <bos-table-column lable="装备型号" field="model"></bos-table-column>
+                    <bos-table-column lable="装备位置"
+                                      :filter="(row)=>surface(row)"></bos-table-column>
+                    <bos-table-column lable="装备件数" field="Number"></bos-table-column>
+                    <bos-table-column lable="供应商" field="supplier.name"></bos-table-column>
+                    <bos-table-column lable="联系人" field="supplier.person"></bos-table-column>
+                    <bos-table-column lable="联系方式" field="supplier.phone"></bos-table-column>
+                </el-table>
+            </div>
         </servicedialog>
-
+        <servicedialog title="结束维修装备清单" ref="dialogEnd" :width="'4.578125rem'" @cancel="cancel" @confirm="repairPush">
+            <div class="end_table">
+                <el-table :data="dialogList" max-height="2.7865rem">
+                    <bos-table-column lable="装备名称" field="name"></bos-table-column>
+                    <bos-table-column lable="装备型号" field="model"></bos-table-column>
+                    <bos-table-column lable="装备位置"
+                                      :filter="(row)=>surface(row)"></bos-table-column>
+                    <bos-table-column lable="装备件数" field="Number"></bos-table-column>
+                </el-table>
+            </div>
+        </servicedialog>
 
         <field-dialog title="申请报废" ref="dialog1" @confirm="dialogConfirm">
             <form-container ref="inlineForm" :model="inlineForm">
-                <field-input v-model="inlineForm.auditor" label="申请人" width="3.5" :disabled="true"></field-input>
+                <field-input v-model="inlineForm.auditor" label="申请人员" width="3.5" :disabled="true"></field-input>
                 <br/>
                 <field-select label="审核人" v-model="inlineForm.leader" width="3.5"
                               :rules="r(true).all(R.require)"
@@ -98,12 +109,18 @@
     import equip from 'components/equipment/addEquipment'
     import tabs from 'components/base/tabs/index'
     import {formRulesMixin} from 'field/common/mixinComponent';
-    import servicedialog from 'components/base/serviceDialog'
+    import servicedialog from 'components/base/gailiangban'
     import api from 'gql/operation.gql'
     import {transformMixin} from 'common/js/transformMixin'
-    import { retirementApplication, getEquipsList, equipsMaintain, equipsReturn } from "api/operation";
+    import {
+        retirementApplication,
+        getEquipsList,
+        equipsMaintain,
+        equipsReturn,
+        findrepairingEquips
+    } from "api/operation";
     import {getRfidinfo} from "api/rfid";
-    import { start, killProcess } from 'common/js/rfidReader'
+    import {start, killProcess} from 'common/js/rfidReader'
 
     // const cmdPath = 'C:\\Users\\Administrator';
     //const exec = window.require('child_process').exec;
@@ -142,11 +159,18 @@
             selected(data) {
                 console.log(data);
             },
-            service() {
-                this.$refs.dialog.show();
+            repairTime(repairTime) {
+                let repairTimes = repairTime / 1000 / 60 / 60;
+                if (repairTimes < 1) {
+                    return '不足一小时'
+                } else {
+                    return Math.round(repairTimes) + '小时'
+                }
+            },
+            serviceEnd(){
+                this.$refs.dialogEnd.show();
                 this.dialogList = [];
                 this.listPush = [];
-
                 start("java -jar scan.jar", (data) => {
                     data = data.replace(/[\r\n]/g, "")
                     getRfidinfo([`${data}`]).then(res => {
@@ -161,7 +185,31 @@
                 }, (fail) => {
                     this.$message.error(fail)
                     this.$refs.dialog.hide()
-                }, (pid, err) => {pid?this.pid = pid:this.$message.error(err)})
+                }, (pid, err) => {
+                    pid ? this.pid = pid : this.$message.error(err)
+                })
+            },
+            service() {
+                this.$refs.dialog.show();
+                this.dialogList = [];
+                this.listPush = [];
+                start("java -jar scan.jar", (data) => {
+                    data = data.replace(/[\r\n]/g, "")
+                    getRfidinfo([`${data}`]).then(res => {
+                        if (0 in res) {
+                            this.dialogList.push(res[0]);
+                            this.listPush.push(res[0].id);
+                        } else {
+                            this.$message.error(`${data}该RFID不在库房内`);
+                            //index = 1;
+                        }
+                    })
+                }, (fail) => {
+                    this.$message.error(fail)
+                    this.$refs.dialog.hide()
+                }, (pid, err) => {
+                    pid ? this.pid = pid : this.$message.error(err)
+                })
 
                 // const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
                 // this.pid = process.pid;
@@ -205,7 +253,7 @@
 
             },
             cancel() {
-                 killProcess(this.pid)
+                killProcess(this.pid)
             },
 
             dialogConfirm() {
@@ -268,19 +316,19 @@
                 // })
             },
             getEquipServiceList() {
-                let params = {
-                    page: this.paginator.page, 
-                    size: this.paginator.size, 
-                    search: this.inquire, 
-                    state: "MAINTAIN"
-                };
-                this.loading = true
-                getEquipsList(params).then(res => {
-                    let result = JSON.parse(JSON.stringify(res.content))
-                    this.loading = false
+                // let params = {
+                //     page: this.paginator.page,
+                //     size: this.paginator.size,
+                //     search: this.inquire,
+                //     state: "MAINTAIN"
+                // };
+                this.loading = true;
+                findrepairingEquips().then(res => {
+                    let result = JSON.parse(JSON.stringify(res));
+                    this.loading = false;
                     this.list = result
-                    this.paginator.totalPages = res.totalPages
-                    this.paginator.totalElements = res.totalElements
+                    // this.paginator.totalPages = res.totalPages
+                    // this.paginator.totalElements = res.totalElements
                 }).catch(e => {
                     this.loading = false
                 })
@@ -290,7 +338,7 @@
                 this.getEquipServiceList()
             }
         },
-        
+
         // apollo: {
         //     list() {
         //         return this.getEntityListWithPagintor(api.getEquipList);
@@ -320,4 +368,20 @@
         font-size: 16px;
     }
 
+    .start_table {
+        width:6.4583rem;
+        height: 2.7917rem;
+        margin-left: 0.25rem;
+        margin-right: 0.25rem;
+        margin-top: 0.1458rem;
+        background:rgba(255,255,255,1);
+    }
+    .end_table {
+        width:4.1146rem;
+        height:2.7865rem;
+        margin-left: 0.25rem;
+        margin-right: 0.25rem;
+        margin-top: 0.1458rem;
+        background:rgba(255,255,255,1);
+    }
 </style>

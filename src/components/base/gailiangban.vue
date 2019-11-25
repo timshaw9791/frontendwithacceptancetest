@@ -4,8 +4,8 @@
                    :width="width">
             <slot></slot>
             <div slot="footer" class="dialog-footer" v-if="button">
-                <el-button @click="cancelDb">取 消</el-button>
-                <el-button type="primary" @click="dialogConfirm">确 定</el-button>
+                <el-button @click="cancelDb" data-test="button">取 消</el-button>
+                <el-button type="primary" @click="dialogConfirm" data-test="button">确 定</el-button>
             </div>
         </el-dialog>
     </div>
@@ -77,10 +77,10 @@
         /deep/ .el-dialog__title {
             color: white;
         }
-        /*/deep/ .el-dialog--center /deep/ .el-dialog__body {*/
-            /*text-align: initial;*/
-            /*padding: 0px 0px 0px;*/
-        /*}*/
+        /deep/ .el-dialog--center /deep/ .el-dialog__body {
+            text-align: initial;
+            padding: 0px 0px 0px;
+        }
         /deep/ .el-dialog__headerbtn /deep/ .el-dialog__close {
             margin-top: -3px;
             font-size: 25px;

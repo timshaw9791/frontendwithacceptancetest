@@ -31,7 +31,7 @@
       },
       align:{
         type: String,
-        default:"center"
+        default:"left"
       },
       width:{
         type: [Number, String],

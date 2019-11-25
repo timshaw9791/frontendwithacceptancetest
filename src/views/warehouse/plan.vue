@@ -90,22 +90,21 @@
 
                     <el-table-column label="装备名称" align="center">
                         <template scope="scope">
-                            <el-select v-model="value" value-key="id" > 
+                            <el-select v-model="scope.row.equipName" value-key="id" > 
                                 <el-option
-                                v-for="item in equipList"
-                                :key="item.id"
-                                :label="item.name"
-                                :value="item.model">
+                                v-for="item in nameList"
+                                :label="item"
+                                :value="item">
                                 </el-option>
                             </el-select>
                         </template>
                     </el-table-column>
 
-                     <el-table-column label="装备型号" align="center">
+                     <el-table-column label="装备型号" align="center" >
                         <template scope="scope">
-                          <el-select v-model="modelValue" value-key="id">
+                          <el-select v-model="scope.row.equipModel" value-key="id" @change="qaq(scope,$event)">
                                 <el-option
-                                v-for="item in value"
+                                v-for="item in modelList"
                                 :key="item.id"
                                 :label="item.model"
                                 :value="item">
@@ -156,7 +155,9 @@
                 delId: '',
                 equipList:[],
                 value:'',
-                modelValue:''
+                modelValue:'',
+                nameList:[],
+                modelList:[]
             }
         },
         mixins: [formRulesMixin, transformMixin],
@@ -217,11 +218,39 @@
                     console.log(err);
                 })
             },
+            changeModel(data){
+               this.modelList=[]
+               this.equipList.forEach(item=>{
+                   if(this.value==item.name)
+                   {
+                       this.modelList.push(item)
+                       console.log("this.modelList");
+                       console.log(this.modelList);
+                   }
+               })
+            },
             getEquipInfo() {
                 getEquipList().then(res => {
                     this.equipList=res;
+                    res.forEach(item=>{
+                        let flag=false;
+                        for(var i=0;i<this.nameList.length;i++)
+                        {
+                            if(item.name==this.nameList[i])
+                            {
+                                flag=true
+                            }
+                        }
+                        if(!flag)
+                        {
+                        this.nameList.push(item.name)
+                        }
+                        
+                    })
                     console.log("this.equipList");
                     console.log(this.equipList);
+                    console.log("this.nameList");
+                    console.log(this.nameList);
                     let newData =res.content;
                     let eqName = newData.map(res => {
                         return res.equipArg.model
@@ -304,6 +333,13 @@
             this.getList();
         },
         watch: {
+            value(newVal){
+               this.changeModel(newVal)
+            },
+            // modelValue()
+            // {
+            //   this.qaq()
+            // },
             inquire(newVal, oldVal) {
                 this.param.namelike = newVal;
                 console.log(newVal);
