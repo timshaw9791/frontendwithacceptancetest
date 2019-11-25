@@ -22,12 +22,30 @@
        
     </div>
     <div>
-        <el-table :data="list" fit highlight-current-row height="3.55rem" v-if="!viewStatus.insFlag">
+        <el-table :data="equipList" fit highlight-current-row height="3.55rem" v-if="!viewStatus.insFlag">
             <bos-table-column lable="装备名称" field="name" :width="250"></bos-table-column>
             <bos-table-column lable="装备型号" field="model" :width="250"></bos-table-column>
-            <teach-table-column lable="教学视频" field="video" @isvideo="isvideo" @videoname="videoname"></teach-table-column>
-            <teach-table-column lable="教学文档" field="pdf" @ispdf="ispdf"></teach-table-column>
+            <!-- <teach-table-column lable="教学视频" field="video" @isvideo="isvideo" @videoname="videoname"></teach-table-column>
+            <teach-table-column lable="教学文档" field="pdf" @ispdf="ispdf"></teach-table-column> -->
+              <el-table-column label="教学视频" align="center"  min-width="'3.75rem'" >
+                <template slot-scope="scope">
+                <div v-for="item in changeArr(scope.row.video,true)" @click="item=='暂无视频'?'':isvideo(item,scope.row)" :class="(item=='暂无视频')?classA:classB" >
+                    <div >
+                    {{item}}
+                </div>
+                </div>
+                </template>
+            </el-table-column>
 
+            <el-table-column label="教学文档" align="center"  min-width="'3.75rem'" >
+                <template slot-scope="scope">
+                <div v-for="item in changeArr(scope.row.pdf,false)" @click="item=='暂无文档'?'':ispdf(item,scope.row)" :class="(item=='暂无文档')?classA:classB" >
+                    <div>
+                    {{item}}
+                </div>
+                </div>
+                </template>
+            </el-table-column>
         </el-table>
         <instructional v-if="viewStatus.insFlag" :ins="insData" title=""></instructional>
 
@@ -57,7 +75,7 @@
                 </div>
                 <div class="up_box">
                     <span>视频限制{{equipModel.video?equipModel.video.length:0}}/3</span>
-                    <span style="margin-left:33px;">文档限制{{equipModel.pdf?equipModel.pdf.length:0}}/3</span>
+                    <span style="margin-left:2.0625rem;">文档限制{{equipModel.pdf?equipModel.pdf.length:0}}/3</span>
                    
                     <div @click="videoUp" class="up-box" >
                         <input type="file" ref="fileVideo" @change="videoFileChange" data-test="upFile" >
@@ -68,7 +86,7 @@
                 <div class=video_box>
                     <div  v-for="(item,index) in equipModel.video" class="video">
                        <div @click="delVideo(index)">
-                        <svg-icon icon-class="关闭1" style="width:20px;height:20px; float:right" />
+                        <svg-icon icon-class="关闭1" style="width:1.25rem;height:1.25rem; float:right" />
                     </div>
                     <div>
                         <img src="@/common/images/电视-视频缩略.png" style="width:50px;height:50px;"/>
@@ -167,7 +185,9 @@ export default {
             nameList:[],
             modelList:[],
             videoNum: 0,
-            pdfNum: 0
+            pdfNum: 0,
+            classA:'box',
+            classB:'doc'
         }
     },
     watch: {
@@ -186,6 +206,54 @@ export default {
     methods: {
         edit() {
             this.$refs.editDialog.show()
+        },
+        changeArr(data,flag)
+        {
+            console.log(data)
+            console.log(flag)
+            let videoList=[]
+            videoList=JSON.parse(JSON.stringify(data));
+            if(flag)
+            {
+                 if(data.length!=0)
+            {
+                for(var i=0;i<3;i++)
+                {
+                //   console.log(videoList[i])
+                if(videoList[i]==undefined)
+                {
+                    videoList[i]='暂无视频'
+                }
+                }
+            }
+            else {
+                for(var i=0;i<3;i++)
+                {
+                    videoList[i]='暂无视频'
+                }
+            }
+
+            }else {
+                 if(data.length!=0)
+            {
+                for(var i=0;i<3;i++)
+                {
+                //   console.log(videoList[i])
+                if(videoList[i]==undefined)
+                {
+                    videoList[i]='暂无文档'
+                }
+                }
+            }
+            else {
+                for(var i=0;i<3;i++)
+                {
+                    videoList[i]='暂无文档'
+                }
+            }
+            }
+           
+        return videoList
         },
         changeModel(data){
                this.equipModel=''
@@ -284,28 +352,27 @@ export default {
         this.getListGql('')
 
         },
-        videoname(data){
-        this.title=data.name+data.model
-      
-        },
-        isvideo(data) {
+        isvideo(name,data) {
+            console.log("data")
             console.log(data)
             this.insData = {
-                key: data,
-                name: data,
+                key: name,
+                name: name,
                 typeName: 'MP4'
             };
+            this.title=data.name+data.model
             this.viewStatus.rMFlag = false;
             this.viewStatus.insFlag = true;
             this.condition.push(data);
         },
-        ispdf(data) {
+        ispdf(name,data) {
             console.log(data)
             this.insData = {
-                key: data,
-                name: data,
+                key: name,
+                name: name,
                 typeName: 'PDF'
             };
+            this.title=data.name+data.model
             console.log(this.title)
             this.viewStatus.rMFlag = false;
             this.viewStatus.insFlag = true;
@@ -338,8 +405,9 @@ export default {
                     })
               
                 this.list = JSON.parse(JSON.stringify(res.content));
+                console.log(this.list)
                 this.list.forEach(item => {
-                    if (item.video!= null &&item.pdf!='' ) {
+                    if (item.video!= null &&item.video!='' ) {
                             item.video = item.video.split(',');
                            
                     }else{
@@ -391,7 +459,7 @@ export default {
                 else{
                      instance.post(videoUpUrl, fileFormData, requestConfig).then(res => {
                     this.videoNum++
-                    this.equipName.video.push(files.name)
+                    this.equipModel.video.push(files.name)
                     loading.close();
                 }).catch(err => {
                     loading.close();
@@ -410,7 +478,7 @@ export default {
                      instance.post(pdfUpUrl, fileFormData, requestConfig).then(res => {
                     console.log("上传成功")
                     this.pdfNum++
-                    this.equipName.pdf.push(files.name)
+                    this.equipModel.pdf.push(files.name)
                      loading.close();
                 }).catch(err => {
                     loading.close();
@@ -621,4 +689,31 @@ export default {
         word-wrap: break-word;
     }
 }
+.box{
+  display: inline-block;
+  margin-left: 50px;
+  width:100px;
+  height:22px;
+  font-size:14px;
+  font-family:PingFang SC;
+  font-weight:400;
+  line-height:20px;
+  color: black;
+  opacity:1;
+  text-align: center
+  }
+  .doc{
+  display: inline-block;
+  cursor: pointer;
+  margin-left: 50px;
+  width:100px;
+  height:22px;
+  font-size:14px;
+  font-family:PingFang SC;
+  font-weight:400;
+  line-height:20px;
+  color:rgba(63,95,224,1);
+  opacity:1;
+  text-align: center
+  }
 </style>
