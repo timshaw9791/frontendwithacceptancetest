@@ -37,7 +37,10 @@
                 <bos-table-column lable="装备数量" :filter="(row) => 1"></bos-table-column>
               </el-table>
             </div>
-        </el-card>
+            <div class="storage-list-footer">
+              <el-button type="primary" @click="submit" v-if="title.includes('装备')">提交</el-button>
+            </div>
+        </el-card> 
     </div>
 </template>
 
@@ -155,6 +158,11 @@
           }
         }
       }
+    }
+
+    .storage-list-footer {
+      margin-top: -10px;
+      text-align: center;
     }
 
     .el-card:not(:nth-last-child(2)) {

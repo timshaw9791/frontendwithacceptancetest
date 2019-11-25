@@ -33,7 +33,7 @@
                      ></r_label>
         </el-card>
 
-        <storageInfo :equipId="equipId" v-if="storageInfoShow" :title="title" @black="black"></storageInfo>
+        <storageInfo :equipId="equipId" v-if="storageInfoShow" :equipList="equipList" :equipName="equipName" :title="title" @black="black"></storageInfo>
     </div>
 </template>
 
@@ -56,6 +56,8 @@
                 options: [],
                 commonHouseId: '',
                 equipId: '',
+                equipName: '', // 装备参数
+                equipList: '', // 装备数据
                 title: '',
                 storageInfoShow: false,
                 list: [],
@@ -106,7 +108,8 @@
                     case 'look':
                         this.storageInfoShow = true;
                         this.title = '装备参数详情';
-                        this.equipId = row.id;
+                        this.equipName = row.name
+                        this.equipList = row
                         break;
                 }
             },

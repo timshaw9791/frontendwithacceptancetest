@@ -114,7 +114,7 @@
             },
             dialogConfirm() {
                 let obj = JSON.parse(JSON.stringify(this.inlineForm))
-                this.$refs.inlineForm.restValidate(this.title.includes('修改')?updateSupplier:saveSupplier, obj, res => {
+                this.$refs.inlineForm.restValidate(this.title.includes('编辑')?updateSupplier:saveSupplier, obj, res => {
                     this.$message.success(`${this.title}成功`)
                     this.$refs.dialog.hide()
                     this.paginator.page = 1
@@ -123,7 +123,7 @@
             },
             addChanger(title, row) {
                 this.title = title;
-                if (title.includes('修改')) {
+                if (title.includes('编辑')) {
                     this.inlineForm = JSON.parse(JSON.stringify(row));
                 } else {
                     this.inlineForm = {};
