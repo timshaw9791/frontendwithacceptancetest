@@ -1,6 +1,6 @@
 <template>
     <div id="personnelSelect">
-        <div class="personnel-box">
+        <div class="personnel-box" data-test="select">
             <el-select v-model="value" :placeholder="placeholder" @change="toChange">
                 <el-option
                         v-for="item in select"

@@ -34,8 +34,8 @@
                     </div>
                     <div class="box-body">
                         <form-container ref="form" :model="form" class="formList">
-                           <field-input v-model="form.name" label="装备名称" width="3"
-                                         :rules="r(true).all(R.require)" prop="upkeepCycle"
+                           <field-input v-model="form.name" label="装备名称" width="3" name="装备名称"
+                                         :rules="r(true).all(R.require)" prop="name"
                                          v-if="['新增装备信息', '装备参数详情', '装备信息详情'].includes(title)"
                                          :disabled="edit"
                             ></field-input>
@@ -45,7 +45,7 @@
                                           v-else></field-select>
             
                             <field-input v-model="form.model" label="装备型号" width="3"
-                                         :rules="r(true).all(R.require)" prop="upkeepCycle"
+                                         :rules="r(true).all(R.require)" prop="model"
                                          v-if="['新增装备信息', '装备参数详情', '装备信息详情'].includes(title)"
                                          :disabled="edit" :class="{'occupy-position': !title.includes('装备信息详情')}"
                             ></field-input>
@@ -79,7 +79,7 @@
                             <field-select label="供应商" v-model="form.vendorId" width="3" name="供应商"
                                           :rules="r(true).all(R.require)"
                                           prop="vendorId" @change="vendor(form.vendorId)"
-                                          :disabled="edit" :list="vendorId"
+                                          :disabled="edit" :list="supplierArr"
                                           v-else></field-select>
 
                             <field-input v-model="form.personM" label="联系人员" width="3" :disabled="true"
@@ -94,7 +94,7 @@
                         <!--<el-button type="primary" class="button" @click="pushForm" v-if="!equipId">提交</el-button>-->
                         <div class="imgUp">
                             <imgUp @success="successUp" :disabled="edit"
-                                   :image="imageUrl" :upload="title.includes('入库')?false:true" :noimg="noimg"></imgUp>
+                                   :image="form.image" :upload="title.includes('入库')?false:true" :noimg="noimg"></imgUp>
                         </div>
                     </div>
 
@@ -111,15 +111,19 @@
 
 
                             <field-input v-model="zbForm.numberL" label="架体编号" width="2.5"
+                                        :rules="r(true).all(R.integer)" prop="numberL"
                                          :disabled="extendEdit"></field-input>
 
                             <field-select label="架体AB面" v-model="zbForm.surfaceL" width="2.5"
-                                          :disabled="extendEdit"
+                                          :disabled="extendEdit"  :rules="r(true).all(R.require)"
                                           :list="[{val:'A',key:'A面'},{val:'B',key:'B面'}]"></field-select>
+
                             <field-input v-model="zbForm.sectionL" label="架体节号" width="2.5"
+                                        :rules="r(true).all(R.integer)" prop="sectionL"
                                          :disabled="extendEdit"></field-input>
 
                             <field-input v-model="zbForm.floorL" label="架体层号" width="2.5"
+                                        :rules="r(true).all(R.integer)" prop="floorL"
                                          :disabled="extendEdit"></field-input>
 
                             <field-date-picker v-model="zbForm.productDateQ" label="生产日期" width="2.5" :disabled="extendEdit"
@@ -199,13 +203,12 @@
 
 <script>
     import {formRulesMixin} from 'field/common/mixinComponent';
-    import api from 'gql/eqList.gql'
     import {scrappedUp} from "api/workflow";
     import imgUp from 'components/base/axiosImgUp';
     import axios from 'axios';
     import {imgUpUrl, pdfUpUrl, videoUpUrl, imgBaseUrl, pdfBaseUrl, videoBaseUrl} from "api/config";
     import {delFile} from "api/basic";
-    import {getGenreList,addEquipInfo,getSuppliers,getEquipById, equipArgsByName, inHouse, findEquip} from "api/storage"
+    import { equipArgsByName, inHouse, findEquip, updateEquipArg, getAllSupplier, saveEquipArg, updateEquip} from "api/storage"
     import serviceDialog from 'components/base/serviceDialog/index'
     import {transformMixin} from "common/js/transformMixin";
     import { start, startOne, killProcess } from 'common/js/rfidReader'
@@ -227,6 +230,8 @@
                     vendorId: '' , // 装备供应商
                     personM: '', // 装备联系人员
                     phoneM: '', // 装备联系方式
+                    id: '',
+                    image: null, // 图片
                 },
                 equipment: {
                     name: [],
@@ -242,13 +247,15 @@
                     price: '', // 装备单价
                 },
                 list: [{rfid: null, serial: null}],
+                tempImage: '', // 用以保存图片的名字
                 formRes: '',
                 inlineForm: {},
                 leadershipList: [],
                 noimg:false,
                 unitId: JSON.parse(localStorage.getItem('user')).unitId,
                 options: [],
-                vendorId: [],
+                supplierArr: [], // 供应商列表
+                allSupplier: [], // 供应商所有数据列表
                 edit: true, // 装备参数详情的编辑
                 extendEdit: true, // 装备信息详情的编辑
                 submitShow: false, // 提交按钮是否显示
@@ -288,10 +295,19 @@
                 type: String,
                 default: null,
             },
-
+            equipName: {
+                type: String,
+                default: null
+            },
             title: {
                 type: String,
                 default: null,
+            },
+            equipList: {
+                type: Object,
+                default() {
+                    return {}
+                }
             }
         },
 
@@ -349,20 +365,21 @@
             addEquipArg() {
                 this.isClick = true;
                 setTimeout(() => {this.isClick = false}, 1600);
-                if(this.list.length == 0 || this.list[0].rfid == null || this.list[0].rfid == undefined) {
-                    this.$message.error("未扫入装备")
-                    return
-                }
-                let tempForm = JSON.parse(JSON.stringify(this.form)),
-                    tempZbForm = JSON.parse(JSON.stringify(this.zbForm))
                 if(this.title.includes('入库装备')) {
-                    let requestBody = {
+                    if(this.list.length == 0 || this.list[0].rfid == null || this.list[0].rfid == undefined) {
+                        this.$message.error("未扫入装备")
+                        return
+                    }
+                    let tempForm = JSON.parse(JSON.stringify(this.form)),
+                        tempZbForm = JSON.parse(JSON.stringify(this.zbForm)),
+                        requestBody = {
                         equipArg: {
-                            chargeCycle: tempForm.chargeCycle,
+                            chargeCycle: tempForm.chargeCycle*1000*3600*24,
+                            upkeepCycle: tempForm.upkeepCycle*1000*3600*24,
                             id: tempForm.id,
                             model: tempForm.model,
                             name: tempForm.name,
-                            shelfLife: tempForm.shelfLifeQ,
+                            shelfLife: tempForm.shelfLifeQ*1000*3600*24,
                         },
                         location: {
                             floor: tempZbForm.floorL,
@@ -387,6 +404,83 @@
                         this.$message.success("入库成功")
                         this.$emit('black')
                         // 关闭硬件
+                    })
+                } else if(this.title.includes('装备参数详情')) {
+                    let tempForm =  {
+                        id: this.form.id,
+                        name: this.form.name,
+                        model: this.form.model,
+                        chargeCycle: this.form.chargeCycle*1000*3600*24,
+                        shelfLife: this.form.shelfLifeQ*1000*3600*24,
+                        upkeepCycle: this.form.upkeepCycle*1000*3600*24,
+                        image: this.form.imageAddress,
+                        supplier: {
+                            name: this.form.vendorId,
+                            person: this.form.personM,
+                            phone: this.form.phoneM,
+                            id: this.form.supplierId
+                        }
+                    }
+                    this.$refs.form.restValidate(updateEquipArg, JSON.parse(JSON.stringify(tempForm)), (res) => {
+                        this.edit = true;
+                        this.$message.success("更新成功")
+                        this.getEquipInfo()
+                    })
+                } else if(this.title.includes('新增装备信息')) {
+                    let tempForm = {
+                        name: this.form.name,
+                        model: this.form.model,
+                        shelfLife: this.form.shelfLifeQ*1000*3600*24,
+                        chargeCycle: this.form.chargeCycle*1000*3600*24,
+                        upkeepCycle: this.form.upkeepCycle*1000*3600*24,
+                        supplier: {
+                            id: this.form.supplierId,
+                            name: this.form.vendorId,
+                            person: this.form.personM,
+                            phone: this.form.phoneM
+                        }
+                    }
+                    this.$refs.form.restValidate(saveEquipArg, tempForm, (res) => {
+                        this.$message.success("新增成功")
+                        this.$emit('black')
+                    })
+                } else if(this.title.includes('装备信息详情')) {
+                    let tempForm = {
+                        equipArg: {
+                            id: this.form.equipId,
+                            name: this.form.name,
+                            model: this.form.model,
+                            image: this.tempImage,
+                            shelfLife: this.form.shelfLifeQ*1000*3600*24,
+                            chargeCycle: this.form.chargeCycle*1000*3600*24,
+                            upkeepCycle: this.form.upkeepCycle*1000*3600*24,
+                            supplier: {
+                                id: this.form.supplierId,
+                                name: this.form.vendorId,
+                                person: this.form.personM,
+                                phone: this.form.phoneM
+                            }
+                        },
+                        location: {
+                            number: this.zbForm.numberL,
+                            surface: this.zbForm.surfaceL,
+                            section: this.zbForm.sectionL,
+                            floor: this.zbForm.floorL
+                        },
+                        id: this.form.id,
+                        productDate: this.zbForm.productDateQ,
+                        price: this.zbForm.price*100,
+                        rfid: this.form.rfid,
+                        serial: this.form.serial
+                    }
+                    // updateEquip
+                    this.$refs.form.validate.then(() => {
+                        this.$refs.zbForm.restValidate(updateEquip, tempForm, (res) => {
+                            this.$message.success("更新成功")
+                            this.$emit('black')
+                        })
+                    }).catch(err => {
+                        this.$message.error('未通过检验');
                     })
                 }
                 // if (this.title.includes('新增')) {
@@ -654,11 +748,12 @@
 
             //选择供应商后更新 对应信息
             vendor(data) {
-                console.log(data);
-                this.vendorId.some(item => {
-                    if (item.val === data) {
-                        this.form.personM = item.data.person;
-                        this.form.phoneM = item.data.phone;
+                this.allSupplier.some(item => {
+                    if (item.id === data) {
+                        this.form.personM = item.person;
+                        this.form.phoneM = item.phone;
+                        this.form.vendorId = item.name,
+                        this.form.supplierId = item.id
                         return true
                     }
                 })
@@ -666,8 +761,6 @@
 
             //图片上传成功暴露的方法
             successUp(data) {
-                console.log(data);
-
                 this.form.imageAddress = data;
             },
 
@@ -737,6 +830,15 @@
             //进入页面获取数据
             getEquipInfo() {
                 this.init()
+                // 获取供应商列表
+                getAllSupplier().then(res => {
+                        let result = JSON.parse(JSON.stringify(res.content)), arr = [];
+                        result.forEach(supplier => {
+                            arr.push({key: supplier.name, val: supplier.id})
+                        })
+                        this.supplierArr = arr
+                        this.allSupplier = result
+                })
                 if(this.title.includes('入库装备')) {
                     equipArgsByName({name: this.form.name}).then(res => {
                         let result = JSON.parse(JSON.stringify(res)), nameArr = [], modelArr = [];
@@ -754,16 +856,23 @@
                 } else if(this.title.includes('装备信息详情')) {
                     findEquip(this.equipId).then(res => {
                         let result = JSON.parse(JSON.stringify(res))
+                        this.tempImage = result.image
                         this.form = {
+                            id: result.id,
+                            equipId: result.equipArg.id,
                             name: result.equipArg.name,
                             model: result.equipArg.model,
                             serial: result.serial,
-                            shelfLifeQ: result.equipArg.shelfLife/3600/24,
-                            chargeCycle: result.equipArg.chargeCycle/3600/24,
-                            upkeepCycle: result.equipArg.upkeepCycle/3600/24,
+                            image: `${imgBaseUrl}${result.image}`,
+                            shelfLifeQ: result.equipArg.shelfLife/1000/3600/24,
+                            chargeCycle: result.equipArg.chargeCycle/1000/3600/24,
+                            upkeepCycle: result.equipArg.upkeepCycle/1000/3600/24,
+                            supplierId: result.equipArg.supplier.id,
                             vendorId: result.equipArg.supplier.name,
                             personM: result.equipArg.supplier.person,
-                            phoneM: result.equipArg.supplier.phone
+                            phoneM: result.equipArg.supplier.phone,
+                            rfid: result.rfid,
+                            serial: result.serial
                         }
                         this.zbForm = {
                             numberL: result.location.number,
@@ -774,6 +883,38 @@
                             price: result.price/100
                         }
                     })
+                } else if(this.title.includes('装备参数详情')) {
+                    let tempForm = JSON.parse(JSON.stringify(this.equipList))
+                    this.tempImage = tempForm.image
+                    this.form = {
+                        id: tempForm.id,
+                        name: tempForm.name,
+                        model: tempForm.model,
+                        image: `${imgBaseUrl}${tempForm.image}`,
+                        shelfLifeQ: tempForm.shelfLife/1000/3600/24,
+                        upkeepCycle: tempForm.upkeepCycle/1000/3600/24,
+                        chargeCycle: tempForm.chargeCycle/1000/3600/24,
+                        vendorId: tempForm.supplier.name,
+                        personM: tempForm.supplier.person,
+                        phoneM: tempForm.supplier.phone,
+                        supplierId: tempForm.supplier.id
+                    }
+                    // equipArgsByName({name: this.equipName}).then(res => {
+                    //     let result = JSON.parse(JSON.stringify(res[0]))
+                    //     this.form = {
+                    //         id: result.id,
+                    //         name: result.name,
+                    //         model: result.model,
+                    //         image: `${imgBaseUrl}${result.image}`,
+                    //         shelfLifeQ: result.shelfLife/1000/3600/24,
+                    //         chargeCycle: result.chargeCycle/1000/3600/24,
+                    //         upkeepCycle: result.upkeepCycle/1000/3600/24,
+                    //         vendorId: result.supplier.name,
+                    //         personM: result.supplier.person,
+                    //         phoneM: result.supplier.phone,
+                    //         supplierId: result.supplier.id
+                    //     }
+                    // })
                 }
                 // if (this.equipId) {
                 //     getEquipById(this.equipId).then(res=>{
