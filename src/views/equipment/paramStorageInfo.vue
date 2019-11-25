@@ -12,7 +12,7 @@
             <!--操作拦-->
             <div>
                 <tabs>
-                    <el-button type="text" class="_textBt" @click="goInfo('look')">
+                    <el-button type="text" class="_textBt" @click="goInfo('add')">
                         <svg-icon icon-class="加" class="textBt"/>
                         新增装备参数
                     </el-button>
@@ -33,7 +33,7 @@
                      ></r_label>
         </el-card>
 
-        <storageInfo :equipId="equipId" v-if="storageInfoShow" :title="title" @black="black"></storageInfo>
+        <storageInfo :equipId="equipId" v-if="storageInfoShow" :equipList="equipList" :equipName="equipName" :title="title" @black="black"></storageInfo>
     </div>
 </template>
 
@@ -56,16 +56,18 @@
                 options: [],
                 commonHouseId: '',
                 equipId: '',
+                equipName: '', // 装备参数
+                equipList: '', // 装备数据
                 title: '',
                 storageInfoShow: false,
                 list: [],
                 table: {
                     labelList: [
-                        {lable: '装备名称', field: 'rfid'},
-                        {lable: '装备型号', field: 'equipArg.category.genre.name'},
-                        {lable: '供应商', field: 'equipArg.category.name' },
+                        {lable: '装备名称', field: 'name'},
+                        {lable: '装备型号', field: 'model'},
+                        {lable: '供应商', field: 'supplier.name' },
                     ],
-                    url:'/equips',
+                    url:'/equip/findByNameOrModelLike',
                     tableAction:{
                         label:'操作',
                         button:[{name:'查看',type:'primary'}]
@@ -106,7 +108,8 @@
                     case 'look':
                         this.storageInfoShow = true;
                         this.title = '装备参数详情';
-                        this.equipId = row.id;
+                        this.equipName = row.name
+                        this.equipList = row
                         break;
                 }
             },

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-card shadow="never" v-if="!storageInfoShow">
+        <el-card shadow="never" v-if="storageListShow">
 
             <!--element card 的头部-->
 
@@ -12,7 +12,7 @@
             <!--操作拦-->
             <div>
                 <tabs>
-                    <el-button type="text" class="_textBt" @click="goInfo('out')">
+                    <el-button type="text" class="_textBt" @click="goInfo">
                         <svg-icon icon-class="加" class="textBt"/>
                         出库装备
                     </el-button>
@@ -32,12 +32,15 @@
             <r_label :table="table" ref="lable" @clickTable="clickTable"
                      ></r_label>
         </el-card>
+
+        <in-storage-list v-if="!storageListShow" :title="title" :equipData="equipData" @black="storageListShow=true"></in-storage-list>
     </div>
 </template>
 
 <script>
     import tabs from 'components/base/tabs/index'
     import serviceDialog from 'components/base/serviceDialog/index'
+    import inStorageList from 'components/equipment/inStorageList'
     import r_label from 'common/vue/ajaxLabel'
     // nodejs调用子进程的方法
 
@@ -53,17 +56,16 @@
                 options: [],
                 commonHouseId: '',
                 equipId: '',
+                equipData: {},
                 title: '',
-                storageInfoShow: false,
-                list: [],
                 table: {
                     labelList: [
-                        {lable: '出库单号', field: 'rfid'},
-                        {lable: '装备数量', field: 'equipArg.category.genre.name'},
-                        {lable: '操作人员', field: 'equipArg.category.name', },
-                        {lable: '出库时间', field: 'equipArg.name'},
+                        {lable: '出库单号', field: 'orderNumber'},
+                        {lable: '装备数量', field: 'count'},
+                        {lable: '操作人员', field: 'operatorInfo.operator', },
+                        {lable: '出库时间', filter: (row) => this.$filterTime(row.createTime)},
                     ],
-                    url:'/equips',
+                    url: '/inouthouse/findOutHouseNumberLike',
                     tableAction:{
                         label:'操作',
                         button:[{name:'查看',type:'primary'}]
@@ -77,6 +79,7 @@
                 },
                 delEquipObj: {},
                 dialogVisible: false,
+                storageListShow: true,
                 writeAll: [],
                 writeIndex: '',
                 pid: '',
@@ -87,33 +90,18 @@
         },
         components: {
             tabs,
-            r_label
+            r_label,
+            inStorageList
         },
         methods: {
             clickTable(table) {
-              
+                this.equipData = table.row
+                this.title="出库单详情"
+               this.storageListShow = false
             },
-            goInfo(data, row) {
-                switch (data) {
-                    case 'add':
-                        this.storageInfoShow = true;
-                        this.title = '新增装备信息';
-                        this.equipId = '';
-                        break;
-                    case 'storage':
-                        this.storageInfoShow = true;
-                        this.title = '入库装备';
-                        this.equipId = '';
-                        break;
-                    case 'look':
-                        this.storageInfoShow = true;
-                        this.title = '装备查看';
-                        this.equipId = row.id;
-                        break;
-                    case 'rfid':
-                        this.$refs.dialogPattern.show();
-                        break;
-                }
+            goInfo() {
+                this.storageListShow = false;
+                this.title = "出库装备";
             },
             
             black(data) {

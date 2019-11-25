@@ -1,5 +1,5 @@
 <template>
-    <el-input :type="type" v-model="copyVal"
+    <el-input  :type="type" v-model="copyVal"
               :suffix-icon="suffix"
               :placeholder="placeholder"
               :readonly="cReadonly" :disabled="cDisabled"

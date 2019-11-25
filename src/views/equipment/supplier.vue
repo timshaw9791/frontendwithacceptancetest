@@ -27,7 +27,7 @@
                     <bos-table-column lable="联系方式" field="phone"></bos-table-column>
                     <el-table-column label="操作" align="center" width="200px">
                         <template slot-scope="scope">
-                            <el-button type="primary" size="mini" @click="addChanger('修改供应商',scope.row)">编辑</el-button>
+                            <el-button type="primary" size="mini" @click="addChanger('编辑供应商信息',scope.row)">编辑</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -35,7 +35,23 @@
             </div>
         </el-card>
 
-        <field-dialog :title="title" ref="dialog" @confirm="dialogConfirm">
+        <service-dialog :title="title" ref="dialog" @confirm="dialogConfirm">
+            <form-container ref="inlineForm" :model="inlineForm">
+                <field-input v-model="inlineForm.name" label="供应商" width="8"
+                             :rules="r(true).all(R.require)" prop="name"
+                ></field-input>
+                <br/>
+                <field-input v-model="inlineForm.person" label="联系人" width="8"
+                             :rules="r(true).all(R.require)" prop="person"
+                ></field-input>
+                <br/>
+                <field-input v-model="inlineForm.phone" label="联系方式" width="8"
+                             :rules="r(true).all(R.mobile)" prop="phone"
+                ></field-input>
+            </form-container>
+        </service-dialog>
+
+        <!-- <field-dialog :title="title" ref="dialog" @confirm="dialogConfirm">
             <form-container ref="inlineForm" :model="inlineForm">
                 <field-input v-model="inlineForm.name" label="供应商" width="5"
                              :rules="r(true).all(R.require)" prop="name"
@@ -49,12 +65,13 @@
                              :rules="r(true).all(R.mobile)" prop="phone"
                 ></field-input>
             </form-container>
-        </field-dialog>
+        </field-dialog> -->
     </div>
 </template>
 
 <script>
     import {formRulesMixin} from 'field/common/mixinTableRest';
+    import serviceDialog from 'components/base/serviceDialog/index'
     import { supplierFindByName, saveSupplier, updateSupplier } from "api/equip"
 
     export default {
@@ -69,6 +86,9 @@
             }
         },
         mixins: [formRulesMixin],
+        components: {
+            serviceDialog  
+        },
         watch: {
             inquire(newVal, oldVal) {
                 this.getSupplierList()
@@ -94,7 +114,7 @@
             },
             dialogConfirm() {
                 let obj = JSON.parse(JSON.stringify(this.inlineForm))
-                this.$refs.inlineForm.restValidate(this.title.includes('修改')?updateSupplier:saveSupplier, obj, res => {
+                this.$refs.inlineForm.restValidate(this.title.includes('编辑')?updateSupplier:saveSupplier, obj, res => {
                     this.$message.success(`${this.title}成功`)
                     this.$refs.dialog.hide()
                     this.paginator.page = 1
@@ -103,7 +123,7 @@
             },
             addChanger(title, row) {
                 this.title = title;
-                if (title.includes('修改')) {
+                if (title.includes('编辑')) {
                     this.inlineForm = JSON.parse(JSON.stringify(row));
                 } else {
                     this.inlineForm = {};
