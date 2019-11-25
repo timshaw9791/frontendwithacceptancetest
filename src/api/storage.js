@@ -97,3 +97,38 @@ export function findEquip(id) {
         method: "GET"
     })
 }
+
+/* 新增装备信息 */
+export function saveEquipArg(data) {
+    return request({
+        url: "/equip/saveEquipArg",
+        method: "POST",
+        data
+    })
+}
+
+/* 更新装备参数 */
+export function updateEquipArg(data) {
+    return request({
+        url: "/equip/updateEquipArg",
+        method: "POST",
+        data
+    })
+}
+
+/* 更新装备信息 */
+export function updateEquip(data) {
+    return request({
+        url: "/equip/updateEquip",
+        method: "POST",
+        data
+    })
+}
+
+/* 获取所有供应商 */
+export function getAllSupplier() {
+    return request({
+        url: "/supplier/findByName",
+        method: "GET"
+    })
+}

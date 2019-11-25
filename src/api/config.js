@@ -30,7 +30,6 @@ if (process.env.NODE_ENV == "production") {
     getHandheldPath(result.INVENTORY_PATH)
 }
 
-export { baseURL, baseBURL, localTitle}
 export const imgBaseUrl = `${baseURL}/images/`;
 export const pdfBaseUrl = `${baseURL}/pdfs/`;
 export const videoBaseUrl = `${baseURL}/videos/`;
@@ -42,3 +41,5 @@ export const videoUpUrl = `${baseURL}/upload/video`;
 export const websocketUrl = `${baseURL}/websocket`;
 
 export const tokenName = 'x-auth-token';
+
+export { baseURL, baseBURL, localTitle }

@@ -12,7 +12,7 @@
             <!--操作拦-->
             <div>
                 <tabs>
-                    <el-button type="text" class="_textBt" @click="goInfo('out')">
+                    <el-button type="text" class="_textBt" @click="goInfo">
                         <svg-icon icon-class="加" class="textBt"/>
                         出库装备
                     </el-button>
@@ -33,7 +33,7 @@
                      ></r_label>
         </el-card>
 
-        <in-storage-list v-if="!storageListShow" :title="title" @black="storageListShow=true"></in-storage-list>
+        <in-storage-list v-if="!storageListShow" :title="title" :equipData="equipData" @black="storageListShow=true"></in-storage-list>
     </div>
 </template>
 
@@ -56,6 +56,7 @@
                 options: [],
                 commonHouseId: '',
                 equipId: '',
+                equipData: {},
                 title: '',
                 table: {
                     labelList: [
@@ -94,19 +95,13 @@
         },
         methods: {
             clickTable(table) {
-               this.goInfo('look', table.row)
+                this.equipData = table.row
+                this.title="出库单详情"
+               this.storageListShow = false
             },
-            goInfo(data, row) {
-                switch (data) {
-                    case 'out':
-                        this.storageListShow = false;
-                        this.title = "出库装备";
-                        break;
-                    case 'look':
-                        this.storageListShow = false;
-                        this.title = '出库单详情';
-                        break;
-                }
+            goInfo() {
+                this.storageListShow = false;
+                this.title = "出库装备";
             },
             
             black(data) {
