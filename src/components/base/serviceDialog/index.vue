@@ -20,8 +20,8 @@
             </el-dialog>
 
             <div slot="footer" class="dialog-footer" v-if="button">
-                <el-button @click="cancelDb">取 消</el-button>
-                <el-button type="primary" :disabled="disabled" @click="dialogConfirm">{{ confirmInfo }}</el-button>
+                <el-button @click="cancelDb" data-test="button">取 消</el-button>
+                <el-button type="primary" :disabled="disabled" @click="dialogConfirm" data-test="button">{{ confirmInfo }}</el-button>
             </div>
         </el-dialog>
     </div>
