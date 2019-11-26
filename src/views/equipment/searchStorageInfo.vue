@@ -32,11 +32,13 @@
         <storageInfo :equipId="equipId" v-if="storageInfoShow" :title="title" @black="black"></storageInfo>
 
         <service-dialog title="装备状态历史记录" ref="historyDialog" :button="false" :secondary="false">
-            <el-table :data="historyList" height="529px" fit>
-                <bos-table-column lable="装备状态" field="equipState"></bos-table-column>
-                <bos-table-column lable="操作时间" :filter="(row) => $filterTime(row.time)"></bos-table-column>
-                <bos-table-column lable="操作人员" field="operatePeople"></bos-table-column>
-            </el-table>
+            <div class="history-box">
+                <el-table :data="historyList" height="529px" style="border: 1px solid #ccc; border-radius: 6px">
+                    <bos-table-column lable="装备状态" align="center" field="equipState"></bos-table-column>
+                    <bos-table-column lable="操作时间" align="center" :filter="(row) => $filterTime(row.time)"></bos-table-column>
+                    <bos-table-column lable="操作人员" align="center" field="operatePeople"></bos-table-column>
+                </el-table>
+            </div>
         </service-dialog>
     </div>
 </template>
@@ -204,4 +206,16 @@
         }
     }
 
+    .history-box {
+        ::-webkit-scrollbar-track-piece {
+            background: #d3dce6;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(47,47,118,0.37);
+            border-radius: 20px;
+        }
+    }
 </style>
