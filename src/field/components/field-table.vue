@@ -2,7 +2,7 @@
     <div>
         <el-table
                 :data="list"
-                style="width: 100%" id="table" @sort-change="sortChange" height="3.45rem">
+                style="width: 100%" id="table" @sort-change="sortChange" :height="height">
             <bos-table-column  v-for="item in labelList" :lable="item.lable" :sort="item.sort" :field="item.field" :filter="item.filter"></bos-table-column>
             <el-table-column v-if="flag" :label="tableAction.label" align="center">
                 <template slot-scope="scope">
@@ -10,7 +10,7 @@
                 </template>
             </el-table-column>
         </el-table>
-        <bos-paginator v-if="list!=''"  :pageInfo="pageInfo" @bosCurrentPageChanged="tableChangePage"></bos-paginator>
+        <bos-paginator v-if="list!=''&&show"  :pageInfo="pageInfo" @bosCurrentPageChanged="tableChangePage"></bos-paginator>
     </div>
 </template>
 
@@ -27,9 +27,17 @@
             list: {
                 type: Array
             },
+            show: {
+                type: Boolean,
+                default:true
+            },
             labelList: {
                 type: Array,
                 required: true
+            },
+            height:{
+                type:String,
+                default:'3.45rem'
             },
             /*defaultSort:{
               type:Object,

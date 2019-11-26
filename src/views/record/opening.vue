@@ -22,7 +22,7 @@
                 </BosInput>
             </div>
         </div>
-        <field-table :list="list" :labelList="table.labelList"
+        <field-table :list="list" :labelList="table.labelList" :show="false"
                     :tableAction="table.tableAction"  :pageInfo="paginator" @tableCurrentPageChanged="changePage" @clickTableCloum="clickTableCloum" style="width: 100%">
         </field-table>
         <r_video ref="recordVideo" :src="address"></r_video>
@@ -51,7 +51,7 @@
                     flag: false,
                     labelList: [
                         {lable: '开门人员', field: 'operatorInfo.operator',sort:false},
-                        {lable: '开门时间', field: 'creatTime' ,filter: (ns) => this.$filterTime(parseInt(ns.creatTime))},
+                        {lable: '开门时间', field: 'createTime' ,filter: (ns) => this.$filterTime(parseInt(ns.createTime))},
                     ],
                     search:'',
                     tableAction:{
@@ -73,8 +73,8 @@
             clickTableCloum(table) {
                 let data = table.row;
                 if (data) {
-                    console.log(data);
-                    this.address=baseURL+'/records/'+data.videoAddress;
+                    console.log("data",data);
+                    this.address=baseURL+'/records/'+data.video;
                     this.$refs.recordVideo.show()
                 }
             },
@@ -107,15 +107,23 @@
             },
             'table.time':{
                 handler(data){
-                    data[0] = data[0].replace(new RegExp("-","gm"),"/");
-                    let starttime = (new Date(data[0])).getTime();
-                     data[1] = data[1].replace(new RegExp("-","gm"),"/");
-                    let endtime = (new Date(data[1])).getTime();
-                    let params = {endTime:endtime,startTime:starttime}
+                    let endtime = ''
+                    let starttime = ''
+                    if(data){
+                        data[0] = data[0].replace(new RegExp("-","gm"),"/");
+                        starttime = (new Date(data[0])).getTime();
+                        data[1] = data[1].replace(new RegExp("-","gm"),"/");
+                        endtime = (new Date(data[1])).getTime();
+                        let params = {endTime:endtime,startTime:starttime}
+                        findByTimeBetween(params).then((res)=>{
+                            this.list=JSON.parse(JSON.stringify(res.content))
+                        })
+                    }else{
+                        gateOpenRecord().then((res)=>{
+                            this.list=JSON.parse(JSON.stringify(res.content))
+                        })
+                    }
                     console.log("params",params)
-                    findByTimeBetween(params).then((res)=>{
-                        this.list=JSON.parse(JSON.stringify(res.content))
-                    })
                 }
             }
         }

@@ -1,11 +1,11 @@
 <template>
     <div class="opening-box">
-        <my-header :title="'盘点记录'" :searchFlag="false"  :haveBlack="!show" @h_black="black"></my-header>
+        <my-header :title="'维修记录'" :searchFlag="false"  :haveBlack="!show" @h_black="black"></my-header>
         <div v-if="show">
             <div class="action-bar">
                 <div style="width:400px" data-test="time_search">
                     <el-date-picker
-                        v-model="table.time"
+                        v-model="time"
                         type="daterange"
                         value-format="yyyy-MM-dd"
                         range-separator="至"
@@ -17,7 +17,7 @@
                     <BosInput
                             placeholder="操作人员"
                             suffix="el-icon-search"
-                            v-model="table.search"
+                            v-model="params.operator"
                             style="width:285px;">
 
                     </BosInput>
@@ -29,41 +29,36 @@
         </div>
         
         <!-- <r_video ref="recordVideo" :src="address"></r_video> -->
-        <inventoryinfo :infolist="infolist" :show="show"></inventoryinfo>
-
+        <service-recordinfo :infolist="infolist" :show="show"></service-recordinfo>
     </div>
 </template>
 
 <script>
     import myHeader from 'components/base/header/header'
-    import {findStartTimeAndEndTimeBetweenAndOperatorLike } from "api/equiprecord"
-    import inventoryinfo from "views/record/inventoryinfo"
+    import {findRepairByStartTimeAndEndTimeBetweenAndOperatorLike } from "api/equiprecord"
+    import serviceRecordinfo from "views/record/serviceRecordinfo"
 
     export default {
-        name: "inventory",
+        name: "serviceRecord",
         components:{
             myHeader,
-            inventoryinfo
+            serviceRecordinfo
         },
         data(){
             return{
                 table: {
                     flag: false,
                     labelList: [
-                        {lable: '开始盘点时间', field: 'createTime' ,filter: (ns) => this.$filterTime(parseInt(ns.createTime))},
-                        {lable: '结束盘点时间', field: 'updateTime' ,filter: (ns) => this.$filterTime(parseInt(ns.createTime))},
+                        {lable: '开始维修时间', field: 'createTime' ,filter: (ns) => this.$filterTime(parseInt(ns.createTime))},
+                        {lable: '维修件数', field: 'recordDetailSet.length',sort:false},
                         {lable: '操作人员', field: 'operatorInfo.operator',sort:false},
-                        {lable: '盘点总数', field: 'inventoryCount',sort:false},
-                        {lable: '未盘点数', field: 'notCount',sort:false},
-                        {lable: '出库数量', field: 'outHouseCount',sort:false},
                     ],
-                    search:'',
                     tableAction:{
                         label:'详情',
                         button:[{name:'查看',type:'primary'}]
                     },
-                    time:''
                 },
+                time:'',
                 list:[],
                 infolist:[],
                 paginator: {
@@ -71,7 +66,12 @@
                     totalPages: 10,
                     size: 9
                 },
-                show:true
+                show:true,
+                params:{
+                    startTime:'',
+                    endTime:'',
+                    operator:''
+                }
             }
         },
         methods:{
@@ -85,13 +85,13 @@
                 console.log("typeof(this.infolist)",typeof(this.infolist))
             },
             
-            getList(){
-                let params = this.paginator
-                findStartTimeAndEndTimeBetweenAndOperatorLike().then(res=>{
+            getList(data){
+                // let params = this.paginator
+                findRepairByStartTimeAndEndTimeBetweenAndOperatorLike(data).then(res=>{
                     this.list=[];
                     console.log("111")
                     this.list=res;
-                    this.paginator.totalPages=res.totalPages
+                    // this.paginator.totalPages=res.totalPages
                     console.log("res",res)
                 })
             },
@@ -102,37 +102,34 @@
             },
             black(){
                 this.show = true
-                console.log("show",this.show)
             }
         },
         created(){
             this.getList()
         },
         watch:{
-            'table.search':{
+            'params.operator':{
                 handler(data){
-                    if(data){
-                        let params = {operator:data}
-                        findStartTimeAndEndTimeBetweenAndOperatorLike(params).then((res)=>{
-                            this.list=res
-                        })
-                    }else{
-                        this.getList()
-                    }
-                    
+                    console.log("this.params",this.params)
+                    this.getList(this.params)
                 }
             },
-            'table.time':{
+            'time':{
                 handler(data){
-                    data[0] = data[0].replace(new RegExp("-","gm"),"/");
-                    let starttime = (new Date(data[0])).getTime();
-                     data[1] = data[1].replace(new RegExp("-","gm"),"/");
-                    let endtime = (new Date(data[1])).getTime();
-                    let params = {endTime:endtime,startTime:starttime}
-                    console.log("params",params)
-                    findStartTimeAndEndTimeBetweenAndOperatorLike(params).then((res)=>{
-                        this.list=JSON.parse(JSON.stringify(res.content))
-                    })
+                    console.log("data",data)
+                    if(data){
+                        data[0] = data[0].replace(new RegExp("-","gm"),"/");
+                        this.params.startTime = (new Date(data[0])).getTime();
+                        data[1] = data[1].replace(new RegExp("-","gm"),"/");
+                        this.params.endTime = (new Date(data[1])).getTime()+24*60*60*1000-1;
+                        console.log("this.params",this.params)
+                    }
+                    else{
+                        this.params.startTime = '';
+                        this.params.endTime = '';
+                        console.log("this.params",this.params)
+                    }
+                    this.getList(this.params)
                 }
             }
         }

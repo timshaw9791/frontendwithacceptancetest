@@ -1,6 +1,6 @@
 <template>
-    <div class="borrow">
-        <my-header :title="'装备领还记录'" :searchFlag="false"></my-header>
+    <div class="opening-box">
+        <my-header :title="'充电记录'" :searchFlag="false"></my-header>
         <div class="action-bar">
             <div style="width:400px" data-test="time_search">
                 <el-date-picker
@@ -14,7 +14,7 @@
             </div>
             <div class="_buttons" style="margin-right: 18px">
                 <BosInput
-                        placeholder="操作人员"
+                        placeholder="RFID/装备名称"
                         suffix="el-icon-search"
                         v-model="params.args"
                         style="width:285px;">
@@ -23,85 +23,61 @@
             </div>
         </div>
         <field-table :list="list" :labelList="table.labelList" :show="false"
-                      :tableAction="table.tableAction"  :pageInfo="paginator" @tableCurrentPageChanged="changePage"  @clickTableCloum="clickTableCloum" style="width: 100%">
+                    :tableAction="table.tableAction"  :pageInfo="paginator" @tableCurrentPageChanged="changePage" style="width: 100%">
         </field-table>
-        <r_video ref="recordVideo" :src="address"></r_video>
-        <service-dialog title="装备领用/归还记录" ref="dialogLinghuan" width="766px" :button="false">
-            <field-table :list="infolist" :labelList="infotable.labelList" :show="false"
-                        :pageInfo="paginator" @tableCurrentPageChanged="changePage"  style="width: 100%">
-            </field-table>
-        </service-dialog>
     </div>
 </template>
 
 <script>
     import myHeader from 'components/base/header/header'
-    import r_video from 'components/record/recordDialog'
-    import serviceDialog from 'components/base/gailiangban'
-    import {baseURL} from "../../api/config";
-    import {findByStartTimeAndEndTimeBetweenAndArgsLike} from "api/equiprecord";
+    import {findChargeByStartTimeAndEndTimeBetweenAndArgsLike} from "api/equiprecord"
+    import {transformMixin} from "common/js/transformMixin";
 
     export default {
-        name: "borrow",
-        components: {
-            r_video,
+        name: "consumablerecord",
+        components:{
             myHeader,
-            serviceDialog
         },
-        created(){
-            if(this.$route.query.name!=null){
-                this.defaultSearch=this.$route.query.name;
-                this.table.flag=true
-            }
-        },
-        data() {
-            return {
-                defaultSearch:'',
+        mixins: [transformMixin],
+        data(){
+            return{
                 table: {
+                    flag: false,
                     labelList: [
-                        {lable: '操作人员', field: 'operatorInfo.operator', sort: false},
-                        {lable: '领取/归还状态', field: 'state', sort: false},
-                        {lable: '领取/归还时间', field: 'createTime', filter: (ns) => this.$filterTime(ns.createTime), sort: false}
+                        {lable: 'RFID', field: 'equipInfo.rfid',sort:false},
+                        {lable: '装备序号', field: 'equipInfo.serial',sort:false},
+                        {lable: '装备名称', field: 'equipInfo.equipName',sort:false},
+                        {lable: '装备型号', field: 'equipInfo.model',sort:false},
+                        {lable: '装备位置', field: 'equipInfo',filter: (ns) => this.fixposition(ns.equipInfo)},
+                        {lable: '充电周期', field: 'equipInfo.duration',filter: (ns) => this.useTime(ns.equipInfo.duration,"周期")},
+                        {lable: '开始充电时间', field: 'createTime' ,filter: (ns) => this.$filterTime(parseInt(ns.createTime))},
+                        {lable: '已充时间', field: 'equipInfo.useTime',filter: (ns) => this.useTime(ns.equipInfo.useTime,"已冲")},
                     ],
-                    tableAction:{
-                        label:'监控视频',
-                        button:[{name:'查看',type:'primary'},{name:'监控',type:'primary'}]
-                    },
-                    flag:false
+                    search:'',
                 },
-                infotable: {
-                    labelList: [
-                        {lable: 'RFID', field: 'equipInfo.rfid', sort: false},
-                        {lable: '装备序号', field: 'equipInfo.serial', sort: false},
-                        {lable: '装备名称', field: 'equipInfo.equipName', sort: false},
-                        {lable: '装备型号', field: 'equipInfo.model', sort: false},
-                    ],
-                    flag:false
-                },
+                time:'',
+                list:[],
                 paginator: {
                     page: 1,
                     totalPages: 10,
                     size: 9
                 },
-                list:[],
                 address:'',
-                infolist:[],
                 params:{
-                    endTime:'',
                     startTime:'',
+                    endTime:'',
                     args:''
-                },
-                time:''
+                }
             }
         },
-
-        methods: {
+        methods:{
             
             getList(data){
                 let params = this.paginator
-                findByStartTimeAndEndTimeBetweenAndArgsLike(data).then(res=>{
+                findChargeByStartTimeAndEndTimeBetweenAndArgsLike(data).then(res=>{
                     this.list=[];
-                    this.list=JSON.parse(JSON.stringify(res.content));
+                    this.list=res;
+                    console.log("res",res)
                     this.paginator.totalPages=res.totalPages
                 })
             },
@@ -109,30 +85,27 @@
                 this.paginator.page = data
                 this.getList()
             },
-            clickTableCloum(data){
-                console.log("data",data)
-                if(data.name=="查看"){
-                    console.log("111")
-                    this.infolist = data.row.recordDetailSet
-                    console.log("this.infolist",this.infolist)
-                    this.$refs.dialogLinghuan.show()
-                }else if(data.name=="监控"){
-                    console.log("222")
-                    this.address=baseURL+'/records/'+data.row.video;
-                    this.$refs.recordVideo.show()
+            useTime(data,info){
+                var days = parseInt(data / (1000 * 60 * 60 * 24));
+                var hours = parseInt((data % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = parseInt((data % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = (data % (1000 * 60)) / 1000;
+                if(info=="周期"){
+                    return days + " 天 ";
+                }else{
+                    return days + " 天 " + hours + " 小时 ";
                 }
             }
         },
         created(){
             this.getList()
         },
-        watch: {
+        watch:{
             'params.args':{
                 handler(data){
                     console.log("this.params",this.params)
                     this.getList(this.params)
                 }
-                
             },
             'time':{
                 handler(data){
@@ -150,31 +123,20 @@
                         console.log("this.params",this.params)
                     }
                     this.getList(this.params)
+                    
                 }
-                
             },
-            'list':{
-                handler(){
-                    for(let i in this.list){
-                        if(this.list[i].state == "RECEIVE"){
-                            this.list[i].state = "领取"
-                        }else if(this.list[i].state == "RETURN"){
-                            this.list[i].state = "归还"
-                        }
-                    }
-                }
-            }
-        },
+        }
     }
 </script>
 
 <style scoped>
-    .borrow{
-        font-size: 16px;
-        width: 100%;
-        min-height: 4.4323rem;
-    }
-    .action-bar {
+.opening-box{
+    font-size: 16px;
+    width: 100%;
+    min-height: 4.4323rem;
+}
+.action-bar {
     padding-right: 23px;
     margin-top: 8px;
     border-top: rgba(112, 112, 112, 0.13) solid 1px;
