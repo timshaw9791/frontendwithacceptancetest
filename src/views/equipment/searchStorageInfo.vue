@@ -30,6 +30,14 @@
         </el-card>
 
         <storageInfo :equipId="equipId" v-if="storageInfoShow" :title="title" @black="black"></storageInfo>
+
+        <service-dialog title="装备状态历史记录" ref="historyDialog" :button="false" :secondary="false">
+            <el-table :data="historyList" height="529px" fit>
+                <bos-table-column lable="装备状态" field="equipState"></bos-table-column>
+                <bos-table-column lable="操作时间" :filter="(row) => $filterTime(row.time)"></bos-table-column>
+                <bos-table-column lable="操作人员" field="operatePeople"></bos-table-column>
+            </el-table>
+        </service-dialog>
     </div>
 </template>
 
@@ -38,6 +46,7 @@
     import serviceDialog from 'components/base/serviceDialog/index'
     import storageInfo from 'views/equipment/storageInfos'
     import r_label from 'common/vue/ajaxLabel'
+    import { findEquipHistory } from "api/storage"
     // nodejs调用子进程的方法
 
     // const cmdPath = 'C:\\Users\\Administrator';   //cmd命令的位置
@@ -55,6 +64,7 @@
                 title: '',
                 storageInfoShow: false,
                 list: [],
+                historyList: [],
                 table: {
                     labelList: [
                         {lable: 'RFID', field: 'rfid'},
@@ -88,11 +98,20 @@
         components: {
             tabs,
             r_label,
-            storageInfo
+            storageInfo,
+            serviceDialog
         },
         methods: {
             clickTable(table) {
-              this.goInfo('look', table.row)
+              if(table.name == "查看") {
+                this.goInfo('look', table.row)
+              } else {
+                findEquipHistory({id: table.row.id}).then(res => {
+                    let result = JSON.parse(JSON.stringify(res))
+                    this.historyList = result
+                    this.$refs.historyDialog.show()
+                })
+              }
             },
             goInfo(data, row) {
                 switch (data) {
