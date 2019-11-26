@@ -1,6 +1,6 @@
 <template>
     <div class="opening-box">
-        <my-header :title="'保养记录'" :searchFlag="false"  :haveBlack="!show" @h_black="black"></my-header>
+        <my-header :title="'维修记录'" :searchFlag="false"  :haveBlack="!show" @h_black="black"></my-header>
         <div v-if="show">
             <div class="action-bar">
                 <div style="width:400px" data-test="time_search">
@@ -29,30 +29,30 @@
         </div>
         
         <!-- <r_video ref="recordVideo" :src="address"></r_video> -->
-        <maintenance-recordinfo :infolist="infolist" :show="show"></maintenance-recordinfo>
+        <service-recordinfo :infolist="infolist" :show="show"></service-recordinfo>
     </div>
 </template>
 
 <script>
     import myHeader from 'components/base/header/header'
-    import {findUpkeepStartTimeAndEndTimeBetweenAndOperatorLike} from "api/equiprecord"
-    import maintenanceRecordinfo from "views/record/maintenanceRecordinfo"
+    import {findRepairByStartTimeAndEndTimeBetweenAndOperatorLike } from "api/equiprecord"
+    import serviceRecordinfo from "views/record/serviceRecordinfo"
+
     export default {
-        name: "maintenanceRecord",
+        name: "serviceRecord",
         components:{
             myHeader,
-            maintenanceRecordinfo
+            serviceRecordinfo
         },
         data(){
             return{
                 table: {
                     flag: false,
                     labelList: [
-                        {lable: '开始保养时间', field: 'createTime' ,filter: (ns) => this.$filterTime(parseInt(ns.createTime))},
-                        {lable: '保养件数', field: 'count',sort:false},
+                        {lable: '开始维修时间', field: 'createTime' ,filter: (ns) => this.$filterTime(parseInt(ns.createTime))},
+                        {lable: '维修件数', field: 'recordDetailSet.length',sort:false},
                         {lable: '操作人员', field: 'operatorInfo.operator',sort:false},
                     ],
-                    search:'',
                     tableAction:{
                         label:'详情',
                         button:[{name:'查看',type:'primary'}]
@@ -68,27 +68,31 @@
                 },
                 show:true,
                 params:{
-                    endTime:'',
                     startTime:'',
+                    endTime:'',
                     operator:''
                 }
             }
         },
         methods:{
             clickTableCloum(table) {
+                console.log("111")
                 let data = table.row;
+                console.log("data",data)
                 this.infolist = data
+                console.log("this.infolist",this.infolist)
                 this.show = false
+                console.log("typeof(this.infolist)",typeof(this.infolist))
             },
             
             getList(data){
-                let params = this.paginator
-                findUpkeepStartTimeAndEndTimeBetweenAndOperatorLike(data).then(res=>{
+                // let params = this.paginator
+                findRepairByStartTimeAndEndTimeBetweenAndOperatorLike(data).then(res=>{
                     this.list=[];
+                    console.log("111")
                     this.list=res;
-                    this.paginator.totalPages=res.totalPages
+                    // this.paginator.totalPages=res.totalPages
                     console.log("res",res)
-                    console.log("list",this.list)
                 })
             },
             changePage(data){

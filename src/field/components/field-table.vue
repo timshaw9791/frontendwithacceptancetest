@@ -32,8 +32,8 @@
                 required: true
             },
             height:{
-              type:String,
-              default:'3.55rem'
+                type:String,
+                default:'3.45rem'
             },
             /*defaultSort:{
               type:Object,

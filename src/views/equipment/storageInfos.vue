@@ -41,7 +41,7 @@
                             ></field-input>
                             <field-select label="装备名称" v-model="form.name" width="3" name="装备名称"
                                           :list="equipment.name" :rules="r(true).all(R.require)"
-                                          @change="getEquipInfo" placeholder="请选择" prop="name"
+                                          @change="equipNameSelected" placeholder="请选择" prop="name"
                                           v-else></field-select>
             
                             <field-input v-model="form.model" label="装备型号" width="3"
@@ -190,9 +190,9 @@
         </field-dialog>
 
 
-        <serviceDialog title="复制RFID" ref="copyRfidDialog" @confirm="copyRfid">
+        <serviceDialog title="复制RFID" ref="copyRfidDialog" @confirm="copyRfid" confirmInfo="写入">
             <form-container ref="copyRfid" :model="copyRfidList" style="text-align: center">
-                <field-input v-model="copyRfidList.rfid" label="申请编号" width="4"
+                <field-input v-model="copyRfidList.rfid" label="RFID：" width="4"
                              :disabled="true"></field-input>
             </form-container>
         </serviceDialog>
@@ -259,11 +259,12 @@
                 edit: true, // 装备参数详情的编辑
                 extendEdit: true, // 装备信息详情的编辑
                 submitShow: false, // 提交按钮是否显示
+                hardwareOpen: false, // 硬件是否启动
                 imageUrl: '',
                 rfids: [],
                 serialList: [],
                 pid: '',
-                index: 0,
+                index: 0, // 标识当前扫入是否是第一件装备
                 com: 0,
                 copyRfidList: {},
                 judgeEdit: { // 判断是否对数据进行修改
@@ -332,6 +333,9 @@
                     price: '', 
                 }
                 this.list = [{rfid: null, serial: null}]
+                this.pid = ''
+                this.index = 0
+                this.hardwareOpen = false
             },
             //离开页面以后为父组件抛出black 杀死进程
             black() {
@@ -346,6 +350,10 @@
                 //         },
                 //         zbForm: {}
                 //     };
+                    
+                    if(this.title.includes('入库装备')) {
+                        killProcess(this.pid)
+                    }
                     this.$emit('black', true);
                 // } else {
                 //     this.$refs.dialog.show();
@@ -400,7 +408,9 @@
                         rfids: rfidList,
                         serials: serialList
                     }, requestBody, (state, res) => {
-                        this.init()
+                        killProcess(this.pid)
+                        this.pid = ''
+                        this.hardwareOpen = false
                         this.$message.success("入库成功")
                         this.$emit('black')
                         // 关闭硬件
@@ -424,7 +434,7 @@
                     this.$refs.form.restValidate(updateEquipArg, JSON.parse(JSON.stringify(tempForm)), (res) => {
                         this.edit = true;
                         this.$message.success("更新成功")
-                        this.getEquipInfo()
+                        this.$emit('black')
                     })
                 } else if(this.title.includes('新增装备信息')) {
                     let tempForm = {
@@ -653,98 +663,6 @@
                 this.$emit('black', true);
             },
 
-            //点击图标执行input的上传click事件
-            pdfUp(data) {
-                if (!this.edit) {
-                    this.$refs.filePdf[data].click();
-                }
-            },
-
-            //点击图标执行input的上传click事件
-            videoUp(data) {
-                if (!this.edit) {
-                    this.$refs.fileVideo[data].click();
-                }
-            },
-
-            //上传video类
-            videoFileChange(index) {
-                if (this.form.videoAddresses.length > 0) {
-                    delFile({
-                        filename: this.form.videoAddresses[index],
-                        category: 'video',
-                    }).then(res => {
-                        console.log(res);
-                    })
-                }
-
-                let files = this.$refs.fileVideo[index].files[0];
-
-                let fileFormData = new FormData();
-                fileFormData.append('file', files, files.name);
-                let requestConfig = {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    },
-                };
-                const instance = axios.create({
-                    withCredentials: true
-                });
-                const loading = this.$loading({
-                    lock: true,
-                    text: '正在上传请稍等!',
-                    spinner: 'el-icon-loading',
-                    background: 'rgba(0, 0, 0, 0.7)'
-                });
-                instance.post(videoUpUrl, fileFormData, requestConfig).then(res => {
-                    loading.close();
-                    this.form.videoAddresses[index] = res.data;
-                    this.form.videoAddresses.reverse();
-                    this.form.videoAddresses.reverse();
-                }).catch(err => {
-                    loading.close();
-                    this.$message.error('上传失败');
-                });
-            },
-
-            //上传pdf
-            pdfFileChange(index) {
-
-                if (this.form.documentAddresses.length > 0) {
-                    delFile({
-                        filename: this.form.documentAddresses[index],
-                        category: 'pdf',
-                    }).then(res => {
-                        console.log(res);
-                    })
-                }
-
-
-                let files = this.$refs.filePdf[index].files[0];
-                let fileFormData = new FormData();
-                fileFormData.append('file', files, files.name);//filename是键，file是值，就是要传的文件，test.zip是要传的文件名
-                let requestConfig = {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    },
-                };
-                const instance = axios.create({
-                    withCredentials: true
-                });
-
-                instance.post(pdfUpUrl, fileFormData, requestConfig).then(res => {
-                    console.log(res.data);
-                    this.form.documentAddresses[index] = res.data;
-                    this.form.documentAddresses.reverse();
-                    this.form.documentAddresses.reverse();
-                }).catch(err => {
-                    console.log(err);
-                    this.$message.error('上传失败');
-                    this.$refs.filePdf[index].value = null;
-                });
-
-
-            },
 
             //选择供应商后更新 对应信息
             vendor(data) {
@@ -780,7 +698,6 @@
 
             // 复制RFID
             copyRfid() {
-                console.log("SprWu");
                 startOne("java -jar writing.jar", (data) => {
                     if (data.includes('succeed')) {
                         this.$message.success('复制成功!');
@@ -789,15 +706,6 @@
                         this.$message.error('复制失败!');
                     }
                 }, this.copyRfidList.rfid)
-                // exec(`java -jar writing.jar ${this.com} ${this.copyRfidList.rfid}`, {cwd: cmdPath}, (err, data) => {
-                //     console.log(data);
-                //     if (data.includes('succeed')) {
-                //         this.$message.success('复制成功!');
-                //         this.$refs.copyRfidDialog.hide();
-                //     } else {
-                //         this.$message.error('复制失败!');
-                //     }
-                // })
             },
             // 装备实体扫描列表点击删除
             delqaq(row) {
@@ -808,24 +716,41 @@
                 //     this.$message.error('不能删除最后一个');
                 // }
             },
+            // 装备名称选择完成
+            equipNameSelected() {
+                if(this.pid != '' || this.pid != 0) {
+                    killProcess(this.pid)
+                    this.pid = ''
+                }
+                this.getEquipInfo()
+            },
             // 选择型号完成，显示对应装备参数
             equipSelected() {
                 let temp = this.equipment.allEquip.find(equip => equip.model == this.form.model)
                 this.form = Object.assign(this.form, {
-                    shelfLifeQ: temp.shelfLife/3600/24,
-                    chargeCycle: temp.chargeCycle/3600/24,
-                    upkeepCycle: temp.upkeepCycle/3600/24,
+                    shelfLifeQ: temp.shelfLife/1000/3600/24,
+                    chargeCycle: temp.chargeCycle/1000/3600/24,
+                    upkeepCycle: temp.upkeepCycle/1000/3600/24,
                     vendorId: temp.supplier.name,
                     personM: temp.supplier.person,
                     phoneM: temp.supplier.phone,
                     id: temp.id
                 })
-                // 硬件开启
-            setTimeout(() => {
-                list: [{rfid: null, serial: null}],
-            this.list[0].rfid = "00008"
-            this.list[0].serial = "88888"
-            }, 1000)
+                // 硬件开启 hardwareOpen
+                if(!this.hardwareOpen) {
+                    start("java -jar scan.jar", (data) => {
+                        if(this.index == 0) {
+                            this.list[0].rfid = data;
+                        } else {
+                            this.list.push({ rfid: data });
+                        }
+                        this.index = this.index + 1
+                        this.hardwareOpen = true
+                    }, (fail) => {
+                        this.index = 1;
+                        this.$message.error(fail);
+                    }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
+                }
             },
             //进入页面获取数据
             getEquipInfo() {
@@ -857,6 +782,7 @@
                     findEquip(this.equipId).then(res => {
                         let result = JSON.parse(JSON.stringify(res))
                         this.tempImage = result.image
+                        this.copyRfidList.rfid = result.rfid
                         this.form = {
                             id: result.id,
                             equipId: result.equipArg.id,
@@ -1033,7 +959,6 @@
             //killProcess();
         },
         mounted() {
-
             //不同的入口进入的展示不同页面
             if (this.title.includes('入库装备')) {
                 this.submitShow = true; // edit与submitShow同 则按钮显示
@@ -1048,7 +973,9 @@
             this.getEquipInfo();
         },
         beforeDestroy() {
-            // killProcess(this.pid)
+            if(this.hardwareOpen || this.pid != '') {
+                killProcess(this.pid)
+            }
         }
 
     }

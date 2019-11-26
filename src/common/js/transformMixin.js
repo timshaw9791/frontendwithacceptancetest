@@ -98,6 +98,10 @@ export const transformMixin = {
 
         },
 
+        fixposition(data){
+            return data.number+'架/'+data.surface+'面/'+data.section+'节/'+data.floor+'层'
+        },
+
         applicationType(data) {
             switch (data) {
                 case 'USE_POST_TIME':
@@ -108,6 +112,28 @@ export const transformMixin = {
                     return '维修失败报废';
             }
         },
+        // 获取当前时间
+        getCurrentDate() {
+            let now = new Date();
+            let year = now.getFullYear(); //得到年份
+            let month = now.getMonth();//得到月份
+            let date = now.getDate();//得到日期
+            let day = now.getDay();//得到周几
+            let hour = now.getHours();//得到小时
+            let minu = now.getMinutes();//得到分钟
+            let sec = now.getSeconds();//得到秒
+            let MS = now.getMilliseconds();//获取毫秒
+            month = month + 1;
+            var time = "";
+            time = year + "-" + month + "-" + date + "-" + " " + hour + ":" + minu + ":" + sec + " " ;
+            return time
+          },
+
+          getDatamillseconds(data){
+            data = data.replace(new RegExp("-","gm"),"/");
+            let time = (new Date(data)).getTime();
+            return time
+          }
 
     }
 };

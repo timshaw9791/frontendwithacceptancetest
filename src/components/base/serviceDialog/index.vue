@@ -21,7 +21,7 @@
 
             <div slot="footer" class="dialog-footer" v-if="button">
                 <el-button @click="cancelDb">取 消</el-button>
-                <el-button type="primary" :disabled="disabled" @click="dialogConfirm">确 定</el-button>
+                <el-button type="primary" :disabled="disabled" @click="dialogConfirm">{{ confirmInfo }}</el-button>
             </div>
         </el-dialog>
     </div>
@@ -51,6 +51,10 @@
             secondary: {
                 type: Boolean,
                 default: true
+            },
+            confirmInfo: {
+                type: String,
+                default: "确 定"
             }
         },
         methods: {

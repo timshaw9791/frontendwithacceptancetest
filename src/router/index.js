@@ -219,21 +219,46 @@ export const asyncRouterMap = [
         meta: {title: '记录管理', icon: '工作日志', roles: ['POLICE_OFFICER', 'ADMINISTRATOR']},
         children: [
             {
+                path: 'opening',
+                name: 'opening',
+                component: _import('record/opening'),
+                meta: {title: '开门记录', roles: ['ADMINISTRATOR']},
+            }, 
+            {
                 path: 'borrow',
                 name: 'borrow',
                 component: _import('record/borrow'),
-                meta: {title: '装备领还记录', roles: ['POLICE_OFFICER', 'ADMINISTRATOR']},
-            }, {
+                meta: {title: '领还记录', roles: ['POLICE_OFFICER', 'ADMINISTRATOR']},
+            },
+            {
                 path: 'inventory',
                 name: 'inventory',
                 component: _import('record/inventory'),
                 meta: {title: '盘点记录', roles: ['ADMINISTRATOR']},
             },
             {
-                path: 'opening',
-                name: 'opening',
-                component: _import('record/opening'),
-                meta: {title: '开门记录', roles: ['ADMINISTRATOR']},
+                path: 'chargingRecord',
+                name: 'chargingRecord',
+                component: _import('record/chargingRecord'),
+                meta: {title: '充电记录', roles: ['ADMINISTRATOR']},
+            },
+            {
+                path: 'maintenanceRecord',
+                name: 'maintenanceRecord',
+                component: _import('record/maintenanceRecord'),
+                meta: {title: '保养记录', roles: ['ADMINISTRATOR']},
+            },
+            {
+                path: 'serviceRecord',
+                name: 'serviceRecord',
+                component: _import('record/serviceRecord'),
+                meta: {title: '维修记录', roles: ['ADMINISTRATOR']},
+            },
+            {
+                path: 'scraded',
+                name: 'scraded',
+                component: _import('record/scraded'),
+                meta: {title: '报废记录', roles: ['POLICE_OFFICER', 'ADMINISTRATOR']},
             }, 
             {
                 path: 'consumablerecord',
