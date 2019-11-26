@@ -1,17 +1,16 @@
 <template>
-    <div class="amount_box">
-        <div class="amount_head" data-test="title_box">
+    <div class="scrap_box">
+        <div class="scrap_head" data-test="title_box">
             {{$route.meta.title}}
         </div>
-        <div class="amount_body" data-test="main_box">
+        <div class="scrap_body" data-test="main_box">
             <report_tree @clickNode="clickNode"></report_tree>
             <report_table ref="table" :table="table" @export="toExport">
-                <div class="table_header_box" v-if="table.tableType!=='All'&&table.tableType!==''&&computeTotal.receiveUseCount!==undefined">
+                <div class="table_header_box" v-if="table.tableType!=='All'&&table.tableType!==''&&computeTotal.count!==undefined">
                     <div class="table_header">
                         <div class="table_header_item"><span v-text="`装备总数：${computeTotal.totalCount}`"></span></div>
-                        <div class="table_header_item"><span v-text="`可用数量：${computeTotal.inHouseCount}`"></span></div>
-                        <div class="table_header_item"><span v-text="`领用数量：${computeTotal.receiveUseCount}`"></span></div>
                         <div class="table_header_item"><span v-text="`装备总价(元)：${computeTotal.totalPrice}`"></span></div>
+                        <div class="table_header_item"><span v-text="`报废件数：${computeTotal.count}`"></span></div>
                     </div>
                 </div>
             </report_table>
@@ -22,18 +21,18 @@
 <script>
     import report_tree from 'components/report/report_tree'
     import report_table from 'components/report/report_table'
-    import {findEquipMoneyStatistic} from 'api/report'
+    import {scrapStatistic} from 'api/report'
     import {
         categoryFindAll,
         deleteGenreById,
         findAllCategoryById,
-        amountStock,
+        scrapStock,
         findAllEquipArgs,
         inHouse
     } from "api/warehouse"
 
     export default {
-        name: "amount",
+        name: "scrap",
         components: {report_tree, report_table},
         data() {
             return {
@@ -92,10 +91,9 @@
                         this.table.placeholder = '全部大类';
                         this.$set(this.table, 'labelList', [
                             {lable: '装备大类', field: 'genre'},
-                            {lable: '装备总数', field: 'totality'},
-                            {lable: '可用数量', field: 'inHouseCount'},
-                            {lable: '领用数量', field: 'receiveUseCount'},
-                            {lable: '装备总价(元)', field: 'totalPrice',filter: this.filterTotalPrice}
+                            {lable: '装备总数', field: 'totalCount'},
+                            {lable: '装备总价(元)', field: 'totalPrice',filter: this.filterTotalPrice},
+                            {lable: '报废件数', field: 'count'},
                         ]);
                         break;
                     case 'Genre':
@@ -104,10 +102,9 @@
                         this.table.placeholder = '小类';
                         this.$set(this.table, 'labelList', [
                             {lable: '装备小类', field: 'category'},
-                            {lable: '装备总数', field: 'totality'},
-                            {lable: '可用数量', field: 'inHouseCount'},
-                            {lable: '领用数量', field: 'receiveUseCount'},
-                            {lable: '装备总价(元)', field: 'totalPrice',filter: this.filterTotalPrice}
+                            {lable: '装备总数', field: 'totalCount'},
+                            {lable: '装备总价(元)', field: 'totalPrice',filter: this.filterTotalPrice},
+                            {lable: '报废件数', field: 'count'},
                         ]);
                         break;
                     case 'Category':
@@ -115,12 +112,11 @@
                         this.table.tableTitle = `装备小类：\xa0\xa0${this.current.name}`;
                         this.table.placeholder = '名称/供应商';
                         this.$set(this.table, 'labelList', [
-                            {lable: '装备名称', field: 'equipName'},
+                            {lable: '装备名称', field: 'name'},
                             {lable: '装备型号', field: 'model'},
                             {lable: '装备总数', field: 'totalCount'},
-                            {lable: '可用数量', field: 'inHouseCount'},
-                            {lable: '领用数量', field: 'receiveUseCount'},
                             {lable: '装备总价(元)', field: 'totalPrice',filter: this.filterTotalPrice},
+                            {lable: '报废件数', field: 'count'},
                             {lable: '供应商', field: 'supplier',width:200}
                         ]);
                         break;
@@ -133,7 +129,7 @@
 
             },
             getAmountList() {
-                findEquipMoneyStatistic(this.table.params).then(res => {
+                scrapStatistic(this.table.params).then(res => {
                     this.$set(this.table, 'list', res);
                     if(this.table.tableType!=='All'){
                         this.computeFunction(JSON.parse(JSON.stringify(this.table.list)))
@@ -158,19 +154,16 @@
             computeFunction(data){
                 let totalCount = 0;
                 let totalPrice = 0;
-                let inHouseCount = 0;
-                let receiveUseCount = 0;
+                let count = 0;
                 data.forEach(item=>{
-                    totalCount+=item.totality;
+                    totalCount+=item.totalCount;
                     totalPrice+=item.totalPrice;
-                    inHouseCount+=item.inHouseCount;
-                    receiveUseCount+=item.receiveUseCount;
+                    count+=item.count;
                 });
                 this.computeTotal={
                     totalCount:totalCount,
                     totalPrice:totalPrice/100,
-                    inHouseCount:inHouseCount,
-                    receiveUseCount:receiveUseCount
+                    count:count,
                 }
             },
             toExport(){
@@ -180,7 +173,7 @@
             //     this.status.buttonDisable=!this.status.buttonDisable;
             //     this.status.distribution=!this.status.buttonDisable;
             //     if(!this.status.distribution){
-            //         this.$refs.amountTable.resultCheckBox();
+            //         this.$refs.scrapTable.resultCheckBox();
             //     }
             // },
             // getTotalAndStockCount() {
@@ -220,14 +213,14 @@
             //             this.table.tableData.forEach(item => {
             //                 category.push(item.category)
             //             });
-            //             amountStock(category).then(res => {
+            //             scrapStock(category).then(res => {
             //                 this.$message.success('操作成功');
             //                 this.status.buttonDisable = !this.status.buttonDisable
             //             });
             //         }
             //     } else {
             //         if(this.table.tableType==='unallocated'){
-            //             this.$refs.amountTable.resultCheckBox();
+            //             this.$refs.scrapTable.resultCheckBox();
             //             this.status.distribution=false;
             //         }else{
             //             this.table.tableData = this.table.copyTableData;
@@ -277,7 +270,7 @@
 </script>
 
 <style lang="scss" scoped>
-    .amount_box {
+    .scrap_box {
         font-size: 0.0833rem;
         text-align: center;
     }
@@ -300,7 +293,7 @@
     .table_header .table_header_item{
         margin-right: 0.2604rem;
     }
-    .amount_box .amount_head {
+    .scrap_box .scrap_head {
         width: 100%;
         height: 0.296875rem;
         display: flex;
@@ -311,7 +304,7 @@
         color: #707070;
     }
 
-    .amount_box .amount_body {
+    .scrap_box .scrap_body {
         display: flex;
         flex-direction: row;
         width: 100%;

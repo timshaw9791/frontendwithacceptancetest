@@ -1,5 +1,5 @@
 <template>
-  <el-table-column :label="lable" :align="align" :width="cWidth" :min-width="'60px'" :sortable="sort">
+  <el-table-column :label="lable" :align="align" :width="cWidth" :min-width="'0.3125rem'" :sortable="sort">
     <template slot-scope="scope">
       {{getResult(scope.row,field)}}
     </template>
@@ -12,6 +12,7 @@
   export default {
     data(){
       return {
+        search:'',
         basePx: localStorage.getItem('fontSize')
       }
     },

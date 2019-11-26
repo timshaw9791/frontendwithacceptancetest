@@ -267,16 +267,22 @@ export const asyncRouterMap = [
                 meta: {title: '装备损耗率', roles: ['ADMINISTRATOR']},
             },
             {
-                path: 'opening',
-                name: 'opening',
-                component: _import('record/opening'),
-                meta: {title: '开门记录', roles: ['ADMINISTRATOR']},
+                path: 'repair',
+                name: 'repair',
+                component: _import('report/repair'),
+                meta: {title: '装备维修率', roles: ['ADMINISTRATOR']},
             },
             {
-                path: 'consumablerecord',
-                name: 'consumablerecord',
-                component: _import('record/consumablerecord'),
-                meta: {title: '耗材记录', roles: ['ADMINISTRATOR']},
+                path: 'frequency',
+                name: 'frequency',
+                component: _import('report/frequency'),
+                meta: {title: '装备使用频次', roles: ['ADMINISTRATOR']},
+            },
+            {
+                path: 'scrap',
+                name: 'scrap',
+                component: _import('report/scrap'),
+                meta: {title: '装备报废件数', roles: ['ADMINISTRATOR']},
             }
         ]
     },

@@ -9,7 +9,7 @@
                     <r_search ref="report_search" :placeholder="table.placeholder" @search="getSearch"></r_search>
                 </div>
                 <div class="action_export">
-                    <text-button :iconClass="'导出'" :buttonName="'导出'"></text-button>
+                    <text-button :iconClass="'导出'" :buttonName="'导出'" @click="toExport"></text-button>
                 </div>
             </div>
         </div>
@@ -48,26 +48,29 @@
             },
             emptySearch(){
                 this.$refs['report_search'].emptySearch();
+            },
+            toExport(){
+                this.$emit('export',true)
             }
         }
     }
 </script>
 
 <style lang="scss" scoped>
-    /deep/ .el-table th.is-leaf, .el-table td {
-        padding-left: 0.3021rem;
-        border-bottom: 0.0052rem solid #EBEEF5;
-    }
-    /deep/ .el-table--enable-row-transition .el-table__body td {
-        padding-left: 0.3021rem;
-    }
+    /*/deep/ .el-table th.is-leaf, .el-table td {*/
+        /*padding-left: 0.3021rem;*/
+        /*border-bottom: 0.0052rem solid #EBEEF5;*/
+    /*}*/
+    /*/deep/ .el-table--enable-row-transition .el-table__body td {*/
+        /*padding-left: 0.3021rem;*/
+    /*}*/
 
-    /deep/ .el-input__inner {
-        text-align: center;
+    /*/deep/ .el-input__inner {*/
+        /*text-align: center;*/
 
-    }
+    /*}*/
     /deep/ .el-table-column--selection{
-        margin-left: 200px;
+        margin-left: 1.0417rem;
     }
     .report_table {
         margin-left: 0.15625rem;
@@ -87,7 +90,7 @@
         padding-right: 0.1615rem;
         align-items: center;
         justify-content: space-between;
-        padding-left: 0.3021rem;
+        padding-left: 0.1615rem;
         font-size: 0.0833rem;
         color: rgba(112, 112, 112, 1);
     }
@@ -131,6 +134,7 @@
     }
 
     .report_table .report_table_box {
-
+        padding-right: 0.1615rem;
+        padding-left: 0.1615rem;
     }
 </style>
