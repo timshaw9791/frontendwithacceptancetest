@@ -92,11 +92,11 @@
 
 <style scoped>
     .actionButton{
-        width:0.3646rem;
-        height:0.1667rem;
+        width:70px;
+        height:32px;
 
         opacity:1;
         color: white;
-        border-radius:0.0208rem;
+        border-radius:4px;
     }
 </style>
