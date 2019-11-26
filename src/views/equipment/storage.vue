@@ -198,9 +198,9 @@
                 this.dialogVisible = false
                 inHouseOrder(this.delEquipId).then(res => {
                     this.$message.success("删除成功")
-                    this.$refs.lable.getList()
+                    alert("SprWu11")
                 }).catch(err => {
-                    this.$message.error(err)
+                    this.$message.error(err.response.data.message)
                 })
             },
             // toDel(data) {

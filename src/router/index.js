@@ -122,7 +122,7 @@ export const asyncRouterMap = [
                 path: 'safety',
                 name: 'warehouse/safety',
                 component: _import('warehouse/safety'),
-                meta: {title: '标准库存'},
+                meta: {title: '安全库存'},
             },
             {
                 path: 'consumables',
@@ -265,29 +265,60 @@ export const asyncRouterMap = [
                 name: 'consumablerecord',
                 component: _import('record/consumablerecord'),
                 meta: {title: '耗材记录', roles: ['ADMINISTRATOR']},
-            }, 
-            // {
-            //     path: 'entryAndExit',
-            //     name: 'entryAndExit',
-            //     component: _import('record/entryAndExit'),
-            //     meta: {title: '人员出入记录', roles: ['POLICE_OFFICER', 'ADMINISTRATOR']},
-            // }, 
+            },
+            {
+                path: 'maintenanceRecord',
+                name: 'maintenanceRecord',
+                component: _import('record/maintenanceRecord'),
+                meta: {title: '维保记录', roles: ['ADMINISTRATOR']},
+            },
         ]
     },
     {
         path: '/report',
         component: Layout,
         name: 'report',
-        meta: {roles: ['ADMINISTRATOR']},
+        meta: {title: '统计报表', icon: '统计报表', roles: ['ADMINISTRATOR']},
         children: [
             {
-                path: 'index',
-                name: 'report/index',
-                component: _import('report/index'),
-                meta: {title: '统计报表', icon: '统计报表'},
+                path: 'amount',
+                name: 'amount',
+                component: _import('report/amount'),
+                meta: {title: '装备金额统计', roles: ['ADMINISTRATOR']},
+            }, {
+                path: 'lossStatistics',
+                name: 'lossStatistics',
+                component: _import('report/lossStatistics'),
+                meta: {title: '装备损耗率', roles: ['ADMINISTRATOR']},
             },
+            {
+                path: 'opening',
+                name: 'opening',
+                component: _import('record/opening'),
+                meta: {title: '开门记录', roles: ['ADMINISTRATOR']},
+            },
+            {
+                path: 'consumablerecord',
+                name: 'consumablerecord',
+                component: _import('record/consumablerecord'),
+                meta: {title: '耗材记录', roles: ['ADMINISTRATOR']},
+            }
         ]
     },
+    // {
+    //     path: '/report',
+    //     component: Layout,
+    //     name: 'report',
+    //     meta: {roles: ['ADMINISTRATOR']},
+    //     children: [
+    //         {
+    //             path: 'index',
+    //             name: 'report/index',
+    //             component: _import('report/index'),
+    //             meta: {title: '统计报表', icon: '统计报表'},
+    //         },
+    //     ]
+    // },
     {
         path: '/personnel',
         component: Layout,

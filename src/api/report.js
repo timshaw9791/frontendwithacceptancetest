@@ -1,6 +1,16 @@
 import request from 'common/js/request'
 
 
+
+
+export function lossStatistic(params) {
+    return request({
+        url: '/statistic/lossStatistic',
+        method: 'get',
+        params:params
+    })
+}
+
 export function getGenreList() {
     return request({
         url: '/genres/list',

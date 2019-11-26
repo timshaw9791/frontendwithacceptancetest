@@ -1,7 +1,7 @@
 <template>
     <div class="search" data-test="search">
         <svg-icon icon-class="搜索" class="icon-search"></svg-icon>
-        <input class="input" v-model="search" :placeholder="placeholder">
+        <input class="input" v-model="searchObject.search" :placeholder="placeholder">
     </div>
 </template>
 
@@ -10,13 +10,28 @@
         name: "index",
         data(){
             return{
-                search:''
+                searchObject:{
+                    search:'',
+                    type:'routine'
+                }
             }
         },
         watch:{
-            'search':{
+            'searchObject.search':{
                 handler(newVal){
-                    this.$emit('search',newVal)
+                    if(this.searchObject.type==='routine'){
+                        this.$emit('search',newVal)
+                    }else {
+                        this.searchObject.type='routine';
+                    }
+                }
+            }
+        },
+        methods:{
+            emptySearch(){
+                if(this.searchObject.search!==''){
+                    this.searchObject.type='empty';
+                    this.searchObject.search='';
                 }
             }
         },
@@ -38,7 +53,7 @@
         width: 100%;
         height: 0.1979rem;
         background: rgba(255, 255, 255, 1);
-        border: 0.0052rem solid rgba(112, 112, 112, 1);
+        border: 0.0052rem solid rgba(112, 112, 112, 0.13);
         opacity: 1;
         border-radius: 0.099rem;
         padding-left: 0.078125rem;

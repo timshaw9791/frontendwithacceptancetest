@@ -61,7 +61,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="safety_table_box">
+                <div class="safety_table_box" data-test="table_box">
                     <safety-table ref="safetyTable" :currentNode="tree.currentNode" v-if="status.tableFlag" :table="table" :disable="status.buttonDisable" :distribution="status.distribution" @success="successTable"></safety-table>
                 </div>
             </div>
@@ -87,7 +87,6 @@
         data() {
             return {
                 unallocated:'',
-                filterText: '',
                 form: {},
                 table: {
                     tableType: 'genre',
@@ -202,6 +201,8 @@
                 }else {
                     findAllEquipArgs('').then(res => {
                         this.table.tableData = res;
+                        this.$message.success('操作成功');
+                        this.$refs.genreOrCategory.cancelDb()
                     });
                 }
             },

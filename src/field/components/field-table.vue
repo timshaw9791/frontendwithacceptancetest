@@ -2,7 +2,7 @@
     <div>
         <el-table
                 :data="list"
-                style="width: 100%;min-height:490px"  id="table" @sort-change="sortChange" :height="height">
+                style="width: 100%;min-height: 490px" id="table" @sort-change="sortChange" :height="height">
             <bos-table-column  v-for="item in labelList" :lable="item.lable" :sort="item.sort" :field="item.field" :filter="item.filter"></bos-table-column>
             <el-table-column v-if="flag" :label="tableAction.label" align="center">
                 <template slot-scope="scope">
@@ -92,11 +92,11 @@
 
 <style scoped>
     .actionButton{
-        width:70px;
-        height:32px;
+        width:0.3646rem;
+        height:0.1667rem;
 
         opacity:1;
         color: white;
-        border-radius:4px;
+        border-radius:0.0208rem;
     }
 </style>

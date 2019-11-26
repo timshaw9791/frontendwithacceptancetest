@@ -57,7 +57,7 @@
                 commonHouseId: '',
                 equipId: '',
                 equipName: '', // 装备参数
-                equipList: '', // 装备数据
+                equipList: {}, // 装备数据
                 title: '',
                 storageInfoShow: false,
                 list: [],
