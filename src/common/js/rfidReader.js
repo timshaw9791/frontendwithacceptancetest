@@ -72,7 +72,7 @@ export function start(cmd, success, failure, callBack) {
 
     process.stdout.on("data", data => {
         if (index == 1) {
-            success(data)
+            success(data.replace(/[\r\n]/g, ""))
         } else if (index == 0 && JSON.parse(data).status == "succeed") {
             index = 1
         }

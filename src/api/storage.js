@@ -106,6 +106,14 @@ export function findEquip(id) {
     })
 }
 
+/* 通过rfid找实体装备 */
+export function findByRfids(params) {
+    return request({
+        url: `/equip/findByRfids?${qs.stringify(params, { indices: false })}`,
+        method: "GET"
+    })
+}
+
 /* 新增装备信息 */
 export function saveEquipArg(data) {
     return request({
