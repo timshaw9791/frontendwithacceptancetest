@@ -49,7 +49,6 @@
         <tips ref="deleteEquipArg" :contentText="'您确定要解除装备类别绑定吗'" @confirm="deleteEquipArgId"></tips>
     </div>
 </template>
-
 <script>
     import {deleteCategory,relateCategory} from "api/warehouse"
     import tips from "components/base/tips"
@@ -127,7 +126,7 @@
 
     }
     /deep/ .el-table-column--selection{
-margin-left: 200px;
+        margin-left: 1.0417rem;
     }
     .safety_table_box {
         width: 100%;

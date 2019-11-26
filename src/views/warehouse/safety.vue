@@ -250,17 +250,18 @@
                         findAllCategoryById(data.id).then(res => {
                             this.table.tableData = res;
                             this.table.tableType = 'genre';
-                            this.status.tableFlag=true
+                            this.status.tableFlag=true;
+                            this.title.tableTitle=`装备大类:\xa0\xa0\xa0\xa0${data.name}`
                         });
                     } else {
                         findAllEquipArgs(data.id).then(res => {
                             this.table.tableData = res;
                             this.getTotalAndStockCount();
                             this.table.tableType = 'category';
-                            this.status.tableFlag=true
+                            this.status.tableFlag=true;
+                            this.title.tableTitle=`装备小类:\xa0\xa0\xa0\xa0${data.name}`
                         })
                     }
-                    this.title.tableTitle = this.table.tableType === 'genre' ? `装备大类:\xa0\xa0\xa0\xa0${data.name}` : `装备小类:${data.name}`
                 }else {
                     this.title.tableTitle='未分类装备';
                     findAllEquipArgs('').then(res => {
