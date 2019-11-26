@@ -5,7 +5,7 @@ if (process.env.NODE_ENV == "production") {
     //var com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM']; // 端口 串口号
     var com = 9;
     var fs = window.require('fs')
-    var newFile_path = 'C:\\Users\\Administrator\\inventory.json'; // 手持机路径
+    var newFile_path = 'C:/Users/Administrator/inventory.json'; // 手持机路径
     var inventoryFile = `inventory.json`;
 }
 
@@ -21,7 +21,8 @@ export function setCom(data) {
 
 /* 获取手持机路径 */
 export function getHandheldPath(path) {
-    inventoryFile = `${newFile_path}/inventory.json`;
+    inventoryFile = `${path}/inventory.json`;
+    newFile_path = path
 }
 
 
@@ -72,7 +73,7 @@ export function start(cmd, success, failure, callBack) {
 
     process.stdout.on("data", data => {
         if (index == 1) {
-            success(data)
+            success(data.replace(/[\r\n]/g, ""))
         } else if (index == 0 && JSON.parse(data).status == "succeed") {
             index = 1
         }

@@ -3,9 +3,37 @@ import request from 'common/js/request'
 
 
 
+export function findEquipMoneyStatistic(params) {
+    return request({
+        url: '/statisticForm/findEquipMoneyStatistic',
+        method: 'get',
+        params:params
+    })
+}
+export function scrapStatistic(params) {
+    return request({
+        url: '/statistic/scrapStatistic',
+        method: 'get',
+        params:params
+    })
+}
+export function frequencyStatistic(params) {
+    return request({
+        url: '/statistic/frequencyStatistic',
+        method: 'get',
+        params:params
+    })
+}
 export function lossStatistic(params) {
     return request({
         url: '/statistic/lossStatistic',
+        method: 'get',
+        params:params
+    })
+}
+export function repairStatistic(params) {
+    return request({
+        url: '/statistic/repairStatistic',
         method: 'get',
         params:params
     })

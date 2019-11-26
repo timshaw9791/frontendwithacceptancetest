@@ -1,138 +1,191 @@
 <template>
-    <div class="inventory">
-        <my-header :title="'盘点记录'" :searchFlag="false" :haveBlack="!viewStatus.flag" @h_black="black"></my-header>
-        <r_search :placeholder="'人员姓名'" @handleSearch="handleSearch" v-show="viewStatus.flag"></r_search>
-        <div v-show="!viewStatus.flag">
-            <div class="line"></div>
-            <r_inventory :tableData="inventory.equipList" :overview="inventory.overview" :size="String(inventory.overview.rfidCount)" :componentType="'see'"
-             ref="recordInventory"></r_inventory>
+    <div class="opening-box">
+        <my-header :title="'盘点记录'" :searchFlag="false"  :haveBlack="!show" @h_black="black"></my-header>
+        <div v-if="show">
+            <div class="action-bar">
+                <div style="width:400px" data-test="time_search">
+                    <el-date-picker
+                        v-model="table.time"
+                        type="daterange"
+                        value-format="yyyy-MM-dd"
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期">
+                    </el-date-picker>
+                </div>
+                <div class="_buttons" style="margin-right: 18px">
+                    <BosInput
+                            placeholder="操作人员"
+                            suffix="el-icon-search"
+                            v-model="table.search"
+                            style="width:285px;">
+
+                    </BosInput>
+                </div>
+            </div>
+            <field-table :list="list" :labelList="table.labelList" :havePage="false"
+                        :tableAction="table.tableAction"  :pageInfo="paginator" @tableCurrentPageChanged="changePage" @clickTableCloum="clickTableCloum" style="width: 100%">
+            </field-table>
         </div>
-        <r_label :table="table" @clickTable="clickTable" v-show="viewStatus.flag" ref="las"></r_label>
+        
+        <!-- <r_video ref="recordVideo" :src="address"></r_video> -->
+        <inventoryinfo :infolist="infolist" :show="show"></inventoryinfo>
+
     </div>
 </template>
 
 <script>
     import myHeader from 'components/base/header/header'
-    import r_search from 'components/record/recordSearch'
-    import r_inventory from 'components/inventory/inventoryComponent'
-    import r_label from 'common/vue/ajaxLabel'
-    import record from 'gql/record.gql'
-    import {fetchMixin} from 'field/common/mixinFetch'
-    import request from 'common/js/request'
-    import {baseURL} from "../../api/config";
+    import {findStartTimeAndEndTimeBetweenAndOperatorLike } from "api/equiprecord"
+    import inventoryinfo from "views/record/inventoryinfo"
 
     export default {
         name: "inventory",
-        mixins: [fetchMixin],
-        components: {
+        components:{
             myHeader,
-            r_search,
-            r_label,
-            r_inventory
+            inventoryinfo
         },
-        data() {
-            return {
+        data(){
+            return{
                 table: {
                     flag: false,
                     labelList: [
-                        {lable: '操作人员', field: 'adminName', sort: false},
-                        {lable: '盘点总数', field: 'rfidCount', sort: false},
-                        {lable: '未盘点数', field: 'withoutRfidCount', sort: false},
-                        {lable: '出库数量', field: 'outCount', sort: false},
-                        {lable: '开始时间', field: 'startTime', filter: (ns) => this.$filterTime(parseInt(ns.startTime))},
-                        {lable: '结束时间', field: 'endTime', filter: (ns) => this.$filterTime(parseInt(ns.endTime))},
+                        {lable: '开始盘点时间', field: 'createTime' ,filter: (ns) => this.$filterTime(parseInt(ns.createTime))},
+                        {lable: '结束盘点时间', field: 'updateTime' ,filter: (ns) => this.$filterTime(parseInt(ns.createTime))},
+                        {lable: '操作人员', field: 'operatorInfo.operator',sort:false},
+                        {lable: '盘点总数', field: 'inventoryCount',sort:false},
+                        {lable: '未盘点数', field: 'notCount',sort:false},
+                        {lable: '出库数量', field: 'outHouseCount',sort:false},
                     ],
-                    url:'/inventories',
                     search:'',
-                    params:{direction:'DESC',property:'endTime'},
-                    tableAction: {
-                        label: '操作',
-                        button:[{name:'详情',type:'primary'}]
-                    }
+                    tableAction:{
+                        label:'详情',
+                        button:[{name:'查看',type:'primary'}]
+                    },
+                    time:''
                 },
-                inventory: {
-                    equipList: [],
-                    overview: {}
+                list:[],
+                infolist:[],
+                paginator: {
+                    page: 1,
+                    totalPages: 10,
+                    size: 9
                 },
-                viewStatus: {
-                    flag: true
-                }
+                show:true
             }
         },
-        methods: {
-            handleSearch(data) {
-                this.$set(this.table, 'search', data);
-            },
-            black(data) {
-                this.viewStatus.flag = !this.viewStatus.flag
-            },
-            clickTable(table) {
+        methods:{
+            clickTableCloum(table) {
+                console.log("111")
                 let data = table.row;
-                if (data) {
-                    this.getDetails(data);
-                    this.$refs.recordInventory.remark=data.note;
-                    this.inventory.overview=data;
-                    this.viewStatus.flag = !this.viewStatus.flag
-                }
+                console.log("data",data)
+                this.infolist = data
+                console.log("this.infolist",this.infolist)
+                this.show = false
+                console.log("typeof(this.infolist)",typeof(this.infolist))
             },
-            getDetails(data) {
-                request({
-                    method: 'get',
-                    url: baseURL+`/inventories/${data.id}/items`,
-                }).then(res=>{
-                    this.inventory.equipList=res;
+            
+            getList(){
+                let params = this.paginator
+                findStartTimeAndEndTimeBetweenAndOperatorLike().then(res=>{
+                    this.list=[];
+                    console.log("111")
+                    this.list=res;
+                    this.paginator.totalPages=res.totalPages
+                    console.log("res",res)
                 })
             },
-            // filterStartTime(nS) {
-            //     return new Date(parseInt(nS.startTime)).toLocaleString().replace(/:\d{1,2}$/, ' ');
-            // },
-            // filterEndTime(nS) {
-            //     return new Date(parseInt(nS.endTime)).toLocaleString().replace(/:\d{1,2}$/, ' ');
-            // },
-            // filterTime(date){
-            //     let time='';
-            //     if(date!=''){
-            //         let dateNow =  new Date(date);
-            //         let year = dateNow.getFullYear();
-            //         let moth = dateNow.getMonth()+1;
-            //         let day = dateNow.getDay();
-            //         let hour = dateNow.getHours();
-            //         let min = dateNow.getMinutes();
-            //         let seconds = dateNow.getSeconds();
-            //         time = year+'-'+addZero(moth)+'-'+addZero(day)+'\xa0\xa0\xa0'+addZero(hour)+':'+addZero(min)+':'+addZero(seconds);
-            //     }
-            //     function addZero(some) {
-            //         if (some<10){
-            //             return '0'+some
-            //         }else {
-            //             return some
-            //         }
-            //     };
-            //     return time
-            // },
-            sortGql(data) {
-                let gqlName, api;
-                if (data.name == '开始时间') {
-                    gqlName = 'getInventoryListStartTime'
-                } else {
-                    gqlName = 'getInventoryListEndTime'
+            changePage(data){
+                this.paginator.page = data
+                this.getList()
+
+            },
+            black(){
+                this.show = true
+                console.log("show",this.show)
+            }
+        },
+        created(){
+            this.getList()
+        },
+        watch:{
+            'table.search':{
+                handler(data){
+                    if(data){
+                        let params = {operator:data}
+                        findStartTimeAndEndTimeBetweenAndOperatorLike(params).then((res)=>{
+                            this.list=res
+                        })
+                    }else{
+                        this.getList()
+                    }
+                    
                 }
-                if (data.order == 'descending') {
-                    api = gqlName + 'DESC';
-                } else {
-                    api = gqlName + 'ASC';
+            },
+            'table.time':{
+                handler(data){
+                    data[0] = data[0].replace(new RegExp("-","gm"),"/");
+                    let starttime = (new Date(data[0])).getTime();
+                     data[1] = data[1].replace(new RegExp("-","gm"),"/");
+                    let endtime = (new Date(data[1])).getTime();
+                    let params = {endTime:endtime,startTime:starttime}
+                    console.log("params",params)
+                    findStartTimeAndEndTimeBetweenAndOperatorLike(params).then((res)=>{
+                        this.list=JSON.parse(JSON.stringify(res.content))
+                    })
                 }
-                this.$set(this.table.graphqlTable, 'graphqlApi', record[api]);
             }
         }
     }
 </script>
 
 <style scoped>
-    .inventory {
-        font-size: 16px;
-    }
-    .line {
-        border-top: rgba(112, 112, 112, 0.13) solid 1px;
-    }
+.opening-box{
+    font-size: 16px;
+    width: 100%;
+    min-height: 4.4323rem;
+}
+.action-bar {
+    padding-right: 23px;
+    margin-top: 8px;
+    border-top: rgba(112, 112, 112, 0.13) solid 1px;
+    border-bottom: rgba(112, 112, 112, 0.13) solid 1px;
+    font-size: 16px;
+    font-family: "PingFang SC";
+    height: 57px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+    padding-left: 18px;
+    width: 100%;
+    color: #707070;
+}
+.action-bar .input-box{
+    width:285.0048px;
+    position: relative;
+}
+.input-box .input{
+    width: 100%;
+    height:38px;
+    background:rgba(255,255,255,1);
+    border:1px solid rgba(112,112,112,1);
+    opacity:1;
+    border-radius:19px;
+    padding-left: 15px;
+    outline:medium;
+    color: #707070;
+}
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    color: #BBBBBB;
+}
+.input-box .icon-search{
+    position: absolute;
+    right: 10px;
+    z-index: 1;
+    top: 50%; /*偏移*/
+    width: 25px;
+    height: 25px;
+    transform: translateY(-50%);
+}
 </style>

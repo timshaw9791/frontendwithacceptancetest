@@ -55,11 +55,14 @@
                 this.$refs.tree.filter(val);
             }
         },
-        created() {
+        mounted() {
             this.getGenreAll()
         },
 
         methods:{
+            init(){
+                this.handleNodeClick(this.tree.treeData[0]);
+            },
             getGenreAll() {
                 categoryFindAll().then(res => {
                     this.tree.copyTreeData=res;
@@ -69,7 +72,10 @@
                         item.categorySet.forEach(item => {
                             item.click = false;
                         })
-                    })
+                    });
+                    setTimeout(()=>{
+                        this.init()
+                    },50)
                 })
             },
             getSearch(data) {
@@ -91,23 +97,29 @@
                         }
                         item.categorySet.forEach(category => {
                             category.click = false;
-                            this.$refs[category.id].style.color = "#2F2F76";
+                            if(this.$refs[category.id]){
+                                this.$refs[category.id].style.color = "#2F2F76";
+                            }
                         })
                     } else {
                         item.click = false;
                         this.$refs[item.id].style.color = "#2F2F76";
-                        item.categorySet.forEach(category => {
-                            if (category.id === data.id) {
-                                if (data.click) {
-                                    this.$refs[category.id].style.color = "#3F5FE0";
+                        if(item.categorySet.length!==0){
+                            item.categorySet.forEach(category => {
+                                if (category.id === data.id) {
+                                    if (data.click) {
+                                        this.$refs[category.id].style.color = "#3F5FE0";
+                                    } else {
+                                        this.$refs[category.id].style.color = "#2F2F76";
+                                    }
                                 } else {
-                                    this.$refs[category.id].style.color = "#2F2F76";
+                                    category.click = false;
+                                    if(this.$refs[category.id]){
+                                        this.$refs[category.id].style.color = "#2F2F76";
+                                    }
                                 }
-                            } else {
-                                category.click = false;
-                                this.$refs[category.id].style.color = "#2F2F76";
-                            }
-                        })
+                            })
+                        }
                     }
                 });
             },

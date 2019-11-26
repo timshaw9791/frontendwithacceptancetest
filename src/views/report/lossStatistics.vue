@@ -5,7 +5,17 @@
         </div>
         <div class="safety_body" data-test="main_box">
             <report_tree @clickNode="clickNode"></report_tree>
-            <report_table ref="table" :table="table"></report_table>
+            <report_table ref="table" :table="table" @export="toExport">
+                <div class="table_header_box" v-if="table.tableType!=='All'&&table.tableType!==''&&computeTotal.rate!==undefined">
+                  <div class="table_header">
+                      <div class="table_header_item"><span v-text="`装备总数：${computeTotal.totalCount}`"></span></div>
+                      <div class="table_header_item"><span v-text="`装备总价(元)：${computeTotal.totalPrice}`"></span></div>
+                      <div class="table_header_item"><span v-text="`损耗数量：${computeTotal.count}`"></span></div>
+                      <div class="table_header_item"><span v-text="`损耗总额：${computeTotal.totalLoss}`"></span></div>
+                      <div class="table_header_item"><span v-text="`损耗率(%)：${computeTotal.rate}`"></span></div>
+                  </div>
+                </div>
+            </report_table>
         </div>
     </div>
 </template>
@@ -29,14 +39,15 @@
         data() {
             return {
                 table: {
-                    tableType: 'genre',
+                    tableType: 'All',
                     list: [],
                     labelList: [],
                     tableTitle: '全部大类',
                     placeholder: '全部大类',
                     height: '3.78125rem',
-                    params: {id: '', level: '', search: ''}
+                    params: {id: '', level: '', search: ''},
                 },
+                computeTotal:{},
                 current: {}
             }
         },
@@ -47,6 +58,8 @@
                     this.getAmountList()
                 }
             }
+        },
+        created(){
         },
         methods: {
             clickNode(data) {
@@ -81,14 +94,14 @@
                         this.$set(this.table, 'labelList', [
                             {lable: '装备大类', field: 'genre'},
                             {lable: '装备总数', field: 'totalCount'},
-                            {lable: '装备总价', field: 'totalPrice',filter: this.filterTotalPrice},
+                            {lable: '装备总价(元)', field: 'totalPrice',filter: this.filterTotalPrice},
                             {lable: '损耗数量', field: 'count',},
                             {lable: '损耗总额', field: 'action', filter: this.filterTotalLoss},
-                            {lable: '损耗率(%)',filter: this.filterLoss}
+                            {lable: '损耗率(%)',filter: this.filterRate}
                         ]);
                         break;
                     case 'Genre':
-                        this.table.height = '3.78125rem';
+                        this.table.height = '3.484375rem';
                         this.table.tableTitle = `装备大类：\xa0\xa0${this.current.name}`;
                         this.table.placeholder = '小类';
                         this.$set(this.table, 'labelList', [
@@ -97,11 +110,11 @@
                             {lable: '装备总价(元)', field: 'totalPrice',filter: this.filterTotalPrice},
                             {lable: '损耗数量', field: 'count',},
                             {lable: '损耗总额', field: 'totalLoss', filter: this.filterTotalLoss},
-                            {lable: '损耗率(%)', filter: this.filterLoss}
+                            {lable: '损耗率(%)', filter: this.filterRate}
                         ]);
                         break;
                     case 'Category':
-                        this.table.height = '3.78125rem';
+                        this.table.height = '3.484375rem';
                         this.table.tableTitle = `装备小类：\xa0\xa0${this.current.name}`;
                         this.table.placeholder = '名称/供应商';
                         this.$set(this.table, 'labelList', [
@@ -111,8 +124,8 @@
                             {lable: '装备总价(元)', field: 'totalPrice', filter: this.filterTotalPrice},
                             {lable: '损耗数量', field: 'count',},
                             {lable: '损耗总额', field: 'totalLoss', filter: this.filterTotalLoss},
-                            {lable: '损耗率(%)', filter: this.filterLoss},
-                            {lable: '供应商', field: 'supplier'}
+                            {lable: '损耗率(%)', filter: this.filterRate},
+                            {lable: '供应商', field: 'supplier',width:200}
                         ]);
                         break;
                 }
@@ -126,7 +139,10 @@
             getAmountList() {
                 lossStatistic(this.table.params).then(res => {
                     this.$set(this.table, 'list', res);
-                    console.log(res)
+                    if(this.table.tableType!=='All'){
+                        this.computeFunction(JSON.parse(JSON.stringify(this.table.list)))
+                    }
+
                 })
             },
             filterTotalPrice(data) {
@@ -135,15 +151,40 @@
             filterTotalLoss(data) {
                 return data.totalLoss/100
             },
-            filterLoss(data){
+            filterRate(data){
                 if(data.totalCount!==0){
                     return data.count/data.totalCount
                 }else {
                     return 0
                 }
 
+            },
+            computeFunction(data){
+                let totalCount = 0;
+                let totalPrice = 0;
+                let count = 0;
+                let totalLoss = 0;
+                let rate = 0;
+                data.forEach(item=>{
+                    totalCount+=item.totalCount;
+                    totalPrice+=item.totalPrice;
+                    count+=item.count;
+                    totalLoss+=item.totalLoss;
+                });
+                if(totalCount!=0){
+                    rate=count/totalCount
+                }
+                this.computeTotal={
+                    totalCount:totalCount,
+                    totalPrice:totalPrice/100,
+                    count:count,
+                    totalLoss:totalLoss/100,
+                    rate:rate
+                }
+            },
+            toExport(){
+                console.log('toExport')
             }
-
             // distributionClick(){
             //     this.status.buttonDisable=!this.status.buttonDisable;
             //     this.status.distribution=!this.status.buttonDisable;
@@ -249,7 +290,25 @@
         font-size: 0.0833rem;
         text-align: center;
     }
-
+    .table_header_box{
+        height: 0.296875rem;
+        width: 100%;
+        border-bottom: 0.0052rem solid rgba(112, 112, 112, 0.13);
+        /*padding-left: 0.1615rem;*/
+        /*padding-right: 0.1615rem;*/
+        display: flex;
+        align-items: center;
+    }
+    .table_header_box .table_header{
+        padding-left:10px;
+        padding-right:10px;
+        width: 100%;
+        color: #707070FF;
+        display: flex;
+    }
+    .table_header .table_header_item{
+        margin-right: 0.2604rem;
+    }
     .safety_box .safety_head {
         width: 100%;
         height: 0.296875rem;

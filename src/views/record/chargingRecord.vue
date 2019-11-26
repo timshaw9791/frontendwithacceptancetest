@@ -1,110 +1,107 @@
 <template>
     <div class="opening-box">
-        <my-header :title="'保养记录'" :searchFlag="false"  :haveBlack="!show" @h_black="black"></my-header>
-        <div v-if="show">
-            <div class="action-bar">
-                <div style="width:400px" data-test="time_search">
-                    <el-date-picker
-                        v-model="time"
-                        type="daterange"
-                        value-format="yyyy-MM-dd"
-                        range-separator="至"
-                        start-placeholder="开始日期"
-                        end-placeholder="结束日期">
-                    </el-date-picker>
-                </div>
-                <div class="_buttons" style="margin-right: 18px">
-                    <BosInput
-                            placeholder="操作人员"
-                            suffix="el-icon-search"
-                            v-model="params.operator"
-                            style="width:285px;">
-
-                    </BosInput>
-                </div>
+        <my-header :title="'充电记录'" :searchFlag="false"></my-header>
+        <div class="action-bar">
+            <div style="width:400px" data-test="time_search">
+                <el-date-picker
+                    v-model="time"
+                    type="daterange"
+                    value-format="yyyy-MM-dd"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期">
+                </el-date-picker>
             </div>
-            <field-table :list="list" :labelList="table.labelList" :havePage="false"
-                        :tableAction="table.tableAction"  :pageInfo="paginator" @tableCurrentPageChanged="changePage" @clickTableCloum="clickTableCloum" style="width: 100%">
-            </field-table>
+            <div class="_buttons" style="margin-right: 18px">
+                <BosInput
+                        placeholder="RFID/装备名称"
+                        suffix="el-icon-search"
+                        v-model="params.args"
+                        style="width:285px;">
+
+                </BosInput>
+            </div>
         </div>
-        
-        <!-- <r_video ref="recordVideo" :src="address"></r_video> -->
-        <maintenance-recordinfo :infolist="infolist" :show="show"></maintenance-recordinfo>
+        <field-table :list="list" :labelList="table.labelList" :havePage="false"
+                    :tableAction="table.tableAction"  :pageInfo="paginator" @tableCurrentPageChanged="changePage" style="width: 100%">
+        </field-table>
     </div>
 </template>
 
 <script>
     import myHeader from 'components/base/header/header'
-    import {findUpkeepStartTimeAndEndTimeBetweenAndOperatorLike} from "api/equiprecord"
-    import maintenanceRecordinfo from "views/record/maintenanceRecordinfo"
+    import {findChargeByStartTimeAndEndTimeBetweenAndArgsLike} from "api/equiprecord"
+    import {transformMixin} from "common/js/transformMixin";
+
     export default {
-        name: "maintenanceRecord",
+        name: "consumablerecord",
         components:{
             myHeader,
-            maintenanceRecordinfo
         },
+        mixins: [transformMixin],
         data(){
             return{
                 table: {
                     flag: false,
                     labelList: [
-                        {lable: '开始保养时间', field: 'createTime' ,filter: (ns) => this.$filterTime(parseInt(ns.createTime))},
-                        {lable: '保养件数', field: 'count',sort:false},
-                        {lable: '操作人员', field: 'operatorInfo.operator',sort:false},
+                        {lable: 'RFID', field: 'equipInfo.rfid',sort:false},
+                        {lable: '装备序号', field: 'equipInfo.serial',sort:false},
+                        {lable: '装备名称', field: 'equipInfo.equipName',sort:false},
+                        {lable: '装备型号', field: 'equipInfo.model',sort:false},
+                        {lable: '装备位置', field: 'equipInfo',filter: (ns) => this.fixposition(ns.equipInfo)},
+                        {lable: '充电周期', field: 'equipInfo.duration',filter: (ns) => this.useTime(ns.equipInfo.duration,"周期")},
+                        {lable: '开始充电时间', field: 'createTime' ,filter: (ns) => this.$filterTime(parseInt(ns.createTime))},
+                        {lable: '已充时间', field: 'equipInfo.useTime',filter: (ns) => this.useTime(ns.equipInfo.useTime,"已冲")},
                     ],
                     search:'',
-                    tableAction:{
-                        label:'详情',
-                        button:[{name:'查看',type:'primary'}]
-                    },
                 },
                 time:'',
                 list:[],
-                infolist:[],
                 paginator: {
                     page: 1,
                     totalPages: 10,
                     size: 9
                 },
-                show:true,
+                address:'',
                 params:{
-                    endTime:'',
                     startTime:'',
-                    operator:''
+                    endTime:'',
+                    args:''
                 }
             }
         },
         methods:{
-            clickTableCloum(table) {
-                let data = table.row;
-                this.infolist = data
-                this.show = false
-            },
             
             getList(data){
                 let params = this.paginator
-                findUpkeepStartTimeAndEndTimeBetweenAndOperatorLike(data).then(res=>{
+                findChargeByStartTimeAndEndTimeBetweenAndArgsLike(data).then(res=>{
                     this.list=[];
                     this.list=res;
-                    this.paginator.totalPages=res.totalPages
                     console.log("res",res)
-                    console.log("list",this.list)
+                    this.paginator.totalPages=res.totalPages
                 })
             },
             changePage(data){
                 this.paginator.page = data
                 this.getList()
-
             },
-            black(){
-                this.show = true
+            useTime(data,info){
+                var days = parseInt(data / (1000 * 60 * 60 * 24));
+                var hours = parseInt((data % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = parseInt((data % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = (data % (1000 * 60)) / 1000;
+                if(info=="周期"){
+                    return days + " 天 ";
+                }else{
+                    return days + " 天 " + hours + " 小时 ";
+                }
             }
         },
         created(){
             this.getList()
         },
         watch:{
-            'params.operator':{
+            'params.args':{
                 handler(data){
                     console.log("this.params",this.params)
                     this.getList(this.params)
@@ -126,8 +123,9 @@
                         console.log("this.params",this.params)
                     }
                     this.getList(this.params)
+                    
                 }
-            }
+            },
         }
     }
 </script>
