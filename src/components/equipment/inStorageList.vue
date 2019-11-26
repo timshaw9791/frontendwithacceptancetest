@@ -18,7 +18,7 @@
                       :label="item.key" :key="item.val" :value="item.val">
                     </el-option>
                   </el-select>
-                  <div class="read" v-show="hardware.selected == 'Handheld'">读取</div>
+                  <div class="read" @click="readerHandheld" v-show="hardware.selected == 'Handheld'">读取</div>
                 </div>
                 <div class="operator">
                   <div class="label">操作人员： </div>
@@ -33,8 +33,8 @@
               <el-table :data="list" height="529px" style="border: 1px solid #ccc; margin-top: 10px">
                 <bos-table-column lable="装备名称" field="name"></bos-table-column>
                 <bos-table-column lable="装备型号" field="model"></bos-table-column>
-                <bos-table-column lable="装备位置" :filter="(row) => $filterFrame(row.locationInfo)"></bos-table-column>
-                <bos-table-column lable="装备数量" :filter="(row) => 1"></bos-table-column>
+                <bos-table-column lable="装备位置" :filter="(row) => $filterFrame(row.location)"></bos-table-column>
+                <bos-table-column lable="装备数量" field="count"></bos-table-column>
               </el-table>
             </div>
             <div class="storage-list-footer">
@@ -45,11 +45,13 @@
 </template>
 
 <script>
+import { outHouse, findByRfids } from "api/storage"
+import { start, killProcess } from 'common/js/rfidReader'
+
     export default {
         data() {
             return {
                 equipList: [],
-                list: [],
                 typeName: '', // 显示什么类型(入库/出库)
                 hardware: {
                   selectArr: [{
@@ -60,11 +62,14 @@
                     key: '读卡器'
                   }],
                   selected: '', // 所选用的硬件
-                  operator: "王小明"
-                }
+                  operator: ""
+                },
+                list: [],
+                haveList: [], // 存在的装备被记录
+                rfidList: [],
+                pid: ''
             }
         },
-
         props: {
             title: {
               type: String,
@@ -81,10 +86,7 @@
               }
             }
         },
-
-
         methods: {
-
             //离开页面以后为父组件抛出black 杀死进程
             black() {
               this.$emit('black', true);
@@ -92,27 +94,105 @@
             },
             // 切换硬件后
             selectHardware(val) {
-              console.log(val);
+              if(this.pid) {
+                killProcess(this.pid)
+                this.pid = ''
+              }
+              this.list = []
+              if(val == 'cardReader') {
+                start("java -jar scan.jar", (data) => {
+                  this.getEquipInfo(data)
+                }, (fail) => {this.$message.error(fail)}, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
+              }
+            },
+            // 手持机读取
+            readerHandheld() {
+              console.log("读取");
+            },
+            submit() {
+              if(this.hardware.selected == '') {
+                this.$message.error("请选择硬件")
+                return
+              }
+              if(this.list.length == 0 || this.rfidList.length == 0) {
+                this.$message.error("未扫入装备")
+                return
+              }
+              outHouse({rfids: this.rfidList}).then(res => {
+                console.log(res);
+                this.$message.success("出库成功")
+                // 关闭硬件
+                killProcess(this.pid)
+                this.pid = ''
+                setTimeout(() => {
+                  this.$emit('black')
+                }, 3000)
+              })
+            },
+            getEquipInfo(rfid, isArray=false) {
+              console.log(rfid);
+              if(isArray) {
+
+              } else {
+                findByRfids({rfids: [rfid]}).then(res => {
+                  if(res.length == 0) {
+                    this.$message.error("该rfid未对应装备")
+                  }
+                  res.forEach(equip => {
+                    let mergeName = `${equip.equipArg.name}${equip.equipArg.model}${equip.location.number}${equip.location.surface}${equip.location.section}${equip.location.floor}`,
+                        have = this.list.findIndex(item => item.mergeName == mergeName)
+                    if(have != -1) {
+                      this.list[have].count++
+                    } else {
+                      this.list.push({
+                        name: equip.equipArg.name,
+                        model: equip.equipArg.model,
+                        location: equip.location,
+                        count: 1,
+                        mergeName
+                      })
+                    }
+                    this.rfidList.push(equip.rfid)
+                  })
+                })
+              }
+            },
+            // 从父组件prop传递的数组
+            createListData(equipArray) {
+              equipArray.forEach(equip => {
+                let mergeName = `${equip.name}${equip.model}${equip.locationInfo.number}${equip.locationInfo.surface}${equip.locationInfo.section}${equip.locationInfo.floor}`,
+                    have = this.list.findIndex(item => item.mergeName == mergeName);
+                if(have != -1) {
+                  this.list[have].count++
+                } else {
+                  this.list.push({
+                    name: equip.name,
+                    model: equip.model,
+                    location: equip.locationInfo,
+                    count: 1,
+                    mergeName
+                  })
+                }
+              })
             }
-
-
-            
         },
-
         created() {
           this.typeName = this.title.slice(0, 2)
-          this.equipList = {
-            orderNumber: this.equipData.orderNumber,
-            operator: this.equipData.operatorInfo?this.equipData.operatorInfo.operator: '',
-            createTime: this.$filterTime(this.equipData.createTime),
+          this.hardware.operator = JSON.parse(localStorage.getItem('user')).username
+          if(!this.title.includes("出库装备")) {
+            this.equipList = {
+              orderNumber: this.equipData.orderNumber,
+              operator: this.equipData.operatorInfo?this.equipData.operatorInfo.operator: '',
+              createTime: this.$filterTime(this.equipData.createTime),
+            }
+            this.createListData(this.equipData.equipInOutHouseDetails)
           }
-          this.list = this.equipData.equipInOutHouseDetails
         },
-        mounted() {
-          
-        },
-
-
+        beforeDestroy() {
+          if(this.pid != '') {
+            killProcess(this.pid)
+          }
+        }
     }
 </script>
 
