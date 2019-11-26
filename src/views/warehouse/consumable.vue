@@ -40,12 +40,12 @@
         </el-card>
 
         <serviceDialog :title="title" ref="dialog" @confirm="submit" :secondary="false" :data-test="title">
-            <form-container ref="form" :list="list" class="add-personneo-body-from">
-                <field-select :list="ConsumableList" v-if="disabled" label="耗材名称" v-model="name" width="100"></field-select>
-                <field-input v-else label="耗材名称" v-model="name" width="100"></field-input>
-                <field-input label="耗材数量" v-model="count" width="100"></field-input>
-                <field-input label="耗材用途" v-model="describes" :disabled=disabled :type="'textarea'" width="100"></field-input>
-                <field-input label="备注" v-model="remark" v-show="show" :type="'textarea'" width="100"></field-input>
+            <form-container ref="form" :list="list">
+                <field-select :list="ConsumableList" v-if="disabled" label="耗材名称" v-model="name" width="10"></field-select>
+                <field-input v-else label="耗材名称" v-model="name" width="10"></field-input>
+                <field-input label="耗材数量" v-model="count" width="10"></field-input>
+                <field-input label="耗材用途" v-model="describes" :disabled="disabled" :type="'textarea'" width="10"></field-input>
+                <field-input label="备注" v-model="remark" v-show="show" :type="'textarea'" width="10"></field-input>
             </form-container>
             
         </serviceDialog>
@@ -64,6 +64,7 @@
                 title: '',
                 inquire: '',
                 list: [],
+                alllist: [],
                 name:'',
                 count:'',
                 describes:'',
@@ -82,15 +83,13 @@
         mixins: [formRulesMixin],
         methods: {
             getConsumableList() {
+                console.log("111")
                 let params = {page: this.paginator.page, size: this.paginator.size, search: this.inquire};
                 getConsumableList(params).then(res => {
                     let result = JSON.parse(JSON.stringify(res));
                     this.paginator.totalPages = res.totalPages
                     this.paginator.totalElements = res.totalElements
                     this.list = res.content
-                    for(let i in this.list){
-                        this.ConsumableList.push(this.list[i].name)
-                    }
                 })
             },
             changePage(data) {
@@ -150,6 +149,16 @@
                     }
                 }
             },
+            getallList(){
+                getConsumableList().then(res => {
+                    this.alllist = res.content
+                    this.ConsumableList = []
+                    for(let i in this.alllist){
+                        this.ConsumableList.push(this.alllist[i].name)
+                    }
+                    console.log(this.ConsumableList)
+                })
+            },
             dialogShow(data) {
                 console.log(data);
                 if(data=="add"){
@@ -160,10 +169,12 @@
                     this.title = "补充耗材"
                     this.show = false
                     this.disabled = true
+                    this.getallList()
                 }else if(data=="receive"){
                     this.title = "领取耗材"
                     this.disabled = true
                     this.show = true
+                    this.getallList()
                 }
                 // 显示弹框时清空数据
                 this.name = ''
@@ -182,10 +193,10 @@
             },
             name(){
                 if(this.disabled){
-                    for(let i in this.list){
-                        if(this.name == this.list[i].name){
-                            this.describes = this.list[i].describes
-                            this.from.id = this.list[i].id
+                    for(let i in this.alllist){
+                        if(this.name == this.alllist[i].name){
+                            this.describes = this.alllist[i].describes
+                            this.from.id = this.alllist[i].id
                         }
                     }
                 }

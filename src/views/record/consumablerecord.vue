@@ -16,13 +16,13 @@
                 <BosInput
                         placeholder="装备名称/操作状态/操作人员"
                         suffix="el-icon-search"
-                        v-model="table.search"
+                        v-model="search"
                         style="width:285px;">
 
                 </BosInput>
             </div>
         </div>
-        <field-table :list="list" :labelList="table.labelList"
+        <field-table :list="list" :labelList="table.labelList" :havePage="false"
                     :tableAction="table.tableAction"  :pageInfo="paginator" @tableCurrentPageChanged="changePage" style="width: 100%">
         </field-table>
     </div>
@@ -30,13 +30,16 @@
 
 <script>
     import myHeader from 'components/base/header/header'
-    import {findConsumableByName,findByTimeBetween} from "api/equiprecord"
+    import {findConsumableByName} from "api/equiprecord"
+    import {transformMixin} from "common/js/transformMixin"
 
     export default {
         name: "consumablerecord",
         components:{
             myHeader,
+            
         },
+        mixins: [ transformMixin],
         data(){
             return{
                 table: {
@@ -47,25 +50,30 @@
                         {lable: '备注', field: 'remark',sort:false},
                         {lable: '操作状态', field: 'category',sort:false},
                         {lable: '操作人员', field: 'operatorInfo.operator',sort:false},
-                        {lable: '操作时间', field: 'creatTime' ,filter: (ns) => this.$filterTime(parseInt(ns.creatTime))},
+                        {lable: '操作时间', field: 'createTime' ,filter: (ns) => this.$filterTime(parseInt(ns.createTime))},
                     ],
-                    search:'',
-                    time:''
                 },
+                time:'',
+                search:'',
                 list:[],
                 paginator: {
                     page: 1,
                     totalPages: 10,
                     size: 9
                 },
-                address:''
+                address:'',
+                params:{
+                    startTime:0,
+                    endTime:'',
+                    search:''
+                }
             }
         },
         methods:{
             
             getList(data){
                 let params = this.paginator
-                findConsumableByName(params).then(res=>{
+                findConsumableByName(data).then(res=>{
                     this.list=[];
                     this.list=JSON.parse(JSON.stringify(res.content));
                     this.paginator.totalPages=res.totalPages
@@ -77,29 +85,35 @@
             }
         },
         created(){
-            this.getList()
+            this.getList(),
+            this.params.endtime=this.getDatamillseconds(this.getCurrentDate())
         },
         watch:{
-            'table.search':{
+            'search':{
                 handler(data){
-                    this.paginator.name = data
-                    this.getList()
+                    this.params.search=data
+                    if(data=="新增"||data=="增"||data=="新"){
+                        this.params.search="INCREASE"
+                    }else if(data=="补充"||data=="充"||data=="补"){
+                        this.params.search="UPDATE"
+                    }else if(data=="领取"||data=="取"||data=="领"){
+                        this.params.search= "RECEIVE"
+                    }
+                    this.getList(this.params)
 
                 }
             },
             'table.time':{
                 handler(data){
+                    console.log("data",data)
                     if(data){
-                        data[0] = data[0].replace(new RegExp("-","gm"),"/");
-                        let starttime = (new Date(data[0])).getTime();
-                        data[1] = data[1].replace(new RegExp("-","gm"),"/");
-                        let endtime = (new Date(data[1])).getTime();
-                        let params = {endTime:endtime,startTime:starttime}
-                        findByTimeBetween(params).then((res)=>{
-                            this.list=JSON.parse(JSON.stringify(res.content))
-                        })
+                        this.params.startTime = this.getDatamillseconds(data[0])
+                        this.params.endTime = this.getDatamillseconds(data[1])+24*60*60*1000-1
+                        this.getList(this.params)
                     }else{
-                        this.getList()
+                        this.params.startTime=''
+                        this.params.endTime=''
+                        this.getList(this.params)
                     }
                     
                 }

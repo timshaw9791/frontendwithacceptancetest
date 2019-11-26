@@ -2,7 +2,7 @@
     <div>
         <el-table
                 :data="list"
-                style="width: 100%;min-height: 490px" id="table" @sort-change="sortChange" height="3.55rem">
+                style="width: 100%;min-height:490px"  id="table" @sort-change="sortChange" :height="height">
             <bos-table-column  v-for="item in labelList" :lable="item.lable" :sort="item.sort" :field="item.field" :filter="item.filter"></bos-table-column>
             <el-table-column v-if="flag" :label="tableAction.label" align="center">
                 <template slot-scope="scope">
@@ -30,6 +30,10 @@
             labelList: {
                 type: Array,
                 required: true
+            },
+            height:{
+                type:String,
+                default:'3.45rem'
             },
             /*defaultSort:{
               type:Object,
