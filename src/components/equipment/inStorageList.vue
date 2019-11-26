@@ -38,7 +38,7 @@
               </el-table>
             </div>
             <div class="storage-list-footer">
-              <el-button type="primary" @click="submit" v-if="title.includes('装备')">提交</el-button>
+              <el-button type="primary" @click="submit" :disable="disable" v-if="title.includes('装备')">提交</el-button>
             </div>
         </el-card> 
     </div>
@@ -46,7 +46,7 @@
 
 <script>
 import { outHouse, findByRfids } from "api/storage"
-import { start, killProcess } from 'common/js/rfidReader'
+import { start, killProcess, handheld } from 'common/js/rfidReader'
 
     export default {
         data() {
@@ -67,7 +67,8 @@ import { start, killProcess } from 'common/js/rfidReader'
                 list: [],
                 haveList: [], // 存在的装备被记录
                 rfidList: [],
-                pid: ''
+                pid: '',
+                disable: false, // 提交按钮是否可用
             }
         },
         props: {
@@ -107,9 +108,15 @@ import { start, killProcess } from 'common/js/rfidReader'
             },
             // 手持机读取
             readerHandheld() {
-              console.log("读取");
+              handheld((err) => this.$message.error(err)).then(data => {
+                this.getEquipInfo(JSON.parse(data).rfid, true)
+              })
             },
             submit() {
+              this.disable = true
+              setTimeout(() => {
+                this.disable = false
+              }, 2000)
               if(this.hardware.selected == '') {
                 this.$message.error("请选择硬件")
                 return
@@ -130,35 +137,41 @@ import { start, killProcess } from 'common/js/rfidReader'
               })
             },
             getEquipInfo(rfid, isArray=false) {
-              console.log(rfid);
+              let rfidList = [];
               if(isArray) {
-
+                rfidList = rfid
               } else {
-                findByRfids({rfids: [rfid]}).then(res => {
-                  if(res.length == 0) {
-                    this.$message.error("该rfid未对应装备")
-                  }
-                  res.forEach(equip => {
-                    let mergeName = `${equip.equipArg.name}${equip.equipArg.model}${equip.location.number}${equip.location.surface}${equip.location.section}${equip.location.floor}`,
-                        have = this.list.findIndex(item => item.mergeName == mergeName)
-                    if(have != -1) {
-                      this.list[have].count++
-                    } else {
-                      this.list.push({
-                        name: equip.equipArg.name,
-                        model: equip.equipArg.model,
-                        location: equip.location,
-                        count: 1,
-                        mergeName
-                      })
-                    }
-                    this.rfidList.push(equip.rfid)
-                  })
-                })
+                rfidList.push(rfid)
               }
+              findByRfids({rfids: rfidList}).then(res => {
+                if(res.length == 0) {
+                  this.$message.error("该rfid未对应装备")
+                }
+                this.createListData(res)
+              })
+              
+            },
+            // 从后台返回的数组
+            createListData(equipArray) {
+              equipArray.forEach(equip => {
+                let mergeName = `${equip.equipArg.name}${equip.equipArg.model}${equip.location.number}${equip.location.surface}${equip.location.section}${equip.location.floor}`,
+                    have = this.list.findIndex(item => item.mergeName == mergeName)
+                if(have != -1) {
+                  this.list[have].count++
+                } else {
+                  this.list.push({
+                    name: equip.equipArg.name,
+                    model: equip.equipArg.model,
+                    location: equip.location,
+                    count: 1,
+                    mergeName
+                  })
+                }
+                this.rfidList.push(equip.rfid)
+              })
             },
             // 从父组件prop传递的数组
-            createListData(equipArray) {
+            createPropListData(equipArray) {
               equipArray.forEach(equip => {
                 let mergeName = `${equip.name}${equip.model}${equip.locationInfo.number}${equip.locationInfo.surface}${equip.locationInfo.section}${equip.locationInfo.floor}`,
                     have = this.list.findIndex(item => item.mergeName == mergeName);
@@ -185,7 +198,7 @@ import { start, killProcess } from 'common/js/rfidReader'
               operator: this.equipData.operatorInfo?this.equipData.operatorInfo.operator: '',
               createTime: this.$filterTime(this.equipData.createTime),
             }
-            this.createListData(this.equipData.equipInOutHouseDetails)
+            this.createPropListData(this.equipData.equipInOutHouseDetails)
           }
         },
         beforeDestroy() {
