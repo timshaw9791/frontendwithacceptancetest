@@ -2,19 +2,19 @@
   <div class="excel-table-box">
     <table border="1" id="table" ref="excelTable">
       <tr>
-        <th colspan="5">{{ tableHeader.bigTitle }}</th>
+        <th :colspan="colspan">{{ tableHeader.bigTitle }}</th>
       </tr>
       <tr>
-        <td colspan="5">{{ tableHeader.smallTitle }}</td>
+        <td :colspan="colspan">{{ tableHeader.smallTitle }}</td>
       </tr>
       <tr>
-        <td colspan="5">{{ tableHeader.info}}</td>
+        <td :colspan="colspan">{{ tableHeader.info}}</td>
       </tr>
       <tr>
         <td v-for="(item, i) in tableHeader.lableList" :key="i + 'header'">{{ item.lable }}</td>
       </tr>
       <tr v-for="(item, i) in list" :key="i">
-        <td v-for="n in tableHeader.lableList.length">{{ item[tableHeader.lableList[n-1].filed] }}</td>
+        <td v-for="n in colspan">{{ item[tableHeader.lableList[n-1].filed] }}</td>
       </tr>
     </table>
     <button @click="exportExcel">导出</button>
@@ -27,7 +27,7 @@ export default {
   name: "exceltable",
   data() {
     return {
-    
+      colspan: 1
     };
   },
   props: {
@@ -82,7 +82,10 @@ export default {
       }
       return wbout;
     }
-  }
+  },
+  created() {
+    this.colspan = this.tableHeader.lableList.length
+  },
 };
 </script>
 
