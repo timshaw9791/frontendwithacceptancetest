@@ -43,6 +43,12 @@
                     }
                 }
             },
+            'table.abnormal': {
+                deep: true,
+                handler(newVal, oldVal) {
+                    this.getList()
+                }
+            },
             'paginator.page':{
                 deep:true,
                 handler(newVal,oldVal) {
