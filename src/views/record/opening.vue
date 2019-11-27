@@ -4,7 +4,7 @@
         <div class="action-bar">
             <div style="width:400px" data-test="time_search">
                 <el-date-picker
-                    v-model="table.time"
+                    v-model="time"
                     type="daterange"
                     value-format="yyyy-MM-dd"
                     range-separator="至"
@@ -16,14 +16,14 @@
                 <BosInput
                         placeholder="开门人员"
                         suffix="el-icon-search"
-                        v-model="table.search"
+                        v-model="params.search"
                         style="width:285px;">
 
                 </BosInput>
             </div>
         </div>
         <field-table :list="list" :labelList="table.labelList" :havePage="false"
-                    :tableAction="table.tableAction"  :pageInfo="paginator" @tableCurrentPageChanged="changePage" @clickTableCloum="clickTableCloum" style="width: 100%">
+                    :tableAction="table.tableAction"   @clickTableCloum="clickTableCloum" style="width: 100%">
         </field-table>
         <r_video ref="recordVideo" :src="address"></r_video>
     </div>
@@ -35,7 +35,7 @@
     import r_video from 'components/record/recordDialog'
     import r_label from 'common/vue/ajaxLabel'
     import {baseURL} from "../../api/config";
-    import {gateOpenRecord,findByTimeBetween,findByOperatorName} from "api/openrecord"
+    import {findByOperatorName} from "api/openrecord"
 
     export default {
         name: "opening",
@@ -58,15 +58,15 @@
                         label:'监控视频',
                         button:[{name:'查看',type:'primary'}]
                     },
-                    time:''
                 },
+                time:'',
                 list:[],
-                paginator: {
-                    page: 1,
-                    totalPages: 10,
-                    size: 9
-                },
-                address:''
+                address:'',
+                params:{
+                    startTime:'',
+                    endTime:'',
+                    search:''
+                }
             }
         },
         methods:{
@@ -79,51 +79,35 @@
                 }
             },
             
-            getList(){
-                let params = this.paginator
-                gateOpenRecord(params).then(res=>{
+            getList(data){
+                findByOperatorName(data).then(res=>{
                     this.list=[];
                     this.list=res.content;
-                    this.paginator.totalPages=res.totalPages
                 })
             },
-            changePage(data){
-                this.paginator.page = data
-                this.getList()
-
-            }
         },
         created(){
             this.getList()
         },
         watch:{
-            'table.search':{
+            'params.search':{
                 handler(data){
-                    let params = {operator:data}
-                    findByOperatorName(params).then((res)=>{
-                        this.list=JSON.parse(JSON.stringify(res.content))
-                    })
+                    this.getList(this.params)
                 }
             },
             'table.time':{
                 handler(data){
-                    let endtime = ''
-                    let starttime = ''
                     if(data){
                         data[0] = data[0].replace(new RegExp("-","gm"),"/");
-                        starttime = (new Date(data[0])).getTime();
+                        this.params.startTime = (new Date(data[0])).getTime();
                         data[1] = data[1].replace(new RegExp("-","gm"),"/");
-                        endtime = (new Date(data[1])).getTime();
-                        let params = {endTime:endtime,startTime:starttime}
-                        findByTimeBetween(params).then((res)=>{
-                            this.list=JSON.parse(JSON.stringify(res.content))
-                        })
+                        this.params.endTime = (new Date(data[1])).getTime()+24*60*60*1000-1;
+                        this.getList(this.params)
                     }else{
-                        gateOpenRecord().then((res)=>{
-                            this.list=JSON.parse(JSON.stringify(res.content))
-                        })
+                        this.params.startTime = '';
+                        this.params.endTime = '';
+                        this.getList(this.params)
                     }
-                    console.log("params",params)
                 }
             }
         }

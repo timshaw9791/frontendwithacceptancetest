@@ -55,3 +55,12 @@ export function findStartTimeAndEndTimeBetweenAndOperatorLike(data) {
         params: data
     })
 }
+
+// 报废记录
+export function findScrapRecordByNameLike(data) {
+    return request({
+        url: '/equipRecord/findScrapRecordByNameLike',
+        method: 'get',
+        params: data
+    })
+}

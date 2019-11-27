@@ -23,12 +23,12 @@
             </div>
         </div>
         <field-table :list="list" :labelList="table.labelList" :havePage="false"
-                      :tableAction="table.tableAction"  :pageInfo="paginator" @tableCurrentPageChanged="changePage"  @clickTableCloum="clickTableCloum" style="width: 100%">
+                      :tableAction="table.tableAction"  @clickTableCloum="clickTableCloum" style="width: 100%">
         </field-table>
         <r_video ref="recordVideo" :src="address"></r_video>
         <service-dialog title="装备领用/归还记录" ref="dialogLinghuan" width="766px" :button="false">
-            <field-table :list="infolist" :labelList="infotable.labelList" :show="false"
-                        :pageInfo="paginator" @tableCurrentPageChanged="changePage"  style="width: 100%">
+            <field-table :list="infolist" :labelList="infotable.labelList" :havePage="false"
+                         style="width: 100%">
             </field-table>
         </service-dialog>
     </div>
@@ -78,11 +78,6 @@
                     ],
                     flag:false
                 },
-                paginator: {
-                    page: 1,
-                    totalPages: 10,
-                    size: 9
-                },
                 list:[],
                 address:'',
                 infolist:[],
@@ -98,16 +93,10 @@
         methods: {
             
             getList(data){
-                let params = this.paginator
                 findByStartTimeAndEndTimeBetweenAndArgsLike(data).then(res=>{
                     this.list=[];
                     this.list=JSON.parse(JSON.stringify(res.content));
-                    this.paginator.totalPages=res.totalPages
                 })
-            },
-            changePage(data){
-                this.paginator.page = data
-                this.getList()
             },
             clickTableCloum(data){
                 console.log("data",data)

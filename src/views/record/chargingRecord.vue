@@ -23,7 +23,7 @@
             </div>
         </div>
         <field-table :list="list" :labelList="table.labelList" :havePage="false"
-                    :tableAction="table.tableAction"  :pageInfo="paginator" @tableCurrentPageChanged="changePage" style="width: 100%">
+                    :tableAction="table.tableAction"  style="width: 100%">
         </field-table>
     </div>
 </template>
@@ -57,11 +57,6 @@
                 },
                 time:'',
                 list:[],
-                paginator: {
-                    page: 1,
-                    totalPages: 10,
-                    size: 9
-                },
                 address:'',
                 params:{
                     startTime:'',
@@ -73,17 +68,11 @@
         methods:{
             
             getList(data){
-                let params = this.paginator
                 findChargeByStartTimeAndEndTimeBetweenAndArgsLike(data).then(res=>{
                     this.list=[];
                     this.list=res;
                     console.log("res",res)
-                    this.paginator.totalPages=res.totalPages
                 })
-            },
-            changePage(data){
-                this.paginator.page = data
-                this.getList()
             },
             useTime(data,info){
                 var days = parseInt(data / (1000 * 60 * 60 * 24));
