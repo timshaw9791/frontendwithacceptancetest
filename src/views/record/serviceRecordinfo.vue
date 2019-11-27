@@ -15,7 +15,7 @@
             </div>
         </div>
         <field-table :list="list" :labelList="table.labelList" :havePage="false"
-                    :pageInfo="paginator" @tableCurrentPageChanged="changePage"  style="width: 100%">
+                     style="width: 100%">
         </field-table>
         <!-- <r_video ref="recordVideo" :src="address"></r_video> -->
     </div>
@@ -56,19 +56,10 @@
                     search:'',
                 },
                 time:'',
-                paginator: {
-                    page: 1,
-                    totalPages: 10,
-                    size: 9
-                },
             }
         },
         methods:{
-            changePage(data){
-                this.paginator.page = data
-                this.getList()
-
-            },
+            
         },
         watch:{
             'table.search':{

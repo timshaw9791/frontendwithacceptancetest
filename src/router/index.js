@@ -113,6 +113,12 @@ export const asyncRouterMap = [
                 meta: {title: '库房信息'},
             },
             {
+                path: 'expired',
+                name: 'warehouse/expired',
+                component: _import('warehouse/expired'),
+                meta: {title: '到期报废'},
+            },
+            {
                 path: 'inventory',
                 name: 'warehouse/inventory',
                 component: _import('warehouse/inventory'),
@@ -265,12 +271,6 @@ export const asyncRouterMap = [
                 name: 'consumablerecord',
                 component: _import('record/consumablerecord'),
                 meta: {title: '耗材记录', roles: ['ADMINISTRATOR']},
-            },
-            {
-                path: 'maintenanceRecord',
-                name: 'maintenanceRecord',
-                component: _import('record/maintenanceRecord'),
-                meta: {title: '维保记录', roles: ['ADMINISTRATOR']},
             },
         ]
     },

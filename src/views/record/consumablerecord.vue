@@ -23,7 +23,7 @@
             </div>
         </div>
         <field-table :list="list" :labelList="table.labelList" :havePage="false"
-                    :tableAction="table.tableAction"  :pageInfo="paginator" @tableCurrentPageChanged="changePage" style="width: 100%">
+                    :tableAction="table.tableAction"  style="width: 100%">
         </field-table>
     </div>
 </template>
@@ -56,11 +56,6 @@
                 time:'',
                 search:'',
                 list:[],
-                paginator: {
-                    page: 1,
-                    totalPages: 10,
-                    size: 9
-                },
                 address:'',
                 params:{
                     startTime:0,
@@ -72,17 +67,11 @@
         methods:{
             
             getList(data){
-                let params = this.paginator
                 findConsumableByName(data).then(res=>{
                     this.list=[];
                     this.list=JSON.parse(JSON.stringify(res.content));
-                    this.paginator.totalPages=res.totalPages
                 })
             },
-            changePage(data){
-                this.paginator.page = data
-                this.getList()
-            }
         },
         created(){
             this.getList(),

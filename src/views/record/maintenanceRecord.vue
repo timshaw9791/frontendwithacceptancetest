@@ -24,7 +24,7 @@
                 </div>
             </div>
             <field-table :list="list" :labelList="table.labelList" :havePage="false"
-                        :tableAction="table.tableAction"  :pageInfo="paginator" @tableCurrentPageChanged="changePage" @clickTableCloum="clickTableCloum" style="width: 100%">
+                        :tableAction="table.tableAction"  @clickTableCloum="clickTableCloum" style="width: 100%">
             </field-table>
         </div>
         
@@ -61,11 +61,6 @@
                 time:'',
                 list:[],
                 infolist:[],
-                paginator: {
-                    page: 1,
-                    totalPages: 10,
-                    size: 9
-                },
                 show:true,
                 params:{
                     endTime:'',
@@ -82,19 +77,12 @@
             },
             
             getList(data){
-                let params = this.paginator
                 findUpkeepStartTimeAndEndTimeBetweenAndOperatorLike(data).then(res=>{
                     this.list=[];
                     this.list=res;
-                    this.paginator.totalPages=res.totalPages
                     console.log("res",res)
                     console.log("list",this.list)
                 })
-            },
-            changePage(data){
-                this.paginator.page = data
-                this.getList()
-
             },
             black(){
                 this.show = true
