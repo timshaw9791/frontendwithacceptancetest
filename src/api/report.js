@@ -5,7 +5,7 @@ import request from 'common/js/request'
 
 export function findEquipMoneyStatistic(params) {
     return request({
-        url: '/statisticForm/findEquipMoneyStatistic',
+        url: '/statistic/MoneyStatistic',
         method: 'get',
         params:params
     })
