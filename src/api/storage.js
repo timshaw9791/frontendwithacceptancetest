@@ -148,3 +148,12 @@ export function getAllSupplier() {
         method: "GET"
     })
 }
+
+/* 装备历史记录 */
+export function findEquipHistory(params) {
+    return request({
+        url: "/equip/findEquipHistory",
+        method: "GET",
+        params
+    })
+}

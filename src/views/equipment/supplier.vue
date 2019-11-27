@@ -87,7 +87,7 @@
         },
         mixins: [formRulesMixin],
         components: {
-            serviceDialog  
+            serviceDialog
         },
         watch: {
             inquire(newVal, oldVal) {

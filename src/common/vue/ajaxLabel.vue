@@ -86,8 +86,18 @@
     }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
     .label{
         width: 100%;
+        ::-webkit-scrollbar-track-piece {
+            background: #d3dce6;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(47,47,118,0.37);
+            border-radius: 20px;
+        }
     }
 </style>
