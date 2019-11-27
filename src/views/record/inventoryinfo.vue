@@ -39,7 +39,7 @@
         <div class="body">
             <span v-text="'未在库装备统计：'"></span>
             <field-table :list="list" :labelList="table.labelList" height="3rem" :havePage="false"
-                        :tableAction="table.tableAction"  :pageInfo="paginator" @tableCurrentPageChanged="changePage" @clickTableCloum="clickTableCloum" style="width: 100%">
+                        :tableAction="table.tableAction"  @clickTableCloum="clickTableCloum" style="width: 100%">
             </field-table>
         </div>
         <div class="bottom">
