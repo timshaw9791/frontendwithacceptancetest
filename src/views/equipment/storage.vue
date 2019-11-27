@@ -16,6 +16,7 @@
                         <svg-icon icon-class="加" class="textBt"/>
                         入库装备
                     </el-button>
+                    <el-checkbox v-model="abnormal">异常单</el-checkbox>
                     <div class="_buttons">
                         <BosInput
                                 placeholder="单号"
@@ -158,6 +159,7 @@
                     search:'',
                 },
                 equipData: {}, // 入库单数据
+                abnormal: false, // 是否只显示异常单
                 mode: true,
                 inlineForm: {
                     rfid: '',
@@ -410,7 +412,7 @@
 <style lang="scss" scoped>
     .el-card {
         border: none !important;
-        font-size: 0.0833rem;
+        font-size: 16px;
     }
     
     // 可调整
@@ -421,7 +423,13 @@
     // ._textBt {
     //     font-size: 0.0833rem !important;
     // }
-    
+    .el-checkbox {
+        /deep/ .el-checkbox__label {
+            font-size: 16px;
+            color: #2f2f76;
+            font-family: sans-serif
+        }
+    }
     .pattern-box {
         display: flex;
         align-items: center;
