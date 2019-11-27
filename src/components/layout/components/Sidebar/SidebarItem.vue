@@ -1,6 +1,6 @@
 <template>
     <div class="menu-wrapper">
-        <template v-for="item in routes" v-if="!item.hidden&&item.children">
+        <template v-for="item in routes" v-if="!item.hidden&&item.children&&item.name!=='overview'">
 
             <router-link v-if="hasOneShowingChildren(item.children) && !item.children[0].children&&!item.alwaysShow"
                          :to="item.path+'/'+item.children[0].path"
