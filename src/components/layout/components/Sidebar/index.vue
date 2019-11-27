@@ -55,6 +55,9 @@
                 window.close();
             },
         },
+        created(){
+          console.log('permission_routers',this.permission_routers)
+        },
         computed: {
             ...mapGetters([
                 'permission_routers',

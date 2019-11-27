@@ -33,7 +33,11 @@
                      ></r_label>
         </el-card>
 
-        <storageInfo :equipId="equipId" v-if="storageInfoShow" :equipList="equipList" :equipName="equipName" :title="title" @black="black"></storageInfo>
+        <storageInfo :equipId="equipId" v-if="storageInfoShow" :equipList="equipList" :getPropEquip="propEquip" :title="title" @black="black"></storageInfo>
+
+        <service-dialog title="提示" :secondary="false" @confirm="toInHouse" ref="tipDialog">
+            <center>您确定要立即入库此装备</center>
+        </service-dialog>
     </div>
 </template>
 
@@ -56,8 +60,9 @@
                 options: [],
                 commonHouseId: '',
                 equipId: '',
-                equipName: '', // 装备参数
+                propEquip: {}, // 跳转到入库装备，自动选择的装备数据
                 equipList: {}, // 装备数据
+                equipData: {}, // 用以暂存新增成功的装备参数
                 title: '',
                 storageInfoShow: false,
                 list: [],
@@ -70,7 +75,7 @@
                     url:'/equip/findByNameOrModelLike',
                     tableAction:{
                         label:'操作',
-                        button:[{name:'查看',type:'primary'}]
+                        button:[{name:'查看',type:'primary'}, {name: '入库', type: 'primary'}]
                     },
                     search:'',
                 },
@@ -92,11 +97,16 @@
         components: {
             tabs,
             r_label,
-            storageInfo
+            storageInfo,
+            serviceDialog
         },
         methods: {
             clickTable(table) {
-              this.goInfo('look', table.row)
+              if(table.name == '查看') {
+                  this.goInfo('look', table.row)
+              } else {
+                  this.goInfo('in', table.row)
+              }
             },
             goInfo(data, row) {
                 switch (data) {
@@ -111,18 +121,27 @@
                         this.equipName = row.name
                         this.equipList = row
                         break;
+                    case 'in':
+                        this.storageInfoShow = true;
+                        this.title = '入库装备';
+                        this.propEquip = row;
+                        break
                 }
             },
-            
-            black(data) {
+            toInHouse() {
+                this.$refs.tipDialog.hide()
+                this.goInfo('in', this.equipData)
+            },
+            black(state=null) {
                 // this.refetch()
                 this.storageInfoShow = false;
+                if(state) {
+                    this.equipData = state
+                    this.$refs.tipDialog.show()
+                }
             },
-        beforeDestroy() {
-            killProcess(this.pid)
         }
-        }
-    }
+}
 </script>
 
 <style lang="scss" scoped>

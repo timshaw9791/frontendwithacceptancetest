@@ -240,13 +240,13 @@
                 },
                 zbForm: {
                     numberL: '', // 架体编号
-                    surfaceL: '', // 架体AB面
+                    surfaceL: 'A面', // 架体AB面
                     sectionL: '', // 架体节号
                     extendEdit: '', // 架体层号
                     productDateQ: '', // 生产日期
                     price: '', // 装备单价
                 },
-                list: [{rfid: null, serial: null}],
+                list: [{rfid: null, serial: ''}],
                 tempImage: '', // 用以保存图片的名字
                 formRes: '',
                 inlineForm: {},
@@ -260,6 +260,7 @@
                 extendEdit: true, // 装备信息详情的编辑
                 submitShow: false, // 提交按钮是否显示
                 hardwareOpen: false, // 硬件是否启动
+                useProp: false, // 装备入库是否自动选择
                 imageUrl: '',
                 rfids: [],
                 serialList: [],
@@ -296,10 +297,6 @@
                 type: String,
                 default: null,
             },
-            equipName: {
-                type: String,
-                default: null
-            },
             title: {
                 type: String,
                 default: null,
@@ -308,6 +305,12 @@
                 type: Object,
                 default() {
                     return {}
+                }
+            },
+            getPropEquip: { // 从装备参数来，直接选择完装备
+                type: Object,
+                default() {
+                    return null
                 }
             }
         },
@@ -326,13 +329,13 @@
                 })
                 this.zbForm = {
                     numberL: '', 
-                    surfaceL: '',
+                    surfaceL: 'A面',
                     sectionL: '', 
                     extendEdit: '', 
                     productDateQ: '', 
                     price: '', 
                 }
-                this.list = [{rfid: null, serial: null}]
+                this.list = [{rfid: null, serial: ''}]
                 this.pid = ''
                 this.index = 0
                 this.hardwareOpen = false
@@ -354,7 +357,7 @@
                     if(this.title.includes('入库装备')) {
                         killProcess(this.pid)
                     }
-                    this.$emit('black', true);
+                    this.$emit('black');
                 // } else {
                 //     this.$refs.dialog.show();
                 // }
@@ -404,16 +407,22 @@
                         rfidList.push(equip.rfid)
                         serialList.push(equip.serial)
                     })
-                    this.$refs.form.postValidate(inHouse, {
-                        rfids: rfidList,
-                        serials: serialList
-                    }, requestBody, (state, res) => {
-                        killProcess(this.pid)
-                        this.pid = ''
-                        this.hardwareOpen = false
-                        this.$message.success("入库成功")
-                        this.$emit('black')
-                        // 关闭硬件
+                    console.log(rfidList);
+                    console.log(serialList);
+                    this.$refs.form.validate.then(() => {
+                            this.$refs.zbForm.postValidate(inHouse, {
+                            rfids: rfidList,
+                            serials: serialList
+                        }, requestBody, (state, res) => {
+                            killProcess(this.pid)
+                            this.pid = ''
+                            this.hardwareOpen = false
+                            this.$message.success("入库成功")
+                            this.$emit('black')
+                            // 关闭硬件
+                        })
+                    }).catch(err => {
+                        this.$message.error("未通过检验")
                     })
                 } else if(this.title.includes('装备参数详情')) {
                     let tempForm =  {
@@ -452,7 +461,10 @@
                     }
                     this.$refs.form.restValidate(saveEquipArg, tempForm, (res) => {
                         this.$message.success("新增成功")
-                        this.$emit('black')
+                        this.$emit('black', {
+                            name: tempForm.name,
+                            model: tempForm.model
+                        })
                     })
                 } else if(this.title.includes('装备信息详情')) {
                     let tempForm = {
@@ -722,6 +734,7 @@
                     killProcess(this.pid)
                     this.pid = ''
                 }
+                this.useProp = false
                 this.getEquipInfo()
             },
             // 选择型号完成，显示对应装备参数
@@ -774,8 +787,16 @@
                         if(this.equipment.name != "") {
                             this.equipment.model = Array.from(new Set(modelArr))
                             this.equipment.allEquip = res
+                            if(this.useProp) {
+                                this.form.model = this.getPropEquip.model
+                                this.equipSelected()
+                            }
                         } else {
                             this.equipment.name = Array.from(new Set(nameArr))
+                            if(this.useProp) { // 自动选择装备
+                                this.form.name = this.getPropEquip.name
+                                this.getEquipInfo()
+                            }
                         }
                     })
                 } else if(this.title.includes('装备信息详情')) {
@@ -970,7 +991,14 @@
             } else if (this.title.includes('装备参数详情')) {
                 
             }
+            if(this.getPropEquip) {
+                this.useProp = true
+            }
             this.getEquipInfo();
+            // setTimeout(() => {
+            //     this.form.name = "警用装备包"
+            //     this.getEquipInfo()
+            // }, 2000)
         },
         beforeDestroy() {
             if(this.hardwareOpen || this.pid != '') {

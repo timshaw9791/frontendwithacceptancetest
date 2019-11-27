@@ -59,8 +59,6 @@ export const asyncRouterMap = [
             }
         ]
     },
-
-
     {
         path: '/equipment',
         component: Layout,
@@ -97,76 +95,9 @@ export const asyncRouterMap = [
                 component: _import('equipment/supplier'),
                 meta: {title: '供应商管理'},
             },
-            
-        ]
-    },
-    {
-        path: '/warehouse',
-        component: Layout,
-        name: 'warehouse',
-        meta: {title: '库房管理', icon: '仓库信息', roles: ['ADMINISTRATOR']},
-        children: [
-            {
-                path: 'info',
-                name: 'warehouse/info',
-                component: _import('warehouse/info'),
-                meta: {title: '库房信息'},
-            },
-            {
-                path: 'inventory',
-                name: 'warehouse/inventory',
-                component: _import('warehouse/inventory'),
-                meta: {title: '盘点'},
-            },
-            {
-                path: 'safety',
-                name: 'warehouse/safety',
-                component: _import('warehouse/safety'),
-                meta: {title: '安全库存'},
-            },
-            {
-                path: 'consumables',
-                name: 'warehouse/consumable',
-                component: _import('warehouse/consumable'),
-                meta: {title: '耗材管理'},
-            },
-            {
-                path: 'plan',
-                name: 'warehouse/plan',
-                component: _import('warehouse/plan'),
-                meta: {title: '预案管理'},
-            },
-
 
         ]
     },
-    {
-        path: '/equipmentOperation',
-        component: Layout,
-        name: 'equipmentOperation',
-        meta: {title: '装备维保', icon: '装备维保', roles: ['ADMINISTRATOR']},
-        children: [
-            {
-                path: 'charging',
-                name: 'charging',
-                component: _import('equipmentOperation/charging'),
-                meta: {title: '充电'},
-            },
-            {
-                path: 'service',
-                name: 'service',
-                component: _import('equipmentOperation/service'),
-                meta: {title: '维修'},
-            },
-            {
-                path: 'maintenance',
-                name: 'maintenance',
-                component: _import('equipmentOperation/maintenance'),
-                meta: {title: '保养'},
-            },
-        ]
-    },
-
     {
         path: '/process',
         component: Layout,
@@ -213,65 +144,85 @@ export const asyncRouterMap = [
         ]
     },
     {
-        path: '/record',
+        path: '/equipmentOperation',
         component: Layout,
-        name: 'record',
-        meta: {title: '记录管理', icon: '工作日志', roles: ['POLICE_OFFICER', 'ADMINISTRATOR']},
+        name: 'equipmentOperation',
+        meta: {title: '维保充电', icon: '装备维保', roles: ['ADMINISTRATOR']},
         children: [
             {
-                path: 'opening',
-                name: 'opening',
-                component: _import('record/opening'),
-                meta: {title: '开门记录', roles: ['ADMINISTRATOR']},
-            }, 
+                path: 'charging',
+                name: 'charging',
+                component: _import('equipmentOperation/charging'),
+                meta: {title: '充电'},
+            },
             {
-                path: 'borrow',
-                name: 'borrow',
-                component: _import('record/borrow'),
-                meta: {title: '领还记录', roles: ['POLICE_OFFICER', 'ADMINISTRATOR']},
+                path: 'maintenance',
+                name: 'maintenance',
+                component: _import('equipmentOperation/maintenance'),
+                meta: {title: '保养'},
+            },
+            {
+                path: 'service',
+                name: 'service',
+                component: _import('equipmentOperation/service'),
+                meta: {title: '维修'},
+            }
+        ]
+    },
+    {
+        path: '/warehouse',
+        component: Layout,
+        name: 'warehouse',
+        meta: {title: '库房管理', icon: '仓库信息', roles: ['ADMINISTRATOR']},
+        children: [
+            {
+                path: 'safety',
+                name: 'warehouse/safety',
+                component: _import('warehouse/safety'),
+                meta: {title: '安全库存'},
+            },
+            {
+                path: 'surroundings',
+                name: 'warehouse/surroundings',
+                component: _import('surroundings/index'),
+                meta: {title: '环境管理'},
             },
             {
                 path: 'inventory',
-                name: 'inventory',
-                component: _import('record/inventory'),
-                meta: {title: '盘点记录', roles: ['ADMINISTRATOR']},
+                name: 'warehouse/inventory',
+                component: _import('warehouse/inventory'),
+                meta: {title: '盘点'},
             },
             {
-                path: 'chargingRecord',
-                name: 'chargingRecord',
-                component: _import('record/chargingRecord'),
-                meta: {title: '充电记录', roles: ['ADMINISTRATOR']},
+                path: 'personnelManagement',
+                name: 'warehouse/personnelManagement',
+                component: _import('personnelManagement/personnelManagement'),
+                meta: {title: '人员管理'},
+            },
+            {
+                path: 'plan',
+                name: 'warehouse/plan',
+                component: _import('warehouse/plan'),
+                meta: {title: '应急预案'},
+            },
+            {
+                path: 'consumables',
+                name: 'warehouse/consumable',
+                component: _import('warehouse/consumable'),
+                meta: {title: '耗材管理'},
+            },
+            {
+                path: 'training',
+                name: 'warehouse/training',
+                component: _import('training/index'),
+                meta: {title: '教学培训'},
             },
             // {
-            //     path: 'maintenanceRecord',
-            //     name: 'maintenanceRecord',
-            //     component: _import('record/maintenanceRecord'),
-            //     meta: {title: '保养记录', roles: ['ADMINISTRATOR']},
+            //     path: 'info',
+            //     name: 'warehouse/info',
+            //     component: _import('warehouse/info'),
+            //     meta: {title: '库房信息'},
             // },
-            {
-                path: 'serviceRecord',
-                name: 'serviceRecord',
-                component: _import('record/serviceRecord'),
-                meta: {title: '维修记录', roles: ['ADMINISTRATOR']},
-            },
-            {
-                path: 'scraded',
-                name: 'scraded',
-                component: _import('record/scraded'),
-                meta: {title: '报废记录', roles: ['POLICE_OFFICER', 'ADMINISTRATOR']},
-            }, 
-            {
-                path: 'consumablerecord',
-                name: 'consumablerecord',
-                component: _import('record/consumablerecord'),
-                meta: {title: '耗材记录', roles: ['ADMINISTRATOR']},
-            },
-            {
-                path: 'maintenanceRecord',
-                name: 'maintenanceRecord',
-                component: _import('record/maintenanceRecord'),
-                meta: {title: '维保记录', roles: ['ADMINISTRATOR']},
-            },
         ]
     },
     {
@@ -311,6 +262,69 @@ export const asyncRouterMap = [
             }
         ]
     },
+    {
+        path: '/record',
+        component: Layout,
+        name: 'record',
+        meta: {title: '记录管理', icon: '工作日志', roles: ['POLICE_OFFICER', 'ADMINISTRATOR']},
+        children: [
+            {
+                path: 'opening',
+                name: 'opening',
+                component: _import('record/opening'),
+                meta: {title: '开门记录', roles: ['ADMINISTRATOR']},
+            },
+            {
+                path: 'borrow',
+                name: 'borrow',
+                component: _import('record/borrow'),
+                meta: {title: '领还记录', roles: ['POLICE_OFFICER', 'ADMINISTRATOR']},
+            },
+            {
+                path: 'inventory',
+                name: 'inventory',
+                component: _import('record/inventory'),
+                meta: {title: '盘点记录', roles: ['ADMINISTRATOR']},
+            },
+            {
+                path: 'chargingRecord',
+                name: 'chargingRecord',
+                component: _import('record/chargingRecord'),
+                meta: {title: '充电记录', roles: ['ADMINISTRATOR']},
+            },
+            // {
+            //     path: 'maintenanceRecord',
+            //     name: 'maintenanceRecord',
+            //     component: _import('record/maintenanceRecord'),
+            //     meta: {title: '保养记录', roles: ['ADMINISTRATOR']},
+            // },
+            {
+                path: 'serviceRecord',
+                name: 'serviceRecord',
+                component: _import('record/serviceRecord'),
+                meta: {title: '维修记录', roles: ['ADMINISTRATOR']},
+            },
+            {
+                path: 'scraded',
+                name: 'scraded',
+                component: _import('record/scraded'),
+                meta: {title: '报废记录', roles: ['POLICE_OFFICER', 'ADMINISTRATOR']},
+            },
+            {
+                path: 'consumablerecord',
+                name: 'consumablerecord',
+                component: _import('record/consumablerecord'),
+                meta: {title: '耗材记录', roles: ['ADMINISTRATOR']},
+            },
+            {
+                path: 'maintenanceRecord',
+                name: 'maintenanceRecord',
+                component: _import('record/maintenanceRecord'),
+                meta: {title: '维保记录', roles: ['ADMINISTRATOR']},
+            },
+        ]
+    },
+
     // {
     //     path: '/report',
     //     component: Layout,
@@ -325,55 +339,55 @@ export const asyncRouterMap = [
     //         },
     //     ]
     // },
-    {
-        path: '/personnel',
-        component: Layout,
-        name: 'personnel',
-        meta: {title: '人员管理', icon: '人员管理', roles: ['ADMINISTRATOR']},
-        children: [
-            {
-                path: 'info',
-                name: 'info',
-                component: _import('personnelManagement/personnelManagement'),
-                meta: {title: '人员信息', icon: '人员管理'},
-            },
-            {
-                path: 'permission',
-                name: 'permission',
-                component: _import('personnel/permission'),
-                hidden: true,
-                meta: {title: '权限'},
-            },
-        ]
-    },
-    {
-        path: '/surroundings',
-        component: Layout,
-        name: 'surroundings',
-        meta: {roles: ['ADMINISTRATOR']},
-        children: [
-            {
-                path: 'index',
-                name: 'surroundings/index',
-                component: _import('surroundings/index'),
-                meta: {title: '环境管理', icon: '环境控制'},
-            },
-        ]
-    },
-    {
-        path: '/training',
-        component: Layout,
-        name: 'training',
-        meta: {roles: ['ADMINISTRATOR']},
-        children: [
-            {
-                path: 'index',
-                name: 'training/index',
-                component: _import('training/index'),
-                meta: {title: '教学培训', icon: '教学培训'},
-            },
-        ]
-    },
+    // {
+    //     path: '/personnel',
+    //     component: Layout,
+    //     name: 'personnel',
+    //     meta: {title: '人员管理', icon: '人员管理', roles: ['ADMINISTRATOR']},
+    //     children: [
+    //         {
+    //             path: 'info',
+    //             name: 'info',
+    //             component: _import('personnelManagement/personnelManagement'),
+    //             meta: {title: '人员信息', icon: '人员管理'},
+    //         },
+    //         {
+    //             path: 'permission',
+    //             name: 'permission',
+    //             component: _import('personnel/permission'),
+    //             hidden: true,
+    //             meta: {title: '权限'},
+    //         },
+    //     ]
+    // },
+    // {
+    //     path: '/surroundings',
+    //     component: Layout,
+    //     name: 'surroundings',
+    //     meta: {roles: ['ADMINISTRATOR']},
+    //     children: [
+    //         {
+    //             path: 'index',
+    //             name: 'surroundings/index',
+    //             component: _import('surroundings/index'),
+    //             meta: {title: '环境管理', icon: '环境控制'},
+    //         },
+    //     ]
+    // },
+    // {
+    //     path: '/training',
+    //     component: Layout,
+    //     name: 'training',
+    //     meta: {roles: ['ADMINISTRATOR']},
+    //     children: [
+    //         {
+    //             path: 'index',
+    //             name: 'training/index',
+    //             component: _import('training/index'),
+    //             meta: {title: '教学培训', icon: '教学培训'},
+    //         },
+    //     ]
+    // },
     // {
     //     path: '/category',
     //     component: Layout,
