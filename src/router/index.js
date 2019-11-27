@@ -212,6 +212,12 @@ export const asyncRouterMap = [
                 meta: {title: '耗材管理'},
             },
             {
+                path: 'expired',
+                name: 'warehouse/expired',
+                component: _import('warehouse/expired'),
+                meta: {title: '到期报废'},
+            },
+            {
                 path: 'training',
                 name: 'warehouse/training',
                 component: _import('training/index'),
