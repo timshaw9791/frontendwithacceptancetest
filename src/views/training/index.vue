@@ -53,7 +53,7 @@
             <div class="main_box">
                 <div class="select">
                 <div class="select_name">
-                    <div class="textbox"> <span>装备名称：</span></div>
+                    <label class="textbox"> <span>装备名称：</span></label>
                    <div class="el_selectBox">
                         <el-select v-model="equipName" placeholder="请选择"  value-key="id" name="装备名称">
                         <el-option v-for="(item,index) in nameList" :label="item" :value="item" :key="item">
@@ -63,7 +63,7 @@
                    
                 </div>
                 <div class="select_model">
-                    <div class="textbox"> <span>装备型号：</span></div>
+                    <label class="textbox"> <span>装备型号：</span></label>
                    <div class="el_selectBox">
                         <el-select v-model="equipModel" placeholder="请选择"  value-key="id" name="装备名称">
                         <el-option v-for="(item,index) in modelList" :label="item.model" :value="item" :key="item.id">
@@ -85,7 +85,7 @@
                 </div>
                 <div class=video_box>
                     <div  v-for="(item,index) in equipModel.video" class="video">
-                       <div @click="delVideo(index)">
+                       <div @click="delVideo(index)" :data-test="item+'_close'">
                         <svg-icon icon-class="关闭1" style="width:1.25rem;height:1.25rem; float:right" />
                     </div>
                     <div>

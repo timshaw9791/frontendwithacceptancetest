@@ -20,8 +20,8 @@
             </el-dialog>
 
             <div slot="footer" class="dialog-footer" v-if="button">
-                <el-button @click="cancelDb">取 消</el-button>
-                <el-button type="primary" :disabled="disabled" @click="dialogConfirm">确 定</el-button>
+                <el-button @click="cancelDb" data-test="button">取 消</el-button>
+                <el-button type="primary" :disabled="disabled" @click="dialogConfirm" data-test="button">确 定</el-button>
             </div>
         </el-dialog>
     </div>

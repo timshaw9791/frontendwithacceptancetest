@@ -48,6 +48,8 @@
     },
     methods:{
       getResult(row,field){
+        console.log("this.field")
+        console.log(this.field)
         if(this.filter) return this.filter(row);
         if(!field)throw new Error('field no set');
         field=field.split('.');
