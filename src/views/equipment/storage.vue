@@ -16,6 +16,7 @@
                         <svg-icon icon-class="加" class="textBt"/>
                         入库装备
                     </el-button>
+                    <el-checkbox v-model="abnormal">异常单</el-checkbox>
                     <div class="_buttons">
                         <BosInput
                                 placeholder="单号"
@@ -55,49 +56,6 @@
         <storageInfo :equipId="equipId" v-if="storageInfoShow" :title="title" @black="black"></storageInfo>
         <in-storage-list v-if="!storageListShow" title="入库单详情" :equipData="equipData" @black="storageListShow=true"></in-storage-list>
 
-
-        <!--RFID遮罩层 -->
-
-        <service-dialog ref="dialogPattern" title="选择模式" width="3.3021rem" :button="false" @cancel="cancelPattern">
-            <div class="pattern-box">
-                <el-button class="pattern" v-text="'连号模式'" @click="rfidMode('serial')"></el-button>
-                <el-button class="pattern" style="margin-left: 0.5677rem" v-text="'单件模式'"
-                           @click="rfidMode('singleton')"></el-button>
-            </div>
-        </service-dialog>
-
-        <!--RFID遮罩层 -->
-
-        <service-dialog ref="dialogModify" title="修改RFID" width="3.3021rem" :button="false" @cancel="cancel">
-
-            <div v-if="modeType=='serial'">
-                <div class='rfidList'>
-                    <div v-for="(item,index) in writeAll" class="rfid">
-                        <div class="rfid-left">
-                            RFID{{index+1}} : <span>{{item.epc}}</span>
-                        </div>
-                        <span>{{item.status==='succeed'?'写入成功':'已重复请下一个'}}</span>
-                    </div>
-                </div>
-                <div class="_button">
-                    <el-button type="primary" size="medium" @click="">重新写入</el-button>
-                </div>
-            </div>
-
-            <div v-else>
-                <form-container ref="inlineForm" :model="inlineForm">
-                    <field-input v-model="inlineForm.rfid" size="medium" label="RFID:" width="8"
-                                 :disabled="true"></field-input>
-                    <el-button style="margin-left: 12px" type="primary" @click='writeone'>读取</el-button>
-                    <br/>
-                    <field-input v-model="inlineForm.newRfid" size="medium" label="修改RFID:" width="8"></field-input>
-                </form-container>
-                <div class="_button">
-                    <el-button size="medium" @click="$refs.dialogModify.hide()">取消</el-button>
-                    <el-button type="primary" size="medium" @click="saveOne(inlineForm.newRfid)">写入</el-button>
-                </div>
-            </div>
-        </service-dialog>
         <!--提示的遮罩层 -->
         <el-dialog
                 title="提示"
@@ -158,6 +116,7 @@
                     search:'',
                 },
                 equipData: {}, // 入库单数据
+                abnormal: false, // 是否只显示异常单
                 mode: true,
                 inlineForm: {
                     rfid: '',
@@ -207,73 +166,11 @@
             //     this.delEquipObj = data;
             //     this.dialogVisible = true
             // },
-            rfidMode(mode) {
-                this.modeType = mode;
-                if (this.modeType == 'serial') {
-                    this.serialRfid();
-                }
-                this.$refs.dialogModify.show();
-            },
             goInfo() {
                 this.storageInfoShow = true;
                 // this.storageListShow = false
                  this.title = '入库装备';
                 // this.equipId = '';
-            },
-            serialRfid() {
-                getRfid().then(res => {
-                    start("java -jar auto.jar", (data) => {
-                        let newData = JSON.parse(data);
-                        console.log(newData);
-                        this.writeAll.unshift(newData);
-                        this.writeIndex = newData;
-                        // if (this.index>0) {
-                        //     this.writeAll.unshift(newData);
-                        //     this.writeIndex = newData;
-                        // } else {
-                        //     newData.status === 'succeed' && newData.epc === undefined? this.index = 1: this.index = 0;
-                        // }
-                    }, (fail) => {
-                        this.index = 1;
-                        this.$refs.dialogModify.hide();
-                        this.$message.error(fail)
-                    }, (pid, err) => {pid?this.pid = pid:this.$message.error(err);this.$refs.dialogModify.hide()})
-
-                    //是以流的形式,可以监听
-                    // const process = exec(`java -jar auto.jar ${this.com} ${res}`, {cwd: cmdPath}); //调用cmd执行读写器
-                    // this.pid = process.pid;
-                    // let start = false;
-
-                    //成功的时候
-                    // process.stdout.on('data', (data) => {
-                    //     let newData = JSON.parse(data);
-                    //     console.log(newData);
-                    //     if (start === true) {
-                    //         this.writeAll.unshift(newData);
-                    //         this.writeIndex = newData;
-                    //     } else if (start === false) {
-                    //         newData.status === 'succeed' && newData.epc === undefined ? start = true : start = false;
-                    //     }
-                    // });
-
-                    //报错的时候
-                    // process.stderr.on('data', (err) => {
-                    //     console.log(err);
-                    //     this.$message.error('设备故障请重新插拔!插入后请重新打开');
-                    //     start = true;
-                    //     this.$refs.dialogModify.hide();
-                    //     killProcess();
-                    // });
-
-                    //退出的时候
-                    // process.on('exit', (code) => {
-                    //     if (start === false) {
-                    //         this.$message.error('设备未插入或串口号错误,插入后请重新打开');
-                    //         this.$refs.dialogModify.hide();
-                    //     }
-                    //     console.log(`子进程退出，退出码 ${code}`);
-                    // });
-                });
             },
             black(data) {
                 // this.refetch()
@@ -410,7 +307,7 @@
 <style lang="scss" scoped>
     .el-card {
         border: none !important;
-        font-size: 0.0833rem;
+        font-size: 16px;
     }
     
     // 可调整
@@ -421,7 +318,13 @@
     // ._textBt {
     //     font-size: 0.0833rem !important;
     // }
-    
+    .el-checkbox {
+        /deep/ .el-checkbox__label {
+            font-size: 16px;
+            color: #2f2f76;
+            font-family: sans-serif
+        }
+    }
     .pattern-box {
         display: flex;
         align-items: center;
