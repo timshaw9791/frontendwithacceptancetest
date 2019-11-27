@@ -86,6 +86,7 @@
                 this.typeCountermeasure(this.table.tableType)
             },
             typeCountermeasure(data) {
+                console.log(data);
                 switch (data) {
                     case 'All':
                         this.table.height = '3.78125rem';
