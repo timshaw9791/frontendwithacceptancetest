@@ -53,11 +53,11 @@
                             <text-button :iconClass="'取消1'" :dataTest="'disable'" v-if="status.buttonDisable" :havePoint="false"
                                          :buttonName="' '"></text-button>
                             <text-button :iconClass="'确定1'" :dataTest="'disable'" v-if="status.buttonDisable" :havePoint="false"
-                                         :buttonName="' '"></text-button>
+                                         :buttonName="' '" style="margin-left: 0.0521rem"></text-button>
                             <text-button :iconClass="'取消'" :dataTest="'取消_icon'" v-if="!status.buttonDisable" :buttonName="' '"
                                          @click="modifyStock('result')"></text-button>
                             <text-button :iconClass="'确定'" :dataTest="'确定_icon'" v-if="!status.buttonDisable" :buttonName="' '"
-                                         @click="modifyStock('modify')"></text-button>
+                                         @click="modifyStock('modify')" style="margin-left: 0.0521rem"></text-button>
                         </div>
                     </div>
                 </div>
@@ -86,7 +86,7 @@
         components: {s_search, textButton, serviceDialog, genreOrCategory, safetyTable, tips},
         data() {
             return {
-                unallocated:'',
+                filterText:'',
                 form: {},
                 table: {
                     tableType: 'genre',
@@ -121,7 +121,6 @@
         },
         created() {
             this.getGenreAll()
-            // this.rowDrop()
         },
         watch: {
             filterText(val) {
@@ -135,53 +134,9 @@
             }
         },
         methods: {
-            // test(){
-            //     let rfids='121212,232343',serials='1212,1212',equip={
-            //         "charge": true,
-            //         "chargeTime": 0,
-            //         "equipArg": {
-            //             "alphabetic": "string",
-            //             "categoryId": "string",
-            //             "chargeCycle": 0,
-            //             "creatTime": 0,
-            //             "id": "string",
-            //             "image": "string",
-            //             "model": "string",
-            //             "name": "string",
-            //             "pdf": "string",
-            //             "shelfLife": 0,
-            //             "supplier": {
-            //                 "creatTime": 0,
-            //                 "id": "string",
-            //                 "name": "string",
-            //                 "person": "string",
-            //                 "phone": "string",
-            //                 "updateTime": 0
-            //             },
-            //             "updateTime": 0,
-            //             "upkeepCycle": 0,
-            //             "video": "string"
-            //         },
-            //         "keep": true,
-            //         "keepTime": 0,
-            //         "location": {
-            //             "creatTime": 0,
-            //             "floor": "string",
-            //             "id": "string",
-            //             "number": "string",
-            //             "section": "string",
-            //             "surface": "A",
-            //             "updateTime": 0
-            //         },
-            //         "price": 0,
-            //         "productDate": 0,
-            //         "repairTime": 0,
-            //         "updateTime": 0
-            //     }
-            //     inHouse(rfids,serials,equip).then(res=>{
-            //
-            //     })
-            // },
+            init(){
+                this.handleNodeClick(this.tree.treeData[0]);
+            },
             distributionClick(){
                 this.status.buttonDisable=!this.status.buttonDisable;
                 this.status.distribution=!this.status.buttonDisable;
@@ -278,7 +233,7 @@
                 this.table.tableData.forEach(item => {
                     count = count + item.count
                 });
-                this.table.totalCount = count + '\xa0\xa0{件}'
+                this.table.totalCount = count + '\xa0\xa0(件)'
             },
             refetch() {
                 this.getGenreAll();
@@ -337,6 +292,9 @@
                 deleteGenreById(this.tree.currentNode.id).then(res => {
                     this.getGenreAll();
                     this.$refs.deleteGenre.hide();
+                }).catch(err=>{
+                    this.$message.error(err.response.data.message);
+                    this.$refs.deleteGenre.hide();
                 })
             },
             deleteGenre() {
@@ -351,7 +309,10 @@
                         item.categorySet.forEach(item => {
                             item.click = false;
                         })
-                    })
+                    });
+                    setTimeout(()=>{
+                        this.init()
+                    },50)
                 })
             },
             getSearch(data) {
@@ -443,7 +404,10 @@
         align-items: center;
 
     }
-
+    /deep/ .el-table-column--selection .cell {
+         padding-left: 0.0821rem;
+         padding-right: 0rem;
+    }
     /deep/ .el-tree-node__expand-icon.expanded {
         /*-webkit-transform: rotate(0deg);*/
         /*transform: rotate(0deg);*/
@@ -498,6 +462,7 @@
         border-bottom: 0.0052rem solid rgba(112, 112, 112, 0.13);
         display: flex;
         padding-right: 0.1667rem;
+        color: #2F2F76FF!important;
         align-items: center;
         justify-content: space-between;
         padding-left: 0.34375rem;
