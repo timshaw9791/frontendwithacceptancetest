@@ -13,6 +13,26 @@ export function findrepairingequips() {
         method: 'get',
     })
 }
+export function repairEquipMaintain(rfids,state) {
+    return request({
+        url: `/equipMaintain/repair?rfids=${rfids}&&state=${state}`,
+        method: 'post',
+    })
+}
+export function findByRfids(rfids) {
+    return request({
+        url: `/equip/findByRfids?rfids=${rfids}`,
+        method: 'get',
+    })
+}
+export function upkeep(rfids,state) {
+    return request({
+        url: `/equipMaintain/upkeep?rfids=${rfids}&&state=${state}`,
+        method: 'get',
+    })
+}
+
+
 // export function maintainEquipApplyOrders(params) {
 //     return request({
 //         url: "/maintain-equip-apply-orders",
@@ -35,13 +55,13 @@ export function findrepairingEquips() {
     })
 }
 
-export function equipsMaintain(data) {
-    return request({
-        url: "/equips/maintain",
-        method: "PUT",
-        data
-    })
-}
+// export function equipsMaintain(data) {
+//     return request({
+//         url: "/equips/maintain",
+//         method: "PUT",
+//         data
+//     })
+// }
 
 /* 维修、保养装备归还 */
 export function equipsReturn(data) {

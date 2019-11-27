@@ -14,16 +14,6 @@
                         <svg-icon icon-class="批量"/>
                         结束保养
                     </el-button>
-                    <!--<div class="_buttons">-->
-                    <!--<BosInput-->
-                    <!--v-if="type==='需要保养'"-->
-                    <!--placeholder="rfid/装备/序号/编号"-->
-                    <!--suffix="el-icon-search"-->
-                    <!--v-model="inquire"-->
-                    <!--:wrapforlike="false"-->
-                    <!--style=" width:285px;"-->
-                    <!--&gt;</BosInput>-->
-                    <!--</div>-->
                 </tabs>
                 <div v-if="show" class="maintenance_body">
                     <div class="maintenance_body_table_box">
@@ -146,28 +136,28 @@
 
                 <right :batch="batch" @cancel="cancel" @tobatch="change" v-if="!show"></right>
                 <servicedialog title="开始保养装备清单" ref="maintenanceDialog" :width="'4.151rem'" @cancel="cancel"
-                               @confirm="repairPush">
+                               @confirm="repairPush(true)">
                     <div class="maintenance_start_table">
                         <div class="maintenance__start_table_head">
                             {{`本次保养装备合计：${equipMaintenance}(件)`}}
                         </div>
                         <el-table :data="dialogList" max-height="2.7917rem">
-                            <bos-table-column lable="装备名称" field="name"></bos-table-column>
-                            <bos-table-column lable="装备型号" field="model"></bos-table-column>
+                            <bos-table-column lable="装备名称" field="equipName"></bos-table-column>
+                            <bos-table-column lable="装备型号" field="equipModel"></bos-table-column>
                             <bos-table-column lable="待保养/本次保养"
-                                              :filter="(row)=>row.inHouseCount+'/'+row.receiveHouseCount"
+                                              :filter="(row)=>row.equipCount+'/'+row.equipNowCount"
                                               :align="'left'"></bos-table-column>
                         </el-table>
                     </div>
                 </servicedialog>
                 <servicedialog title="结束维修装备清单" ref="maintenanceEndDialog" :width="'4.7552rem'" @cancel="cancel"
-                               @confirm="repairPush">
+                               @confirm="repairPush(false)">
                     <div class="maintenance_end_table">
                         <el-table :data="dialogList" max-height="2.7865rem">
-                            <bos-table-column lable="装备名称" field="name"></bos-table-column>
-                            <bos-table-column lable="装备型号" field="model"></bos-table-column>
+                            <bos-table-column lable="装备名称" field="item.equipArg.name"></bos-table-column>
+                            <bos-table-column lable="装备型号" field="item.equipArg.model"></bos-table-column>
                             <bos-table-column lable="装备位置"
-                                              :filter="(row)=>surface(row)"></bos-table-column>
+                                              :filter="(row)=>surface(row.item.location)"></bos-table-column>
                             <bos-table-column lable="装备件数" field="Number"></bos-table-column>
                         </el-table>
                     </div>
@@ -187,11 +177,10 @@
     import serviceDialog from "components/base/serviceDialog";
     import {transformMixin} from "common/js/transformMixin";
     import {getNeedUpkeep, findneedkeepEquips} from "api/needs";
-    import {equipsUpkeep} from "api/operation"
+    import {upkeep,findByRfids} from "api/operation"
 
     var _ = require("lodash");
-    import {start, killProcess} from "common/js/rfidReader"
-
+    import {start, killProcess,modifyFileName,handheld} from "common/js/rfidReader"
     //const exec = window.require('child_process').exec;
     //const spawn = window.require('child_process').spawn;
     // import {killProcess} from "common/js/kill";
@@ -205,7 +194,7 @@
                 batch: false, // 是否显示多选框(正在保养)
                 show: true,
                 title: "",
-                equipMaintenance:'',
+                equipMaintenance:0,
                 dialogList: [],
                 equipList: [], // 保存确认保养的装备id
                 param: {
@@ -230,12 +219,41 @@
 
         methods: {
             batchstorage() {
-                this.$refs.maintenanceEndDialog.show();
-                this.batch = !this.batch;
+                // this.batch = !this.batch;
+                this.dialogList = [];
+                modifyFileName('return');
+                handheld((err) => this.$message.error(err)).then((data) => {
+                    let json = JSON.parse(data);
+                    this.rfids=json.rfid;
+                    findByRfids(this.rfids).then(res=>{
+                        this.classify(res);
+                        this.$refs.maintenanceEndDialog.show();
+                    });
+                });
+            },
+            classify(data){
+                let dialogList=[];
+                data.forEach(item=>{
+                    if(dialogList.length===0){
+                        dialogList.push({item:item,number:1});
+                    }else {
+                        let flag=false;
+                        dialogList.forEach(dItem=>{
+                            if(!flag&&item.equipArg.name===dItem.item.equipArg.name&&item.equipArg.model===dItem.item.equipArg.model
+                                &&item.location.floor===dItem.item.location.floor&&item.location.number===dItem.item.location.number
+                                &&item.location.section===dItem.item.location.section&&item.location.surface===dItem.item.location.surface){
+                                dItem.number++;
+                                flag=true
+                            }
+                        });
+                        if(!flag){
+                            dialogList.push({item:item,number:1});
+                        }
+                    }
+                });
+                this.dialogList=dialogList;
             },
             selected(data) {
-                console.log("触发到我了")
-                console.log(data);
                 this.type = data;
                 if (data === "需要保养") {
                     this.show = true;
@@ -319,17 +337,25 @@
             cancel() {
 
             },
-            repairPush() {
-
+            repairPush(Bool) {
+                upkeep(this.rfids,Bool).then(res => {
+                    this.$message.success('操作成功')
+                })
             },
             /* 显示具体的保养列表 */
             maintenanceShow() {
-                this.maintenance.list = this.list.map(item => {
-                    // -1为初始 无显示， 1为勾， 0为感叹号
-                    this.$set(item, "rfidConfirm", -1); // 对返回对象进行响应式属性添加
-                    return item;
+                this.dialogList = [];
+                modifyFileName('keep');
+                handheld((err) => this.$message.error(err)).then((data) => {
+                    this.dialogList=JSON.parse(data);
+                    this.equipMaintenance=0;
+                    this.dialogList.forEach(item=>{
+                        this.equipMaintenance+=item.equipNowCount;
+                        this.rfids=[...this.rfids,...item.rfids];
+                    });
+                    this.$refs.maintenanceDialog.show();
                 });
-                this.$refs.maintenanceDialog.show();
+
 
                 // start("java -jar scan.jar", (data) => {
                 //         data = data.replace(/[\r\n]/g, "") // 扫描值带有 "%0A" 后缀
@@ -422,23 +448,22 @@
                 this.$refs.dialogButton.hide();
             },
             change() {
-
                 this.batch = !this.batch
             },
             /* 确认保养 */
-            submit() {
-                if (0 in this.equipList) {
-                    equipsUpkeep(this.equipList).then(res => {
-                        this.$refs.maintenanceDialog.hide();
-                        this.$message.success("保养成功");
-                        this.getList();
-                        this.equipList = [];
-                        killProcess(this.process.pid)
-                    })
-                } else {
-                    this.$message.error("未选择装备!");
-                }
-            },
+            // submit() {
+            //     if (0 in this.equipList) {
+            //         equipsUpkeep(this.equipList).then(res => {
+            //             this.$refs.maintenanceDialog.hide();
+            //             this.$message.success("保养成功");
+            //             this.getList();
+            //             this.equipList = [];
+            //             killProcess(this.process.pid)
+            //         })
+            //     } else {
+            //         this.$message.error("未选择装备!");
+            //     }
+            // },
             single(row) {
                 this.$refs.dialogButton.show();
                 this.equipList.push(row.equip.id);

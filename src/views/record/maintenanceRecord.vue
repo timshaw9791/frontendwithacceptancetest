@@ -77,7 +77,7 @@
         methods:{
             clickTableCloum(table) {
                 let data = table.row;
-                this.infolist = data
+                this.infolist = data;
                 this.show = false
             },
             

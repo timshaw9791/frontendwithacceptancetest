@@ -242,12 +242,12 @@ export const asyncRouterMap = [
                 component: _import('record/chargingRecord'),
                 meta: {title: '充电记录', roles: ['ADMINISTRATOR']},
             },
-            {
-                path: 'maintenanceRecord',
-                name: 'maintenanceRecord',
-                component: _import('record/maintenanceRecord'),
-                meta: {title: '保养记录', roles: ['ADMINISTRATOR']},
-            },
+            // {
+            //     path: 'maintenanceRecord',
+            //     name: 'maintenanceRecord',
+            //     component: _import('record/maintenanceRecord'),
+            //     meta: {title: '保养记录', roles: ['ADMINISTRATOR']},
+            // },
             {
                 path: 'serviceRecord',
                 name: 'serviceRecord',
