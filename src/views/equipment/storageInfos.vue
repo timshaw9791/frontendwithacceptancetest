@@ -414,12 +414,12 @@
                             rfids: rfidList,
                             serials: serialList
                         }, requestBody, (state, res) => {
+                            // 关闭硬件
                             killProcess(this.pid)
                             this.pid = ''
                             this.hardwareOpen = false
                             this.$message.success("入库成功")
-                            this.$emit('black')
-                            // 关闭硬件
+                            this.$emit('black')  
                         })
                     }).catch(err => {
                         this.$message.error("未通过检验")

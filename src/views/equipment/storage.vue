@@ -253,9 +253,6 @@
         //         return this.getEntityListWithPagintor(api.getEquipList); //  graphql结合自定义组件的mixin方法 传入语句即可
         //     },
         // },
-        created() {
-            this.table.url = this.allURL
-        },
         // mixins: [formRulesMixin],
         computed: {
             authentication() {
