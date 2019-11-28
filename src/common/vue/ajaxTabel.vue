@@ -30,6 +30,10 @@
             tableFlag:{
                 type:Boolean,
                 default:true
+            },
+            otherParams: {
+                type: Boolean,
+                default: false
             }
         },
         watch:{
@@ -67,8 +71,8 @@
                 let url=baseURL+this.table.url;
                 let paramskey={page:this.paginator.page,size: this.paginator.size,search:this.table.search, direction: "DESC",properties: "updateTime"};
                 let params={};
-                if(this.table.params!=null){
-                    params={...paramskey,...this.table.params};
+                if(this.otherParams){
+                    params={...paramskey,...{abnormal: this.table.abnormal}};
                 }else {
                     params={...paramskey};
                 }

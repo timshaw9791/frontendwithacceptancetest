@@ -17,19 +17,19 @@
                     <BosInput
                             placeholder="操作人员"
                             suffix="el-icon-search"
-                            v-model="table.search"
+                            v-model="params.operator"
                             style="width:285px;">
 
                     </BosInput>
                 </div>
             </div>
-            <field-table :list="list" :labelList="table.labelList" :havePage="false"
+            <field-table :list="list" :labelList="table.labelList"  :pageInfo="params" @tableCurrentPageChanged="changePage" 
                         :tableAction="table.tableAction"  @clickTableCloum="clickTableCloum" style="width: 100%">
             </field-table>
         </div>
         
         <!-- <r_video ref="recordVideo" :src="address"></r_video> -->
-        <inventoryinfo :infolist="infolist" :show="show"></inventoryinfo>
+        <inventoryinfo :overview="infolist" :show="show"></inventoryinfo>
 
     </div>
 </template>
@@ -62,11 +62,22 @@
                         label:'详情',
                         button:[{name:'查看',type:'primary'}]
                     },
-                    time:''
                 },
+                time:'',
                 list:[],
                 infolist:[],
-                show:true
+                show:true,
+                params:{
+                    endTime:'',
+                    startTime:'',
+                    operator:'',
+                    properties:'create_time',
+                    direction:'DESC',
+                    page:1,
+                    size:10,
+                    totalPages: 5,
+                    totalElements: 5
+                }
             }
         },
         methods:{
@@ -81,46 +92,42 @@
             },
             
             getList(){
-                findStartTimeAndEndTimeBetweenAndOperatorLike().then(res=>{
+                findStartTimeAndEndTimeBetweenAndOperatorLike(this.params).then(res=>{
                     this.list=[];
                     console.log("111")
-                    this.list=res;
+                    this.list=res.content;
                     console.log("res",res)
+                    this.params.totalPages = res.totalPages
+                    this.params.totalElements = res.totalElements
                 })
             },
             black(){
                 this.show = true
                 console.log("show",this.show)
+            },
+            changePage(data){
+                this.params.page=data
+                this.getList()
             }
         },
         created(){
             this.getList()
         },
         watch:{
-            'table.search':{
+            'params.operator':{
                 handler(data){
-                    if(data){
-                        let params = {operator:data}
-                        findStartTimeAndEndTimeBetweenAndOperatorLike(params).then((res)=>{
-                            this.list=res
-                        })
-                    }else{
-                        this.getList()
-                    }
-                    
+                    this.getList()
                 }
             },
             'table.time':{
                 handler(data){
-                    data[0] = data[0].replace(new RegExp("-","gm"),"/");
-                    let starttime = (new Date(data[0])).getTime();
-                     data[1] = data[1].replace(new RegExp("-","gm"),"/");
-                    let endtime = (new Date(data[1])).getTime();
-                    let params = {endTime:endtime,startTime:starttime}
-                    console.log("params",params)
-                    findStartTimeAndEndTimeBetweenAndOperatorLike(params).then((res)=>{
-                        this.list=JSON.parse(JSON.stringify(res.content))
-                    })
+                    if(data){
+                        data[0] = data[0].replace(new RegExp("-","gm"),"/");
+                        this.params.startTime = (new Date(data[0])).getTime();
+                        data[1] = data[1].replace(new RegExp("-","gm"),"/");
+                        this.params.endTime = (new Date(data[1])).getTime()+24*60*60*1000-1
+                    }
+                    this.getList()
                 }
             }
         }

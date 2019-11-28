@@ -30,8 +30,7 @@
             </div>
 
             <!--list列表-->
-            <r_label :table="table" ref="lable" @clickTable="clickTable"
-                     ></r_label>
+            <r_label :table="table" ref="lable" @clickTable="clickTable" :otherParams="true"></r_label>
             <!--<el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"-->
                       <!--fit>-->
                 <!--<bos-table-column lable="RFID" field="rfid"></bos-table-column>-->
@@ -175,11 +174,7 @@
             },
             // 是否显示异常单
             changeState(state) {
-                if(state) {
-                    this.table.url = this.abnorlmalURL
-                } else {
-                    this.table.url = this.allURL
-                }
+                this.table.abnormal = state
             },
             black(data) {
                 // this.refetch()
