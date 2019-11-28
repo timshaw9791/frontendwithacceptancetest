@@ -12,7 +12,7 @@
     import {baseURL} from "../../api/config";
     import request from 'common/js/request'
     export default {
-        name: "labels",
+        name: "tabels",
         data(){
             return{
                 list:[],

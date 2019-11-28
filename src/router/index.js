@@ -105,6 +105,12 @@ export const asyncRouterMap = [
         meta: {title: '流程管理', icon: '流程管理', roles: ['ADMINISTRATOR']},
         children: [
             {
+                path: 'myProcess',
+                name: 'myProcess',
+                component: _import('process/myProcess'),
+                meta: {title: '我的流程'},
+            },
+            {
                 path: 'scrapped',
                 name: 'scrapped',
                 component: _import('process/scrapped'),

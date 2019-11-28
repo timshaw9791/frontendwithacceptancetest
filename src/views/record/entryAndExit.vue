@@ -12,7 +12,7 @@
     import myHeader from 'components/base/header/header'
     import r_search from 'components/record/recordSearch'
     import r_video from 'components/record/recordDialog'
-    import r_label from 'common/vue/ajaxLabel'
+    import r_label from 'common/vue/ajaxTabel'
     import record from 'gql/record.gql'
     import {baseURL} from "../../api/config";
 

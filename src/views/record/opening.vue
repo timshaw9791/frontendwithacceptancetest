@@ -33,7 +33,7 @@
     import myHeader from 'components/base/header/header'
     import r_search from 'components/record/recordSearch'
     import r_video from 'components/record/recordDialog'
-    import r_label from 'common/vue/ajaxLabel'
+    import r_label from 'common/vue/ajaxTabel'
     import {baseURL} from "../../api/config";
     import {findByOperatorName} from "api/openrecord"
 

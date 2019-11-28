@@ -145,7 +145,7 @@
                             <bos-table-column lable="装备名称" field="equipName"></bos-table-column>
                             <bos-table-column lable="装备型号" field="equipModel"></bos-table-column>
                             <bos-table-column lable="待保养/本次保养"
-                                              :filter="(row)=>row.equipCount+'/'+row.equipNowCount"
+                                              :filter="(row)=>row.equipNowCount+'/'+row.equipCount"
                                               :align="'left'"></bos-table-column>
                         </el-table>
                     </div>

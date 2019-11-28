@@ -98,7 +98,6 @@
     .actionButton{
         width:70px;
         height:32px;
-
         opacity:1;
         color: white;
         border-radius:4px;

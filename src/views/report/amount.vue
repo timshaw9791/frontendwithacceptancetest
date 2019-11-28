@@ -116,7 +116,7 @@
                         this.table.tableTitle = `装备小类：\xa0\xa0${this.current.name}`;
                         this.table.placeholder = '名称/供应商';
                         this.$set(this.table, 'labelList', [
-                            {lable: '装备名称', field: 'equipName'},
+                            {lable: '装备名称', field: 'name'},
                             {lable: '装备型号', field: 'model'},
                             {lable: '装备总数', field: 'totality'},
                             {lable: '可用数量', field: 'inHouseCount'},

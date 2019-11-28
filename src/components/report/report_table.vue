@@ -64,7 +64,6 @@
         },
         methods: {
             getSearch(data) {
-                console.log('getSearch',data);
                this.$set(this.table.params,'search',data);
             },
             emptySearch(){
@@ -88,7 +87,6 @@
 
     /*/deep/ .el-input__inner {*/
         /*text-align: center;*/
-
     /*}*/
     /deep/ .el-table-column--selection{
         margin-left: 1.0417rem;
