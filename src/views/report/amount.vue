@@ -118,7 +118,7 @@
                         this.$set(this.table, 'labelList', [
                             {lable: '装备名称', field: 'equipName'},
                             {lable: '装备型号', field: 'model'},
-                            {lable: '装备总数', field: 'totalCount'},
+                            {lable: '装备总数', field: 'totality'},
                             {lable: '可用数量', field: 'inHouseCount'},
                             {lable: '领用数量', field: 'receiveUseCount'},
                             {lable: '装备总价(元)', field: 'totalPrice',filter: this.filterTotalPrice},
