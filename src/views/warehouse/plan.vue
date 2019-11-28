@@ -441,7 +441,6 @@
             }
 
             .list {
-                border: 1px solid black;
                 overflow-x: hidden;
                 overflow-y: auto;
                 // .scroll-bar {
