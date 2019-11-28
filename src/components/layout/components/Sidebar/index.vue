@@ -31,6 +31,7 @@
     import {mapGetters} from 'vuex'
     import SidebarItem from './SidebarItem'
     import topInfo from './personal'
+    import { killProcessSync } from "common/js/rfidReader"
 
     // const cmdPath = 'C:\\Users\\Administrator';
     // const exec = window.require('child_process').exec;
@@ -39,6 +40,7 @@
         components: {SidebarItem, topInfo},
         methods: {
             windowClose() {
+                killProcessSync()
                 // const process = exec(`java -jar SendCamSignal.jar ${-1}`, {cwd: cmdPath});
                 // process.stderr.on('data', (err) => {
                 //
