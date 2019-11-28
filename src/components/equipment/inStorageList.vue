@@ -37,8 +37,12 @@
                 <bos-table-column lable="装备数量" field="count"></bos-table-column>
               </el-table>
             </div>
-            <div class="storage-list-footer">
-              <el-button type="primary" @click="submit" :disable="disable" v-if="title.includes('装备')">提交</el-button>
+            <div class="storage-list-footer" v-if="title.includes('装备')">
+              <el-button type="primary" @click="submit" :disable="disable" >提交</el-button>
+            </div>
+            <div class="storage-list-abnormal">
+              <div>备注：装备在运输过程中丢失</div>
+              <div>本次入库缺少： [充电警棍 SHD-874] 1件，[充电警棍 DHG-235] 1件</div>
             </div>
         </el-card> 
     </div>
@@ -131,9 +135,7 @@ import { start, killProcess, handheld } from 'common/js/rfidReader'
                 // 关闭硬件
                 killProcess(this.pid)
                 this.pid = ''
-                setTimeout(() => {
-                  this.$emit('black')
-                }, 3000)
+                this.$emit('black')
               })
             },
             getEquipInfo(rfid, isArray=false) {
@@ -221,7 +223,7 @@ import { start, killProcess, handheld } from 'common/js/rfidReader'
       .storage-list-body {
         width: 5.0781rem;
         min-width: 950px;
-        margin: 70px auto;
+        margin: 70px auto 20px auto;
 
         .list-info {
           display: flex;
@@ -254,8 +256,17 @@ import { start, killProcess, handheld } from 'common/js/rfidReader'
     }
 
     .storage-list-footer {
-      margin-top: -10px;
       text-align: center;
+    }
+
+    .storage-list-abnormal {
+      width: 5.0781rem;
+      min-width: 950px;
+      margin: -10px auto;
+      font-size:16px;
+      font-family:PingFang SC;
+      font-weight:400;
+      color: red;
     }
 
     .el-card:not(:nth-last-child(2)) {

@@ -240,7 +240,7 @@
                 },
                 zbForm: {
                     numberL: '', // 架体编号
-                    surfaceL: 'A面', // 架体AB面
+                    surfaceL: 'A', // 架体AB面
                     sectionL: '', // 架体节号
                     extendEdit: '', // 架体层号
                     productDateQ: '', // 生产日期
@@ -329,7 +329,7 @@
                 })
                 this.zbForm = {
                     numberL: '', 
-                    surfaceL: 'A面',
+                    surfaceL: 'A',
                     sectionL: '', 
                     extendEdit: '', 
                     productDateQ: '', 
@@ -405,7 +405,7 @@
                     serialList = [];
                     this.list.forEach(equip => {
                         rfidList.push(equip.rfid)
-                        serialList.push(equip.serial)
+                        serialList.push(equip.serial==''?'""':equip.serial)
                     })
                     console.log(rfidList);
                     console.log(serialList);
@@ -414,12 +414,12 @@
                             rfids: rfidList,
                             serials: serialList
                         }, requestBody, (state, res) => {
+                            // 关闭硬件
                             killProcess(this.pid)
                             this.pid = ''
                             this.hardwareOpen = false
                             this.$message.success("入库成功")
-                            this.$emit('black')
-                            // 关闭硬件
+                            this.$emit('black')  
                         })
                     }).catch(err => {
                         this.$message.error("未通过检验")
