@@ -23,25 +23,25 @@
     </div>
     <div>
         <el-table :data="equipList" fit highlight-current-row height="3.55rem" v-if="!viewStatus.insFlag">
-            <bos-table-column lable="装备名称" field="name" :width="250"></bos-table-column>
+            <bos-table-column lable="装备名称" field="name" :width="250" align="center"></bos-table-column>
             <bos-table-column lable="装备型号" field="model" :width="250"></bos-table-column>
             <!-- <teach-table-column lable="教学视频" field="video" @isvideo="isvideo" @videoname="videoname"></teach-table-column>
             <teach-table-column lable="教学文档" field="pdf" @ispdf="ispdf"></teach-table-column> -->
-              <el-table-column label="教学视频" align="center"  min-width="'3.75rem'" >
+              <el-table-column label="教学视频" align="center"  min-width="'3.75rem'" fit >
                 <template slot-scope="scope">
                 <div v-for="item in changeArr(scope.row.video,true)" @click="item=='暂无视频'?'':isvideo(item,scope.row)" :class="(item=='暂无视频')?classA:classB" >
                     <div >
-                    {{item}}
+                    {{item|ellipsis}}
                 </div>
                 </div>
                 </template>
             </el-table-column>
 
-            <el-table-column label="教学文档" align="center"  min-width="'3.75rem'" >
+            <el-table-column label="教学文档" align="center"  min-width="'3.75rem'" fit>
                 <template slot-scope="scope">
                 <div v-for="item in changeArr(scope.row.pdf,false)" @click="item=='暂无文档'?'':ispdf(item,scope.row)" :class="(item=='暂无文档')?classA:classB" >
                     <div>
-                    {{item}}
+                    {{item|ellipsis}}
                 </div>
                 </div>
                 </template>
@@ -86,7 +86,7 @@
                 <div class=video_box>
                     <div  v-for="(item,index) in equipModel.video" class="video">
                        <div @click="delVideo(index)" :data-test="item+'_close'">
-                        <svg-icon icon-class="关闭1" style="width:1.25rem;height:1.25rem; float:right" />
+                        <svg-icon icon-class="关闭1" style="width:20px;height:20px; float:right" />
                     </div>
                     <div>
                         <img src="@/common/images/电视-视频缩略.png" style="width:50px;height:50px;"/>
@@ -156,6 +156,15 @@ export default {
         serviceDialog
 
     },
+    filters: {
+    ellipsis (value) {
+      if (!value) return ''
+      if (value.length > 4) {
+        return value.slice(0,4) + '...'
+      }
+      return value
+    }
+  },
     // mixins: [fetchMixin],
     data() {
         return {
@@ -209,8 +218,7 @@ export default {
         },
         changeArr(data,flag)
         {
-            console.log(data)
-            console.log(flag)
+
             let videoList=[]
             videoList=JSON.parse(JSON.stringify(data));
             if(flag)
@@ -262,8 +270,7 @@ export default {
                    if(this.equipName==item.name)
                    {
                        this.modelList.push(item)
-                       console.log("this.modelList");
-                       console.log(this.modelList);
+
                    }
                })
             },
@@ -339,22 +346,19 @@ export default {
             this.condition.push(data);
         },
         delVideo(index){
-        console.log("删除成功")
+
         this.videoNum=this.equipModel.video.length;
         this.equipModel.video.splice(index,1)
         
         },
         delPdf(index){
-        
-        console.log("删除成功")
+        this.$refs.fileVideo.value=''
         this.pdfNum=this.equipModel.pdf.length;
         this.equipModel.pdf.splice(index,1)
         this.getListGql('')
 
         },
         isvideo(name,data) {
-            console.log("data")
-            console.log(data)
             this.insData = {
                 key: name,
                 name: name,
@@ -366,14 +370,12 @@ export default {
             this.condition.push(data);
         },
         ispdf(name,data) {
-            console.log(data)
             this.insData = {
                 key: name,
                 name: name,
                 typeName: 'PDF'
             };
             this.title=data.name+data.model
-            console.log(this.title)
             this.viewStatus.rMFlag = false;
             this.viewStatus.insFlag = true;
             this.condition.push(data);
@@ -385,8 +387,7 @@ export default {
             getEquipArgs({
                 name: search
             }).then(res => {
-                console.log("res")
-                console.log(res)
+
                   res.content.forEach(item=>{
                       
                         let flag=false;
@@ -428,14 +429,23 @@ export default {
         },
         videoUp(data) {
                 this.$refs.fileVideo.click();
+                console.log("this.$refs.fileVideo.files")
+                console.log(this.$refs.fileVideo.files)
         },
         videoFileChange(){
+                console.log("this.$refs.fileVideo.files")
+                console.log(this.$refs.fileVideo.files)
                 let files = this.$refs.fileVideo.files[0];
+                var fileSize = (files.size / 1024).toFixed(0)
+                var size=10240
+                if(fileSize<=size)
+                {
                 let a=files.name.lastIndexOf(".");
                 let b=files.name.length;
                 let c=files.name.substring(a,b)
                 let fileFormData = new FormData();
                 fileFormData.append('file', files,files.name);
+
                 let requestConfig = {
                     headers: {
                         'Content-Type': 'multipart/form-data'
@@ -452,7 +462,7 @@ export default {
                 });
                 if(c=='.mp4')
                 {
-                if(this.videoNum==3)
+                if(this.equipModel.video.length>3)
                 {
                     this.$message.error("视频上传已达最大值")
                 }
@@ -460,7 +470,9 @@ export default {
                      instance.post(videoUpUrl, fileFormData, requestConfig).then(res => {
                     this.videoNum++
                     this.equipModel.video.push(files.name)
+                   
                     loading.close();
+
                 }).catch(err => {
                     loading.close();
                     this.$message.error('上传失败');
@@ -470,12 +482,14 @@ export default {
                 }
                 if(c=='.pdf')
                 {
-                    if(this.pdfNum==3)
+                    if(this.equipModel.pdf.length>3)
                     {
                         this.$message.error("文档上传已达最大值")
                     }
                     else{
+                    
                      instance.post(pdfUpUrl, fileFormData, requestConfig).then(res => {
+                    
                     console.log("上传成功")
                     this.pdfNum++
                     this.equipModel.pdf.push(files.name)
@@ -488,7 +502,9 @@ export default {
                 });
                     }
                
-
+                }
+                }else{
+                    this.$message.error('文件应小于10MB');
                 }
                 
             },
@@ -515,8 +531,7 @@ export default {
                         },
                         data:newData
             }
-            console.log("config")
-            console.log(config)
+
             request(config).then(res => {
             this.$message.success("修改成功");
             this.$refs.editDialog.hide();
@@ -690,8 +705,9 @@ export default {
     }
 }
 .box{
+//   border:1px solid black;
   display: inline-block;
-  margin-left: 50px;
+//   margin-left: 50px;
   width:100px;
   height:22px;
   font-size:14px;
@@ -705,7 +721,7 @@ export default {
   .doc{
   display: inline-block;
   cursor: pointer;
-  margin-left: 50px;
+//   margin-left: 50px;
   width:100px;
   height:22px;
   font-size:14px;
