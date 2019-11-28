@@ -27,7 +27,7 @@ export function getHandheldPath(path) {
 
 
 /* 结束对应进程 */
-function killProcessSync() {
+export function killProcessSync() {
     return new Promise((resolve, reject) => {
         let newData = [];
         exec("jps", ["/L"], (err, data) => {
