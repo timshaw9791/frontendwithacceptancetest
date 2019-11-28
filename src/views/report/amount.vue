@@ -45,6 +45,7 @@
                     placeholder: '全部大类',
                     height: '3.78125rem',
                     params: {id: '', level: '', search: ''},
+                    info:''
                 },
                 computeTotal:{},
                 current: {}
@@ -166,12 +167,13 @@
                     inHouseCount+=item.inHouseCount;
                     receiveUseCount+=item.receiveUseCount;
                 });
+                this.table.info=`装备总数：${totalCount}可用数量：${inHouseCount}领用数量：${receiveUseCount}装备总价(元)：${totalPrice/100}`
                 this.computeTotal={
                     totalCount:totalCount,
                     totalPrice:totalPrice/100,
                     inHouseCount:inHouseCount,
                     receiveUseCount:receiveUseCount
-                }
+                };
             },
             toExport(){
                 console.log('toExport')

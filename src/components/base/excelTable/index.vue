@@ -17,7 +17,6 @@
         <td v-for="n in colspan">{{ item[tableHeader.lableList[n-1].filed] }}</td>
       </tr>
     </table>
-    <button @click="exportExcel">导出</button>
   </div>
 </template>
 <script>
