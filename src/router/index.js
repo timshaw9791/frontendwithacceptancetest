@@ -136,6 +136,12 @@ export const asyncRouterMap = [
                 component: _import('warehouse/plan'),
                 meta: {title: '预案管理'},
             },
+            {
+                path: 'noreturn',
+                name: 'warehouse/noreturn',
+                component: _import('warehouse/noReturn'),
+                meta: {title: '未归还'},
+            },
 
 
         ]

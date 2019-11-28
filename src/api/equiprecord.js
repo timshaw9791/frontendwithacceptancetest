@@ -15,3 +15,11 @@ export function findConsumableByName(data) {
         params: data
     })
 }
+
+export function findNoReturn(data) {
+    return request({
+        url: '/equipRecord/findByNameLikeOrOperatorLike',
+        method: 'get',
+        params: data
+    })
+}
