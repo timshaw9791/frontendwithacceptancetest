@@ -5,7 +5,7 @@
         </div>
         <div class="amount_body" data-test="main_box">
             <report_tree @clickNode="clickNode"></report_tree>
-            <report_table ref="table" :table="table" @export="toExport">
+            <report_table ref="table" :table="table">
                 <div class="table_header_box" v-if="table.tableType!=='All'&&table.tableType!==''&&computeTotal.receiveUseCount!==undefined">
                     <div class="table_header">
                         <div class="table_header_item"><span v-text="`装备总数：${computeTotal.totalCount}`"></span></div>
@@ -138,6 +138,8 @@
                     this.$set(this.table, 'list', res);
                     if(this.table.tableType!=='All'){
                         this.computeFunction(JSON.parse(JSON.stringify(this.table.list)))
+                    }else {
+                        this.table.info=''
                     }
 
                 })
@@ -167,7 +169,7 @@
                     inHouseCount+=item.inHouseCount;
                     receiveUseCount+=item.receiveUseCount;
                 });
-                this.table.info=`装备总数：${totalCount}可用数量：${inHouseCount}领用数量：${receiveUseCount}装备总价(元)：${totalPrice/100}`
+                this.table.info=`装备总数：${totalCount}可用数量：${inHouseCount}领用数量：${receiveUseCount}装备总价(元)：${totalPrice/100}`;
                 this.computeTotal={
                     totalCount:totalCount,
                     totalPrice:totalPrice/100,
@@ -175,9 +177,6 @@
                     receiveUseCount:receiveUseCount
                 };
             },
-            toExport(){
-                console.log('toExport')
-            }
             // distributionClick(){
             //     this.status.buttonDisable=!this.status.buttonDisable;
             //     this.status.distribution=!this.status.buttonDisable;
@@ -282,11 +281,13 @@
     .amount_box {
         font-size: 0.0833rem;
         text-align: center;
+        height: 4.6875rem;
+        width: 100%;
     }
     .table_header_box{
         height: 0.296875rem;
         width: 100%;
-        border-bottom: 1px solid rgba(112, 112, 112, 0.13);
+        border-bottom: 0.0052rem solid rgba(112, 112, 112, 0.13);
         /*padding-left: 0.1615rem;*/
         /*padding-right: 0.1615rem;*/
         display: flex;
@@ -309,7 +310,7 @@
         align-items: center;
         justify-content: left;
         padding-left: 0.09375rem;
-        border-bottom: 1px solid rgba(112, 112, 112, 0.13);
+        border-bottom: 0.0052rem solid rgba(112, 112, 112, 0.13);
         color: #707070;
     }
 

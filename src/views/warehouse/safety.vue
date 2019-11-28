@@ -343,6 +343,8 @@
     .safety_box {
         font-size: 0.0833rem;
         text-align: center;
+        height: 4.6875rem;
+        width: 100%;
     }
 
     .safety_box .safety_head {
