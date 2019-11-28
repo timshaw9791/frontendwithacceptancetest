@@ -1,376 +1,170 @@
 <template>
     <div class="overview">
-        <el-card shadow="never" :body-style="{ padding:'0.156rem'}" v-if="$store.getters.roles.includes('ADMINISTRATOR')">
-            <div slot="header">
-                <span class="_card-title">{{$route.meta.title}}</span>
+        <el-card shadow="never" :body-style="{ padding:'0.156rem'}">
+            <div class="topRemind">
+                <div class="remind-box" v-for="(item, i) in topRemindList" :key="i">
+                    <div class="count">{{ item.count }}</div>
+                    <div :class="{'tag': true, 'only-tag': item.count == undefined}">{{ item.tag }}</div>
+                </div>
             </div>
-            <div class="ov-content">
 
-                <div class="statistics">
-                    <div class="total">
-                        <div>在库总数<span>{{topList.inHouseCount}}</span></div>
-                        <div>出库总数<span>{{topList.outHouseCount}}</span></div>
+            
+        </el-card>
+        
+        <el-card  shadow="never" :body-style="{ padding:'0.156rem'}">
+            <div class="to-do">
+                <div class="title">待办事宜</div>
+                <div class="event-list">
+                    <div class="event-box" v-for="(event, i) in toDoList" :key="i">
+                        <div>{{ event.name }}</div>
+                        <div>{{ event.time }}</div>
                     </div>
-                    <div class="ss-content" v-for="(item,index) in topList.genreStatisticList" :key="index">
-                        <div class="title">
-                            {{item.name}}
+                </div>
+            </div>
+        </el-card>
+
+        <el-card shadow="never" :body-style="{ padding:'0.156rem'}">
+            <div class="inventory-statistics">
+                <div class="header">
+                    <div class="title">库存统计</div>
+                    <div class="sum-info">
+                        <div class="info-box">
+                            <div class="num">600</div>
+                            <div class="tag">领用总数</div>
                         </div>
-                        <div class="bulk" @click="gotoInfo('statistics',item.name)">
-                            <progress-circular :width="70" :strokeWidth="6"
-                                               :percentage="item.percentage"
-                                               color="#3B86FF">
-                                <div class="inside">
-                                    <span class="percentage">{{item.percentage}}%</span>
-                                    <span class="percentageName">出库</span>
-                                </div>
-                            </progress-circular>
-                            <div class="inside-info">
-                                <div class="sort">
-                                    <div class="icon icon-on"></div>
-                                    <div class="piece">在库 {{item.inHouseCount}}件</div>
-                                </div>
-                                <div class="sort">
-                                    <div class="icon icon-ok"></div>
-                                    <div class="piece">出库 {{item.outHouseCount}}件</div>
-                                </div>
+                        <svg-icon icon-class="领用总数" class="svg-icon"></svg-icon>
+                        <div class="info-box">
+                            <div class="num">600</div>
+                            <div class="tag">可用总数</div>
+                        </div>
+                        <svg-icon icon-class="可用总数" class="svg-icon"></svg-icon>
+                    </div>
+                </div>
+                <div class="body">
+                    <div class="item" v-for="(item, i) in inventoryList" :key="i">
+                        <progress-circular 
+                            :width="108" 
+                            :strokeWidth="8"
+                            :percentage="item.percentage"
+                            color="#3B86FF"
+                            style="margin: 0 auto">
+                            <div class="inside">
+                                <span>{{ item.percentage }}%</span>
+                                <span>领用</span>
+                            </div>
+                        </progress-circular>
+                        <div class="other-info">
+                            <div class="info">
+                                <div class="icon-white"></div>
+                                <div class="tip">可用数量 {{ item.available }}</div>
+                            </div>
+                            <div class="info">
+                                <div class="icon-blue"></div>
+                                <div class="tip">领用数量 {{ item.recive }}</div>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <div class="block">
-
-                    <div class="bk-style" v-for="(item,index) in contentList" :key="index+0.1">
-                        <div class="bk-top">
-                            <span>{{item.name}}</span>
-                        </div>
-                        <div class="bk-content">
-                            <el-scrollbar wrap-class="scroll-bar">
-                                <div class="scroll-bar">
-                                    <el-table :data="item.list" fit @row-click="gotoInfo">
-                                        <div v-if="index===0">
-                                            <bos-table-column lable="类型"
-                                                              remWidth="170px"
-                                                              :filter="(row)=>workType(row.type)"></bos-table-column>
-                                            <bos-table-column lable="编号" field="number"></bos-table-column>
-                                            <bos-table-column lable="状态"
-                                                              :filter="(row)=>workState(row.state)"></bos-table-column>
-                                        </div>
-                                        <div v-if="index===1">
-                                            <bos-table-column lable="倒计时"
-                                                              :filter="(row)=>`${row.day}天`"></bos-table-column>
-
-                                            <bos-table-column lable="名称" field="equipName"></bos-table-column>
-
-                                            <bos-table-column lable="装备序号" field="equipSerial"></bos-table-column>
-
-
-                                            <bos-table-column lable="类型" field="type"></bos-table-column>
-
-
-                                        </div>
-                                        <div v-if="index===2">
-                                            <bos-table-column lable="倒计时"
-                                                              :filter="(row)=>`${row.day}天`"></bos-table-column>
-
-                                            <bos-table-column lable="名称"
-                                                              field="equipArgInfo.equipName"></bos-table-column>
-
-                                            <bos-table-column lable="型号"
-                                                              field="equipArgInfo.equipModel"></bos-table-column>
-                                            <bos-table-column lable="数量" field="count"></bos-table-column>
-                                        </div>
-
-                                        <div v-if="index===3">
-                                            <bos-table-column lable="超时"
-                                                              :filter="(row)=>countdown1(row.receiveTime)"></bos-table-column>
-                                            <bos-table-column lable="名称" field="name"></bos-table-column>
-                                            <bos-table-column lable="型号" field="equipArg.model"></bos-table-column>
-                                        </div>
-                                    </el-table>
-                                </div>
-                            </el-scrollbar>
-                        </div>
-                    </div>
-
-
-                    <div class="bk-style">
-                        <div class="bk-top">
-                            <span>温/湿度</span>
-                        </div>
-                        <div class="bk-content center" @click="gotoInfo('surroundings')">
-                            <progress-circular :width="180" :strokeWidth="6" :percentage="100" color="#2F2F76"
-                                               style="cursor: pointer;">
-                                <div class="inside">
-                                    <div>当前温度</div>
-                                    <div>{{surroundings.temperature}}°</div>
-                                    <div>相对湿度:{{surroundings.humidity}}%</div>
-                                </div>
-                            </progress-circular>
-                        </div>
-                    </div>
-                    <div class="bk-style">
-                        <div class="bk-top">
-                            <span @click="gotoInfo('video')" style="cursor:pointer">视频监控</span>
-                        </div>
-                        <div class="bk-content">
-                            <video-player width="454px" height="248px" :videoID="1"></video-player>
-                        </div>
+                        <div class="item-type">{{ item.type }}</div>
                     </div>
                 </div>
             </div>
         </el-card>
-        <el-card shadow="never" :body-style="{ padding:'0.156rem'}" v-else>
-            正在注销!
-        </el-card>
-
-        <service-dialog ref="dialogMaturity" title="到期报废装备" width="60%" :button="false" :secondary="false">
-            <el-table :data="maturityList" fit>
-                <bos-table-column lable="RFID" field="rfid"></bos-table-column>
-                <bos-table-column lable="装备名称" field="equipArg.name"></bos-table-column>
-                <bos-table-column lable="装备型号" field="equipArg.model"></bos-table-column>
-                <bos-table-column lable="架体编号" field="location.number"></bos-table-column>
-                <bos-table-column lable="架体AB面" field="location.surface"></bos-table-column>
-                <bos-table-column lable="架体节号" field="location.section"></bos-table-column>
-                <bos-table-column lable="架体层号" field="location.floor"></bos-table-column>
-            </el-table>
-        </service-dialog>
-
     </div>
 </template>
 
 
 <script>
     import progressCircular from 'components/base/progressCircular'
-    import FlvPlayerVue from 'components/videoPlayer/FlvPlayer.vue';
-    import {temperatureValue} from "api/surroundings";
-    import {equipmentAmount, equipmentScrapped, equipmentCharging, getProcess} from "api/statistics";
-    import api from 'gql/home.gql'
-    import {transformMixin} from 'common/js/transformMixin'
-    import {formRulesMixin} from 'field/common/mixinComponent';
-    import {baseURL} from "api/config";
-    import serviceDialog from 'components/base/serviceDialog/index'
-    import {equipmentScrappedInfo} from "api/statistics";
-    import {getReceiveList} from 'api/overview'
-    // const cmdPath = 'C:\\Users\\Administrator';
-    // const exec = window.require('child_process').exec;
-    // const spawn = window.require('child_process').spawn;todo
-
+    // import FlvPlayerVue from 'components/videoPlayer/FlvPlayer.vue';
+    // import {temperatureValue} from "api/surroundings";
+    // import {equipmentAmount, equipmentScrapped, equipmentCharging, getProcess} from "api/statistics";
+    // import {transformMixin} from 'common/js/transformMixin'
+    // import {formRulesMixin} from 'field/common/mixinComponent';
+    // import {baseURL} from "api/config";
+    // import serviceDialog from 'components/base/serviceDialog/index'
+    // import {equipmentScrappedInfo} from "api/statistics";
+    // import {getReceiveList} from 'api/overview'
+    
     export default {
         data() {
             return {
-                list: [],
-                flag: false,
-                surroundings: {
-                    temperature: 0,
-                    humidity: 0,
-                }
-                ,
-                topList: [],
-                contentList:
-                    [{name: '调拨通知'}, {name: '保养/充电通知'}, {name: '到期报废提醒'}, {name: '未归还提醒'}],
-                videoTime: '',
-                maturityList: [],
+                topRemindList: [{
+                    count: 0,
+                    tag: "充电提醒"
+                },{
+                    count: 0,
+                    tag: "保养提醒"
+                },{
+                    count: 0,
+                    tag: "未归还提醒"
+                },{
+                    count: 0,
+                    tag: "到期报废提醒"
+                },{
+                    tag: "同步手持机"
+                }],
+                toDoList: [{
+                    name: "XXXXX流程申请-王小明",
+                    time: "2019-11-30"
+                },{
+                    name: "XXXXX流程申请-王小明",
+                    time: "2019-11-30"
+                },{
+                    name: "XXXXX流程申请-王小明",
+                    time: "2019-11-30"
+                },{
+                    name: "XXXXX流程申请-王小明",
+                    time: "2019-11-30"
+                },{
+                    name: "XXXXX流程申请-王小明",
+                    time: "2019-11-30"
+                },{
+                    name: "XXXXX流程申请-王小明",
+                    time: "2019-11-30"
+                }],
+                inventoryList: [{
+                    percentage: 45,
+                    available: 260,
+                    recive: 143,
+                    type: "警械类"
+                },
+                {
+                    percentage: 45,
+                    available: 260,
+                    recive: 143,
+                    type: "防护、防爆装备类"
+                },
+                {
+                    percentage: 45,
+                    available: 260,
+                    recive: 143,
+                    type: "观象、通信及照明器材类"
+                },
+                {
+                    percentage: 45,
+                    available: 260,
+                    recive: 143,
+                    type: "生活保障物资类"
+                },
+                {
+                    percentage: 45,
+                    available: 260,
+                    recive: 143,
+                    type: "抢险救援装备类"
+                },
+                {
+                    percentage: 45,
+                    available: 260,
+                    recive: 143,
+                    type: "其他装备物资类"
+                }]
             }
         },
-        mixins: [formRulesMixin, transformMixin],
+        
         methods: {
-            getList() {
-                let data = {
-                    page: 1,
-                    size: 20,
-                    applicantId: JSON.parse(localStorage.getItem('user')).id,
-                    property: 'time',
-                    direction: 'DESC'
-                };
-
-                getProcess(data).then(res => {
-                    this.contentList[0] = {
-                        list: res.content,
-                        name: '调拨通知',
-                    };
-                    console.log(res);
-                });
-
-
-                equipmentScrapped().then(res => {
-                    console.log(res);
-                    this.contentList[2] = {
-                        list: res,
-                        name: '到期报废提醒',
-                    };
-                    this.contentList.push('');
-                    this.contentList.pop();
-                }).catch(err => {
-                    console.log(err);
-                });
-
-                equipmentCharging().then(res => {
-                    console.log(res);
-                    this.contentList[1] = {
-                        list: res,
-                        name: '保养/充电通知',
-                    }
-                }).catch(err => {
-                    console.log(err);
-                });
-
-                equipmentAmount().then(res => {
-                    res.genreStatisticList.forEach((item, index) => {
-                        res.genreStatisticList[index]['percentage'] = item.outHouseCount !== 0 ? Math.round((item.outHouseCount / item.count) * 100) : 0;
-                    });
-                    this.topList = res;
-                }).catch(err => {
-                    console.log(err);
-                });
-                getReceiveList().then(res=>{
-                    console.log(res);
-                    this.contentList[3] = {
-                        list: JSON.parse(JSON.stringify(res)),
-                        name: '未归还提醒',
-                    };
-                    this.contentList.push('');
-                    this.contentList.pop();
-                });
-                // this.gqlQuery(api.getEquipList, {
-                //     "paginator": {
-                //         "page": 1,
-                //         "size": 20
-                //     },
-                //     "qfilter": {
-                //         "key": "receiveTime",
-                //         "operator": "GREATTHAN",
-                //         "value": "0",
-                //         "combinator": "AND",
-                //         "next": {
-                //             "key": "receiveTime",
-                //             "operator": "GREATTHAN",
-                //             "value": new Date - 1000 * 60 * 60 * 24 * 3
-                //         }
-                //     }
-                // }, (res) => {
-                //     this.contentList[3] = {
-                //         list: JSON.parse(JSON.stringify(res.data.EquipList.content)),
-                //         name: '未归还提醒',
-                //     };
-                //     this.contentList.push('');
-                //     this.contentList.pop();
-                // });
-            },
-            gotoInfo(row, route) {
-                console.log(row,route);
-                if (row.type === '充电') {
-                    this.$router.push({path: '/equipmentOperation/charging', query: {name: row.equipRfid}});
-                } else if (row.type === '保养') {
-                    this.$router.push({path: '/equipmentOperation/maintenance', query: {name: row.equipRfid}});
-                }
-                if (row === 'surroundings') {
-                    this.$router.push('/surroundings/index');
-                }
-                if (row === 'video') {
-                    this.$router.push({path: '/surroundings/index', query: {name: 'video'}});
-                }
-                if (row === 'statistics') {
-                    this.$router.push({path: '/report/index', query: {name: route}});
-                }
-
-                if (row.state && row.inputTime) {
-                    this.$router.push({path: '/record/borrow', query: {name: row.rfid}});
-                }
-                if (row.count) {
-                    equipmentScrappedInfo({
-                        model: row.equipArgInfo.equipModel,
-                        name: row.equipArgInfo.equipName
-                    }).then(res => {
-                        this.maturityList = res;
-                    });
-                    this.$refs.dialogMaturity.show();
-                }
-
-                if (row.processInstanceId) {
-                    switch (row.type) {
-                        case 'DOWN_TO_UP':
-                            this.$router.push({
-                                path: '/process/transfer',
-                                query: {
-                                    state: row.state,
-                                    type: row.type,
-                                    id: row.id,
-                                    number:row.number,
-                                    processInstanceId: row.processInstanceId
-                                }
-                            });
-                            break;
-                        case 'BORROW':
-                            this.$router.push({
-                                path: '/process/secondment',
-                                query: {
-                                    state: row.state,
-                                    type: row.type,
-                                    id: row.id,
-                                    number:row.number,
-                                    processInstanceId: row.processInstanceId
-                                }
-                            });
-                            break;
-                        case 'SCRAP':
-                            this.$router.push({
-                                path: '/process/scrapped',
-                                query: {
-                                    state: row.state,
-                                    type: row.type,
-                                    id: row.id,
-                                    number:row.number,
-                                    processInstanceId: row.processInstanceId
-                                }
-                            });
-                            break;
-                        case 'DIRECT_TRANSFER':
-                            this.$router.push({
-                                path: '/process/directAdjustment',
-                                query: {
-                                    state: row.state,
-                                    type: row.type,
-                                    id: row.id,
-                                    number:row.number,
-                                    processInstanceId: row.processInstanceId
-                                }
-                            });
-                            break;
-                    }
-                }
-            },
-            getHumiture() {
-                this.$ajax({
-                    method: 'post',
-                    url: baseURL + '/environment/humitureQuery',
-                }).then((res) => {
-                    this.surroundings.temperature = res.data.data.temperature;
-                    this.surroundings.humidity = res.data.data.humidity;
-                }).catch(err => {
-                    this.$message.error(err);
-                });
-            },
-
         },
-
-        mounted() {
-            this.getList();
-            this.getHumiture();
-            this.videoTime = setInterval(() => {
-                window.location.reload();
-            }, 180000);  //180000
-        },
-        beforeDestroy() {
-            clearTimeout(this.videoTime);
-        },
-
         components: {
-            progressCircular,
-            "video-player": FlvPlayerVue,
-            serviceDialog
-        },
-
+            progressCircular
+        }
     }
 </script>
 
@@ -392,216 +186,155 @@
     }
 
     .overview {
-        font-size: .1rem;
+        font-size: 16px;
+        font-family:PingFang SC;
 
         .el-card {
             border: none !important;
         }
 
-        // ._card-title {
-        //     font-size: 0.0938rem;
-        // }
-        .center {
+        .topRemind {
+            width: 100%;
             display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .ov-content {
-
-            .statistics {
-                padding: 0 1vw;
-                box-shadow: 0 .01rem .03rem rgba(0, 0, 0, 0.16);
-                display: flex;
-                align-items: center;
-                height: .67rem;
-                width: 100%;
-                flex-wrap: wrap;
-                justify-content: space-around;
-
-                .total {
-                    font-size: .08rem;
-                    font-weight: bold;
-                    color: rgba(77, 79, 92, 1);
-
-                    div {
-                        padding-bottom: .05rem;
-                    }
-
-                    span {
-                        margin-left: .07rem;
-                        font-size: .1rem;
-                    }
+            justify-content: space-between;
+            .remind-box {
+                width: 1.4167rem;
+                height: 0.776rem;
+                box-shadow:0px 0px 12px rgba(235,238,245,1);
+                text-align: center;
+                padding-top: 0.0781rem;
+                border-radius:10px;
+                cursor: pointer;
+                .count {
+                    font-size:0.3229rem;
+                    font-weight:bold;
+                    color:rgba(47,47,118,0.75);
                 }
-
-                .ss-content {
-                    .title {
-                        text-align: center;
-                        font-size: .09rem;
-                        color: rgba(77, 79, 92, 1);
-                        margin-bottom: 0.0879rem;
-                    }
-
-                    .bulk {
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        cursor: pointer;
-
-                        .ProgressCircular {
-                            height: 0 !important;
-                        }
-
-                        .inside {
-                            display: grid;
-                            color: rgba(77, 79, 92, 1);
-                            text-align: center;
-
-                            .percentage {
-
-                            }
-
-                            .percentageName {
-
-                            }
-                        }
-
-                        .inside-info {
-                            margin-left: .06rem;
-                            display: flex;
-                            flex-direction: column;
-
-                            .sort {
-                                display: flex;
-                                align-items: center;
-                                margin-top: .02rem;
-
-                                .icon {
-                                    width: .052rem;
-                                    height: .05rem;
-                                    border-radius: 50%;
-
-                                }
-
-                                .icon-on {
-                                    background: rgba(232, 234, 239, 1);
-                                }
-
-                                .icon-ok {
-                                    background: rgba(59, 134, 255, 1);
-                                }
-
-                                .piece {
-                                    margin-left: .05rem;
-                                }
-
-                            }
-                        }
-                    }
-
-
+                .tag {
+                    font-size:0.125rem;
+                    color: #C0C4CC;
+                }
+                .only-tag {
+                    font-size: 0.1563rem;
+                    color: #2F2F76;
+                    margin-top: 0.2083rem;
                 }
             }
+        }
 
-            .block {
+        .to-do {
+            box-shadow:0px 0px 12px rgba(235,238,245,1);
+            border-radius:10px;
+            padding: 0.0521rem;
+            .title {
+                font-size:0.125rem;
+                color: #707070;
+                border-bottom: 2px solid #F0F0F0;
+                padding-bottom: 0.0625rem;
+            }
+            .event-list::-webkit-scrollbar {
+                width: 6px;
+            }
+            .event-list::-webkit-scrollbar-thumb {
+                background: rgba(47,47,118,0.37);
+                border-radius: 20px;
+             }
+            .event-list {
+                margin-top: 0.0781rem;
+                width: 100%;
+                height: 1.4583rem;
+                max-height: 1.4583rem;
+                overflow-x: hidden;
+                overflow-y: auto;
+                .event-box {
+                    display: flex;
+                    justify-content: space-between;
+                    height: 0.1719rem;
+                    font-size:0.125rem;
+                    color: #707070;
+                    padding-right: 16px;
+                    margin-bottom: 0.0938rem;
+                }
+            }
+        }
+
+        .inventory-statistics {
+            box-shadow:0px 0px 12px rgba(235,238,245,1);
+            border-radius: 10px;
+            padding: 0.0521rem;
+            .header {
                 display: flex;
-                flex-wrap: wrap;
                 justify-content: space-between;
-
-                .bk-style {
-                    width: 2.656rem;
-                    height: 1.6927rem;
-                    box-shadow: 0 .015rem .031rem rgba(0, 0, 0, 0.16);
-                    // margin-bottom: 14px;
-                    margin-top: .135rem;
-                    color: rgba(112, 112, 112, 1);
-
-                    .bk-top {
-                        height: .218rem;
-                        border-left: .02rem solid rgba(47, 47, 118, 0.75);
-                        padding: .072rem;
-                        margin-bottom: .052rem;
-
-                        span {
-                            font-size: .093rem;
-
+                .title {
+                    font-size:0.125rem;
+                    color: #707070;
+                }
+                .sum-info {
+                    width: 2.0833rem;
+                    display: flex;
+                    justify-content: space-between;
+                    margin: 0.1042rem 0;
+                    .info-box {
+                        display: grid;
+                        color: rgba(77, 79, 92, 1);
+                        text-align: center;
+                        .num {
+                            font-size:0.1302rem;
+                            font-weight:bold;
+                            color: #4D4F5C;
                         }
-                    }
-
-
-                    .bk-content {
-
-                        .el-table {
-                            font-size: 0.0729rem;
-                        }
-
-                        .el-table /deep/ th.is-leaf,
-                        .el-table td {
+                        .tag {
                             font-size: 0.0833rem;
                         }
-
-                        // .el-table /deep/ .el-table__header {
-                        //     width: 100% !important;
-                        //     display: flex;
-                        // }
-
-                        .el-table /deep/ th {
-                            padding: 3px 0;
-                        }
-
-                        .el-table /deep/ div.cell {
-                            padding: 0;
-                        }
-
-
-
-
-
-                        .monitor {
-                            width: 1.562rem;
-                            height: 1.562rem;
-                        }
-
-                        .scroll-bar {
-                            max-height: 1.302rem;
-                            width: 100%;
-                        }
-
-                        .inside {
+                    }
+                    .svg-icon {
+                        width: 0.5833rem;
+                        height: 0.2083rem;
+                    }
+                }
+            }
+           
+           .body {
+               display: flex;
+               justify-content: space-around;
+               .item {
+                    .inside {
+                        display: grid;
+                        color: rgba(77, 79, 92, 1);
+                        text-align: center;
+                    }
+                    .other-info {
+                        margin-top: 0.0521rem;
+                        .info {
                             display: flex;
                             justify-content: center;
                             align-items: center;
-                            flex-direction: column;
-
-                            div {
-                                color: rgba(47, 47, 118, 1);
+                            margin-bottom: 0.0625rem;
+                            .icon-white {
+                                width: 0.0521rem;
+                                height: 0.0521rem;
+                                border-radius: 50%;
+                                background: rgba(232, 234, 239, 1);
                             }
-
-                            div:first-child {
-                                font-size: .083rem;
+                            .icon-blue {
+                                width: 0.0521rem;
+                                height: 0.0521rem;
+                                border-radius: 50%;
+                                background: rgba(59, 134, 255, 1);
                             }
-
-                            div:nth-child(2) {
-                                font-size: .286rem;
-                                margin-left: .093rem;
-                            }
-
-                            div:last-child {
-                                font-size: .072rem;
-
+                            .tip {
+                                margin-left: 0.0521rem;
                             }
                         }
+                    }
+                    .item-type {
+                        text-align: center;
                     }
                 }
             }
         }
-
     }
-
-    .el-table__body-wrapper is-scrolling-left /deep/ .el-table__empty-block {
-        width: 2.25rem !important;
-    }
-
+        
 </style>
 
 
