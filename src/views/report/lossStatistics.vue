@@ -5,7 +5,7 @@
         </div>
         <div class="safety_body" data-test="main_box">
             <report_tree @clickNode="clickNode"></report_tree>
-            <report_table ref="table" :table="table" @export="toExport">
+            <report_table ref="table" :table="table">
                 <div class="table_header_box" v-if="table.tableType!=='All'&&table.tableType!==''&&computeTotal.rate!==undefined">
                   <div class="table_header">
                       <div class="table_header_item"><span v-text="`装备总数：${computeTotal.totalCount}`"></span></div>
@@ -46,6 +46,7 @@
                     placeholder: '全部大类',
                     height: '3.78125rem',
                     params: {id: '', level: '', search: ''},
+                    info:''
                 },
                 computeTotal:{},
                 current: {}
@@ -142,6 +143,8 @@
                     this.$set(this.table, 'list', res);
                     if(this.table.tableType!=='All'){
                         this.computeFunction(JSON.parse(JSON.stringify(this.table.list)))
+                    }else {
+                        this.table.info=''
                     }
 
                 })
@@ -175,6 +178,7 @@
                 if(totalCount!=0){
                     rate=count/totalCount
                 }
+                this.table.info=`装备总数：${totalCount}装备总价(元)：${totalPrice/100}损耗数量：${count}损耗总额：${totalLoss/100}损耗率(%)：${rate}`;
                 this.computeTotal={
                     totalCount:totalCount,
                     totalPrice:totalPrice/100,
@@ -182,9 +186,6 @@
                     totalLoss:totalLoss/100,
                     rate:rate
                 }
-            },
-            toExport(){
-                console.log('toExport')
             }
             // distributionClick(){
             //     this.status.buttonDisable=!this.status.buttonDisable;
@@ -290,6 +291,8 @@
     .safety_box {
         font-size: 0.0833rem;
         text-align: center;
+        height: 4.6875rem;
+        width: 100%;
     }
     .table_header_box{
         height: 0.296875rem;

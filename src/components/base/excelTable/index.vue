@@ -7,14 +7,14 @@
       <tr>
         <td :colspan="colspan">{{ tableHeader.smallTitle }}</td>
       </tr>
-      <tr>
+      <tr v-if="tableHeader.info">
         <td :colspan="colspan">{{ tableHeader.info}}</td>
       </tr>
       <tr>
         <td v-for="(item, i) in tableHeader.lableList" :key="i + 'header'">{{ item.lable }}</td>
       </tr>
       <tr v-for="(item, i) in list" :key="i">
-        <td v-for="n in colspan">{{ item[tableHeader.lableList[n-1].filed] }}</td>
+        <td v-for="n in colspan">{{ item[tableHeader.lableList[n-1].field] }}</td>
       </tr>
     </table>
   </div>
@@ -25,25 +25,23 @@ import FileSaver from "file-saver";
 export default {
   name: "exceltable",
   data() {
-    return {
-      colspan: 1
-    };
+    return {}
   },
   props: {
     list: {
       type: Array,
       default() {
-        return [{a:'1',b:'2'},{a:'1',b:'2'}]
+        return []
       }
     },
     tableHeader: {
       type: Object,
       default() {
         return {
-          bigTitle: "装备金额统计",
-          smallTitle: "装备小类：警棍",
-          info: "装备总数：1000 可用数量：600， 领用数量：300， 装备总价(元) 100000",
-          lableList: [{filed: 'a'},{filed: 'b'}]
+          bigTitle: "",
+          smallTitle: "",
+          info: "",
+          lableList: []
         }
       }
     },
@@ -56,8 +54,14 @@ export default {
       default: "sheet"
     }
   },
+  computed: {
+    colspan() {
+      return this.tableHeader.lableList.length
+    }
+  },
   methods: {
     exportExcel() {
+      console.log('exportExcel',this.fileName);
       /* 从表生成工作簿对象 */
       var wb = XLSX.utils.table_to_book(this.$refs.excelTable);
       /* 获取二进制字符串作为输出 */
@@ -74,17 +78,14 @@ export default {
           //返回一个新创建的 Blob 对象，其内容由参数中给定的数组串联组成。
           new Blob([wbout], { type: "application/octet-stream" }),
           //设置导出文件名称
-          "sheetjs.xlsx"
+          `${this.fileName}.xlsx`
         );
       } catch (e) {
         if (typeof console !== "undefined") console.log(e, wbout);
       }
       return wbout;
     }
-  },
-  created() {
-    this.colspan = this.tableHeader.lableList.length
-  },
+  }
 };
 </script>
 

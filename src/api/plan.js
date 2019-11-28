@@ -3,7 +3,7 @@ import request from 'common/js/request'
 
 export function getPlanList(data) {
     return request({
-        url: '/plan-manage',
+        url: '/planManage/planList',
         method: 'get',
         params: data
     })
@@ -12,7 +12,14 @@ export function getPlanList(data) {
 
 export function savePlan(data) {
     return request({
-        url: '/plan-manage',
+        url: '/planManage/savePlanMange',
+        method: 'post',
+        data
+    })
+}
+export function updatePlan(data) {
+    return request({
+        url: '/planManage/updatePlanMange',
         method: 'post',
         data
     })
@@ -21,14 +28,14 @@ export function savePlan(data) {
 
 export function delectPlan(data) {
     return request({
-        url: `/plan-manage/${data}`,
-        method: 'delete',
+        url: `/planManage/deleteBy/${data}`,
+        method: 'POST',
     })
 }
 
 export function searchPlan(data) {
     return request({
-        url: '/plan-manage/search/like-by-name',
+        url: '/planManage/findByNameLike',
         method: 'get',
         params:data
     })
@@ -37,7 +44,7 @@ export function searchPlan(data) {
 //equipList
 export function getEquipList() {
     return request({
-        url: "/equips",
-        method: "GET"
+        url: "/equip/equipArgsByName",
+        method: "GET",
     })
 }
