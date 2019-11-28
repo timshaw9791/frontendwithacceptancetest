@@ -2,7 +2,7 @@
     <div class="overview">
         <el-card shadow="never" :body-style="{ padding:'0.156rem'}">
             <div class="topRemind">
-                <div class="remind-box" v-for="(item, i) in topRemindList" :key="i">
+                <div class="remind-box" v-for="(item, i) in topRemindList" :key="i" @click="toOther(item.key)">
                     <div class="count">{{ item.count }}</div>
                     <div :class="{'tag': true, 'only-tag': item.count == undefined}">{{ item.tag }}</div>
                 </div>
@@ -29,12 +29,12 @@
                     <div class="title">库存统计</div>
                     <div class="sum-info">
                         <div class="info-box">
-                            <div class="num">600</div>
+                            <div class="num">{{ totalIsUse }}</div>
                             <div class="tag">领用总数</div>
                         </div>
                         <svg-icon icon-class="领用总数" class="svg-icon"></svg-icon>
                         <div class="info-box">
-                            <div class="num">600</div>
+                            <div class="num">{{ totalCanUse }}</div>
                             <div class="tag">可用总数</div>
                         </div>
                         <svg-icon icon-class="可用总数" class="svg-icon"></svg-icon>
@@ -56,14 +56,14 @@
                         <div class="other-info">
                             <div class="info">
                                 <div class="icon-white"></div>
-                                <div class="tip">可用数量 {{ item.available }}</div>
+                                <div class="tip">可用数量 {{ item.canUse }}</div>
                             </div>
                             <div class="info">
                                 <div class="icon-blue"></div>
-                                <div class="tip">领用数量 {{ item.recive }}</div>
+                                <div class="tip">领用数量 {{ item.isUse }}</div>
                             </div>
                         </div>
-                        <div class="item-type">{{ item.type }}</div>
+                        <div class="item-type">{{ item.genreName }}</div>
                     </div>
                 </div>
             </div>
@@ -74,6 +74,8 @@
 
 <script>
     import progressCircular from 'components/base/progressCircular'
+    import { findAllData, findEquipsNeedChange } from 'api/overview'
+    import { writeFile } from "common/js/rfidReader"
     // import FlvPlayerVue from 'components/videoPlayer/FlvPlayer.vue';
     // import {temperatureValue} from "api/surroundings";
     // import {equipmentAmount, equipmentScrapped, equipmentCharging, getProcess} from "api/statistics";
@@ -89,17 +91,22 @@
             return {
                 topRemindList: [{
                     count: 0,
+                    key: 'CHARGE',
                     tag: "充电提醒"
                 },{
                     count: 0,
+                    key: 'KEEP',
                     tag: "保养提醒"
                 },{
                     count: 0,
+                    key: 'NOT_RETURN',
                     tag: "未归还提醒"
                 },{
                     count: 0,
+                    key: 'SCRAP',
                     tag: "到期报废提醒"
                 },{
+                    key: 'SYNC',
                     tag: "同步手持机"
                 }],
                 toDoList: [{
@@ -122,49 +129,104 @@
                     time: "2019-11-30"
                 }],
                 inventoryList: [{
-                    percentage: 45,
-                    available: 260,
-                    recive: 143,
-                    type: "警械类"
+                    percentage: 0,
+                    canUse: 0,
+                    isUse: 0,
+                    genreName: "警械类"
+                },
+                {
+                    percentage: 0,
+                    canUse: 0,
+                    isUse: 0,
+                    genreName: "防护、防爆装备类"
+                },
+                {
+                    percentage: 0,
+                    canUse: 0,
+                    isUse: 0,
+                    genreName: "观象、通信及照明器材类"
+                },
+                {
+                    percentage: 0,
+                    canUse: 0,
+                    isUse: 0,
+                    genreName: "生活保障物资类"
+                },
+                {
+                    percentage: 0,
+                    canUse: 0,
+                    isUse: 0,
+                    genreName: "抢险救援装备类"
                 },
                 {
                     percentage: 45,
-                    available: 260,
-                    recive: 143,
-                    type: "防护、防爆装备类"
-                },
-                {
-                    percentage: 45,
-                    available: 260,
-                    recive: 143,
-                    type: "观象、通信及照明器材类"
-                },
-                {
-                    percentage: 45,
-                    available: 260,
-                    recive: 143,
-                    type: "生活保障物资类"
-                },
-                {
-                    percentage: 45,
-                    available: 260,
-                    recive: 143,
-                    type: "抢险救援装备类"
-                },
-                {
-                    percentage: 45,
-                    available: 260,
-                    recive: 143,
-                    type: "其他装备物资类"
-                }]
+                    canUse: 0,
+                    isUse: 0,
+                    genreName: "其他装备物资类"
+                }],
+                totalCanUse: 0,
+                totalIsUse: 0,
             }
         },
-        
         methods: {
+            getAllData() {
+                findAllData().then(res => {
+                    let result = JSON.parse(JSON.stringify(res)), list = [], isUse = 0, canUse = 0;
+                    this.topRemindList[0].count = result.needChargeNum
+                    this.topRemindList[1].count = result.needKeepNum
+                    this.topRemindList[2].count = result.needReceiveNum
+                    this.topRemindList[3].count = result.needScrapNum
+                    result.workDataDtoList.forEach(item => {
+                        let molecule = item.isUse, denominator = item.isUse + item.canUse, percentage = 0;
+                        isUse += item.isUse
+                        canUse += item.canUse
+                        if(molecule.item == 0 || denominator == 0) {
+                            percentage = 0
+                        } else {
+                            percentage = (molecule/denominator*100).toFixed(2)
+                        }
+                        list.push(Object.assign(item, {percentage: Number(percentage)}))
+                    })
+                    this.inventoryList = list
+                })
+            },
+            syncHandheld() {
+                findEquipsNeedChange().then(res => {
+                    console.log(res);
+                    writeFile(res, err => {
+                        this.$message.error(err)
+                    })
+                })
+            },
+            toOther(key) {
+                console.log(key);
+                switch (key) {
+                    case 'CHARGE':
+                        this.$router.push({name: 'charging'})
+                        break;
+                    case 'KEEP':
+                        this.$router.push({name: 'maintenance'})
+                        break;
+                    case 'NOT_RETURN':
+                        this.$router.push({name: 'warehouse/noreturn'})
+                        break;
+                    case 'SCRAP':
+                        this.$router.push({name: 'warehouse/expired'})
+                        break;
+                    case 'SYNC':
+                        this.syncHandheld()
+                        break;
+                    default:
+                        break;
+                }
+            }
         },
         components: {
             progressCircular
-        }
+        },
+        created() {
+            this.getAllData()
+        },
     }
 </script>
 
@@ -273,7 +335,7 @@
                     width: 2.0833rem;
                     display: flex;
                     justify-content: space-between;
-                    margin: 0.1042rem 0;
+                    margin: 20.0064px 0;
                     .info-box {
                         display: grid;
                         color: rgba(77, 79, 92, 1);

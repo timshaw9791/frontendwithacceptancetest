@@ -170,3 +170,26 @@ export function handheld(errCB) {
     });
     return start
 }
+
+/* 导出文件 */
+export function writeFile(content, cb) {
+    let path = `${newFile_path}/equip.json`,
+        pushCmdStr = `chcp 65001 && adb push ${path} sdcard/inventoryData/`;;
+    fs.writeFileSync(path, JSON.stringify(content))
+    console.log(newFile_path);
+    console.log(path);
+    console.log(pushCmdStr);
+    workerProcess = exec(pushCmdStr, {
+        cwd: newFile_path
+    })
+
+    workerProcess.stderr.on('data', data => {
+        cb(data)
+        console.log(data);
+    })
+
+    workerProcess.on('close', code => {
+        cb(code)
+        console.log('out code: ' + code);
+    })
+}
