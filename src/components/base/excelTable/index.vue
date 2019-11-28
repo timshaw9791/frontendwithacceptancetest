@@ -14,7 +14,7 @@
         <td v-for="(item, i) in tableHeader.lableList" :key="i + 'header'">{{ item.lable }}</td>
       </tr>
       <tr v-for="(item, i) in list" :key="i">
-        <td v-for="n in colspan">{{ item[tableHeader.lableList[n-1].filed] }}</td>
+        <td v-for="n in colspan">{{ item[tableHeader.lableList[n-1].field] }}</td>
       </tr>
     </table>
   </div>
@@ -25,25 +25,23 @@ import FileSaver from "file-saver";
 export default {
   name: "exceltable",
   data() {
-    return {
-      colspan: 1
-    };
+    return {}
   },
   props: {
     list: {
       type: Array,
       default() {
-        return [{a:'1',b:'2'},{a:'1',b:'2'}]
+        return []
       }
     },
     tableHeader: {
       type: Object,
       default() {
         return {
-          bigTitle: "装备金额统计",
-          smallTitle: "装备小类：警棍",
-          info: "装备总数：1000 可用数量：600， 领用数量：300， 装备总价(元) 100000",
-          lableList: [{filed: 'a'},{filed: 'b'}]
+          bigTitle: "",
+          smallTitle: "",
+          info: "",
+          lableList: []
         }
       }
     },
@@ -54,6 +52,11 @@ export default {
     fileName: {
       type: String,
       default: "sheet"
+    }
+  },
+  computed: {
+    colspan() {
+      return this.tableHeader.lableList.length
     }
   },
   methods: {
@@ -81,10 +84,7 @@ export default {
       }
       return wbout;
     }
-  },
-  created() {
-    this.colspan = this.tableHeader.lableList.length
-  },
+  }
 };
 </script>
 
