@@ -39,7 +39,7 @@
                         <div class="list">
                             <el-scrollbar wrap-class="scroll-bar">
                                 <div class="scroll-bar">
-                                    <el-table :data="item.equipArgItemSet" fit>
+                                    <el-table :data="item.equipArgItemList" fit>
                                         <!-- <bos-table-column lable="序号" 
                                                           ></bos-table-column>
                                         <bos-table-column lable="装备名称" field="equipArg.name"></bos-table-column>
@@ -85,7 +85,7 @@
                 <field-input v-model="form.name" label="预案名称 :" width="4" :rules="r(true).all(R.require)"
                              prop="name"></field-input>
 
-                <el-table :data="form.equipArgItemSet" fit class="dialogList" height="360">
+                <el-table :data="form.equipArgItemList" fit class="dialogList" height="360">
                      <el-table-column label="序号" align="center">
                         <template scope="scope">
                             <span>{{scope.$index+1}}</span>
@@ -150,10 +150,10 @@
         data() {
             return {
                 inquire: '',
-                paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
+                paginator: {size: 6, page: 1, totalPages: 5, totalElements: 5},
                 list: [],
                 form: {
-                    equipArgItemSet: [{equipArg: '', location: {}}]
+                    equipArgItemList: [{equipArg: '', location: {}}]
                 },
                 restaurants: [],
                 title: '',
@@ -162,7 +162,8 @@
                 value:'',
                 modelValue:'',
                 nameList:[],
-                modelList:[]
+                modelList:[],
+                params:{size: 6, page: 1,name:''}
             }
         },
         mixins: [formRulesMixin, transformMixin],
@@ -172,7 +173,7 @@
         methods: {
             changePage(page) {
                 this.paginator.page = page
-                this.getSupplierList()
+                this.getList()
             },
 
             qaq(row, data,title) {
@@ -182,29 +183,29 @@
                 console.log("data")
                 console.log(data);
                 let tempData = JSON.parse(JSON.stringify(data))
-                this.form.equipArgItemSet[row] = data;
+                this.form.equipArgItemList[row] = data;
                 
-                this.form.equipArgItemSet[row.$index].equipArg.model = data.model
-                this.form.equipArgItemSet[row.$index].equipArg.name = data.name
-                this.form.equipArgItemSet[row.$index].location = data.location
+                this.form.equipArgItemList[row.$index].equipArg.model = data.model
+                this.form.equipArgItemList[row.$index].equipArg.name = data.name
+                this.form.equipArgItemList[row.$index].location = data.location
                 if(title=='新增预案')
                 {
-                    if (row.$index === this.form.equipArgItemSet.length - 1) {
-                    this.form.equipArgItemSet.push({equipArg: {name:'',model:''}, location: {}});
+                    if (row.$index === this.form.equipArgItemList.length - 1) {
+                    this.form.equipArgItemList.push({equipArg: {name:'',model:''}, location: {}});
                 }
                 }
                 if(title='编辑预案')
                 {
-                    if (row.$index === this.form.equipArgItemSet.length - 1) {
-                    this.form.equipArgItemSet.push({equipArg: {name:''}, location: {}});
+                    if (row.$index === this.form.equipArgItemList.length - 1) {
+                    this.form.equipArgItemList.push({equipArg: {name:''}, location: {}});
                 }
                 }
 
             },
 
             delqaq(row) {
-                if (this.form.equipArgItemSet.length > 1) {
-                    this.form.equipArgItemSet.splice(row.$index, 1);
+                if (this.form.equipArgItemList.length > 1) {
+                    this.form.equipArgItemList.splice(row.$index, 1);
                 } else {
                     this.$message.error('不能删除最后一个');
                 }
@@ -215,27 +216,28 @@
                     console.log(this.title)
                     this.$set(this.form,'name','');
                     this.$set(this.form,'remark','');
-                    this.form['equipArgItemSet'] = [{equipArg: {name:'',model:''}, location: {}}];
+                    this.form['equipArgItemList'] = [{equipArg: {name:'',model:''}, location: {}}];
                     
 
                 } else if (type === 'up') {
                     this.title = '编辑预案';
                     console.log(item);
                     this.form = JSON.parse(JSON.stringify(item));
-                    this.form.equipArgItemSet.push({equipArg: {name:''}, location: {}});
-                    console.log("this.form.equipArgItemSet");
-                    console.log(this.form.equipArgItemSet);
+                    this.form.equipArgItemList.push({equipArg: {name:''}, location: {}});
+                    console.log("this.form.equipArgItemList");
+                    console.log(this.form.equipArgItemList);
                    
                 }
                this.getEquipInfo();
                this.$refs.dialog.show();
             },
             getList() {
-                let params = {page: this.paginator.page, size: this.paginator.size,name:''}
-                getPlanList(params).then(res => {
+                this.params.page=this.paginator.page
+                this.params.size=this.paginator.size
+                searchPlan(this.params).then(res => {
                     console.log("res++++++++++++++++++7")
                     
-                    this.list = res;
+                    this.list = res.content;
                     console.log(this.list)
                     this.total = res.totalElements;
                     this.paginator.totalPages = res.totalPages
@@ -286,15 +288,15 @@
 
             },
             submit() {
-                console.log("this.title")
-                console.log(this.title)
+                console.log("this.form.equipArgItemList")
+                console.log(this.form.equipArgItemList)
                 this.$refs.form.validate.then(res => {
-                    if (this.form.equipArgItemSet[this.form.equipArgItemSet.length - 1].equipArg.name === ''&&this.form.equipArgItemSet.length!=1) {
-                        this.form.equipArgItemSet.splice(this.form.equipArgItemSet.length - 1, 1);
+                    if (this.form.equipArgItemList[this.form.equipArgItemList.length - 1].equipArg.name === ''&&this.form.equipArgItemList.length!=1) {
+                        this.form.equipArgItemList.splice(this.form.equipArgItemList.length - 1, 1);
                     }
-                    if (this.title === '新增预案' && this.form.equipArgItemSet[0]) {
-                       this.form.equipArgItemSet.forEach(item=>{
-                            console.log("this.form.equipArgItemSet");
+                    if (this.title === '新增预案' && this.form.equipArgItemList[0]) {
+                       this.form.equipArgItemList.forEach(item=>{
+                            console.log("this.form.equipArgItemList");
                             console.log(item)
                             if(item.equipArg.id==undefined)
                             {
@@ -316,13 +318,13 @@
                             this.$message.error(err.message);
                         })
 
-                    } else if (this.title === '编辑预案' && this.form.equipArgItemSet[0]) {
-                        if (this.form.equipArgItemSet[this.form.equipArgItemSet.length - 1].equipArg.name === ''&&this.form.equipArgItemSet.length!=1) {
-                        this.form.equipArgItemSet.splice(this.form.equipArgItemSet.length - 1, 1);
+                    } else if (this.title === '编辑预案' && this.form.equipArgItemList[0]) {
+                        if (this.form.equipArgItemList[this.form.equipArgItemList.length - 1].equipArg.name === ''&&this.form.equipArgItemList.length!=1) {
+                        this.form.equipArgItemList.splice(this.form.equipArgItemList.length - 1, 1);
                     }
                         console.log("this.form")
                         console.log(this.form)
-                        //  this.form.equipArgItemSet = this.form.equipArgItemSet.map(res1 => {
+                        //  this.form.equipArgItemList = this.form.equipArgItemList.map(res1 => {
                         //      console.log("map++++++++++++++++++")
                         //     console.log(res1);
                         //     if (res1.equipArg.id==undefined) {
@@ -338,8 +340,8 @@
                         //     console.log("neWres1")
                         //     console.log(res1)
                         // });
-                        this.form.equipArgItemSet.forEach(item=>{
-                            console.log("this.form.equipArgItemSet");
+                        this.form.equipArgItemList.forEach(item=>{
+                            console.log("this.form.equipArgItemList");
                             console.log(item)
                             if(item.equipArg.id==undefined)
                             {
@@ -397,17 +399,18 @@
             // },
             inquire(newVal, oldVal) {
             
-                this.param.namelike = newVal;
+                this.params.name = newVal;
                 console.log(newVal);
-                if (newVal === '%%') {
-                    this.getList();
-                } else {
-                    console.log("触发我")
-                    searchPlan({name: newVal}).then(res => {
-                        console.log(res.content);
-                        this.list = res.content;
-                    })
-                }
+                // if (newVal === '%%') {
+                //     this.getList();
+                // } else {
+                //     console.log("触发我")
+                //     searchPlan({page: this.paginator.page, size: this.paginator.size,name: newVal}).then(res => {
+                //         console.log(res.content);
+                //         this.list = res.content;
+                //     })
+                // }
+                this.getList()
             }
         }
     }
@@ -441,23 +444,25 @@
     }
 
     .bodyContent {
-        border: 1px solid black;
-        height: 3.55rem;
-        padding: 0 0.3125rem;
+        margin: 0 auto;
+        height: 720px;
+        width:1100px;
+        // padding: 0 0.3125rem;
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-between;
+        // justify-content: space-between;
 
         .pieceList {
-            border:1px solid red;
-            width:491px;
-            height:343px;
+           
+            width:350px;
+            height:280px;
+            margin-left: 10px;
             background: rgb(255, 255, 255);
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
             margin-top: 0.1406rem;
 
             .top {
-                padding: 0.1042rem;
+                // padding: 0.1042rem;
                 height: 0.2083rem;
                 width: 100%;
                 display: flex;
@@ -479,7 +484,7 @@
                 display: flex;
                 margin-top: 0.0521rem;
                 height: 0.2083rem;
-                padding: 0 0.2604rem;
+                // padding: 0 0.2604rem;
                 color: rgba(112, 112, 112, 1);
 
                 .bottomInfo {
