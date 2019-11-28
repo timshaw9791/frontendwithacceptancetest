@@ -58,17 +58,26 @@
                     totalPages: 10,
                     size: 9
                 },
+             params:{page:1,size:10,name:''}
             }
         },
         mixins: [formRulesMixin, transformMixin],
         methods: {
-            
+             changePage(page) {
+                this.paginator.page = page
+                this.getList()
+            },
              getList(name) {
-                 let params = {page: this.paginator.page, size: this.paginator.size,name:name};
-                 findNoReturn(params).then(res=>{
+                 this.params.page=this.paginator.page
+                 this.params.name=name
+                 this.params.size=this.paginator.size
+                 
+                 findNoReturn(this.params).then(res=>{
                      console.log("res")
                      console.log(res)
                      this.list = res.content
+                      this.paginator.totalPages = res.totalPages
+                    this.paginator.totalElements = res.totalElements
                      console.log("this.list");
                      console.log(this.list);
                 });

@@ -38,8 +38,9 @@
 
                         <div class="list">
                             <el-scrollbar wrap-class="scroll-bar">
-                                <div class="scroll-bar">
-                                    <el-table :data="item.equipArgItemList" fit>
+                                <div >
+                                    
+                                    <el-table :data="item.equipArgItemList" fit height="200" class="tablist" >
                                         <!-- <bos-table-column lable="序号" 
                                                           ></bos-table-column>
                                         <bos-table-column lable="装备名称" field="equipArg.name"></bos-table-column>
@@ -177,11 +178,7 @@
             },
 
             qaq(row, data,title) {
-                console.log("title"+title)
-                console.log("row")
-                console.log(row)
-                console.log("data")
-                console.log(data);
+
                 let tempData = JSON.parse(JSON.stringify(data))
                 this.form.equipArgItemList[row] = data;
                 
@@ -235,10 +232,7 @@
                 this.params.page=this.paginator.page
                 this.params.size=this.paginator.size
                 searchPlan(this.params).then(res => {
-                    console.log("res++++++++++++++++++7")
-                    
                     this.list = res.content;
-                    console.log(this.list)
                     this.total = res.totalElements;
                     this.paginator.totalPages = res.totalPages
                     this.paginator.totalElements = res.totalElements
@@ -247,15 +241,11 @@
                 })
             },
             changeModel(data){
-                console.log("出发我")
-                console.log(data);
                 this.modelList=[]
                this.equipList.forEach(item=>{
                    if(data==item.name)
                    {
                        this.modelList.push(item)
-                       console.log("this.modelList");
-                       console.log(this.modelList);
                    }
                })
             },
@@ -279,25 +269,20 @@
                         }
                         
                     })
-                    console.log("this.equipList");
-                    console.log(this.equipList);
-                    console.log("this.nameList");
-                    console.log(this.nameList);
+
 
                 })
 
             },
             submit() {
-                console.log("this.form.equipArgItemList")
-                console.log(this.form.equipArgItemList)
+                console.log("输出form")
+                console.log(this.form);
                 this.$refs.form.validate.then(res => {
                     if (this.form.equipArgItemList[this.form.equipArgItemList.length - 1].equipArg.name === ''&&this.form.equipArgItemList.length!=1) {
                         this.form.equipArgItemList.splice(this.form.equipArgItemList.length - 1, 1);
                     }
                     if (this.title === '新增预案' && this.form.equipArgItemList[0]) {
                        this.form.equipArgItemList.forEach(item=>{
-                            console.log("this.form.equipArgItemList");
-                            console.log(item)
                             if(item.equipArg.id==undefined)
                             {
                                 this.equipList.forEach(it=>{
@@ -322,24 +307,8 @@
                         if (this.form.equipArgItemList[this.form.equipArgItemList.length - 1].equipArg.name === ''&&this.form.equipArgItemList.length!=1) {
                         this.form.equipArgItemList.splice(this.form.equipArgItemList.length - 1, 1);
                     }
-                        console.log("this.form")
+                        console.log("this.form.5555555555555555555555555555555")
                         console.log(this.form)
-                        //  this.form.equipArgItemList = this.form.equipArgItemList.map(res1 => {
-                        //      console.log("map++++++++++++++++++")
-                        //     console.log(res1);
-                        //     if (res1.equipArg.id==undefined) {
-                        //         this.equipList.forEach(item=>{
-                        //             if(item.name==res1.equipArg.name&&item.name==res1.equipArg.model)
-                        //             {
-                        //                 return {equipArg:item}
-                        //             }
-                        //         })
-                        //     }else{
-
-                        //     }
-                        //     console.log("neWres1")
-                        //     console.log(res1)
-                        // });
                         this.form.equipArgItemList.forEach(item=>{
                             console.log("this.form.equipArgItemList");
                             console.log(item)
@@ -353,7 +322,7 @@
                                 })
                             }
                         })
-                        console.log("this.form")
+                        console.log("this.form“挖的啊吴大维达瓦大屋顶阿文大王的阿文d")
                         console.log(this.form)
                         updatePlan(this.form).then(item => {
                             this.$refs.dialog.hide();
@@ -472,13 +441,36 @@
             }
 
             .list {
-                .scroll-bar {
-                    max-height: 1.3021rem;
-                    min-height: 1.3021rem;
-                    width: 100%;
-                    padding: 0 8%;
-                }
+                border: 1px solid black;
+                overflow-x: hidden;
+                overflow-y: auto;
+                // .scroll-bar {
+                //     max-height: 1.3021rem;
+                //     min-height: 1.3021rem;
+                //     width: 100%;
+                //     padding: 0 8%;
+                // }
             }
+             .tablist::-webkit-scrollbar {
+                width: 2px;
+                height: 5px;
+
+                }
+
+            .tablist::-webkit-scrollbar-thumb {
+                background-color: rgba(144, 147, 153, 0.1);
+            }
+
+            .tablist::-webkit-scrollbar-track { /*滚动条里面轨道*/
+                -webkit-box-shadow: #F5F5F5;
+                border-radius: 10px;
+                background: #F5F5F5;
+            }
+
+            .tablist::-webkit-scrollbar-thumb:hover {
+                background: rgba(144, 147, 153, 0.3);
+            }
+
 
             .bottom {
                 display: flex;
