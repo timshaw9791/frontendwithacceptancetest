@@ -40,9 +40,9 @@
             <div class="storage-list-footer" v-if="title.includes('装备')">
               <el-button type="primary" @click="submit" :disable="disable" >提交</el-button>
             </div>
-            <div class="storage-list-abnormal">
-              <div>备注：装备在运输过程中丢失</div>
-              <div>本次入库缺少： [充电警棍 SHD-874] 1件，[充电警棍 DHG-235] 1件</div>
+            <div class="storage-list-abnormal" v-if="equipData.abnormal">
+              <div>备注：{{ equipData.remark }}</div>
+              <div>本次入库缺少： {{ equipData.abnormalInfo }}</div>
             </div>
         </el-card> 
     </div>
