@@ -32,9 +32,10 @@
                     this.$set(this.form,'position',res.position);
                     this.imageUrl = `${imgBaseUrl}${res.faceInformation}`;
                 });
-                getOrganUnitById({id:data.unitId}).then(res=>{
-                    this.$set(this.form,'unitName',`${res.location}${res.name}`)
-                });
+                this.$set(this.form, 'unitName', data.organUnitName)
+                // getOrganUnitById({id:data.unitId}).then(res=>{
+                //     this.$set(this.form,'unitName',`${res.location}${res.name}`)
+                // });
             },
         },
         mounted() {

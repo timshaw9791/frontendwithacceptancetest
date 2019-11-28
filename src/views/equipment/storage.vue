@@ -16,7 +16,7 @@
                         <svg-icon icon-class="加" class="textBt"/>
                         入库装备
                     </el-button>
-                    <el-checkbox v-model="abnormal">异常单</el-checkbox>
+                    <el-checkbox v-model="abnormal" @change="changeState">异常单</el-checkbox>
                     <div class="_buttons">
                         <BosInput
                                 placeholder="单号"
@@ -114,6 +114,7 @@
                         button:[{name:'查看',type:'primary'},{name:'删除',type:'danger'}]
                     },
                     search:'',
+                    abnormal: false
                 },
                 equipData: {}, // 入库单数据
                 abnormal: false, // 是否只显示异常单
@@ -171,6 +172,14 @@
                 // this.storageListShow = false
                  this.title = '入库装备';
                 // this.equipId = '';
+            },
+            // 是否显示异常单
+            changeState(state) {
+                if(state) {
+                    this.table.url = this.abnorlmalURL
+                } else {
+                    this.table.url = this.allURL
+                }
             },
             black(data) {
                 // this.refetch()
@@ -244,11 +253,6 @@
         //         return this.getEntityListWithPagintor(api.getEquipList); //  graphql结合自定义组件的mixin方法 传入语句即可
         //     },
         // },
-        mounted() {
-        },
-        created() {
-            this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];//获取到串口号
-        },
         // mixins: [formRulesMixin],
         computed: {
             authentication() {
