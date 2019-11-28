@@ -17,13 +17,13 @@
                     <BosInput
                             placeholder="操作人员"
                             suffix="el-icon-search"
-                            v-model="params.operator"
+                            v-model="params.search"
                             style="width:285px;">
 
                     </BosInput>
                 </div>
             </div>
-            <field-table :list="list" :labelList="table.labelList" :havePage="false"
+            <field-table :list="list" :labelList="table.labelList"  :pageInfo="params" @tableCurrentPageChanged="changePage" 
                         :tableAction="table.tableAction"  @clickTableCloum="clickTableCloum" style="width: 100%">
             </field-table>
         </div>
@@ -65,7 +65,13 @@
                 params:{
                     startTime:'',
                     endTime:'',
-                    operator:''
+                    search:'',
+                    properties:'create_time',
+                    direction:'DESC',
+                    page:1,
+                    size:2,
+                    totalPages: 5,
+                    totalElements: 5
                 }
             }
         },
@@ -80,30 +86,38 @@
                 console.log("typeof(this.infolist)",typeof(this.infolist))
             },
             
-            getList(data){
-                findRepairByStartTimeAndEndTimeBetweenAndOperatorLike(data).then(res=>{
+            getList(){
+                findRepairByStartTimeAndEndTimeBetweenAndOperatorLike(this.params).then(res=>{
                     this.list=[];
                     console.log("111")
-                    this.list=res;
-                    console.log("res",res)
+                    console.log("res",res,"this.list",this.list)
+                    this.list=res.content;
+                    this.params.totalPages = res.totalPages
+                    this.params.totalElements = res.totalElements
                 })
             },
             black(){
                 this.show = true
+            },
+            changePage(data){
+                this.params.page=data
+                this.getList()
             }
         },
         created(){
             this.getList()
         },
         watch:{
-            'params.operator':{
+            'params.search':{
                 handler(data){
+                    this.params.page=1
                     console.log("this.params",this.params)
-                    this.getList(this.params)
+                    this.getList()
                 }
             },
             'time':{
                 handler(data){
+                    this.params.page=1
                     console.log("data",data)
                     if(data){
                         data[0] = data[0].replace(new RegExp("-","gm"),"/");
@@ -117,7 +131,7 @@
                         this.params.endTime = '';
                         console.log("this.params",this.params)
                     }
-                    this.getList(this.params)
+                    this.getList()
                 }
             }
         }
