@@ -18,7 +18,7 @@
             <field-table :list="table.list" :labelList="table.labelList" :havePage="false" :height="table.height" style="width: 100%"></field-table>
         </div>
         <div >
-            <excel-table ref="table_excel" :list="table.list" :tableHeader="{bigTitle:$route.meta.title,lableList:table.labelList,smallTitle:table.tableTitle,info:table.info}"></excel-table>
+            <excel-table ref="table_excel" :listT="table.list" :tableHeader="{bigTitle:$route.meta.title,lableList:table.labelList,smallTitle:table.tableTitle,info:table.info}"></excel-table>
         </div>
     </div>
 </template>
