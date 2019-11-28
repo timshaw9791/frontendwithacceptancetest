@@ -22,8 +22,8 @@
                 </BosInput>
             </div>
         </div>
-        <field-table :list="list" :labelList="table.labelList" :havePage="false"
-                    :tableAction="table.tableAction"  style="width: 100%">
+        <field-table :list="list" :labelList="table.labelList" 
+                    :tableAction="table.tableAction" :pageInfo="params" @tableCurrentPageChanged="changePage" style="width: 100%">
         </field-table>
     </div>
 </template>
@@ -60,26 +60,42 @@
                 params:{
                     startTime:0,
                     endTime:'',
-                    search:''
-                }
+                    search:'',
+                    properties:'create_time',
+                    direction:'DESC',
+                    page:1,
+                    size:10,
+                    totalPages: 5,
+                    totalElements: 5
+                },
+
             }
         },
         methods:{
-            
-            getList(data){
-                findConsumableByName(data).then(res=>{
+            getList(){
+                findConsumableByName(this.params).then(res=>{
                     this.list=[];
                     this.list=JSON.parse(JSON.stringify(res.content));
+                    this.params.totalPages = res.totalPages
+                    this.params.totalElements = res.totalElements
+                    console.log("this.list",this.list)
                 })
             },
+            changePage(data){
+                console.log("进入changePage")
+                this.params.page=data;
+                this.getList()
+            }
+            
         },
         created(){
             this.getList(),
-            this.params.endtime=this.getDatamillseconds(this.getCurrentDate())
+            this.params.endTime=this.getDatamillseconds(this.getCurrentDate())
         },
         watch:{
             'search':{
                 handler(data){
+                    this.params.page=1;
                     this.params.search=data
                     if(data=="新增"||data=="增"||data=="新"){
                         this.params.search="INCREASE"
@@ -94,6 +110,7 @@
             },
             'table.time':{
                 handler(data){
+                    this.params.page=1;
                     console.log("data",data)
                     if(data){
                         this.params.startTime = this.getDatamillseconds(data[0])

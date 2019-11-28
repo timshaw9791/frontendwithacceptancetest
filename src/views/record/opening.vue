@@ -22,7 +22,7 @@
                 </BosInput>
             </div>
         </div>
-        <field-table :list="list" :labelList="table.labelList" :havePage="false"
+        <field-table :list="list" :labelList="table.labelList"  :pageInfo="params" @tableCurrentPageChanged="changePage" 
                     :tableAction="table.tableAction"   @clickTableCloum="clickTableCloum" style="width: 100%">
         </field-table>
         <r_video ref="recordVideo" :src="address"></r_video>
@@ -65,7 +65,13 @@
                 params:{
                     startTime:'',
                     endTime:'',
-                    search:''
+                    search:'',
+                    properties:'create_time',
+                    direction:'DESC',
+                    page:1,
+                    size:10,
+                    totalPages: 5,
+                    totalElements: 5
                 }
             }
         },
@@ -79,12 +85,18 @@
                 }
             },
             
-            getList(data){
-                findByOperatorName(data).then(res=>{
+            getList(){
+                findByOperatorName(this.params).then(res=>{
                     this.list=[];
                     this.list=res.content;
+                    this.params.totalPages = res.totalPages
+                    this.params.totalElements = res.totalElements
                 })
             },
+            changePage(data){
+                this.params.page=data
+                this.getList()
+            }
         },
         created(){
             this.getList()
@@ -92,17 +104,19 @@
         watch:{
             'params.search':{
                 handler(data){
-                    this.getList(this.params)
+                    this.params.page=1
+                    this.getList()
                 }
             },
-            'table.time':{
+            'time':{
                 handler(data){
+                    this.params.page=1
                     if(data){
                         data[0] = data[0].replace(new RegExp("-","gm"),"/");
                         this.params.startTime = (new Date(data[0])).getTime();
                         data[1] = data[1].replace(new RegExp("-","gm"),"/");
                         this.params.endTime = (new Date(data[1])).getTime()+24*60*60*1000-1;
-                        this.getList(this.params)
+                        this.getList()
                     }else{
                         this.params.startTime = '';
                         this.params.endTime = '';

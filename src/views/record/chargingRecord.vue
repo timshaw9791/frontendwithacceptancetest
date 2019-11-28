@@ -16,13 +16,13 @@
                 <BosInput
                         placeholder="RFID/装备名称"
                         suffix="el-icon-search"
-                        v-model="params.args"
+                        v-model="params.search"
                         style="width:285px;">
 
                 </BosInput>
             </div>
         </div>
-        <field-table :list="list" :labelList="table.labelList" :havePage="false"
+        <field-table :list="list" :labelList="table.labelList" :pageInfo="params" @tableCurrentPageChanged="changePage"
                     :tableAction="table.tableAction"  style="width: 100%">
         </field-table>
     </div>
@@ -61,18 +61,30 @@
                 params:{
                     startTime:'',
                     endTime:'',
-                    args:''
+                    search:'',
+                    properties:'create_time',
+                    direction:'DESC',
+                    page:1,
+                    size:10,
+                    totalPages: 5,
+                    totalElements: 5
                 }
             }
         },
         methods:{
             
-            getList(data){
-                findChargeByStartTimeAndEndTimeBetweenAndArgsLike(data).then(res=>{
+            getList(){
+                findChargeByStartTimeAndEndTimeBetweenAndArgsLike(this.params).then(res=>{
                     this.list=[];
-                    this.list=res;
+                    this.list=res.content;
                     console.log("res",res)
+                    this.params.totalPages = res.totalPages
+                    this.params.totalElements = res.totalElements
                 })
+            },
+            changePage(data){
+                this.params.page=data;
+                this.getList()
             },
             useTime(data,info){
                 var days = parseInt(data / (1000 * 60 * 60 * 24));
@@ -90,14 +102,16 @@
             this.getList()
         },
         watch:{
-            'params.args':{
+            'params.search':{
                 handler(data){
+                    this.params.page=1;
                     console.log("this.params",this.params)
-                    this.getList(this.params)
+                    this.getList()
                 }
             },
             'time':{
                 handler(data){
+                    this.params.page=1;
                     console.log("data",data)
                     if(data){
                         data[0] = data[0].replace(new RegExp("-","gm"),"/");
@@ -111,7 +125,7 @@
                         this.params.endTime = '';
                         console.log("this.params",this.params)
                     }
-                    this.getList(this.params)
+                    this.getList()
                     
                 }
             },

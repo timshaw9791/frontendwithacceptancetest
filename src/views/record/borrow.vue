@@ -22,7 +22,7 @@
                 </BosInput>
             </div>
         </div>
-        <field-table :list="list" :labelList="table.labelList" :havePage="false"
+        <field-table :list="list" :labelList="table.labelList" :pageInfo="params" @tableCurrentPageChanged="changePage"
                       :tableAction="table.tableAction"  @clickTableCloum="clickTableCloum" style="width: 100%">
         </field-table>
         <r_video ref="recordVideo" :src="address"></r_video>
@@ -84,7 +84,13 @@
                 params:{
                     endTime:'',
                     startTime:'',
-                    args:''
+                    args:'',
+                    properties:'create_time',
+                    direction:'DESC',
+                    page:1,
+                    size:10,
+                    totalPages: 5,
+                    totalElements: 5
                 },
                 time:''
             }
@@ -92,11 +98,17 @@
 
         methods: {
             
-            getList(data){
-                findByStartTimeAndEndTimeBetweenAndArgsLike(data).then(res=>{
+            getList(){
+                findByStartTimeAndEndTimeBetweenAndArgsLike(this.params).then(res=>{
                     this.list=[];
                     this.list=JSON.parse(JSON.stringify(res.content));
+                    this.params.totalPages = res.totalPages
+                    this.params.totalElements = res.totalElements
                 })
+            },
+            changePage(data){
+                this.params.page=data;
+                this.getList()
             },
             clickTableCloum(data){
                 console.log("data",data)
@@ -118,13 +130,15 @@
         watch: {
             'params.args':{
                 handler(data){
+                    this.params.page=1;
                     console.log("this.params",this.params)
-                    this.getList(this.params)
+                    this.getList()
                 }
                 
             },
             'time':{
                 handler(data){
+                    this.params.page=1;
                     console.log("data",data)
                     if(data){
                         data[0] = data[0].replace(new RegExp("-","gm"),"/");
@@ -138,7 +152,7 @@
                         this.params.endTime = '';
                         console.log("this.params",this.params)
                     }
-                    this.getList(this.params)
+                    this.getList()
                 }
                 
             },
