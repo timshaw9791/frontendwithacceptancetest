@@ -218,11 +218,16 @@
 
                 } else if (type === 'up') {
                     this.title = '编辑预案';
+                    console.log("6666666666666666wad");
                     console.log(item);
+                    let equ={model:'',name:''}
                     this.form = JSON.parse(JSON.stringify(item));
+                    this.form.equipArgItemList.forEach(it=>{
+                        equ.model=it.equipArg.model
+                        equ.name=it.equipArg.name
+                        it.equipArg=JSON.parse(JSON.stringify(equ));
+                    })
                     this.form.equipArgItemList.push({equipArg: {name:''}, location: {}});
-                    console.log("this.form.equipArgItemList");
-                    console.log(this.form.equipArgItemList);
                    
                 }
                this.getEquipInfo();

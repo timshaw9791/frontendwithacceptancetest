@@ -1,10 +1,11 @@
 <template>
     <div class="environmentalControl">
-        <s_card :header="'设备状态及控制'">
+        <s_card :header="'设备状态及控制'" @editt="edit">
            <div class="control-box">
                <control-template v-for="item in control"  :templateData="item" @handleConctrol="toConctrol"></control-template>
            </div>
         </s_card>
+        <editThreshold ref="editThreshold"></editThreshold>
         <charging-station ref="chargingStation"></charging-station>
         <dehumidification ref="dehumidification"></dehumidification>
         <air-conditioning ref="airConditioning"></air-conditioning>
@@ -21,11 +22,13 @@
     import chargingStation from './control/chargingStation'
     import dehumidification from './control/dehumidification'
     import airConditioning from './control/airConditioning'
+    import editThreshold from './control/editThreshold'
     import smokeAlarm from './control/smokeAlarm'
     import light from './control/lighting'
     import exhaust from './control/exhaust'
     import disinfection from './control/disinfection'
     import {baseURL} from "../../api/config";
+   
 
     export default {
         name: "environmentalControl",
@@ -38,7 +41,8 @@
             light,
             smokeAlarm,
             exhaust,
-            disinfection
+            disinfection,
+            editThreshold
         },
         data(){
             return{
@@ -76,6 +80,9 @@
             this.getConfigs();
         },
         methods:{
+            edit(){
+             this.$refs.editThreshold.show()
+            },
             getConfigs(){
                 this.$ajax({
                     method:'post',
@@ -92,6 +99,8 @@
                 });
             },
             toConctrol(data){
+                console.log("dawdawd");
+                console.log(data);
                if(data.flag){
                    this.handleClick(data.text);
                }else {
@@ -99,6 +108,7 @@
                }
             },
             handleClick(clickItem){
+                
                 let clickRef;
                 if(clickItem=='视频监控'){
                    this.$emit('toVideo')
