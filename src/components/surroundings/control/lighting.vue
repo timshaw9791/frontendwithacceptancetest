@@ -96,6 +96,7 @@
                     let listCopy=[]
                     let lig=[]
                     lig=resData.split('')
+                    lig=lig.reverse()
                     console.log("lightList")
                     console.log(lig);
                     lig.forEach((item,index)=>{
