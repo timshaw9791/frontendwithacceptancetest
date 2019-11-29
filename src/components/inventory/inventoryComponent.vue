@@ -21,7 +21,7 @@
                 </div>
                 <div class="title-item" style="margin-left: 73px">
                     <span v-text="'未盘点数'"></span><span style="margin-left: 23px" v-text="overview.withoutRfidCount"></span>
-                    <span v-text="'(出库数量'"></span><span style="margin-left: 5px" v-text="overview.outCount"></span><span v-text="')'"></span>
+                    <span v-text="'(领用数量'"></span><span style="margin-left: 5px" v-text="overview.outCount"></span><span v-text="')'"></span>
                 </div>
                 <!--<div class="title-item" style="margin-left: 73px">-->
                     <!--<span v-text="'出库数量'"></span><span style="margin-left: 23px" v-text="overview.outCount"></span>-->
@@ -47,11 +47,13 @@
 
 <script>
     import inventoryTable from './inventoryTable'
+    import {transformMixin} from 'common/js/transformMixin'
     export default {
         name: "inventoryComponent",
         components:{
             inventoryTable
         },
+        mixins: [transformMixin],
         data(){
             return{
                 remark:''
@@ -74,9 +76,10 @@
         },
         watch:{
           'remark':{
-              handler(newVal){
-                 if(this.componentType=='warehouse'&&newVal!=''){
-                     this.$emit('newNote',newVal)
+              handler(data){
+                  console.log("data111",data)
+                 if(this.componentType=='warehouse'){
+                     this.$emit('newNote',data)
                  }
               }
           }
@@ -88,6 +91,7 @@
           },
             startTime:function() {
               let time='';
+              console.log("this.overview",this.overview)
               if(this.overview.startTime){
                   console.log(new Date(this.overview.startTime));
                   time = this.$filterTime(this.overview.startTime);
@@ -96,11 +100,20 @@
             },
             endTime:function(){
                 let time='';
+                console.log("this.overview",this.overview)
                 if(this.overview.endTime){
                     console.log(new Date(this.overview.endTime));
                     time = this.$filterTime(this.overview.endTime);
                 }
                 return time
+            }
+        },
+        watch: {
+            'this.overview.startTime':{
+                handler(){
+                    time = this.filterTime(this.overview.endTime);
+                    console.log("time",time)
+                }
             }
         },
 

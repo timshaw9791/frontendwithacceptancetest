@@ -16,7 +16,7 @@
                 <BosInput
                         placeholder="操作人员"
                         suffix="el-icon-search"
-                        v-model="params.args"
+                        v-model="params.search"
                         style="width:285px;">
 
                 </BosInput>
@@ -84,7 +84,7 @@
                 params:{
                     endTime:'',
                     startTime:'',
-                    args:'',
+                    search:'',
                     properties:'create_time',
                     direction:'DESC',
                     page:1,
@@ -128,7 +128,7 @@
             this.getList()
         },
         watch: {
-            'params.args':{
+            'params.search':{
                 handler(data){
                     this.params.page=1;
                     console.log("this.params",this.params)

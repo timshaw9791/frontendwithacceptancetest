@@ -53,7 +53,7 @@
                         {lable: '装备型号', field: 'model',sort:false},
                         {lable: '供应商', field: 'supplierName',sort:false},
                         {lable: '联系人', field: 'person',sort:false},
-                        {lable: '联系方式', field: '18266669999',sort:false},
+                        {lable: '联系方式', field: 'phone',sort:false},
                         {lable: '到期时间', field: 'scarTime' ,filter: (ns) => this.$filterTime(parseInt(ns.scarTime))},
                     ],
                     search:'',

@@ -17,7 +17,7 @@
                     <BosInput
                             placeholder="操作人员"
                             suffix="el-icon-search"
-                            v-model="params.operator"
+                            v-model="params.search"
                             style="width:285px;">
 
                     </BosInput>
@@ -70,7 +70,7 @@
                 params:{
                     endTime:'',
                     startTime:'',
-                    operator:'',
+                    search:'',
                     properties:'create_time',
                     direction:'DESC',
                     page:1,
@@ -114,7 +114,7 @@
             this.getList()
         },
         watch:{
-            'params.operator':{
+            'params.search':{
                 handler(data){
                     this.getList()
                 }
@@ -126,6 +126,9 @@
                         this.params.startTime = (new Date(data[0])).getTime();
                         data[1] = data[1].replace(new RegExp("-","gm"),"/");
                         this.params.endTime = (new Date(data[1])).getTime()+24*60*60*1000-1
+                    }else{
+                        this.params.startTime =''
+                        this.params.endTime=''
                     }
                     this.getList()
                 }

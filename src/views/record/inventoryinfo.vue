@@ -41,7 +41,7 @@
         </div>
         <div class="bottom">
             <span v-text="'备注：'"></span>
-            <span v-model="remark"></span>
+            <span v-model="overview.remark"></span>
         </div>
     </div>
 </template>
@@ -57,8 +57,6 @@
         mixins: [transformMixin],
         data(){
             return{
-                remark:'',
-                
                 table: {
                     flag: false,
                     labelList: [
@@ -72,18 +70,8 @@
             }
         },
         props:{
-          list:{
-              type:Array
-          },
             overview:{
               type:Object
-            },
-            size:{
-              type:String
-            },
-            componentType:{
-              type:String,
-                default:'warehouse'
             },
             show:{
                 type:Boolean,

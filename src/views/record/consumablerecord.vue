@@ -48,7 +48,7 @@
                         {lable: '装备名称', field: 'name',sort:false},
                         {lable: '装备数量', field: 'count',sort:false},
                         {lable: '备注', field: 'remark',sort:false},
-                        {lable: '操作状态', field: 'category',sort:false},
+                        {lable: '操作状态', field: 'categoryCn',sort:false},
                         {lable: '操作人员', field: 'operatorInfo.operator',sort:false},
                         {lable: '操作时间', field: 'createTime' ,filter: (ns) => this.$filterTime(parseInt(ns.createTime))},
                     ],
@@ -97,13 +97,6 @@
                 handler(data){
                     this.params.page=1;
                     this.params.search=data
-                    if(data=="新增"||data=="增"||data=="新"){
-                        this.params.search="INCREASE"
-                    }else if(data=="补充"||data=="充"||data=="补"){
-                        this.params.search="UPDATE"
-                    }else if(data=="领取"||data=="取"||data=="领"){
-                        this.params.search= "RECEIVE"
-                    }
                     this.getList(this.params)
 
                 }
@@ -124,21 +117,6 @@
                     
                 }
             },
-            'list':{
-                handler(data){
-                    for(let i in this.list){
-                        if(this.list[i].category=="INCREASE"){
-                            this.list[i].category="新增"
-                        }else if(this.list[i].category=="UPDATE"){
-                            this.list[i].category="补充"
-                        }else if(this.list[i].category=="RECEIVE"){
-                            this.list[i].category="领取"
-                        }
-                        console.log("++++")
-                    }
-
-                }
-            }
         }
     }
 </script>
