@@ -59,7 +59,7 @@
               }
             },
             controlCharging(data){
-                let params={route:this.socket.route,number:this.socket.number,status:data};
+                let params={station:this.socket.station,number:this.socket.number,status:data};
                 this.$ajax({
                     method:'post',
                     url:baseURL+'/environment/chargeSwitch',

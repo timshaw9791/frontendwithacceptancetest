@@ -25,10 +25,19 @@ export function setSmokeThreshold(params) {
         params
     })
 }
+
+export function getChangeStationStatus(params) {
+    return request({
+        url: '/environment/chargeQuery',
+        method: 'POST',
+        params:params
+    })
+}
+
 export function getEquipChargeRecordList(params) {
     return request({
-        url: '/equip-charge-records/charging',
-        method: 'get',
+        url: '/environment/chargeInfo',
+        method: 'POST',
         params:params
     })
 }
