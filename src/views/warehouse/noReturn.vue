@@ -58,7 +58,7 @@
                     totalPages: 10,
                     size: 9
                 },
-             params:{page:1,size:10,name:''}
+             params:{page:1,size:10,search:''}
             }
         },
         mixins: [formRulesMixin, transformMixin],
@@ -69,7 +69,7 @@
             },
              getList(name) {
                  this.params.page=this.paginator.page
-                 this.params.name=name
+                 this.params.search=name
                  this.params.size=this.paginator.size
                  
                  findNoReturn(this.params).then(res=>{
