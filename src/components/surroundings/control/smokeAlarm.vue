@@ -5,20 +5,12 @@
                 <div class="smokeAlarm-top">
                     <svg-icon icon-class="烟雾报警" style="width: 56px;height: 70px"></svg-icon>
                     <span v-text="'烟雾报警'" style="margin-top: 8px"></span>
-                    <!--<span v-text="'关闭报警'" class="smokeAlarm-button"></span>-->
+                    <!-- <span v-text="'关闭报警'" class="smokeAlarm-button"></span> -->
                 </div>
                 <div class="smokeAlarm-bottom">
-                    <span v-text="'当前浓度：'+concentration+'%'"></span>
+                    <span v-text="'当前浓度：'+concentration+'ppm'"></span>
                 </div>
-                <div class="dehumidification-bottom">
-                   <span v-text="'烟雾阈值：'"></span><input class="input" :style="notModify?'border:none;':''" v-model="threshold" :disabled="notModify"/><span v-text="'ppm'"></span>
-                   <div @click="notModify = !notModify">
-                       <svg-icon icon-class="编辑" style="width: 18px;height: 18px;margin-left: 24px;cursor: pointer"></svg-icon>
-                   </div>
-               </div>
-               <div class="dehumidification-button" v-if="!notModify">
-                    <span v-text="'取消'" @click="notModify = !notModify" class="cancel"></span><span v-text="'提交'" @click="submission" class="submission"></span>
-                </div>
+               
             </div>
         </dialogs>
     </div>

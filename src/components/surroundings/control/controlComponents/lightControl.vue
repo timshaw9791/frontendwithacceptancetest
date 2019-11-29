@@ -27,6 +27,7 @@
         },
         methods:{
             changeItem(data){
+
                 let params={
                     number:this.light.number,
                     route:this.light.route,

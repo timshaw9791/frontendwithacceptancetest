@@ -5,6 +5,7 @@
                 <div class="humidity-top">
                     <span v-text="'当前湿度： '"></span>
                     <span style="font-size: 0.1563rem" v-text="humidity"></span>
+                    <span v-text="'%'"></span>
                 </div>
                 <s_humidity-component style="margin-top: 0.2448rem" :scale="scale" :temperature="humidity" :id="'humidity'" :color="color"></s_humidity-component>
                 <span v-text="'查看湿度曲线'" style="margin-top: 0.3229rem;color: blue;cursor: pointer" @click="toLineChart"></span>
