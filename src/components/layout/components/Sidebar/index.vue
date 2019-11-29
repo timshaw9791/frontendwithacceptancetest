@@ -2,7 +2,7 @@
     <div>
         <div v-if="!isCollapse">
             <div class="topTitle">
-                <img src="@/common/images/警徽.png" />
+                <img src="@/common/images/警徽.png"@click="windowClose()" />
                 <!-- <svg-icon icon-class="警徽" @click="windowClose()"></svg-icon> -->
             </div>
             <topInfo class="topInfo"></topInfo>
