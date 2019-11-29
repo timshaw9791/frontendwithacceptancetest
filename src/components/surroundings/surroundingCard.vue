@@ -1,6 +1,11 @@
 <template>
     <div class="surroundingCard">
-        <div class="surroundingCard-head" :style="'height:'+cHeight+'px'" v-text="header"></div>
+        <div class="surroundingCard-head" :style="'height:'+cHeight+'px'" >
+            <span>{{header}}</span>
+            <div @click="edit" v-if="header=='设备状态及控制'">
+                <svg-icon icon-class="设置1"></svg-icon>
+            </div>
+        </div>
         <div class="surroundingCard-body">
             <slot>
             </slot>
@@ -21,11 +26,17 @@
                 default:57
             }
         },
+        methods:{
+            edit(){
+                this.$emit('editt')
+            }
+        },
         computed: {
             cHeight() {
                 let fontSize = localStorage.getItem('fontSize')
                 return (this.height/192*fontSize).toFixed(2)
-            }
+            },
+            
         },
     }
 </script>

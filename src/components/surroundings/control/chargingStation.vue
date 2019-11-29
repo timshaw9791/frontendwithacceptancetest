@@ -21,7 +21,7 @@
     import {fetchMixin} from 'field/common/mixinFetch'
     import  surroundings from 'gql/surroundings.gql'
     import {baseURL} from "../../../api/config";
-    import {getEquipChargeRecordList} from 'api/surroundings'
+    import {getEquipChargeRecordList,getChangeStationStatus} from 'api/surroundings'
 
     export default {
         name: "chargingStation",
@@ -48,7 +48,8 @@
                         key:"duration",
                         operator:"EQUEAL"
                     }
-                }
+                },
+                changeCount:0
             }
         },
         created(){
@@ -60,22 +61,33 @@
                     method:'post',
                     url:baseURL+'/environment/deviceConfig',
                 }).then((res)=>{
-                    console.log('getConfigs',res.data);
+                    this.changeCount=res.data.data.ENVIRONMENT_CHARGE_COUNT
+                    console.log('getConfigs',res.data.data.ENVIRONMENT_CHARGE_COUNT);
                 }).catch(err=>{
                     this.$message.error(err);
                 });
             },
             getChargingStationtList(){
                 this.select.selectList=[];
-              this.ajax(baseURL+'/environment/getChargeCount','',(data)=>{
-                  for (let i=1;i<=data.data.data;i++){
-                      this.select.selectList.push({
+            //   this.ajax(baseURL+'/environment/getChargeCount','',(data)=>{
+            //       for (let i=1;i<=data.data.data;i++){
+            //           this.select.selectList.push({
+            //               label:i+'号智能充电台',
+            //               value:i
+            //           })
+            //       }
+            //       this.$refs.dialog.show();
+            //   })
+            //   getChangeStationStatus({station:1}).then(res=>{
+            //       console.log(res);
+            //   })
+              for(let i=1;i<=this.changeCount;i++){
+                  this.select.selectList.push({
                           label:i+'号智能充电台',
                           value:i
                       })
-                  }
-                  this.$refs.dialog.show();
-              })
+              }
+              this.$refs.dialog.show();
             },
             selectSation(data){
                 this.getChargingStationtNumber(data)
@@ -94,9 +106,12 @@
                 }
             },
             getChargingStationtNumber(number){
-                this.ajax(baseURL+'/environment/chargeQuery',{number:Number(number)},(data)=>{
-                    console.log('getChargingStationtNumber',data);
-                    let socket = data.data.data.split('').reverse();
+                getChangeStationStatus({station:number}).then(res=>{
+                    console.log("成功+++++++");
+                   console.log(typeof(res));
+                    let soList=''
+                    soList=res.toString()
+                    let socket = soList.split('').reverse();
                     let socketCopy=[];
                     socket.forEach((item,index)=>{
                         let numberItem = index+1;
@@ -105,14 +120,20 @@
                                 socketName:numberItem+'号智能插座',
                                 name:'',
                                 number:numberItem,
-                                route:number,
+                                station:number,
                                 chargingTime:'',
                                 status:Number(item)
                             })
                         }
                     });
+                    console.log("socketCopy");
+                    console.log(socketCopy);
+                    this.socketList=socketCopy
+                    console.log(this.socketList);
+                    this.flag=true;
                     this.getContextGql(number,socketCopy)
                 })
+                
                 // this.qfilter.value=String(number);
                 // this.gqlQuery(surroundings.getEquipChargeRecordList,{qfilter:this.qfilter}, (data) => {
                 //    let socketCopy=[];
@@ -164,7 +185,7 @@
                 })*/
             },
             getContextGql(number,copyList){
-                getEquipChargeRecordList({chargeStation:number}).then(res=>{
+                getEquipChargeRecordList({station:number}).then(res=>{
                     res.forEach(item=>{
                             let number = Number(item.chargeNumber)-1;
                             if(copyList[number].name==''){
@@ -202,6 +223,7 @@
 
             },
             show(){
+                this.getConfigs()
                 this.getChargingStationtList();
 
             },
