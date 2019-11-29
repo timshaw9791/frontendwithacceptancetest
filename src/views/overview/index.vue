@@ -197,9 +197,9 @@
                         }
                         list.push(Object.assign(item, {percentage: Number(percentage)}))
                     })
-                    //当个数超过8个，需要换行显示。添加 i 标签，解决flex:justify-content: space-around;最后一行不能左对齐问题
+                    //当个数超过7个，需要换行显示。添加 i 标签，解决flex:justify-content: space-around;最后一行不能左对齐问题
                     // length = list.length
-                    // if(length > 8) {
+                    // if(length > 7) {
                     //     this.showCircular = false; // 不显示进度图形
                     //     for(let i = 1; i< 8; i++) {
                     //         this.$refs.inventory.appendChild(document.createElement('i'))
@@ -208,6 +208,8 @@
                     this.inventoryList = list
                     this.totalIsUse = isUse
                     this.totalCanUse = canUse
+                }).catch(err => {
+                    this.$message.error("请求超时")
                 })
             },
             syncHandheld() {
@@ -388,7 +390,7 @@
                justify-content: space-around;
                flex-wrap: wrap;
                .item {
-                   width: 1.1979rem;
+                   width: 1.1458rem;
                     .inside {
                         font-size: 0.1146rem;
                         display: grid;
@@ -424,7 +426,7 @@
                     }
                 }
                 i { // 补位元素
-                    width: 1.1979rem;
+                    width: 1.1458rem;
                 }
             }
         }
