@@ -1,61 +1,19 @@
 <template>
     <div style="width: 100%">
+        
         <el-table
                 :data="tableData"
-                height="424"
+                height="2rem"
                 border
                 style="width: 100%"
                 :align="align"
         >
-            <el-table-column
-                    prop="rfid"
-                    label="RFID"
-                    width="0.9375rem"
-                    :align="align"
-             >
-            </el-table-column>
-            <el-table-column
-                    prop="model"
-                    label="装备型号"
-                    :align="align"
-            >
-            </el-table-column>
-            <el-table-column
-                    prop="name"
-                    label="装备名称"
-                    :align="align"
-            >
-            </el-table-column>
-            <el-table-column
-                    prop="serial"
-                    label="装备序号"
-                    :align="align"
-            >
-            </el-table-column>
-            <el-table-column
-                    prop="location.number"
-                    label="架体编号"
-                    :align="align"
-            >
-            </el-table-column>
-            <!--<el-table-column-->
-                    <!--prop="location.surface"-->
-                    <!--label="架体AB面"-->
-                    <!--:align="align"-->
-            <!--&gt;-->
-            <!--</el-table-column>-->
-            <el-table-column
-                    prop="location.floor"
-                    label="架体层号"
-                    :align="align"
-            >
-            </el-table-column>
-            <el-table-column
-                    prop="location.section"
-                    label="架体节号"
-                    :align="align"
-            >
-            </el-table-column>
+        <bos-table-column lable="RFID" field="equipInfo.rfid"></bos-table-column>
+        <bos-table-column lable="装备序号" field="equipInfo.serial"></bos-table-column>
+        <bos-table-column lable="装备型号" field="equipInfo.model"></bos-table-column>
+        <bos-table-column lable="装备名称" field="equipInfo.equipName"></bos-table-column>
+        <bos-table-column lable="装备位置"
+                            :filter="(row)=>$filterFrame(row.equipInfo)"></bos-table-column>
             <el-table-column
                     prop="serial"
                     label="操作"
@@ -79,7 +37,7 @@
                     </div>
                 </div>
                 <div class="copyRfid-button">
-                    <el-button class="copyRfid-button-cancel" @click="cancelCopy">取消</el-button><el-button class="copyRfid-button-submits" @click="copyRfid">写入</el-button>
+                    <el-button class="copyRfid-button-cancel" @click="cancelCopy">取消</el-button><el-button class="copyRfid-button-submits" @click="copyRfid">复制</el-button>
                 </div>
             </div>
         </dialog-svices>
@@ -92,6 +50,7 @@
     //const spawn = window.require('child_process').spawn;
     // import {killProcess} from "common/js/kill";
     import { startOne } from 'common/js/rfidReader'
+    import {transformMixin} from 'common/js/transformMixin'
     import dialogSvices from 'components/record/recordServiceDialog'
     export default {
         name: "inventoryTable",
@@ -101,6 +60,7 @@
                 type:Array
             }
         },
+        mixins: [transformMixin],
         data(){
             return{
                 align:'center',
@@ -109,7 +69,7 @@
         },
         methods:{
             handleClick(row){
-              this.cRfid=row.rfid;
+              this.cRfid=row.equipInfo.rfid;
               this.$refs.copyRfidDialog.show()
             },
             cancelCopy(){
@@ -164,8 +124,8 @@
         margin-top: 0.6042rem;
     }
     .copyRfid-button .copyRfid-button-cancel{
-        width:0.3646rem;
-        height:0.1667rem;
+        width:70px;
+        height:32px;
         border:1px solid rgba(47,47,118,1);
         opacity:1;
         line-height: 0px;
@@ -174,8 +134,8 @@
     .copyRfid-button .copyRfid-button-submits{
         color: white;
         margin-left: 0.0625rem;
-        width:0.3646rem;
-        height:0.1667rem;
+        width:70px;
+        height:32px;
         line-height: 0px;
         background:rgba(47,47,118,1);
         opacity:1;

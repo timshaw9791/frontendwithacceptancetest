@@ -57,26 +57,42 @@
         methods: {
             toInventory() {
                 this.inventoryObj.rflist = [];
-                handheld((err) => this.$message.error(err)).then(data => {
-                    this.getInventoryRf(JSON.parse(data));
-                });
+                // handheld((err) => this.$message.error(err)).then(data => {
+                //     this.getInventoryRf(JSON.parse(data));
+                // });
                 // this.getInventoryRf();
                 // this.getInventoryRfCopy();
                 //todo 记得合并前换回来
-                // this.getInventoryRf({rfid:['19080020','12312141'],size:2});
+                this.getInventoryRf({"endTime":1574651680308,"rfid":["050001D3"],"size":1,"startTime":1574651671133});
             },
             getNote(data) {
+                console.log("data",data)
                 if (Object.keys(this.inventoryObj.inventoryData.inventory).length != 0) {
-                    this.inventoryObj.inventoryData.inventory.note = data
+                    this.inventoryObj.inventoryData.inventory.remark = data
                 } else {
                     this.$message.warning('请先进行盘点')
                 }
             },
             handleSubmission(data) {
                 if (data) {
+                    console.log("this.inventoryObj.inventoryData",this.inventoryObj.inventoryData)
+                    console.log("data",data)
+
                     if (Object.keys(this.inventoryObj.inventoryData.inventory).length != 0) {
-                        let url = baseURL+'/inventories';
-                        let data = this.inventoryObj.inventoryData;
+                        let url = baseURL+'/equipMaintain/inventory';
+                        let data={
+                            createTime: this.inventoryObj.inventoryData.inventory.startTime,
+                            inventoryCount: this.inventoryObj.inventoryData.inventory.inventoryCount,
+                            inventoryDetailSet: this.inventoryObj.inventoryData.inventoryItems,
+                            notCount: this.inventoryObj.inventoryData.inventory.outCount,
+                            operatorInfo: {
+                                operator: this.inventoryObj.inventoryData.inventory.adminName,
+                                operatorId: this.inventoryObj.inventoryData.inventory.adminId
+                            },
+                            outHouseCount: this.inventoryObj.inventoryData.inventory.withoutRfidCount,
+                            remark: this.inventoryObj.inventoryData.inventory.remark,
+                            updateTime: this.inventoryObj.inventoryData.inventory.endTime
+                        }
                         request({
                             method: 'post',
                             url: url,
@@ -100,7 +116,7 @@
                 }
             },
             submit(data) {
-                let url = baseURL+'/inventories/calculate';
+                let url = baseURL+'/equipMaintain/inventoryByRfid';
                 let rfidC = [];
                 this.inventoryObj.rflist.forEach(item => {
                     rfidC.push(item.rfId);
@@ -114,7 +130,7 @@
                     request({
                         method: 'post',
                         url: url,
-                        params: {rfidList: rfid}
+                        params: {rfids: rfid}
                     }).then((res) => {
                         /*res.inventoryItems.forEach((item,index)=>{
                             let num = index+1;
@@ -129,14 +145,17 @@
                          this.overview.endTime=this.inventory.inventoryData.endTime;
                          this.overview.name=JSON.parse(localStorage.getItem('user')).name;
                          this.overview.size=this.inventory.inventoryData.size*/
-                        this.inventoryObj.inventoryData = res;
-                        this.inventoryObj.inventoryData.inventory.outCount = res.inventory.outCount;
-                        this.inventoryObj.inventoryData.inventory.withoutRfidCount = res.inventory.withoutRfidCount;
+                        console.log("res",res)
+                        this.inventoryObj.inventoryData.inventoryItems = res.inventoryDetailSet;
+                        this.inventoryObj.inventoryData.inventory.outCount = res.notCount;
+                        this.inventoryObj.inventoryData.inventory.withoutRfidCount = res.outHouseCount;
                         this.inventoryObj.inventoryData.inventory.startTime = this.inventoryObj.getInventory.startTime;
                         this.inventoryObj.inventoryData.inventory.endTime = this.inventoryObj.getInventory.endTime;
-                        this.inventoryObj.inventoryData.inventory.adminName = JSON.parse(localStorage.getItem('user')).name;
-                        this.inventoryObj.inventoryData.inventory.adminId = JSON.parse(localStorage.getItem('user')).id;
-                        this.inventoryObj.inventoryData.inventory.rfidCount=res.inventory.rfidCount;
+                        this.inventoryObj.inventoryData.inventory.adminName = res.operatorInfo.operator;
+                        this.inventoryObj.inventoryData.inventory.adminId = res.operatorInfo.operatorId;
+                        this.inventoryObj.inventoryData.inventory.inventoryCount = res.inventoryCount;
+                        console.log("this.inventoryObj.inventoryData",this.inventoryObj.inventoryData)
+                        
                         this.deleteFile();
                     }).catch(err => {
                         this.$message.error(err);

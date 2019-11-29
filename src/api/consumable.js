@@ -25,11 +25,10 @@ export function updateConsumable(data) {
     })
 }
 
-export function receiveConsumable(data,params) {
+export function receiveConsumable(data) {
     return request({
         url: '/consumable/receiveConsumable',
         method: 'post',
-        data:data,
-        params:params
+        data:data
     })
 }
