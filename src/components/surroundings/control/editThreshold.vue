@@ -1,6 +1,6 @@
 <template>
     <div class="airConditioning">
-        <dialogs :width="398" ref="dialog" :title="'空调控制'">
+        <dialogs :width="398" ref="dialog" :title="'设备阈值控制'">
             <div class="airConditioning-body">
                
                 <div class="airConditioning-bottom">
