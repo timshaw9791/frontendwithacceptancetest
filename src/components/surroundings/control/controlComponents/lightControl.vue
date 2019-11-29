@@ -3,7 +3,7 @@
         <surrounding-card :header="(index+1)+'路照明灯'" :height="39">
             <div class="lighting-control-body">
                 <svg-icon icon-class="灯光图标1" style="width: 53px;height: 80px"></svg-icon>
-                <switch-control width="0.3646rem" :active="active" :inactive="inactive" :status="light.status==1?false:true" style="margin-top: 29px" @handleChange="changeItem"></switch-control>
+                <switch-control width="0.3646rem" :active="active" :inactive="inactive" :status="light.status==1?true:false" style="margin-top: 29px" @handleChange="changeItem"></switch-control>
             </div>
         </surrounding-card>
     </div>
@@ -27,6 +27,7 @@
         },
         methods:{
             changeItem(data){
+
                 let params={
                     number:this.light.number,
                     route:this.light.route,
