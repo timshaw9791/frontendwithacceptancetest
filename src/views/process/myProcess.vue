@@ -13,7 +13,7 @@
         </div>
         <div class="my_process_main_box" data-test="main_box">
             <div class="main_table_box" data-test="table_box">
-                <p_table :table="table" @clickTable="clickTable" ref="table"></p_table>
+                <p_table :table="table" :typeUrl="'process'" @clickTable="clickTable" ref="table"></p_table>
             </div>
         </div>
     </div>
@@ -32,24 +32,38 @@
             return{
                 table: {
                     labelList: [
-                        {lable: '请求标题', field: 'action',filter: this.filterName, sort: false},
-                        {lable: '工作流', field: 'operator', sort: false},
-                        {lable: '创建时间', field: 'startTime', filter: (ns) => this.$filterTime(ns.time), sort: false},
+                        {lable: '请求标题', field: 'action',filter: this.filterProcessName},
+                        {lable: '工作流', field: 'operator', filter: this.filterProcessType},
+                        {lable: '创建时间', field: 'startTime', filter: (ns) => this.$filterTime(ns.startTime)},
                         {lable: '当前节点', field: 'action'},
                         {lable: '未操作者', field: 'action'},
-                        {lable: '操作', field: 'action'}
                     ],
-                    url:'/equip-records',
+                    url:'/history/process-instances/page',
                     tableAction:{
                         label:'操作',
-                        button:[{name:'详情',type:'primary'},{name:'监控',type:'primary'}]
+                        button:[{name:'详情',type:'primary'}]
                     },
-                    params:{direction:'DESC',property:'time'},
+                    abnormal:{startUserId:''},
                     search:''
                 }
             }
         },
         methods:{
+            filterProcessType(ns){
+                switch (ns.processDefinitionKey) {
+                    case "SCRAP":
+                        return '报废流程'
+                }
+            },
+            filterProcessName(ns){
+                let type,name=JSON.parse(localStorage.getItem('user')).name,time=(new Date(ns.startTime)).toLocaleDateString();
+                switch (ns.processDefinitionKey) {
+                    case "SCRAP":
+                        type = '报废流程';
+                       break;
+                }
+                return type+'-'+name+'-'+time.replace(/\//g,'-')
+            },
             getSearch(data){
                 this.table.search=data
             },
