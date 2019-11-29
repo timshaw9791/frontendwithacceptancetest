@@ -1,5 +1,5 @@
 <template>
-    <div class="overview">
+    <div class="overview" v-loading="loading" element-loading-text="正在同步中">
         <el-card shadow="never" :body-style="{ padding:'0.156rem'}">
             <div class="topRemind">
                 <div class="remind-box" v-for="(item, i) in topRemindList" :key="i" @click="toOther(item.key)">
@@ -166,6 +166,7 @@
                 }],
                 totalCanUse: 0,
                 totalIsUse: 0,
+                loading: false, // 手持机同步等待
             }
         },
         methods: {
@@ -192,14 +193,20 @@
             },
             syncHandheld() {
                 findEquipsNeedChange().then(res => {
-                    console.log(res);
-                    writeFile(res, err => {
-                        this.$message.error(err)
+                    writeFile(res, cbData => {
+                        this.loading = false
+                        if(cbData.state) {
+                            this.$message.success(cbData.message)
+                        } else {
+                            this.$message.error(cbData.message)
+                        }
                     })
+                }).catch(err => {
+                    this.loading = false
+                    this.$message.error(err.response.message)
                 })
             },
             toOther(key) {
-                console.log(key);
                 switch (key) {
                     case 'CHARGE':
                         this.$router.push({name: 'charging'})
@@ -214,6 +221,7 @@
                         this.$router.push({name: 'warehouse/expired'})
                         break;
                     case 'SYNC':
+                        this.loading = true
                         this.syncHandheld()
                         break;
                     default:
