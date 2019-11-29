@@ -434,7 +434,7 @@ export default {
                 let files = this.$refs.fileVideo.files[0];
                 var fileSize = (files.size / 1024).toFixed(0)
                 var size=10240
-                if(fileSize<=size)
+                if(fileSize<=size||files.type=='video/mp4')
                 {
                 let a=files.name.lastIndexOf(".");
                 let b=files.name.length;
@@ -499,7 +499,7 @@ export default {
                
                 }
                 }else{
-                    this.$message.error('文件应小于10MB');
+                    this.$message.error('文件应小于40MB');
                 }
                 
             },
