@@ -102,7 +102,7 @@ export const asyncRouterMap = [
         path: '/process',
         component: Layout,
         name: 'process',
-        meta: {title: '流程管理', icon: '流程管理', roles: ['ADMINISTRATOR']},
+        meta: {title: '流程管理', icon: '流程管理'},
         children: [
             {
                 path: 'myProcess',
