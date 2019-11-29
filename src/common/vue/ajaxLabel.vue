@@ -82,7 +82,13 @@
                     params: params
                 }).then(res=>{
                     this.list=[];
-                    this.list=res.content;
+                    this.list=res.content.map(item => {
+                        if(item.serial == '""') {
+                            return Object.assign({}, item, {serial: ''})
+                        } else {
+                            return item
+                        }
+                    });
                     this.paginator.totalPages=res.totalPages
                 })
             },

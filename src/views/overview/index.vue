@@ -1,8 +1,8 @@
 <template>
-    <div class="overview">
+    <div class="overview" v-loading="loading" element-loading-text="正在同步中">
         <el-card shadow="never" :body-style="{ padding:'0.156rem'}">
             <div class="topRemind">
-                <div class="remind-box" v-for="(item, i) in topRemindList" :key="i">
+                <div class="remind-box" v-for="(item, i) in topRemindList" :key="i" @click="toOther(item.key)">
                     <div class="count">{{ item.count }}</div>
                     <div :class="{'tag': true, 'only-tag': item.count == undefined}">{{ item.tag }}</div>
                 </div>
@@ -17,6 +17,7 @@
                 <div class="event-list">
                     <div class="event-box" v-for="(event, i) in toDoList" :key="i">
                         <div>{{ event.name }}</div>
+                        <div>{{ event.type }}</div>
                         <div>{{ event.time }}</div>
                     </div>
                 </div>
@@ -29,24 +30,25 @@
                     <div class="title">库存统计</div>
                     <div class="sum-info">
                         <div class="info-box">
-                            <div class="num">600</div>
+                            <div class="num">{{ totalIsUse }}</div>
                             <div class="tag">领用总数</div>
                         </div>
                         <svg-icon icon-class="领用总数" class="svg-icon"></svg-icon>
                         <div class="info-box">
-                            <div class="num">600</div>
+                            <div class="num">{{ totalCanUse }}</div>
                             <div class="tag">可用总数</div>
                         </div>
                         <svg-icon icon-class="可用总数" class="svg-icon"></svg-icon>
                     </div>
                 </div>
-                <div class="body">
+                <div class="body" ref="inventory">
                     <div class="item" v-for="(item, i) in inventoryList" :key="i">
                         <progress-circular 
-                            :width="108" 
-                            :strokeWidth="8"
+                            :width="131" 
+                            :strokeWidth="9"
                             :percentage="item.percentage"
                             color="#3B86FF"
+                            v-show="showCircular"
                             style="margin: 0 auto">
                             <div class="inside">
                                 <span>{{ item.percentage }}%</span>
@@ -56,14 +58,14 @@
                         <div class="other-info">
                             <div class="info">
                                 <div class="icon-white"></div>
-                                <div class="tip">可用数量 {{ item.available }}</div>
+                                <div class="tip">可用数量 {{ item.canUse }}</div>
                             </div>
                             <div class="info">
                                 <div class="icon-blue"></div>
-                                <div class="tip">领用数量 {{ item.recive }}</div>
+                                <div class="tip">领用数量 {{ item.isUse }}</div>
                             </div>
                         </div>
-                        <div class="item-type">{{ item.type }}</div>
+                        <div class="item-type">{{ item.genreName }}</div>
                     </div>
                 </div>
             </div>
@@ -74,6 +76,8 @@
 
 <script>
     import progressCircular from 'components/base/progressCircular'
+    import { findAllData, findEquipsNeedChange } from 'api/overview'
+    import { writeFile } from "common/js/rfidReader"
     // import FlvPlayerVue from 'components/videoPlayer/FlvPlayer.vue';
     // import {temperatureValue} from "api/surroundings";
     // import {equipmentAmount, equipmentScrapped, equipmentCharging, getProcess} from "api/statistics";
@@ -89,82 +93,167 @@
             return {
                 topRemindList: [{
                     count: 0,
+                    key: 'CHARGE',
                     tag: "充电提醒"
                 },{
                     count: 0,
+                    key: 'KEEP',
                     tag: "保养提醒"
                 },{
                     count: 0,
+                    key: 'NOT_RETURN',
                     tag: "未归还提醒"
                 },{
                     count: 0,
+                    key: 'SCRAP',
                     tag: "到期报废提醒"
                 },{
+                    key: 'SYNC',
                     tag: "同步手持机"
                 }],
                 toDoList: [{
-                    name: "XXXXX流程申请-王小明",
+                    name: "调拨流程申请-王小明",
+                    type: "调拨流程",
                     time: "2019-11-30"
                 },{
-                    name: "XXXXX流程申请-王小明",
+                    name: "调拨流程申请-王小明",
+                    type: "调拨流程",
                     time: "2019-11-30"
                 },{
-                    name: "XXXXX流程申请-王小明",
+                    name: "调拨流程申请-王小明",
+                    type: "调拨流程",
                     time: "2019-11-30"
                 },{
-                    name: "XXXXX流程申请-王小明",
+                    name: "调拨流程申请-王小明",
+                    type: "调拨流程",
                     time: "2019-11-30"
                 },{
-                    name: "XXXXX流程申请-王小明",
+                    name: "调拨流程申请-王小明",
+                    type: "调拨流程",
                     time: "2019-11-30"
                 },{
-                    name: "XXXXX流程申请-王小明",
+                    name: "调拨流程申请-王小明",
+                    type: "调拨流程",
                     time: "2019-11-30"
                 }],
                 inventoryList: [{
-                    percentage: 45,
-                    available: 260,
-                    recive: 143,
-                    type: "警械类"
+                    percentage: 0,
+                    canUse: 0,
+                    isUse: 0,
+                    genreName: "警械类"
+                },
+                {
+                    percentage: 0,
+                    canUse: 0,
+                    isUse: 0,
+                    genreName: "防护、防爆装备类"
+                },
+                {
+                    percentage: 0,
+                    canUse: 0,
+                    isUse: 0,
+                    genreName: "观象、通信及照明器材类"
+                },
+                {
+                    percentage: 0,
+                    canUse: 0,
+                    isUse: 0,
+                    genreName: "生活保障物资类"
+                },
+                {
+                    percentage: 0,
+                    canUse: 0,
+                    isUse: 0,
+                    genreName: "抢险救援装备类"
                 },
                 {
                     percentage: 45,
-                    available: 260,
-                    recive: 143,
-                    type: "防护、防爆装备类"
-                },
-                {
-                    percentage: 45,
-                    available: 260,
-                    recive: 143,
-                    type: "观象、通信及照明器材类"
-                },
-                {
-                    percentage: 45,
-                    available: 260,
-                    recive: 143,
-                    type: "生活保障物资类"
-                },
-                {
-                    percentage: 45,
-                    available: 260,
-                    recive: 143,
-                    type: "抢险救援装备类"
-                },
-                {
-                    percentage: 45,
-                    available: 260,
-                    recive: 143,
-                    type: "其他装备物资类"
-                }]
+                    canUse: 0,
+                    isUse: 0,
+                    genreName: "其他装备物资类"
+                }],
+                totalCanUse: 0,
+                totalIsUse: 0,
+                loading: false, // 手持机同步等待
+                showCircular: true, // 个数超过8个则不显示
             }
         },
-        
         methods: {
+            getAllData() {
+                findAllData().then(res => {
+                    let result = JSON.parse(JSON.stringify(res)), list = [], isUse = 0, canUse = 0, length = 0;
+                    this.topRemindList[0].count = result.needChargeNum
+                    this.topRemindList[1].count = result.needKeepNum
+                    this.topRemindList[2].count = result.needReceiveNum
+                    this.topRemindList[3].count = result.needScrapNum
+                    result.workDataDtoList.forEach(item => {
+                        let molecule = item.isUse, denominator = item.isUse + item.canUse, percentage = 0;
+                        isUse += item.isUse
+                        canUse += item.canUse
+                        if(molecule.item == 0 || denominator == 0) {
+                            percentage = 0
+                        } else {
+                            percentage = (molecule/denominator*100).toFixed(2)
+                        }
+                        list.push(Object.assign(item, {percentage: Number(percentage)}))
+                    })
+                    //当个数超过8个，需要换行显示。添加 i 标签，解决flex:justify-content: space-around;最后一行不能左对齐问题
+                    // length = list.length
+                    // if(length > 8) {
+                    //     this.showCircular = false; // 不显示进度图形
+                    //     for(let i = 1; i< 8; i++) {
+                    //         this.$refs.inventory.appendChild(document.createElement('i'))
+                    //     }
+                    // }
+                    this.inventoryList = list
+                    this.totalIsUse = isUse
+                    this.totalCanUse = canUse
+                })
+            },
+            syncHandheld() {
+                findEquipsNeedChange().then(res => {
+                    writeFile(res, cbData => {
+                        this.loading = false
+                        if(cbData.state) {
+                            this.$message.success(cbData.message)
+                        } else {
+                            this.$message.error(cbData.message)
+                        }
+                    })
+                }).catch(err => {
+                    this.loading = false
+                    this.$message.error(err.response.message)
+                })
+            },
+            toOther(key) {
+                switch (key) {
+                    case 'CHARGE':
+                        this.$router.push({name: 'charging'})
+                        break;
+                    case 'KEEP':
+                        this.$router.push({name: 'maintenance'})
+                        break;
+                    case 'NOT_RETURN':
+                        this.$router.push({name: 'warehouse/noreturn'})
+                        break;
+                    case 'SCRAP':
+                        this.$router.push({name: 'warehouse/expired'})
+                        break;
+                    case 'SYNC':
+                        this.loading = true
+                        this.syncHandheld()
+                        break;
+                    default:
+                        break;
+                }
+            }
         },
         components: {
             progressCircular
-        }
+        },
+        created() {
+            this.getAllData()
+        },
     }
 </script>
 
@@ -227,7 +316,7 @@
             border-radius:10px;
             padding: 0.0521rem;
             .title {
-                font-size:0.125rem;
+                font-size: 20px;
                 color: #707070;
                 border-bottom: 2px solid #F0F0F0;
                 padding-bottom: 0.0625rem;
@@ -242,18 +331,18 @@
             .event-list {
                 margin-top: 0.0781rem;
                 width: 100%;
-                height: 1.4583rem;
-                max-height: 1.4583rem;
+                height: 1.4063rem;
+                max-height: 1.4063rem;
                 overflow-x: hidden;
                 overflow-y: auto;
                 .event-box {
                     display: flex;
                     justify-content: space-between;
-                    height: 0.1719rem;
-                    font-size:0.125rem;
+                    height: 30px;
+                    font-size: 18px;
                     color: #707070;
                     padding-right: 16px;
-                    margin-bottom: 0.0938rem;
+                    margin-bottom: 10px;
                 }
             }
         }
@@ -266,7 +355,7 @@
                 display: flex;
                 justify-content: space-between;
                 .title {
-                    font-size:0.125rem;
+                    font-size: 20px;
                     color: #707070;
                 }
                 .sum-info {
@@ -297,19 +386,21 @@
            .body {
                display: flex;
                justify-content: space-around;
+               flex-wrap: wrap;
                .item {
+                   width: 1.1979rem;
                     .inside {
+                        font-size: 0.1146rem;
                         display: grid;
                         color: rgba(77, 79, 92, 1);
                         text-align: center;
                     }
                     .other-info {
-                        margin-top: 0.0521rem;
                         .info {
                             display: flex;
                             justify-content: center;
                             align-items: center;
-                            margin-bottom: 0.0625rem;
+                            margin-top: 0.0625rem;
                             .icon-white {
                                 width: 0.0521rem;
                                 height: 0.0521rem;
@@ -328,8 +419,12 @@
                         }
                     }
                     .item-type {
+                        margin-top: 0.0625rem;
                         text-align: center;
                     }
+                }
+                i { // 补位元素
+                    width: 1.1979rem;
                 }
             }
         }
