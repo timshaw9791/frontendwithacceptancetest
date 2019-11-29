@@ -170,3 +170,30 @@ export function handheld(errCB) {
     });
     return start
 }
+
+/* 导出文件 */
+export function writeFile(content, cb) {
+    let path = `${newFile_path}/equip.json`,
+        pushCmdStr = `chcp 65001 && adb push ${path} sdcard/inventoryData/`;
+    try {
+        fs.writeFileSync(path, JSON.stringify(content))
+    } catch (error) {
+        cb({state: false, message: "本地文件写入失败"})
+        console.log(error);
+    }
+    workerProcess = exec(pushCmdStr, {
+        cwd: newFile_path
+    })
+
+    workerProcess.stderr.on('data', data => {
+        if(data.includes('device')) {
+            cb({state: false, message: "未发现设备，请检查设备是否连接正常"})
+        } else if(data.includes('KB/s')) {
+            cb({state: true, message: "同步手持机成功"})
+        }
+    })
+
+    workerProcess.on('close', code => {
+        console.log('out code: ' + code);
+    })
+}

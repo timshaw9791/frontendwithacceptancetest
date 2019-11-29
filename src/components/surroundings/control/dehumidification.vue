@@ -7,15 +7,7 @@
                    <span v-text="'除湿控制器'" style="margin-top: 8px"></span>
                    <switch-control :active="active" :inactive="inactive" style="margin-top: 31px" :status="dehumidificationStatus?true:false" @handleChange="dehumidificationControl"></switch-control>
                </div>
-               <div class="dehumidification-bottom">
-                   <span v-text="'湿度阈值：'"></span><input class="input" :style="flag?'border:none;':''" v-model="threshold" :disabled="flag"/><span v-text="'%'"></span>
-                   <div @click="toSetThreshold">
-                       <svg-icon icon-class="编辑" style="width: 18px;height: 18px;margin-left: 24px"></svg-icon>
-                   </div>
-               </div>
-                <div class="dehumidification-button" v-if="!flag">
-                    <span v-text="'取消'" @click="cancel" class="cancel"></span><span v-text="'提交'" @click="submission" class="submission"></span>
-                </div>
+               
             </div>
         </dialogs>
     </div>

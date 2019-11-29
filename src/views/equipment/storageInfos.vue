@@ -55,7 +55,6 @@
                                           :class="{'occupy-position': !title.includes('装备信息详情')}" v-else></field-select>
 
                             <field-input v-model="form.serial" label="装备序号" width="3" :disabled="true"
-                                        :rules="r(true).all(R.require)"
                                         v-if="title.includes('装备信息详情')"
                                       prop="serial"></field-input>
                             
@@ -809,7 +808,7 @@
                             equipId: result.equipArg.id,
                             name: result.equipArg.name,
                             model: result.equipArg.model,
-                            serial: result.serial,
+                            serial: result.serial == '""'?'':result.serial,
                             image: `${imgBaseUrl}${result.image}`,
                             shelfLifeQ: result.equipArg.shelfLife/1000/3600/24,
                             chargeCycle: result.equipArg.chargeCycle/1000/3600/24,
@@ -819,7 +818,6 @@
                             personM: result.equipArg.supplier.person,
                             phoneM: result.equipArg.supplier.phone,
                             rfid: result.rfid,
-                            serial: result.serial
                         }
                         this.zbForm = {
                             numberL: result.location.number,
