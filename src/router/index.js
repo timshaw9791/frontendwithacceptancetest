@@ -327,13 +327,13 @@ export const asyncRouterMap = [
                 name: 'consumablerecord',
                 component: _import('record/consumablerecord'),
                 meta: {title: '耗材记录', roles: ['ADMINISTRATOR']},
-            },
-            {
-                path: 'maintenanceRecord',
-                name: 'maintenanceRecord',
-                component: _import('record/maintenanceRecord'),
-                meta: {title: '维保记录', roles: ['ADMINISTRATOR']},
-            },
+            }
+            // {
+            //     path: 'maintenanceRecord',
+            //     name: 'maintenanceRecord',
+            //     component: _import('record/maintenanceRecord'),
+            //     meta: {title: '维保记录', roles: ['ADMINISTRATOR']},
+            // },
         ]
     },
 
