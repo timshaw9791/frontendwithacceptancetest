@@ -16,7 +16,7 @@
                 <div class="title">待办事宜</div>
                 <div class="event-list">
                     <div class="event-box" v-for="(event, i) in toDoList" :key="i">
-                        <div>{{ event.name }}</div>
+                        <div>{{ event.info }}</div>
                         <div>{{ event.type }}</div>
                         <div>{{ event.time }}</div>
                     </div>
@@ -76,7 +76,7 @@
 
 <script>
     import progressCircular from 'components/base/progressCircular'
-    import { findAllData, findEquipsNeedChange } from 'api/overview'
+    import { findAllData, findEquipsNeedChange, tasks } from 'api/overview'
     import { writeFile } from "common/js/rfidReader"
     // import FlvPlayerVue from 'components/videoPlayer/FlvPlayer.vue';
     // import {temperatureValue} from "api/surroundings";
@@ -112,27 +112,27 @@
                     tag: "同步手持机"
                 }],
                 toDoList: [{
-                    name: "调拨流程申请-王小明",
+                    info: "调拨流程申请-王小明",
                     type: "调拨流程",
                     time: "2019-11-30"
                 },{
-                    name: "调拨流程申请-王小明",
+                    info: "调拨流程申请-王小明",
                     type: "调拨流程",
                     time: "2019-11-30"
                 },{
-                    name: "调拨流程申请-王小明",
+                    info: "调拨流程申请-王小明",
                     type: "调拨流程",
                     time: "2019-11-30"
                 },{
-                    name: "调拨流程申请-王小明",
+                    info: "调拨流程申请-王小明",
                     type: "调拨流程",
                     time: "2019-11-30"
                 },{
-                    name: "调拨流程申请-王小明",
+                    info: "调拨流程申请-王小明",
                     type: "调拨流程",
                     time: "2019-11-30"
                 },{
-                    name: "调拨流程申请-王小明",
+                    info: "调拨流程申请-王小明",
                     type: "调拨流程",
                     time: "2019-11-30"
                 }],
@@ -212,6 +212,19 @@
                     this.$message.error("请求超时")
                 })
             },
+            getToDoTasks() {
+                tasks().then(res => {
+                    let result = JSON.parse(JSON.stringify(res)), list = [],userName = JSON.parse(localStorage.getItem("user")).name;
+                    result.forEach(item => {
+                        list.push({
+                            info: `${item.name}-${userName}-${this.$filterTime(item.createTime, '{y}-{m}-{d}')}`,
+                            type: item.name,
+                            time: this.$filterTime(item.createTime)
+                        })
+                    })
+                    this.toDoList = list
+                })
+            },
             syncHandheld() {
                 findEquipsNeedChange().then(res => {
                     writeFile(res, cbData => {
@@ -255,6 +268,7 @@
         },
         created() {
             this.getAllData()
+            this.getToDoTasks()
         },
     }
 </script>
