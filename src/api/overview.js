@@ -1,4 +1,5 @@
 import request from 'common/js/request'
+import { baseBURL } from 'api/config'
 
 
 export function getReceiveList() {
@@ -24,4 +25,12 @@ export function findEquipsNeedChange() {
     })
 }
 
+/* 待办任务 */
+export function tasks(params) {
+    return request({
+        url: `${baseBURL}/tasks`,
+        method: "GET",
+        params
+    })
+}
 
