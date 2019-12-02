@@ -51,7 +51,7 @@
 
     .search .input {
         width: 100%;
-        height: 0.1979rem;
+        height: 0.1667rem;
         background: rgba(255, 255, 255, 1);
         border: 0.0052rem solid rgba(112, 112, 112, 0.13);
         opacity: 1;

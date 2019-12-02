@@ -48,7 +48,6 @@
                handler(newVal){
                    console.log('indexDefaultWatch',newVal);
                    this.value = newVal;
-
                    this.$emit('selected', newVal);
                }
             }

@@ -10,7 +10,7 @@
 </template>
 
 <script>
-    import {baseURL} from "../../api/config";
+    import {baseURL,baseBURL} from "../../api/config";
     import request from 'common/js/request'
 
     export default {
@@ -40,7 +40,7 @@
             typeUrl: {
                 type: String,
                 default: 'normal'
-            }
+            },
         },
         watch: {
             'table.search': {
@@ -53,7 +53,7 @@
                     }
                 }
             },
-            'table.abnormal': {
+            'table.params': {
                 deep: true,
                 handler(newVal, oldVal) {
                     this.getList()
@@ -75,9 +75,10 @@
         },
         methods: {
             getList() {
-                let url = baseURL + this.table.url;
+                let url = '';
                 let paramskey = {};
                 if (this.typeUrl === 'normal') {
+                    url=baseURL + this.table.url;
                     paramskey = {
                         page: this.paginator.page,
                         size: this.paginator.size,
@@ -87,10 +88,11 @@
                     };
                 } else {
                     paramskey = {page: this.paginator.page, size: this.paginator.size, search: this.table.search};
+                    url=baseBURL + this.table.url
                 }
                 let params = {};
                 if (this.otherParams) {
-                    params = {...paramskey, ...{abnormal: this.table.abnormal}};
+                    params = {...paramskey, ...this.table.params};
                 } else {
                     params = {...paramskey};
                 }

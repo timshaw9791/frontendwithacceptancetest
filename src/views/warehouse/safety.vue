@@ -76,14 +76,13 @@
     import s_search from 'components/base/search'
     import textButton from 'components/base/textButton'
     import tips from "components/base/tips"
-    import serviceDialog from 'components/base/gailiangban'
     import genreOrCategory from 'components/warehouse/safety/genreOrCategory'
     import safetyTable from 'components/warehouse/safety/safetyTable'
     import {categoryFindAll, deleteGenreById, findAllCategoryById, safetyStock, findAllEquipArgs,inHouse} from "api/warehouse"
 
     export default {
         name: "safety",
-        components: {s_search, textButton, serviceDialog, genreOrCategory, safetyTable, tips},
+        components: {s_search, textButton, genreOrCategory, safetyTable, tips},
         data() {
             return {
                 filterText:'',

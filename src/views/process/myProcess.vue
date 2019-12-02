@@ -4,7 +4,7 @@
             {{$route.meta.title}}
         </div>
         <div class="my_process_action_box" data-test="action_box">
-            <text-button :iconSize="20" :iconClass="'加号'" :buttonName="'申请流程'" @click="toExport"></text-button>
+            <text-button :iconSize="20" :iconClass="'加号'" :buttonName="'申请流程'" @click="apply"></text-button>
             <div class="action_right_box">
                 <div style="width: 1.6875rem">
                     <p_search @search="getSearch" :placeholder="'标题/工作流'"></p_search>
@@ -13,9 +13,10 @@
         </div>
         <div class="my_process_main_box" data-test="main_box">
             <div class="main_table_box" data-test="table_box">
-                <p_table :table="table" :typeUrl="'process'" @clickTable="clickTable" ref="table"></p_table>
+                <p_table :table="table" :typeUrl="'process'" :otherParams="true" @clickTable="clickTable" ref="table"></p_table>
             </div>
         </div>
+        <select_apply ref="selectApply"></select_apply>
     </div>
 </template>
 
@@ -23,10 +24,11 @@
     import textButton from 'components/base/textButton'
     import p_search from 'components/base/search'
     import p_table from 'common/vue/ajaxTabel'
+    import select_apply from 'components/process/processDialog/selectApplyProcess'
     export default {
         name: "myProcess",
         components:{
-            textButton,p_search,p_table
+            textButton,p_search,p_table,select_apply
         },
         data(){
             return{
@@ -43,12 +45,15 @@
                         label:'操作',
                         button:[{name:'详情',type:'primary'}]
                     },
-                    abnormal:{startUserId:''},
+                    params:{startUserId:JSON.parse(localStorage.getItem('user')).id},
                     search:''
                 }
             }
         },
         methods:{
+            apply(){
+                this.$refs.selectApply.show()
+            },
             filterProcessType(ns){
                 switch (ns.processDefinitionKey) {
                     case "SCRAP":
