@@ -16,74 +16,62 @@
             <div class="header-item">
                 <span v-text="'操作人员：'"></span>
                 <div class="header-content">
-                    <span v-text="overview.adminName"></span>
+                    <span v-text="overview.operatorInfo.operator"></span>
                 </div>
             </div>
         </div>
         <div class="title">
             <div class="title-box">
                 <div class="title-item">
-                    <span v-text="'盘点总数'"></span><span style="margin-left: 23px" v-text="size"></span>
+                    <span v-text="'盘点总数'"></span><span style="margin-left: 23px" v-text="overview.inventoryCount"></span>
                 </div>
                 <div class="title-item" style="margin-left: 73px">
                     <span v-text="'未盘点数'"></span>
-                    <span style="margin-left: 23px" v-text="overview.withoutRfidCount"></span>
+                    <span style="margin-left: 23px" v-text="overview.notCount"></span>
                     <span v-text="'(出库数量'"></span>
-                    <span style="margin-left: 5px" v-text="overview.outCount"></span><span v-text="')'"></span>
-                </div>
-                <div class="title-item" style="margin-left: 73px">
-                    <span v-text="'出库数量'"></span><span style="margin-left: 23px" v-text="overview.outCount"></span>
+                    <span style="margin-left: 5px" v-text="overview.outHouseCount"></span><span v-text="')'"></span>
                 </div>
             </div>
         </div>
         <div class="body">
             <span v-text="'未在库装备统计：'"></span>
-            <field-table :list="list" :labelList="table.labelList" height="3rem" :havePage="false"
-                        :tableAction="table.tableAction"  @clickTableCloum="clickTableCloum" style="width: 100%">
+            <field-table :list="overview.inventoryDetailSet" :labelList="table.labelList" height="3rem" :havePage="false"
+                        :tableAction="table.tableAction"  style="width: 100%">
             </field-table>
         </div>
         <div class="bottom">
             <span v-text="'备注：'"></span>
-            <span v-model="remark"></span>
+            <span v-model="overview.remark"></span>
         </div>
     </div>
 </template>
 
 <script>
+    import {transformMixin} from "common/js/transformMixin";
+
     export default {
         name: "inventoryinfo",
         components:{
             
         },
+        mixins: [transformMixin],
         data(){
             return{
-                remark:'',
-                
                 table: {
                     flag: false,
                     labelList: [
-                        {lable: 'RFID', field: 'inventoryCount',sort:false},
-                        {lable: '装备序号', field: 'inventoryCount',sort:false},
-                        {lable: '装备型号', field: 'operatorInfo.operator',sort:false},
-                        {lable: '装备名称', field: 'inventoryCount',sort:false},
-                        {lable: '装备位置', field: 'notCount',sort:false},
+                        {lable: 'RFID', field: 'equipInfo.rfid',sort:false},
+                        {lable: '装备序号', field: 'equipInfo.serial',sort:false},
+                        {lable: '装备型号', field: 'equipInfo.model',sort:false},
+                        {lable: '装备名称', field: 'equipInfo.equipName',sort:false},
+                        {lable: '装备位置', field: 'equipInfo',filter: (ns) => this.fixposition(ns.equipInfo)},
                     ],
                 },
             }
         },
         props:{
-          list:{
-              type:Array
-          },
             overview:{
               type:Object
-            },
-            size:{
-              type:String
-            },
-            componentType:{
-              type:String,
-                default:'warehouse'
             },
             show:{
                 type:Boolean,
@@ -95,22 +83,21 @@
         },
         computed:{
           name: ()=> {
-              let user=JSON.parse(localStorage.getItem('user'));
-              return user.name
+              return this.overview.operatorInfo.operator
           },
             startTime:function() {
               let time='';
-              if(this.overview.startTime){
-                  console.log(new Date(this.overview.startTime));
-                  time = this.$filterTime(this.overview.startTime);
+              if(this.overview.createTime){
+                  console.log(new Date(this.overview.createTime));
+                  time = this.$filterTime(this.overview.createTime);
               }
                 return time;
             },
             endTime:function(){
                 let time='';
-                if(this.overview.endTime){
-                    console.log(new Date(this.overview.endTime));
-                    time = this.$filterTime(this.overview.endTime);
+                if(this.overview.updateTime){
+                    console.log(new Date(this.overview.updateTime));
+                    time = this.$filterTime(this.overview.updateTime);
                 }
                 return time
             }

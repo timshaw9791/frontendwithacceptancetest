@@ -304,12 +304,12 @@ export const asyncRouterMap = [
                 component: _import('record/chargingRecord'),
                 meta: {title: '充电记录', roles: ['ADMINISTRATOR']},
             },
-            // {
-            //     path: 'maintenanceRecord',
-            //     name: 'maintenanceRecord',
-            //     component: _import('record/maintenanceRecord'),
-            //     meta: {title: '保养记录', roles: ['ADMINISTRATOR']},
-            // },
+            {
+                path: 'maintenanceRecord',
+                name: 'maintenanceRecord',
+                component: _import('record/maintenanceRecord'),
+                meta: {title: '保养记录', roles: ['ADMINISTRATOR']},
+            },
             {
                 path: 'serviceRecord',
                 name: 'serviceRecord',
@@ -327,13 +327,13 @@ export const asyncRouterMap = [
                 name: 'consumablerecord',
                 component: _import('record/consumablerecord'),
                 meta: {title: '耗材记录', roles: ['ADMINISTRATOR']},
-            },
-            {
-                path: 'maintenanceRecord',
-                name: 'maintenanceRecord',
-                component: _import('record/maintenanceRecord'),
-                meta: {title: '维保记录', roles: ['ADMINISTRATOR']},
-            },
+            }
+            // {
+            //     path: 'maintenanceRecord',
+            //     name: 'maintenanceRecord',
+            //     component: _import('record/maintenanceRecord'),
+            //     meta: {title: '维保记录', roles: ['ADMINISTRATOR']},
+            // },
         ]
     },
 

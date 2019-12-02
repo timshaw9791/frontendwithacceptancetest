@@ -22,7 +22,7 @@
                 </BosInput>
             </div>
         </div>
-        <field-table :list="list" :labelList="table.labelList" :havePage="false"
+        <field-table :list="list" :labelList="table.labelList"  :pageInfo="params" @tableCurrentPageChanged="changePage" 
                       :tableAction="table.tableAction"  @clickTableCloum="clickTableCloum" style="width: 100%">
         </field-table>
         <service-dialog title="维修报废记录" ref="dialogLinghuan" width="766px" :button="false">
@@ -87,7 +87,13 @@
                 params:{
                     endTime:'',
                     startTime:'',
-                    search:''
+                    search:'',
+                    properties:'create_time',
+                    direction:'DESC',
+                    page:1,
+                    size:10,
+                    totalPages: 5,
+                    totalElements: 5
                 },
                 time:''
             }
@@ -95,20 +101,25 @@
 
         methods: {
             
-            getList(data){
-                findScrapRecordByNameLike(data).then(res=>{
+            getList(){
+                findScrapRecordByNameLike(this.params).then(res=>{
                     this.list=[];
                     this.list=JSON.parse(JSON.stringify(res.content));
+                    this.params.totalPages = res.totalPages
+                    this.params.totalElements = res.totalElements
                 })
                 console.log("this.list",this.list)
             },
             clickTableCloum(data){
                 console.log("data",data)
-                console.log("111")
                 this.infolist = data.row.scrapDetailSet
                 console.log("this.infolist",this.infolist)
                 this.$refs.dialogLinghuan.show()
                 
+            },
+            changePage(data){
+                this.params.page=data;
+                this.getList()
             }
         },
         created(){
@@ -117,14 +128,16 @@
         watch: {
             'params.search':{
                 handler(data){
+                    this.params.page=1
                     console.log("this.params",this.params)
-                    this.getList(this.params)
+                    this.getList()
                 }
                 
             },
             'time':{
                 handler(data){
                     console.log("data",data)
+                    this.params.page=1
                     if(data){
                         data[0] = data[0].replace(new RegExp("-","gm"),"/");
                         this.params.startTime = (new Date(data[0])).getTime();
@@ -137,7 +150,7 @@
                         this.params.endTime = '';
                         console.log("this.params",this.params)
                     }
-                    this.getList(this.params)
+                    this.getList()
                 }
                 
             },

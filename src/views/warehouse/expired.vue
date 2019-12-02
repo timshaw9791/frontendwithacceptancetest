@@ -3,8 +3,9 @@
         <my-header :title="'到期报废'" :searchFlag="false"  ></my-header>
         <div >
             <div class="action-bar">
-                <div style="width:400px">
-                    读取数据
+                <div class="readata">
+                    <svg-icon icon-class='新增' style="margin-left: 38px;line-height: 57px;" class="icon-search"></svg-icon>
+                    <span style="color: #2F2F76;line-height: 57px;" @click="read" data-test="button" >读取数据</span>
                 </div>
                 <div class="_buttons" style="margin-right: 18px">
                     <BosInput
@@ -18,6 +19,12 @@
             <field-table :list="list" :labelList="table.labelList"
                         :tableAction="table.tableAction"  :pageInfo="paginator" @tableCurrentPageChanged="changePage" style="width: 100%">
             </field-table>
+            <service-dialog title="报废装备清单" ref="dialog1" :secondary="true" @confirm="expriedEquip">
+                <div>  本次报废装备合计：{{this.count}}(件)</div>
+                <field-table :list="equiplist.inventoryModels" :labelList="equip"
+                            :havePage="false" style="width: 100%">
+                </field-table>
+            </service-dialog>
         </div>
         
     </div>
@@ -25,26 +32,29 @@
 
 <script>
     import myHeader from 'components/base/header/header'
-    import {findScarEquipByNameLike} from'api/expired.js'
+    import {findScarEquipByNameLike,scrap} from'api/expired.js'
+    import serviceDialog from 'components/base/gailiangban'
+    import { handheld, killProcess } from 'common/js/rfidReader'
 
     export default {
         name: "expired",
         components:{
             myHeader,
+            serviceDialog,
         },
         data(){
             return{
                 table: {
                     flag: false,
                     labelList: [
-                        {lable: 'RFID', field: 'count',sort:false},
-                        {lable: '装备序号', field: 'operatorInfo.operator',sort:false},
-                        {lable: '装备名称', field: 'operatorInfo.operator',sort:false},
-                        {lable: '装备型号', field: 'operatorInfo.operator',sort:false},
-                        {lable: '供应商', field: 'operatorInfo.operator',sort:false},
-                        {lable: '联系人', field: 'operatorInfo.operator',sort:false},
-                        {lable: '联系方式', field: 'operatorInfo.operator',sort:false},
-                        {lable: '到期时间', field: 'createTime' ,filter: (ns) => this.$filterTime(parseInt(ns.createTime))},
+                        {lable: 'RFID', field: 'rfid',sort:false},
+                        {lable: '装备序号', field: 'serial',sort:false},
+                        {lable: '装备名称', field: 'equipName',sort:false},
+                        {lable: '装备型号', field: 'model',sort:false},
+                        {lable: '供应商', field: 'supplierName',sort:false},
+                        {lable: '联系人', field: 'person',sort:false},
+                        {lable: '联系方式', field: 'phone',sort:false},
+                        {lable: '到期时间', field: 'scarTime' ,filter: (ns) => this.$filterTime(parseInt(ns.scarTime))},
                     ],
                     search:'',
                 },
@@ -55,6 +65,14 @@
                     totalPages: 10,
                     size: 9
                 },
+                equiplist:[],
+                equip:[
+                    {lable: '装备名称', field: 'equipName',sort:false},
+                    {lable: '装备型号', field: 'equipModel',sort:false},
+                    {lable: '装备数量', field: 'currentProgress',sort:false},
+                ],
+                rfidlist:[],
+                count:0
             }
         },
         methods:{
@@ -66,7 +84,7 @@
                 }
                 findScarEquipByNameLike(params).then(res=>{
                     this.list=[];
-                    this.list=res;
+                    this.list=res.content;
                     this.paginator.totalPages=res.totalPages
                     console.log("res",res)
                     console.log("list",this.list)
@@ -77,6 +95,27 @@
                 this.getList()
 
             },
+            read(){
+                console.log("获取数据")
+                this.equiplist=[]
+                handheld((err) => this.$message.error(err)).then(data => {
+                    this.equiplist=JSON.parse(JSON.stringify(data));
+                    for(let i in this.equiplist.inventoryModels){
+                        for (let j in this.this.equiplist.inventoryModels[i].rfids){
+                            this.rfidlist.push(this.equiplist.inventoryModels[i].rfids[j])
+                        }
+                        this.count+=this.equiplist.inventoryModels[i].currentProgress
+                    }
+                    this.$refs.dialog1.show();
+                });
+            },
+            expriedEquip(){
+                console.log("报废")
+                scrap(this.rfidlist).then(res=>{
+                    this.$message.success('操作成功')
+                    this.$refs.dialog1.hide();
+                })
+            }
         },
         created(){
             this.getList()
@@ -115,6 +154,13 @@
     width: 100%;
     color: #707070;
 }
+.action-bar .readata{
+        display: flex;
+        align-items: center;
+        justify-content: left;
+        flex-direction: row;
+        cursor: pointer;
+    }
 .action-bar .input-box{
     width:285.0048px;
     position: relative;

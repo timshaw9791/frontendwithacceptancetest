@@ -17,13 +17,13 @@
                     <BosInput
                             placeholder="操作人员"
                             suffix="el-icon-search"
-                            v-model="params.operator"
+                            v-model="params.search"
                             style="width:285px;">
 
                     </BosInput>
                 </div>
             </div>
-            <field-table :list="list" :labelList="table.labelList" :havePage="false"
+            <field-table :list="list" :labelList="table.labelList"  :pageInfo="params" @tableCurrentPageChanged="changePage" 
                         :tableAction="table.tableAction"  @clickTableCloum="clickTableCloum" style="width: 100%">
             </field-table>
         </div>
@@ -65,7 +65,13 @@
                 params:{
                     endTime:'',
                     startTime:'',
-                    operator:''
+                    search:'',
+                    properties:'create_time',
+                    direction:'DESC',
+                    page:1,
+                    size:10,
+                    totalPages: 5,
+                    totalElements: 5
                 }
             }
         },
@@ -76,30 +82,38 @@
                 this.show = false
             },
             
-            getList(data){
-                findUpkeepStartTimeAndEndTimeBetweenAndOperatorLike(data).then(res=>{
+            getList(){
+                findUpkeepStartTimeAndEndTimeBetweenAndOperatorLike(this.params).then(res=>{
                     this.list=[];
-                    this.list=res;
+                    this.list=res.content;
                     console.log("res",res)
                     console.log("list",this.list)
+                    this.params.totalPages = res.totalPages
+                    this.params.totalElements = res.totalElements
                 })
             },
             black(){
                 this.show = true
+            },
+            changePage(data){
+                this.params.page=data
+                this.getList()
             }
         },
         created(){
             this.getList()
         },
         watch:{
-            'params.operator':{
+            'params.search':{
                 handler(data){
+                    this.params.page=1
                     console.log("this.params",this.params)
                     this.getList(this.params)
                 }
             },
             'time':{
                 handler(data){
+                    this.params.page=1
                     console.log("data",data)
                     if(data){
                         data[0] = data[0].replace(new RegExp("-","gm"),"/");

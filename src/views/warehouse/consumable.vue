@@ -135,11 +135,10 @@
                         this.$message.error("请填写完整！")
                     }else{
                         this.from.name = this.name
-                        this.from.describes = this.describes
+                        this.from.describes = this.remark
                         this.from.count = this.count
                         let data = JSON.parse(JSON.stringify(this.from))
-                        let params = {remark: this.remark}
-                        receiveConsumable(data,params).then((res)=>{
+                        receiveConsumable(data).then((res)=>{
                             this.$message.success('操作成功')
                             this.$refs.dialog.hide();
                             this.getConsumableList()

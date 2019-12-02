@@ -8,3 +8,14 @@ export function findScarEquipByNameLike(data) {
         params: data
     })
 }
+
+export function scrap(data) {
+    return request({
+        url: '/equipmaintain/scrap',
+        method: 'post',
+        params: {
+            category:'MATURITY',
+            rfids:data
+        }
+    })
+}

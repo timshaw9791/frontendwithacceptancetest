@@ -96,7 +96,7 @@
         },
         methods: {
             getSupplierList() {
-                let params = {page: this.paginator.page, size: this.paginator.size, name: this.inquire};
+                let params = {page: this.paginator.page, size: this.paginator.size, name: this.inquire, direction: "DESC",properties: "updateTime"};
                 this.loading = true
                 supplierFindByName(params).then(res => {
                     let result = JSON.parse(JSON.stringify(res))
