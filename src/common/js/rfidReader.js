@@ -174,26 +174,38 @@ export function handheld(errCB) {
 /* 导出文件 */
 export function writeFile(content, cb) {
     let path = `${newFile_path}/equip.json`,
-        pushCmdStr = `chcp 65001 && adb push ${path} sdcard/inventoryData/`;
+        pushCmdStr = `chcp 65001 && adb push ${path} sdcard/inventoryData/`,
+        needReport = true;
     try {
         fs.writeFileSync(path, JSON.stringify(content))
     } catch (error) {
         cb({state: false, message: "本地文件写入失败"})
+        needReport = false
         console.log(error);
     }
     workerProcess = exec(pushCmdStr, {
         cwd: newFile_path
     })
-
+    
     workerProcess.stderr.on('data', data => {
-        if(data.includes('device')) {
+        if(data.includes('device') || data.includes('devices')) {
+            needReport = false
             cb({state: false, message: "未发现设备，请检查设备是否连接正常"})
         } else if(data.includes('KB/s')) {
+            needReport = false
             cb({state: true, message: "同步手持机成功"})
+        } else if(data.includes('adb') || data.includes('not recognized')) {
+            needReport = false
+            cb({state: false, message: "ADB驱动未安装"})
         }
+        console.log(data);
     })
 
     workerProcess.on('close', code => {
+        if(needReport) {
+            needReport = false
+            cb({state: false, message: `命令发生错误，退出码${code}`})
+        }
         console.log('out code: ' + code);
     })
 }
