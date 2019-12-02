@@ -7,7 +7,7 @@
             <div class="action-bar">
             <div class="_buttons" style="margin-right: 18px">
             <BosInput
-                    placeholder="开门人员"
+                    placeholder="领取人员"
                     suffix="el-icon-search"
                     v-model="search"
                     style="width:285px;">

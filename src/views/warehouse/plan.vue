@@ -419,7 +419,7 @@
         // justify-content: space-between;
 
         .pieceList {
-            border: 1px solid red;
+            // border: 1px solid red;
             width:491px;
             height:343px;
             margin-left: 10px;
