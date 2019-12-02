@@ -34,6 +34,9 @@
                 type: Array,
                 default: [],
             },
+            placeholder:{
+                type:String
+            }
             // indexDefault: {
             //     type: String,
             // },
@@ -43,13 +46,13 @@
             // }
         },
         watch: {
-            'indexDefault':{
-                handler(newVal){
-                    console.log('indexDefaultWatch',newVal);
-                    this.value = newVal;
-                    this.$emit('selected', newVal);
-                }
-            }
+            // 'indexDefault':{
+            //     handler(newVal){
+            //         console.log('indexDefaultWatch',newVal);
+            //         this.value = newVal;
+            //         this.$emit('selected', newVal);
+            //     }
+            // }
         }
     }
 </script>
@@ -57,12 +60,12 @@
 <style lang="scss" scoped>
 
     .tabs-select {
-        /deep/ .el-input__inner {
-            width: 1.1458rem;
+        /deep/ .el-select .el-input__inner {
             height: 0.1667rem;
         }
-        /deep/ .el-input__suffix {
-            top: 0.0208rem;
+        /deep/ .el-input__icon {
+            width: 0.1302rem;
+            line-height: 0.1667rem;
         }
     }
 

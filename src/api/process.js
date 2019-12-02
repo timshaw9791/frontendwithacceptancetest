@@ -2,6 +2,49 @@ import request from 'common/js/request'
 import {baseBURL} from "./config";
 
 
+export function getAllUnit() {
+    return  request({
+        url:`${baseBURL}/organ-units/tree`,
+        method:'get'
+    })
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export function getMyhouse() {
     return  request({

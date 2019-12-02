@@ -1,30 +1,42 @@
 <template>
-    <div>
-        <el-table :data="equipArgList" fit class="dialogList" height="360">
-            <el-table-column label="装备名称" align="center" >
+    <div class="process-table-box">
+        <el-table :data="equipArgList" fit class="dialogList" height="2.421875rem">
+            <el-table-column label="装备名称" align="left">
                 <template scope="scope">
-                    <el-select v-model="scope.row.equipArg.name" value-key="id" @change="changeModel(scope.row.equipArg.name)">
-                        <el-option
-                                v-for="item in nameList"
-                                :label="item"
-                                :value="item"
-                                :key="item">
-                        </el-option>
-                    </el-select>
+                    <div class="table-row-item">
+                        <el-select v-model="scope.row.equipArg.name" value-key="id"
+                                   @change="changeModel(scope.row.equipArg.name)">
+                            <el-option
+                                    v-for="item in nameList"
+                                    :label="item"
+                                    :value="item"
+                                    :key="item">
+                            </el-option>
+                        </el-select>
+                    </div>
                 </template>
             </el-table-column>
-            <!--<el-table-column label="装备型号" align="center" >-->
-                <!--<template scope="scope">-->
-                    <!--<el-select v-model="scope.row.equipArg.model" value-key="id" @change="qaq(scope,$event,title)">-->
-                        <!--<el-option-->
-                                <!--v-for="item in modelList"-->
-                                <!--:key="item.id"-->
-                                <!--:label="item.model"-->
-                                <!--:value="item">-->
-                        <!--</el-option>-->
-                    <!--</el-select>-->
-                <!--</template>-->
-            <!--</el-table-column>-->
+            <el-table-column label="装备型号" align="left">
+                <template scope="scope">
+                    <div class="table-row-item">
+                        <el-select v-model="scope.row.equipArg.model" value-key="id">
+                            <el-option
+                                    v-for="item in modelList"
+                                    :key="item.id"
+                                    :label="item.model"
+                                    :value="item">
+                            </el-option>
+                        </el-select>
+                    </div>
+                </template>
+            </el-table-column>
+            <el-table-column label="装备数量" align="left">
+                <template scope="scope">
+                    <div class="table-row-item">
+                        <el-input v-model="scope.row.equipArg.count"></el-input>
+                    </div>
+                </template>
+            </el-table-column>
         </el-table>
     </div>
 </template>
@@ -32,17 +44,48 @@
 <script>
     export default {
         name: "processTable",
-        props:{
-            equipArgList:{
-                type:Array,
-                default(){
+        data(){
+            return{
+                modelList:[]
+            }
+        },
+        props: {
+            equipArgList: {
+                type: Array,
+                default() {
+                    return [{equipArg: '', location: {}}]
+                }
+            },
+            nameList: {
+                type: Array,
+                default() {
                     return []
                 }
+            }
+        },
+        methods:{
+            changeModel(name){
+
             }
         }
     }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+    .process-table-box {
+        width: 100%;
+        border:1px solid rgba(220,223,230,1);
+    }
 
+    .process-table-box .table-row-item {
+        width: 1.2917rem;
+        /deep/ .el-input__inner {
+            height: 0.1667rem;
+        }
+
+        /deep/ .el-input__icon {
+            width: 0.1302rem;
+            line-height: 0.1667rem;
+        }
+    }
 </style>

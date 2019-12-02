@@ -12,24 +12,25 @@
             </div>
         </serviceDialog>
         <apply-borrow ref="borrow"></apply-borrow>
+        <apply-scrap ref="scrap"></apply-scrap>
     </div>
 </template>
 
 <script>
     import serviceDialog from 'components/base/gailiangban'
     import applyBorrow from './applyBorrow'
-
+    import applyScrap from './applyScrap'
     export default {
         name: "selectApplyProcess",
         components: {
-            serviceDialog, applyBorrow
+            serviceDialog, applyBorrow,applyScrap
         },
         data() {
             return {
                 selectButtons: [{key: '', label: '调拨流程'}, {key: 'borrow', label: '借用流程'}, {
                     key: '',
                     label: '直调流程'
-                }, {key: '', label: '报废流程'}]
+                }, {key: 'scrap', label: '报废流程'}]
             }
         },
         methods: {

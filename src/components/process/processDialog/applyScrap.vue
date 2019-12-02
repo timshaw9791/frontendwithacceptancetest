@@ -1,9 +1,9 @@
 <template>
     <div>
-        <serviceDialog :title="'申请借用流程'" ref="applyBorrow" width="5.4167rem"
+        <serviceDialog :title="'申请报废流程'" ref="applyScrap" width="5.4167rem"
                        :button="false">
-            <div class="apply-borrow-box">
-                <div class="apply-borrow-action">
+            <div class="apply-scrap-box">
+                <div class="apply-scrap-action">
                     <div class="action-button-item">
                         <span v-text="'所在库房：'"></span>
                         <div class="button-item-input">
@@ -15,14 +15,23 @@
                         <process-cascader></process-cascader>
                     </div>
                     <div class="action-button-item">
-                        <span v-text="'指定领导：'"></span>
+                        <span v-text="'选择硬件：'"></span>
                         <p_select :options="options" @selected="selectValue"></p_select>
                     </div>
                 </div>
-                <div class="apply-borrow-table">
+                <div class="apply-reason">
+                    <div style="width: 0.390625rem"><span v-text="'申请原因:'"></span></div>
+                    <el-input
+                            :autosize="{ minRows: 1, maxRows: 1}"
+                            type="textarea"
+                            placeholder="请输入内容"
+                            v-model="form.reason">
+                    </el-input>
+                </div>
+                <div class="apply-scrap-table">
                     <process-table></process-table>
                 </div>
-                <div class="apply-borrow-footer">
+                <div class="apply-scrap-footer">
                     <div class="action-footer-item">
                         <span v-text="'申请人员：'"></span>
                         <div class="button-item-input">
@@ -30,7 +39,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="apply-borrow-button">
+                <div class="apply-scrap-button">
                     <el-button @click="cancelDb" data-test="button">取 消</el-button>
                     <el-button type="primary" @click="apply" data-test="button">确 定</el-button>
                 </div>
@@ -45,7 +54,7 @@
     import processTable from '../processTable'
     import processCascader from '../processCascader'
     export default {
-        name: "applyBorrow",
+        name: "applyScrap",
         components: {
             serviceDialog,
             p_select,
@@ -55,7 +64,8 @@
         data() {
             return {
                 form:{
-                    myUnit:JSON.parse(localStorage.getItem('user')).organUnitName
+                    myUnit:JSON.parse(localStorage.getItem('user')).organUnitName,
+                    reason:''
                 },
                 options: [{
                     value: '选项1',
@@ -63,7 +73,6 @@
                 }, {
                     value: '选项2',
                     label: '双皮奶',
-                    disabled: true
                 }, {
                     value: '选项3',
                     label: '蚵仔煎'
@@ -87,22 +96,25 @@
             selectValue(data) {
                 console.log(data);
             },
+            apply(){
+
+            },
             show() {
-                this.$refs.applyBorrow.show()
+                this.$refs.applyScrap.show()
             },
             cancelDb() {
-                this.$refs.applyBorrow.cancel();
+                this.$refs.applyScrap.cancel();
             },
         }
     }
 </script>
 
 <style lang="scss" scoped>
-    .apply-borrow-box {
+    .apply-scrap-box {
         height: 3.6302rem;
         position: relative;
     }
-    .apply-borrow-box .apply-borrow-button{
+    .apply-scrap-box .apply-scrap-button{
         position: absolute;
         width: 100%;
         display: flex;
@@ -114,24 +126,34 @@
             line-height: 0px;
         }
     }
-    .apply-borrow-box .apply-borrow-action {
+    .apply-scrap-box .apply-reason{
+        width: 100%;
+        padding: 0rem 0.1771rem 0.0625rem 0.1771rem;
+        display: flex;
+        align-items: center;
+        justify-content: left;
+        /deep/ .el-textarea__inner {
+
+        }
+    }
+    .apply-scrap-box .apply-scrap-action {
         width: 100%;
         padding: 0.0833rem 0.1771rem 0.0625rem 0.1771rem;
         display: flex;
         align-items: center;
         justify-content: space-between;
     }
-    .apply-borrow-box .apply-borrow-table{
+    .apply-scrap-box .apply-scrap-table{
         width: 100%;
         padding-left: 0.1771rem;
         padding-right: 0.1771rem;
     }
-    .apply-borrow-box .apply-borrow-footer{
+    .apply-scrap-box .apply-scrap-footer{
         width: 100%;
         margin-top: 0.0677rem;
         position: relative;
     }
-    .apply-borrow-footer .action-footer-item{
+    .apply-scrap-footer .action-footer-item{
         position: absolute;
         right: 0.1667rem;
         display: flex;
@@ -142,7 +164,7 @@
             height: 0.1667rem;
         }
     }
-    .apply-borrow-action .action-button-item {
+    .apply-scrap-action .action-button-item {
         display: flex;
         align-items: center;
         justify-content: center;
