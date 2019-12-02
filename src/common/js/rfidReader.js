@@ -204,7 +204,11 @@ export function writeFile(content, cb) {
     workerProcess.on('close', code => {
         if(needReport) {
             needReport = false
-            cb({state: false, message: `命令发生错误，退出码${code}`})
+            if(code == 0) {
+                cb({state: true, message: "同步手持机成功"})
+            } else {
+                cb({state: false, message: `命令发生错误，退出码${code}`})
+            }
         }
         console.log('out code: ' + code);
     })
