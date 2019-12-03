@@ -16,7 +16,7 @@
                 <div class="title">待办事宜</div>
                 <div class="event-list">
                     <div class="event-box" v-for="(event, i) in toDoList" :key="i">
-                        <div>{{ event.name }}</div>
+                        <div>{{ event.info }}</div>
                         <div>{{ event.type }}</div>
                         <div>{{ event.time }}</div>
                     </div>
@@ -29,19 +29,30 @@
                 <div class="header">
                     <div class="title">库存统计</div>
                     <div class="sum-info">
-                        <div class="info-box">
-                            <div class="num">{{ totalIsUse }}</div>
-                            <div class="tag">领用总数</div>
-                        </div>
-                        <svg-icon icon-class="领用总数" class="svg-icon"></svg-icon>
-                        <div class="info-box">
-                            <div class="num">{{ totalCanUse }}</div>
-                            <div class="tag">可用总数</div>
-                        </div>
-                        <svg-icon icon-class="可用总数" class="svg-icon"></svg-icon>
+                        <div>领用总数</div>
+                        <div class="num">{{ totalIsUse }}</div>
+                        <div class="temp"></div>
+                        <div>可用总数</div>
+                        <div class="num">{{ totalCanUse }}</div>
                     </div>
                 </div>
-                <div class="body" ref="inventory">
+                <!-- 表格类 -->
+                <div class="body">
+                    <div class="body-left">
+                        <div class="header-type">装备大类</div>
+                        <div class="header-num">领用数量</div>
+                        <div class="header-num">可用数量</div>
+                    </div>
+                    <div class="body-right">
+                        <div class="item" v-for="(item, i) in inventoryList" :key="i">
+                            <div class="header-type">{{ item.genreName }}</div>
+                            <div class="header-num">{{ item.isUse }}</div>
+                            <div class="header-num">{{ item.canUse }}</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 进度条类 -->
+                <!-- <div class="body" ref="inventory">
                     <div class="item" v-for="(item, i) in inventoryList" :key="i">
                         <progress-circular 
                             :width="131" 
@@ -67,7 +78,7 @@
                         </div>
                         <div class="item-type">{{ item.genreName }}</div>
                     </div>
-                </div>
+                </div> -->
             </div>
         </el-card>
     </div>
@@ -76,7 +87,7 @@
 
 <script>
     import progressCircular from 'components/base/progressCircular'
-    import { findAllData, findEquipsNeedChange } from 'api/overview'
+    import { findAllData, findEquipsNeedChange, tasks } from 'api/overview'
     import { writeFile } from "common/js/rfidReader"
     // import FlvPlayerVue from 'components/videoPlayer/FlvPlayer.vue';
     // import {temperatureValue} from "api/surroundings";
@@ -112,66 +123,31 @@
                     tag: "同步手持机"
                 }],
                 toDoList: [{
-                    name: "调拨流程申请-王小明",
+                    info: "调拨流程申请-王小明",
                     type: "调拨流程",
                     time: "2019-11-30"
                 },{
-                    name: "调拨流程申请-王小明",
+                    info: "调拨流程申请-王小明",
                     type: "调拨流程",
                     time: "2019-11-30"
                 },{
-                    name: "调拨流程申请-王小明",
+                    info: "调拨流程申请-王小明",
                     type: "调拨流程",
                     time: "2019-11-30"
                 },{
-                    name: "调拨流程申请-王小明",
+                    info: "调拨流程申请-王小明",
                     type: "调拨流程",
                     time: "2019-11-30"
                 },{
-                    name: "调拨流程申请-王小明",
+                    info: "调拨流程申请-王小明",
                     type: "调拨流程",
                     time: "2019-11-30"
                 },{
-                    name: "调拨流程申请-王小明",
+                    info: "调拨流程申请-王小明",
                     type: "调拨流程",
                     time: "2019-11-30"
                 }],
-                inventoryList: [{
-                    percentage: 0,
-                    canUse: 0,
-                    isUse: 0,
-                    genreName: "警械类"
-                },
-                {
-                    percentage: 0,
-                    canUse: 0,
-                    isUse: 0,
-                    genreName: "防护、防爆装备类"
-                },
-                {
-                    percentage: 0,
-                    canUse: 0,
-                    isUse: 0,
-                    genreName: "观象、通信及照明器材类"
-                },
-                {
-                    percentage: 0,
-                    canUse: 0,
-                    isUse: 0,
-                    genreName: "生活保障物资类"
-                },
-                {
-                    percentage: 0,
-                    canUse: 0,
-                    isUse: 0,
-                    genreName: "抢险救援装备类"
-                },
-                {
-                    percentage: 45,
-                    canUse: 0,
-                    isUse: 0,
-                    genreName: "其他装备物资类"
-                }],
+                inventoryList: [],
                 totalCanUse: 0,
                 totalIsUse: 0,
                 loading: false, // 手持机同步等待
@@ -187,15 +163,15 @@
                     this.topRemindList[2].count = result.needReceiveNum
                     this.topRemindList[3].count = result.needScrapNum
                     result.workDataDtoList.forEach(item => {
-                        let molecule = item.isUse, denominator = item.isUse + item.canUse, percentage = 0;
+                        // let molecule = item.isUse, denominator = item.isUse + item.canUse; percentage = 0;
                         isUse += item.isUse
                         canUse += item.canUse
-                        if(molecule.item == 0 || denominator == 0) {
-                            percentage = 0
-                        } else {
-                            percentage = (molecule/denominator*100).toFixed(2)
-                        }
-                        list.push(Object.assign(item, {percentage: Number(percentage)}))
+                        // if(molecule.item == 0 || denominator == 0) {
+                        //     percentage = 0
+                        // } else {
+                        //     percentage = (molecule/denominator*100).toFixed(2)
+                        // }
+                        list.push(item)
                     })
                     //当个数超过7个，需要换行显示。添加 i 标签，解决flex:justify-content: space-around;最后一行不能左对齐问题
                     // length = list.length
@@ -210,6 +186,19 @@
                     this.totalCanUse = canUse
                 }).catch(err => {
                     this.$message.error("请求超时")
+                })
+            },
+            getToDoTasks() {
+                tasks().then(res => {
+                    let result = JSON.parse(JSON.stringify(res)), list = [],userName = JSON.parse(localStorage.getItem("user")).name;
+                    result.forEach(item => {
+                        list.push({
+                            info: `${item.name}-${userName}-${this.$filterTime(item.createTime, '{y}-{m}-{d}')}`,
+                            type: item.name,
+                            time: this.$filterTime(item.createTime)
+                        })
+                    })
+                    this.toDoList = list
                 })
             },
             syncHandheld() {
@@ -255,6 +244,7 @@
         },
         created() {
             this.getAllData()
+            this.getToDoTasks()
         },
     }
 </script>
@@ -333,8 +323,8 @@
             .event-list {
                 margin-top: 0.0781rem;
                 width: 100%;
-                height: 1.4063rem;
-                max-height: 1.4063rem;
+                height: 1.2656rem;
+                max-height: 1.2656rem;
                 overflow-x: hidden;
                 overflow-y: auto;
                 .event-box {
@@ -361,74 +351,150 @@
                     color: #707070;
                 }
                 .sum-info {
-                    width: 2.0833rem;
                     display: flex;
+                    font-size:14px;
+                    align-items: center;
                     justify-content: space-between;
-                    margin: 0.1042rem 0;
-                    .info-box {
-                        display: grid;
-                        color: rgba(77, 79, 92, 1);
-                        text-align: center;
-                        .num {
-                            font-size:0.1302rem;
-                            font-weight:bold;
-                            color: #4D4F5C;
-                        }
-                        .tag {
-                            font-size: 0.0833rem;
-                        }
+                    margin: 0 0 10px 0;
+                    .num {
+                        margin: 0 10px;
+                        font-size: 25px;
+                        font-weight: bold;
                     }
-                    .svg-icon {
-                        width: 0.5833rem;
-                        height: 0.2083rem;
+                    .temp {
+                        width: 10px;
+                    }
+                    // 进度条类
+                    // .info-box {
+                    //     display: grid;
+                    //     color: rgba(77, 79, 92, 1);
+                    //     text-align: center;
+                    //     .num {
+                    //         font-size:0.1302rem;
+                    //         font-weight:bold;
+                    //         color: #4D4F5C;
+                    //     }
+                    //     .tag {
+                    //         font-size: 0.0833rem;
+                    //     }
+                    // }
+                    // .svg-icon {
+                    //     width: 0.5833rem;
+                    //     height: 0.2083rem;
+                    // }
+                }
+            }
+
+        // 表格类
+        .body {
+            height: 300px;
+            border-top: 1px solid #F0F0F0;
+            border-left: 1px solid #F0F0F0;
+            .body-left {
+                width: 10%;
+                float: left;
+                font-size:16px;
+                font-weight:800;
+                color: #4D4F5C;
+                display: grid;
+                grid-template-rows: 130px 85px 85px;
+                .header-type {
+                    border-right: 1px solid #F0F0F0;
+                    border-bottom: 1px solid #F0F0F0;
+                    text-align: center;
+                    line-height: 130px;
+                }
+                .header-num {
+                    text-align: center;
+                    line-height: 85px;
+                    border-right: 1px solid #F0F0F0;
+                    border-bottom: 1px solid #F0F0F0;
+                }
+            }
+            .body-right::-webkit-scrollbar {
+                height: 10px;
+            }
+            .body-right::-webkit-scrollbar-thumb {
+                background: rgba(47,47,118,0.30);
+                border-radius: 20px;
+            }
+            .body-right {
+                width: 90%;
+                max-width: 90%;
+                overflow-x: scroll;
+                overflow-y: hidden;
+                float: left;
+                display: flex;
+                color: #4D4F5C;
+                justify-content: flex-start;
+                .item {
+                    width: 100%;
+                    min-width: 141px;
+                    display: grid;
+                    grid-template-rows: 130px 85px 85px;
+                    .header-type {
+                        border-right: 1px solid #F0F0F0;
+                        border-bottom: 1px solid #F0F0F0;
+                        text-align: center;
+                        line-height: 130px;
+                        font-weight: 500;
+                    }
+                    .header-num {
+                        text-align: center;
+                        line-height: 85px;
+                        border-right: 1px solid #F0F0F0;
+                        border-bottom: 1px solid #F0F0F0;
                     }
                 }
             }
-           
-           .body {
-               display: flex;
-               justify-content: space-around;
-               flex-wrap: wrap;
-               .item {
-                   width: 1.1458rem;
-                    .inside {
-                        font-size: 0.1146rem;
-                        display: grid;
-                        color: rgba(77, 79, 92, 1);
-                        text-align: center;
-                    }
-                    .other-info {
-                        .info {
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-                            margin-top: 0.0625rem;
-                            .icon-white {
-                                width: 0.0521rem;
-                                height: 0.0521rem;
-                                border-radius: 50%;
-                                background: rgba(232, 234, 239, 1);
-                            }
-                            .icon-blue {
-                                width: 0.0521rem;
-                                height: 0.0521rem;
-                                border-radius: 50%;
-                                background: rgba(59, 134, 255, 1);
-                            }
-                            .tip {
-                                margin-left: 0.0521rem;
-                            }
-                        }
-                    }
-                    .item-type {
-                        margin-top: 0.0625rem;
-                        text-align: center;
-                    }
-                }
-                i { // 补位元素
-                    width: 1.1458rem;
-                }
-            }
+        }   
+
+        
+        // 进度条类
+        //    .body {
+        //        display: flex;
+        //        justify-content: space-around;
+        //        flex-wrap: wrap;
+        //        .item {
+        //            width: 1.1979rem;
+        //             .inside {
+        //                 font-size: 0.1146rem;
+        //                 display: grid;
+        //                 color: rgba(77, 79, 92, 1);
+        //                 text-align: center;
+        //             }
+        //             .other-info {
+        //                 .info {
+        //                     display: flex;
+        //                     justify-content: center;
+        //                     align-items: center;
+        //                     margin-top: 0.0625rem;
+        //                     .icon-white {
+        //                         width: 0.0521rem;
+        //                         height: 0.0521rem;
+        //                         border-radius: 50%;
+        //                         background: rgba(232, 234, 239, 1);
+        //                     }
+        //                     .icon-blue {
+        //                         width: 0.0521rem;
+        //                         height: 0.0521rem;
+        //                         border-radius: 50%;
+        //                         background: rgba(59, 134, 255, 1);
+        //                     }
+        //                     .tip {
+        //                         margin-left: 0.0521rem;
+        //                     }
+        //                 }
+        //             }
+        //             .item-type {
+        //                 margin-top: 0.0625rem;
+        //                 text-align: center;
+        //             }
+        //         }
+        //         i { // 补位元素
+        //             width: 1.1979rem;
+        //         }
+        //     }
         }
     }
         
