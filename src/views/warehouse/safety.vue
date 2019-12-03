@@ -67,7 +67,7 @@
             </div>
         </div>
         <genre-or-category ref="genreOrCategory" :selectData="tree.copyTreeData" :title="title.genreTitle" :genreData="tree.currentNode"
-                           @sucess="refetch" @sucessDistribution="successTable" :type="title.titleType" :checkBoxData="table.checkBoxData"></genre-or-category>
+                           @sucess="refetch" @sucessUpdateCategory="updateCategory" @sucessDistribution="successTable" :type="title.titleType" :checkBoxData="table.checkBoxData"></genre-or-category>
         <tips ref="deleteGenre" :contentText="'您确定要删除此条装备大类吗'" @confirm="deleteGenreById"></tips>
     </div>
 </template>
@@ -135,6 +135,19 @@
         methods: {
             init(){
                 this.handleNodeClick(this.tree.treeData[0]);
+            },
+            updateCategory(data){
+                let categorySet=this.tree.currentNode.categorySet;
+                categorySet.forEach(item=>{
+                    if(item.id===data.id){
+                        item.name=data.name
+                    }
+                });
+                findAllCategoryById(this.tree.currentNode.id).then(res => {
+                    this.table.tableData = res;
+                });
+                this.$message.success('操作成功');
+                this.$refs.genreOrCategory.cancelDb()
             },
             distributionClick(){
                 this.status.buttonDisable=!this.status.buttonDisable;

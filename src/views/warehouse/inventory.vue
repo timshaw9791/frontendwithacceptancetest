@@ -66,7 +66,6 @@
                 this.getInventoryRf({"endTime":1574651680308,"rfid":["050001D3"],"size":1,"startTime":1574651671133});
             },
             getNote(data) {
-                console.log("data",data)
                 if (Object.keys(this.inventoryObj.inventoryData.inventory).length != 0) {
                     this.inventoryObj.inventoryData.inventory.remark = data
                 } else {

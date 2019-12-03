@@ -13,6 +13,8 @@
         </serviceDialog>
         <apply-borrow ref="borrow"></apply-borrow>
         <apply-scrap ref="scrap"></apply-scrap>
+        <apply-direct ref="direct"></apply-direct>
+        <apply-allocation ref="allocation"></apply-allocation>
     </div>
 </template>
 
@@ -20,15 +22,18 @@
     import serviceDialog from 'components/base/gailiangban'
     import applyBorrow from './applyBorrow'
     import applyScrap from './applyScrap'
+    import applyDirect from './applyDirect'
+    import applyAllocation from './applyAllocation'
     export default {
         name: "selectApplyProcess",
         components: {
-            serviceDialog, applyBorrow,applyScrap
+            applyDirect,
+            serviceDialog, applyBorrow,applyScrap,applyAllocation
         },
         data() {
             return {
-                selectButtons: [{key: '', label: '调拨流程'}, {key: 'borrow', label: '借用流程'}, {
-                    key: '',
+                selectButtons: [{key: 'allocation', label: '调拨流程'}, {key: 'borrow', label: '借用流程'}, {
+                    key: 'direct',
                     label: '直调流程'
                 }, {key: 'scrap', label: '报废流程'}]
             }

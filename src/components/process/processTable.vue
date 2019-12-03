@@ -1,6 +1,6 @@
 <template>
     <div class="process-table-box">
-        <el-table :data="equipArgList" fit class="dialogList" height="2.421875rem">
+        <el-table :data="equipArgList" fit  height="2.421875rem" v-if="processType!=='scrap'">
             <el-table-column label="装备名称" align="left">
                 <template scope="scope">
                     <div class="table-row-item">
@@ -37,6 +37,22 @@
                     </div>
                 </template>
             </el-table-column>
+            <el-table-column label=" " align="left">
+                <template scope="scope">
+                    <div class="table-row-item-button-box">
+                        <el-button class="table-row-item-button" type="danger" >删除</el-button>
+                    </div>
+                </template>
+            </el-table-column>
+        </el-table>
+
+
+
+        <el-table :data="equipArgList" fit height="2.421875rem" v-if="processType==='scrap'">
+            <el-table-column prop="rfid" label="RFID"  align="left"></el-table-column>
+            <el-table-column prop="serial" label="装备序号"  align="left"></el-table-column>
+            <el-table-column prop="name" label="装备名称"  align="left"></el-table-column>
+            <el-table-column prop="model" label="装备型号"  align="left"></el-table-column>
         </el-table>
     </div>
 </template>
@@ -50,6 +66,10 @@
             }
         },
         props: {
+            processType:{
+                type:String,
+                default:''
+            },
             equipArgList: {
                 type: Array,
                 default() {
@@ -78,14 +98,22 @@
     }
 
     .process-table-box .table-row-item {
-        width: 1.2917rem;
+        width: 1.1458rem;
         /deep/ .el-input__inner {
             height: 0.1667rem;
         }
-
         /deep/ .el-input__icon {
             width: 0.1302rem;
             line-height: 0.1667rem;
         }
+    }
+    .process-table-box .table-row-item-button-box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .table-row-item-button-box .table-row-item-button{
+        height: 0.1667rem;
+        line-height: 0rem;
     }
 </style>

@@ -168,7 +168,7 @@
                             });
                             categoryData.name = this.genre;
                             updateCategory(categoryData).then(res => {
-                                this.$emit('sucess', res);
+                                this.$emit('sucessUpdateCategory', res);
                                 this.result();
                             })
                         }

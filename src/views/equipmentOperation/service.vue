@@ -187,7 +187,7 @@
             },
             service() {
                 this.dialogList = [];
-                modifyFileName('repair');
+                modifyFileName('repair.json');
                 handheld((err) => this.$message.error(err)).then((data) => {
                     let json = JSON.parse(data);
                     this.rfids=json.rfid;
@@ -246,7 +246,14 @@
             },
             repairPush(Bool) {
                 repairEquipMaintain(this.rfids,Bool).then(res => {
-                    this.$message.success('操作成功')
+                    this.$message.success('操作成功');
+                    if(Bool){
+                        this.$refs.dialog.cancel()
+                    }else {
+                        this.$refs.dialogEnd.cancel();
+                    }
+                }).catch(err=>{
+                    this.$message.error(err.response.data.message)
                 })
                 // this.gqlMutate(api.admin_maintainEquips, {
                 //     equipIdList: this.listPush
@@ -294,8 +301,8 @@
                         reason: this.inlineForm.reason,
                     }).then((res) => {
                         console.log(res);
-                        this.$refs.dialog1.hide()
-                        this.getEquipServiceList()
+                        this.$refs.dialog1.hide();
+                        this.getEquipServiceList();
                         this.callback('报废已经申请');
                     })
                 )
@@ -314,9 +321,9 @@
                 if (0 in this.equipList) {
                     equipsReturn(this.equipList).then(res => {
                         console.log(res);
-                        this.$message.success("入库成功")
-                        this.equipList = []
-                        this.batch = !this.batch
+                        this.$message.success("入库成功");
+                        this.equipList = [];
+                        this.batch = !this.batch;
                         // 刷新列表
                         this.getEquipServiceList()
                     })
@@ -348,7 +355,7 @@
                 })
             },
             changePage(page) {
-                this.paginator.page = page
+                this.paginator.page = page;
                 this.getEquipServiceList()
             }
         },
