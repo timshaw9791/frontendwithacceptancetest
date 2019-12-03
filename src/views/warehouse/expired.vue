@@ -34,7 +34,7 @@
     import myHeader from 'components/base/header/header'
     import {findScarEquipByNameLike,scrap} from'api/expired.js'
     import serviceDialog from 'components/base/gailiangban'
-    import { handheld, killProcess } from 'common/js/rfidReader'
+    import { handheld, modifyFileName } from 'common/js/rfidReader'
 
     export default {
         name: "expired",
@@ -98,14 +98,25 @@
             read(){
                 console.log("获取数据")
                 this.equiplist=[]
+                modifyFileName('scrap.json')
                 handheld((err) => this.$message.error(err)).then(data => {
-                    this.equiplist=JSON.parse(JSON.stringify(data));
+                    this.equiplist=JSON.parse(data);
+                    let test=[]
                     for(let i in this.equiplist.inventoryModels){
-                        for (let j in this.this.equiplist.inventoryModels[i].rfids){
-                            this.rfidlist.push(this.equiplist.inventoryModels[i].rfids[j])
+                        console.log("this.equiplist.inventoryModels[i].rfids",this.equiplist.inventoryModels[i].rfids)
+                        if(this.equiplist.inventoryModels[i].rfids!=''){
+                            console.log("进入"+i)
+                            for (let j in this.equiplist.inventoryModels[i].rfids){
+                                this.rfidlist.push(this.equiplist.inventoryModels[i].rfids[j])
+                                test.push(this.equiplist.inventoryModels[i])
+                                console.log("test",test)
+                            }
                         }
                         this.count+=this.equiplist.inventoryModels[i].currentProgress
                     }
+                    this.equiplist.inventoryModels=JSON.parse(JSON.stringify(test))
+                    console.log("this.equiplist",this.equiplist)
+                    console.log("this.rfidlist1",this.rfidlist)
                     this.$refs.dialog1.show();
                 });
             },

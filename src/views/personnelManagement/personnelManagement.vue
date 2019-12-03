@@ -1,12 +1,13 @@
 <template>
     <div class="personnelManagement">
-        <my-header :title="'人员管理'" :searchFlag="false" :haveBlack="!viewStatus.flag" @h_black="blackJudge"></my-header>
+        <my-header :title="'人员管理'" v-if="viewStatus.flag"  :searchFlag="false" :haveBlack="false" ></my-header>
+        <my-header :title="'人员信息详情'" v-if="!viewStatus.flag" :searchFlag="false" :haveBlack="true" @h_black="blackJudge"></my-header>
         <div class="personnel-action-bar">
             <div v-show="viewStatus.flag" class="add">
                 <div class="add-personnel">
                     <select-personel id="personnelManagementSelect" :select="select.selectList" @selectRole="selectRole"></select-personel>
                     <div class="checkbox">
-                        <el-checkbox v-model="showEnter" label="进入库房权限"  style="margin-left: 0.2604rem;" @change="showEnterpeople" data-test="check">进入库房权限</el-checkbox>
+                        <el-checkbox v-model="showEnter" label="进入库房权限"  style="margin-left: 0.2604rem;color: #2F2F76;" @change="showEnterpeople" data-test="check">进入库房权限</el-checkbox>
                     </div>
                     <div class="add-personnel-item"><svg-icon icon-class='同步' style="margin-left: 38px" class="icon-search"></svg-icon>
                         <span style="color: #2F2F76" @click="synchronization" data-test="button">信息头像同步</span></div>
@@ -17,7 +18,7 @@
                     <!-- <div class="add-personnel-item"><svg-icon icon-class='同步' style="margin-left: 38px" class="icon-search"></svg-icon>
                         <span style="color: #2F2F76" @click="syncuser">用户同步</span></div> -->
                 </div>
-                <div class="input-box">
+                <div class="_buttons">
                     <BosInput
                             placeholder="姓名/职位/警号"
                             suffix="el-icon-search"
@@ -30,8 +31,8 @@
             <div class="modify" v-if="!viewStatus.flag">
                 <span>基础信息</span>
                 <div class="modify-box" v-if="type=='add'?false:true" @click="toModify" data-test="button">
-                    <svg-icon icon-class="编辑" class="icon-modify"></svg-icon>
-                    <span>{{disabled?'编辑':'取消编辑'}}</span>
+                    <svg-icon icon-class="编辑1" class="icon-modify"></svg-icon>
+                    <span style="color:#2F2F76">{{disabled?'编辑':'取消编辑'}}</span>
                 </div>
             </div>
         </div>
@@ -107,8 +108,7 @@
             }
         },
             created() {
-                let unit = JSON.parse(localStorage.getItem('user')).unitId;
-                this.getUnit(unit)
+                this.unit = JSON.parse(localStorage.getItem('user')).organUnitName;
             },
             methods: {
                 /* 需要改 */
@@ -132,14 +132,6 @@
                     }).catch(err => {
                         this.loading = false
                         this.$message.error("同步失败")
-                    })
-                },
-                getUnit(id){
-                    this.$ajax({
-                        url: `${baseURL}/architecture/organUnit/${id}`,
-                        method: "GET"
-                    }).then(res => {
-                        this.unit = res.data
                     })
                 },
                 toModify(){
@@ -247,6 +239,7 @@
         display: flex;
         flex-direction: row;
         align-items: center;
+        cursor: pointer;
         justify-content: left;
     }
     .modify-box .icon-modify{
@@ -310,6 +303,11 @@
     font-size: 18px !important;
 }
 .checkbox{
+    font-size: 16px;
     margin-left: 0.151rem;
+}
+.el-checkbox__label{
+        font-size: 16px;
+
 }
 </style>
