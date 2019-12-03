@@ -39,7 +39,7 @@ export default {
       list: [],
       tableAction:{
         label:'操作',
-        button:[{name:'查看',type:'primary'},{name:'删除',type:'primary'}]
+        button:[{name:'详情',type:'primary'},{name:'删除',type:'danger'}]
       },
       labelList: [
         {lable: '姓名', field: 'name', sort: false},
@@ -94,7 +94,7 @@ export default {
     clickPersonnel(data) {
       console.log("data")
       console.log(data)
-      if(data.name == "查看"){
+      if(data.name == "详情"){
         this.$emit("clickPersonnel", data);
       }else if(data.name == "删除"){
         // this.$emit("clickPersonnel", data);

@@ -2,50 +2,52 @@
     <div>
         <div id="myFrom" class="add-personnel-bodey-box">
             <form-container ref="form" :model="form" class="add-personneo-body-from">
-                <field-input class="field-input" v-model="form.name" label="姓名" width="4.5"
+                <field-input class="field-input" v-model="form.name" label="姓名：" width="4.5"
                              :rules="r(true).all(R.require)" prop="name" :disabled="disabled"></field-input>
+                <el-form :model="raleFormGs" ref="raleForm" style="margin-top: 10px;margin-right:150px">
+                    <el-form-item label="权限：" prop="type">
+                        <el-checkbox-group  v-model="raleFormGs.type" style="display: flex;flex-direction: row" :disabled="disabled" @change="changeCheckPermission">
+                            <el-checkbox  v-for="item in cRaleList"  :label="item.val"  name="type"  style="margin-left: 0.0833rem;" data-test="check">{{item.key}}</el-checkbox>
+                        </el-checkbox-group>
+                    </el-form-item>
+                </el-form>
                 <!--<field-checkbox  v-model="gender" label="性别" width="4.5" :rules="r(true).all(R.require)"-->
                                 <!--prop="position" :list="nanlist" @change="changeCheck" :disabled="disabled"></field-checkbox>-->
                 <el-form :model="ruleFormGs" :rules="rulesG" ref="ruleForm" style="margin-left: 0.35rem;margin-top: 10px;">
-                    <el-form-item label="性别" prop="type">
+                    <el-form-item label="性别：" prop="type">
                         <el-checkbox-group v-model="ruleFormGs.type" style="display: flex;flex-direction: row" :disabled="disabled" @change="changeCheck">
-                            <el-checkbox  v-for="item in nanlist" :label="item.val" name="type"  style="margin-left: 0.2604rem;" data-test="check">{{item.val}}</el-checkbox>
+                            <el-checkbox  v-for="item in nanlist" :label="item.val" name="type"  style="margin-left: 0.0833rem;" data-test="check">{{item.val}}</el-checkbox>
                         </el-checkbox-group>
                     </el-form-item>
                 </el-form>
-                <field-input class="field-input" v-model="form.idNumber" :disabled="disabled" label="身份证号" width="4.5"
-                             :rules="r(true).all(R.cardId)" prop="idNumber"></field-input>
-                <field-input class="field-input" v-model="form.phone"  :disabled="disabled" label="联系方式" width="4.5"
-                             :rules="r(true).all(R.mobile)" prop="phone"></field-input>
-                <field-input class="field-input" v-model="form.unitName" label="机构单位" width="4.5"
-                             prop="organUnit" :disabled="true"></field-input>
-                <el-form :model="roleFormGs" :rules="rulesG" ref="roleForm" style="margin-left: 1.5rem;margin-top: 10px;">
-                    <el-form-item label="角色" prop="type">
-                        <el-checkbox-group v-model="roleFormGs.type" style="display: flex;flex-direction: row" :disabled="disabled" @change="changeCheckRole">
-                            <el-checkbox  v-for="item in cRoleList"  :label="item.val"  name="type"  style="margin-left: 0.2604rem;" data-test="check">{{item.key}}</el-checkbox>
-                        </el-checkbox-group>
-                    </el-form-item>
-                </el-form>
-                <el-form :model="raleFormGs" ref="raleForm" style="margin-left: 0.15rem;margin-top: 10px;">
-                    <el-form-item label="权限" prop="type">
-                        <el-checkbox-group  v-model="raleFormGs.type" style="display: flex;flex-direction: row" :disabled="disabled" @change="changeCheckPermission">
-                            <el-checkbox  v-for="item in cRaleList"  :label="item.val"  name="type"  style="margin-left: 0.2604rem;" data-test="check">{{item.key}}</el-checkbox>
-                        </el-checkbox-group>
-                    </el-form-item>
-                </el-form>
-                <field-input class="field-input" v-model="form.position" :disabled="disabled"  label="职位" width="4.5"
+                <field-input class="field-input" v-model="form.position" :disabled="disabled"  label="职位：" width="4.5"
                              :rules="r(true).all(R.require)" prop="position"></field-input>
-                <field-input class="field-input" v-model="form.policeSign" :disabled="disabled"  label="警号(账号)" width="4.5"
+                <field-input class="field-input" v-model="form.idNumber" :disabled="disabled" label="身份证号：" width="4.5"
+                             :rules="r(true).all(R.cardId)" prop="idNumber"></field-input>
+                <field-input class="field-input" v-model="form.policeSign" :disabled="disabled"  label="警号(账号)：" width="4.5"
                              :rules="r(true).all(R.require)" prop="policeSign"></field-input>
-                <field-input class="field-input" v-model="form.password" label="密码" width="4.5"
+                <field-input class="field-input" v-model="form.phone"  :disabled="disabled" label="联系方式：" width="4.5"
+                             :rules="r(true).all(R.mobile)" prop="phone"></field-input>
+                <field-input class="field-input" v-model="form.password" label="密码：" width="4.5"
                              :rules="r(true).all(R.require)" prop="password" :disabled="disabled" :type="'password'"></field-input>
+                <field-input class="field-input" v-model="form.unitName" label="机构单位：" width="4.5"
+                             prop="organUnit" :disabled="true"></field-input>
+                <field-input class="field-input" v-model="form.fingerprintInformation" label="指纹信息：" width="4.5"
+                             prop="fingerprintInformation" :disabled="disabled"></field-input>
+                <el-form :model="roleFormGs" :rules="rulesG" ref="roleForm" style="margin-left: 0.35rem;margin-top: 10px;">
+                    <el-form-item label="角色：" prop="type">
+                        <el-checkbox-group v-model="roleFormGs.type" style="display: flex;flex-direction: row" :disabled="disabled" @change="changeCheckRole">
+                            <el-checkbox  v-for="item in cRoleList"  :label="item.val"  name="type"  style="margin-left: 0.0833rem;" data-test="check">{{item.key}}</el-checkbox>
+                        </el-checkbox-group>
+                    </el-form-item>
+                </el-form>
                 <!--<field-checkbox  v-model="roleItems" label="角色" width="4.5" :disabled="disabled" :rules="r(true).all(R.require)"-->
                                  <!--prop="position" :list="cRoleList" @change="changeCheckRole"></field-checkbox>-->
-                <field-input class="field-input" v-model="form.fingerprintInformation" :disabled="disabled" :type="'textarea'" label="指纹信息" width="7" style="margin-left:1.225rem"
-                             prop="fingerprintInformation"></field-input>
             </form-container>
             <div class="add-personneo-upload-img">
-                <div class="img-box" v-if="viewStatus.flag" @click="uploadImg"></div>
+                <div class="img-box" v-if="viewStatus.flag" @click="uploadImg">
+                    <img src="./加号.png" v-if="viewStatus.flag" class="img_icon">
+                </div>
                 <img :src="img" class="img" v-if="!viewStatus.flag" @click="uploadImg">
                 <!-- <div :class="disabled?'span disabled':'span'">
                     <span v-text="'上传'" @click="uploadImg"></span>
@@ -57,7 +59,7 @@
         </div>
         <div class="add-personneo-bottom">
             <!-- <el-button @click="black">返回</el-button> -->
-            <el-button data-test="button" type="primary" @click="confirm" :disabled="isClick" v-show="!disabled">确认</el-button>
+            <el-button data-test="button" type="primary" @click="confirm" :disabled="isClick" v-show="!disabled">提交</el-button>
         </div>
 
         <field-dialog title="提示" ref="dialog" @confirm="dialogConfirm">
@@ -116,7 +118,7 @@
                 type:Array
             },
             organUnit:{
-                type:Object
+                type:String
             },
             addType:{
                 type:String,
@@ -133,13 +135,10 @@
         },
         created(){
             if(this.addType=='add'){
-                this.$set(this.form,'unitName',this.organUnit.name)
+                this.$set(this.form,'unitName',this.organUnit)
             }else {
                 this.initForm()
             }
-            console.log("this.form")
-            console.log(this.form)
-            console.log(this.roleList);
             // this.roleList.forEach(item=>{
             //    if(item.value!=''&&item.label!='超级管理员'){
             //        this.cRoleList.push({
@@ -155,7 +154,6 @@
         computed:{
           img(){
               let img;
-              console.log('this.personnelImg',this.personnelImg);
               if(this.personnelImg!=null&&this.personnelImg!=''){
                   img=this.src+this.personnelImg;
               }else {
@@ -177,7 +175,7 @@
                 this.$set(this.form,'phone',this.personenlData.row.phone);
                 this.$set(this.form,'fingerprintInformation',this.personenlData.row.fingerprintInformation);
                 this.$set(this.form,'role',{id:this.personenlData.row.role});
-                this.$set(this.form,'unitName',this.personenlData.row.unitName);
+                this.$set(this.form,'unitName',this.personenlData.row.organUnitName);
                 this.personnelImg=this.personenlData.row.faceInformation;
                 this.$set(this.form,'faceInformation',this.personnelImg);
                 if(this.personenlData.row.role=="警员"){
@@ -190,8 +188,6 @@
                 this.raleFormGs.type = this.form.enterHouse
                 this.viewStatus.flag=false;
                 this.judgeForm = JSON.parse(JSON.stringify(this.form))
-                console.log("this.roleFormGs.type")
-                console.log(this.roleFormGs.type)
             },
             black(){
                 if(JSON.stringify(this.form) == JSON.stringify(this.judgeForm)) {
@@ -217,8 +213,6 @@
             },
             changeCheckRole(data){
                 // this.$set(this.form,'roleItems', []);
-                console.log("data")
-                console.log(data[data.length-1])
                 if(data.length==0){
                     this.roleFormGs.type=[];
                     this.form.role={id:''};
@@ -238,8 +232,6 @@
                 }else{
                     this.raleFormGs.type=true;
                 }
-                console.log("this.raleFormGs.type")
-                console.log(this.raleFormGs.type)
                 this.form.enterHouse = this.raleFormGs.type
             },
             PreviewImage(event){
@@ -288,8 +280,6 @@
                     }else{
                         this.form.enterHouse = this.raleFormGs.type
                     }
-                    console.log("this.form")
-                    console.log(this.form)
                     this.$refs.form.validate.then((valid) => {
                         if(valid){
                            if(flag){
@@ -328,7 +318,7 @@
     .add-personneo-body-from{
         width: 5rem;
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         flex-wrap: wrap;
         align-items: center;
         justify-content: space-between;
@@ -345,12 +335,21 @@
         flex-direction: column;
     }
     .add-personneo-upload-img .img{
-        width:100%;
-        height: 192px;
+        width:180px;
+        height:251px;
+    }
+    .add-personneo-upload-img:hover .img_icon{
+        opacity: 1;
+    }
+    .img_icon{
+        opacity: 0;
+        margin-left: 60px;
+        margin-top: 95px;
     }
     .add-personneo-upload-img .img-box{
-        width:137px;
-        height:192px;
+        align:center;
+        width:180px;
+        height:251px;
         background:rgba(112,112,112,1);
         opacity:0.5;
     }
@@ -371,7 +370,7 @@
 
     }
     #myFrom .el-form-item__error {
-       margin-left: 0.2708rem;
+    //    margin-left: 0.2708rem;
        min-width: 116px;
     }
     #myFrom .el-form-item__label {
@@ -389,15 +388,15 @@
         height: 30px;
     }
     #myFrom .el-checkbox-group{
-        margin-left: 52px;
+        // margin-left: 52px;
     }
     #myFrom .el-input__inner{
-        margin-left: 52px;
+        // margin-left: 52px;
     }
     #myFrom .el-form-item{
         margin-bottom: 20px;
     }
     #myFrom .el-textarea{
-        margin-left: 52px;
+        // margin-left: 52px;
     }
 </style>
