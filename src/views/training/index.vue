@@ -451,7 +451,7 @@ export default {
                 console.log(this.$refs.fileVideo.files)
                 let files = this.$refs.fileVideo.files[0];
                 var fileSize = (files.size / 1024).toFixed(0)
-                var size=10240
+                var size=40960
                 if(fileSize<=size||files.type=='video/mp4')
                 {
                 let a=files.name.lastIndexOf(".");
