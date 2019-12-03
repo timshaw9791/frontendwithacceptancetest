@@ -4,9 +4,9 @@
             <div slot="header" class="header">
                 <span class="_card-title">{{title}}</span>
                 <div class="black" @click="black">
-                <svg-icon icon-class="返回" class="svg-info"></svg-icon>
-                <span v-text="'返回'"></span>
-            </div>
+                    <svg-icon icon-class="返回" class="svg-info"></svg-icon>
+                    <span v-text="'返回'"></span>
+                </div>
             </div>
             <div>
                 <!--装备参数-->
@@ -189,7 +189,7 @@
         </field-dialog>
 
 
-        <serviceDialog title="复制RFID" ref="copyRfidDialog" @confirm="copyRfid" confirmInfo="写入">
+        <serviceDialog title="复制RFID" ref="copyRfidDialog" @confirm="copyRfid" confirmInfo="写入" :secondary="false">
             <form-container ref="copyRfid" :model="copyRfidList" style="text-align: center">
                 <field-input v-model="copyRfidList.rfid" label="RFID：" width="4"
                              :disabled="true"></field-input>
@@ -1020,14 +1020,18 @@
         // }
     }
 
-    .el-card:not(:nth-last-child(2)) {
-        border-bottom: none !important;
+    .el-card {
+        border: none !important;
     }
 
-    .el-card:first-child {
+    // .el-card:not(:nth-last-child(2)) {
+    //     border-bottom: none !important;
+    // }
 
-        border-top: none !important;
-    }
+    // .el-card:first-child {
+
+    //     border-top: none !important;
+    // }
 
     /* 可调整 */
     // ._card-title {
@@ -1040,6 +1044,7 @@
         display: flex;
         align-items: center;
         float: right;
+        cursor: pointer;
     }
 
     .black .svg-info {

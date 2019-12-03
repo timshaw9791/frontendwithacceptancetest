@@ -30,7 +30,7 @@
             </div>
 
             <!--list列表-->
-            <r_label :table="table" ref="lable" @clickTable="clickTable" :otherParams="true"></r_label>
+            <r_label :table="table" ref="lable" @clickTable="clickTable" :buttonState="true" :otherParams="true"></r_label>
             <!--<el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"-->
                       <!--fit>-->
                 <!--<bos-table-column lable="RFID" field="rfid"></bos-table-column>-->
@@ -110,7 +110,7 @@
                     url:'/inouthouse/findInHouseNumberLike',
                     tableAction:{
                         label:'操作',
-                        button:[{name:'查看',type:'primary'},{name:'删除',type:'danger'}]
+                        button:[{name:'详情',type:'primary'},{name:'删除',type:'danger'}]
                     },
                     search:'',
                     abnormal: false
@@ -141,7 +141,7 @@
         },
         methods: {
             clickTable(table) {
-                if(table.name==='查看'){
+                if(table.name==='详情'){
                     this.equipData = table.row
                     this.storageListShow = false
                 }else {

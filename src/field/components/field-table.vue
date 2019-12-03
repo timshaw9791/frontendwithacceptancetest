@@ -4,9 +4,9 @@
                 :data="list"
                 style="width: 100%;min-height: 490px" id="table" @sort-change="sortChange" :height="height">
             <bos-table-column align="center" v-for="item in labelList" :lable="item.lable" :width="item.width" :sort="item.sort" :field="item.field" :filter="item.filter"></bos-table-column>
-            <el-table-column v-if="flag" :label="tableAction.label" align="center">
+            <el-table-column v-if="flag" :label="tableAction.label" align="left">
                 <template slot-scope="scope">
-                    <el-button :type="item.type" size="mini" class="actionButton" @click="someClick(scope.row,item.name)" v-for="item in tableAction.button" v-text="item.name" data-test="button"></el-button>
+                    <el-button :type="item.type" v-show="judgeState(item.name, scope.row)" size="mini" class="actionButton" @click="someClick(scope.row,item.name)" v-for="item in tableAction.button" v-text="item.name" data-test="button"></el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -57,6 +57,10 @@
             },
             pageInfo:{
                 type:Object
+            },
+            buttonState: { // 是否启用按钮 隐藏/显示
+                type: Boolean,
+                default: false
             }
         },
         created() {
@@ -85,6 +89,12 @@
             },
             tableChangePage(newPage){
                 this.$emit('tableCurrentPageChanged',newPage)
+            },
+            judgeState(name, row) {
+                if(!this.buttonState) return true
+                if(!name.includes('删除')) return true
+                let nowTime = new Date().getTime();
+                return (nowTime - row.updateTime)/1000/3600/24 > 1?false:true
             }
         }
     }
