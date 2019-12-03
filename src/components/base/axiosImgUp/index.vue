@@ -10,7 +10,7 @@
                 :before-upload="beforeAvatarUpload">
                 
             <img v-if="imageUrl" :src="imageUrl" class="avatar">
-            <img v-else-if="noimg&&!upload" src='@/assets/noThumbnails.png' class="avatar">
+            <img v-else-if="noimg" src='@/assets/noThumbnails.png' class="avatar">
             <i v-else :class='[upload?"avatar-uploader-icon":"avatar",upload ? "el-icon-plus" : ""]'></i> 
             <!-- el-icon-plus avatar-uploader-icon -->
         </el-upload>
@@ -75,7 +75,7 @@
         },
         watch: {
             image(newVal) {
-                newVal ? this.imageUrl = newVal : this.imageUrl = '';
+                newVal&&!this.noimg ? this.imageUrl = newVal : this.imageUrl = '';
 
             }
         },

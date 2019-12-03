@@ -1,7 +1,7 @@
 <template>
     <div class="label">
         <div>
-            <field-table :list="list" :labelList="table.labelList"
+            <field-table :list="list" :labelList="table.labelList" :buttonState="buttonState"
                          :tableAction="table.tableAction"  :pageInfo="paginator" @tableCurrentPageChanged="changePage" @clickTableCloum="clickTableCloum" style="width: 100%">
             </field-table>
         </div>
@@ -32,6 +32,10 @@
                 default:true
             },
             otherParams: {
+                type: Boolean,
+                default: false
+            },
+            buttonState: {
                 type: Boolean,
                 default: false
             }

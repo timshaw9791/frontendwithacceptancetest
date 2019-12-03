@@ -31,7 +31,7 @@
             <div class="modify" v-if="!viewStatus.flag">
                 <span>基础信息</span>
                 <div class="modify-box" v-if="type=='add'?false:true" @click="toModify" data-test="button">
-                    <svg-icon icon-class="编辑1" class="icon-modify"></svg-icon>
+                    <svg-icon icon-class="编辑" class="icon-modify"></svg-icon>
                     <span style="color:#2F2F76">{{disabled?'编辑':'取消编辑'}}</span>
                 </div>
             </div>

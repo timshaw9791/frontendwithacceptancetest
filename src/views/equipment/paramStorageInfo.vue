@@ -75,7 +75,7 @@
                     url:'/equip/findByNameOrModelLike',
                     tableAction:{
                         label:'操作',
-                        button:[{name:'查看',type:'primary'}, {name: '入库', type: 'primary'}]
+                        button:[{name:'详情',type:'primary'}, {name: '入库', type: 'primary'}]
                     },
                     search:'',
                 },
@@ -102,7 +102,7 @@
         },
         methods: {
             clickTable(table) {
-              if(table.name == '查看') {
+              if(table.name == '详情') {
                   this.goInfo('look', table.row)
               } else {
                   this.goInfo('in', table.row)
@@ -112,7 +112,7 @@
                 switch (data) {
                     case 'add':
                         this.storageInfoShow = true;
-                        this.title = '新增装备信息';
+                        this.title = '新增装备参数';
                         this.equipId = '';
                         break;
                     case 'look':

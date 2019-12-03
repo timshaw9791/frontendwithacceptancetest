@@ -9,7 +9,8 @@
                     width="30%"
                     title="提示"
                     :visible.sync="innerVisible"
-                    append-to-body>
+                    append-to-body
+                    center>
                 <div class="_dialogDiv">
                     您确定要放弃本次操作吗?
                 </div>

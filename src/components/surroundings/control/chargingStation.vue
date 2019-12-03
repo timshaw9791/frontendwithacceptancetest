@@ -186,13 +186,18 @@
             },
             getContextGql(number,copyList){
                 getEquipChargeRecordList({station:number}).then(res=>{
-                    res.forEach(item=>{
+                    console.log("wdwadw");
+                    console.log(res);
+                    console.log("copyList");
+                    console.log(copyList);
+                    res.equipInfo.forEach(item=>{
                             let number = Number(item.chargeNumber)-1;
                             if(copyList[number].name==''){
+                                console.log("触发我了");
                                 copyList[number].name=item.equipName;
                                 copyList[number].number=item.chargeNumber;
-                                copyList[number].route=item.chargeStation;
-                                copyList[number].chargingTime=item.startTime;
+                                copyList[number].station=item.chargeStation;
+                                copyList[number].chargingTime=item.occurrenceTimeMillis;
                             }
                         });
                         this.socketList=copyList;

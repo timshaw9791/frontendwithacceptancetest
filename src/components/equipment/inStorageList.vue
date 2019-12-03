@@ -63,7 +63,7 @@ import { start, killProcess, handheld } from 'common/js/rfidReader'
                     key: '手持机'
                   }, {
                     val: 'cardReader', 
-                    key: '读卡器'
+                    key: '读写器'
                   }],
                   selected: '', // 所选用的硬件
                   operator: ""
@@ -284,6 +284,7 @@ import { start, killProcess, handheld } from 'common/js/rfidReader'
         display: flex;
         align-items: center;
         float: right;
+        cursor: pointer;
     }
 
     .black .svg-info {
