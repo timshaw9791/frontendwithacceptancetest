@@ -447,6 +447,7 @@
                     let tempForm = {
                         name: this.form.name,
                         model: this.form.model,
+                        image: this.form.imageAddress,
                         shelfLife: this.form.shelfLifeQ*1000*3600*24,
                         chargeCycle: this.form.chargeCycle*1000*3600*24,
                         upkeepCycle: this.form.upkeepCycle*1000*3600*24,
