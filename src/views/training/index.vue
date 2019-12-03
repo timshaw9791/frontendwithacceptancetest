@@ -47,7 +47,7 @@
                 </template>
             </el-table-column>
         </el-table>
-         <div class="page">
+         <div class="page" v-if="pageFlag">
                         <bos-paginator v-if="this.list!=''" :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
                     </div>
         <instructional v-if="viewStatus.insFlag" :ins="insData" title=""></instructional>
@@ -200,6 +200,7 @@ export default {
             pdfNum: 0,
             classA:'box',
             classB:'doc',
+            pageFlag:true,
             paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
             params:{size: 3, page: 1,search:''}
         }
@@ -366,6 +367,7 @@ export default {
 
         },
         isvideo(name,data) {
+            this.pageFlag=!this.pageFlag
             this.insData = {
                 key: name,
                 name: name,
@@ -377,6 +379,7 @@ export default {
             this.condition.push(data);
         },
         ispdf(name,data) {
+            this.pageFlag=!this.pageFlag
             this.insData = {
                 key: name,
                 name: name,
@@ -388,6 +391,7 @@ export default {
             this.condition.push(data);
         },
         back() {
+            this.pageFlag=!this.pageFlag
             this.viewStatus.insFlag = false;
         },
         getListGql() {
