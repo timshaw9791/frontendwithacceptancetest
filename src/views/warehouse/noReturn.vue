@@ -7,7 +7,7 @@
             <div class="action-bar">
             <div class="_buttons" style="margin-right: 18px">
             <BosInput
-                    placeholder="开门人员"
+                    placeholder="领取人员"
                     suffix="el-icon-search"
                     v-model="search"
                     style="width:285px;">
@@ -58,7 +58,7 @@
                     totalPages: 10,
                     size: 9
                 },
-             params:{page:1,size:10,name:''}
+             params:{page:1,size:10,search:''}
             }
         },
         mixins: [formRulesMixin, transformMixin],
@@ -69,7 +69,7 @@
             },
              getList(name) {
                  this.params.page=this.paginator.page
-                 this.params.name=name
+                 this.params.search=name
                  this.params.size=this.paginator.size
                  
                  findNoReturn(this.params).then(res=>{
