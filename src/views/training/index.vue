@@ -47,6 +47,9 @@
                 </template>
             </el-table-column>
         </el-table>
+         <div class="page" v-if="pageFlag">
+                        <bos-paginator v-if="this.list!=''" :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
+                    </div>
         <instructional v-if="viewStatus.insFlag" :ins="insData" title=""></instructional>
 
         <serviceDialog title="编辑教学文档与视频" ref="editDialog" @cancel="quit" @confirm="addEquip" width="800px">
@@ -196,7 +199,10 @@ export default {
             videoNum: 0,
             pdfNum: 0,
             classA:'box',
-            classB:'doc'
+            classB:'doc',
+            pageFlag:true,
+            paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
+            params:{size: 3, page: 1,search:''}
         }
     },
     watch: {
@@ -205,14 +211,19 @@ export default {
             },
         'search': {
             handler(newval) {
-                this.getListGql(newval);
+                this.params.search=newval
+                this.getListGql();
             }
         }
     },
     created() {
-        this.getListGql('');
+        this.getListGql();
     },
     methods: {
+        changePage(page) {
+                this.paginator.page = page
+                this.getListGql()
+            },
         edit() {
             this.$refs.editDialog.show()
         },
@@ -352,10 +363,11 @@ export default {
         this.$refs.fileVideo.value=''
         this.pdfNum=this.equipModel.pdf.length;
         this.equipModel.pdf.splice(index,1)
-        this.getListGql('')
+        this.getListGql()
 
         },
         isvideo(name,data) {
+            this.pageFlag=!this.pageFlag
             this.insData = {
                 key: name,
                 name: name,
@@ -367,6 +379,7 @@ export default {
             this.condition.push(data);
         },
         ispdf(name,data) {
+            this.pageFlag=!this.pageFlag
             this.insData = {
                 key: name,
                 name: name,
@@ -378,12 +391,17 @@ export default {
             this.condition.push(data);
         },
         back() {
+            this.pageFlag=!this.pageFlag
             this.viewStatus.insFlag = false;
         },
-        getListGql(search) {
-            getEquipArgs({
-                name: search
-            }).then(res => {
+        getListGql() {
+             this.params.page=this.paginator.page
+             this.params.size=this.paginator.size
+            getEquipArgs(this.params).then(res => {
+                this.paginator.totalPages = res.totalPages
+                this.paginator.totalElements = res.totalElements
+                console.log("RES");
+                console.log(res);
                   res.content.forEach(item=>{
                       
                         let flag=false;
@@ -433,8 +451,8 @@ export default {
                 console.log(this.$refs.fileVideo.files)
                 let files = this.$refs.fileVideo.files[0];
                 var fileSize = (files.size / 1024).toFixed(0)
-                var size=10240
-                if(fileSize<=size)
+                var size=40960
+                if(fileSize<=size||files.type=='video/mp4')
                 {
                 let a=files.name.lastIndexOf(".");
                 let b=files.name.length;
@@ -499,7 +517,7 @@ export default {
                
                 }
                 }else{
-                    this.$message.error('文件应小于10MB');
+                    this.$message.error('文件应小于40MB');
                 }
                 
             },

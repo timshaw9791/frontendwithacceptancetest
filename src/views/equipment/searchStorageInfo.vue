@@ -78,7 +78,7 @@
                     url:'/equip/findEquipsByRfidAndNameAndModel',
                     tableAction:{
                         label:'操作',
-                        button:[{name:'查看',type:'primary'}, {name: '历史', type: 'primary'}]
+                        button:[{name:'详情',type:'primary'}, {name: '历史', type: 'primary'}]
                     },
                     search:'',
                 },
@@ -105,7 +105,7 @@
         },
         methods: {
             clickTable(table) {
-              if(table.name == "查看") {
+              if(table.name == "详情") {
                 this.goInfo('look', table.row)
               } else {
                 findEquipHistory({id: table.row.id}).then(res => {

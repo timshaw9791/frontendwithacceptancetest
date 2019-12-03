@@ -298,8 +298,11 @@
                                 })
                             }
                         })
-                        console.log("this.form")
-                        console.log(this.form)
+                        if(this.form.equipArgItemList[0].equipArg.name=='')
+                        {
+                            console.log("执行到了");
+                            this.$message.error('预案内容不得为空')
+                        }else{
                         savePlan(this.form).then(item => {
                             this.$refs.dialog.hide();
                             this.getList();
@@ -307,6 +310,8 @@
                         }).catch(err => {
                             this.$message.error(err.message);
                         })
+                        }
+                        
 
                     } else if (this.title === '编辑预案' && this.form.equipArgItemList[0]) {
                         if (this.form.equipArgItemList[this.form.equipArgItemList.length - 1].equipArg.name === ''&&this.form.equipArgItemList.length!=1) {
@@ -375,15 +380,6 @@
             
                 this.params.name = newVal;
                 console.log(newVal);
-                // if (newVal === '%%') {
-                //     this.getList();
-                // } else {
-                //     console.log("触发我")
-                //     searchPlan({page: this.paginator.page, size: this.paginator.size,name: newVal}).then(res => {
-                //         console.log(res.content);
-                //         this.list = res.content;
-                //     })
-                // }
                 this.getList()
             }
         }
@@ -420,16 +416,17 @@
     .bodyContent {
         margin: 0 auto;
         height: 720px;
-        width:1100px;
+        width:1649px;
+        margin-left: 58px;
         // padding: 0 0.3125rem;
         display: flex;
         flex-wrap: wrap;
         // justify-content: space-between;
 
         .pieceList {
-           
-            width:350px;
-            height:280px;
+            // border: 1px solid red;
+            width:491px;
+            height:343px;
             margin-left: 10px;
             background: rgb(255, 255, 255);
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
@@ -495,6 +492,7 @@
             }
         }
         .page{
+            
             height: 50px;
             border: 1px solid black;
             width:480px;

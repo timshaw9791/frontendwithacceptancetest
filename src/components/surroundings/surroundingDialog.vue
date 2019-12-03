@@ -70,6 +70,7 @@
         background: rgba(0,0,0,.6);
     }
     .zn-center .surroundingDialog-header{
+        
         width:100%;
         height:57px;
         background:rgba(47,47,118,1);

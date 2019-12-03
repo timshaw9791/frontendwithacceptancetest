@@ -22,7 +22,7 @@
     import {getToken} from "../../common/js/auth";
     import request from 'common/js/request'
     import {baseURL} from "../../api/config";
-    import { delFile, handheld } from 'common/js/rfidReader'
+    import { modifyFileName , handheld } from 'common/js/rfidReader'
 
     // import {handheld} from 'common/js/pda'
     // const fs = window.require('fs');
@@ -57,13 +57,14 @@
         methods: {
             toInventory() {
                 this.inventoryObj.rflist = [];
-                // handheld((err) => this.$message.error(err)).then(data => {
-                //     this.getInventoryRf(JSON.parse(data));
-                // });
+                modifyFileName('in_house.json')
+                handheld((err) => this.$message.error(err)).then(data => {
+                    this.getInventoryRf(JSON.parse(data));
+                });
                 // this.getInventoryRf();
                 // this.getInventoryRfCopy();
                 //todo 记得合并前换回来
-                this.getInventoryRf({"endTime":1574651680308,"rfid":["050001D3"],"size":1,"startTime":1574651671133});
+                // this.getInventoryRf({"endTime":1574651680308,"rfid":["050001D3"],"size":1,"startTime":1574651671133});
             },
             getNote(data) {
                 if (Object.keys(this.inventoryObj.inventoryData.inventory).length != 0) {
