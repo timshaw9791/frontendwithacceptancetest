@@ -1,16 +1,15 @@
 <template>
     <div class="airConditioning">
-        <dialogs :width="398" ref="dialog" :title="'空调控制'">
-            <div class="airConditioning-body">
+        <dialogs :width="1040" ref="dialog" :title="'空调控制'">
+         <div class="air_box">
                 <div class="airConditioning-box">
-                    <svg-icon icon-class="空调图标" style="width: 70px;height: 48px"></svg-icon>
-                    <span v-text="'空调控制'" style="margin-top: 19px"></span>
-                    <switch-control :active="refrigerationActive" :inactive="refrigerationInactive" :status="refrigeration" style="margin-top: 31px" @handleChange="refrigerationControl"></switch-control>
-                    <switch-control :active="heatingActive" :inactive="heatingInactive" :status='heating' style="margin-top: 16px"  @handleChange="heatingControl"></switch-control>
-                    <switch-control :active="dehumidificationActive" :inactive="dehumidificationInactive" :status="dehumidification" style="margin-top: 16px"  @handleChange="dehumidificationControl"></switch-control>
+                   <airControl
+                    v-for="(item,index) in airList" 
+                    :index="index"
+                    :item="item"
+                    ></airControl>
                 </div>
-                
-            </div>
+          </div>
         </dialogs>
     </div>
 </template>
@@ -18,7 +17,7 @@
 <script>
     import dialogs from '../surroundingDialog'
     import surroundingCard from '../surroundingCard'
-    import switchControl from './controlComponents/switchControl'
+    import airControl from './airControl'
     import {baseURL} from "../../../api/config";
 
     export default {
@@ -26,50 +25,48 @@
         components: {
             dialogs,
             surroundingCard,
-            switchControl
+            airControl,
+            nnn:['','','','','']
         },
         data() {
             return {
                 num:false,
                 order:false,
-                refrigerationActive:{
-                    text:'',
-                    color:'#39BC53',
-                },
-                refrigerationInactive:{
-                    text:'制冷',
-                    color:'#B8B8B8',
-                },
-                heatingActive:{
-                    text:'',
-                    color:'#39BC53',
-                },
-                heatingInactive:{
-                    text:'制热',
-                    color:'#B8B8B8',
-                },
-                dehumidificationActive:{
-                    text:'',
-                    color:'#39BC53',
-                },
-                dehumidificationInactive:{
-                    text:'抽湿',
-                    color:'#B8B8B8',
-                },
-                refrigeration:false,
-                heating:false,
-                dehumidification:false,
                 flag:true,
                 threshold:{
                     max:'',
                     min:''
-                }
+                },
+                airNum:0,
+                airList:''
             }
         },
         created(){
-
+        
         },
         methods:{
+            getConfig(){
+               this.$ajax({
+                    method:'post',
+                    url:baseURL+'/environment/deviceConfig',
+                }).then(res=>{
+                    this.airNum=res.data.data.AIR_CONDITIONER_COUNT
+                    console.log("设备信息");
+                    console.log(this.airNum);
+                })
+            },
+            getAirStatusList(){
+               this.$ajax({
+                    method:'post',
+                    url:baseURL+'/environment/allAirConditionerStatus',
+                }).then(res=>{
+                    let arrList=res.data.data
+                    let newList=Object.values(arrList)
+                    this.airList=newList
+                    console.log(this.airList);
+                    console.log(res);
+                })
+            },
             refrigerationControl(data){
                if(data){
                    this.controlAir(1);
@@ -119,7 +116,10 @@
                 }
             },
             show(){
-                this.getThreshold();
+                this.getConfig()
+                this.getAirStatusList()
+                // this.getThreshold();
+                
                 this.$refs.dialog.show();
             },
             close(){
@@ -212,31 +212,42 @@
 
 <style scoped>
     .airConditioning {
-        width: 100%;
+       
+        
     }
-
+    .air_box{
+        width: 1040px;
+        height: 697px;
+   
+    }
     .airConditioning .airConditioning-body {
         height: 416px;
         display: flex;
         align-items: center;
-        padding-top: 20px;
+        /* padding-top: 20px; */
         flex-direction: column;
         font-size: 16px;
         color: #707070;
         position:relative;
     }
-    .airConditioning-body .airConditioning-box{
+    .airConditioning-box{
+        /* border: 1px solid black;
         width: 180px;
         height: 248px;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-direction: column;
-        box-shadow:0px 3px 6px rgba(0,0,0,0.16);
+        box-shadow:0px 3px 6px rgba(0,0,0,0.16); */
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding-left: 0.3125rem;
     }
     .airConditioning-body .airConditioning-bottom{
         height: 22px;
-        margin-top: 29px;
+        /* 
+         */
         display: flex;
         align-items: center;
         justify-content: center;

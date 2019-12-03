@@ -92,7 +92,8 @@
                     this.control[3].flag=config.SMOKE;
                     this.control[1].flag=config.DEHUMIDIFIER;
                     this.control[7].flag=config.DISINFECTION;
-                    this.control[5].flag=config.AIR_CONDITIONER;
+                    // this.control[5].flag=config.AIR_CONDITIONER;
+                    this.control[5].flag=true;
                     this.control[6].flag=config.EXHAUST_AIR;
                 }).catch(err=>{
                     this.$message.error(err);

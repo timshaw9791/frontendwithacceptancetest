@@ -298,8 +298,11 @@
                                 })
                             }
                         })
-                        console.log("this.form")
-                        console.log(this.form)
+                        if(this.form.equipArgItemList[0].equipArg.name=='')
+                        {
+                            console.log("执行到了");
+                            this.$message.error('预案内容不得为空')
+                        }else{
                         savePlan(this.form).then(item => {
                             this.$refs.dialog.hide();
                             this.getList();
@@ -307,6 +310,8 @@
                         }).catch(err => {
                             this.$message.error(err.message);
                         })
+                        }
+                        
 
                     } else if (this.title === '编辑预案' && this.form.equipArgItemList[0]) {
                         if (this.form.equipArgItemList[this.form.equipArgItemList.length - 1].equipArg.name === ''&&this.form.equipArgItemList.length!=1) {
