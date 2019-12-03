@@ -112,7 +112,7 @@
                 switch (data) {
                     case 'add':
                         this.storageInfoShow = true;
-                        this.title = '新增装备信息';
+                        this.title = '新增装备参数';
                         this.equipId = '';
                         break;
                     case 'look':

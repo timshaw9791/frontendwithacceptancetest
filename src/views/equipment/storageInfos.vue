@@ -36,7 +36,7 @@
                         <form-container ref="form" :model="form" class="formList">
                            <field-input v-model="form.name" label="装备名称" width="3" name="装备名称"
                                          :rules="r(true).all(R.require)" prop="name"
-                                         v-if="['新增装备信息', '装备参数详情', '装备信息详情'].includes(title)"
+                                         v-if="['新增装备参数', '装备参数详情', '装备信息详情'].includes(title)"
                                          :disabled="edit"
                             ></field-input>
                             <field-select label="装备名称" v-model="form.name" width="3" name="装备名称"
@@ -46,7 +46,7 @@
             
                             <field-input v-model="form.model" label="装备型号" width="3"
                                          :rules="r(true).all(R.require)" prop="model"
-                                         v-if="['新增装备信息', '装备参数详情', '装备信息详情'].includes(title)"
+                                         v-if="['新增装备参数', '装备参数详情', '装备信息详情'].includes(title)"
                                          :disabled="edit" :class="{'occupy-position': !title.includes('装备信息详情')}"
                             ></field-input>
                             <field-select label="装备型号" v-model="form.model" width="3" name="装备型号" prop="model"
@@ -93,7 +93,7 @@
                         <!--<el-button type="primary" class="button" @click="pushForm" v-if="!equipId">提交</el-button>-->
                         <div class="imgUp">
                             <imgUp @success="successUp" :disabled="edit"
-                                   :image="form.image" :upload="title.includes('入库')?false:true" :noimg="noimg"></imgUp>
+                                   :image="form.image" :upload="title.includes('入库')?false:true" :noimg="tempImage==null"></imgUp>
                         </div>
                     </div>
 
@@ -250,7 +250,6 @@
                 formRes: '',
                 inlineForm: {},
                 leadershipList: [],
-                noimg:false,
                 unitId: JSON.parse(localStorage.getItem('user')).unitId,
                 options: [],
                 supplierArr: [], // 供应商列表
@@ -444,7 +443,7 @@
                         this.$message.success("更新成功")
                         this.$emit('black')
                     })
-                } else if(this.title.includes('新增装备信息')) {
+                } else if(this.title.includes('新增装备参数')) {
                     let tempForm = {
                         name: this.form.name,
                         model: this.form.model,
@@ -678,6 +677,7 @@
             //选择供应商后更新 对应信息
             vendor(data) {
                 this.allSupplier.some(item => {
+                    console.log(item);
                     if (item.id === data) {
                         this.form.personM = item.person;
                         this.form.phoneM = item.phone;
@@ -746,8 +746,10 @@
                     vendorId: temp.supplier.name,
                     personM: temp.supplier.person,
                     phoneM: temp.supplier.phone,
-                    id: temp.id
+                    id: temp.id,
+                    image: `${imgBaseUrl}${temp.image}`
                 })
+                this.tempImage = temp.image
                 // 硬件开启 hardwareOpen
                 if(!this.hardwareOpen) {
                     start("java -jar scan.jar", (data) => {
@@ -984,7 +986,7 @@
                 this.extendEdit = false;
             } else if(this.title.includes('装备信息详情')) {
                 
-            } else if (this.title.includes('新增装备信息')) {
+            } else if (this.title.includes('新增装备参数')) {
                 this.edit = false;
             } else if (this.title.includes('装备参数详情')) {
                 
