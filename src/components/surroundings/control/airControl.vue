@@ -148,7 +148,7 @@
 
 <style scoped>
     .lighting-control-body{
-        height: 201px;
+        height: 248px;
         display: flex;
         justify-content: center;
         flex-direction: column;
