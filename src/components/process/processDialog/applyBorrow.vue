@@ -7,12 +7,12 @@
                     <div class="action-button-item">
                         <span v-text="'所在库房：'"></span>
                         <div class="button-item-input">
-                            <el-input :disabled="true" v-model="form.myUnit"></el-input>
+                            <el-input :disabled="true" v-model="applyObject.house.houseName"></el-input>
                         </div>
                     </div>
                     <div class="action-button-item">
                         <span v-text="'出库机构：'"></span>
-                        <process-cascader></process-cascader>
+                        <process-cascader @handleUnitChange="changeUnit"></process-cascader>
                     </div>
                     <div class="action-button-item">
                         <span v-text="'指定领导：'"></span>
@@ -44,6 +44,7 @@
     import p_select from 'components/base/selected'
     import processTable from '../processTable'
     import processCascader from '../processCascader'
+    import {getEquipArgs} from 'api/process'
     export default {
         name: "applyBorrow",
         components: {
@@ -51,6 +52,11 @@
             p_select,
             processTable,
             processCascader
+        },
+        props:{
+            applyObject:{
+                type:Object
+            }
         },
         data() {
             return {
@@ -81,6 +87,11 @@
             }
         },
         methods: {
+            changeUnit(data){
+                getEquipArgs().then(res=>{
+                    console.log(res);
+                })
+            },
             apply(data) {
                 console.log(data)
             },

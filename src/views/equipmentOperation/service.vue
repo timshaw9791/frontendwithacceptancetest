@@ -266,7 +266,6 @@
             },
             classify(data){
                 let dialogList=[];
-                console.log(data);
                 data.forEach(item=>{
                     if(dialogList.length===0){
                         dialogList.push({item:item,number:1});

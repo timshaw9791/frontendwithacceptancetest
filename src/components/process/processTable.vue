@@ -4,13 +4,13 @@
             <el-table-column label="装备名称" align="left">
                 <template scope="scope">
                     <div class="table-row-item">
-                        <el-select v-model="scope.row.equipArg.name" value-key="id"
+                        <el-select v-model="scope.row.equipArg" value-key="id"
                                    @change="changeModel(scope.row.equipArg.name)">
                             <el-option
                                     v-for="item in nameList"
-                                    :label="item"
-                                    :value="item"
-                                    :key="item">
+                                    :label="item.label"
+                                    :value="item.value"
+                                    >
                             </el-option>
                         </el-select>
                     </div>
@@ -21,10 +21,10 @@
                     <div class="table-row-item">
                         <el-select v-model="scope.row.equipArg.model" value-key="id">
                             <el-option
-                                    v-for="item in modelList"
+                                    v-for="item in scope.row.equipArg.equipArgModels"
                                     :key="item.id"
                                     :label="item.model"
-                                    :value="item">
+                                    :value="item.model">
                             </el-option>
                         </el-select>
                     </div>
@@ -62,7 +62,9 @@
         name: "processTable",
         data(){
             return{
-                modelList:[]
+                modelList:[],
+                equipName:'',
+                value:''
             }
         },
         props: {
@@ -73,7 +75,7 @@
             equipArgList: {
                 type: Array,
                 default() {
-                    return [{equipArg: '', location: {}}]
+                    return [{equipArg: {},name:'',model:''}]
                 }
             },
             nameList: {
@@ -83,9 +85,12 @@
                 }
             }
         },
+        created(){
+          console.log(this.nameList)
+        },
         methods:{
             changeModel(name){
-
+                console.log(name)
             }
         }
     }

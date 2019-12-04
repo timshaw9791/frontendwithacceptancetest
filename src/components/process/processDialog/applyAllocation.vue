@@ -7,12 +7,12 @@
                     <div class="action-button-item">
                         <span v-text="'所在库房：'"></span>
                         <div class="button-item-input">
-                            <el-input :disabled="true" v-model="form.myUnit"></el-input>
+                            <el-input :disabled="true" v-model="applyObject.house.houseName"></el-input>
                         </div>
                     </div>
                     <div class="action-button-item">
                         <span v-text="'出库机构：'"></span>
-                        <process-cascader></process-cascader>
+                        <process-cascader @handleUnitChange="changeUnit"></process-cascader>
                     </div>
                     <div class="action-button-item">
                         <span v-text="'指定领导：'"></span>
@@ -20,7 +20,7 @@
                     </div>
                 </div>
                 <div class="apply-allocation-table">
-                    <process-table></process-table>
+                    <process-table :nameList="mixinObject.equipArgs"></process-table>
                 </div>
                 <div class="apply-allocation-footer">
                     <div class="action-footer-item">
@@ -44,6 +44,7 @@
     import p_select from 'components/base/selected'
     import processTable from '../processTable'
     import processCascader from '../processCascader'
+    import {applyProcessMixin} from "common/js/applyProcessMixin";
     export default {
         name: "applyAllocation",
         components: {
@@ -52,10 +53,16 @@
             processTable,
             processCascader
         },
+        props:{
+          applyObject:{
+              type:Object
+          }
+        },
+        mixins: [applyProcessMixin],
         data() {
             return {
                 form:{
-                    myUnit:JSON.parse(localStorage.getItem('user')).organUnitName
+                    myUnit:''
                 },
                 options: [{
                     value: '选项1',
@@ -80,7 +87,12 @@
                 }, {name: '', label: '报废流程'}]
             }
         },
+        created(){
+        },
         methods: {
+            changeUnit(){
+                this.mixinEquipArgs();
+            },
             apply(data) {
                 console.log(data)
             },

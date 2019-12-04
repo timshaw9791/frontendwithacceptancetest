@@ -9,7 +9,18 @@ export function getAllUnit() {
     })
 }
 
-
+export function getHouseInfo() {
+    return  request({
+        url:`/house/info`,
+        method:'get'
+    })
+}
+export function getEquipArgs() {
+    return  request({
+        url:`${baseBURL}/equip-args`,
+        method:'get'
+    })
+}
 
 
 

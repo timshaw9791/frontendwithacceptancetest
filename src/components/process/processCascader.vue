@@ -29,7 +29,7 @@
         },
         methods:{
             handleUnitChange(data){
-                console.log(data)
+                this.$emit('handleUnitChange',data[data.length-1])
             },
             getUnitList(){
                 getAllUnit().then(res=>{

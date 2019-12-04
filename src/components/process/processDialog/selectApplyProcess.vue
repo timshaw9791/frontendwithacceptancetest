@@ -11,15 +11,16 @@
                 </div>
             </div>
         </serviceDialog>
-        <apply-borrow ref="borrow"></apply-borrow>
+        <apply-borrow :applyObject="applyObject" ref="borrow"></apply-borrow>
         <apply-scrap ref="scrap"></apply-scrap>
         <apply-direct ref="direct"></apply-direct>
-        <apply-allocation ref="allocation"></apply-allocation>
+        <apply-allocation :applyObject="applyObject" ref="allocation"></apply-allocation>
     </div>
 </template>
 
 <script>
     import serviceDialog from 'components/base/gailiangban'
+    import {getHouseInfo} from 'api/process'
     import applyBorrow from './applyBorrow'
     import applyScrap from './applyScrap'
     import applyDirect from './applyDirect'
@@ -35,10 +36,21 @@
                 selectButtons: [{key: 'allocation', label: '调拨流程'}, {key: 'borrow', label: '借用流程'}, {
                     key: 'direct',
                     label: '直调流程'
-                }, {key: 'scrap', label: '报废流程'}]
+                }, {key: 'scrap', label: '报废流程'}],
+                applyObject:{
+                    house:{}
+                }
             }
         },
+        created(){
+            this.init();
+        },
         methods: {
+            init(){
+                getHouseInfo().then(res=>{
+                    this.$set(this.applyObject,'house',res);
+                })
+            },
             apply(key) {
                 this.cancelDb();
                 this.$refs[key].show();
