@@ -189,12 +189,14 @@
                 {
                     if (row.$index === this.form.equipArgItemList.length - 1) {
                     this.form.equipArgItemList.push({equipArg: {name:'',model:''}, location: {}});
+                    this.modelList=[]
                 }
                 }
                 if(title='编辑预案')
                 {
                     if (row.$index === this.form.equipArgItemList.length - 1) {
                     this.form.equipArgItemList.push({equipArg: {name:''}, location: {}});
+                    this.modelList=[]
                 }
                 }
 
