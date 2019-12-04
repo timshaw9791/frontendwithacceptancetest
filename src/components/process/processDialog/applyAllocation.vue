@@ -16,17 +16,17 @@
                     </div>
                     <div class="action-button-item">
                         <span v-text="'指定领导：'"></span>
-                        <p_select :options="options" @selected="selectValue"></p_select>
+                        <p_select ref="transfer_select" :options="mixinObject.leaderList" @selected="selectValue"></p_select>
                     </div>
                 </div>
                 <div class="apply-allocation-table">
-                    <process-table :nameList="mixinObject.equipArgs"></process-table>
+                    <process-table :equipArgList="form.equips" :nameList="mixinObject.equipArgs"></process-table>
                 </div>
                 <div class="apply-allocation-footer">
                     <div class="action-footer-item">
                         <span v-text="'申请人员：'"></span>
                         <div class="button-item-input">
-                            <el-input :disabled="true" v-model="form.myUnit"></el-input>
+                            <el-input :disabled="true" v-model="form.applicant.name"></el-input>
                         </div>
                     </div>
                 </div>
@@ -62,25 +62,23 @@
         data() {
             return {
                 form:{
-                    myUnit:''
+                    type:'TRANSFER',
+                    leader:{},
+                    equips:[{equipArg: {},equip:{}}],
+                    outboundOrganUnit:{},
+                    inboundOrganUnit:{
+                        id: this.applyObject.house.organUnitId,
+                        name: this.applyObject.house.organUnitName},
+                    inboundWarehouse:{
+                        id: this.applyObject.house.houseId,
+                        name: this.applyObject.house.houseName
+                    },
+                    applicant: {
+                        id: JSON.parse(localStorage.getItem('user')).id,
+                        name: JSON.parse(localStorage.getItem('user')).name,
+                        organUnitId: this.applyObject.house.organUnitId
+                    }
                 },
-                options: [{
-                    value: '选项1',
-                    label: '黄金糕'
-                }, {
-                    value: '选项2',
-                    label: '双皮奶',
-                    disabled: true
-                }, {
-                    value: '选项3',
-                    label: '蚵仔煎'
-                }, {
-                    value: '选项4',
-                    label: '龙须面'
-                }, {
-                    value: '选项5',
-                    label: '北京烤鸭'
-                }],
                 selectButtons: [{name: '', label: '调拨流程'}, {name: '', label: '借用流程'}, {
                     name: '',
                     label: '直调流程'
@@ -90,14 +88,31 @@
         created(){
         },
         methods: {
-            changeUnit(){
+            changeUnit(data){
+                this.$refs['transfer_select'].toEmpty();
+                let params={organUnitId:data[0].id,type:this.form.type};
+                this.form.outboundOrganUnit=data[data.length-1];
                 this.mixinEquipArgs();
+                this.getLeader(params);
             },
-            apply(data) {
-                console.log(data)
+            apply() {
+                let equips=[];
+                this.form.equips.forEach(item=>{
+                    if(item.equip.name!=undefined){
+                        equips.push(item.equip);
+                    }
+                });
+               let apply={
+                   applicant:this.form.applicant,
+                   equips:equips,
+                   inboundOrganUnit:this.form.inboundOrganUnit,
+                   inboundWarehouse:this.form.inboundWarehouse,
+                   outboundOrganUnit:this.form.outboundOrganUnit
+               };
             },
             selectValue(data) {
-                console.log(data);
+               this.form.leader=data;
+               console.log(data)
             },
             show() {
                 this.$refs.applyAllocation.show()

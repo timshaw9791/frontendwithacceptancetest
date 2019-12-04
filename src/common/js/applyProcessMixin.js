@@ -1,9 +1,11 @@
-import {getEquipArgs} from 'api/process'
+import {getEquipArgs,getApplyLeader} from 'api/process'
 export const applyProcessMixin = {
     data() {
         return {
            mixinObject:{
-               equipArgs:[]
+               equipArgs:[],
+               leaderList:[],
+               processConfigId:''
            }
         }
     },
@@ -11,6 +13,18 @@ export const applyProcessMixin = {
         mixinEquipArgs(){
             getEquipArgs().then(res=>{
                 this.classify(res);
+            })
+        },
+        getLeader(data){
+            getApplyLeader(data).then(res=>{
+                let leader=[];
+                res.auditors.forEach(item=>{
+                    if(item.level===1){
+                        leader.push({value:item.leader,label:item.leader.name})
+                    }
+                });
+                this.mixinObject.processConfigId=res.id;
+                this.$set(this.mixinObject,'leaderList',leader);
             })
         },
         classify(data){
@@ -33,8 +47,8 @@ export const applyProcessMixin = {
                     }
                 }
             });
-            this.$set(this.mixinObject,'equipArgs',classifyList);
             console.log(this.mixinObject.equipArgs)
+            this.$set(this.mixinObject,'equipArgs',classifyList);
         },
 
     }

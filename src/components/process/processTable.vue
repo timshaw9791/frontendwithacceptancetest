@@ -5,7 +5,7 @@
                 <template scope="scope">
                     <div class="table-row-item">
                         <el-select v-model="scope.row.equipArg" value-key="id"
-                                   @change="changeModel(scope.row.equipArg.name)">
+                                   @change="changeModel(scope.row)">
                             <el-option
                                     v-for="item in nameList"
                                     :label="item.label"
@@ -19,7 +19,7 @@
             <el-table-column label="装备型号" align="left">
                 <template scope="scope">
                     <div class="table-row-item">
-                        <el-select v-model="scope.row.equipArg.model" value-key="id">
+                        <el-select v-model="scope.row.equip.model" value-key="id">
                             <el-option
                                     v-for="item in scope.row.equipArg.equipArgModels"
                                     :key="item.id"
@@ -33,14 +33,14 @@
             <el-table-column label="装备数量" align="left">
                 <template scope="scope">
                     <div class="table-row-item">
-                        <el-input v-model="scope.row.equipArg.count"></el-input>
+                        <el-input v-model="scope.row.equip.count" @blur="changeCount(scope,$event)"></el-input>
                     </div>
                 </template>
             </el-table-column>
             <el-table-column label=" " align="left">
                 <template scope="scope">
                     <div class="table-row-item-button-box">
-                        <el-button class="table-row-item-button" type="danger" >删除</el-button>
+                        <el-button class="table-row-item-button" type="danger" @click="delEquip(scope)">删除</el-button>
                     </div>
                 </template>
             </el-table-column>
@@ -64,7 +64,8 @@
             return{
                 modelList:[],
                 equipName:'',
-                value:''
+                value:'',
+                nowRow:{}
             }
         },
         props: {
@@ -75,7 +76,7 @@
             equipArgList: {
                 type: Array,
                 default() {
-                    return [{equipArg: {},name:'',model:''}]
+                    return [{equipArg: {},equip:{}}]
                 }
             },
             nameList: {
@@ -89,8 +90,33 @@
           console.log(this.nameList)
         },
         methods:{
-            changeModel(name){
-                console.log(name)
+            addRow() {
+                if (this.nowRow.$index === this.equipArgList.length - 1) {
+                    this.equipArgList.push({equipArg: {},equip:{}});
+                }
+            },
+            delEquip(data){
+                if (this.equipArgList.length > 1) {
+                    this.equipArgList.splice(data.$index, 1);
+                } else {
+                    this.$message.error('不能删除最后一个');
+                }
+            },
+            changeModel(row){
+                row.equip.name=row.equipArg.name;
+                row.equip.model=row.equipArg.equipArgModels[0].model;
+                this.$set(row.equip,'count','');
+            },
+            changeCount(row, event){
+                let count=row.row.equip.count;
+                if(row.row.equip.count!==''){
+                    if(Number(count)===0){
+                        this.$message.error('装备数量不能为零')
+                    }else {
+                        this.nowRow = row;
+                        this.addRow();
+                    }
+                }
             }
         }
     }

@@ -1,10 +1,10 @@
 <template>
     <div class="tabs-select">
-        <el-select v-model="value" placeholder="" @change="indexValue">
+        <el-select v-model="value" placeholder="" @change="changeValue">
             <el-option
                     style="text-align:center"
                     v-for="item in options"
-                    :key="item.value"
+                    :key="item.label"
                     :label="item.label"
                     :value="item.value">
             </el-option>
@@ -17,11 +17,15 @@
         data() {
             return {
                 value: '',
+                empty:true
             }
         },
         methods: {
-            indexValue() {
+            changeValue() {
                 this.$emit('selected', this.value);
+            },
+            toEmpty(){
+                this.value=''
             }
         },
         mounted(){

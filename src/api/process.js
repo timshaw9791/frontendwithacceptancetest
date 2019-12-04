@@ -22,7 +22,13 @@ export function getEquipArgs() {
     })
 }
 
-
+export function getApplyLeader(params) {
+    return  request({
+        url:`${baseBURL}/process-configs/by-organ-unit-and-type`,
+        method:'get',
+        params:params
+    })
+}
 
 
 

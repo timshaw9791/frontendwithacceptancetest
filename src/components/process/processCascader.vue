@@ -13,38 +13,59 @@
 
 <script>
     import {getAllUnit} from 'api/process'
+
     export default {
         name: "processCascader",
-        data(){
+        data() {
             return {
-                value:[],
-                cascader:{
+                value: [],
+                cascader: {
                     options: [],
-                    prop:{value: 'id', label: 'name', children: 'lowers'}
+                    prop: {value: 'value', label: 'name', children: 'lowers'}
                 }
             }
         },
-        created(){
+        created() {
             this.getUnitList()
         },
-        methods:{
-            handleUnitChange(data){
-                this.$emit('handleUnitChange',data[data.length-1])
+        methods: {
+            handleUnitChange(data) {
+                console.log(data);
+                this.$emit('handleUnitChange', data)
             },
-            getUnitList(){
-                getAllUnit().then(res=>{
-                   this.cascader.options=[res]
-                })
+            getUnitList() {
+                this.cascader.options = [];
+                getAllUnit().then(res => {
+                    let option=[JSON.parse(JSON.stringify(res))];
+                    console.log('getUnitList',option);
+                    option.forEach(item=>{
+                        fs(item)
+                    });
+                    this.cascader.options = option
+                });
+                function fs(item) {
+                    item.value={
+                        name:item.name,
+                        id:item.id
+                    };
+                    if(item.lowers!==null){
+                        item.lowers.forEach(lowerItem=>{
+                            fs(lowerItem);
+                        })
+                    }
+
+                }
             }
         }
     }
 </script>
 
 <style lang="scss" scoped>
-    .process-cascader{
+    .process-cascader {
         /deep/ .el-input__inner {
             height: 0.1667rem;
         }
+
         /deep/ .el-input__icon {
             width: 0.1302rem;
             line-height: 0.1667rem;
