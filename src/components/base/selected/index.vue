@@ -22,17 +22,16 @@
         },
         methods: {
             changeValue(data) {
-                console.log(data);
+                console.log('this.empty',this.empty);
                 if(!this.empty){
-
-                    this.$emit('selected', this.value);
+                    this.$emit('selected', data);
                 }else {
                     this.empty=false
                 }
             },
             toEmpty(){
                 this.value='';
-                this.empty=true
+
             }
         },
         mounted(){

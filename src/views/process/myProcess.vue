@@ -13,10 +13,10 @@
         </div>
         <div class="my_process_main_box" data-test="main_box">
             <div class="main_table_box" data-test="table_box">
-                <p_table :table="table" :typeUrl="'process'" :otherParams="true" @clickTable="clickTable" ref="table"></p_table>
+                <p_table ref="processTable" :table="table" :typeUrl="'process'" :otherParams="true" @clickTable="clickTable"></p_table>
             </div>
         </div>
-        <select_apply ref="selectApply"></select_apply>
+        <select_apply ref="selectApply" @sucessApply="sucessApply"></select_apply>
     </div>
 </template>
 
@@ -40,6 +40,7 @@
                         {lable: '当前节点', field: 'currentTask.name'},
                         {lable: '未操作者', field: 'currentTask.assigneeName'},
                     ],
+                    height:'618px',
                     url:'/history/process-instances/page',
                     tableAction:{
                         label:'操作',
@@ -54,10 +55,17 @@
             apply(){
                 this.$refs.selectApply.show()
             },
+            sucessApply(){
+                this.$refs.processTable.refetch()
+            },
             filterProcessType(ns){
                 switch (ns.processDefinitionKey) {
                     case "SCRAP":
-                        return '报废流程'
+                        return '报废流程';
+                    case "TRANSFER":
+                        return '调拨流程';
+                    case "DIRECT_ALLOT":
+                        return '直调流程'
                 }
             },
             filterProcessName(ns){
@@ -66,6 +74,12 @@
                     case "SCRAP":
                         type = '报废流程';
                        break;
+                    case "TRANSFER":
+                        type = '调拨流程';
+                        break;
+                    case "DIRECT_ALLOT":
+                        type = '直调流程';
+                        break;
                 }
                 return type+'-'+name+'-'+time.replace(/\//g,'-')
             },

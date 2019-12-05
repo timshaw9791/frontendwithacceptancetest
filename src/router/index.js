@@ -63,7 +63,7 @@ export const asyncRouterMap = [
         path: '/equipment',
         component: Layout,
         name: 'equipment',
-        meta: {title: '装备出入库', icon: '装备信息', roles: ['ADMINISTRATOR']},
+        meta: {title: '装备出入库', icon: '装备出入库', roles: ['ADMINISTRATOR']},
         children: [
             {
                 path: 'storage',
@@ -153,7 +153,7 @@ export const asyncRouterMap = [
         path: '/equipmentOperation',
         component: Layout,
         name: 'equipmentOperation',
-        meta: {title: '维保充电', icon: '装备维保', roles: ['ADMINISTRATOR']},
+        meta: {title: '维保充电', icon: '维保充电', roles: ['ADMINISTRATOR']},
         children: [
             {
                 path: 'charging',
@@ -179,7 +179,7 @@ export const asyncRouterMap = [
         path: '/warehouse',
         component: Layout,
         name: 'warehouse',
-        meta: {title: '库房管理', icon: '仓库信息', roles: ['ADMINISTRATOR']},
+        meta: {title: '库房管理', icon: '库房管理', roles: ['ADMINISTRATOR']},
         children: [
             {
                 path: 'safety',
@@ -284,7 +284,7 @@ export const asyncRouterMap = [
         path: '/record',
         component: Layout,
         name: 'record',
-        meta: {title: '记录管理', icon: '工作日志', roles: ['POLICE_OFFICER', 'ADMINISTRATOR']},
+        meta: {title: '记录管理', icon: '记录管理', roles: ['POLICE_OFFICER', 'ADMINISTRATOR']},
         children: [
             {
                 path: 'opening',

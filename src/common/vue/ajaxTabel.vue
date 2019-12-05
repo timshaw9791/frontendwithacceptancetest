@@ -3,7 +3,7 @@
         <div>
             <field-table :list="list" :labelList="table.labelList"
                          :tableAction="table.tableAction" :pageInfo="paginator" @tableCurrentPageChanged="changePage"
-                         @clickTableCloum="clickTableCloum" style="width: 100%">
+                         @clickTableCloum="clickTableCloum" style="width: 100%" :height="table.height">
             </field-table>
         </div>
     </div>
@@ -21,7 +21,7 @@
                 paginator: {
                     page: 1,
                     totalPages: 10,
-                    size: 9
+                    size: 10
                 }
             }
         },
@@ -74,6 +74,9 @@
             }
         },
         methods: {
+            refetch(){
+               this.getList()
+            },
             getList() {
                 let url = '';
                 let paramskey = {};

@@ -50,9 +50,23 @@ export function transferStart(data,nextAssignee,processConfigId) {
         data
     })
 }
-export function transferStarts(data,nextAssignee,processConfigId) {
+export function directStarts(data,nextAssignee,processConfigId) {
     return  request({
         url:`${baseBURL}/workflow/direct-allot/start?nextAssignee=${nextAssignee}&&processConfigId=${processConfigId}`,
+        method:'post',
+        data
+    })
+}
+
+export function equipById(id) {
+    return  request({
+        url:`/equip/findEquipsByRfidAndNameAndModel?search=${id}`,
+        method:'get',
+    })
+}
+export function scrapStarts(data,nextAssignee,processConfigId) {
+    return  request({
+        url:`${baseBURL}/workflow/scrap/start?nextAssignee=${nextAssignee}&&processConfigId=${processConfigId}`,
         method:'post',
         data
     })

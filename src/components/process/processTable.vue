@@ -51,8 +51,8 @@
         <el-table :data="equipArgList" fit height="2.421875rem" v-if="processType==='scrap'">
             <el-table-column prop="rfid" label="RFID"  align="left"></el-table-column>
             <el-table-column prop="serial" label="装备序号"  align="left"></el-table-column>
-            <el-table-column prop="name" label="装备名称"  align="left"></el-table-column>
-            <el-table-column prop="model" label="装备型号"  align="left"></el-table-column>
+            <el-table-column prop="equipArg.name" label="装备名称"  align="left"></el-table-column>
+            <el-table-column prop="equipArg.model" label="装备型号"  align="left"></el-table-column>
         </el-table>
     </div>
 </template>

@@ -12,9 +12,9 @@
             </div>
         </serviceDialog>
         <apply-borrow :applyObject="applyObject" ref="borrow"></apply-borrow>
-        <apply-scrap :applyObject="applyObject" ref="scrap"></apply-scrap>
-        <apply-direct :applyObject="applyObject" ref="direct"></apply-direct>
-        <apply-allocation :applyObject="applyObject" ref="allocation"></apply-allocation>
+        <apply-scrap :applyObject="applyObject" ref="scrap" @applySucess="sucessApply"></apply-scrap>
+        <apply-direct :applyObject="applyObject" ref="direct" @applySucess="sucessApply"></apply-direct>
+        <apply-allocation :applyObject="applyObject" ref="allocation" @applySucess="sucessApply"></apply-allocation>
     </div>
 </template>
 
@@ -47,9 +47,11 @@
             this.init();
         },
         methods: {
+            sucessApply(){
+                this.$emit('sucessApply',true)
+            },
             init(){
                 getHouseInfo().then(res=>{
-                    console.log('house',res)
                     this.$set(this.applyObject,'house',res);
                 })
             },

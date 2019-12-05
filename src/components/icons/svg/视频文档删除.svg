@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fc6a6a;
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+    </style>
+  </defs>
+  <g id="视频文档删除" transform="translate(-553 -142)">
+    <path id="视频文档删除-2" data-name="视频文档删除" class="cls-1" d="M113.778,123.778a10,10,0,1,0,10-10A10,10,0,0,0,113.778,123.778Z" transform="translate(439.222 28.222)"/>
+    <path id="视频文档删除-3" data-name="视频文档删除" class="cls-2" d="M322.108,303.017a.716.716,0,0,1,0,.988l-8.886,8.886a.7.7,0,1,1-.988-.988l8.89-8.886A.717.717,0,0,1,322.108,303.017Z" transform="translate(246.074 -155.956)"/>
+    <path id="视频文档删除-4" data-name="视频文档删除" class="cls-2" d="M312.468,302.888a.716.716,0,0,1,.988,0l8.886,8.886a.7.7,0,0,1-.988.988l-8.886-8.886A.716.716,0,0,1,312.468,302.888Z" transform="translate(245.839 -155.829)"/>
+  </g>
+</svg>

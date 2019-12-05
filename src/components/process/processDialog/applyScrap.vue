@@ -12,11 +12,11 @@
                     </div>
                     <div class="action-button-item">
                         <span v-text="'指定领导：'"></span>
-                        <p_select :options="mixinObject.leaderList" @selected="selectValue"></p_select>
+                        <p_select :options="mixinObject.leaderList" @selected="selectLeader"></p_select>
                     </div>
                     <div class="action-button-item">
                         <span v-text="'选择硬件：'"></span>
-                        <p_select :options="options" @selected="selectValue"></p_select>
+                        <p_select :options="hardwareSelect" @selected="selectHardware"></p_select>
                     </div>
                 </div>
                 <div class="apply-reason">
@@ -58,7 +58,8 @@
     import processCascader from '../processCascader'
     import textButton from 'components/base/textButton'
     import {applyProcessMixin} from "common/js/applyProcessMixin";
-    import {transferStart} from "api/process"
+    import {scrapStarts,equipById} from "api/process"
+    import {start, delFile, handheld, killProcess,modifyFileName} from 'common/js/rfidReader'
     export default {
         name: "applyScrap",
         components: {
@@ -76,18 +77,13 @@
         mixins: [applyProcessMixin],
         data() {
             return {
+                hardwareSelect:[{name:'手持机',id:'1'},{name:'RFID读写器',id:'2'}],
+                hardware:'',
                 form:{
                     type:'SCRAP',
                     leader:{},
                     equips:[],
                     outboundOrganUnit:{},
-                    inboundOrganUnit:{
-                        id: this.applyObject.house.organUnitId,
-                        name: this.applyObject.house.organUnitName},
-                    inboundWarehouse:{
-                        id: this.applyObject.house.houseId,
-                        name: this.applyObject.house.houseName
-                    },
                     applicant: {
                         id: JSON.parse(localStorage.getItem('user')).id,
                         name: JSON.parse(localStorage.getItem('user')).name,
@@ -95,40 +91,99 @@
                     },
                     reason:''
                 },
-                options: [{
-                    value: '选项1',
-                    label: '黄金糕'
-                }, {
-                    value: '选项2',
-                    label: '双皮奶',
-                }, {
-                    value: '选项3',
-                    label: '蚵仔煎'
-                }, {
-                    value: '选项4',
-                    label: '龙须面'
-                }, {
-                    value: '选项5',
-                    label: '北京烤鸭'
-                }],
                 selectButtons: [{name: '', label: '调拨流程'}, {name: '', label: '借用流程'}, {
                     name: '',
                     label: '直调流程'
                 }, {name: '', label: '报废流程'}]
             }
         },
-        created(){
-            this.mixiGetLeader({organUnitId:this.applyObject.house.organUnitId,type:this.form.type});
+        mounted(){
+           setTimeout(()=>{
+               this.mixiGetLeader({organUnitId:this.applyObject.house.organUnitId,type:this.form.type});
+           },2000)
+        },
+        watch:{
+            'hardware': {
+                deep:true,
+                handler(newVal, oldVal) {
+                    // if (oldVal == 'RFID读写器' && newVal == '手持机') {
+                    //     this.end(this.pid)
+                    // } else if (newVal == '') {
+                    //     this.end(this.pid)
+                    // }
+                    if (newVal === '手持机') {
+                        console.log('watch',newVal);
+                        this.handheldMachine();
+                    } else if (newVal === 'RFID读写器') {
+                        this.getListUsb();
+                    }
+                }
+            }
         },
         methods: {
             apply(data) {
-                console.log(data)
+                let equips = [];
+                this.form.equips.forEach(item => {
+                    equips.push({id:item.id,rfid:item.rfid,name:item.equipArg.name,model:item.equipArg.model})
+                });
+                let apply = {
+                    applicant: this.form.applicant,
+                    equips: equips,
+                    note:this.form.reason,
+                    warehouse:{
+                        id: this.applyObject.house.houseId,
+                        name: this.applyObject.house.houseName
+                    }
+                };
+                scrapStarts(apply, this.form.leader.id, this.mixinObject.processConfigId).then(res => {
+                    this.$message.success('操作成功');
+                    this.$emit('applySucess',true);
+                    this.cancelDb()
+                })
             },
-            selectValue(data) {
-                console.log(data);
+            selectLeader(data) {
+                this.$set(this.form,'leader',data);
             },
-            apply(){
-
+            selectHardware(data){
+                this.hardware=data.name;
+            },
+            getEquipByRfid(data){
+               data.forEach(item=>{
+                   this.form.equips=[];
+                   equipById(item).then(res=>{
+                       this.form.equips.push(res.content[0])
+                   })
+               })
+            },
+            handheldMachine() {
+                modifyFileName('search.json');
+                handheld((err) => this.$message.error(err)).then((data) => {
+                    let json = JSON.parse(data);
+                    this.getEquipByRfid(json.rfid);
+                    this.deleteFile();
+                });
+                //todo 要换回来
+                // let data = inventoryData;
+                // this.getEquipByRfid(['40058889','40058890'])
+            },
+            getListUsb() {//todo
+                start("java -jar scan.jar", (data) => {
+                    this.getEquipByRfid([data]);
+                }, (fail) => {
+                    this.$message.error(fail)
+                }, (pid, err) => {
+                    pid ? this.pid = pid : this.$message.error(err)
+                })
+            },
+            deleteFile() {
+                delFile(newFile_path, () => {})
+            },
+            end(pid) {
+                if (pid) {
+                    //spawn("taskkill", ["/PID", pid, "/T", "/F"]);
+                    killProcess(this.pid);
+                    this.index = 0;
+                }
             },
             show() {
                 this.$refs.applyScrap.show()

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="15.132" height="14.832" viewBox="0 0 15.132 14.832">
+  <defs>
+    <style>
+      .cls-1, .cls-2 {
+        fill: #2f2f76;
+      }
+
+      .cls-2 {
+        stroke: #2f2f76;
+        stroke-width: 0.5px;
+      }
+    </style>
+  </defs>
+  <g id="读取" transform="translate(-556 -197)">
+    <path id="读取-2" data-name="读取" class="cls-1" d="M77.71,65.011H64.01V63.869h13.7Zm-1.142,0H77.71v4.564H76.569ZM65.154,77.561H64.012V65.011h1.141Z" transform="translate(491.99 133.131)"/>
+    <path id="读取-3" data-name="读取" class="cls-1" d="M64.212,266.239h5.7v1.14h-5.7Zm2.28-9.127h6.849v-1.14H66.492Zm0,2.278H72.2v-1.14H66.492Zm0,2.288h3.424v-1.139H66.492Zm0,0" transform="translate(491.794 -55.547)"/>
+    <path id="读取-4" data-name="读取" class="cls-2" d="M534.481,470.356l-1.549-1.559a2.881,2.881,0,1,0-.337.337l1.548,1.558a.238.238,0,1,0,.338-.336Zm-3.746-1.018a2.4,2.4,0,1,1,2.4-2.4,2.4,2.4,0,0,1-2.4,2.4Z" transform="translate(36.332 -259.35)"/>
+  </g>
+</svg>

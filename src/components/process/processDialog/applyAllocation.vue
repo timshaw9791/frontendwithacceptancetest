@@ -16,7 +16,8 @@
                     </div>
                     <div class="action-button-item">
                         <span v-text="'指定领导：'"></span>
-                        <p_select ref="transfer_select" :options="mixinObject.leaderList" @selected="selectValue"></p_select>
+                        <p_select ref="transferSelect" :options="mixinObject.leaderList"
+                                  @selected="selectLeader"></p_select>
                     </div>
                 </div>
                 <div class="apply-allocation-table">
@@ -55,26 +56,19 @@
             processTable,
             processCascader
         },
-        props:{
-          applyObject:{
-              type:Object
-          }
+        props: {
+            applyObject: {
+                type: Object
+            }
         },
         mixins: [applyProcessMixin],
         data() {
             return {
-                form:{
-                    type:'TRANSFER',
+                form: {
                     leader:{},
-                    equips:[{equipArg: {},equip:{}}],
-                    outboundOrganUnit:{},
-                    inboundOrganUnit:{
-                        id: this.applyObject.house.organUnitId,
-                        name: this.applyObject.house.organUnitName},
-                    inboundWarehouse:{
-                        id: this.applyObject.house.houseId,
-                        name: this.applyObject.house.houseName
-                    },
+                    type: 'TRANSFER',
+                    equips: [{equipArg: {}, equip: {}}],
+                    outboundOrganUnit: {},
                     applicant: {
                         id: JSON.parse(localStorage.getItem('user')).id,
                         name: JSON.parse(localStorage.getItem('user')).name,
@@ -87,40 +81,49 @@
                 }, {name: '', label: '报废流程'}]
             }
         },
-        created(){
+        created() {
         },
         methods: {
-            changeUnit(data){
-                this.$refs['transfer_select'].toEmpty();
-                let params={organUnitId:data[0].id,type:this.form.type};
-                this.form.outboundOrganUnit=data[data.length-1];
+            changeUnit(data) {
+                this.$refs.transferSelect.toEmpty();
+                let params = {organUnitId: data[0].id, type: this.form.type};
+                this.form.outboundOrganUnit = data[data.length - 1];
                 this.mixinEquipArgs();
                 this.mixiGetLeader(params);
             },
             apply() {
-                let equips=[];
-                this.form.equips.forEach(item=>{
-                    if(item.equip.name!=undefined){
+                let equips = [];
+                this.form.equips.forEach(item => {
+                    if (item.equip.name != undefined) {
                         equips.push(item.equip);
                     }
                 });
-               let apply={
-                   applicant:this.form.applicant,
-                   equips:equips,
-                   inboundOrganUnit:this.form.inboundOrganUnit,
-                   inboundWarehouse:this.form.inboundWarehouse,
-                   outboundOrganUnit:this.form.outboundOrganUnit
-               };
-                transferStart(apply,this.form.leader.id,this.mixinObject.processConfigId).then(res=>{
-                   this.$message.success('操作成功');
-                   this.cancelDb()
+                let inboundOrganUnit = {
+                    id: this.applyObject.house.organUnitId,
+                    name: this.applyObject.house.organUnitName
+                };
+                let inboundWarehouse = {
+                    id: this.applyObject.house.houseId,
+                    name: this.applyObject.house.houseName
+                };
+                let apply = {
+                    applicant: this.form.applicant,
+                    equips: equips,
+                    inboundOrganUnit: inboundOrganUnit,
+                    inboundWarehouse: inboundWarehouse,
+                    outboundOrganUnit: this.form.outboundOrganUnit
+                };
+                transferStart(apply, this.form.leader.id, this.mixinObject.processConfigId).then(res => {
+                    this.$message.success('操作成功');
+                    this.$emit('applySucess',true);
+                    this.cancelDb()
                 })
             },
-            selectValue(data) {
-               this.form.leader=data;
+            selectLeader(data) {
+                this.$set(this.form,'leader',data);
             },
             show() {
-                this.$set(this.form,'equips',[{equipArg: {},equip:{}}]);
+                this.$set(this.form, 'equips', [{equipArg: {}, equip: {}}]);
                 this.$refs.applyAllocation.show()
             },
             cancelDb() {
@@ -135,18 +138,21 @@
         height: 3.6302rem;
         position: relative;
     }
-    .apply-allocation-box .apply-allocation-button{
+
+    .apply-allocation-box .apply-allocation-button {
         position: absolute;
         width: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
         bottom: 0.224rem;
+
         /deep/ .el-button {
             height: 0.1667rem;
             line-height: 0px;
         }
     }
+
     .apply-allocation-box .apply-allocation-action {
         width: 100%;
         padding: 0.0833rem 0.1771rem 0.0625rem 0.1771rem;
@@ -154,27 +160,32 @@
         align-items: center;
         justify-content: space-between;
     }
-    .apply-allocation-box .apply-allocation-table{
+
+    .apply-allocation-box .apply-allocation-table {
         width: 100%;
         padding-left: 0.1771rem;
         padding-right: 0.1771rem;
     }
-    .apply-allocation-box .apply-allocation-footer{
+
+    .apply-allocation-box .apply-allocation-footer {
         width: 100%;
         margin-top: 0.0677rem;
         position: relative;
     }
-    .apply-allocation-footer .action-footer-item{
+
+    .apply-allocation-footer .action-footer-item {
         position: absolute;
         right: 0.1667rem;
         display: flex;
         align-items: center;
         justify-content: center;
+
         /deep/ .el-input__inner {
             width: 1.1458rem;
             height: 0.1667rem;
         }
     }
+
     .apply-allocation-action .action-button-item {
         display: flex;
         align-items: center;

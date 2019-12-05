@@ -12,7 +12,7 @@
         props: {
             iconSize: {
                 type: Number,
-                default: ''
+                default: 16
             },
             iconClass: {
                 type: String,
