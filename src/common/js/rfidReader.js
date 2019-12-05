@@ -164,8 +164,8 @@ export function handheld(errCB) {
                 let result = JSON.parse(fs.readFileSync(inventoryFile));
                 resolve(JSON.stringify(result));
             } else {
-                if(errTip) errCB("文件不存在");
-                console.log("文件不存在");
+                if(errTip) errCB("请确认已点击手持机上的确认按钮");
+                console.log("请确认已点击手持机上的确认按钮");
             }
             console.log('out code：' + code);
         });

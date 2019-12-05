@@ -14,7 +14,7 @@
             </div>
             <div class="_buttons" style="margin-right: 18px">
                 <BosInput
-                        placeholder="操作人员"
+                        placeholder="装备名称"
                         suffix="el-icon-search"
                         v-model="params.search"
                         style="width:285px;">
@@ -25,7 +25,7 @@
         <field-table :list="list" :labelList="table.labelList"  :pageInfo="params" @tableCurrentPageChanged="changePage" 
                       :tableAction="table.tableAction"  @clickTableCloum="clickTableCloum" style="width: 100%">
         </field-table>
-        <service-dialog title="维修报废记录" ref="dialogLinghuan" width="766px" :button="false">
+        <service-dialog title="装备报废记录" ref="dialogLinghuan" width="766px" :button="false">
             <field-table :list="infolist" :labelList="infotable.labelList" :havePage="false"
                           style="width: 100%">
             </field-table>
@@ -61,7 +61,7 @@
                         {lable: '操作人员', field: 'operatorInfo.operator', sort: false},
                         {lable: '报废时间', field: 'createTime', filter: (ns) => this.$filterTime(ns.createTime), sort: false},
                         {lable: '装备数量', field: 'count', sort: false},
-                        {lable: '备注', field: 'category', sort: false},
+                        {lable: '备注', field: 'categoryCn', sort: false},
                     ],
                     tableAction:{
                         label:'详情',
@@ -95,7 +95,8 @@
                     totalPages: 5,
                     totalElements: 5
                 },
-                time:''
+                time:'',
+                title:''
             }
         },
 
@@ -112,6 +113,7 @@
             },
             clickTableCloum(data){
                 console.log("data",data)
+                this.title=data.category
                 this.infolist = data.row.scrapDetailSet
                 console.log("this.infolist",this.infolist)
                 this.$refs.dialogLinghuan.show()
