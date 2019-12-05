@@ -539,9 +539,9 @@ export default {
             let config={
                url: '/equip/updateEquipArg',
                         method: 'POST',
-                        params:{
-                            categoryId: this.sendList.categoryId ? this.sendList.categoryId: '',
-                        },
+                        // params:{
+                        //     categoryId: this.sendList.categoryId ? this.sendList.categoryId: '',
+                        // },
                         data:newData
             }
             request(config).then(res => {
