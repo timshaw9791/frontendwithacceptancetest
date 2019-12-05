@@ -71,6 +71,9 @@
             }
         },
         methods:{
+            getAgain() { // 外部调用刷新
+                this.getList()
+            },
             getList(){
                 let url=baseURL+this.table.url;
                 let paramskey={page:this.paginator.page,size: this.paginator.size,search:this.table.search, direction: "DESC",properties: "updateTime"};
