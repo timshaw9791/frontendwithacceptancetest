@@ -7,6 +7,7 @@ if (process.env.NODE_ENV == "production") {
     var fs = window.require('fs');
     var newFile_path = 'C:/Users/Administrator/inventory.json'; // 手持机路径
     var inventoryFile = `inventory.json`;
+    var testDevelopment = false
 }
 
 var cmdPath = 'C:\\Users\\Administrator'; // 读卡器路径
@@ -26,6 +27,13 @@ export function modifyFileName(data) {
 export function getHandheldPath(path) {
     newFile_path = path
 }
+
+/* 是否是测试环境 */
+export function getDevelopment(state) {
+    testDevelopment = state
+}
+
+
 
 
 /* 结束对应进程 */
@@ -117,6 +125,20 @@ export function handheld(errCB) {
     inventoryFile = `${newFile_path}/${fileName}`;
     cmdStr = 'chcp 65001 && adb pull sdcard/inventoryData/'+fileName+' .';
     console.log("newFile_path",newFile_path)
+    // 测试环境使用方法
+    if(testDevelopment) {
+        let start = new Promise((resolve, reject) => {
+            if (fs.existsSync(inventoryFile)) {
+                let result = JSON.parse(fs.readFileSync(inventoryFile));
+                resolve(JSON.stringify(result));
+            } else {
+                if(errTip) errCB("文件不存在");
+                console.log("文件不存在");
+            }
+        });
+        return start
+    }
+
     if (fs.existsSync(inventoryFile)) {
         fs.unlinkSync(inventoryFile);
     }
@@ -124,31 +146,6 @@ export function handheld(errCB) {
     workerProcess = exec(cmdStr, {
         cwd: newFile_path
     });
-
-
-    // let start = new Promise((resolve, reject) => {
-    //     workerProcess.stdout.on('data', (data) => {
-    //         if(fs.existsSync(inventoryFile)) {
-    //             let result = JSON.parse(fs.readFileSync(inventoryFile));
-    //             resolve(JSON.stringify(result));
-    //         } else {
-    //             console.log("文件不存在");
-    //         }
-
-    //         // fs.exists(inventoryFile, (exists) => {
-    //         //     //读取本地的json文件
-    //         //     if (exists) {
-    //         //         let result = JSON.parse(fs.readFileSync(inventoryFile));
-    //         //         resolve(JSON.stringify(result));
-    //         //     } else {
-    //         //         console.log("文件不存在");
-    //         //     }
-    //         //     //遍历读取到的用户对象，进行登录验证
-    //         // });
-    //     })
-    // });
-
-
     // 打印错误的后台可执行程序输出
     workerProcess.stderr.on('data', (data) => {
         if(data.includes("device")) { 
@@ -164,8 +161,8 @@ export function handheld(errCB) {
                 let result = JSON.parse(fs.readFileSync(inventoryFile));
                 resolve(JSON.stringify(result));
             } else {
-                if(errTip) errCB("文件不存在");
-                console.log("文件不存在");
+                if(errTip) errCB("请确认已点击手持机上的确认按钮");
+                console.log("请确认已点击手持机上的确认按钮");
             }
             console.log('out code：' + code);
         });
@@ -185,6 +182,14 @@ export function writeFile(content, cb) {
         needReport = false
         console.log(error);
     }
+    
+    // 测试环境使用的方法
+    // if(testDevelopment) {
+    //     if(needReport) {
+    //         cb({state: true, message: "同步手持机成功"})
+    //     }
+    // }
+
     workerProcess = exec(pushCmdStr, {
         cwd: newFile_path
     })

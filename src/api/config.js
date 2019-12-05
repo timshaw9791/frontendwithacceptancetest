@@ -2,7 +2,7 @@
  * Created by Administrator on 2018/6/5.
  */
 
-import { setCom, getHandheldPath } from 'common/js/rfidReader'
+import { setCom, getHandheldPath, getDevelopment } from 'common/js/rfidReader'
 export const ERR_OK = 0;
 
 
@@ -28,6 +28,7 @@ if (process.env.NODE_ENV == "production") {
     localTitle = `${result.A_CLIENT_TITLE}`;
     setCom(result.UHF_READ_COM)
     getHandheldPath(result.INVENTORY_PATH)
+    getDevelopment(result.TEST_DEVELOPMENT)
 }
 
 export const imgBaseUrl = `${baseURL}/images/`;
