@@ -12,7 +12,7 @@
                     </div>
                     <div class="action-button-item">
                         <span v-text="'出库机构：'"></span>
-                        <process-cascader @handleUnitChange="changeUnit"></process-cascader>
+                        <process-cascader ref="transfer_cascader" @handleUnitChange="changeUnit"></process-cascader>
                     </div>
                     <div class="action-button-item">
                         <span v-text="'指定领导：'"></span>
@@ -45,6 +45,8 @@
     import processTable from '../processTable'
     import processCascader from '../processCascader'
     import {applyProcessMixin} from "common/js/applyProcessMixin";
+    import {transferStart} from "api/process"
+
     export default {
         name: "applyAllocation",
         components: {
@@ -93,7 +95,7 @@
                 let params={organUnitId:data[0].id,type:this.form.type};
                 this.form.outboundOrganUnit=data[data.length-1];
                 this.mixinEquipArgs();
-                this.getLeader(params);
+                this.mixiGetLeader(params);
             },
             apply() {
                 let equips=[];
@@ -109,12 +111,16 @@
                    inboundWarehouse:this.form.inboundWarehouse,
                    outboundOrganUnit:this.form.outboundOrganUnit
                };
+                transferStart(apply,this.form.leader.id,this.mixinObject.processConfigId).then(res=>{
+                   this.$message.success('操作成功');
+                   this.cancelDb()
+                })
             },
             selectValue(data) {
                this.form.leader=data;
-               console.log(data)
             },
             show() {
+                this.$set(this.form,'equips',[{equipArg: {},equip:{}}]);
                 this.$refs.applyAllocation.show()
             },
             cancelDb() {

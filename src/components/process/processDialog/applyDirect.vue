@@ -6,31 +6,31 @@
                 <div class="apply-direct-action">
                     <div class="action-button-item">
                         <span v-text="'接收机构：'"></span>
-                        <process-cascader></process-cascader>
+                        <process-cascader ref="direct_cascader" @handleUnitChange="changeUnit"></process-cascader>
                     </div>
                     <div class="action-button-item">
                         <span v-text="'接收库房：'"></span>
-                        <p_select :options="options" @selected="selectValue"></p_select>
+                        <p_select :options="mixinObject.houseList" @selected="selectHouse"></p_select>
                     </div>
                     <div class="action-button-item">
                         <span v-text="'接收人员：'"></span>
-                        <p_select :options="options" @selected="selectValue"></p_select>
+                        <p_select :options="mixinObject.userList" @selected="selectUser"></p_select>
                     </div>
                 </div>
                 <div class="apply-direct-action">
                     <div class="action-button-item">
                         <span v-text="'指定领导：'"></span>
-                        <p_select :options="options" @selected="selectValue"></p_select>
+                        <p_select ref="direct_select" :options="mixinObject.leaderList" @selected="selectLeader"></p_select>
                     </div>
                 </div>
                 <div class="apply-direct-table">
-                    <process-table></process-table>
+                    <process-table :equipArgList="form.equips" :nameList="mixinObject.equipArgs"></process-table>
                 </div>
                 <div class="apply-direct-footer">
                     <div class="action-footer-item">
                         <span v-text="'申请人员：'"></span>
                         <div class="button-item-input">
-                            <el-input :disabled="true" v-model="form.myUnit"></el-input>
+                            <el-input :disabled="true" v-model="form.applicant.name"></el-input>
                         </div>
                     </div>
                 </div>
@@ -48,6 +48,8 @@
     import p_select from 'components/base/selected'
     import processTable from '../processTable'
     import processCascader from '../processCascader'
+    import {applyProcessMixin} from "common/js/applyProcessMixin";
+    import {transferStart} from "api/process"
     export default {
         name: "applyDirect",
         components: {
@@ -56,37 +58,60 @@
             processTable,
             processCascader
         },
+        mixins: [applyProcessMixin],
         data() {
             return {
                 form:{
-                    myUnit:JSON.parse(localStorage.getItem('user')).organUnitName
+                    type:'DIRECT_ALLOT',
+                    leader:{},
+                    equips:[{equipArg: {},equip:{}}],
+                    outboundOrganUnit:{},
+                    inboundOrganUnit:{
+                        id: this.applyObject.house.organUnitId,
+                        name: this.applyObject.house.organUnitName},
+                    inboundWarehouse:{
+                        id: this.applyObject.house.houseId,
+                        name: this.applyObject.house.houseName
+                    },
+                    applicant: {
+                        id: JSON.parse(localStorage.getItem('user')).id,
+                        name: JSON.parse(localStorage.getItem('user')).name,
+                        organUnitId: this.applyObject.house.organUnitId
+                    }
                 },
-                options: [{
-                    value: '选项1',
-                    label: '黄金糕'
-                }, {
-                    value: '选项2',
-                    label: '双皮奶',
-                    disabled: true
-                }, {
-                    value: '选项3',
-                    label: '蚵仔煎'
-                }, {
-                    value: '选项4',
-                    label: '龙须面'
-                }, {
-                    value: '选项5',
-                    label: '北京烤鸭'
-                }],
                 selectButtons: [{name: '', label: '调拨流程'}, {name: '', label: '借用流程'}, {
                     name: '',
                     label: '直调流程'
                 }, {name: '', label: '报废流程'}]
             }
         },
+        props:{
+            applyObject:{
+                type:Object
+            }
+        },
+        created(){
+
+        },
         methods: {
+            changeUnit(data){
+                let params={organUnitId:this.applyObject.house.organUnitId,type:this.form.type};
+                this.mixinGetHouse(data[data.length-1].id);
+                this.mixinEquipArgs();
+                this.mixinGetUser(data[data.length-1].id);
+                this.mixiGetLeader(params);
+            },
             apply(data) {
                 console.log(data)
+            },
+            selectLeader(data){
+                this.form.leader=data;
+            },
+            selectUser(data){
+
+            },
+            selectHouse(data){
+              console.log(data)
             },
             selectValue(data) {
                 console.log(data);

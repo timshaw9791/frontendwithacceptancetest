@@ -191,13 +191,13 @@ export function writeFile(content, cb) {
     
     workerProcess.stderr.on('data', data => {
         if(data.includes('device') || data.includes('devices')) {
-            needReport = false
+            needReport = false;
             cb({state: false, message: "未发现设备，请检查设备是否连接正常"})
         } else if(data.includes('KB/s')) {
-            needReport = false
+            needReport = false;
             cb({state: true, message: "同步手持机成功"})
         } else if(data.includes('adb') || data.includes('not recognized')) {
-            needReport = false
+            needReport = false;
             cb({state: false, message: "ADB驱动未安装"})
         }
         console.log(data);

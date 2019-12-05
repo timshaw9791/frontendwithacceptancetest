@@ -12,8 +12,8 @@
             </div>
         </serviceDialog>
         <apply-borrow :applyObject="applyObject" ref="borrow"></apply-borrow>
-        <apply-scrap ref="scrap"></apply-scrap>
-        <apply-direct ref="direct"></apply-direct>
+        <apply-scrap :applyObject="applyObject" ref="scrap"></apply-scrap>
+        <apply-direct :applyObject="applyObject" ref="direct"></apply-direct>
         <apply-allocation :applyObject="applyObject" ref="allocation"></apply-allocation>
     </div>
 </template>
@@ -31,6 +31,7 @@
             applyDirect,
             serviceDialog, applyBorrow,applyScrap,applyAllocation
         },
+
         data() {
             return {
                 selectButtons: [{key: 'allocation', label: '调拨流程'}, {key: 'borrow', label: '借用流程'}, {
@@ -48,6 +49,7 @@
         methods: {
             init(){
                 getHouseInfo().then(res=>{
+                    console.log('house',res)
                     this.$set(this.applyObject,'house',res);
                 })
             },

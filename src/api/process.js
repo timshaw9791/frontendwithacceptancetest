@@ -8,6 +8,19 @@ export function getAllUnit() {
         method:'get'
     })
 }
+export function getUser(organUnitId) {
+    return  request({
+        url:`${baseBURL}/users/by-organ-unit?organUnitId=${organUnitId}&role=ADMIN`,
+        method:'get'
+    })
+}
+export function getPlatformHouse(id) {
+    return  request({
+        url:`${baseBURL}/houses/by-organ-unit?organUnitId=${id}`,
+        method:'get'
+    })
+}
+
 
 export function getHouseInfo() {
     return  request({
@@ -15,6 +28,7 @@ export function getHouseInfo() {
         method:'get'
     })
 }
+
 export function getEquipArgs() {
     return  request({
         url:`${baseBURL}/equip-args`,
@@ -27,6 +41,20 @@ export function getApplyLeader(params) {
         url:`${baseBURL}/process-configs/by-organ-unit-and-type`,
         method:'get',
         params:params
+    })
+}
+export function transferStart(data,nextAssignee,processConfigId) {
+    return  request({
+        url:`${baseBURL}/workflow/transfer/start?nextAssignee=${nextAssignee}&&processConfigId=${processConfigId}`,
+        method:'post',
+        data
+    })
+}
+export function transferStarts(data,nextAssignee,processConfigId) {
+    return  request({
+        url:`${baseBURL}/workflow/direct-allot/start?nextAssignee=${nextAssignee}&&processConfigId=${processConfigId}`,
+        method:'post',
+        data
     })
 }
 

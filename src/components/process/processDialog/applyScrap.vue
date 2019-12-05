@@ -7,12 +7,12 @@
                     <div class="action-button-item">
                         <span v-text="'所在库房：'"></span>
                         <div class="button-item-input">
-                            <el-input :disabled="true" v-model="form.myUnit"></el-input>
+                            <el-input :disabled="true" v-model="applyObject.house.houseName"></el-input>
                         </div>
                     </div>
                     <div class="action-button-item">
-                        <span v-text="'出库机构：'"></span>
-                        <process-cascader></process-cascader>
+                        <span v-text="'指定领导：'"></span>
+                        <p_select :options="mixinObject.leaderList" @selected="selectValue"></p_select>
                     </div>
                     <div class="action-button-item">
                         <span v-text="'选择硬件：'"></span>
@@ -29,7 +29,7 @@
                     </el-input>
                 </div>
                 <div class="apply-scrap-table">
-                    <process-table :processType="'scrap'"></process-table>
+                    <process-table :equipArgList="form.equips"  :processType="'scrap'"></process-table>
                 </div>
                 <div class="apply-scrap-footer">
                     <div class="action-footer-item">
@@ -38,7 +38,7 @@
                     <div class="action-footer-item">
                         <span v-text="'申请人员：'"></span>
                         <div class="button-item-input">
-                            <el-input :disabled="true" v-model="form.myUnit"></el-input>
+                            <el-input :disabled="true" v-model="form.applicant.name"></el-input>
                         </div>
                     </div>
                 </div>
@@ -57,6 +57,8 @@
     import processTable from '../processTable'
     import processCascader from '../processCascader'
     import textButton from 'components/base/textButton'
+    import {applyProcessMixin} from "common/js/applyProcessMixin";
+    import {transferStart} from "api/process"
     export default {
         name: "applyScrap",
         components: {
@@ -66,10 +68,31 @@
             processCascader,
             textButton
         },
+        props:{
+            applyObject:{
+                type:Object
+            }
+        },
+        mixins: [applyProcessMixin],
         data() {
             return {
                 form:{
-                    myUnit:JSON.parse(localStorage.getItem('user')).organUnitName,
+                    type:'SCRAP',
+                    leader:{},
+                    equips:[],
+                    outboundOrganUnit:{},
+                    inboundOrganUnit:{
+                        id: this.applyObject.house.organUnitId,
+                        name: this.applyObject.house.organUnitName},
+                    inboundWarehouse:{
+                        id: this.applyObject.house.houseId,
+                        name: this.applyObject.house.houseName
+                    },
+                    applicant: {
+                        id: JSON.parse(localStorage.getItem('user')).id,
+                        name: JSON.parse(localStorage.getItem('user')).name,
+                        organUnitId: this.applyObject.house.organUnitId
+                    },
                     reason:''
                 },
                 options: [{
@@ -93,6 +116,9 @@
                     label: '直调流程'
                 }, {name: '', label: '报废流程'}]
             }
+        },
+        created(){
+            this.mixiGetLeader({organUnitId:this.applyObject.house.organUnitId,type:this.form.type});
         },
         methods: {
             apply(data) {

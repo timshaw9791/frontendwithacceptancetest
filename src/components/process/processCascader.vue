@@ -30,14 +30,12 @@
         },
         methods: {
             handleUnitChange(data) {
-                console.log(data);
                 this.$emit('handleUnitChange', data)
             },
             getUnitList() {
                 this.cascader.options = [];
                 getAllUnit().then(res => {
                     let option=[JSON.parse(JSON.stringify(res))];
-                    console.log('getUnitList',option);
                     option.forEach(item=>{
                         fs(item)
                     });

@@ -37,15 +37,15 @@
                         {lable: '请求标题', field: 'action',filter: this.filterProcessName},
                         {lable: '工作流', field: 'operator', filter: this.filterProcessType},
                         {lable: '创建时间', field: 'startTime', filter: (ns) => this.$filterTime(ns.startTime)},
-                        {lable: '当前节点', field: 'action'},
-                        {lable: '未操作者', field: 'action'},
+                        {lable: '当前节点', field: 'currentTask.name'},
+                        {lable: '未操作者', field: 'currentTask.assigneeName'},
                     ],
                     url:'/history/process-instances/page',
                     tableAction:{
                         label:'操作',
                         button:[{name:'详情',type:'primary'}]
                     },
-                    params:{startUserId:JSON.parse(localStorage.getItem('user')).id},
+                    params:{startUserId:JSON.parse(localStorage.getItem('user')).id,includeCurrentTask:true,includeProcessVariables:true},
                     search:''
                 }
             }

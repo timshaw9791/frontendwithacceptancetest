@@ -1,12 +1,12 @@
 <template>
     <div class="tabs-select">
-        <el-select v-model="value" placeholder="" @change="changeValue">
+        <el-select v-model="value" placeholder="" value-key="id" @change="changeValue">
             <el-option
                     style="text-align:center"
                     v-for="item in options"
-                    :key="item.label"
-                    :label="item.label"
-                    :value="item.value">
+                    :key="item[prop.key]"
+                    :label="item[prop.label]"
+                    :value="item">
             </el-option>
         </el-select>
     </div>
@@ -16,16 +16,23 @@
     export default {
         data() {
             return {
-                value: '',
-                empty:true
+                value: {},
+                empty:false
             }
         },
         methods: {
-            changeValue() {
-                this.$emit('selected', this.value);
+            changeValue(data) {
+                console.log(data);
+                if(!this.empty){
+
+                    this.$emit('selected', this.value);
+                }else {
+                    this.empty=false
+                }
             },
             toEmpty(){
-                this.value=''
+                this.value='';
+                this.empty=true
             }
         },
         mounted(){
@@ -40,6 +47,15 @@
             },
             placeholder:{
                 type:String
+            },
+            prop:{
+                type:Object,
+                default(){
+                    return{
+                        key:'id',
+                        label:'name',
+                    }
+                }
             }
             // indexDefault: {
             //     type: String,
