@@ -20,7 +20,13 @@
                         :tableAction="table.tableAction"  :pageInfo="paginator" @tableCurrentPageChanged="changePage" style="width: 100%">
             </field-table>
             <service-dialog title="报废装备清单" ref="dialog1" :secondary="true" @confirm="expriedEquip">
-                <div>  本次报废装备合计：{{this.count}}(件)</div>
+                <div style="height:0.3438rem;">
+                    <div style="height:0.3438rem;margin:0 auto;text-align:center;width:3.75rem;background:rgba(224,224,224,1);align:center">  
+                        <div style="font-size:24px;margin:0 auto;text-align:center;color:rgba(239,69,69,1);line-height:0.3438rem;">
+                            本次报废装备合计：{{this.count}}(件)
+                        </div>
+                    </div>
+                </div>
                 <field-table :list="equiplist.inventoryModels" :labelList="equip"
                             :havePage="false" style="width: 100%">
                 </field-table>
@@ -63,7 +69,8 @@
                 paginator: {
                     page: 1,
                     totalPages: 10,
-                    size: 9
+                    size: 9,
+                    search:''
                 },
                 equiplist:[],
                 equip:[
@@ -79,8 +86,9 @@
             
             getList(data){
                 let params = this.paginator
+                console.log("params",params)
                 if(data){
-                    params.push(data)
+                    params.search=data.search
                 }
                 findScarEquipByNameLike(params).then(res=>{
                     this.list=[];
@@ -102,12 +110,16 @@
                 handheld((err) => this.$message.error(err)).then(data => {
                     this.equiplist=JSON.parse(data);
                     let test=[]
+                    this.rfidlist=[]
+                    this.count=0
                     for(let i in this.equiplist.inventoryModels){
                         console.log("this.equiplist.inventoryModels[i].rfids",this.equiplist.inventoryModels[i].rfids)
                         if(this.equiplist.inventoryModels[i].rfids!=''){
                             console.log("进入"+i)
                             for (let j in this.equiplist.inventoryModels[i].rfids){
-                                this.rfidlist.push(this.equiplist.inventoryModels[i].rfids[j])
+                                this.rfidlist.push({
+                                    rfids:this.equiplist.inventoryModels[i].rfids[j]
+                                })
                                 test.push(this.equiplist.inventoryModels[i])
                                 console.log("test",test)
                             }
@@ -120,11 +132,26 @@
                     this.$refs.dialog1.show();
                 });
             },
+            getString(data) {
+                let str = '';
+                data.forEach(item => {
+                    str = str + ',' + item
+                });
+                return str.substring(1, str.length);
+            },
             expriedEquip(){
                 console.log("报废")
-                scrap(this.rfidlist).then(res=>{
+                let rfidC = [];
+                this.rfidlist.forEach(item => {
+                    rfidC.push(item.rfids);
+                });
+                let rfid = this.getString(rfidC);
+                scrap(rfid).then(res=>{
                     this.$message.success('操作成功')
                     this.$refs.dialog1.hide();
+                }).catch((error) => {
+                    console.error(error);  //服务器错误或者网络状态问题
+                    this.$message.error(`${error}`);
                 })
             }
         },
