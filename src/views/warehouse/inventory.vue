@@ -82,7 +82,7 @@
                     if (Object.keys(this.inventoryObj.inventoryData.inventory).length != 0) {
                         let url = baseURL+'/equipMaintain/inventory';
                         let data={
-                            createTime: this.inventoryObj.inventoryData.inventory.startTime,
+                            startTime: this.inventoryObj.inventoryData.inventory.startTime,
                             inventoryCount: this.inventoryObj.inventoryData.inventory.inventoryCount,
                             inventoryDetailSet: this.inventoryObj.inventoryData.inventoryItems,
                             notCount: this.inventoryObj.inventoryData.inventory.outCount,
@@ -92,7 +92,6 @@
                             },
                             outHouseCount: this.inventoryObj.inventoryData.inventory.withoutRfidCount,
                             remark: this.inventoryObj.inventoryData.inventory.remark,
-                            updateTime: this.inventoryObj.inventoryData.inventory.endTime
                         }
                         request({
                             method: 'post',
@@ -147,11 +146,11 @@
                          this.overview.name=JSON.parse(localStorage.getItem('user')).name;
                          this.overview.size=this.inventory.inventoryData.size*/
                         console.log("res",res)
+                        console.log("this.inventoryObj.getInventory",this.inventoryObj.getInventory)
                         this.inventoryObj.inventoryData.inventoryItems = res.inventoryDetailSet;
                         this.inventoryObj.inventoryData.inventory.outCount = res.notCount;
                         this.inventoryObj.inventoryData.inventory.withoutRfidCount = res.outHouseCount;
                         this.inventoryObj.inventoryData.inventory.startTime = this.inventoryObj.getInventory.startTime;
-                        this.inventoryObj.inventoryData.inventory.endTime = this.inventoryObj.getInventory.endTime;
                         this.inventoryObj.inventoryData.inventory.adminName = res.operatorInfo.operator;
                         this.inventoryObj.inventoryData.inventory.adminId = res.operatorInfo.operatorId;
                         this.inventoryObj.inventoryData.inventory.inventoryCount = res.inventoryCount;
