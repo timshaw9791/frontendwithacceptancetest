@@ -113,7 +113,6 @@
                 tempList = null
             },
             processReviewInfo() {
-                console.log(this.universalObj)
                 let params = {processInstanceId: this.universalObj.id, includeProcessVariables: false, includeTaskVariables: true},
                     lable = "";
                 historyTasks(params).then(res => {
