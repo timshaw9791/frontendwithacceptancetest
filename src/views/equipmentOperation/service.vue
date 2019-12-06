@@ -174,7 +174,7 @@
                 this.dialogList = [];
                 // let rfid=['00003645','19080011','00002','00001545','198023242222222222222222','00008','5555555555'];
                 // this.rfids=rfid;
-                modifyFileName('return');
+                modifyFileName('return.json');
                 handheld((err) => this.$message.error(err)).then((data) => {
                     let json = JSON.parse(data);
                     this.rfids=json.rfid;
