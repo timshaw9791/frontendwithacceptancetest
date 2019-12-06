@@ -7,7 +7,7 @@
             <div>
                 <div class="secondaryTitle">
                     <el-button type="text" class="_textBt" @click="addChanger('新增供应商')">
-                        <svg-icon icon-class="加"/>
+                        <svg-icon icon-class="加号"/>
                         新增供应商
                     </el-button>
                     <div class="_buttons">

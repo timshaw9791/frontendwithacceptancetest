@@ -7,11 +7,11 @@
             <div>
                 <tabs :list="tabsList" :indexDefault="0" @selected="selected">
                     <el-button type="text" class="_textBt" @click="service">
-                        <svg-icon icon-class="维修"/>
+                        <svg-icon icon-class="开始维修"/>
                         开始维修
                     </el-button>
                     <el-button type="text" class="_textBt" @click="serviceEnd">
-                        <svg-icon icon-class="批量"/>
+                        <svg-icon icon-class="结束维修"/>
                         结束维修
                     </el-button>
 

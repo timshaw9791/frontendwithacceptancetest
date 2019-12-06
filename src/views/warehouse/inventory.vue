@@ -3,7 +3,7 @@
         <my-header :title="'盘点'" :searchFlag="false"></my-header>
         <div class="action-bar">
             <el-button type="text" class="in_button" @click="toInventory">
-                <svg-icon icon-class="加"/>
+                <svg-icon icon-class="加号"/>
                 开始盘点
             </el-button>
         </div>

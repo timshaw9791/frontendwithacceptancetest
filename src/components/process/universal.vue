@@ -5,19 +5,19 @@
         </div>
         <div class="body">
             <div class="info">
-                <div>申请单号: {{ form.applyOrderId }}</div>
-                <div v-show="notScrap">接收机构: {{ form.receiveAgency }}</div>
-                <div v-show="notScrap">出库机构: {{ form.outAgency }}</div>
-                <div>申请时间: {{ form.applyTime }}</div>
-                <div v-show="notScrap">接收库房: {{ form.receiveStore }}</div>
-                <div v-show="notScrap">出库库房: {{ form.outStore }}</div>
-                <div>申请人员: {{ form.applyPeople }}</div>
-                <div v-show="notScrap">接收人员: {{ form.receivePeople }}</div>
-                <div v-show="notScrap">出库人员: {{ form.outPeople }}</div>
+                <div>申请单号: {{ universalObj.variables.applyOrder.number}}</div>
+                <div v-show="notScrap">接收机构: {{ universalObj.variables.applyOrder.inboundOrganUnit.name}}</div>
+                <div v-show="notScrap">出库机构: {{ universalObj.variables.applyOrder.outboundOrganUnit.name }}</div>
+                <div>申请时间: {{this.$filterTime(universalObj.variables.applyOrder.applyTime)}}</div>
+                <div v-show="notScrap">接收库房: {{ universalObj.variables.applyOrder.inboundWarehouse.name}}</div>
+                <div v-show="notScrap">出库库房: {{ universalObj.variables.applyOrder.outboundWarehouse?universalObj.applyOrder.outboundWarehouse.name:'-'}}</div>
+                <div>申请人员: {{ universalObj.variables.applyOrder.applicant.name }}</div>
+                <div v-show="notScrap">接收人员: {{ universalObj.variables.applyOrder.inboundUser.name}}</div>
+                <div v-show="notScrap">出库人员: {{universalObj.variables.applyOrder.outboundUser?universalObj.applyOrder.outboundUser.name:'-'}}</div>
                 <div v-show="!notScrap">报废原因: {{ form.note }}</div>
             </div>
             <div>装备统计:</div>
-            <el-table :data="list" height="350" style="border: 1px solid #ccc;margin-top: 6px">
+            <el-table :data="universalObj.variables.applyOrder.equips" height="350" style="border: 1px solid #ccc;margin-top: 6px">
                 <bos-table-column lable="装备名称" field="name"></bos-table-column>
                 <bos-table-column lable="装备型号" field="model"></bos-table-column>
                 <bos-table-column lable="装备数量" field="count"></bos-table-column>
@@ -43,7 +43,7 @@
 
 <script>
     import serviceDialog from "components/base/serviceDialog"
-    import { doneDetail, historyTasks, scrapAudit } from "api/process"
+    import { historyTasks } from "api/process"
     export default {
         name: 'doneuniversal',
         data() {
@@ -113,20 +113,21 @@
                 tempList = null
             },
             processReviewInfo() {
-                let params = {processInstanceId: this.form.processInstanceId, includeProcessVariables: false, includeTaskVariables: true},
+                console.log(this.universalObj)
+                let params = {processInstanceId: this.universalObj.id, includeProcessVariables: false, includeTaskVariables: true},
                     lable = "";
                 historyTasks(params).then(res => {
                     let tempList = [];
                     res.forEach(item => {
                         switch (item.taskDefinitionKey) {
                             case 'apply':
-                                lable = "申请"
+                                lable = "申请";
                                 break;
                             case 'audit':
-                                lable = "审核"
+                                lable = "审核";
                                 break;
                             default:
-                                lable = "审批"
+                                lable = "审批";
                                 break;
                         }
                         tempList.push({
@@ -136,7 +137,7 @@
                             note: item.taskVariables.note || '',
                             time: item.endTime?this.$filterTime(item.endTime):'-'
                         })
-                    })
+                    });
                     this.processList = tempList
                 })
             },
@@ -146,7 +147,7 @@
             }
         },
         created() {
-            this.getListInfo()
+            this.processReviewInfo();
             if(this.title == '报废') {
                 this.notScrap = false
             }
@@ -159,6 +160,9 @@
             listId: {
                 type: [String, Number],
                 default: ''
+            },
+            universalObj:{
+                type: Object
             }
         },
         components: {

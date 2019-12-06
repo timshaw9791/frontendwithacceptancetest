@@ -1,8 +1,6 @@
 <template>
     <div class="my_process">
-        <div class="my_process_header" data-test="title_box">
-            {{$route.meta.title}}
-        </div>
+        <my-header :title="'直调流程'" :searchFlag="false" :haveBlack="!status.tableOrUniversalFlag" @h_black="black"></my-header>
         <div class="my_process_action_box" data-test="action_box" v-if="status.tableOrUniversalFlag">
             <text-button :iconSize="20" :iconClass="'加号'" :buttonName="'申请流程'" @click="apply"></text-button>
             <div class="action_right_box">
@@ -14,7 +12,7 @@
         <div class="my_process_main_box" data-test="main_box">
             <div class="main_table_box" data-test="table_box">
                 <p_table ref="processTable" :table="table" :typeUrl="'process'" :otherParams="true" @clickTable="clickTable" v-if="status.tableOrUniversalFlag"></p_table>
-                <p_universal v-if="!status.tableOrUniversalFlag"></p_universal>
+                <p_universal :title="universal.title" :universalObj="universal.universalObj" v-if="!status.tableOrUniversalFlag"></p_universal>
             </div>
         </div>
         <select_apply ref="selectApply" @sucessApply="sucessApply"></select_apply>
@@ -27,10 +25,11 @@
     import p_table from 'common/vue/ajaxTabel'
     import select_apply from 'components/process/processDialog/selectApplyProcess'
     import p_universal from 'components/process/universal'
+    import myHeader from 'components/base/header/header'
     export default {
         name: "myProcess",
         components:{
-            textButton,p_search,p_table,select_apply,p_universal
+            textButton,p_search,p_table,select_apply,p_universal,myHeader
         },
         data(){
             return{
@@ -51,12 +50,19 @@
                     params:{startUserId:JSON.parse(localStorage.getItem('user')).id,includeCurrentTask:true,includeProcessVariables:true},
                     search:''
                 },
+                universal:{
+
+                },
                 status:{
                     tableOrUniversalFlag:true,
+
                 }
             }
         },
         methods:{
+            black(){
+                this.status.tableOrUniversalFlag=!this.status.tableOrUniversalFlag;
+            },
             apply(){
                 this.$refs.selectApply.show()
             },
@@ -91,9 +97,19 @@
             getSearch(data){
                 this.table.search=data
             },
+            getTitle(type){
+                switch (type) {
+                    case "SCRAP":
+                        return '报废';
+                    case "TRANSFER":
+                        return '调拨';
+                    case "DIRECT_ALLOT":
+                        return '直调'
+                }
+            },
             clickTable(table) {
+                this.universal={title:this.getTitle(table.row.processDefinitionKey),universalObj:table.row};
                 this.status.tableOrUniversalFlag=!this.status.tableOrUniversalFlag;
-                console.log(table)
             }
         }
     }

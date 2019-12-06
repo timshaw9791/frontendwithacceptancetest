@@ -9,7 +9,7 @@
     </div>
     <div class="action-bar">
         <el-button type="text" class="_textBt" v-if="!viewStatus.insFlag" @click="edit" data-test="button">
-            <svg-icon icon-class="加" class="textBt" /> 编辑视频与文档
+            <svg-icon icon-class="加号" class="textBt" /> 编辑视频与文档
         </el-button>
         <div class="input-box" v-if="!viewStatus.insFlag" data-test="search">
             <svg-icon icon-class="搜索" class="icon-search"></svg-icon>
