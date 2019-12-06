@@ -7,6 +7,7 @@ if (process.env.NODE_ENV == "production") {
     var fs = window.require('fs');
     var newFile_path = 'C:/Users/Administrator/inventory.json'; // 手持机路径
     var inventoryFile = `inventory.json`;
+    var testDevelopment = false
 }
 
 var cmdPath = 'C:\\Users\\Administrator'; // 读卡器路径
@@ -26,6 +27,13 @@ export function modifyFileName(data) {
 export function getHandheldPath(path) {
     newFile_path = path
 }
+
+/* 是否是测试环境 */
+export function getDevelopment(state) {
+    testDevelopment = state
+}
+
+
 
 
 /* 结束对应进程 */
@@ -63,7 +71,7 @@ export function start(cmd, success, failure, callBack) {
         cwd: cwd
     });
 
-    callBack(process.pid, null)
+    callBack(process.pid, null);
     process.stderr.on("data", err => {
         console.log(err);
         if (!err.includes("Error")) failure.call(this, err)
@@ -106,7 +114,7 @@ export function startOne(cmd, callBack, rfid = null) {
 /* 删除文件 */
 export function delFile(path, callBack) {
     fs.unlink(path, err => {
-        if (err) return false
+        if (err) return false;
         else callBack()
     })
 }
@@ -117,6 +125,22 @@ export function handheld(errCB) {
     inventoryFile = `${newFile_path}/${fileName}`;
     cmdStr = 'chcp 65001 && adb pull sdcard/inventoryData/'+fileName+' .';
     console.log("newFile_path",newFile_path)
+    // 测试环境使用方法
+    console.log(testDevelopment);
+    if(testDevelopment) {
+        let start = new Promise((resolve, reject) => {
+            if (fs.existsSync(inventoryFile)) {
+                let result = JSON.parse(fs.readFileSync(inventoryFile));
+                resolve(JSON.stringify(result));
+            } else {
+                if(errTip) errCB("文件不存在");
+                console.log("文件不存在");
+                console.log("inventoryFile", inventoryFile)
+            }
+        });
+        return start
+    }
+
     if (fs.existsSync(inventoryFile)) {
         fs.unlinkSync(inventoryFile);
     }
@@ -124,36 +148,11 @@ export function handheld(errCB) {
     workerProcess = exec(cmdStr, {
         cwd: newFile_path
     });
-
-
-    // let start = new Promise((resolve, reject) => {
-    //     workerProcess.stdout.on('data', (data) => {
-    //         if(fs.existsSync(inventoryFile)) {
-    //             let result = JSON.parse(fs.readFileSync(inventoryFile));
-    //             resolve(JSON.stringify(result));
-    //         } else {
-    //             console.log("文件不存在");
-    //         }
-
-    //         // fs.exists(inventoryFile, (exists) => {
-    //         //     //读取本地的json文件
-    //         //     if (exists) {
-    //         //         let result = JSON.parse(fs.readFileSync(inventoryFile));
-    //         //         resolve(JSON.stringify(result));
-    //         //     } else {
-    //         //         console.log("文件不存在");
-    //         //     }
-    //         //     //遍历读取到的用户对象，进行登录验证
-    //         // });
-    //     })
-    // });
-
-
     // 打印错误的后台可执行程序输出
     workerProcess.stderr.on('data', (data) => {
         if(data.includes("device")) { 
             errCB("未发现设备，请检查设备连接是否正常");
-            errTip = false
+            errTip = false;
         }
         console.log('stderr: ' + data);
     });
@@ -185,19 +184,27 @@ export function writeFile(content, cb) {
         needReport = false
         console.log(error);
     }
+    
+    // 测试环境使用的方法
+    // if(testDevelopment) {
+    //     if(needReport) {
+    //         cb({state: true, message: "同步手持机成功"})
+    //     }
+    // }
+
     workerProcess = exec(pushCmdStr, {
         cwd: newFile_path
     })
     
     workerProcess.stderr.on('data', data => {
         if(data.includes('device') || data.includes('devices')) {
-            needReport = false
+            needReport = false;
             cb({state: false, message: "未发现设备，请检查设备是否连接正常"})
         } else if(data.includes('KB/s')) {
-            needReport = false
+            needReport = false;
             cb({state: true, message: "同步手持机成功"})
         } else if(data.includes('adb') || data.includes('not recognized')) {
-            needReport = false
+            needReport = false;
             cb({state: false, message: "ADB驱动未安装"})
         }
         console.log(data);

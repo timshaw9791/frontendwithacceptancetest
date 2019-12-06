@@ -45,6 +45,7 @@
                     placeholder: '全部大类',
                     height: '3.78125rem',
                     params: {id: '', level: '', search: ''},
+                    info:''
                 },
                 computeTotal:{},
                 current: {}
@@ -137,6 +138,8 @@
                     this.$set(this.table, 'list', res);
                     if(this.table.tableType!=='All'){
                         this.computeFunction(JSON.parse(JSON.stringify(this.table.list)))
+                    }else {
+                        this.table.info=''
                     }
 
                 })
@@ -168,6 +171,7 @@
                 if(totalCount!=0){
                     rate=count/totalCount
                 }
+                this.table.info=`装备总数：${totalCount}装备总价(元)：${totalPrice/100}维修数量：${count}维修率(%)：${rate}`;
                 this.computeTotal={
                     totalCount:totalCount,
                     totalPrice:totalPrice/100,
@@ -282,6 +286,8 @@
     .repair_box {
         font-size: 0.0833rem;
         text-align: center;
+        height: 4.6875rem;
+        width: 100%;
     }
     .table_header_box{
         height: 0.296875rem;

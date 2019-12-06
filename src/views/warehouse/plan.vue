@@ -24,7 +24,7 @@
 
                     <div class="pieceList" v-for="(item,index) in list" :key="index">
                         <div class="top">
-                            <div style="width: 96%;display: flex;align-items: center;">
+                            <div style="width: 96%;display: flex;align-items: center; margin-left: 0.0521rem">
                                 <el-button type="text" @click="dialogShow('up',item)">
                                     <svg-icon icon-class="编辑" style="margin-right: 0.0625rem;font-size: 0.0833rem"/>
                                 </el-button>
@@ -32,7 +32,7 @@
                                 <span style="margin-left: 0.0521rem">{{item.name}}</span>
                             </div>
                             <el-button type="text" icon="el-icon-close" @click="delList(item)"
-                                       style="color: #7f7f7f;font-size: 0.1042rem">
+                                       style="color: #7f7f7f;font-size: 0.1042rem;margin-right: 0.0521rem">
                             </el-button>
                         </div>
 
@@ -95,7 +95,7 @@
 
                     <el-table-column label="装备名称" align="center" >
                         <template scope="scope">
-                            <el-select v-model="scope.row.equipArg.name" value-key="id" @change="changeModel(scope.row.equipArg.name)"> 
+                            <el-select v-model="scope.row.equipArg.name" value-key="id"> 
                                 <el-option
                                 v-for="item in nameList"
                                 :label="item"
@@ -108,7 +108,9 @@
 
                      <el-table-column label="装备型号" align="center" >
                         <template scope="scope">
-                          <el-select v-model="scope.row.equipArg.model" value-key="id" @change="qaq(scope,$event,title)">
+                             <!-- @change="changeModel(scope.row.equipArg.name)" -->
+                             <!-- @change="qaq(scope,$event,title)" -->
+                          <el-select v-model="scope.row.equipArg.model" value-key="id" @visible-change="changeModel(scope.row.equipArg.name)"@change="qaq(scope,$event,title)">
                                 <el-option
                                 v-for="item in modelList"
                                 :key="item.id"
@@ -220,8 +222,6 @@
 
                 } else if (type === 'up') {
                     this.title = '编辑预案';
-                    console.log("6666666666666666wad");
-                    console.log(item);
                     let equ={model:'',name:''}
                     this.form = JSON.parse(JSON.stringify(item));
                     this.form.equipArgItemList.forEach(it=>{
@@ -247,7 +247,9 @@
                     console.log(err);
                 })
             },
-            changeModel(data){
+            changeModel(data,scope,$event,title){
+                console.log("data");
+                console.log(data);
                 this.modelList=[]
                this.equipList.forEach(item=>{
                    if(data==item.name)
@@ -255,6 +257,7 @@
                        this.modelList.push(item)
                    }
                })
+               this.qaq(scope,$event,title)
             },
             getEquipInfo() {
                 getEquipList().then(res => {
@@ -274,12 +277,8 @@
                         {
                         this.nameList.push(item.name)
                         }
-                        
                     })
-
-
                 })
-
             },
             submit() {
                 console.log("输出form")
@@ -302,7 +301,6 @@
                         })
                         if(this.form.equipArgItemList[0].equipArg.name=='')
                         {
-                            console.log("执行到了");
                             this.$message.error('预案内容不得为空')
                         }else{
                         savePlan(this.form).then(item => {
@@ -319,11 +317,7 @@
                         if (this.form.equipArgItemList[this.form.equipArgItemList.length - 1].equipArg.name === ''&&this.form.equipArgItemList.length!=1) {
                         this.form.equipArgItemList.splice(this.form.equipArgItemList.length - 1, 1);
                     }
-                        console.log("this.form.5555555555555555555555555555555")
-                        console.log(this.form)
                         this.form.equipArgItemList.forEach(item=>{
-                            console.log("this.form.equipArgItemList");
-                            console.log(item)
                             if(item.equipArg.id==undefined)
                             {
                                 this.equipList.forEach(it=>{
@@ -334,8 +328,7 @@
                                 })
                             }
                         })
-                        console.log("this.form“挖的啊吴大维达瓦大屋顶阿文大王的阿文d")
-                        console.log(this.form)
+                        
                         updatePlan(this.form).then(item => {
                             this.$refs.dialog.hide();
                             this.getList();
@@ -416,10 +409,11 @@
     }
 
     .bodyContent {
-        margin: 0 auto;
+        // border:1px solid red;
+        // margin: 0 auto;
         height: 720px;
         width:1649px;
-        margin-left: 58px;
+        
         // padding: 0 0.3125rem;
         display: flex;
         flex-wrap: wrap;
@@ -429,7 +423,7 @@
             // border: 1px solid red;
             width:491px;
             height:343px;
-            margin-left: 10px;
+            margin-left: 29px;
             background: rgb(255, 255, 255);
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
             margin-top: 0.1406rem;
@@ -445,6 +439,7 @@
             }
 
             .list {
+                // border:1px solid red;
                 overflow-x: hidden;
                 overflow-y: auto;
                 // .scroll-bar {
@@ -480,6 +475,7 @@
                 margin-top: 0.0521rem;
                 height: 0.2083rem;
                 // padding: 0 0.2604rem;
+                margin-left: 0.0521rem;
                 color: rgba(112, 112, 112, 1);
 
                 .bottomInfo {

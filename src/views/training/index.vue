@@ -536,13 +536,17 @@ export default {
             this.sendList.pdf ? this.sendList.pdf = this.sendList.pdf.join(',') : '';
             }
             let newData = JSON.parse(JSON.stringify(this.sendList));
+            console.log("this.sendList");
+            console.log(this.sendList);
             let config={
-               url: '/equip/updateEquipArg',
+               url: '/equip/saveTrainGuide',
                         method: 'POST',
                         params:{
-                            categoryId: this.sendList.categoryId ? this.sendList.categoryId: '',
+                            equipArgId: this.sendList.id,
+                            pdf:this.sendList.pdf,
+                            video:this.sendList.video
                         },
-                        data:newData
+                        
             }
             request(config).then(res => {
             this.$message.success("修改成功");

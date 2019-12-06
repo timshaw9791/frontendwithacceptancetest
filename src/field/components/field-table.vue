@@ -2,9 +2,9 @@
     <div>
         <el-table
                 :data="list"
-                style="width: 100%;min-height: 490px" id="table" @sort-change="sortChange" :height="height">
-            <bos-table-column align="left" v-for="item in labelList" :lable="item.lable" :width="item.width" :sort="item.sort" :field="item.field" :filter="item.filter"></bos-table-column>
-            <el-table-column v-if="flag" :label="tableAction.label" align="left">
+                style="width: 100%;" id="field-table" @sort-change="sortChange" :height="height">
+            <bos-table-column :align="align" v-for="item in labelList" :lable="item.lable" :width="item.width" :sort="item.sort" :field="item.field" :filter="item.filter"></bos-table-column>
+            <el-table-column v-if="flag" :label="tableAction.label" :align="align">
                 <template slot-scope="scope">
                     <el-button :type="item.type" v-show="judgeState(item.name, scope.row)" size="mini" class="actionButton" @click="someClick(scope.row,item.name)" v-for="item in tableAction.button" v-text="item.name" data-test="button"></el-button>
                 </template>
@@ -44,6 +44,10 @@
                   }
               }
             },*/
+            align:{
+              type:String,
+              default:'center'
+            },
             havePage:{
                 type:Boolean,
                 default:true
@@ -104,7 +108,6 @@
     .actionButton{
         width:70px;
         height:32px;
-
         opacity:1;
         color: white;
         border-radius:4px;

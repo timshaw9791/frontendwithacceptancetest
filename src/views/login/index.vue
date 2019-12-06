@@ -31,9 +31,8 @@
             </el-form-item>
 
             <el-form-item>
-                <el-button type="primary" style="width:1rem;font-size: 0.1042rem" :loading="loading"
-                           @click.native.prevent="handleLogin">
-                    登 录
+                <el-button type="primary" style="width:1rem;font-size: 0.1042rem" :loading="loading" @click.native.prevent="handleLogin">
+                    <span>登 录</span>
                 </el-button>
             </el-form-item>
         </el-form>

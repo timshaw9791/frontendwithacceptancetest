@@ -1,6 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="15.981" height="14.833" viewBox="0 0 15.981 14.833">
-  <g id="新增" transform="translate(-64.012 -63.868)">
-    <path id="路径_451" data-name="路径 451" d="M79.993,74.141H76.569V70.722H75.427v3.419H72v1.14h3.424V78.7h1.141v-3.42h3.424v-1.14Zm0,0-2.283-9.13h-13.7V63.869h13.7Zm-1.142,0H77.71v4.564H76.569ZM65.154,77.561l-1.142,0V65.011h1.141Z" transform="translate(0 0)" fill="#2f2f76"/>
-    <path id="路径_452" data-name="路径 452" d="M64.212,266.239h5.7v1.14h-5.7Zm2.28-9.127h6.849v-1.14H66.492Zm0,2.278H72.2v-1.14H66.492Zm0,2.288h3.424v-1.139H66.492Zm0,0" transform="translate(-0.196 -188.678)" fill="#2f2f76"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="15.983" height="14.832" viewBox="0 0 15.983 14.832">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #2f2f76;
+      }
+    </style>
+  </defs>
+  <g id="补充" transform="translate(-556 -91)">
+    <path id="补充-2" data-name="补充" class="cls-1" d="M79.993,74.141H76.569V70.722H75.427v3.419H72v1.14h3.424V78.7h1.141V75.28h3.424V74.14ZM77.71,69.3H76.565V65l-12.555.009v-1.14h13.7ZM78.851,74.142Zm-13.7,3.42H64.012V65.011h1.141Z" transform="translate(491.99 27.131)"/>
+    <path id="补充-3" data-name="补充" class="cls-1" d="M64.212,266.239h5.7v1.14h-5.7Zm2.28-9.127h6.849v-1.14H66.492Zm0,2.278H72.2v-1.14H66.492Zm0,2.288h3.424v-1.139H66.492Zm0,0" transform="translate(491.794 -161.547)"/>
   </g>
 </svg>
