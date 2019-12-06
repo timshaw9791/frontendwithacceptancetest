@@ -274,6 +274,12 @@
                             flag=false
                         }
                     });
+                    this.$refs['roleForm'].validate((valid) => {
+                        console.log('roleForm',valid)
+                        if(valid){}else {
+                            flag=false
+                        }
+                    });
                     this.form.role = this.roleFormGs.type[0]
                     if(this.raleFormGs.type==''){
                         this.form.enterHouse=false

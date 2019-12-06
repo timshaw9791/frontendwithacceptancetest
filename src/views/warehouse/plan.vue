@@ -7,7 +7,7 @@
             <div>
                 <div class="secondaryTitle">
                     <el-button type="text" class="_textBt" @click="dialogShow('add')">
-                        <svg-icon icon-class="加"/>
+                        <svg-icon icon-class="加号"/>
                         新增预案
                     </el-button>
                     <div class="_buttons">

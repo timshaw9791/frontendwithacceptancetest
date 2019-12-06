@@ -1,7 +1,13 @@
 import request from 'common/js/request'
 import {baseBURL} from "./config";
 
-
+export function historyTasks(params) {
+    return request({
+        url: `${baseBURL}/history/tasks`,
+        method: "GET",
+        params
+    })
+}
 export function getAllUnit() {
     return  request({
         url:`${baseBURL}/organ-units/tree`,

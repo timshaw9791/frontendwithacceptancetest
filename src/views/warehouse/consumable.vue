@@ -7,7 +7,7 @@
             <div>
                 <div class="secondaryTitle">
                     <el-button type="text" class="in_button" @click="dialogShow('add')" data-test="button">
-                        <svg-icon icon-class="加"/>
+                        <svg-icon icon-class="加号"/>
                         新增耗材
                     </el-button>
                     <el-button type="text" class="in_button" @click="dialogShow('supplement')" data-test="button">

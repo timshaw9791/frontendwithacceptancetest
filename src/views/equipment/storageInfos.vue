@@ -15,7 +15,7 @@
                         <span>装备参数</span>
                         <el-button type="text" class="topIcon" @click="$refs.copyRfidDialog.show()"
                                    v-if="title.includes('装备信息详情')">
-                            <svg-icon icon-class="加"/>
+                            <svg-icon icon-class="加号"/>
                             复制RFID
                         </el-button>
 

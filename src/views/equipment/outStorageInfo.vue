@@ -13,7 +13,7 @@
             <div>
                 <tabs>
                     <el-button type="text" class="_textBt" @click="goInfo">
-                        <svg-icon icon-class="加" class="textBt"/>
+                        <svg-icon icon-class="加号" class="textBt"/>
                         出库装备
                     </el-button>
                     <div class="_buttons">

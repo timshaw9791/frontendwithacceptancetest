@@ -7,11 +7,11 @@
             <div>
                 <tabs :list="tabsList" :indexDefault="0" @selected="selected">
                     <el-button type="text" class="_textBt" @click="maintenanceShow" v-if="show">
-                        <svg-icon icon-class="批量"/>
+                        <svg-icon icon-class="保养"/>
                         开始保养
                     </el-button>
                     <el-button type="text" class="_textBt" @click="batchstorage" v-else>
-                        <svg-icon icon-class="批量"/>
+                        <svg-icon icon-class="保养"/>
                         结束保养
                     </el-button>
                 </tabs>
@@ -220,7 +220,7 @@
             batchstorage() {
                 // this.batch = !this.batch;
                 this.dialogList = [];
-                modifyFileName('return.json');
+                modifyFileName('search.json');
                 handheld((err) => this.$message.error(err)).then((data) => {
                     let json = JSON.parse(data);
                     this.rfids = json.rfid;
