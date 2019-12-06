@@ -126,6 +126,7 @@ export function handheld(errCB) {
     cmdStr = 'chcp 65001 && adb pull sdcard/inventoryData/'+fileName+' .';
     console.log("newFile_path",newFile_path)
     // 测试环境使用方法
+    console.log(testDevelopment);
     if(testDevelopment) {
         let start = new Promise((resolve, reject) => {
             if (fs.existsSync(inventoryFile)) {
