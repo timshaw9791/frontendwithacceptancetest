@@ -173,7 +173,7 @@ export function handheld(errCB) {
 
 /* 导出文件 */
 export function writeFile(content, cb) {
-    let path = `${newFile_path}/equip.json`,
+    let path = `${newFile_path}/statisticsEquip.json`,
         pushCmdStr = `chcp 65001 && adb push ${path} sdcard/inventoryData/`,
         needReport = true;
     try {
