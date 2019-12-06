@@ -70,6 +70,7 @@
         align-items: center;
         justify-content: space-between;
         color:rgba(112,112,112,1);
+        border-bottom: 1px solid rgba(112,112,112, 0.13);
 
     }
     .header .input-box{

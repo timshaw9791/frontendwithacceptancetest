@@ -15,10 +15,10 @@
         </div>
         <div class="report_table_box" data-test="table_box">
             <slot></slot>
-            <field-table :list="table.list" :labelList="table.labelList" :havePage="false" :height="table.height" style="width: 100%"></field-table>
+            <field-table :align="'left'" :list="table.list" :labelList="table.labelList" :havePage="false" :height="table.height" style="width: 100%"></field-table>
         </div>
-        <div >
-            <excel-table ref="table_excel" :listT="table.list" :tableHeader="{bigTitle:$route.meta.title,lableList:table.labelList,smallTitle:table.tableTitle,info:table.info}"></excel-table>
+        <div v-show="false" style="position: absolute;z-index: -2">
+            <excel-table ref="table_excel" :fileName="fileName" :list="table.list" :tableHeader="{bigTitle:$route.meta.title,lableList:table.labelList,smallTitle:table.tableTitle,info:table.info}"></excel-table>
         </div>
     </div>
 </template>
@@ -44,9 +44,26 @@
                 type: Object
             }
         },
+        computed:{
+          fileName(){
+             let name='',fileName='';
+             switch (this.table.tableType) {
+                 case 'All':
+                     name='(全部)';
+                     break;
+                 case 'Genre':
+                     name='(大类)';
+                     break;
+                 case 'Category':
+                     name='(装备)';
+             }
+             fileName = this.$route.meta.title+name;
+             console.log(fileName);
+             return  fileName
+          }
+        },
         methods: {
             getSearch(data) {
-                console.log('getSearch',data);
                this.$set(this.table.params,'search',data);
             },
             emptySearch(){
@@ -70,7 +87,6 @@
 
     /*/deep/ .el-input__inner {*/
         /*text-align: center;*/
-
     /*}*/
     /deep/ .el-table-column--selection{
         margin-left: 1.0417rem;

@@ -7,7 +7,7 @@
       <tr>
         <td :colspan="colspan">{{ tableHeader.smallTitle }}</td>
       </tr>
-      <tr>
+      <tr v-if="tableHeader.info">
         <td :colspan="colspan">{{ tableHeader.info}}</td>
       </tr>
       <tr>
@@ -61,6 +61,7 @@ export default {
   },
   methods: {
     exportExcel() {
+      console.log('exportExcel',this.fileName);
       /* 从表生成工作簿对象 */
       var wb = XLSX.utils.table_to_book(this.$refs.excelTable);
       /* 获取二进制字符串作为输出 */
@@ -77,7 +78,7 @@ export default {
           //返回一个新创建的 Blob 对象，其内容由参数中给定的数组串联组成。
           new Blob([wbout], { type: "application/octet-stream" }),
           //设置导出文件名称
-          "sheetjs.xlsx"
+          `${this.fileName}.xlsx`
         );
       } catch (e) {
         if (typeof console !== "undefined") console.log(e, wbout);

@@ -48,16 +48,16 @@
 
                         </div>
                         <div style="display: flex;" v-if="table.tableType!=='category'">
-                            <text-button v-if="table.tableType==='unallocated'":iconClass="'分配'" :buttonName="'装备分类'"
+                            <text-button v-if="table.tableType==='unallocated'":iconClass="'装备分类'" :buttonName="'装备分类'"
                                          @click="distributionClick" style="margin-right: 0.0921rem"></text-button>
-                            <text-button :iconClass="'取消1'" :dataTest="'disable'" v-if="status.buttonDisable" :havePoint="false"
+                            <text-button :iconClass="'取消'" :dataTest="'disable'" v-if="status.buttonDisable" :havePoint="false"
                                          :buttonName="' '"></text-button>
-                            <text-button :iconClass="'确定1'" :dataTest="'disable'" v-if="status.buttonDisable" :havePoint="false"
+                            <text-button :iconClass="'确定'" :dataTest="'disable'" v-if="status.buttonDisable" :havePoint="false"
                                          :buttonName="' '" style="margin-left: 0.0521rem"></text-button>
-                            <text-button :iconClass="'取消'" :dataTest="'取消_icon'" v-if="!status.buttonDisable" :buttonName="' '"
+                            <text-button :iconClass="'取消'" style="color:#2F2F76!important;" :dataTest="'取消_icon'" v-if="!status.buttonDisable" :buttonName="' '"
                                          @click="modifyStock('result')"></text-button>
                             <text-button :iconClass="'确定'" :dataTest="'确定_icon'" v-if="!status.buttonDisable" :buttonName="' '"
-                                         @click="modifyStock('modify')" style="margin-left: 0.0521rem"></text-button>
+                                         @click="modifyStock('modify')" style="color:#2F2F76!important;margin-left: 0.0521rem"></text-button>
                         </div>
                     </div>
                 </div>
@@ -67,7 +67,7 @@
             </div>
         </div>
         <genre-or-category ref="genreOrCategory" :selectData="tree.copyTreeData" :title="title.genreTitle" :genreData="tree.currentNode"
-                           @sucess="refetch" @sucessDistribution="successTable" :type="title.titleType" :checkBoxData="table.checkBoxData"></genre-or-category>
+                           @sucess="refetch" @sucessUpdateCategory="updateCategory" @sucessDistribution="successTable" :type="title.titleType" :checkBoxData="table.checkBoxData"></genre-or-category>
         <tips ref="deleteGenre" :contentText="'您确定要删除此条装备大类吗'" @confirm="deleteGenreById"></tips>
     </div>
 </template>
@@ -76,14 +76,13 @@
     import s_search from 'components/base/search'
     import textButton from 'components/base/textButton'
     import tips from "components/base/tips"
-    import serviceDialog from 'components/base/gailiangban'
     import genreOrCategory from 'components/warehouse/safety/genreOrCategory'
     import safetyTable from 'components/warehouse/safety/safetyTable'
     import {categoryFindAll, deleteGenreById, findAllCategoryById, safetyStock, findAllEquipArgs,inHouse} from "api/warehouse"
 
     export default {
         name: "safety",
-        components: {s_search, textButton, serviceDialog, genreOrCategory, safetyTable, tips},
+        components: {s_search, textButton, genreOrCategory, safetyTable, tips},
         data() {
             return {
                 filterText:'',
@@ -137,6 +136,19 @@
             init(){
                 this.handleNodeClick(this.tree.treeData[0]);
             },
+            updateCategory(data){
+                let categorySet=this.tree.currentNode.categorySet;
+                categorySet.forEach(item=>{
+                    if(item.id===data.id){
+                        item.name=data.name
+                    }
+                });
+                findAllCategoryById(this.tree.currentNode.id).then(res => {
+                    this.table.tableData = res;
+                });
+                this.$message.success('操作成功');
+                this.$refs.genreOrCategory.cancelDb()
+            },
             distributionClick(){
                 this.status.buttonDisable=!this.status.buttonDisable;
                 this.status.distribution=!this.status.buttonDisable;
@@ -175,7 +187,9 @@
                         }
                         item.categorySet.forEach(category => {
                             category.click = false;
-                            this.$refs[category.id].style.color = "#2F2F76";
+                            if(this.$refs[category.id]){
+                                this.$refs[category.id].style.color = "#2F2F76";
+                            }
                         })
                     } else {
                         item.click = false;
@@ -189,7 +203,9 @@
                                 }
                             } else {
                                 category.click = false;
-                                this.$refs[category.id].style.color = "#2F2F76";
+                                if(this.$refs[category.id]){
+                                    this.$refs[category.id].style.color = "#2F2F76";
+                                }
                             }
                         })
                     }
@@ -343,6 +359,8 @@
     .safety_box {
         font-size: 0.0833rem;
         text-align: center;
+        height: 4.6875rem;
+        width: 100%;
     }
 
     .safety_box .safety_head {

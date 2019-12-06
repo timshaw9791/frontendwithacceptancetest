@@ -50,7 +50,7 @@
 
 <script>
 import { outHouse, findByRfids } from "api/storage"
-import { start, killProcess, handheld } from 'common/js/rfidReader'
+import { start, killProcess, handheld, modifyFileName } from 'common/js/rfidReader'
 
     export default {
         data() {
@@ -150,6 +150,8 @@ import { start, killProcess, handheld } from 'common/js/rfidReader'
                   this.$message.error("该rfid未对应装备")
                 }
                 this.createListData(res)
+              }).catch(err => {
+                this.$message.error("该装备不存在")
               })
               
             },
@@ -192,6 +194,7 @@ import { start, killProcess, handheld } from 'common/js/rfidReader'
             }
         },
         created() {
+          modifyFileName("search.json")
           this.typeName = this.title.slice(0, 2)
           this.hardware.operator = JSON.parse(localStorage.getItem('user')).username
           if(!this.title.includes("出库装备")) {

@@ -3,11 +3,11 @@
         <div class="header">
             <div class="header-item">
                 <span v-text="'开始时间：'"></span>
-                <div class="header-content"><span v-text="startTime"></span></div>
+                <div class="header-content"><span v-text="this.overview.startTime?this.$filterTime(this.overview.startTime):''"></span></div>
             </div>
             <div class="header-item">
                 <span v-text="'结束时间：'"></span>
-                <div class="header-content"><span v-text="endTime"></span></div>
+                <div class="header-content"><span v-text="this.overview.endTime?this.$filterTime(this.overview.endTime):''"></span></div>
             </div>
             <div class="header-item">
                 <span v-text="'操作人员：'"></span>
@@ -20,8 +20,8 @@
                     <span v-text="'盘点总数'"></span><span style="margin-left: 23px" v-text="size"></span>
                 </div>
                 <div class="title-item" style="margin-left: 73px">
-                    <span v-text="'未盘点数'"></span><span style="margin-left: 23px" v-text="overview.withoutRfidCount"></span>
-                    <span v-text="'(领用数量'"></span><span style="margin-left: 5px" v-text="overview.outCount"></span><span v-text="')'"></span>
+                    <span v-text="'未盘点数'"></span><span style="margin-left: 23px" v-text="overview.outCount"></span>
+                    <span v-text="'(领用数量'"></span><span style="margin-left: 5px" v-text="overview.withoutRfidCount"></span><span v-text="')'"></span>
                 </div>
                 <!--<div class="title-item" style="margin-left: 73px">-->
                     <!--<span v-text="'出库数量'"></span><span style="margin-left: 23px" v-text="overview.outCount"></span>-->
@@ -84,61 +84,8 @@
               }
           }
         },
-        computed:{
-          name: ()=> {
-              let user=JSON.parse(localStorage.getItem('user'));
-              return user.name
-          },
-            startTime:function() {
-              let time='';
-              console.log("this.overview",this.overview)
-              if(this.overview.startTime){
-                  console.log(new Date(this.overview.startTime));
-                  time = this.$filterTime(this.overview.startTime);
-              }
-                return time;
-            },
-            endTime:function(){
-                let time='';
-                console.log("this.overview",this.overview)
-                if(this.overview.endTime){
-                    console.log(new Date(this.overview.endTime));
-                    time = this.$filterTime(this.overview.endTime);
-                }
-                return time
-            }
-        },
-        watch: {
-            'this.overview.startTime':{
-                handler(){
-                    time = this.filterTime(this.overview.endTime);
-                    console.log("time",time)
-                }
-            }
-        },
 
         methods:{
-        //   filterTime(date){
-        //      let time='';
-        //      if(date!=''){
-        //          let dateNow =  new Date(date);
-        //          let year = dateNow.getFullYear();
-        //          let moth = dateNow.getMonth()+1;
-        //          let day = dateNow.getDate();
-        //          let hour = dateNow.getHours();
-        //          let min = dateNow.getMinutes();
-        //          let seconds = dateNow.getSeconds();
-        //          time = year+'-'+addZero(moth)+'-'+addZero(day)+'\xa0\xa0\xa0'+addZero(hour)+':'+addZero(min)+':'+addZero(seconds);
-        //      }
-        //      function addZero(some) {
-        //          if (some<10){
-        //              return '0'+some
-        //          }else {
-        //              return some
-        //          }
-        //      };
-        //      return time
-        //   },
             submission(){
                this.$emit('handleSubmission',true)
             }

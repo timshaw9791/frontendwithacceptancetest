@@ -3,7 +3,7 @@
         <my-header :title="'盘点'" :searchFlag="false"></my-header>
         <div class="action-bar">
             <el-button type="text" class="in_button" @click="toInventory">
-                <svg-icon icon-class="加"/>
+                <svg-icon icon-class="加号"/>
                 开始盘点
             </el-button>
         </div>
@@ -67,7 +67,6 @@
                 // this.getInventoryRf({"endTime":1574651680308,"rfid":["050001D3"],"size":1,"startTime":1574651671133});
             },
             getNote(data) {
-                console.log("data",data)
                 if (Object.keys(this.inventoryObj.inventoryData.inventory).length != 0) {
                     this.inventoryObj.inventoryData.inventory.remark = data
                 } else {
@@ -82,7 +81,7 @@
                     if (Object.keys(this.inventoryObj.inventoryData.inventory).length != 0) {
                         let url = baseURL+'/equipMaintain/inventory';
                         let data={
-                            createTime: this.inventoryObj.inventoryData.inventory.startTime,
+                            startTime: this.inventoryObj.inventoryData.inventory.startTime,
                             inventoryCount: this.inventoryObj.inventoryData.inventory.inventoryCount,
                             inventoryDetailSet: this.inventoryObj.inventoryData.inventoryItems,
                             notCount: this.inventoryObj.inventoryData.inventory.outCount,
@@ -92,7 +91,6 @@
                             },
                             outHouseCount: this.inventoryObj.inventoryData.inventory.withoutRfidCount,
                             remark: this.inventoryObj.inventoryData.inventory.remark,
-                            updateTime: this.inventoryObj.inventoryData.inventory.endTime
                         }
                         request({
                             method: 'post',
@@ -147,11 +145,11 @@
                          this.overview.name=JSON.parse(localStorage.getItem('user')).name;
                          this.overview.size=this.inventory.inventoryData.size*/
                         console.log("res",res)
+                        console.log("this.inventoryObj.getInventory",this.inventoryObj.getInventory)
                         this.inventoryObj.inventoryData.inventoryItems = res.inventoryDetailSet;
                         this.inventoryObj.inventoryData.inventory.outCount = res.notCount;
                         this.inventoryObj.inventoryData.inventory.withoutRfidCount = res.outHouseCount;
                         this.inventoryObj.inventoryData.inventory.startTime = this.inventoryObj.getInventory.startTime;
-                        this.inventoryObj.inventoryData.inventory.endTime = this.inventoryObj.getInventory.endTime;
                         this.inventoryObj.inventoryData.inventory.adminName = res.operatorInfo.operator;
                         this.inventoryObj.inventoryData.inventory.adminId = res.operatorInfo.operatorId;
                         this.inventoryObj.inventoryData.inventory.inventoryCount = res.inventoryCount;

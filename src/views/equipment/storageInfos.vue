@@ -15,7 +15,7 @@
                         <span>装备参数</span>
                         <el-button type="text" class="topIcon" @click="$refs.copyRfidDialog.show()"
                                    v-if="title.includes('装备信息详情')">
-                            <svg-icon icon-class="加"/>
+                            <svg-icon icon-class="加号"/>
                             复制RFID
                         </el-button>
 
@@ -58,16 +58,16 @@
                                         v-if="title.includes('装备信息详情')"
                                       prop="serial"></field-input>
                             
-                            <field-input v-model="form.shelfLifeQ" label="保质期" width="3" :disabled="edit"
+                            <field-input v-model="form.shelfLifeQ" label="保质期(天)" width="3" :disabled="edit"
                                          :rules="r(true).all(R.integer)" prop="shelfLifeQ"></field-input>
 
-                            <field-input v-model="form.chargeCycle" label="充电周期" width="3"
-                                         :rules="r(true).all(R.integer)" prop="chargeCycle"
+                            <field-input v-model="form.chargeCycle" label="充电周期(天)" width="3"
+                                         :rules="r(true).all(R.num)" prop="chargeCycle"
                                          :disabled="edit"
                             ></field-input>
 
-                            <field-input v-model="form.upkeepCycle" label="保养周期" width="3"
-                                         :rules="r(true).all(R.integer)" prop="upkeepCycle"
+                            <field-input v-model="form.upkeepCycle" label="保养周期(天)" width="3"
+                                         :rules="r(true).all(R.num)" prop="upkeepCycle"
                                          :disabled="edit"
                             ></field-input>
 

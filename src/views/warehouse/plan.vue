@@ -7,7 +7,7 @@
             <div>
                 <div class="secondaryTitle">
                     <el-button type="text" class="_textBt" @click="dialogShow('add')">
-                        <svg-icon icon-class="加"/>
+                        <svg-icon icon-class="加号"/>
                         新增预案
                     </el-button>
                     <div class="_buttons">
@@ -95,7 +95,7 @@
 
                     <el-table-column label="装备名称" align="center" >
                         <template scope="scope">
-                            <el-select v-model="scope.row.equipArg.name" value-key="id" @change="changeModel(scope.row.equipArg.name)"> 
+                            <el-select v-model="scope.row.equipArg.name" value-key="id"> 
                                 <el-option
                                 v-for="item in nameList"
                                 :label="item"
@@ -108,7 +108,9 @@
 
                      <el-table-column label="装备型号" align="center" >
                         <template scope="scope">
-                          <el-select v-model="scope.row.equipArg.model" value-key="id" @change="qaq(scope,$event,title)">
+                             <!-- @change="changeModel(scope.row.equipArg.name)" -->
+                             <!-- @change="qaq(scope,$event,title)" -->
+                          <el-select v-model="scope.row.equipArg.model" value-key="id" @visible-change="changeModel(scope.row.equipArg.name)"@change="qaq(scope,$event,title)">
                                 <el-option
                                 v-for="item in modelList"
                                 :key="item.id"
@@ -220,8 +222,6 @@
 
                 } else if (type === 'up') {
                     this.title = '编辑预案';
-                    console.log("6666666666666666wad");
-                    console.log(item);
                     let equ={model:'',name:''}
                     this.form = JSON.parse(JSON.stringify(item));
                     this.form.equipArgItemList.forEach(it=>{
@@ -247,7 +247,9 @@
                     console.log(err);
                 })
             },
-            changeModel(data){
+            changeModel(data,scope,$event,title){
+                console.log("data");
+                console.log(data);
                 this.modelList=[]
                this.equipList.forEach(item=>{
                    if(data==item.name)
@@ -255,6 +257,7 @@
                        this.modelList.push(item)
                    }
                })
+               this.qaq(scope,$event,title)
             },
             getEquipInfo() {
                 getEquipList().then(res => {
@@ -274,12 +277,8 @@
                         {
                         this.nameList.push(item.name)
                         }
-                        
                     })
-
-
                 })
-
             },
             submit() {
                 console.log("输出form")
@@ -302,7 +301,6 @@
                         })
                         if(this.form.equipArgItemList[0].equipArg.name=='')
                         {
-                            console.log("执行到了");
                             this.$message.error('预案内容不得为空')
                         }else{
                         savePlan(this.form).then(item => {
@@ -319,11 +317,7 @@
                         if (this.form.equipArgItemList[this.form.equipArgItemList.length - 1].equipArg.name === ''&&this.form.equipArgItemList.length!=1) {
                         this.form.equipArgItemList.splice(this.form.equipArgItemList.length - 1, 1);
                     }
-                        console.log("this.form.5555555555555555555555555555555")
-                        console.log(this.form)
                         this.form.equipArgItemList.forEach(item=>{
-                            console.log("this.form.equipArgItemList");
-                            console.log(item)
                             if(item.equipArg.id==undefined)
                             {
                                 this.equipList.forEach(it=>{
@@ -334,8 +328,7 @@
                                 })
                             }
                         })
-                        console.log("this.form“挖的啊吴大维达瓦大屋顶阿文大王的阿文d")
-                        console.log(this.form)
+                        
                         updatePlan(this.form).then(item => {
                             this.$refs.dialog.hide();
                             this.getList();

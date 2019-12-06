@@ -7,11 +7,11 @@
             <div>
                 <tabs :list="tabsList" :indexDefault="0" @selected="selected">
                     <el-button type="text" class="_textBt" @click="maintenanceShow" v-if="show">
-                        <svg-icon icon-class="批量"/>
+                        <svg-icon icon-class="保养"/>
                         开始保养
                     </el-button>
                     <el-button type="text" class="_textBt" @click="batchstorage" v-else>
-                        <svg-icon icon-class="批量"/>
+                        <svg-icon icon-class="保养"/>
                         结束保养
                     </el-button>
                 </tabs>
@@ -32,7 +32,7 @@
                             <bos-table-column lable="可用/领用"
                                               :filter="(row)=>row.inHouseCount+'/'+row.receiveHouseCount"
                                               :align="'left'"></bos-table-column>
-                            <bos-table-column lable="待保养" :filter="(row)=>row.needKeepCount+'件'"
+                            <bos-table-column lable="待保养/可保养" :filter="(row)=>row.needKeepCount+'/'+row.toKeepCount"
                                               :align="'left'"></bos-table-column>
 
                             <el-table-column type="expand">
@@ -47,9 +47,8 @@
                                                  v-for="(item,index) in props.row.equipCountByLocations"
                                                  :style="index==0?'padding-left: 0.038rem;':''">
                                                 <div class="fold_body_item" v-text="surface(item)"></div>
-                                                <div class="fold_body_item"> {{item.number}}</div>
+                                                <div class="fold_body_item"> {{item.count}}</div>
                                             </div>
-
                                         </div>
                                         <!--<div class="fold">-->
                                         <!--<div class="fold_title">-->
@@ -145,7 +144,7 @@
                             <bos-table-column lable="装备名称" field="equipName"></bos-table-column>
                             <bos-table-column lable="装备型号" field="equipModel"></bos-table-column>
                             <bos-table-column lable="待保养/本次保养"
-                                              :filter="(row)=>row.equipCount+'/'+row.equipNowCount"
+                                              :filter="(row)=>row.totalProgress+'/'+row.currentProgress"
                                               :align="'left'"></bos-table-column>
                         </el-table>
                     </div>
@@ -177,10 +176,10 @@
     import serviceDialog from "components/base/serviceDialog";
     import {transformMixin} from "common/js/transformMixin";
     import {getNeedUpkeep, findneedkeepEquips} from "api/needs";
-    import {upkeep,findByRfids} from "api/operation"
+    import {upkeep, findByRfids} from "api/operation"
 
     var _ = require("lodash");
-    import {start, killProcess,modifyFileName,handheld} from "common/js/rfidReader"
+    import {start, killProcess, modifyFileName, handheld} from "common/js/rfidReader"
     //const exec = window.require('child_process').exec;
     //const spawn = window.require('child_process').spawn;
     // import {killProcess} from "common/js/kill";
@@ -194,7 +193,7 @@
                 batch: false, // 是否显示多选框(正在保养)
                 show: true,
                 title: "",
-                equipMaintenance:0,
+                equipMaintenance: 0,
                 dialogList: [],
                 equipList: [], // 保存确认保养的装备id
                 param: {
@@ -221,37 +220,37 @@
             batchstorage() {
                 // this.batch = !this.batch;
                 this.dialogList = [];
-                modifyFileName('return');
+                modifyFileName('search.json');
                 handheld((err) => this.$message.error(err)).then((data) => {
                     let json = JSON.parse(data);
-                    this.rfids=json.rfid;
-                    findByRfids(this.rfids).then(res=>{
+                    this.rfids = json.rfid;
+                    findByRfids(this.rfids).then(res => {
                         this.classify(res);
                         this.$refs.maintenanceEndDialog.show();
                     });
                 });
             },
-            classify(data){
-                let dialogList=[];
-                data.forEach(item=>{
-                    if(dialogList.length===0){
-                        dialogList.push({item:item,number:1});
-                    }else {
-                        let flag=false;
-                        dialogList.forEach(dItem=>{
-                            if(!flag&&item.equipArg.name===dItem.item.equipArg.name&&item.equipArg.model===dItem.item.equipArg.model
-                                &&item.location.floor===dItem.item.location.floor&&item.location.number===dItem.item.location.number
-                                &&item.location.section===dItem.item.location.section&&item.location.surface===dItem.item.location.surface){
+            classify(data) {
+                let dialogList = [];
+                data.forEach(item => {
+                    if (dialogList.length === 0) {
+                        dialogList.push({item: item, number: 1});
+                    } else {
+                        let flag = false;
+                        dialogList.forEach(dItem => {
+                            if (!flag && item.equipArg.name === dItem.item.equipArg.name && item.equipArg.model === dItem.item.equipArg.model
+                                && item.location.floor === dItem.item.location.floor && item.location.number === dItem.item.location.number
+                                && item.location.section === dItem.item.location.section && item.location.surface === dItem.item.location.surface) {
                                 dItem.number++;
-                                flag=true
+                                flag = true
                             }
                         });
-                        if(!flag){
-                            dialogList.push({item:item,number:1});
+                        if (!flag) {
+                            dialogList.push({item: item, number: 1});
                         }
                     }
                 });
-                this.dialogList=dialogList;
+                this.dialogList = dialogList;
             },
             selected(data) {
                 this.type = data;
@@ -271,7 +270,6 @@
 
             cancel(data) {
                 this.batch = data;
-
             },
 
             async getList() {
@@ -338,21 +336,30 @@
 
             },
             repairPush(Bool) {
-                upkeep(this.rfids,Bool).then(res => {
-                    this.$message.success('操作成功')
+                upkeep(this.rfids, Bool).then(res => {
+                    this.$message.success('操作成功');
+                    if(Bool){
+                        this.$refs.maintenanceDialog.cancel()
+                    }else {
+                        this.$refs.maintenanceEndDialog.cancel();
+                    }
+                }).catch(err=>{
+                    this.$message.error(err.response.data.message)
                 })
             },
             /* 显示具体的保养列表 */
             maintenanceShow() {
                 this.dialogList = [];
-                modifyFileName('keep');
+                this.rfids=[];
+                modifyFileName('keep.json');
                 handheld((err) => this.$message.error(err)).then((data) => {
-                    this.dialogList=JSON.parse(data);
-                    this.equipMaintenance=0;
-                    this.dialogList.forEach(item=>{
-                        this.equipMaintenance+=item.equipNowCount;
-                        this.rfids=[...this.rfids,...item.rfids];
+                    this.dialogList=JSON.parse(data).inventoryModels;
+                    this.equipMaintenance = 0;
+                    this.dialogList.forEach(item => {
+                        this.equipMaintenance += item.currentProgress;
+                        this.rfids=[...this.rfids,...item.rfids]
                     });
+                    console.log(this.rfids);
                     this.$refs.maintenanceDialog.show();
                 });
 
@@ -642,17 +649,19 @@
         margin-top: 0.1458rem;
         background: rgba(255, 255, 255, 1);
     }
-    .maintenance_start_table .maintenance__start_table_head{
-        width:100%;
-        height:0.34375rem;
-        background:rgba(224,224,224,0.32);
+
+    .maintenance_start_table .maintenance__start_table_head {
+        width: 100%;
+        height: 0.34375rem;
+        background: rgba(224, 224, 224, 0.32);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-weight:400;
+        font-weight: 400;
         font-size: 24px;
         color: #EF4545;
     }
+
     .maintenance_end_table {
         width: 4.349rem;
         height: 3.776rem;

@@ -1,6 +1,114 @@
 import request from 'common/js/request'
 import {baseBURL} from "./config";
 
+export function historyTasks(params) {
+    return request({
+        url: `${baseBURL}/history/tasks`,
+        method: "GET",
+        params
+    })
+}
+export function getAllUnit() {
+    return  request({
+        url:`${baseBURL}/organ-units/tree`,
+        method:'get'
+    })
+}
+export function getUser(organUnitId) {
+    return  request({
+        url:`${baseBURL}/users/by-organ-unit?organUnitId=${organUnitId}&role=ADMIN`,
+        method:'get'
+    })
+}
+export function getPlatformHouse(id) {
+    return  request({
+        url:`${baseBURL}/houses/by-organ-unit?organUnitId=${id}`,
+        method:'get'
+    })
+}
+
+
+export function getHouseInfo() {
+    return  request({
+        url:`/house/info`,
+        method:'get'
+    })
+}
+
+export function getEquipArgs() {
+    return  request({
+        url:`${baseBURL}/equip-args`,
+        method:'get'
+    })
+}
+
+export function getApplyLeader(params) {
+    return  request({
+        url:`${baseBURL}/process-configs/by-organ-unit-and-type`,
+        method:'get',
+        params:params
+    })
+}
+export function transferStart(data,nextAssignee,processConfigId) {
+    return  request({
+        url:`${baseBURL}/workflow/transfer/start?nextAssignee=${nextAssignee}&&processConfigId=${processConfigId}`,
+        method:'post',
+        data
+    })
+}
+export function directStarts(data,nextAssignee,processConfigId) {
+    return  request({
+        url:`${baseBURL}/workflow/direct-allot/start?nextAssignee=${nextAssignee}&&processConfigId=${processConfigId}`,
+        method:'post',
+        data
+    })
+}
+
+export function equipById(id) {
+    return  request({
+        url:`/equip/findEquipsByRfidAndNameAndModel?search=${id}`,
+        method:'get',
+    })
+}
+export function scrapStarts(data,nextAssignee,processConfigId) {
+    return  request({
+        url:`${baseBURL}/workflow/scrap/start?nextAssignee=${nextAssignee}&&processConfigId=${processConfigId}`,
+        method:'post',
+        data
+    })
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 export function getMyhouse() {

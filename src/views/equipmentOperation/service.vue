@@ -7,11 +7,11 @@
             <div>
                 <tabs :list="tabsList" :indexDefault="0" @selected="selected">
                     <el-button type="text" class="_textBt" @click="service">
-                        <svg-icon icon-class="维修"/>
+                        <svg-icon icon-class="开始维修"/>
                         开始维修
                     </el-button>
                     <el-button type="text" class="_textBt" @click="serviceEnd">
-                        <svg-icon icon-class="批量"/>
+                        <svg-icon icon-class="结束维修"/>
                         结束维修
                     </el-button>
 
@@ -174,7 +174,7 @@
                 this.dialogList = [];
                 // let rfid=['00003645','19080011','00002','00001545','198023242222222222222222','00008','5555555555'];
                 // this.rfids=rfid;
-                modifyFileName('return');
+                modifyFileName('search.json');
                 handheld((err) => this.$message.error(err)).then((data) => {
                     let json = JSON.parse(data);
                     this.rfids=json.rfid;
@@ -187,7 +187,7 @@
             },
             service() {
                 this.dialogList = [];
-                modifyFileName('repair');
+                modifyFileName('search.json');
                 handheld((err) => this.$message.error(err)).then((data) => {
                     let json = JSON.parse(data);
                     this.rfids=json.rfid;
@@ -246,7 +246,14 @@
             },
             repairPush(Bool) {
                 repairEquipMaintain(this.rfids,Bool).then(res => {
-                    this.$message.success('操作成功')
+                    this.$message.success('操作成功');
+                    if(Bool){
+                        this.$refs.dialog.cancel()
+                    }else {
+                        this.$refs.dialogEnd.cancel();
+                    }
+                }).catch(err=>{
+                    this.$message.error(err.response.data.message)
                 })
                 // this.gqlMutate(api.admin_maintainEquips, {
                 //     equipIdList: this.listPush
@@ -259,7 +266,6 @@
             },
             classify(data){
                 let dialogList=[];
-                console.log(data);
                 data.forEach(item=>{
                     if(dialogList.length===0){
                         dialogList.push({item:item,number:1});
@@ -294,8 +300,8 @@
                         reason: this.inlineForm.reason,
                     }).then((res) => {
                         console.log(res);
-                        this.$refs.dialog1.hide()
-                        this.getEquipServiceList()
+                        this.$refs.dialog1.hide();
+                        this.getEquipServiceList();
                         this.callback('报废已经申请');
                     })
                 )
@@ -314,9 +320,9 @@
                 if (0 in this.equipList) {
                     equipsReturn(this.equipList).then(res => {
                         console.log(res);
-                        this.$message.success("入库成功")
-                        this.equipList = []
-                        this.batch = !this.batch
+                        this.$message.success("入库成功");
+                        this.equipList = [];
+                        this.batch = !this.batch;
                         // 刷新列表
                         this.getEquipServiceList()
                     })
@@ -348,7 +354,7 @@
                 })
             },
             changePage(page) {
-                this.paginator.page = page
+                this.paginator.page = page;
                 this.getEquipServiceList()
             }
         },

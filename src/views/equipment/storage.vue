@@ -13,7 +13,7 @@
             <div>
                 <tabs>
                     <el-button type="text" class="_textBt" @click="goInfo">
-                        <svg-icon icon-class="加" class="textBt"/>
+                        <svg-icon icon-class="加号" class="textBt"/>
                         入库装备
                     </el-button>
                     <el-checkbox v-model="abnormal" @change="changeState">异常单</el-checkbox>
@@ -80,7 +80,7 @@
     import request from 'common/js/request'
     import {baseURL} from "../../api/config";
     import { start, startOne, killProcess } from 'common/js/rfidReader'
-    import r_label from 'common/vue/ajaxLabel'
+    import r_label from 'common/vue/ajaxTabel'
     // nodejs调用子进程的方法
 
     // const cmdPath = 'C:\\Users\\Administrator';   //cmd命令的位置
@@ -157,7 +157,7 @@
                 this.dialogVisible = false
                 inHouseOrder(this.delEquipId).then(res => {
                     this.$message.success("删除成功")
-                    alert("SprWu11")
+                    this.$refs.lable.getAgain()
                 }).catch(err => {
                     this.$message.error(err.response.data.message)
                 })

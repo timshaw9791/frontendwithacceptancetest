@@ -50,7 +50,7 @@
                 table: {
                     flag: false,
                     labelList: [
-                        {lable: '开始盘点时间', field: 'createTime' ,filter: (ns) => this.$filterTime(parseInt(ns.createTime))},
+                        {lable: '开始盘点时间', field: 'createTime' ,filter: (ns) => this.$filterTime(parseInt(ns.starttTime))},
                         {lable: '结束盘点时间', field: 'updateTime' ,filter: (ns) => this.$filterTime(parseInt(ns.createTime))},
                         {lable: '操作人员', field: 'operatorInfo.operator',sort:false},
                         {lable: '盘点总数', field: 'inventoryCount',sort:false},
