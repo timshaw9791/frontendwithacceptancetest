@@ -40,6 +40,9 @@ let __RULES__ = {
     digital(value) {
         return outPutInfo(/^(0|[1-9][0-9]*)(\.\d+)?$/.test(value))
     },
+    num(value) { // 整数判断但可空
+        return value?outPutInfo(/^[0-9]\d*$/.test(value)):true
+    }
 };
 
 export let formRulesMixin = {
