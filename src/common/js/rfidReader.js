@@ -126,7 +126,6 @@ export function handheld(errCB) {
     cmdStr = 'chcp 65001 && adb pull sdcard/inventoryData/'+fileName+' .';
     console.log("newFile_path",newFile_path)
     // 测试环境使用方法
-    console.log(testDevelopment);
     if(testDevelopment) {
         let start = new Promise((resolve, reject) => {
             if (fs.existsSync(inventoryFile)) {
@@ -163,8 +162,8 @@ export function handheld(errCB) {
                 let result = JSON.parse(fs.readFileSync(inventoryFile));
                 resolve(JSON.stringify(result));
             } else {
-                if(errTip) errCB("请确认已点击手持机上的确认按钮");
-                console.log("请确认已点击手持机上的确认按钮");
+                if(errTip) errCB("文件不存在");
+                console.log("文件不存在");
             }
             console.log('out code：' + code);
         });
