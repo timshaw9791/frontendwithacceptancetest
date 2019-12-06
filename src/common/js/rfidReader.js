@@ -134,6 +134,7 @@ export function handheld(errCB) {
             } else {
                 if(errTip) errCB("文件不存在");
                 console.log("文件不存在");
+                console.log("inventoryFile", inventoryFile)
             }
         });
         return start
