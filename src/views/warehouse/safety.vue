@@ -67,7 +67,7 @@
             </div>
         </div>
         <genre-or-category ref="genreOrCategory" :selectData="tree.copyTreeData" :title="title.genreTitle" :genreData="tree.currentNode"
-                           @sucess="refetch" @sucessDistribution="successTable" :type="title.titleType" :checkBoxData="table.checkBoxData"></genre-or-category>
+                           @sucess="refetch" @sucessUpdateCategory="updateCategory" @sucessDistribution="successTable" :type="title.titleType" :checkBoxData="table.checkBoxData"></genre-or-category>
         <tips ref="deleteGenre" :contentText="'您确定要删除此条装备大类吗'" @confirm="deleteGenreById"></tips>
     </div>
 </template>
@@ -76,14 +76,13 @@
     import s_search from 'components/base/search'
     import textButton from 'components/base/textButton'
     import tips from "components/base/tips"
-    import serviceDialog from 'components/base/gailiangban'
     import genreOrCategory from 'components/warehouse/safety/genreOrCategory'
     import safetyTable from 'components/warehouse/safety/safetyTable'
     import {categoryFindAll, deleteGenreById, findAllCategoryById, safetyStock, findAllEquipArgs,inHouse} from "api/warehouse"
 
     export default {
         name: "safety",
-        components: {s_search, textButton, serviceDialog, genreOrCategory, safetyTable, tips},
+        components: {s_search, textButton, genreOrCategory, safetyTable, tips},
         data() {
             return {
                 filterText:'',
@@ -136,6 +135,19 @@
         methods: {
             init(){
                 this.handleNodeClick(this.tree.treeData[0]);
+            },
+            updateCategory(data){
+                let categorySet=this.tree.currentNode.categorySet;
+                categorySet.forEach(item=>{
+                    if(item.id===data.id){
+                        item.name=data.name
+                    }
+                });
+                findAllCategoryById(this.tree.currentNode.id).then(res => {
+                    this.table.tableData = res;
+                });
+                this.$message.success('操作成功');
+                this.$refs.genreOrCategory.cancelDb()
             },
             distributionClick(){
                 this.status.buttonDisable=!this.status.buttonDisable;
@@ -343,6 +355,8 @@
     .safety_box {
         font-size: 0.0833rem;
         text-align: center;
+        height: 4.6875rem;
+        width: 100%;
     }
 
     .safety_box .safety_head {

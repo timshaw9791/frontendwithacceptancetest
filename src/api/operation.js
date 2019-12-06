@@ -28,7 +28,7 @@ export function findByRfids(rfids) {
 export function upkeep(rfids,state) {
     return request({
         url: `/equipMaintain/upkeep?rfids=${rfids}&&state=${state}`,
-        method: 'get',
+        method: 'post',
     })
 }
 

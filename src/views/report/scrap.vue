@@ -5,7 +5,7 @@
         </div>
         <div class="scrap_body" data-test="main_box">
             <report_tree @clickNode="clickNode"></report_tree>
-            <report_table ref="table" :table="table" @export="toExport">
+            <report_table ref="table" :table="table">
                 <div class="table_header_box" v-if="table.tableType!=='All'&&table.tableType!==''&&computeTotal.count!==undefined">
                     <div class="table_header">
                         <div class="table_header_item"><span v-text="`装备总数：${computeTotal.totalCount}`"></span></div>
@@ -44,6 +44,7 @@
                     placeholder: '全部大类',
                     height: '3.78125rem',
                     params: {id: '', level: '', search: ''},
+                    info:''
                 },
                 computeTotal:{},
                 current: {}
@@ -133,6 +134,8 @@
                     this.$set(this.table, 'list', res);
                     if(this.table.tableType!=='All'){
                         this.computeFunction(JSON.parse(JSON.stringify(this.table.list)))
+                    }else {
+                        this.table.info=''
                     }
 
                 })
@@ -160,14 +163,12 @@
                     totalPrice+=item.totalPrice;
                     count+=item.count;
                 });
+                this.table.info=`装备总数：${totalCount}装备总价(元)：${totalPrice/100}报废数量：${count}`;
                 this.computeTotal={
                     totalCount:totalCount,
                     totalPrice:totalPrice/100,
                     count:count,
                 }
-            },
-            toExport(){
-                console.log('toExport')
             }
             // distributionClick(){
             //     this.status.buttonDisable=!this.status.buttonDisable;
@@ -273,6 +274,8 @@
     .scrap_box {
         font-size: 0.0833rem;
         text-align: center;
+        height: 4.6875rem;
+        width: 100%;
     }
     .table_header_box{
         height: 0.296875rem;

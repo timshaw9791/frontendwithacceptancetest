@@ -71,7 +71,7 @@ export function start(cmd, success, failure, callBack) {
         cwd: cwd
     });
 
-    callBack(process.pid, null)
+    callBack(process.pid, null);
     process.stderr.on("data", err => {
         console.log(err);
         if (!err.includes("Error")) failure.call(this, err)
@@ -114,7 +114,7 @@ export function startOne(cmd, callBack, rfid = null) {
 /* 删除文件 */
 export function delFile(path, callBack) {
     fs.unlink(path, err => {
-        if (err) return false
+        if (err) return false;
         else callBack()
     })
 }
@@ -151,7 +151,7 @@ export function handheld(errCB) {
     workerProcess.stderr.on('data', (data) => {
         if(data.includes("device")) { 
             errCB("未发现设备，请检查设备连接是否正常");
-            errTip = false
+            errTip = false;
         }
         console.log('stderr: ' + data);
     });
@@ -197,13 +197,13 @@ export function writeFile(content, cb) {
     
     workerProcess.stderr.on('data', data => {
         if(data.includes('device') || data.includes('devices')) {
-            needReport = false
+            needReport = false;
             cb({state: false, message: "未发现设备，请检查设备是否连接正常"})
         } else if(data.includes('KB/s')) {
-            needReport = false
+            needReport = false;
             cb({state: true, message: "同步手持机成功"})
         } else if(data.includes('adb') || data.includes('not recognized')) {
-            needReport = false
+            needReport = false;
             cb({state: false, message: "ADB驱动未安装"})
         }
         console.log(data);

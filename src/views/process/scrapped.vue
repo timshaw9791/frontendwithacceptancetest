@@ -43,7 +43,7 @@
     import addApply from 'components/process/secondment/addSecondment'
     // import api from 'gql/home.gql'
     // import {fetchMixin} from 'field/common/mixinFetch'
-    import {getOrganUnitById,getMyhouse} from 'api/process'
+    import {getOrganUnitById,getMyhouse,byOrganUnitAndTransferType,findHouseByOrganUnitId} from 'api/process'
     export default {
         name: "scrapped",
         components:{
@@ -120,9 +120,15 @@
             }
         },
         created(){
-            this.defaultList();
-            // this.getEquipInfo();
-            this.getUnitAndHouse();
+            byOrganUnitAndTransferType().then(res=>{
+
+            })
+            findHouseByOrganUnitId().then(res=>{
+
+            })
+            // this.defaultList();
+            // // this.getEquipInfo();
+            // this.getUnitAndHouse();
         },
         computed:{
             havePage(){

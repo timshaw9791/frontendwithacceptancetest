@@ -11,7 +11,6 @@
                     suffix="el-icon-search"
                     v-model="search"
                     style="width:285px;">
-
             </BosInput>
         </div>
              </div>

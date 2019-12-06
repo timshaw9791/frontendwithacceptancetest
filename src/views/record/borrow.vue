@@ -12,7 +12,7 @@
                     end-placeholder="结束日期">
                 </el-date-picker>
             </div>
-            <div class="_buttons" style="margin-right: 18px">
+            <div class="_buttons" style="margin-right: 0.09375rem">
                 <BosInput
                         placeholder="操作人员"
                         suffix="el-icon-search"

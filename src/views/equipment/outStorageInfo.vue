@@ -41,7 +41,7 @@
     import tabs from 'components/base/tabs/index'
     import serviceDialog from 'components/base/serviceDialog/index'
     import inStorageList from 'components/equipment/inStorageList'
-    import r_label from 'common/vue/ajaxLabel'
+    import r_label from 'common/vue/ajaxTabel'
     // nodejs调用子进程的方法
 
     // const cmdPath = 'C:\\Users\\Administrator';   //cmd命令的位置

@@ -80,7 +80,7 @@
     import request from 'common/js/request'
     import {baseURL} from "../../api/config";
     import { start, startOne, killProcess } from 'common/js/rfidReader'
-    import r_label from 'common/vue/ajaxLabel'
+    import r_label from 'common/vue/ajaxTabel'
     // nodejs调用子进程的方法
 
     // const cmdPath = 'C:\\Users\\Administrator';   //cmd命令的位置
