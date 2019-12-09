@@ -1,6 +1,16 @@
 import request from 'common/js/request'
 import {baseBURL} from "./config";
 
+
+
+export function activeTasks(params) {
+    return request({
+        url: `${baseBURL}/tasks/active`,
+        method: "GET",
+        params
+    })
+}
+
 export function historyTasks(params) {
     return request({
         url: `${baseBURL}/history/tasks`,
@@ -47,6 +57,13 @@ export function getApplyLeader(params) {
         url:`${baseBURL}/process-configs/by-organ-unit-and-type`,
         method:'get',
         params:params
+    })
+}
+export function transferRefill(data,nextAssignee,processConfigId) {
+    return  request({
+        url:`${baseBURL}/workflow/transfer/apply?nextAssignee=${nextAssignee}&&taskId=${processConfigId}`,
+        method:'put',
+        data
     })
 }
 export function transferStart(data,nextAssignee,processConfigId) {

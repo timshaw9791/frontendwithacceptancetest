@@ -1,6 +1,6 @@
 <template>
     <div class="my_process">
-        <my-header :title="'直调流程'" :searchFlag="false" :haveBlack="!status.tableOrUniversalFlag" @h_black="black"></my-header>
+        <my-header :title="'我的流程'" :searchFlag="false" :haveBlack="!status.tableOrUniversalFlag" @h_black="black"></my-header>
         <div class="my_process_action_box" data-test="action_box" v-if="status.tableOrUniversalFlag">
             <text-button :iconSize="20" :iconClass="'加号'" :buttonName="'申请流程'" @click="apply"></text-button>
             <div class="action_right_box">
@@ -12,7 +12,7 @@
         <div class="my_process_main_box" data-test="main_box">
             <div class="main_table_box" data-test="table_box">
                 <p_table ref="processTable" :table="table" :typeUrl="'process'" :otherParams="true" @clickTable="clickTable" v-if="status.tableOrUniversalFlag"></p_table>
-                <p_universal :title="universal.title" :universalObj="universal.universalObj" v-if="!status.tableOrUniversalFlag"></p_universal>
+                <p_universal @back="black" :title="universal.title" :universalObj="universal.universalObj" v-if="!status.tableOrUniversalFlag"></p_universal>
             </div>
         </div>
         <select_apply ref="selectApply" @sucessApply="sucessApply"></select_apply>
