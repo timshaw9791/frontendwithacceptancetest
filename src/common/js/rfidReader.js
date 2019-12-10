@@ -129,8 +129,16 @@ export function handheld(errCB) {
     if(testDevelopment) {
         let start = new Promise((resolve, reject) => {
             if (fs.existsSync(inventoryFile)) {
-                let result = JSON.parse(fs.readFileSync(inventoryFile));
-                resolve(JSON.stringify(result));
+                let temp = JSON.parse(fs.readFileSync(inventoryFile)), result = null;
+                try {
+                    result = JSON.parse(temp);
+                } catch (error) {
+                    if(temp.charCodeAt(0) === 0xFEFF) {
+                        temp = temp.slice(1)
+                    }
+                    result = JSON.parse(temp)
+                }
+                resolve(JSON.stringify(result))
             } else {
                 if(errTip) errCB("文件不存在");
                 console.log("文件不存在");
