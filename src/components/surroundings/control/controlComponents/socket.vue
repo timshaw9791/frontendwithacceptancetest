@@ -4,7 +4,7 @@
             <div class="charging-sation-control-body">
                 <div class="c_s_c_upper">
                     <div class="svg-box-socket">
-                        <svg-icon icon-class="插座图标" style="width: 0.3125rem;height: 0.3125rem;margin-top: 0.026rem"></svg-icon>
+                        <svg-icon icon-class="充电台" style="width: 0.3125rem;height: 0.3125rem;margin-top: 0.026rem"></svg-icon>
                     </div>
                     <span v-text="socket.name" style="margin-top: 0.0573rem;font-size: 16px" v-if="socket.name!=''&&flag"></span>
                     <span v-text="time" style="margin-top: 0.026rem;font-size: 14px"  v-if="socket.chargingTime!=''&&flag"></span>

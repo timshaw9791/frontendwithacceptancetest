@@ -89,7 +89,7 @@
                 <div class=video_box>
                     <div  v-for="(item,index) in equipModel.video" class="video">
                        <div @click="delVideo(index)" :data-test="item+'_close'">
-                        <svg-icon icon-class="关闭1" style="width:20px;height:20px; float:right" />
+                        <svg-icon icon-class="视频文档删除" style="width:20px;height:20px; float:right" />
                     </div>
                     <div>
                         <img src="@/common/images/电视-视频缩略.png" style="width:50px;height:50px;"/>
