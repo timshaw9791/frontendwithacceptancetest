@@ -129,10 +129,11 @@ export function handheld(errCB) {
     if(testDevelopment) {
         let start = new Promise((resolve, reject) => {
             if (fs.existsSync(inventoryFile)) {
-                let temp = JSON.parse(fs.readFileSync(inventoryFile)), result = null;
+                let temp = fs.readFileSync(inventoryFile), result = null;
                 try {
                     result = JSON.parse(temp);
                 } catch (error) {
+                    temp = temp.toString()
                     if(temp.charCodeAt(0) === 0xFEFF) {
                         temp = temp.slice(1)
                     }
@@ -167,7 +168,7 @@ export function handheld(errCB) {
         // 退出之后的输出
         workerProcess.on('close', (code) => {
             if (fs.existsSync(inventoryFile)) {
-                let temp = JSON.parse(fs.readFileSync(inventoryFile)), result = null;
+                let temp = fs.readFileSync(inventoryFile), result = null;
                 try {
                     result = JSON.parse(temp);
                 } catch (error) {
@@ -188,8 +189,8 @@ export function handheld(errCB) {
 }
 
 /* 导出文件 */
-export function writeFile(content, cb) {
-    let path = `${newFile_path}/statisticsEquip.json`,
+export function writeFile(content, cb, fileName) {
+    let path = `${newFile_path}/${fileName}`,
         pushCmdStr = `chcp 65001 && adb push ${path} sdcard/inventoryData/`,
         needReport = true;
     try {
