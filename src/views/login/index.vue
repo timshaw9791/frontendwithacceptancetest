@@ -3,7 +3,7 @@
         <!--<video src="../../assets/黑贞.mp4" loop="loop" autoplay="autoplay" class="video"></video>-->
         <div class="video-cover"></div>
         <div class="topTitle">
-            <img src="../../common/images/警徽.png" height="89" width="78" style="cursor: pointer;"
+            <img src="../../common/images/警徽.png" height="89" width="225" style="cursor: pointer;"
                  @click="windowClose"/>
 
             <h3 class="title">{{ title }}</h3>

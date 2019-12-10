@@ -25,6 +25,13 @@ export function findEquipsNeedChange() {
     })
 }
 
+export function findByOneLine() {
+    return request({
+        url: "/equip/findByOneLine",
+        method: "GET"
+    })
+}
+
 /* 待办任务 */
 export function tasks(params) {
     return request({

@@ -3,7 +3,7 @@
         <dialogs :width="398" ref="dialog" :title="'湿度控制器'">
             <div class="dehumidification-body">
                <div class="dehumidification-top">
-                   <svg-icon icon-class="除湿图标" style="width: 56px;height: 70px"></svg-icon>
+                   <svg-icon icon-class="除湿器" style="width: 56px;height: 70px"></svg-icon>
                    <span v-text="'除湿控制器'" style="margin-top: 8px"></span>
                    <switch-control :active="active" :inactive="inactive" style="margin-top: 31px" :status="dehumidificationStatus?true:false" @handleChange="dehumidificationControl"></switch-control>
                </div>
