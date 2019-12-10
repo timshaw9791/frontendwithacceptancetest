@@ -2,6 +2,11 @@
     <div>
         <div class="header">
             <div>{{ title }}申请单</div>
+            <div class="header-button">
+                <el-button v-if="isReject" class="universal-header-button">作废</el-button>
+                <el-button v-if="isReject" class="universal-header-button" @click="refill">重填</el-button>
+                <text-button style="margin-left: 0.125rem" :iconClass="'导出'" :buttonName="'导出'" @click="transfer"></text-button>
+            </div>
         </div>
         <div class="body">
             <div class="info">
@@ -10,10 +15,10 @@
                 <div v-show="notScrap">出库机构: {{ universalObj.variables.applyOrder.outboundOrganUnit.name }}</div>
                 <div>申请时间: {{this.$filterTime(universalObj.variables.applyOrder.applyTime)}}</div>
                 <div v-show="notScrap">接收库房: {{ universalObj.variables.applyOrder.inboundWarehouse.name}}</div>
-                <div v-show="notScrap">出库库房: {{ universalObj.variables.applyOrder.outboundWarehouse?universalObj.applyOrder.outboundWarehouse.name:'-'}}</div>
+                <div v-show="notScrap">出库库房: {{ universalObj.variables.applyOrder.outboundWarehouse?universalObj.variables.applyOrder.outboundWarehouse.name:'-'}}</div>
                 <div>申请人员: {{ universalObj.variables.applyOrder.applicant.name }}</div>
                 <div v-show="notScrap">接收人员: {{ universalObj.variables.applyOrder.inboundUser.name}}</div>
-                <div v-show="notScrap">出库人员: {{universalObj.variables.applyOrder.outboundUser?universalObj.applyOrder.outboundUser.name:'-'}}</div>
+                <div v-show="notScrap">出库人员: {{universalObj.variables.applyOrder.outboundUser?universalObj.variables.applyOrder.outboundUser.name:'-'}}</div>
                 <div v-show="!notScrap">报废原因: {{ form.note }}</div>
             </div>
             <div>装备统计:</div>
@@ -38,12 +43,15 @@
         <service-dialog title="查看原因" ref="reson" :button="false" :secondary="false" confirmInfo="提交">
             驳回原因: <el-input type="textarea" v-model="reson" :disabled="true" :autosize="true" resize="none" style="margin-top: 6px"></el-input>
         </service-dialog>
+        <select_apply ref="selectUniversalApply" :taskId="activeTask.id" @sucessApply="sucessRefill"></select_apply>
     </div>
 </template>
 
 <script>
     import serviceDialog from "components/base/serviceDialog"
-    import { historyTasks } from "api/process"
+    import { historyTasks,activeTasks } from "api/process"
+    import textButton from 'components/base/textButton'
+    import select_apply from 'components/process/processDialog/selectApplyProcess'
     export default {
         name: 'doneuniversal',
         data() {
@@ -62,6 +70,7 @@
                     taskId: '', // 申请单id
                     processInstanceId: '', // 申请单流程id
                 },
+                activeTask:{},
                 list: [],
                 processList: [],
                 nextForm: {
@@ -75,8 +84,22 @@
             }
         },
         methods: {
+            transfer(){
+
+            },
+            sucessRefill(){
+                this.$emit('back',true)
+            },
             toReview() {
                 this.$refs.review.show()
+            },
+            refill(){
+                let ref;
+                switch (this.universalObj.processDefinitionKey) {
+                    case "TRANSFER":
+                        ref='allocation';
+                }
+                this.$refs.selectUniversalApply.apply(ref)
             },
             getListInfo() {
                 let params = {includeVariables: true};
@@ -113,7 +136,6 @@
                 tempList = null
             },
             processReviewInfo() {
-                console.log(this.universalObj)
                 let params = {processInstanceId: this.universalObj.id, includeProcessVariables: false, includeTaskVariables: true},
                     lable = "";
                 historyTasks(params).then(res => {
@@ -130,6 +152,7 @@
                                 lable = "审批";
                                 break;
                         }
+                        console.log(item)
                         tempList.push({
                             lable,
                             name: item.taskVariables.name,
@@ -144,9 +167,22 @@
             lookReson(reson) {
                 this.reson = reson;
                 this.$refs.reson.show()
+            },
+            activeTasks(){
+                activeTasks({includeProcessVariables:true,includeTaskVariables:true,processInstanceId:this.universalObj.id}).then(res=>{
+                   this.activeTask=res;
+                })
+            }
+        },
+        computed:{
+            isReject(){
+                let flag;
+                this.activeTask.taskDefinitionKey==='apply'?flag=true:flag=false;
+                return flag
             }
         },
         created() {
+            this.activeTasks();
             this.processReviewInfo();
             if(this.title == '报废') {
                 this.notScrap = false
@@ -166,7 +202,9 @@
             }
         },
         components: {
-            serviceDialog
+            serviceDialog,
+            textButton,
+            select_apply
         }
     }
 </script>
@@ -176,11 +214,27 @@
         color: #2E2E74;
     }
     .header {
-        padding: 0 20px;
-        height: 35px;
+        padding: 0 35px 0 18px;
+        height: 56px;
         line-height: 35px;
         border-bottom: 1px solid rgba(112,112,112, 0.13);
         font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .header .header-button{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .header-button .universal-header-button{
+        width:70px;
+        height:32px;
+        border:1px solid rgba(47,47,118,1);
+        opacity:1;
+        line-height: 0px;
+        border-radius:4px;
     }
     .body {
         width: 800px;
@@ -211,6 +265,7 @@
                 grid-template-columns: 15% 30% 25% 10% 20%;
                 padding: 6px 0;
                 border-bottom: 1px solid #ccc;
+                align-items: center;
                 .people {
                     color: #2F2F76;
                 }

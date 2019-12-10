@@ -46,7 +46,7 @@
     import processTable from '../processTable'
     import processCascader from '../processCascader'
     import {applyProcessMixin} from "common/js/applyProcessMixin";
-    import {transferStart} from "api/process"
+    import {transferStart,transferRefill} from "api/process"
 
     export default {
         name: "applyAllocation",
@@ -59,6 +59,9 @@
         props: {
             applyObject: {
                 type: Object
+            },
+            taskId:{
+                type: String
             }
         },
         mixins: [applyProcessMixin],
@@ -113,11 +116,20 @@
                     inboundWarehouse: inboundWarehouse,
                     outboundOrganUnit: this.form.outboundOrganUnit
                 };
-                transferStart(apply, this.form.leader.id, this.mixinObject.processConfigId).then(res => {
-                    this.$message.success('操作成功');
-                    this.$emit('applySucess',true);
-                    this.cancelDb()
-                })
+                if (this.taskId){
+                    transferRefill(apply, this.form.leader.id, this.taskId).then(res => {
+                        this.$message.success('操作成功');
+                        this.$emit('applySucess',true);
+                        this.cancelDb()
+                    })
+                }else {
+                    transferStart(apply, this.form.leader.id, this.mixinObject.processConfigId).then(res => {
+                        this.$message.success('操作成功');
+                        this.$emit('applySucess',true);
+                        this.cancelDb()
+                    })
+                }
+
             },
             selectLeader(data) {
                 this.$set(this.form,'leader',data);

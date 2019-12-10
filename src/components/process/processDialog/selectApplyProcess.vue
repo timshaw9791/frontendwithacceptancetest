@@ -14,7 +14,7 @@
         <apply-borrow :applyObject="applyObject" ref="borrow"></apply-borrow>
         <apply-scrap :applyObject="applyObject" ref="scrap" @applySucess="sucessApply"></apply-scrap>
         <apply-direct :applyObject="applyObject" ref="direct" @applySucess="sucessApply"></apply-direct>
-        <apply-allocation :applyObject="applyObject" ref="allocation" @applySucess="sucessApply"></apply-allocation>
+        <apply-allocation :taskId="taskId" :applyObject="applyObject" ref="allocation" @applySucess="sucessApply"></apply-allocation>
     </div>
 </template>
 
@@ -53,7 +53,7 @@
             init(){
                 getHouseInfo().then(res=>{
                     this.$set(this.applyObject,'house',res);
-                })
+                });
             },
             apply(key) {
                 this.cancelDb();
@@ -65,6 +65,12 @@
             cancelDb() {
                 this.$refs.selectApplyProcess.cancel();
             },
+        },
+        props:{
+            taskId:{
+                type:String,
+                default:''
+            }
         }
     }
 </script>
