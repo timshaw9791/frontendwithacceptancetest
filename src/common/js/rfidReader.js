@@ -159,7 +159,15 @@ export function handheld(errCB) {
         // 退出之后的输出
         workerProcess.on('close', (code) => {
             if (fs.existsSync(inventoryFile)) {
-                let result = JSON.parse(fs.readFileSync(inventoryFile));
+                let temp = JSON.parse(fs.readFileSync(inventoryFile)), result = null;
+                try {
+                    result = JSON.parse(temp);
+                } catch (error) {
+                    if(temp.charCodeAt(0) === 0xFEFF) {
+                        temp = temp.slice(1)
+                    }
+                    result = JSON.parse(temp)
+                }
                 resolve(JSON.stringify(result));
             } else {
                 if(errTip) errCB("文件不存在");
