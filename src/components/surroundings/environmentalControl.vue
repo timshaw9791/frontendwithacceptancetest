@@ -47,14 +47,14 @@
         data(){
             return{
                 control:[
-                    {svg:'插座图标',notSvg:'',text:'智能充电台',flag:true},
-                    {svg:'除湿图标',notSvg:'除湿图标灰',text:'除湿器控制',flag:true},
-                    {svg:'灯光图标',notSvg:'',text:'灯光控制',flag:true},
-                    {svg:'烟雾报警',notSvg:'烟雾报警灰',text:'烟雾报警',flag:true},
+                    {svg:'充电台',notSvg:'',text:'智能充电台',flag:true},
+                    {svg:'除湿器',notSvg:'无除湿器',text:'除湿器控制',flag:true},
+                    {svg:'灯光',notSvg:'',text:'灯光控制',flag:true},
+                    {svg:'烟雾报警',notSvg:'无烟雾报警',text:'烟雾报警',flag:true},
                     {svg:'视频监控',notSvg:'',text:'视频监控',flag:true},
-                    {svg:'空调图标',notSvg:'空调图标灰',text:'空调控制',flag:true},
-                    {svg:'排风图标',notSvg:'排风图标灰',text:'排风控制',flag:true},
-                    {svg:'消毒图标',notSvg:'消毒图标灰',text:'消毒机控制',flag:true},
+                    {svg:'空调',notSvg:'无空调',text:'空调控制',flag:true},
+                    {svg:'排风',notSvg:'无排风',text:'排风控制',flag:true},
+                    {svg:'消毒机',notSvg:'无消毒机',text:'消毒机控制',flag:true},
                 ],
                 clickRefList:[
                     {name:'智能充电台',ref:'chargingStation'},
