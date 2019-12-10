@@ -1,7 +1,18 @@
 import request from 'common/js/request'
 import {baseBURL} from "./config";
 
-
+export function findByRfids(rfids) {
+    return request({
+        url: `/equip/findByRfids?rfids=${rfids}`,
+        method: 'get',
+    })
+}
+export function outHouse(rfids) {
+    return request({
+        url: `/equip/outHouse?rfids=${rfids}`,
+        method: 'get',
+    })
+}
 
 export function activeTasks(params) {
     return request({
@@ -10,7 +21,12 @@ export function activeTasks(params) {
         params
     })
 }
-
+export function workflow(processInstanceId,startUserId) {
+    return request({
+        url: `${baseBURL}/workflow?processInstanceId=${processInstanceId}&&startUserId=${startUserId}`,
+        method: "DELETE"
+    })
+}
 export function historyTasks(params) {
     return request({
         url: `${baseBURL}/history/tasks`,

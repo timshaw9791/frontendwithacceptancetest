@@ -1,11 +1,11 @@
 <template>
     <div>
-        <dialog-svices ref="transFerDialogApply" width="1529px" :title="typeOperational" :button="false">
+        <dialog-svices ref="transFerDialogApply" width="7.9635rem" :title="typeOperational" :button="false">
             <div class="directAdjustmentDialog">
                 <div class="directAdjustmentDialog-header">
                     <div class="header-item">
-                        <div><span v-text="billName+'单号：'"></span><span v-text="directObj.number"></span></div>
-                        <div class="d_select"><span v-text="'硬件选择：'"></span>
+                        <div class="d_select">
+                           <div style="width: 150px"><span v-text="'硬件选择：'"></span></div>
                             <el-select v-model="hardware" placeholder="请选择" size="mini">
                                 <el-option
                                         v-for="item in hardwareList"
@@ -14,11 +14,13 @@
                                         :value="item.value">
                                 </el-option>
                             </el-select>
+                            <el-button class="resultButton" v-text="actionReset"
+                                       @click="clickResult"></el-button>
                         </div>
+
                     </div>
-                    <div class="header-item"><span v-text="'装备清单：'"></span>
-                        <el-button class="resultButton" v-text="actionReset"
-                                   @click="clickResult"></el-button>
+                    <div class="header-item"><span v-text="'申请装备表单：'"></span>
+
                     </div>
                 </div>
                 <div class="directAdjustmentDialog-body">
@@ -26,15 +28,9 @@
                         <el-table
                                 :data="directObj.orderItems"
                                 height="531"
-                                border
                                 style="width: 100%"
                                 :align="align"
                         >
-                            <el-table-column
-                                    label="序号"
-                                    type="index"
-                                    :index="indexMethod" width="180" :align="align">
-                            </el-table-column>
                             <el-table-column
                                     prop="name"
                                     label="装备名称"
@@ -60,16 +56,10 @@
                         <el-table
                                 :data="rightList"
                                 height="531"
-                                border
                                 style="width: 100%"
                                 :align="align"
                                 :row-class-name="tableRowClassName"
                         >
-                            <el-table-column
-                                    label="序号"
-                                    type="index"
-                                    :index="indexMethod" width="180" :align="align">
-                            </el-table-column>
                             <el-table-column
                                     prop="name"
                                     label="装备名称"
@@ -90,10 +80,8 @@
                             >
                             </el-table-column>
                             <el-table-column
-                                    prop="flag"
                                     label="操作"
                                     :align="align"
-                                    v-if="!submitFlag"
                             >
                                 <template slot-scope="scope">
                                     <el-button type="text" size="mini" class="deleteButtom"
@@ -106,51 +94,61 @@
                 </div>
                 <div class="directAdjustmentDialog-bottom">
                     <el-button class="cancel" @click="close">取消</el-button>
-                    <el-button style="margin-left: 34px" class="submits" @click="submit">提交</el-button>
+                    <el-button style="margin-left: 0.1771rem" class="submits" @click="submit">提交</el-button>
                 </div>
             </div>
         </dialog-svices>
-        <dialog-svices ref="transFerDialogTips" width="634px" :title="typeOperational+'提示'" :button="false">
+        <dialog-svices ref="transFerDialogTips" width="3.3021rem" :title="typeOperational+'提示'" :button="false">
             <div class="transferdialog-tips">
-                <div style="margin-top: 84px">
+                <div style="margin-top: 0.4375rem">
                     您的装备信息有误，确定要{{typeOperational}}吗？
                 </div>
                 <div class="transferdialog-tips-button">
                     <el-button class="cancel" @click="closeTips">取消</el-button>
-                    <el-button style="margin-left: 12px" class="submits" @click="submitTips">提交</el-button>
+                    <el-button style="margin-left: 0.0625rem" class="submits" @click="submitTips">确定</el-button>
                 </div>
             </div>
         </dialog-svices>
-        <dialog-svices ref="transFerDialogReason" width="634px" title="备注" :button="false">
+        <dialog-svices ref="transFerDialogReason" width="4.8073rem" title="备注" :button="false">
            <div class="transferdialog-textarea">
-               <span v-text="'填写备注：'"></span>
-               <div style="width: 100%;margin-top: 12px">
-                   <el-input
-                           type="textarea"
-                           :autosize="{ minRows: 8, maxRows: 10}"
-                           placeholder="请输入内容"
-                           v-model="reason"
-                           maxlength="150"
-                           show-word-limit>
-                   </el-input>
+               <div class="transferdialog-textarea-body">
+                   <div>
+                       <span v-text="'异常装备：'"></span>
+                       <div class="abnormal-equips">
+
+                       </div>
+                   </div>
+                   <div>
+                       <span v-text="'填写备注：'"></span>
+                       <div style="width: 2.0833rem;margin-top: 0.0625rem">
+                           <el-input
+                                   type="textarea"
+                                   :autosize="{ minRows: 13, maxRows: 13}"
+                                   placeholder="请输入内容"
+                                   v-model="reason"
+                                   show-word-limit>
+                           </el-input>
+                       </div>
+                   </div>
                </div>
+
                <div class="transferdialog-textarea-button">
                    <el-button class="cancel" @click="closeTextarea">取消</el-button>
-                   <el-button style="margin-left: 12px" class="submits" @click="submitTextarea">提交</el-button>
+                   <el-button style="margin-left: 0.0625rem" class="submits" @click="submitTextarea">提交</el-button>
                </div>
            </div>
         </dialog-svices>
-        <dialog-svices ref="transFerDialogApplyConfirm" width="634px" title="申请人确认" :button="false">
+        <dialog-svices ref="transFerDialogApplyConfirm" width="3.3021rem" title="申请人确认" :button="false">
             <div class="transferdialog-apply-confirm">
                 <div class="transferdialog-apply-confirm-item">
-                    <span v-text="'账号：'"></span><el-input style="width: 248px" v-model="user.userName"></el-input>
+                    <span v-text="'账号：'"></span><el-input style="width: 1.2917rem" v-model="user.userName"></el-input>
                 </div>
                 <div class="transferdialog-apply-confirm-item">
-                    <span v-text="'密码：'"></span><el-input style="width: 248px;" v-model="user.password"></el-input>
+                    <span v-text="'密码：'"></span><el-input style="width: 1.2917rem;" v-model="user.password"></el-input>
                 </div>
                 <div class="transferdialog-apply-confirm-buttom">
                     <el-button class="cancel" @click="closeConfirm">取消</el-button>
-                    <el-button style="margin-left: 12px" class="submits" @click="confirmApply">提交</el-button>
+                    <el-button style="margin-left: 0.0625rem" class="submits" @click="confirmApply">提交</el-button>
                 </div>
             </div>
         </dialog-svices>
@@ -162,7 +160,8 @@
     // import inventoryData from 'views/warehouse/inventoryData'
     import request from 'common/js/request'
     import {baseURL,baseBURL} from "../../../api/config"
-    import { start, delFile, handheld, killProcess } from 'common/js/rfidReader'
+    import {findByRfids,outHouse} from 'api/process'
+    import { start, delFile, handheld, killProcess,modifyFileName } from 'common/js/rfidReader'
 
     // import {handheld} from 'common/js/pda'
     // const cmdPath = 'C:\\Users\\Administrator';
@@ -199,11 +198,12 @@
                 ],
                 rightList: [],
                 outList: [],
-                align: 'center',
+                align: 'left',
                 submitFlag: false,
                 types: '',
                 pid: '',
                 index:0,
+                abnormal:[],
                 flag: false,
                 closeUsb: false,
                 com: 0,
@@ -348,31 +348,33 @@
 
             },
             confirmApply(){
-               if(this.user.userName!=''&&this.user.password!=''){
-                   let param={
-                       password:this.user.password,
-                       userId:this.directObj.userId,
-                       username:this.user.userName
-                   };
-                   request({
-                       method:'post',
-                       url:baseBURL+'/identity/authentication',
-                       params:param
-                   }).then(res=>{
-                       this.closeConfirm();
-                       let state;
-                       if(this.submitFlag){
-                           state='NORMAL'
-                       }else {
-                           state='ABNORMAL'
-                       }
-                       this.transferEquipInOrOut(state)
-                   })
-               }else {
-                   this.$message.info('请先填写完整')
-               }
+
+               // if(this.user.userName!=''&&this.user.password!=''){
+               //     let param={
+               //         password:this.user.password,
+               //         userId:this.directObj.userId,
+               //         username:this.user.userName
+               //     };
+               //     request({
+               //         method:'post',
+               //         url:baseBURL+'/identity/authentication',
+               //         params:param
+               //     }).then(res=>{
+               //         this.closeConfirm();
+               //         let state;
+               //         if(this.submitFlag){
+               //             state='NORMAL'
+               //         }else {
+               //             state='ABNORMAL'
+               //         }
+               //         this.transferEquipInOrOut(state)
+               //     })
+               // }else {
+               //     this.$message.info('请先填写完整')
+               // }
             },
             transferEquipInOrOut(state){
+                console.log(state);
                 let url;
                 let rfids=[];
                 let aUrl='';
@@ -385,20 +387,9 @@
                 }else {
                     url=baseURL+'/order-equips/in'+'?orderId='+orderId+'&state='+state;
                     rfids=this.inHouseEquip;
-
-                    // this.rightList.forEach(item=>{
-                    //     rfids=[...rfids,...item.rfid]
-                    // });
                 }
                 if(state=='ABNORMAL'){
                     aUrl=url+'&note='+this.reason;
-                    // request({
-                    //     method:'DELETE',
-                    //     url: url,
-                    //     rfids
-                    // }).then(res=>{
-                    //     console.log(res);
-                    // })
                 }else {
                     aUrl=url
                 }
@@ -500,11 +491,15 @@
                 }
             },
             handheldMachine() {
-                handheld((err) => this.$message.error(err)).then((data) => {
-                    let json = JSON.parse(data);
-                    this.getOutDataCopy(json.rfid);
-                    this.deleteFile();
-                });
+                // modifyFileName('search.json');
+                // handheld((err) => this.$message.error(err)).then((data) => {
+                //     let json = JSON.parse(data);
+                //     this.getOutDataCopy(json.rfid);
+                //     this.deleteFile();
+                //     // findByRfids(json.rfid).then(res => {
+                //     //     this.$refs.maintenanceEndDialog.show();
+                //     // });
+                // });
                 //todo 要换回来
                 // let data = inventoryData;
                 // if(this.typeOperational=='出库'){
@@ -517,27 +512,34 @@
                 //     });
                 //     this.getTrueOrFalse();
                 // }else {
-                //     this.getOutDataCopy(['222','19080012']);
+                //     this.getOutDataCopy(['222','19080012']);,20088892,20088888
                 // }
-                // this.getOutDataCopy(['1908000A0231342309382742'])
+                this.getOutDataCopy(['10048891'])
             },
             // getOutData(data){
             //     console.log(data);
             // },
             getOutDataCopy(data) {
                 if(this.typeOperational=='出库'){
-                    let url = baseURL+'/equips/by-rfidlist';
-                    request({
-                        method: 'PUT',
-                        url: url,
-                        data: data
-                    }).then(res => {
+                    findByRfids(data).then(res=>{
                         if (res.length!=0) {
                             this.getCategroy(res);
                         }else {
                             this.$message.error(`无法识别当前装备的RFID:[${data}]`)
                         }
-                    })
+                    });
+                    // let url = baseURL+'/equips/by-rfidlist';
+                    // request({
+                    //     method: 'PUT',
+                    //     url: url,
+                    //     data: data
+                    // }).then(res => {
+                    //     if (res.length!=0) {
+                    //         this.getCategroy(res);
+                    //     }else {
+                    //         this.$message.error(`无法识别当前装备的RFID:[${data}]`)
+                    //     }
+                    // })
                 }else {
                     let url = baseBURL+'/order-equips/equips-out-house';
                     request({
@@ -565,64 +567,9 @@
                 })
             },
             getCategroy(data) {
-                // let typeModel = this.getTypeModel(data);
-                data.forEach(item => {
-                    if (this.rightList.length == 0) {
-                        this.rightList.push({
-                            name: item.equipArg.name,
-                            model: item.equipArg.model,
-                            rfid: [item.rfid],
-                            count: 1,
-                            flag: false
-                        });
-                    } else {
-                        let flag = false;
-                        let indexI = 0;
-                        this.rightList.forEach((listItem, index) => {
-                            if (listItem.model == item.equipArg.model) {
-                                /* listItem.count=listItem.count+1*/
-                                flag = true; indexI = index;
-                            } else {
+                let group=_.groupBy(data, 'equipArg.model');
 
-                            }
-                        });
-                        if (flag) {
-                            this.rightList[indexI].count = this.rightList[indexI].count + 1;
-                            this.rightList[indexI].rfid.push(item.rfid);
-                        } else {
-                            this.rightList.push({
-                                name: item.equipArg.name,
-                                model: item.equipArg.model,
-                                count: 1,
-                                rfid: [item.rfid],
-                                flag: false
-                            });
-                        }
-                        /*if(typeModel.indexOf(item.equipArg.model) > -1){
-                            console.log(typeModel);
-                            this.rightList.forEach(listItem=>{
-                                if(listItem.model==item.equipArg.model){
-                                    listItem.count=listItem.count+1
-                                }else {
-                                    this.rightList.push({
-                                        name:item.equipArg.name,
-                                        model:item.equipArg.model,
-                                        count:1,
-                                        flag:false
-                                    });
-                                }
-                            })
-                        }else {
-                            this.rightList.push({
-                                name:item.equipArg.name,
-                                model:item.equipArg.model,
-                                count:1,
-                                flag:false
-                            });
-                        }*/
-                    }
-                });
-                this.getTrueOrFalse();
+                this.getTrueOrFalse(group);
             },
             getTypeModel(data) {
                 let typeModel = [];
@@ -638,23 +585,25 @@
                 });
                 return typeModel
             },
-            getTrueOrFalse() {
-                let flags=true;
-                this.rightList.forEach(item => {
-                    this.directObj.orderItems.forEach(directItem => {
-                        if (directItem.model == item.model) {
-                            item.flag = true;
-                            if (directItem.count == item.count) {
-                            } else {
-                                flags = false
-                                item.flag = false
-                            }
-                        } else {
-                            flags = false
-                        }
-                    })
+            getTrueOrFalse(group) {
+                let flag=true,rightlist=[];
+                this.directObj.orderItems.forEach(item=>{
+                   if(group[item.model]){
+                       group[item.model].length===item.count?flag=true:flag=false;
+                       rightlist.push({name:item.name,model:item.model,count:group[item.model].length})
+                   }else {
+                       flag=false
+                   }
                 });
-                this.submitFlag=flags//todo
+                _.forIn(group, function(value, key) {
+                    if(_.findIndex(rightlist, function(o) { return o.model===key;})===-1){
+                        rightlist.push({name:value[0].equipArg.name,model:key,count:value.length});
+                        flag=false;
+                    }
+                });
+                this.rightList=rightlist;
+                this.submitFlag=flag//todo
+                console.log('this.submitFlag',this.submitFlag)
             },
             indexMethod(index) {
                 return index + 1;
@@ -669,56 +618,70 @@
 <style scoped>
     .transferdialog-apply-confirm{
         width: 100%;
-        height: 252px;
+        height: 1.3125rem;
         display: flex;
         align-items: center;
         flex-direction: column;
-        padding-top: 24px;
+        padding-top: 0.125rem;
     }
     .transferdialog-apply-confirm .transferdialog-apply-confirm-item{
         display:flex;
         align-items: center;
-        width: 310px;
-        margin-top: 20px;
+        width: 1.6146rem;
+        margin-top: 0.1042rem;
     }
     .transferdialog-apply-confirm .transferdialog-apply-confirm-buttom{
         width: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-top: 84px;
+        margin-top: 0.4375rem;
     }
     .transferdialog-textarea{
         width: 100%;
-        height: 252px;
-        padding: 0px 26px;
+        height: 2.0833rem;
 
+    }
+    .transferdialog-textarea-body{
+        display: flex;
+        width: 100%;
+        margin-top: 0.1354rem;
+        padding: 0 0.1875rem;
+        justify-content: space-between;
+    }
+    .transferdialog-textarea-body .abnormal-equips{
+        width:2.0833rem;
+        height:1.4769rem;
+        background:rgba(245,247,250,1);
+        border:1px solid rgba(220,223,230,1);
+        opacity:1;
+        border-radius:0.0208rem;
+        margin-top: 0.0625rem
     }
     .transferdialog-textarea .transferdialog-textarea-button{
         width: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-top: 20px;
+        margin-top: 0.1042rem;
     }
     .transferdialog-tips{
         width: 100%;
-        height: 252px;
+        height: 1.3125rem;
         display: flex;
         justify-content: center;
         position: relative;
-        font-size: 20px;
+        font-size: 0.1042rem;
         color: #707070;
     }
     .transferdialog-tips .transferdialog-tips-button{
         position: absolute;
-        right: 32px;
-        bottom: 36px;
+        bottom: 0.1875rem;
     }
     .directAdjustmentDialog {
         height: 781px;
         width: 100%;
-        padding: 15px 55px;
+        padding: 0.078125rem 0.2865rem;
         color: #707070;
     }
 
@@ -735,18 +698,20 @@
     }
 
     .directAdjustmentDialog .directAdjustmentDialog-body {
-        margin-top: 14px;
+        margin-top: 0.0729rem;
         width: 100%;
         display: flex;
         justify-content: space-between;
     }
 
     .directAdjustmentDialog-body .leftTable {
-        width: 700px;
+        width: 3.6458rem;
+        border:0.0052rem solid rgba(112,112,112,0.13);
     }
 
     .directAdjustmentDialog-body .rightTable {
-        width: 700px;
+        width: 3.6458rem;
+        border:0.0052rem solid rgba(112,112,112,0.13);
     }
 
     .rightTable .deleteButtom {
@@ -760,7 +725,7 @@
     .directAdjustmentDialog-header .header-item {
         display: flex;
         width: 100%;
-        margin-top: 14px;
+        margin-top: 0.0729rem;
         justify-content: space-between;
         align-items: center;
     }
@@ -770,9 +735,10 @@
         align-items: center;
     }
 
-    .header-item .resultButton {
+    .d_select .resultButton {
         width: 137px;
         height: 30px;
+        margin-left: 0.0625rem;
         background: rgba(47, 47, 118, 1);
         box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
         opacity: 1;
@@ -786,7 +752,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-top: 57px;
+        margin-top: 0.296875rem;
     }
 
     .submits {
