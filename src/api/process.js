@@ -1,6 +1,15 @@
 import request from 'common/js/request'
 import {baseBURL} from "./config";
 
+
+
+export function checkUser(params) {
+    return request({
+        url: `${baseBURL}/workflow/check-user?`,
+        method: 'put',
+        params:params
+    })
+}
 export function findByRfids(rfids) {
     return request({
         url: `/equip/findByRfids?rfids=${rfids}`,

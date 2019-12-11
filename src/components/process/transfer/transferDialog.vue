@@ -17,7 +17,28 @@
                             <el-button class="resultButton" v-text="actionReset"
                                        @click="clickResult"></el-button>
                         </div>
-
+                        <div class="d_select">
+                            <div style="width: 150px"><span v-text="'装备位置：'"></span></div>
+                            <div class="location">
+                                <el-input ></el-input>
+                            </div>
+                            <div class="location">
+                                <span v-text="'架；'"></span><el-input ></el-input>
+                            </div>
+                            <div class="location">
+                                <el-input ></el-input>
+                            </div>
+                            <div style="width: 68px;height: 32px">
+                                <el-select v-model="location.face" placeholder="-" size="mini">
+                                    <el-option
+                                            v-for="item in [{face:'A'},{face:'B'}]"
+                                            :key="item.face"
+                                            :label="item.face"
+                                            :value="item.face">
+                                    </el-option>
+                                </el-select>
+                            </div>
+                        </div>
                     </div>
                     <div class="header-item"><span v-text="'申请装备表单：'"></span>
 
@@ -26,7 +47,7 @@
                 <div class="directAdjustmentDialog-body">
                     <div class="leftTable">
                         <el-table
-                                :data="directObj.orderItems"
+                                :data="directObj.processVariables.applyOrder.equips"
                                 height="531"
                                 style="width: 100%"
                                 :align="align"
@@ -160,7 +181,7 @@
     // import inventoryData from 'views/warehouse/inventoryData'
     import request from 'common/js/request'
     import {baseURL,baseBURL} from "../../../api/config"
-    import {findByRfids,outHouse} from 'api/process'
+    import {findByRfids,outHouse,checkUser} from 'api/process'
     import { start, delFile, handheld, killProcess,modifyFileName } from 'common/js/rfidReader'
 
     // import {handheld} from 'common/js/pda'
@@ -191,6 +212,7 @@
         },
         data() {
             return {
+                location:{},
                 hardware: '',
                 hardwareList: [
                     {value: '手持机', label: '手持机'},
@@ -224,11 +246,15 @@
                     }
                     if (newVal == '手持机') {
                         this.rightList = [];
-                        this.handheldMachine();
+                        if(this.typeOperational==='出库'){
+                            this.handheldMachine();
+                        }
                     } else if (newVal == 'RFID读写器') {
                         this.closeUsb = false;
                         this.rightList = [];
-                        this.getListUsb();
+                        if(this.typeOperational==='出库'){
+                            this.getListUsb();
+                        }
                     }
                 }
             }
@@ -250,24 +276,11 @@
         methods: {
             deleteFile() {
                 delFile(newFile_path, () => {console.log('删除文件' + newFile_path + '成功')})
-                // fs.unlink(newFile_path, function (error) {
-                //     if (error) {
-                //         return false;
-                //     }
-                //     console.log('删除文件' + newFile_path + '成功');
-                // })
-
             },
             end(pid) {
-                // alert('关掉了');
-                // this.closeUsb=true
-                if (pid) {
-                //    spawn("taskkill", ["/PID", pid, "/T", "/F"]);
-                killProcess(this.pid)
-                }
+                if (pid) {killProcess(this.pid)}
             },
             getListUsb() {//todo
-
                 start("java -jar scan.jar", (data) => {
                     let arr = [];
                     arr.push(data);
@@ -275,46 +288,6 @@
                 }, (fail) => {
                     this.$message.error(fail)
                 }, (pid, err) => {pid?this.pid = pid:this.$message.error(err)})
-
-                // this.index = 0;
-                // const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
-                // this.pid = process.pid;
-
-                // process.stderr.on('data', (err) => {
-                //     console.log(err);
-                //     this.$message.error('设备故障请重新插拔!插入后请重新选择');
-                //     this.index = 1;
-                //     killProcess();
-                // });
-
-
-                // process.stdout.on('data', (data) => {
-                //     if (this.index > 0) {
-                //         let arr = [];
-                //         arr.push(data);
-                //         this.getOutDataCopy(arr);
-                //     } else {
-                //         let newData = JSON.parse(data);
-                //         newData.status === 'succeed' ? this.index = 1 : this.index = 0;
-                //     }
-                // });
-
-                // process.on('exit', (code) => {
-                //     if (this.index === 0) {
-                //         this.$message.error('设备未插入或串口号错误,插入后请重新选择!');
-                //     }
-                //     console.log(`子进程退出，退出码 ${code}`);
-                // });
-
-
-                // let intercal=setInterval(()=>{
-                //     if(this.closeUsb){
-                //         clearInterval(intercal);
-                //         return;
-                //     }
-                //     this.getOutDataCopy(['q2', '3', '4', '55','6','7','8','9','11','天下第一','sdfa','10','222','23252s'])
-                // },1000)
-
             },
             deleteRow(index) {
                 this.rightList.splice(index, 1)
@@ -350,26 +323,21 @@
             },
             confirmApply(){
                 if(this.user.userName!=''&&this.user.password!=''){
-                    console.log(this.directObj);
                    let param={
                        password:this.user.password,
-                       userId:this.directObj.applyOrder.inUser.id,
+                       userId:this.directObj.processVariables.applyOrder.inboundUser.id,
                        username:this.user.userName
                    };
-                   request({
-                       method:'post',
-                       url:baseBURL+'/identity/authentication',
-                       params:param
-                   }).then(res=>{
-                       this.closeConfirm();
-                       let state;
-                       if(this.submitFlag){
-                           state='NORMAL'
-                       }else {
-                           state='ABNORMAL'
-                       }
-                       this.transferEquipInOrOut(state)
-                   })
+                    checkUser(param).then(res=>{
+                        this.closeConfirm();
+                        let state;
+                        if(this.submitFlag){
+                            state='NORMAL'
+                        }else {
+                            state='ABNORMAL'
+                        }
+                        this.transferEquipInOrOut(state)
+                    })
                }else {
                    this.$message.info('请先填写完整')
                }
@@ -378,7 +346,6 @@
 
             },
             transferEquipInOrOut(state){
-                console.log(state);
                 let url;
                 let rfids=[];
                 let equips=[],note='';
@@ -390,11 +357,6 @@
                             rfids.push(item.rfid)
                         })
                     });
-                    outHouse(_.join(rfids, ',')).then(res=>{
-                        res.forEach(item=>{
-                            equips.push({id:item.id,name:item.name,model:item.model,price:item.price,serial:item.serial,productDate:item.productDate,equipArgId:item.equipArg.id})
-                        });
-                    })
                 }else {
                     url=baseURL+'/order-equips/in'+'?orderId='+orderId+'&state='+state;
                     rfids=this.inHouseEquip;
@@ -403,7 +365,12 @@
                     note=this.reason;
                 }
                 if(this.typeOperational=='出库'){
-                    this.$emit('outHouse',{equips:equips,note:note})
+                    outHouse(_.join(rfids, ',')).then(res=>{
+                        res.forEach(item=>{
+                            equips.push({id:item.id,name:item.equipArg.name,model:item.equipArg.model,price:item.price,serial:item.serial,productDate:item.productDate,equipArgId:item.equipArg.id,rfid:item.rfid})
+                        });
+                        this.$emit('outHouse',{equips:equips,note:note})
+                    })
                 }else {
                     request({
                         method: 'PUT',
@@ -518,7 +485,7 @@
                 // }else {
                 //     this.getOutDataCopy(['222','19080012']);,20088892,20088888
                 // }
-                this.getOutDataCopy(['10048889'])
+                this.getOutDataCopy(['30078891'])
             },
             // getOutData(data){
             //     console.log(data);
@@ -545,16 +512,16 @@
                     //     }
                     // })
                 }else {
-                    let url = baseBURL+'/order-equips/equips-out-house';
-                    request({
-                        method: 'GET',
-                        url: url,
-                        params: {orderId:this.directObj.id}
-                    }).then(res => {
-                        if (res) {
-                            this.getCategroyIn(data,res.equips);
-                        }
-                    })
+                    // let url = baseBURL+'/order-equips/equips-out-house';
+                    // request({
+                    //     method: 'GET',
+                    //     url: url,
+                    //     params: {orderId:this.directObj.id}
+                    // }).then(res => {
+                    //     if (res) {
+                    //         this.getCategroyIn(data,res.equips);
+                    //     }
+                    // })
                 }
             },
             getCategroyIn(rfidData,res){
@@ -590,8 +557,8 @@
                 return typeModel
             },
             getTrueOrFalse(group) {
-                let flag=true,rightlist=[];
-                this.directObj.orderItems.forEach(item=>{
+                let flag=true,rightlist=this.rightList;
+                this.directObj.processVariables.applyOrder.equips.forEach(item=>{
                    if(group[item.model]){
                        group[item.model].length===item.count?flag=true:flag=false;
                        rightlist.push({name:item.name,model:item.model,count:group[item.model].length})
@@ -736,8 +703,21 @@
     .header-item .d_select {
         display: flex;
         align-items: center;
+        justify-content: center;
     }
-
+    .d_select .location{
+        width:50px;
+        height:32px;
+        background:rgba(255,255,255,1);
+        border:1px solid rgba(220,223,230,1);
+        line-height: 32px;
+        border-radius:4px;
+    }
+    .location /deep/ .el-input__inner{
+        width:50px;
+        height:32px;
+        line-height: 32px;
+    }
     .d_select .resultButton {
         width: 137px;
         height: 30px;

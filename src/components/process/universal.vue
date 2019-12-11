@@ -6,7 +6,7 @@
                 <el-button v-if="isReject" class="universal-header-button" @click="cancel">作废</el-button>
                 <el-button v-if="isReject" class="universal-header-button" @click="refill">重填</el-button>
                 <el-button v-if="isOutHouse" class="universal-header-button" @click="outHouse">出库</el-button>
-                <el-button v-if="isInHouse" class="universal-header-button" @click="refill">入库</el-button>
+                <el-button v-if="isInHouse" class="universal-header-button" @click="inHouse">入库</el-button>
                 <text-button style="margin-left: 0.125rem" :iconClass="'导出'" :buttonName="'导出'" @click="transfer"></text-button>
             </div>
         </div>
@@ -49,7 +49,7 @@
            <div class="cancel">您确定要作废此申请单吗？</div>
         </service-dialog>
         <select_apply ref="selectUniversalApply" :taskId="activeTask.id" @sucessApply="sucessRefill"></select_apply>
-        <t_dialog ref="transferDialog" @outHouse="outHouseByProcess" :billName="'调拨'" :directObj="directObj" @sucesssInOrOut="sucesssInOrOut"></t_dialog>
+        <t_dialog ref="transferDialog" @outHouse="outHouseByProcess" :typeOperational="typeOperational" :directObj="directObj" @sucesssInOrOut="sucesssInOrOut"></t_dialog>
     </div>
 </template>
 
@@ -80,6 +80,7 @@
                 directObj:{},
                 activeTask:{},
                 list: [],
+                typeOperational:'',
                 processList: [],
                 nextForm: {
                     value: '', // 所选的
@@ -99,15 +100,23 @@
                 this.$refs.transferDialog.close();
                 this.$emit('closeBill', true);
             },
+            inHouse(){
+                this.$set(this,'directObj',this.universalObj);
+                this.typeOperational='入库';
+                console.log(this.directObj)
+                this.$refs.transferDialog.showDialog();
+            },
             outHouse(){
-                this.$set(this.directObj,'orderItems',this.universalObj.processVariables.applyOrder.equips);
-                this.$set(this.directObj,'applyOrder',this.universalObj.processVariables.applyOrder);
+                this.$set(this,'directObj',this.universalObj);
+                console.log(this.directObj)
+                this.typeOperational='出库';
                 this.$refs.transferDialog.showDialog();
             },
             outHouseByProcess(data){
                 let url=`${this.url.outHouse}?note=${data.note}&taskId=${this.activeTask.id}`;
                 equipsOutbound(url,data.equips).then(res=>{
-                    console.log(res);
+                   this.$message.success('操作成功');
+
                 })
             },
             sucessRefill(){
@@ -133,40 +142,40 @@
                     this.$emit('back',true)
                 })
             },
-            getListInfo() {
-                let params = {includeprocessVariables: true};
-                doneDetail(this.listId, params).then(res => {
-                    console.log(res);
-                    let result = JSON.parse(JSON.stringify(res.processVariables)), mergeName = '', have = '';
-                    this.form = {
-                        applyOrderId: '',
-                        applyTime: result.applyOrder.applyTime,
-                        applyPeople: result.applyOrder.applicant.name,
-                        note: result.applyOrder.note,
-                        taskId: res.id,
-                        processInstanceId: res.id
-                    };
-                    this.processReviewInfo();
-                    this.mergeList(result.applyOrder.equips)
-                })
-            },
-            mergeList(array) {
-                let arr = JSON.parse(JSON.stringify(array)), mergeName = '', have = 0, tempList = [];
-                arr.forEach(equip => {
-                    mergeName = `${equip.name}${equip.model}`
-                    have = arr.findIndex(item => item.mergeName == mergeName)
-                    if(have != -1) {
-                        tempList[have].count++
-                    } else {
-                        tempList.push(Object.assign({}, equip, {count: 1, mergeName}))
-                    }
-                });
-                this.list = tempList
-                arr = null
-                mergeName = null
-                have = null
-                tempList = null
-            },
+            // getListInfo() {
+            //     let params = {includeprocessVariables: true};
+            //     doneDetail(this.listId, params).then(res => {
+            //         console.log(res);
+            //         let result = JSON.parse(JSON.stringify(res.processVariables)), mergeName = '', have = '';
+            //         this.form = {
+            //             applyOrderId: '',
+            //             applyTime: result.applyOrder.applyTime,
+            //             applyPeople: result.applyOrder.applicant.name,
+            //             note: result.applyOrder.note,
+            //             taskId: res.id,
+            //             processInstanceId: res.id
+            //         };
+            //         this.processReviewInfo();
+            //         this.mergeList(result.applyOrder.equips)
+            //     })
+            // },
+            // mergeList(array) {
+            //     let arr = JSON.parse(JSON.stringify(array)), mergeName = '', have = 0, tempList = [];
+            //     arr.forEach(equip => {
+            //         mergeName = `${equip.name}${equip.model}`
+            //         have = arr.findIndex(item => item.mergeName == mergeName)
+            //         if(have != -1) {
+            //             tempList[have].count++
+            //         } else {
+            //             tempList.push(Object.assign({}, equip, {count: 1, mergeName}))
+            //         }
+            //     });
+            //     this.list = tempList
+            //     arr = null
+            //     mergeName = null
+            //     have = null
+            //     tempList = null
+            // },
             processReviewInfo() {
                 let params = {processInstanceId: this.universalObj.id, includeprocessVariables: false, includeTaskprocessVariables: true},
                     lable = "";
@@ -218,7 +227,7 @@
             },
             isInHouse(){
                 let flag;
-                this.universalObj.taskDefinitionKey==='"equips_inbound_house"'?flag=true:flag=false;
+                this.universalObj.taskDefinitionKey==='equips_inbound_house'?flag=true:flag=false;
                 return flag
             },
             isOutHouse(){
