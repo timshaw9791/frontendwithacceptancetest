@@ -49,13 +49,13 @@
            <div class="cancel">您确定要作废此申请单吗？</div>
         </service-dialog>
         <select_apply ref="selectUniversalApply" :taskId="activeTask.id" @sucessApply="sucessRefill"></select_apply>
-        <t_dialog ref="transferDialog" :billName="'调拨'" :directObj="directObj" @sucesssInOrOut="sucesssInOrOut"></t_dialog>
+        <t_dialog ref="transferDialog" @outHouse="outHouseByProcess" :billName="'调拨'" :directObj="directObj" @sucesssInOrOut="sucesssInOrOut"></t_dialog>
     </div>
 </template>
 
 <script>
     import serviceDialog from "components/base/serviceDialog"
-    import { historyTasks,activeTasks,workflow } from "api/process"
+    import { historyTasks,activeTasks,workflow,equipsOutbound } from "api/process"
     import textButton from 'components/base/textButton'
     import select_apply from 'components/process/processDialog/selectApplyProcess'
     import t_dialog from 'components/process/transfer/transferDialog'
@@ -101,7 +101,14 @@
             },
             outHouse(){
                 this.$set(this.directObj,'orderItems',this.universalObj.processVariables.applyOrder.equips);
+                this.$set(this.directObj,'applyOrder',this.universalObj.processVariables.applyOrder);
                 this.$refs.transferDialog.showDialog();
+            },
+            outHouseByProcess(data){
+                let url=`${this.url.outHouse}?note=${data.note}&taskId=${this.activeTask.id}`;
+                equipsOutbound(url,data.equips).then(res=>{
+                    console.log(res);
+                })
             },
             sucessRefill(){
                 this.$emit('back',true)
@@ -138,8 +145,8 @@
                         note: result.applyOrder.note,
                         taskId: res.id,
                         processInstanceId: res.id
-                    }
-                    this.processReviewInfo()
+                    };
+                    this.processReviewInfo();
                     this.mergeList(result.applyOrder.equips)
                 })
             },
@@ -153,7 +160,7 @@
                     } else {
                         tempList.push(Object.assign({}, equip, {count: 1, mergeName}))
                     }
-                })
+                });
                 this.list = tempList
                 arr = null
                 mergeName = null
@@ -177,7 +184,6 @@
                                 lable = "审批";
                                 break;
                         }
-                        console.log(item)
                         tempList.push({
                             lable,
                             name: item.taskprocessVariables.name,
@@ -194,9 +200,14 @@
                 this.$refs.reson.show()
             },
             activeTasks(){
-                activeTasks({includeprocessVariables:true,includeTaskprocessVariables:true,processInstanceId:this.universalObj.id}).then(res=>{
-                   this.activeTask=res;
-                })
+                if(this.$route.meta.title==='我的流程'){
+                    activeTasks({includeprocessVariables:true,includeTaskprocessVariables:true,processInstanceId:this.universalObj.id}).then(res=>{
+                        this.activeTask=res;
+                    })
+                }else if(this.$route.meta.title==='代办事宜'){
+                    this.activeTask.id=this.universalObj.id
+                }
+
             }
         },
         computed:{
@@ -233,6 +244,9 @@
                 default: ''
             },
             universalObj:{
+                type: Object
+            },
+            url:{
                 type: Object
             }
         },

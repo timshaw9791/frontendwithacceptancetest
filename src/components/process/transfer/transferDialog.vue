@@ -198,6 +198,7 @@
                 ],
                 rightList: [],
                 outList: [],
+                equipGroup:{},
                 align: 'left',
                 submitFlag: false,
                 types: '',
@@ -319,7 +320,7 @@
                 this.rightList.splice(index, 1)
             },
             close() {
-                this.hardware=''
+                this.hardware='';
                 this.closeUsb = true;
                 this.end(this.pid);
                 this.$refs.transFerDialogApply.cancelDb();
@@ -348,58 +349,61 @@
 
             },
             confirmApply(){
+                if(this.user.userName!=''&&this.user.password!=''){
+                    console.log(this.directObj);
+                   let param={
+                       password:this.user.password,
+                       userId:this.directObj.applyOrder.inUser.id,
+                       username:this.user.userName
+                   };
+                   request({
+                       method:'post',
+                       url:baseBURL+'/identity/authentication',
+                       params:param
+                   }).then(res=>{
+                       this.closeConfirm();
+                       let state;
+                       if(this.submitFlag){
+                           state='NORMAL'
+                       }else {
+                           state='ABNORMAL'
+                       }
+                       this.transferEquipInOrOut(state)
+                   })
+               }else {
+                   this.$message.info('请先填写完整')
+               }
+            },
+            outHouseByRfid(rfids){
 
-               // if(this.user.userName!=''&&this.user.password!=''){
-               //     let param={
-               //         password:this.user.password,
-               //         userId:this.directObj.userId,
-               //         username:this.user.userName
-               //     };
-               //     request({
-               //         method:'post',
-               //         url:baseBURL+'/identity/authentication',
-               //         params:param
-               //     }).then(res=>{
-               //         this.closeConfirm();
-               //         let state;
-               //         if(this.submitFlag){
-               //             state='NORMAL'
-               //         }else {
-               //             state='ABNORMAL'
-               //         }
-               //         this.transferEquipInOrOut(state)
-               //     })
-               // }else {
-               //     this.$message.info('请先填写完整')
-               // }
             },
             transferEquipInOrOut(state){
                 console.log(state);
                 let url;
                 let rfids=[];
+                let equips=[],note='';
                 let aUrl='';
                 let orderId=this.directObj.id;
                 if(this.typeOperational=='出库'){
-                    url=baseURL+'/order-equips/out'+'?orderId='+orderId+'&state='+state;
-                    this.rightList.forEach(item=>{
-                        rfids=[...rfids,...item.rfid]
+                    _.forIn(this.equipGroup, function(value, key) {
+                        value.forEach(item=>{
+                            rfids.push(item.rfid)
+                        })
                     });
+                    outHouse(_.join(rfids, ',')).then(res=>{
+                        res.forEach(item=>{
+                            equips.push({id:item.id,name:item.name,model:item.model,price:item.price,serial:item.serial,productDate:item.productDate,equipArgId:item.equipArg.id})
+                        });
+                    })
                 }else {
                     url=baseURL+'/order-equips/in'+'?orderId='+orderId+'&state='+state;
                     rfids=this.inHouseEquip;
                 }
                 if(state=='ABNORMAL'){
-                    aUrl=url+'&note='+this.reason;
-                }else {
-                    aUrl=url
+                    note=this.reason;
                 }
                 if(this.typeOperational=='出库'){
-                    this.$ajax.delete(aUrl,{data:rfids}).then(res=>{
-                        this.$message.success('出库成功');
-                        this.sucessInOrOut()
-                    }).catch(error=>{
-                        this.$message.error(error.response.data.message)
-                    });
+                    this.$emit('outHouse',{equips:equips,note:note})
                 }else {
                     request({
                         method: 'PUT',
@@ -422,8 +426,8 @@
             submit() {
                 if (this.submitFlag) {
                     if(this.typeOperational=='出库'){
-                        // this.$refs.transFerDialogApplyConfirm.show();
-                        this.transferEquipInOrOut('NORMAL')
+                        this.$refs.transFerDialogApplyConfirm.show();
+                        // this.transferEquipInOrOut('NORMAL')
                     }else {
                         this.transferEquipInOrOut('NORMAL')
                     }
@@ -514,7 +518,7 @@
                 // }else {
                 //     this.getOutDataCopy(['222','19080012']);,20088892,20088888
                 // }
-                this.getOutDataCopy(['10048891'])
+                this.getOutDataCopy(['10048889'])
             },
             // getOutData(data){
             //     console.log(data);
@@ -568,7 +572,7 @@
             },
             getCategroy(data) {
                 let group=_.groupBy(data, 'equipArg.model');
-
+                this.equipGroup=group;
                 this.getTrueOrFalse(group);
             },
             getTypeModel(data) {
@@ -603,7 +607,6 @@
                 });
                 this.rightList=rightlist;
                 this.submitFlag=flag//todo
-                console.log('this.submitFlag',this.submitFlag)
             },
             indexMethod(index) {
                 return index + 1;
@@ -635,7 +638,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-top: 0.4375rem;
+        margin-top: 0.2375rem;
     }
     .transferdialog-textarea{
         width: 100%;

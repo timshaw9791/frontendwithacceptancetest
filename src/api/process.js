@@ -10,7 +10,14 @@ export function findByRfids(rfids) {
 export function outHouse(rfids) {
     return request({
         url: `/equip/outHouse?rfids=${rfids}`,
-        method: 'get',
+        method: 'post',
+    })
+}
+export function equipsOutbound(url,data) {
+    return request({
+        url: `${baseBURL}${url}`,
+        method: 'put',
+        data
     })
 }
 
