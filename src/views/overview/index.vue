@@ -89,7 +89,6 @@
     import progressCircular from 'components/base/progressCircular'
     import { findAllData, findEquipsNeedChange, tasks, findByOneLine } from 'api/overview'
     import { writeFile } from "common/js/rfidReader"
-    // import FlvPlayerVue from 'components/videoPlayer/FlvPlayer.vue';
     // import {temperatureValue} from "api/surroundings";
     // import {equipmentAmount, equipmentScrapped, equipmentCharging, getProcess} from "api/statistics";
     // import {transformMixin} from 'common/js/transformMixin'
