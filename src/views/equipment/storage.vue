@@ -30,7 +30,7 @@
             </div>
 
             <!--list列表-->
-            <r_label :table="table" ref="lable" @clickTable="clickTable" :buttonState="true" :otherParams="true"></r_label>
+            <r_label :table="table" ref="lable" @clickTable="clickTable" :buttonState="buttonState" :otherParams="true"></r_label>
             <!--<el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"-->
                       <!--fit>-->
                 <!--<bos-table-column lable="RFID" field="rfid"></bos-table-column>-->
@@ -80,7 +80,7 @@
     import request from 'common/js/request'
     import {baseURL} from "../../api/config";
     import { start, startOne, killProcess } from 'common/js/rfidReader'
-    import r_label from 'common/vue/ajaxTabel'
+    import r_label from 'common/vue/ajaxLabel'
     // nodejs调用子进程的方法
 
     // const cmdPath = 'C:\\Users\\Administrator';   //cmd命令的位置
@@ -99,6 +99,7 @@
                 title: '',
                 storageInfoShow: false,
                 storageListShow: true,
+                buttonState: true,
                 list: [],
                 table: {
                     labelList: [
