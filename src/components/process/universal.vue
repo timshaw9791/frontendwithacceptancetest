@@ -12,16 +12,16 @@
         </div>
         <div class="body">
             <div class="info">
-                <div>申请单号: {{ universalObj.processVariables.applyOrder.number}}</div>
+                <div>申请单号: {{universalObj.processVariables.applyOrder.number}}</div>
                 <div v-show="notScrap">接收机构: {{ universalObj.processVariables.applyOrder.inboundOrganUnit.name}}</div>
                 <div v-show="notScrap">出库机构: {{ universalObj.processVariables.applyOrder.outboundOrganUnit.name }}</div>
                 <div>申请时间: {{this.$filterTime(universalObj.processVariables.applyOrder.applyTime)}}</div>
                 <div v-show="notScrap">接收库房: {{ universalObj.processVariables.applyOrder.inboundWarehouse.name}}</div>
                 <div v-show="notScrap">出库库房: {{ universalObj.processVariables.applyOrder.outboundWarehouse?universalObj.processVariables.applyOrder.outboundWarehouse.name:'-'}}</div>
-                <div>申请人员: {{ universalObj.processVariables.applyOrder.applicant.name }}</div>
+                <div>申请人员: {{universalObj.processVariables.applyOrder.applicant.name }}</div>
                 <div v-show="notScrap">接收人员: {{ universalObj.processVariables.applyOrder.inboundUser.name}}</div>
                 <div v-show="notScrap">出库人员: {{universalObj.processVariables.applyOrder.outboundUser?universalObj.processVariables.applyOrder.outboundUser.name:'-'}}</div>
-                <div v-show="!notScrap">报废原因: {{ form.note }}</div>
+                <div v-show="!notScrap">报废原因: {{form.note }}</div>
             </div>
             <div>装备统计:</div>
             <el-table :data="universalObj.processVariables.applyOrder.equips" height="350" style="border: 1px solid #ccc;margin-top: 6px">
@@ -103,12 +103,10 @@
             inHouse(){
                 this.$set(this,'directObj',this.universalObj);
                 this.typeOperational='入库';
-                console.log(this.directObj)
                 this.$refs.transferDialog.showDialog();
             },
             outHouse(){
                 this.$set(this,'directObj',this.universalObj);
-                console.log(this.directObj)
                 this.typeOperational='出库';
                 this.$refs.transferDialog.showDialog();
             },

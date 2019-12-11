@@ -104,9 +104,7 @@
             },
             clickTable(table) {
                 this.universal={title:this.getTitle(table.row.processVariables.processConfig.type),universalObj:table.row};
-                this.status.tableOrUniversalFlag=!this.status.tableOrUniversalFlag;
                 let url;
-                console.log(this.universal.title)
                 switch (this.universal.title) {
                     case "报废":
                         url={outHouse:''} ;
@@ -119,7 +117,7 @@
                         break;
                 };
                 this.universal.url=url;
-
+                this.status.tableOrUniversalFlag=!this.status.tableOrUniversalFlag;
             }
         }
     }

@@ -18,18 +18,10 @@
                                        @click="clickResult"></el-button>
                         </div>
                         <div class="d_select">
-                            <div style="width: 150px"><span v-text="'装备位置：'"></span></div>
-                            <div class="location">
-                                <el-input ></el-input>
-                            </div>
-                            <div class="location">
-                                <span v-text="'架；'"></span><el-input ></el-input>
-                            </div>
-                            <div class="location">
-                                <el-input ></el-input>
-                            </div>
-                            <div style="width: 68px;height: 32px">
-                                <el-select v-model="location.face" placeholder="-" size="mini">
+                            <div ><span v-text="'装备位置：'"></span></div>
+                            <div class="location"><el-input v-model="location.number"></el-input></div><span v-text="'架;'"></span>
+                            <div style="width: 68px;height: 32px;margin-right: 12px;margin-left: 12px;">
+                                <el-select v-model="location.surface" placeholder="-" size="mini">
                                     <el-option
                                             v-for="item in [{face:'A'},{face:'B'}]"
                                             :key="item.face"
@@ -37,7 +29,11 @@
                                             :value="item.face">
                                     </el-option>
                                 </el-select>
-                            </div>
+                            </div><span v-text="'面;'"></span>
+                            <div class="location"><el-input v-model="location.section"></el-input></div><span v-text="'节;'"></span>
+                            <div class="location"><el-input v-model="location.floor"></el-input></div><span v-text="'层'"></span>
+                            <el-button class="submits" v-text="'开始'" style="margin-left: 20px" @click="startGetEquip"></el-button>
+                            <el-button class="submits" v-text="'停止'" @click="stopGetEquip"></el-button>
                         </div>
                     </div>
                     <div class="header-item"><span v-text="'申请装备表单：'"></span>
@@ -47,7 +43,7 @@
                 <div class="directAdjustmentDialog-body">
                     <div class="leftTable">
                         <el-table
-                                :data="directObj.processVariables.applyOrder.equips"
+                                :data="directObj.processVariables?directObj.processVariables.applyOrder.equips:[]"
                                 height="531"
                                 style="width: 100%"
                                 :align="align"
@@ -271,9 +267,34 @@
                     name = '重新读取数据'
                 }
                 return name
-            }
+            },
+
         },
         methods: {
+            locationIsNull(){
+                let flag=false;
+                _.forIn(this.location, function(value, key) {
+                    if (value){flag=true}else {flag=false}
+                });
+                return flag
+            },
+            startGetEquip(){
+                if(this.locationIsNull()){
+                    this.getInHouseGetEquip();
+                }else {
+                    this.$message.warning('请先输入装备位置!');
+                }
+
+            },
+            getInHouseGetEquip(){
+                console.log(this.hardware)
+                if(this.hardware==='手持机'){
+                    this.handheldMachine();
+                }
+            },
+            stopGetEquip(){
+
+            },
             deleteFile() {
                 delFile(newFile_path, () => {console.log('删除文件' + newFile_path + '成功')})
             },
@@ -499,37 +520,18 @@
                             this.$message.error(`无法识别当前装备的RFID:[${data}]`)
                         }
                     });
-                    // let url = baseURL+'/equips/by-rfidlist';
-                    // request({
-                    //     method: 'PUT',
-                    //     url: url,
-                    //     data: data
-                    // }).then(res => {
-                    //     if (res.length!=0) {
-                    //         this.getCategroy(res);
-                    //     }else {
-                    //         this.$message.error(`无法识别当前装备的RFID:[${data}]`)
-                    //     }
-                    // })
                 }else {
-                    // let url = baseBURL+'/order-equips/equips-out-house';
-                    // request({
-                    //     method: 'GET',
-                    //     url: url,
-                    //     params: {orderId:this.directObj.id}
-                    // }).then(res => {
-                    //     if (res) {
-                    //         this.getCategroyIn(data,res.equips);
-                    //     }
-                    // })
+                    let equips=this.directObj.processVariables.outboundEquipsOrder.equips;
+                    this.getCategroyIn(data,equips);
                 }
             },
             getCategroyIn(rfidData,res){
                 rfidData.forEach(item=>{
-                    let equip=res.find(value=>{
-                        return value.rfid==item
-                    });
+                    let equip=res.find(value=>{return value.rfid===item});
                     if(equip!=undefined){
+                        equip.location=this.location;
+                        equip.equipArg={id:equip.equipArgId};
+                        // this.inHouseEquip.push(_.omit(equip, ['equipArgId','id','name', 'model']));
                         this.inHouseEquip.push(equip);
                         this.getCategroy([equip])
                     }else {
@@ -539,8 +541,16 @@
             },
             getCategroy(data) {
                 let group=_.groupBy(data, 'equipArg.model');
-                this.equipGroup=group;
-                this.getTrueOrFalse(group);
+                if(this.typeOperational==='出库'){
+                    this.equipGroup=group;
+                    this.getTrueOrFalse(group);
+                }else {
+                    if(Object.keys(this.equipGroup).length===0){
+                        this.equipGroup=group;
+                    }else {
+
+                    }
+                }
             },
             getTypeModel(data) {
                 let typeModel = [];
@@ -711,6 +721,8 @@
         background:rgba(255,255,255,1);
         border:1px solid rgba(220,223,230,1);
         line-height: 32px;
+        margin-right: 12px;
+        margin-left: 12px;
         border-radius:4px;
     }
     .location /deep/ .el-input__inner{
