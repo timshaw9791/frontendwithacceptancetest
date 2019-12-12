@@ -49,13 +49,13 @@
            <div class="cancel">您确定要作废此申请单吗？</div>
         </service-dialog>
         <select_apply ref="selectUniversalApply" :taskId="activeTask.id" @sucessApply="sucessRefill"></select_apply>
-        <t_dialog ref="transferDialog" @outHouse="outHouseByProcess" :typeOperational="typeOperational" :directObj="directObj" @sucesssInOrOut="sucesssInOrOut"></t_dialog>
+        <t_dialog ref="transferDialog" @inHouse="inHouseByProcess" @outHouse="outHouseByProcess" :typeOperational="typeOperational" :directObj="directObj" @sucesssInOrOut="sucesssInOrOut"></t_dialog>
     </div>
 </template>
 
 <script>
     import serviceDialog from "components/base/serviceDialog"
-    import { historyTasks,activeTasks,workflow,equipsOutbound } from "api/process"
+    import { historyTasks,activeTasks,workflow,equipsOutInbound } from "api/process"
     import textButton from 'components/base/textButton'
     import select_apply from 'components/process/processDialog/selectApplyProcess'
     import t_dialog from 'components/process/transfer/transferDialog'
@@ -105,16 +105,21 @@
                 this.typeOperational='入库';
                 this.$refs.transferDialog.showDialog();
             },
+            inHouseByProcess(data){
+                let url=`${this.url.inHouse}?taskId=${this.activeTask.id}`;
+                equipsOutInbound(url,data).then(res=>{
+                    this.$message.success('操作成功');
+                })
+            },
             outHouse(){
                 this.$set(this,'directObj',this.universalObj);
                 this.typeOperational='出库';
                 this.$refs.transferDialog.showDialog();
             },
             outHouseByProcess(data){
-                let url=`${this.url.outHouse}?note=${data.note}&taskId=${this.activeTask.id}`;
-                equipsOutbound(url,data.equips).then(res=>{
+                let url=`${this.url.outHouse}?taskId=${this.activeTask.id}`;
+                equipsOutInbound(url,data).then(res=>{
                    this.$message.success('操作成功');
-
                 })
             },
             sucessRefill(){
@@ -207,6 +212,7 @@
                 this.$refs.reson.show()
             },
             activeTasks(){
+
                 if(this.$route.meta.title==='我的流程'){
                     activeTasks({includeprocessVariables:true,includeTaskprocessVariables:true,processInstanceId:this.universalObj.id}).then(res=>{
                         this.activeTask=res;
@@ -214,7 +220,6 @@
                 }else if(this.$route.meta.title==='代办事宜'){
                     this.activeTask.id=this.universalObj.id
                 }
-
             }
         },
         computed:{
@@ -225,12 +230,32 @@
             },
             isInHouse(){
                 let flag;
-                this.universalObj.taskDefinitionKey==='equips_inbound_house'?flag=true:flag=false;
+                if(this.$route.meta.title==='我的流程'){
+                    if(this.universalObj.currentTask.assigneeName===JSON.parse(localStorage.getItem("user")).name){
+                        if(this.universalObj.currentTask.name.indexOf('入库')!==-1){
+                            flag=true;
+                        }else {
+                            flag=false;
+                        }
+                    }
+                }else {
+                    this.universalObj.taskDefinitionKey==='equips_inbound_house'?flag=true:flag=false;
+                }
                 return flag
             },
             isOutHouse(){
                 let flag;
-                this.universalObj.taskDefinitionKey==='equips_outbound_house'?flag=true:flag=false;
+                if(this.$route.meta.title==='我的流程'){
+                    if(this.universalObj.currentTask.assigneeName===JSON.parse(localStorage.getItem("user")).name){
+                        if(this.universalObj.currentTask.name.indexOf('出库')!==-1){
+                            flag=true;
+                        }else {
+                            flag=false;
+                        }
+                    }
+                }else {
+                    this.universalObj.taskDefinitionKey==='equips_outbound_house'?flag=true:flag=false;
+                }
                 return flag
             }
         },

@@ -116,7 +116,7 @@
                         url={outHouse:''} ;
                         break;
                     case "调拨":
-                        url={outHouse:'/workflow/transfer/equips-outbound'};
+                        url={outHouse:'/workflow/transfer/equips-outbound',inHouse:'/workflow/transfer/equips-inbound'};
                         break;
                     case "直调":
                         url={outHouse:''};

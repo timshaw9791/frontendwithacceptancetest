@@ -16,13 +16,20 @@ export function findByRfids(rfids) {
         method: 'get',
     })
 }
+export function inHouses(data) {
+    return request({
+        url: `/equip/inHouses`,
+        method: 'post',
+        data
+    })
+}
 export function outHouse(rfids) {
     return request({
         url: `/equip/outHouse?rfids=${rfids}`,
         method: 'post',
     })
 }
-export function equipsOutbound(url,data) {
+export function equipsOutInbound(url,data) {
     return request({
         url: `${baseBURL}${url}`,
         method: 'put',

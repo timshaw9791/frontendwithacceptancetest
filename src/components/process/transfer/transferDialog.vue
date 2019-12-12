@@ -17,7 +17,7 @@
                             <el-button class="resultButton" v-text="actionReset"
                                        @click="clickResult"></el-button>
                         </div>
-                        <div class="d_select">
+                        <div class="d_select" v-if="typeOperational==='入库'">
                             <div ><span v-text="'装备位置：'"></span></div>
                             <div class="location"><el-input v-model="location.number"></el-input></div><span v-text="'架;'"></span>
                             <div style="width: 68px;height: 32px;margin-right: 12px;margin-left: 12px;">
@@ -102,7 +102,7 @@
                             >
                                 <template slot-scope="scope">
                                     <el-button type="text" size="mini" class="deleteButtom"
-                                               @click="deleteRow(scope.$index)" :disabled="scope.row.flag"
+                                               @click="deleteRow(scope.row,scope.$index)" :disabled="scope.row.flag"
                                                v-text="'【删除】'"></el-button>
                                 </template>
                             </el-table-column>
@@ -132,7 +132,9 @@
                    <div>
                        <span v-text="'异常装备：'"></span>
                        <div class="abnormal-equips">
-
+                           <div class="abnormal-equips-item" v-for="item in missEquip">
+                               <span v-text="errorEquip(item)"></span>
+                           </div>
                        </div>
                    </div>
                    <div>
@@ -177,7 +179,7 @@
     // import inventoryData from 'views/warehouse/inventoryData'
     import request from 'common/js/request'
     import {baseURL,baseBURL} from "../../../api/config"
-    import {findByRfids,outHouse,checkUser} from 'api/process'
+    import {findByRfids,outHouse,checkUser,inHouses} from 'api/process'
     import { start, delFile, handheld, killProcess,modifyFileName } from 'common/js/rfidReader'
 
     // import {handheld} from 'common/js/pda'
@@ -221,6 +223,7 @@
                 submitFlag: false,
                 types: '',
                 pid: '',
+                missEquip:[],
                 index:0,
                 abnormal:[],
                 flag: false,
@@ -271,6 +274,12 @@
 
         },
         methods: {
+            errorEquip(data){
+              let count,tip,name=`[${data.name+data.model}]`;
+                data.count<0?tip='减':tip='增';
+                count= Math.abs(JSON.parse(JSON.stringify(data)).count);
+                return `${tip}\xa0\xa0\xa0\xa0${name}\xa0\xa0\xa0\xa0${count}'件'`
+            },
             locationIsNull(){
                 let flag=false;
                 _.forIn(this.location, function(value, key) {
@@ -310,7 +319,8 @@
                     this.$message.error(fail)
                 }, (pid, err) => {pid?this.pid = pid:this.$message.error(err)})
             },
-            deleteRow(index) {
+            deleteRow(row,index) {
+                _.omit(this.equipGroup, [row.model]);
                 this.rightList.splice(index, 1)
             },
             close() {
@@ -332,9 +342,9 @@
                 if(this.reason==''){
                     this.$message.info('备注不能为空!');
                 }else {
-                    if(this.typeOperational=='出库'){
-                        this.transferEquipInOrOut('ABNORMAL');
-                        // this.$refs.transFerDialogApplyConfirm.show();
+                    if(this.typeOperational==='出库'){
+                        // this.transferEquipInOrOut('ABNORMAL');
+                        this.$refs.transFerDialogApplyConfirm.show();
                     }else {
                         this.transferEquipInOrOut('ABNORMAL')
                     }
@@ -379,8 +389,11 @@
                         })
                     });
                 }else {
-                    url=baseURL+'/order-equips/in'+'?orderId='+orderId+'&state='+state;
-                    rfids=this.inHouseEquip;
+                   _.forIn(this.equipGroup,(value)=>{
+                       value.forEach(item=>{
+                           equips.push(_.omit(item, ['equipArgId','id','name', 'model']))
+                       });
+                   });
                 }
                 if(state=='ABNORMAL'){
                     note=this.reason;
@@ -390,19 +403,28 @@
                         res.forEach(item=>{
                             equips.push({id:item.id,name:item.equipArg.name,model:item.equipArg.model,price:item.price,serial:item.serial,productDate:item.productDate,equipArgId:item.equipArg.id,rfid:item.rfid})
                         });
-                        this.$emit('outHouse',{equips:equips,note:note})
+                        this.$emit('outHouse',{equips:equips,note:note,error:this.missEquip})
                     })
+                    // equips=[{id:'2121',name:'item.equipArg.name',model:'item.equipArg.model',price:'item.price',serial:'item.serial',productDate:'item.productDate',equipArgId:'item.equipArg.id',rfid:'item.rfid'}],
+
                 }else {
-                    request({
-                        method: 'PUT',
-                        url: aUrl,
-                        data: rfids
-                    }).then(res => {
-                        this.$message.success('入库成功');
-                        this.sucessInOrOut()
-                    }).catch(error=>{
-                        this.$message.error(error.response.data.message)
+                    let inEquip=[];
+                    inHouses(equips).then(res=>{
+                        res.forEach(item=>{
+                            inEquip.push({id:item.id,name:item.equipArg.name,model:item.equipArg.model,price:item.price,serial:item.serial,productDate:item.productDate,equipArgId:item.equipArg.id,rfid:item.rfid})
+                        });
+                        this.$emit('inHouse',{equips:inEquip,note:note,error:this.missEquip})
                     })
+                    // request({
+                    //     method: 'PUT',
+                    //     url: aUrl,
+                    //     data: rfids
+                    // }).then(res => {
+                    //     this.$message.success('入库成功');
+                    //     this.sucessInOrOut()
+                    // }).catch(error=>{
+                    //     this.$message.error(error.response.data.message)
+                    // })
                 }
 
             },
@@ -412,8 +434,9 @@
                this.$emit('sucesssInOrOut',true);
             },
             submit() {
+                console.log(this.submitFlag)
                 if (this.submitFlag) {
-                    if(this.typeOperational=='出库'){
+                    if(this.typeOperational==='出库'){
                         this.$refs.transFerDialogApplyConfirm.show();
                         // this.transferEquipInOrOut('NORMAL')
                     }else {
@@ -439,11 +462,12 @@
                     //     }
                     // })
                 } else {
-                    if(this.billName!='借调'||this.billName!='归还'){
-                        this.$refs.transFerDialogTips.show();
-                    }else {
-                        this.$message.error('请确认出库装备正确')
-                    }
+                    this.$refs.transFerDialogTips.show();
+                    // if(this.billName!='借调'||this.billName!='归还'){
+                    //     this.$refs.transFerDialogTips.show();
+                    // }else {
+                    //     this.$message.error('请确认出库装备正确')
+                    // }
                     // this.sucessInOrOut();
                     // this.$message.error('请重新确认出库装备')
                 }
@@ -506,7 +530,7 @@
                 // }else {
                 //     this.getOutDataCopy(['222','19080012']);,20088892,20088888
                 // }
-                this.getOutDataCopy(['30078891'])
+                this.getOutDataCopy(['19998889'])
             },
             // getOutData(data){
             //     console.log(data);
@@ -525,9 +549,9 @@
                     this.getCategroyIn(data,equips);
                 }
             },
-            getCategroyIn(rfidData,res){
+            getCategroyIn(rfidData,equips){
                 rfidData.forEach(item=>{
-                    let equip=res.find(value=>{return value.rfid===item});
+                    let equip=equips.find(value=>{return value.rfid===item});
                     if(equip!=undefined){
                         equip.location=this.location;
                         equip.equipArg={id:equip.equipArgId};
@@ -540,17 +564,28 @@
                 })
             },
             getCategroy(data) {
-                let group=_.groupBy(data, 'equipArg.model');
+                let group,flag=true;
                 if(this.typeOperational==='出库'){
-                    this.equipGroup=group;
-                    this.getTrueOrFalse(group);
+                    group=_.groupBy(data, 'equipArg.model');
                 }else {
-                    if(Object.keys(this.equipGroup).length===0){
-                        this.equipGroup=group;
-                    }else {
-
+                    group=_.groupBy(data, 'model');
+                }
+                if(Object.keys(this.equipGroup).length===0){
+                    this.equipGroup=group;
+                }else {
+                    for (let key in group){
+                        if(this.equipGroup[key].length!==0&&this.equipGroup[key]!==undefined){
+                            if(_.differenceBy(this.equipGroup[key],group[key], 'rfid').length!=0){
+                                this.equipGroup[key]=[...this.equipGroup[key],...group[key]]
+                            }else {
+                                flag=false
+                            }
+                        }else {
+                            this.equipGroup[key]=group[key]
+                        }
                     }
                 }
+                flag?this.getTrueOrFalse(this.equipGroup):'';
             },
             getTypeModel(data) {
                 let typeModel = [];
@@ -567,22 +602,42 @@
                 return typeModel
             },
             getTrueOrFalse(group) {
-                let flag=true,rightlist=this.rightList;
-                this.directObj.processVariables.applyOrder.equips.forEach(item=>{
-                   if(group[item.model]){
-                       group[item.model].length===item.count?flag=true:flag=false;
-                       rightlist.push({name:item.name,model:item.model,count:group[item.model].length})
-                   }else {
-                       flag=false
-                   }
+                let flag=true,leftList=[],rightLists=[];
+                if(this.typeOperational==='出库'){
+                    leftList=this.directObj.processVariables.applyOrder.equips;
+                }else {
+                    let leftGroup= _.groupBy(JSON.parse(JSON.stringify(this.directObj.processVariables.outboundEquipsOrder.equips)), 'model');
+                    _.forIn(leftGroup,(value,key)=>{
+                        leftList.push({name:value[0].name,model:value[0].model,count:group[key].length})
+                    })
+                }
+                leftList.forEach(item=>{
+                    if(group[item.model]){
+                        rightLists.push({name:item.name,model:item.model,count:group[item.model].length});
+                        let index= _.findIndex(rightLists, ['model', item.model]);
+                        if(rightLists[index].count===item.count){
+                            flag=true
+                        }else {
+                            let miss=JSON.parse(JSON.stringify(rightLists[index]));
+                            miss.count=rightLists[index].count-item.count;
+                            this.missEquip.push(miss);
+                            flag=false;
+                        }
+                    }else {
+                        let miss=JSON.parse(JSON.stringify(item));
+                        miss.count=-miss.count;
+                        this.missEquip.push(miss);
+                        flag=false
+                    }
                 });
-                _.forIn(group, function(value, key) {
-                    if(_.findIndex(rightlist, function(o) { return o.model===key;})===-1){
-                        rightlist.push({name:value[0].equipArg.name,model:key,count:value.length});
+                _.forIn(group, (value, key)=> {
+                    if(_.findIndex(rightLists, (o)=>{ return o.model===key;})===-1){
+                        rightLists.push({name:value[0].equipArg.name,model:key,count:value.length});
+                        this.missEquip.push({name:value[0].equipArg.name,model:key,count:value.length});
                         flag=false;
                     }
                 });
-                this.rightList=rightlist;
+                this.rightList=rightLists;
                 this.submitFlag=flag//todo
             },
             indexMethod(index) {
