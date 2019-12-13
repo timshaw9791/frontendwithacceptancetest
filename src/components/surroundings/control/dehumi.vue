@@ -13,6 +13,7 @@
     import surroundingCard from '../surroundingCard'
     import switchControl from './controlComponents/switchControl'
     import {baseURL} from "../../../api/config";
+    import {HunSwitch} from "../../../api/surroundings"
 
      export default {
         name: "dehumi",
@@ -51,9 +52,10 @@
         },
         methods:{
             getDehumidification(){
+                let ind=this.index+1
                 this.$ajax({
                     method:'post',
-                    url:baseURL+'/environment/dehumidifierStatus',
+                    url:baseURL+'/environment/dehumidifierStatus'+'?number='+ind,
                 }).then((res)=>{
                     console.log(res.data.data);
                     this.dehumidificationStatus=res.data.data
@@ -62,11 +64,11 @@
                 });
             },
             dehumidificationControl(data){
-                this.$ajax({
-                    method:'post',
-                    url:baseURL+'/environment/dehumidifierSwitch?status='+data,
-                }).then((res)=>{
-                    if (res.data.msg=='成功') {
+               HunSwitch({
+                   number:this.index+1,
+                   status:data
+               }).then(res=>{
+                   if (res.msg=='成功') {
                         this.dehumidificationStatus=data;
                         if(data){
                             this.$message.success('开启成功');
@@ -74,9 +76,10 @@
                             this.$message.success('关闭成功');
                         }
                     }
-                }).catch(err=>{
-                    this.$message.error(err);
-                });
+               }).catch(err=>[
+                   this.$message.error("操作失败")
+               ])
+             
             },
             show(){
                 this.$refs.dialog.show();

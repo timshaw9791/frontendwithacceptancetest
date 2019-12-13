@@ -5,7 +5,7 @@
             <div class="surroundingDialog-header" >
                 <span v-text="title"></span>
                 <div @click="close" class="svg">
-                    <svg-icon icon-class="关闭bai"></svg-icon>
+                    <svg-icon icon-class="弹窗关闭"></svg-icon>
                 </div>
             </div>
             <div class="surroundingDialog-content">
