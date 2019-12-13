@@ -4,8 +4,8 @@
         <div >
             <div class="action-bar">
                 <div class="readata">
-                    <svg-icon icon-class='新增' style="margin-left: 38px;line-height: 57px;" class="icon-search"></svg-icon>
-                    <span style="color: #2F2F76;line-height: 57px;" @click="read" data-test="button" >读取数据</span>
+                    <svg-icon icon-class='读取' style="margin-left: 38px;line-height: 57px;" class="icon-search"></svg-icon>
+                    <span style="color: #2F2F76;line-height: 57px" @click="read" data-test="button" >读取数据</span>
                 </div>
                 <div class="_buttons" style="margin-right: 18px">
                     <BosInput
@@ -69,7 +69,7 @@
                 paginator: {
                     page: 1,
                     totalPages: 10,
-                    size: 9,
+                    size: 10,
                     search:''
                 },
                 equiplist:[],
