@@ -13,6 +13,13 @@ export function findrepairingequips() {
         method: 'get',
     })
 }
+export function findkeepingequips() {
+    return request({
+        url: '/equip/findkeepingequips',
+        method: 'get',
+    })
+}
+
 export function repairEquipMaintain(rfids,state) {
     return request({
         url: `/equipMaintain/repair?rfids=${rfids}&&state=${state}`,

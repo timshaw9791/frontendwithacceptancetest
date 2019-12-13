@@ -111,6 +111,12 @@ export const asyncRouterMap = [
                 meta: {title: '我的流程'},
             },
             {
+                path: 'agencyMatters',
+                name: 'agencyMatters',
+                component: _import('process/agencyMatters'),
+                meta: {title: '代办事宜'},
+            },
+            {
                 path: 'scrapped',
                 name: 'scrapped',
                 component: _import('process/scrapped'),

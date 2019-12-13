@@ -116,7 +116,7 @@
 <script>
     import {formRulesMixin} from 'field/common/mixinComponent';
     import serviceDialog from 'components/base/serviceDialog'
-    import { getEquipsList, equipsReturn,findrepairingequips } from "api/operation"
+    import { getEquipsList, equipsReturn,findkeepingequips } from "api/operation"
     import {transformMixin} from 'common/js/transformMixin'
 
     export default {
@@ -143,7 +143,7 @@
         },
         methods: {
             getList() {
-                findrepairingequips().then(res=>{
+                findkeepingequips().then(res=>{
                     this.list=res
                 });
                 // this.list = [{

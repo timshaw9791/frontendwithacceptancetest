@@ -261,7 +261,6 @@
                     } else {
                         this.getList();
                     }
-                    // this.getList();
                 } else if (data === "正在保养") {
                     this.show = false;
                 }
