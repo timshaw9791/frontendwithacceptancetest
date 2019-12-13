@@ -25,8 +25,8 @@
                 </el-table-column>
                 <el-table-column label=" ">
                     <template slot-scope="scope">
-                        <div style="cursor: pointer;width: 0.2604rem" @click="deleteButton('category',scope.row)" data-test="减_icon">
-                            <svg-icon icon-class="减" class="icon-search"></svg-icon>
+                        <div style="cursor: pointer;width: 0.2604rem;color:#EF4545" @click="deleteButton('category',scope.row)" data-test="减_icon">
+                            <svg-icon icon-class="移除"></svg-icon>
                         </div>
                     </template>
                 </el-table-column>
