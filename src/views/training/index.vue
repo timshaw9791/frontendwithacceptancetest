@@ -103,10 +103,10 @@
                 <div class="pdf_box">
                     <div class="video" v-for="(item,index) in equipModel.pdf">
                          <div @click="delPdf(index)">
-                        <svg-icon icon-class="关闭1" style="width:20px;height:20px; float:right" />
+                        <svg-icon icon-class="视频文档删除" style="width:20px;height:20px; float:right" />
                     </div>
                         <div>
-                        <svg-icon icon-class="pdf" class="icon" style="width:50px;height:50px;" />
+                        <svg-icon icon-class="PDF文档" class="icon" style="width:50px;height:50px;" />
                         <div>
                             {{equipModel.pdf[index]}}
                         </div>
