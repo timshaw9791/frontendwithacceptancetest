@@ -1,6 +1,6 @@
 <template>
     <div class="dehumidification">
-        <dialogs :width="1040" ref="dialog" :title="'湿度控制器'">
+        <dialogs :width="1040" ref="dialog" :title="'除湿器控制'">
             <div class="hum_box">
             <div class="dehumidification-box">
                <dehumi
@@ -167,6 +167,12 @@
         width: 1040px;
         height: 698px;
    
+    }
+    .dehumidification-box{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding-left: 0.3125rem;
     }
     .airConditioning-box{
         display: flex;
