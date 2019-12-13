@@ -9,7 +9,7 @@
                 </div>
                 <div class="_buttons" style="margin-right: 18px">
                     <BosInput
-                            placeholder="操作人员"
+                            placeholder="装备名称"
                             suffix="el-icon-search"
                             v-model="table.search"
                             style="width:285px;">
