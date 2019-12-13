@@ -1,6 +1,6 @@
 <template>
     <div class="agency-matters">
-        <my-header :title="'我的流程'" :searchFlag="false" :haveBlack="!status.tableOrUniversalFlag" @h_black="black"></my-header>
+        <my-header :title="'办结事宜'" :searchFlag="false" :haveBlack="!status.tableOrUniversalFlag" @h_black="black"></my-header>
         <!--<div class="agency-matters_action_box" data-test="action_box" v-if="status.tableOrUniversalFlag">-->
             <!--<text-button :iconSize="20" :iconClass="'加号'" :buttonName="'申请流程'" @click="apply"></text-button>-->
             <!--<div class="action_right_box">-->
@@ -47,7 +47,7 @@
                         label:'操作',
                         button:[{name:'详情',type:'primary'}]
                     },
-                    params:{startUserId:JSON.parse(localStorage.getItem('user')).id,includeCurrentTask:true,includeProcessVariables:true},
+                    params:{assignee:JSON.parse(localStorage.getItem('user')).id,includeCurrentTask:true,includeProcessVariables:true,onlyFinished:true},
                     search:''
                 },
                 universal:{

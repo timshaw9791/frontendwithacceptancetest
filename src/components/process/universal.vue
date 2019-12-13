@@ -300,7 +300,7 @@
                             flag=false;
                         }
                     }
-                }else {
+                }else if(this.$route.meta.title==='待办事宜'){
                     this.universalObj.taskDefinitionKey==='equips_inbound_house'?flag=true:flag=false;
                 }
                 return flag
@@ -315,7 +315,7 @@
                             flag=false;
                         }
                     }
-                }else {
+                }else if(this.$route.meta.title==='待办事宜'){
                     this.universalObj.taskDefinitionKey==='equips_outbound_house'?flag=true:flag=false;
                 }
                 return flag
