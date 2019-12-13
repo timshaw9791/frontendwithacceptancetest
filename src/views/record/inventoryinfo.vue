@@ -87,17 +87,16 @@
           },
             startTime:function() {
               let time='';
-              if(this.overview.createTime){
-                  console.log(new Date(this.overview.createTime));
-                  time = this.$filterTime(this.overview.createTime);
+              if(this.overview.startTime!=''){
+                  time = this.$filterTime(parseInt(this.overview.startTime));
               }
                 return time;
             },
             endTime:function(){
                 let time='';
-                if(this.overview.updateTime){
-                    console.log(new Date(this.overview.updateTime));
-                    time = this.$filterTime(this.overview.updateTime);
+                if(this.overview.createTime){
+                    console.log(new Date(this.overview.createTime));
+                    time = this.$filterTime(parseInt(this.overview.createTime));
                 }
                 return time
             }

@@ -11,13 +11,28 @@
                      :overview="inventoryObj.inventoryData.inventory" :size="size" @handleSubmission="handleSubmission"
                      @newNote="getNote"></i_inventory>
         <i_dialog ref="inventory_dialog" :rfList="inventoryObj.rflist" :size="size" @submit="submit"></i_dialog>
+        <service-dialog title="请选择报废审核人" ref="scrap_dialog" :button="true" :secondary="false" @confirm="toScrap">
+            <div style="margin:0 auto;text-align:center;">
+                    <label> <span>审核人：</span></label>
+                    <el-select v-model="nextAssignee" placeholder="请选择" style="width:200px" >
+                        <el-option 
+                            v-for="item in leaderList" 
+                            :label="item.name" 
+                            :value="item.id" 
+                            :key="item.name">
+                    </el-option>
+                </el-select>
+                </div>
+        </service-dialog>
     </div>
 </template>
 
 <script>
     import myHeader from 'components/base/header/header'
+    import serviceDialog from "components/base/serviceDialog"
     import i_inventory from 'components/inventory/inventoryComponent'
     import i_dialog from 'components/inventory/inventoryDialog'
+    import {getHouseInfo, getApplyLeader, scrapStarts} from 'api/process'
     // import inventoryData from './inventoryData'
     import {getToken} from "../../common/js/auth";
     import request from 'common/js/request'
@@ -36,7 +51,8 @@
         components: {
             myHeader,
             i_inventory,
-            i_dialog
+            i_dialog,
+            serviceDialog
         },
         data() {
             return {
@@ -49,6 +65,22 @@
                     getInventory: {},
                 },
                 size: '',
+                scrapList:{
+                    applicant:{
+                        id:"",
+                        name:"",
+                        organUnitId:""
+                    },
+                    equips:[],
+                    warehouse:{
+                        id:"",
+                        name:""
+                    }
+                },
+                nextAssignee:"",
+                processConfigId:"",
+                leaderList:[],
+                houseList:{}
             }
         },
         created() {
@@ -73,46 +105,104 @@
                     this.$message.warning('请先进行盘点')
                 }
             },
-            handleSubmission(data) {
-                if (data) {
+            handleSubmission(data){
+                if(data){
+                    if (Object.keys(this.inventoryObj.inventoryData.inventory).length != 0){
+                        getHouseInfo().then(res=>{
+                            this.houseList = JSON.parse(JSON.stringify(res))
+                            let params = {
+                                type:"SCRAP",
+                                organUnitId:this.houseList.organUnitId
+                            }
+                            this.scrapList.warehouse.id = this.houseList.houseId
+                            this.scrapList.warehouse.name = this.houseList.houseName
+                            getApplyLeader(params).then(response=>{
+                                let listA = JSON.parse(JSON.stringify(response.auditors))
+                                this.leaderList=[]
+                                this.processConfigId = response.id
+                                console.log("this.processConfigId",this.processConfigId)
+                                listA.forEach(item=>{
+                                    if(item.level==1){
+                                        this.leaderList.push(item.leader)
+                                    }
+                                })
+                                console.log("this.leaderList",this.leaderList)
+                            })
+                        })
+                        let listB = JSON.parse(JSON.stringify(this.inventoryObj.inventoryData.inventoryItems))
+                        listB.forEach(item=>{
+                            let a ={
+                                id:item.equipInfo.equipId,
+                                rfid:item.equipInfo.rfid,
+                                name:item.equipInfo.equipName,
+                                model:item.equipInfo.model
+                            }
+                            this.scrapList.equips.push(a)
+                        })
+                        console.log("this.scrapList.equips",this.scrapList.equips)
+                        this.$refs.scrap_dialog.show()
+                    }
+                }
+                
+            },
+            changeSelect(data){
+                console.log("changeSelect data",data)
+                this.nextAssignee = data
+            },
+            toScrap(){
+                this.scrapList.applicant.id = JSON.parse(localStorage.getItem('user')).id
+                this.scrapList.applicant.name = JSON.parse(localStorage.getItem('user')).name
+                if(JSON.parse(localStorage.getItem('user')).organUnitName==this.houseList.organUnitName){
+                    this.scrapList.applicant.organUnitId = this.houseList.organUnitId
+                }else if(JSON.parse(localStorage.getItem('user')).organUnitName==this.houseList.houseName){
+                    this.scrapList.applicant.organUnitId = this.houseList.houseId
+                }
+                scrapStarts(this.scrapList,this.nextAssignee,this.processConfigId).then(res=>{
+                    this.$message.success('报废成功');
+                    this.handleSubmission2()
+                    this.$refs.scrap_dialog.hide()
+                    this.leaderList=[],
+                    this.scrapList={}
+                }).catch(err => {
+                    this.$message.error(err);
+                });
+            },
+            handleSubmission2(data) {
                     console.log("this.inventoryObj.inventoryData",this.inventoryObj.inventoryData)
                     console.log("data",data)
 
-                    if (Object.keys(this.inventoryObj.inventoryData.inventory).length != 0) {
-                        let url = baseURL+'/equipMaintain/inventory';
-                        let data={
-                            startTime: this.inventoryObj.inventoryData.inventory.startTime,
-                            inventoryCount: this.inventoryObj.inventoryData.inventory.inventoryCount,
-                            inventoryDetailSet: this.inventoryObj.inventoryData.inventoryItems,
-                            notCount: this.inventoryObj.inventoryData.inventory.outCount,
-                            operatorInfo: {
-                                operator: this.inventoryObj.inventoryData.inventory.adminName,
-                                operatorId: this.inventoryObj.inventoryData.inventory.adminId
-                            },
-                            outHouseCount: this.inventoryObj.inventoryData.inventory.withoutRfidCount,
-                            remark: this.inventoryObj.inventoryData.inventory.remark,
-                        }
-                        request({
-                            method: 'post',
-                            url: url,
-                            data: data
-                        }).then((res) => {
-                            this.$message.success('操作成功');
-                            this.$refs.inventoryComponent.remark = '';
-                            this.inventoryObj = {
-                                rflist: [],
-                                inventoryData: {
-                                    inventory: {},
-                                    inventoryItems: []
-                                },
-                                getInventory: {},
-                            };
-                            this.size = ''
-                        }).catch(err => {
-                            this.$message.error(err);
-                        });
+                    let url = baseURL+'/equipMaintain/inventory';
+                    let params={
+                        startTime: this.inventoryObj.inventoryData.inventory.startTime,
+                        inventoryCount: this.inventoryObj.inventoryData.inventory.inventoryCount,
+                        inventoryDetailSet: this.inventoryObj.inventoryData.inventoryItems,
+                        notCount: this.inventoryObj.inventoryData.inventory.outCount,
+                        operatorInfo: {
+                            operator: this.inventoryObj.inventoryData.inventory.adminName,
+                            operatorId: this.inventoryObj.inventoryData.inventory.adminId
+                        },
+                        outHouseCount: this.inventoryObj.inventoryData.inventory.withoutRfidCount,
+                        remark: this.inventoryObj.inventoryData.inventory.remark,
                     }
-                }
+                    request({
+                        method: 'post',
+                        url: url,
+                        data: params
+                    }).then((res) => {
+                        this.$message.success('操作成功');
+                        this.$refs.inventoryComponent.remark = '';
+                        this.inventoryObj = {
+                            rflist: [],
+                            inventoryData: {
+                                inventory: {},
+                                inventoryItems: []
+                            },
+                            getInventory: {},
+                        };
+                        this.size = ''
+                    }).catch(err => {
+                        this.$message.error(err);
+                    });
             },
             submit(data) {
                 let url = baseURL+'/equipMaintain/inventoryByRfid';

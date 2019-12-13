@@ -1,20 +1,23 @@
 <template>
     <div class="dehumidification">
-        <dialogs :width="398" ref="dialog" :title="'湿度控制器'">
-            <div class="dehumidification-body">
-               <div class="dehumidification-top">
-                   <svg-icon icon-class="除湿器" style="width: 56px;height: 70px"></svg-icon>
-                   <span v-text="'除湿控制器'" style="margin-top: 8px"></span>
-                   <switch-control :active="active" :inactive="inactive" style="margin-top: 31px" :status="dehumidificationStatus?true:false" @handleChange="dehumidificationControl"></switch-control>
+        <dialogs :width="1040" ref="dialog" :title="'除湿器控制'">
+            <div class="hum_box">
+            <div class="dehumidification-box">
+               <dehumi
+                v-for="(item,index) in humList" 
+                    :index="index"
+                    :item="item"
+               >
+               </dehumi>
                </div>
-               
-            </div>
+               </div>
         </dialogs>
     </div>
 </template>
 
 <script>
     import dialogs from '../surroundingDialog'
+    import dehumi from './dehumi'
     import surroundingCard from '../surroundingCard'
     import switchControl from './controlComponents/switchControl'
     import {baseURL} from "../../../api/config";
@@ -24,7 +27,9 @@
         components: {
             dialogs,
             surroundingCard,
-            switchControl
+            switchControl,
+            dehumi,
+           
         },
         data() {
             return {
@@ -38,26 +43,28 @@
                 },
                 threshold:'',
                 dehumidificationStatus:false,
-                flag:true
+                flag:true,
+                humNum:0,
+                humList:''
             }
         },
         created(){
-            this.getThreshold();
-            this.getDehumidification()
+             
+           
             },
         methods:{
-            getDehumidification(){
+            getConfig(){
                 this.$ajax({
                     method:'post',
-                    url:baseURL+'/environment/dehumidifierStatus',
+                    url:baseURL+'/environment/deviceConfig',
                 }).then((res)=>{
-                    console.log(res.data.data);
-                    this.dehumidificationStatus=res.data.data
+                    this.humNum=res.data.data.DEHUMIDIFIER_COUNT
                 }).catch(err=>{
                     this.$message.error(err);
                 });
             },
-            dehumidificationControl(data){
+            
+            dehumidificationControl(){
                 this.$ajax({
                     method:'post',
                     url:baseURL+'/environment/dehumidifierSwitch?status='+data,
@@ -74,7 +81,23 @@
                     this.$message.error(err);
                 });
             },
+            gethumList(){
+                this.$ajax({
+                    method:'post',
+                    url:baseURL+'/environment/allDehumidifierStatus',
+                }).then(res=>{
+                    console.log("res");
+                    console.log(res);
+                    let arrList=res.data.data
+                    let newList=Object.values(arrList)
+                    this.humList=newList
+                    console.log(this.humList);
+                    console.log(res);
+                })
+            },
             show(){
+                this.getConfig()
+                this.gethumList();
                 this.$refs.dialog.show();
             },
             close(){
@@ -117,18 +140,18 @@
 
 <style scoped>
     .dehumidification {
-        width: 100%;
+        
     }
 
     .dehumidification .dehumidification-body {
         height: 416px;
         display: flex;
         align-items: center;
-        justify-content: center;
+        /* padding-top: 20px; */
         flex-direction: column;
         font-size: 16px;
         color: #707070;
-        position: relative;
+        position:relative;
     }
     .dehumidification-body .dehumidification-top{
         width: 180px;
@@ -138,6 +161,24 @@
         justify-content: center;
         flex-direction: column;
         box-shadow:0px 3px 6px rgba(0,0,0,0.16);
+    }
+    .hum_box{
+        /* border:1px solid red; */
+        width: 1040px;
+        height: 698px;
+   
+    }
+    .dehumidification-box{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding-left: 0.3125rem;
+    }
+    .airConditioning-box{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding-left: 0.3125rem;
     }
     .dehumidification-body .dehumidification-bottom{
         height: 22px;
