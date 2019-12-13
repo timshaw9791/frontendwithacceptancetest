@@ -42,3 +42,11 @@ export function getEquipChargeRecordList(params) {
     })
 }
 
+export function HunSwitch(params) {
+    return request({
+        url: '/environment/dehumidifierSwitch',
+        method: 'POST',
+        params:params
+    })
+}
+

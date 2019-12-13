@@ -7,6 +7,8 @@
                 <el-button v-if="isReject" class="universal-header-button" @click="refill">重填</el-button>
                 <el-button v-if="isOutHouse" class="universal-header-button" @click="outHouse">出库</el-button>
                 <el-button v-if="isInHouse" class="universal-header-button" @click="inHouse">入库</el-button>
+                <text-button v-if="haveInHouse" style="margin-left: 0.125rem" :iconClass="'查看出库单'" :buttonName="'查看入库单'" @click="lookInHouse"></text-button>
+                <text-button v-if="haveOutHouse" style="margin-left: 0.125rem" :iconClass="'查看出库单'" :buttonName="'查看出库单'" @click="lookOutHouse"></text-button>
                 <text-button style="margin-left: 0.125rem" :iconClass="'导出'" :buttonName="'导出'" @click="transfer"></text-button>
             </div>
         </div>
@@ -50,6 +52,7 @@
         </service-dialog>
         <select_apply ref="selectUniversalApply" :taskId="activeTask.id" @sucessApply="sucessRefill"></select_apply>
         <t_dialog ref="transferDialog" @inHouse="inHouseByProcess" @outHouse="outHouseByProcess" :typeOperational="typeOperational" :directObj="directObj" @sucesssInOrOut="sucesssInOrOut"></t_dialog>
+        <look-up :lookUp="lookUp" ref="lookUp"></look-up>
     </div>
 </template>
 
@@ -59,6 +62,7 @@
     import textButton from 'components/base/textButton'
     import select_apply from 'components/process/processDialog/selectApplyProcess'
     import t_dialog from 'components/process/transfer/transferDialog'
+    import lookUp from './lookUp'
     export default {
         name: 'doneuniversal',
         data() {
@@ -86,6 +90,7 @@
                     value: '', // 所选的
                     nextList: [], // 下一级人员
                 },
+                lookUp:{},
                 reson: '', // 某流程驳回原因
                 resonAble: true, // 驳回原因是否可以填写
                 highest: false, // 是否是最高等级
@@ -93,6 +98,37 @@
             }
         },
         methods: {
+            lookInHouse(){
+                let equips=[];
+              let equip=_.groupBy(JSON.parse(JSON.stringify(this.universalObj.processVariables.inboundEquipsOrder.equips)), 'model');
+                for (let key in equip) {
+                    equips.push({name:equip[key][0].name,model:key,count:equip[key].length})
+                }
+              this.lookUp={
+                  title:this.universalObj.processVariables.inboundEquipsOrder.note===''?'入库单':'入库单（异常）',
+                  number:this.universalObj.processVariables.applyOrder.number,
+                  user:this.universalObj.processVariables.applyOrder.inboundUser.name,
+                  order:this.universalObj.processVariables.inboundEquipsOrder,
+                  table:equips
+              };
+              console.log(this.lookUp);console.log(this.universalObj);
+              this.$refs.lookUp.show();
+            },
+            lookOutHouse(){
+                let equips=[];
+                let equip=_.groupBy(JSON.parse(JSON.stringify(this.universalObj.processVariables.outboundEquipsOrder.equips)), 'model');
+                for (let key in equip) {
+                    equips.push({name:equip[key][0].name,model:key,count:equip[key].length})
+                }
+                this.lookUp={
+                    title:this.universalObj.processVariables.outboundEquipsOrder.note===''?'入库单':'入库单（异常）',
+                    number:this.universalObj.processVariables.applyOrder.number,
+                    user:this.universalObj.processVariables.applyOrder.outboundUser.name,
+                    order:this.universalObj.processVariables.outboundEquipsOrder,
+                    table:equips
+                };
+                this.$refs.lookUp.show();
+            },
             transfer(){
 
             },
@@ -217,7 +253,7 @@
                     activeTasks({includeprocessVariables:true,includeTaskprocessVariables:true,processInstanceId:this.universalObj.id}).then(res=>{
                         this.activeTask=res;
                     })
-                }else if(this.$route.meta.title==='代办事宜'){
+                }else if(this.$route.meta.title==='待办事宜'){
                     this.activeTask.id=this.universalObj.id
                 }
             }
@@ -226,6 +262,32 @@
             isReject(){
                 let flag;
                 this.activeTask.taskDefinitionKey==='apply'?flag=true:flag=false;
+                return flag
+            },
+            haveInHouse(){
+                let inUser='';
+                let flag=false;
+                if(this.universalObj.processVariables.applyOrder.inboundUser!=null){
+                    inUser=this.universalObj.processVariables.applyOrder.inboundUser.id
+                }
+                if (inUser===JSON.parse(localStorage.getItem("user")).id&&this.title!=='报废'){
+                    if(this.universalObj.processVariables.inboundEquipsOrder!==null&&this.universalObj.processVariables.inboundEquipsOrder!==undefined){
+                        flag=true
+                    }
+                }
+                return flag
+            },
+            haveOutHouse(){
+                let outUser='';
+                let flag=false;
+                if(this.universalObj.processVariables.applyOrder.outboundUser!=null&&this.title!=='报废'){
+                    outUser=this.universalObj.processVariables.applyOrder.outboundUser.id
+                }
+                if (outUser===JSON.parse(localStorage.getItem("user")).id){
+                    if(this.universalObj.processVariables.outboundEquipsOrder!==null){
+                        flag=true
+                    }
+                }
                 return flag
             },
             isInHouse(){
@@ -238,7 +300,7 @@
                             flag=false;
                         }
                     }
-                }else {
+                }else if(this.$route.meta.title==='待办事宜'){
                     this.universalObj.taskDefinitionKey==='equips_inbound_house'?flag=true:flag=false;
                 }
                 return flag
@@ -253,7 +315,7 @@
                             flag=false;
                         }
                     }
-                }else {
+                }else if(this.$route.meta.title==='待办事宜'){
                     this.universalObj.taskDefinitionKey==='equips_outbound_house'?flag=true:flag=false;
                 }
                 return flag
@@ -286,7 +348,8 @@
             serviceDialog,
             textButton,
             select_apply,
-            t_dialog
+            t_dialog,
+            lookUp
         }
     }
 </script>
