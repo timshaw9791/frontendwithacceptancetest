@@ -223,16 +223,11 @@
                 
                 if(data=='smoke')
                 {
-                    if(this.smokeThreshold < 0) {
-                    this.$message.error("烟雾浓度不可小于0%")
-                } else if(this.smokeThreshold > 100) {
-                    this.$message.error("烟雾浓度不可大于100%")
-                } else {
                     setSmokeThreshold({max: this.smokeThreshold}).then(res => {
                         this.$message.success("设置成功")
                         this.smokeFlag=!this.smokeFlag
                     })
-                }
+                
                 }
                 
                 if(data=='humidity')
