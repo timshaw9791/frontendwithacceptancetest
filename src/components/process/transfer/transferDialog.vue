@@ -17,7 +17,24 @@
                             <el-button class="resultButton" v-text="actionReset"
                                        @click="clickResult"></el-button>
                         </div>
-
+                        <div class="d_select" v-if="typeOperational==='入库'">
+                            <div ><span v-text="'装备位置：'"></span></div>
+                            <div class="location"><el-input v-model="location.number"></el-input></div><span v-text="'架;'"></span>
+                            <div style="width: 68px;height: 32px;margin-right: 12px;margin-left: 12px;">
+                                <el-select v-model="location.surface" placeholder="-" size="mini">
+                                    <el-option
+                                            v-for="item in [{face:'A'},{face:'B'}]"
+                                            :key="item.face"
+                                            :label="item.face"
+                                            :value="item.face">
+                                    </el-option>
+                                </el-select>
+                            </div><span v-text="'面;'"></span>
+                            <div class="location"><el-input v-model="location.section"></el-input></div><span v-text="'节;'"></span>
+                            <div class="location"><el-input v-model="location.floor"></el-input></div><span v-text="'层'"></span>
+                            <el-button class="submits" v-text="'开始'" style="margin-left: 20px" @click="startGetEquip"></el-button>
+                            <el-button class="submits" v-text="'停止'" @click="stopGetEquip"></el-button>
+                        </div>
                     </div>
                     <div class="header-item"><span v-text="'申请装备表单：'"></span>
 
@@ -26,7 +43,7 @@
                 <div class="directAdjustmentDialog-body">
                     <div class="leftTable">
                         <el-table
-                                :data="directObj.orderItems"
+                                :data="directObj.processVariables?directObj.processVariables.applyOrder.equips:[]"
                                 height="531"
                                 style="width: 100%"
                                 :align="align"
@@ -85,7 +102,7 @@
                             >
                                 <template slot-scope="scope">
                                     <el-button type="text" size="mini" class="deleteButtom"
-                                               @click="deleteRow(scope.$index)" :disabled="scope.row.flag"
+                                               @click="deleteRow(scope.row,scope.$index)" :disabled="scope.row.flag"
                                                v-text="'【删除】'"></el-button>
                                 </template>
                             </el-table-column>
@@ -115,7 +132,9 @@
                    <div>
                        <span v-text="'异常装备：'"></span>
                        <div class="abnormal-equips">
-
+                           <div class="abnormal-equips-item" v-for="item in missEquip">
+                               <span v-text="errorEquip(item)"></span>
+                           </div>
                        </div>
                    </div>
                    <div>
@@ -160,7 +179,7 @@
     // import inventoryData from 'views/warehouse/inventoryData'
     import request from 'common/js/request'
     import {baseURL,baseBURL} from "../../../api/config"
-    import {findByRfids,outHouse} from 'api/process'
+    import {findByRfids,outHouse,checkUser,inHouses} from 'api/process'
     import { start, delFile, handheld, killProcess,modifyFileName } from 'common/js/rfidReader'
 
     // import {handheld} from 'common/js/pda'
@@ -191,6 +210,7 @@
         },
         data() {
             return {
+                location:{},
                 hardware: '',
                 hardwareList: [
                     {value: '手持机', label: '手持机'},
@@ -198,10 +218,12 @@
                 ],
                 rightList: [],
                 outList: [],
+                equipGroup:{},
                 align: 'left',
                 submitFlag: false,
                 types: '',
                 pid: '',
+                missEquip:[],
                 index:0,
                 abnormal:[],
                 flag: false,
@@ -223,11 +245,15 @@
                     }
                     if (newVal == '手持机') {
                         this.rightList = [];
-                        this.handheldMachine();
+                        if(this.typeOperational==='出库'){
+                            this.handheldMachine();
+                        }
                     } else if (newVal == 'RFID读写器') {
                         this.closeUsb = false;
                         this.rightList = [];
-                        this.getListUsb();
+                        if(this.typeOperational==='出库'){
+                            this.getListUsb();
+                        }
                     }
                 }
             }
@@ -244,29 +270,47 @@
                     name = '重新读取数据'
                 }
                 return name
-            }
+            },
+
         },
         methods: {
-            deleteFile() {
-                delFile(newFile_path, () => {console.log('删除文件' + newFile_path + '成功')})
-                // fs.unlink(newFile_path, function (error) {
-                //     if (error) {
-                //         return false;
-                //     }
-                //     console.log('删除文件' + newFile_path + '成功');
-                // })
+            errorEquip(data){
+              let count,tip,name=`[${data.name+data.model}]`;
+                data.count<0?tip='减':tip='增';
+                count= Math.abs(JSON.parse(JSON.stringify(data)).count);
+                return `${tip}\xa0\xa0\xa0\xa0${name}\xa0\xa0\xa0\xa0${count}'件'`
+            },
+            locationIsNull(){
+                let flag=false;
+                _.forIn(this.location, function(value, key) {
+                    if (value){flag=true}else {flag=false}
+                });
+                return flag
+            },
+            startGetEquip(){
+                if(this.locationIsNull()){
+                    this.getInHouseGetEquip();
+                }else {
+                    this.$message.warning('请先输入装备位置!');
+                }
 
             },
-            end(pid) {
-                // alert('关掉了');
-                // this.closeUsb=true
-                if (pid) {
-                //    spawn("taskkill", ["/PID", pid, "/T", "/F"]);
-                killProcess(this.pid)
+            getInHouseGetEquip(){
+                console.log(this.hardware)
+                if(this.hardware==='手持机'){
+                    this.handheldMachine();
                 }
             },
-            getListUsb() {//todo
+            stopGetEquip(){
 
+            },
+            deleteFile() {
+                delFile(newFile_path, () => {console.log('删除文件' + newFile_path + '成功')})
+            },
+            end(pid) {
+                if (pid) {killProcess(this.pid)}
+            },
+            getListUsb() {//todo
                 start("java -jar scan.jar", (data) => {
                     let arr = [];
                     arr.push(data);
@@ -274,52 +318,13 @@
                 }, (fail) => {
                     this.$message.error(fail)
                 }, (pid, err) => {pid?this.pid = pid:this.$message.error(err)})
-
-                // this.index = 0;
-                // const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
-                // this.pid = process.pid;
-
-                // process.stderr.on('data', (err) => {
-                //     console.log(err);
-                //     this.$message.error('设备故障请重新插拔!插入后请重新选择');
-                //     this.index = 1;
-                //     killProcess();
-                // });
-
-
-                // process.stdout.on('data', (data) => {
-                //     if (this.index > 0) {
-                //         let arr = [];
-                //         arr.push(data);
-                //         this.getOutDataCopy(arr);
-                //     } else {
-                //         let newData = JSON.parse(data);
-                //         newData.status === 'succeed' ? this.index = 1 : this.index = 0;
-                //     }
-                // });
-
-                // process.on('exit', (code) => {
-                //     if (this.index === 0) {
-                //         this.$message.error('设备未插入或串口号错误,插入后请重新选择!');
-                //     }
-                //     console.log(`子进程退出，退出码 ${code}`);
-                // });
-
-
-                // let intercal=setInterval(()=>{
-                //     if(this.closeUsb){
-                //         clearInterval(intercal);
-                //         return;
-                //     }
-                //     this.getOutDataCopy(['q2', '3', '4', '55','6','7','8','9','11','天下第一','sdfa','10','222','23252s'])
-                // },1000)
-
             },
-            deleteRow(index) {
+            deleteRow(row,index) {
+                _.omit(this.equipGroup, [row.model]);
                 this.rightList.splice(index, 1)
             },
             close() {
-                this.hardware=''
+                this.hardware='';
                 this.closeUsb = true;
                 this.end(this.pid);
                 this.$refs.transFerDialogApply.cancelDb();
@@ -337,9 +342,9 @@
                 if(this.reason==''){
                     this.$message.info('备注不能为空!');
                 }else {
-                    if(this.typeOperational=='出库'){
-                        this.transferEquipInOrOut('ABNORMAL');
-                        // this.$refs.transFerDialogApplyConfirm.show();
+                    if(this.typeOperational==='出库'){
+                        // this.transferEquipInOrOut('ABNORMAL');
+                        this.$refs.transFerDialogApplyConfirm.show();
                     }else {
                         this.transferEquipInOrOut('ABNORMAL')
                     }
@@ -348,69 +353,78 @@
 
             },
             confirmApply(){
+                if(this.user.userName!=''&&this.user.password!=''){
+                   let param={
+                       password:this.user.password,
+                       userId:this.directObj.processVariables.applyOrder.inboundUser.id,
+                       username:this.user.userName
+                   };
+                    checkUser(param).then(res=>{
+                        this.closeConfirm();
+                        let state;
+                        if(this.submitFlag){
+                            state='NORMAL'
+                        }else {
+                            state='ABNORMAL'
+                        }
+                        this.transferEquipInOrOut(state)
+                    })
+               }else {
+                   this.$message.info('请先填写完整')
+               }
+            },
+            outHouseByRfid(rfids){
 
-               // if(this.user.userName!=''&&this.user.password!=''){
-               //     let param={
-               //         password:this.user.password,
-               //         userId:this.directObj.userId,
-               //         username:this.user.userName
-               //     };
-               //     request({
-               //         method:'post',
-               //         url:baseBURL+'/identity/authentication',
-               //         params:param
-               //     }).then(res=>{
-               //         this.closeConfirm();
-               //         let state;
-               //         if(this.submitFlag){
-               //             state='NORMAL'
-               //         }else {
-               //             state='ABNORMAL'
-               //         }
-               //         this.transferEquipInOrOut(state)
-               //     })
-               // }else {
-               //     this.$message.info('请先填写完整')
-               // }
             },
             transferEquipInOrOut(state){
-                console.log(state);
                 let url;
                 let rfids=[];
+                let equips=[],note='';
                 let aUrl='';
                 let orderId=this.directObj.id;
                 if(this.typeOperational=='出库'){
-                    url=baseURL+'/order-equips/out'+'?orderId='+orderId+'&state='+state;
-                    this.rightList.forEach(item=>{
-                        rfids=[...rfids,...item.rfid]
+                    _.forIn(this.equipGroup, function(value, key) {
+                        value.forEach(item=>{
+                            rfids.push(item.rfid)
+                        })
                     });
                 }else {
-                    url=baseURL+'/order-equips/in'+'?orderId='+orderId+'&state='+state;
-                    rfids=this.inHouseEquip;
+                   _.forIn(this.equipGroup,(value)=>{
+                       value.forEach(item=>{
+                           equips.push(_.omit(item, ['equipArgId','id','name', 'model']))
+                       });
+                   });
                 }
                 if(state=='ABNORMAL'){
-                    aUrl=url+'&note='+this.reason;
-                }else {
-                    aUrl=url
+                    note=this.reason;
                 }
                 if(this.typeOperational=='出库'){
-                    this.$ajax.delete(aUrl,{data:rfids}).then(res=>{
-                        this.$message.success('出库成功');
-                        this.sucessInOrOut()
-                    }).catch(error=>{
-                        this.$message.error(error.response.data.message)
-                    });
-                }else {
-                    request({
-                        method: 'PUT',
-                        url: aUrl,
-                        data: rfids
-                    }).then(res => {
-                        this.$message.success('入库成功');
-                        this.sucessInOrOut()
-                    }).catch(error=>{
-                        this.$message.error(error.response.data.message)
+                    outHouse(_.join(rfids, ',')).then(res=>{
+                        res.forEach(item=>{
+                            equips.push({id:item.id,name:item.equipArg.name,model:item.equipArg.model,price:item.price,serial:item.serial,productDate:item.productDate,equipArgId:item.equipArg.id,rfid:item.rfid})
+                        });
+                        this.$emit('outHouse',{equips:equips,note:note,error:this.missEquip})
                     })
+                    // equips=[{id:'2121',name:'item.equipArg.name',model:'item.equipArg.model',price:'item.price',serial:'item.serial',productDate:'item.productDate',equipArgId:'item.equipArg.id',rfid:'item.rfid'}],
+
+                }else {
+                    let inEquip=[];
+                    inHouses(equips).then(res=>{
+                        res.forEach(item=>{
+                            inEquip.push({id:item.id,name:item.equipArg.name,model:item.equipArg.model,price:item.price,serial:item.serial,productDate:item.productDate,equipArgId:item.equipArg.id,rfid:item.rfid})
+                        });
+                        this.$emit('inHouse',{equips:inEquip,note:note,error:this.missEquip})
+                    })
+                    // request({
+                    //     method: 'PUT',
+                    //     url: aUrl,
+                    //     data: rfids
+                    // }).then(res => {
+                    //     this.$message.success('入库成功');
+                    //     this.sucessInOrOut()
+                    // }).catch(error=>{
+                    //     this.$message.error(error.response.data.message)
+                    // })
                 }
 
             },
@@ -420,10 +434,11 @@
                this.$emit('sucesssInOrOut',true);
             },
             submit() {
+                console.log(this.submitFlag)
                 if (this.submitFlag) {
-                    if(this.typeOperational=='出库'){
-                        // this.$refs.transFerDialogApplyConfirm.show();
-                        this.transferEquipInOrOut('NORMAL')
+                    if(this.typeOperational==='出库'){
+                        this.$refs.transFerDialogApplyConfirm.show();
+                        // this.transferEquipInOrOut('NORMAL')
                     }else {
                         this.transferEquipInOrOut('NORMAL')
                     }
@@ -447,11 +462,12 @@
                     //     }
                     // })
                 } else {
-                    if(this.billName!='借调'||this.billName!='归还'){
-                        this.$refs.transFerDialogTips.show();
-                    }else {
-                        this.$message.error('请确认出库装备正确')
-                    }
+                    this.$refs.transFerDialogTips.show();
+                    // if(this.billName!='借调'||this.billName!='归还'){
+                    //     this.$refs.transFerDialogTips.show();
+                    // }else {
+                    //     this.$message.error('请确认出库装备正确')
+                    // }
                     // this.sucessInOrOut();
                     // this.$message.error('请重新确认出库装备')
                 }
@@ -514,7 +530,7 @@
                 // }else {
                 //     this.getOutDataCopy(['222','19080012']);,20088892,20088888
                 // }
-                this.getOutDataCopy(['10048891'])
+                this.getOutDataCopy(['19998889'])
             },
             // getOutData(data){
             //     console.log(data);
@@ -528,37 +544,18 @@
                             this.$message.error(`无法识别当前装备的RFID:[${data}]`)
                         }
                     });
-                    // let url = baseURL+'/equips/by-rfidlist';
-                    // request({
-                    //     method: 'PUT',
-                    //     url: url,
-                    //     data: data
-                    // }).then(res => {
-                    //     if (res.length!=0) {
-                    //         this.getCategroy(res);
-                    //     }else {
-                    //         this.$message.error(`无法识别当前装备的RFID:[${data}]`)
-                    //     }
-                    // })
                 }else {
-                    let url = baseBURL+'/order-equips/equips-out-house';
-                    request({
-                        method: 'GET',
-                        url: url,
-                        params: {orderId:this.directObj.id}
-                    }).then(res => {
-                        if (res) {
-                            this.getCategroyIn(data,res.equips);
-                        }
-                    })
+                    let equips=this.directObj.processVariables.outboundEquipsOrder.equips;
+                    this.getCategroyIn(data,equips);
                 }
             },
-            getCategroyIn(rfidData,res){
+            getCategroyIn(rfidData,equips){
                 rfidData.forEach(item=>{
-                    let equip=res.find(value=>{
-                        return value.rfid==item
-                    });
+                    let equip=equips.find(value=>{return value.rfid===item});
                     if(equip!=undefined){
+                        equip.location=this.location;
+                        equip.equipArg={id:equip.equipArgId};
+                        // this.inHouseEquip.push(_.omit(equip, ['equipArgId','id','name', 'model']));
                         this.inHouseEquip.push(equip);
                         this.getCategroy([equip])
                     }else {
@@ -567,9 +564,28 @@
                 })
             },
             getCategroy(data) {
-                let group=_.groupBy(data, 'equipArg.model');
-
-                this.getTrueOrFalse(group);
+                let group,flag=true;
+                if(this.typeOperational==='出库'){
+                    group=_.groupBy(data, 'equipArg.model');
+                }else {
+                    group=_.groupBy(data, 'model');
+                }
+                if(Object.keys(this.equipGroup).length===0){
+                    this.equipGroup=group;
+                }else {
+                    for (let key in group){
+                        if(this.equipGroup[key].length!==0&&this.equipGroup[key]!==undefined){
+                            if(_.differenceBy(this.equipGroup[key],group[key], 'rfid').length!=0){
+                                this.equipGroup[key]=[...this.equipGroup[key],...group[key]]
+                            }else {
+                                flag=false
+                            }
+                        }else {
+                            this.equipGroup[key]=group[key]
+                        }
+                    }
+                }
+                flag?this.getTrueOrFalse(this.equipGroup):'';
             },
             getTypeModel(data) {
                 let typeModel = [];
@@ -586,24 +602,43 @@
                 return typeModel
             },
             getTrueOrFalse(group) {
-                let flag=true,rightlist=[];
-                this.directObj.orderItems.forEach(item=>{
-                   if(group[item.model]){
-                       group[item.model].length===item.count?flag=true:flag=false;
-                       rightlist.push({name:item.name,model:item.model,count:group[item.model].length})
-                   }else {
-                       flag=false
-                   }
+                let flag=true,leftList=[],rightLists=[];
+                if(this.typeOperational==='出库'){
+                    leftList=this.directObj.processVariables.applyOrder.equips;
+                }else {
+                    let leftGroup= _.groupBy(JSON.parse(JSON.stringify(this.directObj.processVariables.outboundEquipsOrder.equips)), 'model');
+                    _.forIn(leftGroup,(value,key)=>{
+                        leftList.push({name:value[0].name,model:value[0].model,count:group[key].length})
+                    })
+                }
+                leftList.forEach(item=>{
+                    if(group[item.model]){
+                        rightLists.push({name:item.name,model:item.model,count:group[item.model].length});
+                        let index= _.findIndex(rightLists, ['model', item.model]);
+                        if(rightLists[index].count===item.count){
+                            flag=true
+                        }else {
+                            let miss=JSON.parse(JSON.stringify(rightLists[index]));
+                            miss.count=rightLists[index].count-item.count;
+                            this.missEquip.push(miss);
+                            flag=false;
+                        }
+                    }else {
+                        let miss=JSON.parse(JSON.stringify(item));
+                        miss.count=-miss.count;
+                        this.missEquip.push(miss);
+                        flag=false
+                    }
                 });
-                _.forIn(group, function(value, key) {
-                    if(_.findIndex(rightlist, function(o) { return o.model===key;})===-1){
-                        rightlist.push({name:value[0].equipArg.name,model:key,count:value.length});
+                _.forIn(group, (value, key)=> {
+                    if(_.findIndex(rightLists, (o)=>{ return o.model===key;})===-1){
+                        rightLists.push({name:value[0].equipArg.name,model:key,count:value.length});
+                        this.missEquip.push({name:value[0].equipArg.name,model:key,count:value.length});
                         flag=false;
                     }
                 });
-                this.rightList=rightlist;
+                this.rightList=rightLists;
                 this.submitFlag=flag//todo
-                console.log('this.submitFlag',this.submitFlag)
             },
             indexMethod(index) {
                 return index + 1;
@@ -635,7 +670,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-top: 0.4375rem;
+        margin-top: 0.2375rem;
     }
     .transferdialog-textarea{
         width: 100%;
@@ -733,8 +768,23 @@
     .header-item .d_select {
         display: flex;
         align-items: center;
+        justify-content: center;
     }
-
+    .d_select .location{
+        width:50px;
+        height:32px;
+        background:rgba(255,255,255,1);
+        border:1px solid rgba(220,223,230,1);
+        line-height: 32px;
+        margin-right: 12px;
+        margin-left: 12px;
+        border-radius:4px;
+    }
+    .location /deep/ .el-input__inner{
+        width:50px;
+        height:32px;
+        line-height: 32px;
+    }
     .d_select .resultButton {
         width: 137px;
         height: 30px;

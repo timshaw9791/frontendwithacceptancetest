@@ -2,8 +2,8 @@
     <div class="surroundingCard">
         <div class="surroundingCard-head" :style="'height:'+cHeight+'px'" >
             <span>{{header}}</span>
-            <div @click="edit" v-if="header=='设备状态及控制'" >
-                <svg-icon icon-class="环境管理设置"></svg-icon>
+            <div @click="edit" v-if="header=='设备状态及控制'"  style="width:100px">
+                <svg-icon icon-class="环境管理设置" style="margin-left:1.2rem"></svg-icon>
             </div>
         </div>
         <div class="surroundingCard-body">

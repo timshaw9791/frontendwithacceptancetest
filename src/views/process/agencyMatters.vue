@@ -11,7 +11,7 @@
         <div class="agency-matters_main_box" data-test="main_box">
             <div class="main_table_box" data-test="table_box">
                 <p_table ref="processTable" :table="table" :typeUrl="'process'" :otherParams="true" @clickTable="clickTable" v-if="status.tableOrUniversalFlag"></p_table>
-                <p_universal @back="black" :title="universal.title" :universalObj="universal.universalObj" v-if="!status.tableOrUniversalFlag"></p_universal>
+                <p_universal @back="black" :url="universal.url" :title="universal.title" :universalObj="universal.universalObj" v-if="!status.tableOrUniversalFlag"></p_universal>
             </div>
         </div>
     </div>
@@ -104,7 +104,19 @@
             },
             clickTable(table) {
                 this.universal={title:this.getTitle(table.row.processVariables.processConfig.type),universalObj:table.row};
-                console.log(this.universal);
+                let url;
+                switch (this.universal.title) {
+                    case "报废":
+                        url={outHouse:''} ;
+                        break;
+                    case "调拨":
+                        url={outHouse:'/workflow/transfer/equips-outbound',inHouse:'/workflow/transfer/equips-inbound'};
+                        break;
+                    case "直调":
+                        url={outHouse:''}
+                        break;
+                };
+                this.universal.url=url;
                 this.status.tableOrUniversalFlag=!this.status.tableOrUniversalFlag;
             }
         }

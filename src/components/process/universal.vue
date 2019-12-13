@@ -6,22 +6,22 @@
                 <el-button v-if="isReject" class="universal-header-button" @click="cancel">作废</el-button>
                 <el-button v-if="isReject" class="universal-header-button" @click="refill">重填</el-button>
                 <el-button v-if="isOutHouse" class="universal-header-button" @click="outHouse">出库</el-button>
-                <el-button v-if="isInHouse" class="universal-header-button" @click="refill">入库</el-button>
+                <el-button v-if="isInHouse" class="universal-header-button" @click="inHouse">入库</el-button>
                 <text-button style="margin-left: 0.125rem" :iconClass="'导出'" :buttonName="'导出'" @click="transfer"></text-button>
             </div>
         </div>
         <div class="body">
             <div class="info">
-                <div>申请单号: {{ universalObj.processVariables.applyOrder.number}}</div>
+                <div>申请单号: {{universalObj.processVariables.applyOrder.number}}</div>
                 <div v-show="notScrap">接收机构: {{ universalObj.processVariables.applyOrder.inboundOrganUnit.name}}</div>
                 <div v-show="notScrap">出库机构: {{ universalObj.processVariables.applyOrder.outboundOrganUnit.name }}</div>
                 <div>申请时间: {{this.$filterTime(universalObj.processVariables.applyOrder.applyTime)}}</div>
                 <div v-show="notScrap">接收库房: {{ universalObj.processVariables.applyOrder.inboundWarehouse.name}}</div>
                 <div v-show="notScrap">出库库房: {{ universalObj.processVariables.applyOrder.outboundWarehouse?universalObj.processVariables.applyOrder.outboundWarehouse.name:'-'}}</div>
-                <div>申请人员: {{ universalObj.processVariables.applyOrder.applicant.name }}</div>
+                <div>申请人员: {{universalObj.processVariables.applyOrder.applicant.name }}</div>
                 <div v-show="notScrap">接收人员: {{ universalObj.processVariables.applyOrder.inboundUser.name}}</div>
                 <div v-show="notScrap">出库人员: {{universalObj.processVariables.applyOrder.outboundUser?universalObj.processVariables.applyOrder.outboundUser.name:'-'}}</div>
-                <div v-show="!notScrap">报废原因: {{ form.note }}</div>
+                <div v-show="!notScrap">报废原因: {{form.note }}</div>
             </div>
             <div>装备统计:</div>
             <el-table :data="universalObj.processVariables.applyOrder.equips" height="350" style="border: 1px solid #ccc;margin-top: 6px">
@@ -49,13 +49,13 @@
            <div class="cancel">您确定要作废此申请单吗？</div>
         </service-dialog>
         <select_apply ref="selectUniversalApply" :taskId="activeTask.id" @sucessApply="sucessRefill"></select_apply>
-        <t_dialog ref="transferDialog" :billName="'调拨'" :directObj="directObj" @sucesssInOrOut="sucesssInOrOut"></t_dialog>
+        <t_dialog ref="transferDialog" @inHouse="inHouseByProcess" @outHouse="outHouseByProcess" :typeOperational="typeOperational" :directObj="directObj" @sucesssInOrOut="sucesssInOrOut"></t_dialog>
     </div>
 </template>
 
 <script>
     import serviceDialog from "components/base/serviceDialog"
-    import { historyTasks,activeTasks,workflow } from "api/process"
+    import { historyTasks,activeTasks,workflow,equipsOutInbound } from "api/process"
     import textButton from 'components/base/textButton'
     import select_apply from 'components/process/processDialog/selectApplyProcess'
     import t_dialog from 'components/process/transfer/transferDialog'
@@ -80,6 +80,7 @@
                 directObj:{},
                 activeTask:{},
                 list: [],
+                typeOperational:'',
                 processList: [],
                 nextForm: {
                     value: '', // 所选的
@@ -99,9 +100,27 @@
                 this.$refs.transferDialog.close();
                 this.$emit('closeBill', true);
             },
-            outHouse(){
-                this.$set(this.directObj,'orderItems',this.universalObj.processVariables.applyOrder.equips);
+            inHouse(){
+                this.$set(this,'directObj',this.universalObj);
+                this.typeOperational='入库';
                 this.$refs.transferDialog.showDialog();
+            },
+            inHouseByProcess(data){
+                let url=`${this.url.inHouse}?taskId=${this.activeTask.id}`;
+                equipsOutInbound(url,data).then(res=>{
+                    this.$message.success('操作成功');
+                })
+            },
+            outHouse(){
+                this.$set(this,'directObj',this.universalObj);
+                this.typeOperational='出库';
+                this.$refs.transferDialog.showDialog();
+            },
+            outHouseByProcess(data){
+                let url=`${this.url.outHouse}?taskId=${this.activeTask.id}`;
+                equipsOutInbound(url,data).then(res=>{
+                   this.$message.success('操作成功');
+                })
             },
             sucessRefill(){
                 this.$emit('back',true)
@@ -126,40 +145,40 @@
                     this.$emit('back',true)
                 })
             },
-            getListInfo() {
-                let params = {includeprocessVariables: true};
-                doneDetail(this.listId, params).then(res => {
-                    console.log(res);
-                    let result = JSON.parse(JSON.stringify(res.processVariables)), mergeName = '', have = '';
-                    this.form = {
-                        applyOrderId: '',
-                        applyTime: result.applyOrder.applyTime,
-                        applyPeople: result.applyOrder.applicant.name,
-                        note: result.applyOrder.note,
-                        taskId: res.id,
-                        processInstanceId: res.id
-                    }
-                    this.processReviewInfo()
-                    this.mergeList(result.applyOrder.equips)
-                })
-            },
-            mergeList(array) {
-                let arr = JSON.parse(JSON.stringify(array)), mergeName = '', have = 0, tempList = [];
-                arr.forEach(equip => {
-                    mergeName = `${equip.name}${equip.model}`
-                    have = arr.findIndex(item => item.mergeName == mergeName)
-                    if(have != -1) {
-                        tempList[have].count++
-                    } else {
-                        tempList.push(Object.assign({}, equip, {count: 1, mergeName}))
-                    }
-                })
-                this.list = tempList
-                arr = null
-                mergeName = null
-                have = null
-                tempList = null
-            },
+            // getListInfo() {
+            //     let params = {includeprocessVariables: true};
+            //     doneDetail(this.listId, params).then(res => {
+            //         console.log(res);
+            //         let result = JSON.parse(JSON.stringify(res.processVariables)), mergeName = '', have = '';
+            //         this.form = {
+            //             applyOrderId: '',
+            //             applyTime: result.applyOrder.applyTime,
+            //             applyPeople: result.applyOrder.applicant.name,
+            //             note: result.applyOrder.note,
+            //             taskId: res.id,
+            //             processInstanceId: res.id
+            //         };
+            //         this.processReviewInfo();
+            //         this.mergeList(result.applyOrder.equips)
+            //     })
+            // },
+            // mergeList(array) {
+            //     let arr = JSON.parse(JSON.stringify(array)), mergeName = '', have = 0, tempList = [];
+            //     arr.forEach(equip => {
+            //         mergeName = `${equip.name}${equip.model}`
+            //         have = arr.findIndex(item => item.mergeName == mergeName)
+            //         if(have != -1) {
+            //             tempList[have].count++
+            //         } else {
+            //             tempList.push(Object.assign({}, equip, {count: 1, mergeName}))
+            //         }
+            //     });
+            //     this.list = tempList
+            //     arr = null
+            //     mergeName = null
+            //     have = null
+            //     tempList = null
+            // },
             processReviewInfo() {
                 let params = {processInstanceId: this.universalObj.id, includeprocessVariables: false, includeTaskprocessVariables: true},
                     lable = "";
@@ -177,7 +196,6 @@
                                 lable = "审批";
                                 break;
                         }
-                        console.log(item)
                         tempList.push({
                             lable,
                             name: item.taskprocessVariables.name,
@@ -194,9 +212,14 @@
                 this.$refs.reson.show()
             },
             activeTasks(){
-                activeTasks({includeprocessVariables:true,includeTaskprocessVariables:true,processInstanceId:this.universalObj.id}).then(res=>{
-                   this.activeTask=res;
-                })
+
+                if(this.$route.meta.title==='我的流程'){
+                    activeTasks({includeprocessVariables:true,includeTaskprocessVariables:true,processInstanceId:this.universalObj.id}).then(res=>{
+                        this.activeTask=res;
+                    })
+                }else if(this.$route.meta.title==='代办事宜'){
+                    this.activeTask.id=this.universalObj.id
+                }
             }
         },
         computed:{
@@ -207,12 +230,32 @@
             },
             isInHouse(){
                 let flag;
-                this.universalObj.taskDefinitionKey==='"equips_inbound_house"'?flag=true:flag=false;
+                if(this.$route.meta.title==='我的流程'){
+                    if(this.universalObj.currentTask.assigneeName===JSON.parse(localStorage.getItem("user")).name){
+                        if(this.universalObj.currentTask.name.indexOf('入库')!==-1){
+                            flag=true;
+                        }else {
+                            flag=false;
+                        }
+                    }
+                }else {
+                    this.universalObj.taskDefinitionKey==='equips_inbound_house'?flag=true:flag=false;
+                }
                 return flag
             },
             isOutHouse(){
                 let flag;
-                this.universalObj.taskDefinitionKey==='equips_outbound_house'?flag=true:flag=false;
+                if(this.$route.meta.title==='我的流程'){
+                    if(this.universalObj.currentTask.assigneeName===JSON.parse(localStorage.getItem("user")).name){
+                        if(this.universalObj.currentTask.name.indexOf('出库')!==-1){
+                            flag=true;
+                        }else {
+                            flag=false;
+                        }
+                    }
+                }else {
+                    this.universalObj.taskDefinitionKey==='equips_outbound_house'?flag=true:flag=false;
+                }
                 return flag
             }
         },
@@ -233,6 +276,9 @@
                 default: ''
             },
             universalObj:{
+                type: Object
+            },
+            url:{
                 type: Object
             }
         },

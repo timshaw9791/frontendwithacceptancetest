@@ -34,7 +34,7 @@
 
         data() {
             return {
-                selectButtons: [{key: 'allocation', label: '调拨流程'}, {key: 'borrow', label: '借用流程'}, {
+                selectButtons: [{key: 'allocation', label: '调拨流程'},  {
                     key: 'direct',
                     label: '直调流程'
                 }, {key: 'scrap', label: '报废流程'}],

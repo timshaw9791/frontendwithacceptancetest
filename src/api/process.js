@@ -1,16 +1,39 @@
 import request from 'common/js/request'
 import {baseBURL} from "./config";
 
+
+
+export function checkUser(params) {
+    return request({
+        url: `${baseBURL}/workflow/check-user?`,
+        method: 'put',
+        params:params
+    })
+}
 export function findByRfids(rfids) {
     return request({
         url: `/equip/findByRfids?rfids=${rfids}`,
         method: 'get',
     })
 }
+export function inHouses(data) {
+    return request({
+        url: `/equip/inHouses`,
+        method: 'post',
+        data
+    })
+}
 export function outHouse(rfids) {
     return request({
         url: `/equip/outHouse?rfids=${rfids}`,
-        method: 'get',
+        method: 'post',
+    })
+}
+export function equipsOutInbound(url,data) {
+    return request({
+        url: `${baseBURL}${url}`,
+        method: 'put',
+        data
     })
 }
 
