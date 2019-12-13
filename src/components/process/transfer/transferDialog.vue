@@ -276,7 +276,7 @@
         methods: {
             errorEquip(data){
               let count,tip,name=`[${data.name+data.model}]`;
-                data.count<0?tip='减':tip='增';
+                data.count<0?tip='缺':tip='增';
                 count= Math.abs(JSON.parse(JSON.stringify(data)).count);
                 return `${tip}\xa0\xa0\xa0\xa0${name}\xa0\xa0\xa0\xa0${count}'件'`
             },
@@ -296,17 +296,18 @@
 
             },
             getInHouseGetEquip(){
-                console.log(this.hardware)
                 if(this.hardware==='手持机'){
                     this.handheldMachine();
+                }else {
+                    this.getListUsb();
                 }
             },
             stopGetEquip(){
 
             },
-            deleteFile() {
-                delFile(newFile_path, () => {console.log('删除文件' + newFile_path + '成功')})
-            },
+            // deleteFile() {
+            //     delFile(newFile_path, () => {console.log('删除文件' + newFile_path + '成功')})
+            // },
             end(pid) {
                 if (pid) {killProcess(this.pid)}
             },
@@ -415,16 +416,6 @@
                         });
                         this.$emit('inHouse',{equips:inEquip,note:note,error:this.missEquip})
                     })
-                    // request({
-                    //     method: 'PUT',
-                    //     url: aUrl,
-                    //     data: rfids
-                    // }).then(res => {
-                    //     this.$message.success('入库成功');
-                    //     this.sucessInOrOut()
-                    // }).catch(error=>{
-                    //     this.$message.error(error.response.data.message)
-                    // })
                 }
 
             },
@@ -442,34 +433,8 @@
                     }else {
                         this.transferEquipInOrOut('NORMAL')
                     }
-                    // let rfidC = [];
-                    // this.rightList.forEach(item => {
-                    //     rfidC.push(item.rfid)
-                    // });
-                    //
-                    // let url = 'http://192.168.50.14:8080/warehouse/transfers/up-to-down/equips-out/';
-                    // let param = {
-                    //     rfidList: rfidC,
-                    //     orderId: this.directObj.id
-                    // };
-                    // request({
-                    //     method: 'DELETE',
-                    //     url: url,
-                    //     data: param
-                    // }).then(res => {
-                    //     if (res) {
-                    //         console.log(res);
-                    //     }
-                    // })
                 } else {
                     this.$refs.transFerDialogTips.show();
-                    // if(this.billName!='借调'||this.billName!='归还'){
-                    //     this.$refs.transFerDialogTips.show();
-                    // }else {
-                    //     this.$message.error('请确认出库装备正确')
-                    // }
-                    // this.sucessInOrOut();
-                    // this.$message.error('请重新确认出库装备')
                 }
             },
             submitTips(){
@@ -507,15 +472,15 @@
                 }
             },
             handheldMachine() {
-                // modifyFileName('search.json');
-                // handheld((err) => this.$message.error(err)).then((data) => {
-                //     let json = JSON.parse(data);
-                //     this.getOutDataCopy(json.rfid);
-                //     this.deleteFile();
-                //     // findByRfids(json.rfid).then(res => {
-                //     //     this.$refs.maintenanceEndDialog.show();
-                //     // });
-                // });
+                modifyFileName('search.json');
+                handheld((err) => this.$message.error(err)).then((data) => {
+                    let json = JSON.parse(data);
+                    this.getOutDataCopy(json.rfid);
+                    this.deleteFile();
+                    // findByRfids(json.rfid).then(res => {
+                    //     this.$refs.maintenanceEndDialog.show();
+                    // });
+                });
                 //todo 要换回来
                 // let data = inventoryData;
                 // if(this.typeOperational=='出库'){
@@ -530,7 +495,7 @@
                 // }else {
                 //     this.getOutDataCopy(['222','19080012']);,20088892,20088888
                 // }
-                this.getOutDataCopy(['19998889'])
+                // this.getOutDataCopy(['19998889'])
             },
             // getOutData(data){
             //     console.log(data);

@@ -119,7 +119,7 @@
                         url={outHouse:'/workflow/transfer/equips-outbound',inHouse:'/workflow/transfer/equips-inbound'};
                         break;
                     case "直调":
-                        url={outHouse:''};
+                        url={outHouse:'/workflow/direct-allot/equips-outbound',inHouse:'/workflow/direct-allot/equips-inbound'};
                         break;
                 };
                 this.universal.url=url;
