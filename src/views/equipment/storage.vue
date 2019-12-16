@@ -16,7 +16,6 @@
                         <svg-icon icon-class="加号" class="textBt"/>
                         入库装备
                     </el-button>
-                    <el-checkbox v-model="abnormal" @change="changeState">异常单</el-checkbox>
                     <div class="_buttons">
                         <BosInput
                                 placeholder="单号"
@@ -30,7 +29,7 @@
             </div>
 
             <!--list列表-->
-            <r_label :table="table" ref="lable" @clickTable="clickTable" :buttonState="buttonState" :otherParams="true"></r_label>
+            <r_label :table="table" ref="lable" @clickTable="clickTable" :buttonState="buttonState"></r_label>
             <!--<el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"-->
                       <!--fit>-->
                 <!--<bos-table-column lable="RFID" field="rfid"></bos-table-column>-->
@@ -113,11 +112,9 @@
                         label:'操作',
                         button:[{name:'详情',type:'primary'},{name:'删除',type:'danger'}]
                     },
-                    search:'',
-                    abnormal: false
+                    search:''
                 },
                 equipData: {}, // 入库单数据
-                abnormal: false, // 是否只显示异常单
                 mode: true,
                 inlineForm: {
                     rfid: '',
@@ -172,10 +169,6 @@
                 // this.storageListShow = false
                  this.title = '入库装备';
                 // this.equipId = '';
-            },
-            // 是否显示异常单
-            changeState(state) {
-                this.table.abnormal = state
             },
             black(data) {
                 // this.refetch()

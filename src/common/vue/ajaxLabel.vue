@@ -31,10 +31,6 @@
                 type:Boolean,
                 default:true
             },
-            otherParams: {
-                type: Boolean,
-                default: false
-            },
             buttonState: {
                 type: Boolean,
                 default: false
@@ -49,12 +45,6 @@
                     }else {
                         this.getList()
                     }
-                }
-            },
-            'table.abnormal': {
-                deep: true,
-                handler(newVal, oldVal) {
-                    this.getList()
                 }
             },
             'paginator.page':{
@@ -78,11 +68,7 @@
                 let url=baseURL+this.table.url;
                 let paramskey={page:this.paginator.page,size: this.paginator.size,search:this.table.search, direction: "DESC",properties: "updateTime"};
                 let params={};
-                if(this.otherParams){
-                    params={...paramskey,...{abnormal: this.table.abnormal}};
-                }else {
-                    params={...paramskey};
-                }
+                params={...paramskey};
                 request({
                     method:'get',
                     url: url,
