@@ -108,6 +108,7 @@
                 }
             },
             clickTable(table) {
+                console.log(table);
                 this.universal={title:this.getTitle(table.row.processDefinitionKey),universalObj:table.row};
                 this.status.tableOrUniversalFlag=!this.status.tableOrUniversalFlag;
                 let url;

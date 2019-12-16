@@ -1,6 +1,6 @@
 <template>
     <div class="agency-matters">
-        <my-header :title="'我的流程'" :searchFlag="false" :haveBlack="!status.tableOrUniversalFlag" @h_black="black"></my-header>
+        <my-header :title="'已办事宜'" :searchFlag="false" :haveBlack="!status.tableOrUniversalFlag" @h_black="black"></my-header>
         <!--<div class="agency-matters_action_box" data-test="action_box" v-if="status.tableOrUniversalFlag">-->
             <!--<text-button :iconSize="20" :iconClass="'加号'" :buttonName="'申请流程'" @click="apply"></text-button>-->
             <!--<div class="action_right_box">-->
@@ -39,7 +39,7 @@
                         {lable: '工作流', field: 'name'},
                         {lable: '创建时间', field: 'startTime', filter: (ns) => this.$filterTime(ns.endTime)},
                         {lable: '当前节点', field: 'currentTask.name'},
-                        {lable: '未操作者', field: 'currentTask.assigneeName'},
+                        {lable: '未操作者', field: 'currentTask.assigneeName'}
                     ],
                     height:'618px',
                     url:'/history/tasks/page',

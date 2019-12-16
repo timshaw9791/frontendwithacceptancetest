@@ -181,15 +181,7 @@
     import {baseURL,baseBURL} from "../../../api/config"
     import {findByRfids,outHouse,checkUser,inHouses} from 'api/process'
     import { start, delFile, handheld, killProcess,modifyFileName } from 'common/js/rfidReader'
-
-    // import {handheld} from 'common/js/pda'
-    // const cmdPath = 'C:\\Users\\Administrator';
-    //const exec = window.require('child_process').exec;
-    //const spawn = window.require('child_process').spawn;
-    // const fs = window.require('fs');
-    // const path = window.require('path');
-    // const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
-    // import {killProcess} from "common/js/kill";
+    var _ = require("lodash");
 
     export default {
         name: "directAdjustmentDialog",
@@ -318,7 +310,7 @@
                     this.getOutDataCopy(arr);
                 }, (fail) => {
                     this.$message.error(fail)
-                }, (pid, err) => {pid?this.pid = pid:this.$message.error(err)})
+                }, (pid, err) => {pid?this.pid = pid:this.$message.error(err)});
             },
             deleteRow(row,index) {
                 _.omit(this.equipGroup, [row.model]);
@@ -378,11 +370,7 @@
 
             },
             transferEquipInOrOut(state){
-                let url;
-                let rfids=[];
-                let equips=[],note='';
-                let aUrl='';
-                let orderId=this.directObj.id;
+                let equips=[],note='',rfids=[],orderNumber='',price=0;
                 if(this.typeOperational=='出库'){
                     _.forIn(this.equipGroup, function(value, key) {
                         value.forEach(item=>{
@@ -401,20 +389,20 @@
                 }
                 if(this.typeOperational=='出库'){
                     outHouse(_.join(rfids, ',')).then(res=>{
-                        res.forEach(item=>{
+                        res.equips.forEach(item=>{
+                            price=price+item.price;
                             equips.push({id:item.id,name:item.equipArg.name,model:item.equipArg.model,price:item.price,serial:item.serial,productDate:item.productDate,equipArgId:item.equipArg.id,rfid:item.rfid})
                         });
-                        this.$emit('outHouse',{equips:equips,note:note,error:this.missEquip})
+                        this.$emit('outHouse',{outboundEquipsOrder:{equips:equips},outboundInfo:{note:note,missEquips:this.missEquip,orderNumber:res.orderNumber,price:price}})
                     })
                     // equips=[{id:'2121',name:'item.equipArg.name',model:'item.equipArg.model',price:'item.price',serial:'item.serial',productDate:'item.productDate',equipArgId:'item.equipArg.id',rfid:'item.rfid'}],
 
                 }else {
-                    let inEquip=[];
                     inHouses(equips).then(res=>{
-                        res.forEach(item=>{
-                            inEquip.push({id:item.id,name:item.equipArg.name,model:item.equipArg.model,price:item.price,serial:item.serial,productDate:item.productDate,equipArgId:item.equipArg.id,rfid:item.rfid})
+                        res.equips.forEach(item=>{
+                            price=price+item.price;
                         });
-                        this.$emit('inHouse',{equips:inEquip,note:note,error:this.missEquip})
+                        this.$emit('inHouse',{orderNumber:orderNumber,price:price,note:note,missEquips:this.missEquip})
                     })
                 }
 
@@ -472,15 +460,15 @@
                 }
             },
             handheldMachine() {
-                modifyFileName('search.json');
-                handheld((err) => this.$message.error(err)).then((data) => {
-                    let json = JSON.parse(data);
-                    this.getOutDataCopy(json.rfid);
-                    this.deleteFile();
-                    // findByRfids(json.rfid).then(res => {
-                    //     this.$refs.maintenanceEndDialog.show();
-                    // });
-                });
+                // modifyFileName('search.json');
+                // handheld((err) => this.$message.error(err)).then((data) => {
+                //     let json = JSON.parse(data);
+                //     this.getOutDataCopy(json.rfid);
+                //     this.deleteFile();
+                //     // findByRfids(json.rfid).then(res => {
+                //     //     this.$refs.maintenanceEndDialog.show();
+                //     // });
+                // });
                 //todo 要换回来
                 // let data = inventoryData;
                 // if(this.typeOperational=='出库'){
@@ -495,7 +483,7 @@
                 // }else {
                 //     this.getOutDataCopy(['222','19080012']);,20088892,20088888
                 // }
-                // this.getOutDataCopy(['19998889'])
+                this.getOutDataCopy(['00001545'])
             },
             // getOutData(data){
             //     console.log(data);
@@ -532,6 +520,7 @@
                 let group,flag=true;
                 if(this.typeOperational==='出库'){
                     group=_.groupBy(data, 'equipArg.model');
+                    console.log('getCategroy',group)
                 }else {
                     group=_.groupBy(data, 'model');
                 }

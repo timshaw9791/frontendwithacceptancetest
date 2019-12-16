@@ -63,6 +63,7 @@
     import select_apply from 'components/process/processDialog/selectApplyProcess'
     import t_dialog from 'components/process/transfer/transferDialog'
     import lookUp from './lookUp'
+    var _ = require("lodash");
     export default {
         name: 'doneuniversal',
         data() {
@@ -145,6 +146,7 @@
                 let url=`${this.url.inHouse}?taskId=${this.activeTask.id}`;
                 equipsOutInbound(url,data).then(res=>{
                     this.$message.success('操作成功');
+                    this.$emit('back',true)
                 })
             },
             outHouse(){
@@ -156,6 +158,7 @@
                 let url=`${this.url.outHouse}?taskId=${this.activeTask.id}`;
                 equipsOutInbound(url,data).then(res=>{
                    this.$message.success('操作成功');
+                   this.$emit('back',true)
                 })
             },
             sucessRefill(){
@@ -181,40 +184,7 @@
                     this.$emit('back',true)
                 })
             },
-            // getListInfo() {
-            //     let params = {includeprocessVariables: true};
-            //     doneDetail(this.listId, params).then(res => {
-            //         console.log(res);
-            //         let result = JSON.parse(JSON.stringify(res.processVariables)), mergeName = '', have = '';
-            //         this.form = {
-            //             applyOrderId: '',
-            //             applyTime: result.applyOrder.applyTime,
-            //             applyPeople: result.applyOrder.applicant.name,
-            //             note: result.applyOrder.note,
-            //             taskId: res.id,
-            //             processInstanceId: res.id
-            //         };
-            //         this.processReviewInfo();
-            //         this.mergeList(result.applyOrder.equips)
-            //     })
-            // },
-            // mergeList(array) {
-            //     let arr = JSON.parse(JSON.stringify(array)), mergeName = '', have = 0, tempList = [];
-            //     arr.forEach(equip => {
-            //         mergeName = `${equip.name}${equip.model}`
-            //         have = arr.findIndex(item => item.mergeName == mergeName)
-            //         if(have != -1) {
-            //             tempList[have].count++
-            //         } else {
-            //             tempList.push(Object.assign({}, equip, {count: 1, mergeName}))
-            //         }
-            //     });
-            //     this.list = tempList
-            //     arr = null
-            //     mergeName = null
-            //     have = null
-            //     tempList = null
-            // },
+
             processReviewInfo() {
                 let params = {processInstanceId: this.universalObj.id, includeprocessVariables: false, includeTaskprocessVariables: true},
                     lable = "";
@@ -260,8 +230,17 @@
         },
         computed:{
             isReject(){
-                let flag;
-                this.activeTask.taskDefinitionKey==='apply'?flag=true:flag=false;
+                let flag=false;
+                if(this.$route.meta.title==='我的流程'){
+                    this.activeTask.taskDefinitionKey==='apply'?flag=true:flag=false;
+                }else if(this.$route.meta.title==='待办事宜'){
+                    if(this.universalObj.name.indexOf('申请')!==-1){
+                        if(this.universalObj.processVariables.applyOrder.applicant.id===JSON.parse(localStorage.getItem("user")).id){
+                            flag=true
+                        }
+                    }
+                }
+
                 return flag
             },
             haveInHouse(){
@@ -271,7 +250,7 @@
                     inUser=this.universalObj.processVariables.applyOrder.inboundUser.id
                 }
                 if (inUser===JSON.parse(localStorage.getItem("user")).id&&this.title!=='报废'){
-                    if(this.universalObj.processVariables.inboundEquipsOrder!==null&&this.universalObj.processVariables.inboundEquipsOrder!==undefined){
+                    if(this.universalObj.processVariables.applyOrder.outboundInfo!==null&&this.universalObj.processVariables.applyOrder.outboundInfo!==undefined){
                         flag=true
                     }
                 }
@@ -284,7 +263,7 @@
                     outUser=this.universalObj.processVariables.applyOrder.outboundUser.id
                 }
                 if (outUser===JSON.parse(localStorage.getItem("user")).id){
-                    if(this.universalObj.processVariables.outboundEquipsOrder!==null){
+                    if(this.universalObj.processVariables.applyOrder.outboundInfo!==null){
                         flag=true
                     }
                 }
