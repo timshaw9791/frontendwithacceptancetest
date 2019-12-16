@@ -18,7 +18,7 @@
                       :label="item.key" :key="item.val" :value="item.val">
                     </el-option>
                   </el-select>
-                  <div class="read" @click="readerHandheld" v-show="hardware.selected == 'Handheld'">读取</div>
+                  <el-button :class="{'read': true, 'throttle':throttle}" @click="readerHandheld" :disabled="throttle" v-show="hardware.selected == 'Handheld'">读取</el-button>
                 </div>
                 <div class="operator">
                   <div class="label">操作人员： </div>
@@ -55,6 +55,7 @@ import { start, killProcess, handheld, modifyFileName } from 'common/js/rfidRead
     export default {
         data() {
             return {
+              throttle: false,
                 equipList: [],
                 typeName: '', // 显示什么类型(入库/出库)
                 hardware: {
@@ -69,7 +70,6 @@ import { start, killProcess, handheld, modifyFileName } from 'common/js/rfidRead
                   operator: ""
                 },
                 list: [],
-                haveList: [], // 存在的装备被记录
                 rfidList: [],
                 pid: '',
                 disable: false, // 提交按钮是否可用
@@ -112,6 +112,11 @@ import { start, killProcess, handheld, modifyFileName } from 'common/js/rfidRead
             },
             // 手持机读取
             readerHandheld() {
+              if(this.throttle) return
+              this.throttle = true
+              this.list = []
+              this.rfidList = []
+              setTimeout(() => this.throttle = false, 2000)
               handheld((err) => this.$message.error(err)).then(data => {
                 this.getEquipInfo(JSON.parse(data).rfid, true)
               })
@@ -251,7 +256,11 @@ import { start, killProcess, handheld, modifyFileName } from 'common/js/rfidRead
               float: right;
               background-color: #2F2F76;
               border-radius:4px;
-              cursor: pointer;
+              padding: 0;
+              border: 0;
+            }
+            .throttle {
+              background-color: #ddd;
             }
           }
         }
