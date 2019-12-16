@@ -1,16 +1,17 @@
 import request from 'common/js/request'
 import { baseURL } from 'api/config'
 
-export function readMsg(id) {
+export function readMsg(data) {
     return request({
-        url: `${baseURL}/messages/${id}/read`,
-        method: "PUT"
+        url: '/message/markReads',
+        method: "post",
+        params:data
     })
 }
 
 export function getMsgList(data) {
     return request({
-        url: `${baseURL}/messages/by-user`,
+        url: '/message/findByIdAndTitleLike',
         method: "GET",
         params: data
     })

@@ -2,8 +2,6 @@
   <div class="message">
     <div class="msgContents">
       <div>
-        <my-header title="消息中心" 
-                   ></my-header>
         <div class="top">
           <tb-select
             :options="options"
@@ -11,53 +9,65 @@
             style="margin-left: 1vw; min-width: 100px"
             @selected="selected"
           ></tb-select>
-        </div>
-        <div class="message_box">
-            <el-table :data="list" fit highlight-current-row height="3.55rem" align="center">
-                        <bos-table-column lable="标题" field="titleDesc" algin="center"></bos-table-column>
-                         <el-table-column label="内容" align="center"  min-width="'3.75rem'" fit >
-                        <template slot-scope="scope">
-                            <div >
-                            {{flexContent(scope.row.content)}}
-                            <span @click="moreContent(scope.row.content,scope.row.id)" v-if="viewFlag">[详]</span>
-                           </div>
-                        </template>
-                        </el-table-column>
-                        <bos-table-column lable="状态" field="status"></bos-table-column>
-                        <bos-table-column lable="时间" field="createTime" :filter="(row)=>$filterTime(parseInt(row.createTime))"></bos-table-column>
 
-    
-                    </el-table>
-         <servicedialog title="详情" ref="dialog1" :button="false" :ismore="true" :secondary="false">
-            <div>
-                {{this.moreCont}}
-            </div>
-        </servicedialog>
+          <div class="_buttonsLeft" style="margin-left: 1vw">
+            <!--<BosInput-->
+            <!--placeholder="装备/序号/编号/AB面"-->
+            <!--suffix="el-icon-search"-->
+            <!--v-model="inquire"-->
+            <!--:wrapforlike="true"-->
+            <!--style=" width:13vw;">-->
+            <!--</BosInput>-->
+          </div>
         </div>
-        <div>
-            <bos-paginator v-if="this.list!=''" :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
+        <div class="ulList" ref="ulList" v-loading="false" v-infinite-scroll="scrollGet" infinite-scroll-delay="500" infinite-scroll-immediate="false" infinite-scroll-distance="10">
+          <div
+            v-for="(item,index) in list"
+            :key="index"
+            @click="ulClick(item,index)"
+            class="megDiv"
+          >
+            <!-- {{item.title}} -->
+            {{fontNumber(item.title)}}
+            <div class="i" v-show="!item.readed"></div>
+            <span>{{$filterTime(item.time)}} {{conversion(item.readed)}}</span>
+          </div>
         </div>
+        <div class="tip" v-show="loading">正在加载...</div>
+        <div class="msgBottom">消息只保存三个月，请及时查看</div>
       </div>
+
+      <transition name="el-fade-in-linear">
+        <div class="contents" v-if="content">
+          <div class="title">
+            <h2>{{content.title}}</h2>
+            <h4>推送时间 : {{$filterTime(content.time)}}</h4>
+          </div>
+          <div v-html="content.content" class="msgText"></div>
+        </div>
+        <div class="mes" v-if="!content">
+          <img src="@/common/images/消息空白.png" />
+          <div>我是消息盒子,主人需要看点什么吗?</div>
+        </div>
+      </transition>
     </div>
   </div>
 </template>
 
 <script>
 import api from "gql/msg.gql";
-import servicedialog from 'components/base/serviceDialog'
 import { readMsg, getMsgList, getMsgListWithType } from "api/message";
 import { formRulesMixin } from "field/common/mixinComponent";
 import tabs from "components/base/tabs/index";
 import { transformMixin } from "common/js/transformMixin";
 import tbSelect from "components/base/tabs-select";
-import myHeader from 'components/base/header/header'
 
 export default {
   data() {
     return {
       list: [],
       userId: JSON.parse(localStorage.getItem("user")).id,
-      paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
+      page: 1,
       selectedVal: "全部",
       isSelect: false, // 判断是否是选择变动，如是则禁止scroll获取数据
       getScrollDate: true, // 如果返回值为空，则滚动不再发起请求
@@ -65,27 +75,22 @@ export default {
       content: null,
       contentTrue: null,
       inquire: "",
-      moreCont:"",
       oldScrollTop: "",
-      viewFlag:false,
-      searchTitle:'',
       options: [
         { label: "全部", value: "全部" },
-        { label: "报废", value: "报废" },
-        { label: "充电", value: "充电" },
-        { label: "保养", value: "保养" },
-        { label: "未归还", value: "未归还" },
-        { label: "过保", value: "过保" },
-        { label: "标准库存", value: "标准库存" }
+        { label: "报废", value: "EQUIP_SCRAP_MESSAGE" },
+        { label: "充电", value: "CHARGE_REMIND" },
+        { label: "保养", value: "MAINTAIN_REMIND" },
+        { label: "未归还", value: "LONG_TIME_NOT_RETURN" },
+        { label: "过保", value: "PERIOD_EXCEED_SHELF_LIFE" },
+        { label: "标准库存", value: "SAFE_SOCK_REMIND" }
       ],
     };
   },
   mixins: [formRulesMixin, transformMixin],
   components: {
     tabs,
-    tbSelect,
-    myHeader,
-    servicedialog
+    tbSelect
   },
 
   computed: {
@@ -93,75 +98,31 @@ export default {
       return this.$store.state.socket.message;
     }
   },
-//   filters: {
-//     ellipsis (value) {
-//       if (!value) return ''
-//       if (value.length > 2) {         
-//         return value.slice(0,2) 
-//       }
-//       return value
-//     }
-    
-//     },
-created(){
-  this.getList()
-},
   methods: {
-    getList() {
-        // console.log(state);
+    getList(state) {
       let data = {
-        id: JSON.parse(localStorage.getItem("user")).id,
-        page: this.paginator.page,
-        size:this.paginator.size,
-        title:this.searchTitle
+        userId: JSON.parse(localStorage.getItem("user")).id,
+        page: this.page
       };
-      console.log("data.title");
-      console.log(data.title);
-      if(data.title=="")
-      {
-          delete data.title
-      }
       getMsgList(data).then(res => {
-        this.paginator.totalPages = res.totalPages
-        this.paginator.totalElements = res.totalElements  
         this.loading = false
         let result = JSON.parse(JSON.stringify(res.content))
-        this.list=result
-        // // if(state) {
-        // //   this.list = result;
-        // // } else {
-        //   this.list.push(result)
-        // // }
-        this.list.forEach(item=>{
-            if(item.status=='false')
-            {
-                item.status='未读'
-            }else{
-                item.status='已读'
-            }
-        })
+        if(state) {
+          this.list = result;
+        } else {
+          this.list.push(result)
+        }
+        // if(res.content.length == 0) {
+        //   this.getScrollDate = false
+        // }
+        // if (this.oldScrollTop) {
+        //   this.$nextTick(() => {
+        //     this.$refs.ulList.scrollTop = this.oldScrollTop;
+        //   });
+        // }
       });
     },
-    moreContent(data,id){
-        console.log("id");
-        console.log(id);
-    this.moreCont=data,
-    this.$refs.dialog1.show();
-    this.read(id)
-    },
-    changePage(data) {
-                this.paginator.page = data;
-                this.getList()
-            },
-    flexContent(value){
-  
-    if (!value) return ''
-      if (value.length > 12) {   
-          this.viewFlag=true      
-        return value.slice(0,12)+'...' 
-      }
-      return value
-    },
+
     getListWithType(type, state) {
       let data = {
         userId: JSON.parse(localStorage.getItem('user')).id,
@@ -176,31 +137,43 @@ created(){
         } else {
           this.list.push(result)
         }
+        // if(res.content.length == 0) {
+        //   this.getScrollDate = false
+        // }
       })
     },
 
-    // scrollGet() {
-    //   if(this.isSelect) {
-    //     this.isSelect = false
-    //     return
-    //   }
-    //   this.loading = true
-    //   this.page++
-    //   if(this.selectedVal == "全部") {
-    //     this.getList(false)
-    //   } else {
-    //     this.getList(this.selectedVal, false)
-    //   }
-    // },
+    scrollGet() {
+      if(this.isSelect) {
+        this.isSelect = false
+        return
+      }
+      this.loading = true
+      // if(!this.getScrollDate) return
+      this.page++
+      if(this.selectedVal == "全部") {
+        this.getList(false)
+      } else {
+        this.getList(this.selectedVal, false)
+      }
+    },
 
 
-    read(id) {
-    //   this.oldScrollTop = this.$refs.ulList.scrollTop;
-      readMsg({
-          ids:id
-      }).then(res => {
-        // this.getList(false)
+    read(data) {
+      this.oldScrollTop = this.$refs.ulList.scrollTop;
+      readMsg(data.id).then(res => {
+        data.readed = true;
       });
+      // this.gqlMutate(api.houseUser_readMessage,
+      //     {
+      //         messageId: data.id
+      //     }, (res) => {
+      //         // 重新拉取消息数据，会刷新列表
+      //         // this.list = [];
+      //         // this.getList();
+      //         // 只改变当前消息，不会刷新列表
+      //         data.readed = true
+      //     });
     },
     ulClick(data, index) {
       if (!data.readed) {
@@ -217,21 +190,14 @@ created(){
       }
     },
     selected(data) {
-        console.log(data);
       this.isSelect = true
       this.page = 1
-      if(data=='全部')
-      {
-          this.searchTitle=''
-          console.log("111111");
-      this.getList()
-      }else{
-      this.searchTitle=data
-      this.getList()
-      }
-      
       // this.getScrollDate = true
-     
+      if (data === "全部") {
+        this.getList(true)
+      } else {
+        this.getListWithType(data, true)
+      }
     },
     fontNumber(date) {
       const length = date.length;
@@ -251,13 +217,28 @@ created(){
       }
     }
 
+    // 'this.$store.state.socket.message': {
+    //     handler(newer, older) {
+    //         console.log(newer);
+    //         console.log(older);
+    //         if (newer) {
+    //             this.qfilter = {
+    //                 combinator: 'AND',
+    //                 key: "userId",
+    //                 operator: 'LIKE',
+    //                 value: this.userId,
+    //             };
+    //             this.getList();
+    //         }
+    //     },
+    //     deep: true // 开启深度监听
+    // }
   }
 };
 </script>
 
 <style lang="scss" scoped>
 .message {
-  margin-left: 100px;
   font-size: 16px;
 }
 
@@ -268,14 +249,7 @@ created(){
     display: flex;
     align-items: center;
     padding: 0.0833rem 0;
-    text-align: center;
     border-bottom: 1px solid rgb(228, 231, 237);
-  }
-  .message_box{
-      margin:0 auto;
-      width: 1500px;
-      height: 700px;
-    //   border: 1px solid red
   }
   .left-tab {
     border-right: 2px solid rgb(228, 231, 237);
