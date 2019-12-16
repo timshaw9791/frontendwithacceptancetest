@@ -449,10 +449,11 @@
                     display: grid;
                     grid-template-rows: 130px 85px 85px;
                     .header-type {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
                         border-right: 1px solid #F0F0F0;
                         border-bottom: 1px solid #F0F0F0;
-                        text-align: center;
-                        line-height: 130px;
                         font-weight: 500;
                     }
                     .header-num {
