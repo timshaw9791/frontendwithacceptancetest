@@ -21,7 +21,7 @@
                 </div>
                 <div class="airConditioning-bottom">
                     <span v-text="'烟雾浓度报警阈值：'"></span>
-                    <input class="input" :style="smokeFlag?'border:none;':''" v-model="smokeThreshold" :disabled="smokeFlag"/><span>nppm</span>
+                    <input class="input" :style="smokeFlag?'border:none;':''" v-model="smokeThreshold" :disabled="smokeFlag"/><span>ppm</span>
                     <div @click="toSetSmokeThreshold">
                         <svg-icon icon-class="编辑" style="width: 18px;height: 18px;margin-left: 24px"></svg-icon>
                     </div>
