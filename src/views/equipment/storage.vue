@@ -103,6 +103,7 @@
                 table: {
                     labelList: [
                         {lable: '入库单号', field: 'orderNumber'},
+                        {lable: '装备名称', field: 'equips'},
                         {lable: '装备数量', field: 'count'},
                         {lable: '操作人员', field: 'operatorInfo.operator', },
                         {lable: '入库时间', filter: (row) => this.$filterTime(row.createTime)},

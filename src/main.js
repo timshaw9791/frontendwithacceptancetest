@@ -13,6 +13,7 @@ import './plugins/field';
 import '@/permission'
 import Video from 'video.js'
 import { parseTime, filterFrame } from 'common/js/index'
+import _ from 'lodash'
 Vue.prototype.$video = Video;
 
 import VideoPlayer from 'vue-video-player'
@@ -28,6 +29,7 @@ Vue.prototype.$ajax = axios;
 
 Vue.prototype.$filterTime = parseTime
 Vue.prototype.$filterFrame = filterFrame
+Vue.prototype._ = _
 
 new Vue({
     router,
