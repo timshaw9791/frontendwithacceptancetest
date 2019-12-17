@@ -12,7 +12,6 @@ import PDFJS from 'pdfjs-dist'
 import './plugins/field';
 import '@/permission'
 import Video from 'video.js'
-import { parseTime, filterFrame } from 'common/js/index'
 import _ from 'lodash'
 Vue.prototype.$video = Video;
 
