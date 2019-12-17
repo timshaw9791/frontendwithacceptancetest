@@ -11,16 +11,21 @@ import axios from 'axios';
 import PDFJS from 'pdfjs-dist'
 import './plugins/field';
 import '@/permission'
-import Video from 'video.js'
-import { parseTime, filterFrame } from 'common/js/index'
-Vue.prototype.$video = Video;
 
+import { parseTime, filterFrame } from 'common/js/index'
 import VideoPlayer from 'vue-video-player'
 
 
 
 
 Vue.use(VideoPlayer);
+
+
+
+
+
+
+
 
 
 Vue.config.productionTip = false;

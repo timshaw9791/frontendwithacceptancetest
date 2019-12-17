@@ -7,9 +7,9 @@
                     v-if="batch"
                     width="55">
             </el-table-column>
-            <bos-table-column lable="装备名称" field="equip.name"></bos-table-column>
-            <bos-table-column lable="装备序号" field="equip.serial"></bos-table-column>
-            <bos-table-column lable="架体编号" field="equip.location.number"></bos-table-column>
+            <bos-table-column lable="装备名称" field="equipArg.name"></bos-table-column>
+            <bos-table-column lable="装备序号" field="equipArg.serial"></bos-table-column>
+            <bos-table-column lable="架体编号" field="equipArg.location.number"></bos-table-column>
             <bos-table-column lable="架体AB面"
                               :filter="(row)=>surface(row.equip.location?row.equip.location.surface:'暂无')"></bos-table-column>
 

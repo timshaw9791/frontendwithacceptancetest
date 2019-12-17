@@ -1,17 +1,13 @@
 <template>
     <div class="surrounding-video">
-        <video-player width="454px" height="248px" :videoID="1"></video-player>
     </div>
 </template>
 
 <script>
-    // import myVideo from '@/components/videoPlayer/live'
-    import FlvPlayerVue from 'components/videoPlayer/FlvPlayer.vue';
     export default {
         name: "s_video",
         components:{
             // myVideo
-            "video-player": FlvPlayerVue
         },
         props:{
             videoSrc:{

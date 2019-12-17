@@ -212,12 +212,13 @@
 
 <style scoped>
     .airConditioning {
-       
+       font-size: 16px;
+        width: 4.6875rem;
         
     }
     .air_box{
-        width: 1040px;
-        height: 697px;
+      width: 100%;
+        height: 3.6302rem;
    
     }
     .airConditioning .airConditioning-body {

@@ -11,10 +11,10 @@
                     :visible.sync="innerVisible"
                     append-to-body
                     center>
-                <div class="_dialogDiv">
+                <div class="_dialogDiv" >
                     您确定要放弃本次操作吗?
                 </div>
-                <div slot="footer" class="dialog-footer">
+                <div slot="footer" class="dialog-footer" v-if="!ismore">
                     <el-button @click="innerVisible = false" data-test="button">取 消</el-button>
                     <el-button type="primary" @click="cancel" data-test="button">确 定</el-button>
                 </div>
@@ -56,6 +56,10 @@
             confirmInfo: {
                 type: String,
                 default: "确 定"
+            },
+            ismore:{
+                type: Boolean,
+                default: false
             }
         },
         methods: {
