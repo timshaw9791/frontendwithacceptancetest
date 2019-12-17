@@ -403,7 +403,7 @@
                     serialList = [];
                     this.list.forEach(equip => {
                         rfidList.push(equip.rfid)
-                        serialList.push(equip.serial==''?'""':equip.serial)
+                        serialList.push(['', undefined, null].includes(equip.serial)?'""':equip.serial)
                     })
                     console.log(rfidList);
                     console.log(serialList);

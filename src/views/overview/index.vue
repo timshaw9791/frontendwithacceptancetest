@@ -215,13 +215,12 @@
                 }
                 Promise.all([findEquipsNeedChange(), findByOneLine()]).then(res => {
                     Promise.all([handheld(res[0], "statisticsEquip.json"), handheld(res[1], "allEquip.json")]).then(state => {
-                        console.log(state);
                         this.loading = false
                         this.$message.success(typeof state == 'object'?state[0]:state)
                     }).catch(err => {
                         console.log(err);
                         this.loading = false
-                        this.$message.error(typeof err == 'object'?err[0]:err)
+                        this.$message.error(err)
                     })
                 })
                 // findEquipsNeedChange().then(res => {
