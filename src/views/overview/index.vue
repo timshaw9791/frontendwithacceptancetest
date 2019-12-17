@@ -1,5 +1,5 @@
 <template>
-    <div class="overview" v-loading="loading" element-loading-text="正在同步中">
+    <div class="overview" v-loading="loading" element-loading-text="正在导入中...">
         <el-card shadow="never" :body-style="{ padding:'0.156rem'}">
             <div class="topRemind">
                 <div class="remind-box" v-for="(item, i) in topRemindList" :key="i" @click="toOther(item.key)">
@@ -120,7 +120,7 @@
                     tag: "到期报废提醒"
                 },{
                     key: 'SYNC',
-                    tag: "同步手持机"
+                    tag: "导入手持机"
                 }],
                 toDoList: [{
                     info: "调拨流程申请-王小明",
@@ -206,7 +206,7 @@
                     return new Promise((reslove, reject) => {
                         writeFile(data, cbData => {
                             if(cbData.state) {
-                                reslove("同步成功")
+                                reslove("导入成功")
                             } else {
                                 reject(cbData.message)
                             }
@@ -473,6 +473,7 @@
                         align-items: center;
                         border-right: 1px solid #F0F0F0;
                         border-bottom: 1px solid #F0F0F0;
+                        padding: 0 13px;
                         font-weight: 500;
                     }
                     .header-num {
