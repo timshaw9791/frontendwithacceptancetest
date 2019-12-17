@@ -344,10 +344,6 @@
             },
             /* 判断两次数据是否相等 */
             isEqual() {
-                let a = JSON.stringify(this.form) == JSON.stringify(this.judgeEdit);
-                console.log(a);
-                console.log(JSON.stringify(this.form));
-                console.log(JSON.stringify(this.judgeEdit));
                 return JSON.stringify(this.form) == JSON.stringify(this.judgeEdit)
             },
             // 弹窗点击确认后退出

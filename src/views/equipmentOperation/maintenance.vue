@@ -602,6 +602,7 @@
 
     .fold_body::-webkit-scrollbar-track { /*滚动条里面轨道*/
         -webkit-box-shadow: #F5F5F5;
+        box-shadow: #F5F5F5;
         border-radius: 10px;
         background: #F5F5F5;
     }
