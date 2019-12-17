@@ -373,6 +373,7 @@ export default {
                 name: name,
                 typeName: 'MP4'
             };
+            console.log(this.insData);
             this.title=data.name+data.model
             this.viewStatus.rMFlag = false;
             this.viewStatus.insFlag = true;
