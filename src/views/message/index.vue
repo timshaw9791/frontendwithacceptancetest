@@ -71,12 +71,12 @@ export default {
       searchTitle:'',
       options: [
         { label: "全部", value: "全部" },
-        { label: "报废", value: "报废" },
-        { label: "充电", value: "充电" },
-        { label: "保养", value: "保养" },
-        { label: "未归还", value: "未归还" },
-        { label: "过保", value: "过保" },
-        { label: "标准库存", value: "标准库存" }
+        { label: "报废", value: "EQUIP_SCRAP_MESSAGE" },
+        { label: "充电", value: "CHARGE_REMIND" },
+        { label: "保养", value: "MAINTAIN_REMIND" },
+        { label: "未归还", value: "LONG_TIME_NOT_RETURN" },
+        { label: "过保", value: "PERIOD_EXCEED_SHELF_LIFE" },
+        { label: "标准库存", value: "SAFE_SOCK_REMIND" }
       ],
     };
   },
