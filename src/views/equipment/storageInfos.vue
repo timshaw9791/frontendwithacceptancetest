@@ -62,12 +62,12 @@
                                          :rules="r(true).all(R.integer)" prop="shelfLifeQ"></field-input>
 
                             <field-input v-model="form.chargeCycle" label="充电周期(天)" width="3"
-                                         :rules="r(true).all(R.num)" prop="chargeCycle"
+                                         :rules="r(false).all(R.num)" prop="chargeCycle"
                                          :disabled="edit"
                             ></field-input>
 
                             <field-input v-model="form.upkeepCycle" label="保养周期(天)" width="3"
-                                         :rules="r(true).all(R.num)" prop="upkeepCycle"
+                                         :rules="r(false).all(R.num)" prop="upkeepCycle"
                                          :disabled="edit"
                             ></field-input>
 
@@ -742,8 +742,8 @@
                 let temp = this.equipment.allEquip.find(equip => equip.model == this.form.model)
                 this.form = Object.assign(this.form, {
                     shelfLifeQ: temp.shelfLife/1000/3600/24,
-                    chargeCycle: temp.chargeCycle/1000/3600/24,
-                    upkeepCycle: temp.upkeepCycle/1000/3600/24,
+                    chargeCycle: temp.chargeCycle==0?'':temp.chargeCycle/1000/3600/24,
+                    upkeepCycle: temp.upkeepCycle==0?'':temp.upkeepCycle/1000/3600/24,
                     vendorId: temp.supplier.name,
                     personM: temp.supplier.person,
                     phoneM: temp.supplier.phone,
@@ -814,8 +814,8 @@
                             serial: result.serial == '""'?'':result.serial,
                             image: `${imgBaseUrl}${result.image}`,
                             shelfLifeQ: result.equipArg.shelfLife/1000/3600/24,
-                            chargeCycle: result.equipArg.chargeCycle/1000/3600/24,
-                            upkeepCycle: result.equipArg.upkeepCycle/1000/3600/24,
+                            chargeCycle: result.equipArg.chargeCycle==0?'':result.equipArg.chargeCycle/1000/3600/24,
+                            upkeepCycle: result.equipArg.upkeepCycle==0?'':result.equipArg.upkeepCycle/1000/3600/24,
                             supplierId: result.equipArg.supplier.id,
                             vendorId: result.equipArg.supplier.name,
                             personM: result.equipArg.supplier.person,
@@ -840,8 +840,8 @@
                         model: tempForm.model,
                         image: `${imgBaseUrl}${tempForm.image}`,
                         shelfLifeQ: tempForm.shelfLife/1000/3600/24,
-                        upkeepCycle: tempForm.upkeepCycle/1000/3600/24,
-                        chargeCycle: tempForm.chargeCycle/1000/3600/24,
+                        upkeepCycle: tempForm.upkeepCycle==0?'':tempForm.upkeepCycle/1000/3600/24,
+                        chargeCycle: tempForm.chargeCycle==0?'':tempForm.chargeCycle/1000/3600/24,
                         vendorId: tempForm.supplier.name,
                         personM: tempForm.supplier.person,
                         phoneM: tempForm.supplier.phone,
