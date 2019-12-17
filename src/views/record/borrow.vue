@@ -64,7 +64,7 @@
                         {lable: '领取/归还时间', field: 'createTime', filter: (ns) => this.$filterTime(ns.createTime), sort: false}
                     ],
                     tableAction:{
-                        label:'监控视频',
+                        label:'操作',
                         button:[{name:'查看',type:'primary'},{name:'监控',type:'primary'}]
                     },
                     flag:false
