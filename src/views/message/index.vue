@@ -2,33 +2,44 @@
   <div class="message">
     <div class="msgContents">
       <div>
-        <my-header title="消息中心" 
+        <my-header title="消息通知" 
                    ></my-header>
         <div class="top">
-          <tb-select
+          <!-- <tb-select
             :options="options"
             indexDefault="全部"
             style="margin-left: 1vw; min-width: 100px"
             @selected="selected"
-          ></tb-select>
+          ></tb-select> -->
+          <div style="width:200px;cursor: pointer;">
+          <el-input v-model="msgTitle" placeholder="消息标题"></el-input>
+          </div>
+          <!-- <span class="msgReaded">
+            标记为已读
+          </span>
+          <span class="msgRead">
+            标记为未读
+          </span> -->
         </div>
         <div class="message_box">
-            <el-table :data="list" fit highlight-current-row height="3.55rem" align="center">
-                        <bos-table-column lable="标题" field="titleDesc" algin="center"></bos-table-column>
-                         <el-table-column label="内容" align="center"  min-width="'3.75rem'" fit >
+            <el-table :data="list"  highlight-current-row height="3.55rem" align="center">
+                        <bos-table-column lable="消息状态" field="status"></bos-table-column>
+                        <bos-table-column lable="通知时间" field="createTime" :filter="(row)=>$filterTime(parseInt(row.createTime))"></bos-table-column>
+                        <bos-table-column lable="消息标题" field="titleDesc" algin="center"></bos-table-column>
+                        <el-table-column label="消息内容" align="center"  min-width="'3.75rem'" fit >
                         <template slot-scope="scope">
                             <div >
                             {{flexContent(scope.row.content)}}
-                            <span @click="moreContent(scope.row.content,scope.row.id)" v-if="viewFlag">[详]</span>
+                            <span @click="moreContent(scope.row.content,scope.row.id)" v-if="viewFlag" style="cursor: pointer;">[详]</span>
                            </div>
                         </template>
                         </el-table-column>
-                        <bos-table-column lable="状态" field="status"></bos-table-column>
-                        <bos-table-column lable="时间" field="createTime" :filter="(row)=>$filterTime(parseInt(row.createTime))"></bos-table-column>
+                        
+                        
 
     
                     </el-table>
-         <servicedialog title="详情" ref="dialog1" :button="false" :ismore="true" :secondary="false">
+         <servicedialog title="详情" ref="dialog1" :button="false" :ismore="true" :secondary="false" width="500">
             <div>
                 {{this.moreCont}}
             </div>
@@ -69,6 +80,7 @@ export default {
       oldScrollTop: "",
       viewFlag:false,
       searchTitle:'',
+      msgTitle:'',
       options: [
         { label: "全部", value: "全部" },
         { label: "报废", value: "EQUIP_SCRAP_MESSAGE" },
@@ -249,6 +261,10 @@ created(){
       if (newer) {
         this.getList(true);
       }
+    },
+    msgTitle(newVal){
+      this.searchTitle=newVal;
+      this.getList()
     }
 
   }
@@ -389,6 +405,22 @@ created(){
     .msgText {
       padding: 40px 0 0 28px;
     }
+  }
+  .msgReaded{
+    margin-left:15px;
+    width:112px;
+    height:40px;
+    background:rgba(47,47,118,1);
+    opacity:1;
+    border-radius:4px;
+  }
+  .msgRead{
+    margin-left:15px;
+    width:112px;
+    height:40px;
+    background:rgba(47,47,118,1);
+    opacity:1;
+    border-radius:4px;
   }
   .mes {
     width: 100%;
