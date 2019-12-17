@@ -266,14 +266,7 @@
                 index: 0, // 标识当前扫入是否是第一件装备
                 com: 0,
                 copyRfidList: {},
-                judgeEdit: { // 判断是否对数据进行修改
-                    form: {
-                        videoAddresses: [],
-                        documentAddresses: [],
-                        imageAddress: 'noImg.jpg',
-                    },
-                    zbForm: {}
-                },
+                judgeEdit: {},// 判断是否对数据进行修改
                 isClick: false, // 避免提交按钮快速点击
             }
         },
@@ -338,36 +331,28 @@
                 this.index = 0
                 this.hardwareOpen = false
             },
-            //离开页面以后为父组件抛出black 杀死进程
+            //离开页面
             black() {
-                // let flag = this.isEqual();
-                // if(flag) {
-                //     // killProcess(this.pid)
-                //     this.judgeEdit = {
-                //         form: {
-                //             videoAddresses: [],
-                //             documentAddresses: [],
-                //             imageAddress: 'noImg.jpg',
-                //         },
-                //         zbForm: {}
-                //     };
-                    
+                if(this.title.includes('新增装备参数') && !this.isEqual() || this.title.includes('装备参数详情') && !this.edit) {
+                    this.$refs.dialog.show()
+                } else {
                     if(this.title.includes('入库装备')) {
                         killProcess(this.pid)
                     }
                     this.$emit('black');
-                // } else {
-                //     this.$refs.dialog.show();
-                // }
-                //killProcess();
+                }
             },
-
-
             /* 判断两次数据是否相等 */
             isEqual() {
-                let flag1 = JSON.stringify(this.form) == JSON.stringify(this.judgeEdit.form)
-                let flag2 = JSON.stringify(this.zbForm) == JSON.stringify(this.judgeEdit.zbForm)
-                return flag1&&flag2;
+                let a = JSON.stringify(this.form) == JSON.stringify(this.judgeEdit);
+                console.log(a);
+                console.log(JSON.stringify(this.form));
+                console.log(JSON.stringify(this.judgeEdit));
+                return JSON.stringify(this.form) == JSON.stringify(this.judgeEdit)
+            },
+            // 弹窗点击确认后退出
+            dialogConfirm() {
+                this.$emit('black');
             },
 
             //点击提交后 根据从什么入口进入的执行对应的  新增  入库  装备基础信息修改 装备入库信息修改
@@ -655,25 +640,6 @@
                 }
                 return '';
             },
-
-            dialogConfirm() {
-                console.log(this.$route);
-               if(this.$route.name=='warehouse/info'){
-
-               }else {
-                  killProcess(this.pid);
-               }
-                this.judgeEdit = {
-                    form: {
-                        videoAddresses: [],
-                        documentAddresses: [],
-                        imageAddress: 'noImg.jpg',
-                    },
-                    zbForm: {}
-                },
-                this.$emit('black', true);
-            },
-
 
             //选择供应商后更新 对应信息
             vendor(data) {
@@ -989,6 +955,7 @@
                 
             } else if (this.title.includes('新增装备参数')) {
                 this.edit = false;
+                this.judgeEdit = JSON.parse(JSON.stringify(this.form))
             } else if (this.title.includes('装备参数详情')) {
                 
             }

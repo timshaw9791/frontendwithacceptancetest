@@ -225,7 +225,7 @@ export function writeFile(content, cb, fileName) {
             if(code == 0) {
                 cb({state: true, message: "同步手持机成功"})
             } else {
-                cb({state: false, message: `命令发生错误，退出码${code}`})
+                cb({state: false, message: `手持机连接失败，退出码${code}`})
             }
         }
         console.log('out code: ' + code);
