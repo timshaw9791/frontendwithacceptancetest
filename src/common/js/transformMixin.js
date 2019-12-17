@@ -62,7 +62,7 @@ export const transformMixin = {
                  type='逾期:';
              }else {};
              if(Math.abs(cahrgeDay)<1){
-                 cahrgeDay='不足一天'
+                 cahrgeDay='不足一'
              }else {
                  cahrgeDay=Math.round(cahrgeDay)
              }

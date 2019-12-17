@@ -35,14 +35,14 @@
                     </el-table-column>
                     <bos-table-column lable="RFID" field="rfid"></bos-table-column>
                     <bos-table-column lable="装备序号" field="serial"></bos-table-column>
-                    <bos-table-column lable="装备名称" field="name"></bos-table-column>
-                    <bos-table-column lable="装备型号" field="model"></bos-table-column>
+                    <bos-table-column lable="装备名称" field="equipArg.name"></bos-table-column>
+                    <bos-table-column lable="装备型号" field="equipArg.model"></bos-table-column>
                     <bos-table-column lable="装备位置"
-                                      :filter="(row)=>surface(row)"></bos-table-column>
-                    <bos-table-column lable="供应商" field="supplier.name"></bos-table-column>
-                    <bos-table-column lable="联系人" field="supplier.person"></bos-table-column>
-                    <bos-table-column lable="联系方式" field="supplier.phone"></bos-table-column>
-                    <bos-table-column lable="维修时长" :filter="(row)=>repairTime(row.repairTime)"></bos-table-column>
+                                      :filter="(row)=>surface(row.location)"></bos-table-column>
+                    <bos-table-column lable="供应商" field="equipArg.supplier.name"></bos-table-column>
+                    <bos-table-column lable="联系人" field="equipArg.supplier.person"></bos-table-column>
+                    <bos-table-column lable="联系方式" field="equipArg.supplier.phone"></bos-table-column>
+                    <bos-table-column lable="维修时长" :filter="(row)=>repairTime(row.repairIngTime)"></bos-table-column>
                     <!--<bos-table-column lable="上次维修时间" field="time" :filter="(row) => this.$filterTime(row.receiveTime)"></bos-table-column>-->
                     <el-table-column label="操作" align="center" width="200">
                         <template slot-scope="scope">

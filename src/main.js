@@ -13,7 +13,12 @@ import './plugins/field';
 import '@/permission'
 
 import { parseTime, filterFrame } from 'common/js/index'
+import VideoPlayer from 'vue-video-player'
 
+
+
+
+Vue.use(VideoPlayer);
 
 
 

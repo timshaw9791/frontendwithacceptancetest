@@ -140,7 +140,8 @@
 
 <style scoped>
     .dehumidification {
-        
+        font-size: 16px;
+        width: 4.6875rem;
     }
 
     .dehumidification .dehumidification-body {
@@ -164,8 +165,8 @@
     }
     .hum_box{
         /* border:1px solid red; */
-        width: 1040px;
-        height: 698px;
+        width: 100%;
+        height: 3.6302rem;
    
     }
     .dehumidification-box{
