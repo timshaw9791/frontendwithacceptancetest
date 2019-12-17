@@ -28,7 +28,7 @@
                 <div class="title-item" style="margin-left: 73px">
                     <span v-text="'未盘点数'"></span>
                     <span style="margin-left: 23px" v-text="overview.notCount"></span>
-                    <span v-text="'(出库数量'"></span>
+                    <span v-text="'(领用数量'"></span>
                     <span style="margin-left: 5px" v-text="overview.outHouseCount"></span><span v-text="')'"></span>
                 </div>
             </div>

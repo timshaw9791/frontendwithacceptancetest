@@ -77,10 +77,16 @@
                     this.list=[];
                     this.list=res.content.map(item => {
                         if(item.serial == '""') {
-                            return Object.assign({}, item, {serial: ''})
-                        } else {
-                            return item
+                            item = Object.assign({}, item, {serial: ''})
+                        } else if(item.equipInOutHouseDetails) {
+                            let arr = [], str = null;
+                            item.equipInOutHouseDetails.forEach(item => {
+                                arr.push(item.name)
+                            })
+                            //str = this._.truncate(this._.uniq(arr).join(','), {'length': 24,'separator': /,? +/})
+                            item = Object.assign({}, item, {equips: this._.truncate(this._.uniq(arr).join(','), {'length': 9,'separator': /,? +/})})
                         }
+                        return item
                     });
                     this.paginator.totalPages=res.totalPages
                 })

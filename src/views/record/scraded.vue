@@ -64,8 +64,8 @@
                         {lable: '备注', field: 'categoryCn', sort: false},
                     ],
                     tableAction:{
-                        label:'详情',
-                        button:[{name:'查看',type:'primary'}]
+                        label:'操作',
+                        button:[{name:'详情',type:'primary'}]
                     },
                     flag:false
                 },
