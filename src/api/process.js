@@ -3,6 +3,21 @@ import {baseBURL} from "./config";
 
 
 
+export function findInHouseNumberLike(params) {
+    return request({
+        url: `/inouthouse/findInHouseNumberLike?`,
+        method: 'get',
+        params:params
+    })
+}
+export function findOutHouseNumberLike(params) {
+    return request({
+        url: `/inouthouse/findOutHouseNumberLike?`,
+        method: 'get',
+        params:params
+    })
+}
+
 export function checkUser(params) {
     return request({
         url: `${baseBURL}/workflow/check-user?`,
