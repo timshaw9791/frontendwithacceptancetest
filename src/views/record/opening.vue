@@ -53,8 +53,8 @@
                     ],
                     search:'',
                     tableAction:{
-                        label:'监控视频',
-                        button:[{name:'查看',type:'primary'}]
+                        label:'操作',
+                        button:[{name:'视频',type:'primary'}]
                     },
                 },
                 time:'',

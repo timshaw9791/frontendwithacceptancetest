@@ -1,5 +1,5 @@
 <template>
-    <div class="overview" v-loading="loading_1 && loading_2" element-loading-text="正在同步中">
+    <div class="overview" v-loading="loading" element-loading-text="正在导入中...">
         <el-card shadow="never" :body-style="{ padding:'0.156rem'}">
             <div class="topRemind">
                 <div class="remind-box" v-for="(item, i) in topRemindList" :key="i" @click="toOther(item.key)">
@@ -119,7 +119,7 @@
                     tag: "到期报废提醒"
                 },{
                     key: 'SYNC',
-                    tag: "同步手持机"
+                    tag: "导入手持机"
                 }],
                 toDoList: [{
                     info: "调拨流程申请-王小明",
@@ -149,8 +149,7 @@
                 inventoryList: [],
                 totalCanUse: 0,
                 totalIsUse: 0,
-                loading_1: false, // 手持机同步等待
-                loading_2: false,
+                loading: false,
                 showCircular: true, // 个数超过8个则不显示
             }
         },
@@ -202,33 +201,54 @@
                 })
             },
             syncHandheld() {
-                findEquipsNeedChange().then(res => {
-                    writeFile(res, cbData => {
-                        this.loading_1 = false
-                        if(cbData.state) {
-                            this.$message.success("统计装备信息同步成功")
-                        } else {
-                            this.$message.error(cbData.message)
-                        }
-                    }, "statisticsEquip.json")
-                }).catch(err => {
-                    this.loading_1 = false
-                    this.$message.error(err.response.message)
+                function handheld(data, filename, cb) {
+                    return new Promise((reslove, reject) => {
+                        writeFile(data, cbData => {
+                            if(cbData.state) {
+                                reslove("导入成功")
+                            } else {
+                                reject(cbData.message)
+                            }
+                        }, filename)
+                    })
+                }
+                Promise.all([findEquipsNeedChange(), findByOneLine()]).then(res => {
+                    Promise.all([handheld(res[0], "statisticsEquip.json"), handheld(res[1], "allEquip.json")]).then(state => {
+                        this.loading = false
+                        this.$message.success(typeof state == 'object'?state[0]:state)
+                    }).catch(err => {
+                        console.log(err);
+                        this.loading = false
+                        this.$message.error(err)
+                    })
                 })
+                // findEquipsNeedChange().then(res => {
+                //     writeFile(res, cbData => {
+                //         this.loading_1 = false
+                //         if(cbData.state) {
+                //             this.$message.success("统计装备信息同步成功")
+                //         } else {
+                //             this.$message.error(cbData.message)
+                //         }
+                //     }, "statisticsEquip.json")
+                // }).catch(err => {
+                //     this.loading_1 = false
+                //     this.$message.error(err.response.message)
+                // })
 
-                findByOneLine().then(res => {
-                    writeFile(res, cbData => {
-                        this.loading_2 = false
-                        if(cbData.state) {
-                            this.$message.success("所有装备信息同步成功")
-                        } else {
-                            this.$message.error(cbData.message)
-                        }
-                    }, "allEquip.json")
-                }).catch(err => {
-                    this.loading_2 = false
-                    this.$message.error(err.response.message)
-                })
+                // findByOneLine().then(res => {
+                //     writeFile(res, cbData => {
+                //         this.loading_2 = false
+                //         if(cbData.state) {
+                //             this.$message.success("所有装备信息同步成功")
+                //         } else {
+                //             this.$message.error(cbData.message)
+                //         }
+                //     }, "allEquip.json")
+                // }).catch(err => {
+                //     this.loading_2 = false
+                //     this.$message.error(err.response.message)
+                // })
             },
             toOther(key) {
                 switch (key) {
@@ -245,8 +265,7 @@
                         this.$router.push({name: 'warehouse/expired'})
                         break;
                     case 'SYNC':
-                        this.loading_1 = true
-                        this.loading_2 = true
+                        this.loading = true
                         this.syncHandheld()
                         break;
                     default:
@@ -453,6 +472,7 @@
                         align-items: center;
                         border-right: 1px solid #F0F0F0;
                         border-bottom: 1px solid #F0F0F0;
+                        padding: 0 13px;
                         font-weight: 500;
                     }
                     .header-num {

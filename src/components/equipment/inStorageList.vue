@@ -201,7 +201,7 @@ import { start, killProcess, handheld, modifyFileName } from 'common/js/rfidRead
         created() {
           modifyFileName("search.json")
           this.typeName = this.title.slice(0, 2)
-          this.hardware.operator = JSON.parse(localStorage.getItem('user')).username
+          this.hardware.operator = JSON.parse(localStorage.getItem('user')).name
           if(!this.title.includes("出库装备")) {
             this.equipList = {
               orderNumber: this.equipData.orderNumber,
