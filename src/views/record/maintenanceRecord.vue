@@ -54,8 +54,8 @@
                     ],
                     search:'',
                     tableAction:{
-                        label:'详情',
-                        button:[{name:'查看',type:'primary'}]
+                        label:'操作',
+                        button:[{name:'详情',type:'primary'}]
                     },
                 },
                 time:'',

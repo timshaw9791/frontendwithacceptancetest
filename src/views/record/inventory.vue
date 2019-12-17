@@ -55,12 +55,12 @@
                         {lable: '操作人员', field: 'operatorInfo.operator',sort:false},
                         {lable: '盘点总数', field: 'inventoryCount',sort:false},
                         {lable: '未盘点数', field: 'notCount',sort:false},
-                        {lable: '出库数量', field: 'outHouseCount',sort:false},
+                        {lable: '领用数量', field: 'outHouseCount',sort:false},
                     ],
                     search:'',
                     tableAction:{
-                        label:'详情',
-                        button:[{name:'查看',type:'primary'}]
+                        label:'操作',
+                        button:[{name:'详情',type:'primary'}]
                     },
                 },
                 time:'',
