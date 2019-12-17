@@ -2,7 +2,7 @@
     <div style="width: 180px;margin-left: 40px;margin-top: 20px">
         <surrounding-card :header="(index+1)+'号空调'" :height="39">
             <div class="lighting-control-body">
-                 <svg-icon icon-class="空调图标" style="width: 70px;height: 48px"></svg-icon>
+                 <svg-icon icon-class="空调" style="width: 70px;height: 48px"></svg-icon>
                     <span v-text="'空调控制'" style="margin-top: 19px"></span>
                     <switch-control :active="refrigerationActive" :inactive="refrigerationInactive" :status="refrigeration" style="margin-top: 31px" @handleChange="refrigerationControl"></switch-control>
                     <switch-control :active="hotActive" :inactive="hotInactive" :status='hot' style="margin-top: 16px"  @handleChange="hotControl"></switch-control>
