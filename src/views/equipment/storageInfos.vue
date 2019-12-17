@@ -363,29 +363,30 @@
                     let tempForm = JSON.parse(JSON.stringify(this.form)),
                         tempZbForm = JSON.parse(JSON.stringify(this.zbForm)),
                         requestBody = {
-                        equipArg: {
-                            chargeCycle: tempForm.chargeCycle*1000*3600*24,
-                            upkeepCycle: tempForm.upkeepCycle*1000*3600*24,
-                            id: tempForm.id,
-                            model: tempForm.model,
-                            name: tempForm.name,
-                            shelfLife: tempForm.shelfLifeQ*1000*3600*24,
+                            equipArg: {
+                                chargeCycle: tempForm.chargeCycle*1000*3600*24,
+                                upkeepCycle: tempForm.upkeepCycle*1000*3600*24,
+                                id: tempForm.id,
+                                model: tempForm.model,
+                                name: tempForm.name,
+                                shelfLife: tempForm.shelfLifeQ*1000*3600*24,
+                            },
+                            location: {
+                                floor: tempZbForm.floorL,
+                                number: tempZbForm.numberL,
+                                section: tempZbForm.sectionL,
+                                surface: tempZbForm.surfaceL
+                            },
+                            price: tempZbForm.price * 100,
+                            productDate: tempZbForm.productDateQ
                         },
-                        location: {
-                            floor: tempZbForm.floorL,
-                            number: tempZbForm.numberL,
-                            section: tempZbForm.sectionL,
-                            surface: tempZbForm.surfaceL
-                        },
-                        price: tempZbForm.price * 100,
-                        productDate: tempZbForm.productDateQ
-                    },
-                    rfidList = [],
-                    serialList = [];
+                        rfidList = [],
+                        serialList = [];
                     this.list.forEach(equip => {
                         rfidList.push(equip.rfid)
                         serialList.push(['', undefined, null].includes(equip.serial)?'""':equip.serial)
                     })
+                    console.log(this.list);
                     console.log(rfidList);
                     console.log(serialList);
                     this.$refs.form.validate.then(() => {
@@ -395,8 +396,7 @@
                         }, requestBody, (state, res) => {
                             // 关闭硬件
                             killProcess(this.pid)
-                            this.pid = ''
-                            this.hardwareOpen = false
+                            this.init()
                             this.$message.success("入库成功")
                             this.$emit('black')  
                         })
