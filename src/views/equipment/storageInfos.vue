@@ -489,148 +489,6 @@
                         this.$message.error('未通过检验');
                     })
                 }
-                // if (this.title.includes('新增')) {
-                //     this.form.videoAddresses ? this.form.videoAddresses = this.form.videoAddresses.join(',') : '';
-                //     this.form.documentAddresses ? this.form.documentAddresses = this.form.documentAddresses.join(',') : '';
-                //     this.form.name = this.form.name.trim()
-                //     this.form.model = this.form.model.trim()
-                //     let newData = JSON.parse(JSON.stringify(this.form));
-                //     newData.upkeepCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.upkeepCycle)));
-                //     newData.chargeCycle = this.dayToMilli(JSON.parse(JSON.stringify(this.form.chargeCycle)));
-                //     this.$refs.form.ajaxValidate({
-                //         url: '/equip-args',
-                //         method: 'post',
-                //         params:{
-                //             supplierId: this.form.vendorId ? this.form.vendorId : '',
-                //             categoryId: this.form.nameId ? this.form.nameId[1] : '',
-                //         },
-                //         data:newData
-                //     }, (res) => {
-                //         this.dialogConfirm();
-                //         this.$message.success("添加成功")
-                //     },(err)=>{
-                //         this.$message.error(err.response.data.message);
-                //     });
-
-                // } else if (this.title.includes('信息查看')) {
-                //     let modifyForm = JSON.parse(JSON.stringify(this.form));
-                //     modifyForm.videoAddresses ? modifyForm.videoAddresses = modifyForm.videoAddresses.join(',') : '';
-                //     modifyForm.documentAddresses ? modifyForm.documentAddresses = modifyForm.documentAddresses.join(',') : '';
-                //     modifyForm.supplier.id ? this.form.supplier.id = this.form.vendorId : '';
-                //     modifyForm.name = modifyForm.name.trim();
-                //     modifyForm.model = modifyForm.model.trim();
-
-
-                //     let newData = JSON.parse(JSON.stringify(modifyForm));
-
-                //     newData.upkeepCycle = this.dayToMilli(JSON.parse(JSON.stringify(modifyForm.upkeepCycle)));
-                //     newData.chargeCycle = this.dayToMilli(JSON.parse(JSON.stringify(modifyForm.chargeCycle)));
-
-
-                //     this.$refs.form.ajaxValidate({
-                //         url: '/equip-args',
-                //         method: 'put',
-                //         params:{
-                //             categoryId: this.form.nameId ? this.form.nameId[1] : '',
-                //         },
-                //         data:newData
-                //     },  (res) => {
-                //         console.log(res);
-                //         this.$message.success('修改成功')
-                //         this.dialogConfirm();
-
-                //         // this.callback('添加成功!');
-                //     },
-                //         (err)=>{
-                //             this.$message.error(err.response.data.message);
-                //         })
-                // } else if (this.title.includes('入库')) {
-                //     if(this.list[0].rfid == null) {
-                //         this.$message.error("请扫入RFID")
-                //         return
-                //     }
-
-
-                //     this.$refs.form.validate.then((res1) => {
-                //         this.zbForm['location'] = {
-                //             number: Number(this.zbForm.numberL),
-                //             surface: this.zbForm.surfaceL,
-                //             floor: Number(this.zbForm.floorL),
-                //             section: Number(this.zbForm.sectionL),
-                //         };
-                //         this.zbForm['quality'] = {
-                //             shelfLife: this.zbForm.shelfLifeQ * 24 * 60 * 60 * 1000,
-                //             productDate: this.zbForm.productDateQ,
-                //         };
-                //         let equipList=[];
-                //         this.list.forEach(item=>{
-                //             equipList.push({
-                //                 rfid: item['rfid'],
-                //                 serial: item['serial'] == '' ? null : item['serial'],
-                //                 location: this.zbForm.location,
-                //                 quality: this.zbForm.quality,
-                //                 price: this.form.price * 100
-                //             })
-                //         });
-                //         this.$refs.zbForm.ajaxValidate({
-                //             url: '/equips/import',
-                //             method: 'post',
-                //             params:{
-                //                 equipArgId: this.form.nameId[2]
-                //             },
-                //             data:equipList
-                //         }, (res) => {
-                //             this.$message.success('入库成功');
-                //             //spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
-                //             killProcess(this.pid);
-                //             this.$emit('black', true);
-                //         }, (errs) => {
-                //             console.log('errs', errs);
-                //             let newData = [],
-                //                 oldData = String(errs).split('[');
-                //             for (let j = 1; j < oldData.length; j++) {
-                //                 if (oldData[j].includes(']')) {
-                //                     newData = oldData[j].split(']')[0].split(',').map(res => {
-                //                         return res.trim();
-                //                     });
-                //                 }
-                //             }
-                //             newData.forEach(value => {
-                //                 this.list.some(value1 => {
-                //                     if (value === value1['rfid']) {
-                //                         this.$set(value1, 'style', true);
-                //                         return true
-                //                     }
-                //                 })
-                //             });
-                //             //console.log(newData);
-                //             //console.log(this.list);
-                //         })
-
-                //     }).catch(err => {
-                //         this.$message.error('未通过检验');
-                //     })
-
-                // } else if (this.title.includes('装备查看')) {
-                //     this.zbForm['location'] = {
-                //         number: Number(this.zbForm.numberL),
-                //         surface: this.zbForm.surfaceL,
-                //         floor: Number(this.zbForm.floorL),
-                //         section: Number(this.zbForm.sectionL),
-                //     };
-                //     this.zbForm['quality'] = {
-                //         shelfLife: this.zbForm.shelfLifeQ * 24 * 60 * 60 * 1000,
-                //         productDate: this.zbForm.productDateQ,
-                //     };
-                //     this.$refs.zbForm.ajax(api.admin_saveEquipInfo, {
-                //         equipId: this.equipId,
-                //         location: this.zbForm.location,
-                //         quality: this.zbForm.quality,
-                //     }, (res) => {
-                //         this.$message.success('修改成功');
-                //         this.$emit('black', true);
-                //     })
-                // }
             },
 
 
@@ -659,20 +517,6 @@
             successUp(data) {
                 this.form.imageAddress = data;
             },
-
-            //选择完装备后执行 显示对应数据 和开启读卡器的使用
-
-            //点击编辑后状态改变
-            editClick() {
-                
-            },
-
-            // qaq(row) {
-            //     if (row.$index === this.list.length - 1) {
-            //         this.list.push({id: this.list.length});
-            //     }
-            // },
-
 
             // 复制RFID
             copyRfid() {
@@ -813,132 +657,7 @@
                         phoneM: tempForm.supplier.phone,
                         supplierId: tempForm.supplier.id
                     }
-                    // equipArgsByName({name: this.equipName}).then(res => {
-                    //     let result = JSON.parse(JSON.stringify(res[0]))
-                    //     this.form = {
-                    //         id: result.id,
-                    //         name: result.name,
-                    //         model: result.model,
-                    //         image: `${imgBaseUrl}${result.image}`,
-                    //         shelfLifeQ: result.shelfLife/1000/3600/24,
-                    //         chargeCycle: result.chargeCycle/1000/3600/24,
-                    //         upkeepCycle: result.upkeepCycle/1000/3600/24,
-                    //         vendorId: result.supplier.name,
-                    //         personM: result.supplier.person,
-                    //         phoneM: result.supplier.phone,
-                    //         supplierId: result.supplier.id
-                    //     }
-                    // })
                 }
-                // if (this.equipId) {
-                //     getEquipById(this.equipId).then(res=>{
-                //         let eqData = JSON.parse(JSON.stringify(res));
-
-                //         this.zb = eqData;
-                //         this.form = eqData.equipArg;
-
-                //         this.form.vendorId = eqData.equipArg.supplier.id;
-                //         eqData.equipArg.imageAddress ? this.imageUrl = `${imgBaseUrl}${eqData.equipArg.imageAddress}` : '';
-                //         this.$set(this.form, 'eqBig', eqData.equipArg.category.genre.name);
-                //         this.$set(this.form, 'eqSmall', eqData.equipArg.category.name);
-                //         this.$set(this.form, 'serial',eqData.serial)
-                //         this.$set(this.form, 'upkeepCycle', this.milliToDay(eqData.equipArg.upkeepCycle));
-                //         this.$set(this.form, 'chargeCycle', this.milliToDay(eqData.equipArg.chargeCycle));
-                //         this.$set(this.form, 'price', eqData.price / 100);
-
-
-                //         this.zb['shelfLifeQ'] = Math.round(eqData.quality.shelfLife / 24 / 60 / 60 / 1000);
-                //         this.zb['productDateQ'] = eqData.quality.productDate;
-                //         this.zb['floorL'] = eqData.location ? eqData.location.floor : '';
-                //         this.zb['numberL'] = eqData.location ? eqData.location.number : '';
-                //         this.zb['surfaceL'] = eqData.location ? eqData.location.surface : '';
-                //         this.zb['sectionL'] = eqData.location ? eqData.location.section : '';
-                //         this.$set(this.form, 'personM', eqData.equipArg.supplier.person);
-                //         this.$set(this.form, 'phoneM', eqData.equipArg.supplier.phone);
-
-                //         this.$set(this.copyRfidList, 'rfid', eqData.rfid);
-                //         this.zbForm = this.zb;
-                //         this.judgeEdit.form = JSON.parse(JSON.stringify(this.form));
-                //         this.judgeEdit.zbForm = JSON.parse(JSON.stringify(this.zbForm))
-                //     })
-                // }
-
-                // if (this.equipArgId) {
-                //     this.gqlQuery(api.getEquipArg, {
-                //         id: this.equipArgId
-                //     }, (res) => {
-                //         let zb = {};
-                //         let eqData = JSON.parse(JSON.stringify(res.data.EquipArg));
-                //         this.form = eqData;
-                //         this.form.vendorId = eqData.supplier.id;
-                //         eqData.imageAddress ? this.imageUrl = `${imgBaseUrl}${eqData.imageAddress}` : '';
-
-                //         this.form.videoAddresses = eqData.videoAddresses ? eqData.videoAddresses.split(",") : [];
-                //         this.form.documentAddresses = eqData.documentAddresses ? eqData.documentAddresses.split(",") : [];
-
-                //         this.$set(this.form, 'upkeepCycle', this.milliToDay(eqData.upkeepCycle));
-                //         this.$set(this.form, 'chargeCycle', this.milliToDay(eqData.chargeCycle));
-
-                //         this.form.nameId = [eqData.category.genre.id, eqData.category.id];
-                //         this.$set(this.form, 'eqBig', eqData.category.genre.name);
-                //         this.$set(this.form, 'eqSmall', eqData.category.name);
-                //         this.$set(this.form, 'personM', eqData.supplier.person);
-                //         this.$set(this.form, 'phoneM', eqData.supplier.phone);
-                //         this.judgeEdit.form = JSON.parse(JSON.stringify(this.form))
-                //         this.judgeEdit.zbForm = JSON.parse(JSON.stringify(this.zbForm))
-                //     });
-                // };
-                // getGenreList().then(res => {
-                //         let data = JSON.parse(JSON.stringify(res));
-                //         let newData = [];
-                //         if (data) {
-                //             data.forEach((item) => {
-                //                 if (item.categories.length > 0) {
-                //                     item.categories.forEach((item1, index1) => {
-                //                         if (item1.equipArgs.length > 0) {
-                //                             item1.equipArgs.forEach((item2, index2) => {
-                //                                 item1.equipArgs[index2] = {
-                //                                     value: item2.id,
-                //                                     label: item2.name,
-                //                                     model: item2.model,
-                //                                 };
-                //                             })
-                //                         }
-                //                         item.categories[index1] = {
-                //                             value: item1.id,
-                //                             label: item1.name,
-                //                             model: item1.model,
-                //                             children: !this.title.includes('新增') && !this.title.includes('信息查看') ? item1.equipArgs : null
-                //                         };
-                //                     })
-                //                 }
-                //                 newData.push(
-                //                     {
-                //                         value: item.id,
-                //                         label: item.name,
-                //                         model: item.model,
-                //                         children: item.categories
-                //                     }
-                //                 )
-                //             });
-                //             this.options = newData;
-                //         }
-                // });
-
-                // getSuppliers().then(res=>{
-                //     this.vendorId = res.map(item => {
-                //         return {
-                //             val: item.id,
-                //             key: item.name,
-                //             data: {
-                //                 person: item.person,
-                //                 phone: item.phone,
-                //             }
-                //         }
-                //     });
-                //     this.judgeEdit.form = JSON.parse(JSON.stringify(this.form));
-                //     this.judgeEdit.zbForm = JSON.parse(JSON.stringify(this.zbForm))
-                // });
             }
         },
 
@@ -963,10 +682,6 @@
                 this.useProp = true
             }
             this.getEquipInfo();
-            // setTimeout(() => {
-            //     this.form.name = "警用装备包"
-            //     this.getEquipInfo()
-            // }, 2000)
         },
         beforeDestroy() {
             if(this.hardwareOpen || this.pid != '') {
@@ -984,29 +699,12 @@
     .storage-info {
         /* 可调整 */
         font-size: 16px;
-        // ._box-bottom {
-        //  position: absolute;
-        //  bottom: 0;
-        // }
     }
 
     .el-card {
         border: none !important;
     }
 
-    // .el-card:not(:nth-last-child(2)) {
-    //     border-bottom: none !important;
-    // }
-
-    // .el-card:first-child {
-
-    //     border-top: none !important;
-    // }
-
-    /* 可调整 */
-    // ._card-title {
-    //     font-size: 0.0938rem;
-    // }
 
     .black {
         /* 可调整 */
