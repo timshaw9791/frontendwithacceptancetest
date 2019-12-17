@@ -17,10 +17,10 @@
                             <el-table-column prop="count" label="装备数量"  align="left"></el-table-column>
                         </el-table>
                     </div>
-                    <div class="look-up-bottom" v-if="lookUp.order!==undefined&&lookUp.order.note!==''">
-                        <span v-text="`装备统计：${lookUp.order.note}`"></span>
-                        <span style="margin-top: 0.0625rem;" v-text="`异常装备：${getErrorEquip()}`"></span>
-                    </div>
+                    <!--<div class="look-up-bottom" v-if="lookUp.order!==undefined&&lookUp.order.note!==''">-->
+                        <!--<span v-text="`装备统计：${lookUp.order.note}`"></span>-->
+                        <!--<span style="margin-top: 0.0625rem;" v-text="`异常装备：${getErrorEquip()}`"></span>-->
+                    <!--</div>-->
                 </div>
 
             </div>
@@ -41,20 +41,7 @@
             serviceDialog
         },
         methods: {
-            getErrorEquip(){
-                let names='';
-                this.lookUp.order.error.forEach(item=>{
-                    let count,tip,name=`[${item.name+item.model}]`;
-                    item.count<0?tip='缺':tip='增';
-                    count= Math.abs(JSON.parse(JSON.stringify(item)).count);
-                    if(names===''){
-                        names=`${tip}\xa0\xa0\xa0\xa0${name}\xa0\xa0\xa0\xa0${count}'件'`
-                    }else {
-                        names=names+','+`${tip}\xa0\xa0\xa0\xa0${name}\xa0\xa0\xa0\xa0${count}'件'`
-                    }
-                });
-                return names
-            },
+
             show() {
                 this.$refs.lookUpService.show()
             },
@@ -62,13 +49,8 @@
                 this.$refs.lookUpService.cancel();
             },
             filterTime(){
-                if(this.lookUp.order!=undefined){
-                    if(this.lookUp.order.time!==undefined){
-                        return this.$filterTime(this.lookUp.order.time)
-                    }else {
-                        return ''
-                    }
-                }
+                console.log(this.lookUp)
+                return this.$filterTime(this.lookUp.time)
             }
         },
     }
