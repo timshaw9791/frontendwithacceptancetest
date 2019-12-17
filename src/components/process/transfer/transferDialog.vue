@@ -181,15 +181,7 @@
     import {baseURL,baseBURL} from "../../../api/config"
     import {findByRfids,outHouse,checkUser,inHouses} from 'api/process'
     import { start, delFile, handheld, killProcess,modifyFileName } from 'common/js/rfidReader'
-
-    // import {handheld} from 'common/js/pda'
-    // const cmdPath = 'C:\\Users\\Administrator';
-    //const exec = window.require('child_process').exec;
-    //const spawn = window.require('child_process').spawn;
-    // const fs = window.require('fs');
-    // const path = window.require('path');
-    // const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
-    // import {killProcess} from "common/js/kill";
+    var _ = require("lodash");
 
     export default {
         name: "directAdjustmentDialog",
@@ -276,7 +268,7 @@
         methods: {
             errorEquip(data){
               let count,tip,name=`[${data.name+data.model}]`;
-                data.count<0?tip='减':tip='增';
+                data.count<0?tip='缺':tip='增';
                 count= Math.abs(JSON.parse(JSON.stringify(data)).count);
                 return `${tip}\xa0\xa0\xa0\xa0${name}\xa0\xa0\xa0\xa0${count}'件'`
             },
@@ -296,17 +288,18 @@
 
             },
             getInHouseGetEquip(){
-                console.log(this.hardware)
                 if(this.hardware==='手持机'){
                     this.handheldMachine();
+                }else {
+                    this.getListUsb();
                 }
             },
             stopGetEquip(){
 
             },
-            deleteFile() {
-                delFile(newFile_path, () => {console.log('删除文件' + newFile_path + '成功')})
-            },
+            // deleteFile() {
+            //     delFile(newFile_path, () => {console.log('删除文件' + newFile_path + '成功')})
+            // },
             end(pid) {
                 if (pid) {killProcess(this.pid)}
             },
@@ -317,7 +310,7 @@
                     this.getOutDataCopy(arr);
                 }, (fail) => {
                     this.$message.error(fail)
-                }, (pid, err) => {pid?this.pid = pid:this.$message.error(err)})
+                }, (pid, err) => {pid?this.pid = pid:this.$message.error(err)});
             },
             deleteRow(row,index) {
                 _.omit(this.equipGroup, [row.model]);
@@ -377,11 +370,7 @@
 
             },
             transferEquipInOrOut(state){
-                let url;
-                let rfids=[];
-                let equips=[],note='';
-                let aUrl='';
-                let orderId=this.directObj.id;
+                let equips=[],note='',rfids=[],orderNumber='',price=0;
                 if(this.typeOperational=='出库'){
                     _.forIn(this.equipGroup, function(value, key) {
                         value.forEach(item=>{
@@ -400,31 +389,21 @@
                 }
                 if(this.typeOperational=='出库'){
                     outHouse(_.join(rfids, ',')).then(res=>{
-                        res.forEach(item=>{
+                        res.equips.forEach(item=>{
+                            price=price+item.price;
                             equips.push({id:item.id,name:item.equipArg.name,model:item.equipArg.model,price:item.price,serial:item.serial,productDate:item.productDate,equipArgId:item.equipArg.id,rfid:item.rfid})
                         });
-                        this.$emit('outHouse',{equips:equips,note:note,error:this.missEquip})
+                        this.$emit('outHouse',{outboundEquipsOrder:{equips:equips},outboundInfo:{note:note,missEquips:this.missEquip,orderNumber:res.orderNumber,price:price}})
                     })
                     // equips=[{id:'2121',name:'item.equipArg.name',model:'item.equipArg.model',price:'item.price',serial:'item.serial',productDate:'item.productDate',equipArgId:'item.equipArg.id',rfid:'item.rfid'}],
 
                 }else {
-                    let inEquip=[];
                     inHouses(equips).then(res=>{
-                        res.forEach(item=>{
-                            inEquip.push({id:item.id,name:item.equipArg.name,model:item.equipArg.model,price:item.price,serial:item.serial,productDate:item.productDate,equipArgId:item.equipArg.id,rfid:item.rfid})
+                        res.equips.forEach(item=>{
+                            price=price+item.price;
                         });
-                        this.$emit('inHouse',{equips:inEquip,note:note,error:this.missEquip})
+                        this.$emit('inHouse',{orderNumber:orderNumber,price:price,note:note,missEquips:this.missEquip})
                     })
-                    // request({
-                    //     method: 'PUT',
-                    //     url: aUrl,
-                    //     data: rfids
-                    // }).then(res => {
-                    //     this.$message.success('入库成功');
-                    //     this.sucessInOrOut()
-                    // }).catch(error=>{
-                    //     this.$message.error(error.response.data.message)
-                    // })
                 }
 
             },
@@ -442,34 +421,8 @@
                     }else {
                         this.transferEquipInOrOut('NORMAL')
                     }
-                    // let rfidC = [];
-                    // this.rightList.forEach(item => {
-                    //     rfidC.push(item.rfid)
-                    // });
-                    //
-                    // let url = 'http://192.168.50.14:8080/warehouse/transfers/up-to-down/equips-out/';
-                    // let param = {
-                    //     rfidList: rfidC,
-                    //     orderId: this.directObj.id
-                    // };
-                    // request({
-                    //     method: 'DELETE',
-                    //     url: url,
-                    //     data: param
-                    // }).then(res => {
-                    //     if (res) {
-                    //         console.log(res);
-                    //     }
-                    // })
                 } else {
                     this.$refs.transFerDialogTips.show();
-                    // if(this.billName!='借调'||this.billName!='归还'){
-                    //     this.$refs.transFerDialogTips.show();
-                    // }else {
-                    //     this.$message.error('请确认出库装备正确')
-                    // }
-                    // this.sucessInOrOut();
-                    // this.$message.error('请重新确认出库装备')
                 }
             },
             submitTips(){
@@ -530,7 +483,7 @@
                 // }else {
                 //     this.getOutDataCopy(['222','19080012']);,20088892,20088888
                 // }
-                this.getOutDataCopy(['19998889'])
+                this.getOutDataCopy(['00001545'])
             },
             // getOutData(data){
             //     console.log(data);
@@ -567,6 +520,7 @@
                 let group,flag=true;
                 if(this.typeOperational==='出库'){
                     group=_.groupBy(data, 'equipArg.model');
+                    console.log('getCategroy',group)
                 }else {
                     group=_.groupBy(data, 'model');
                 }

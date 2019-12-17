@@ -200,13 +200,6 @@ export function writeFile(content, cb, fileName) {
         needReport = false
         console.log(error);
     }
-    
-    // 测试环境使用的方法
-    // if(testDevelopment) {
-    //     if(needReport) {
-    //         cb({state: true, message: "同步手持机成功"})
-    //     }
-    // }
 
     workerProcess = exec(pushCmdStr, {
         cwd: newFile_path

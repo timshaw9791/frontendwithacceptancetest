@@ -25,7 +25,7 @@ export function inHouses(data) {
 }
 export function outHouse(rfids) {
     return request({
-        url: `/equip/outHouse?rfids=${rfids}`,
+        url: `/equip/outHouses?rfids=${rfids}`,
         method: 'post',
     })
 }

@@ -114,7 +114,6 @@
                             <span @click="gotoInfo('video')" style="cursor:pointer">视频监控</span>
                         </div>
                         <div class="bk-content">
-                            <video-player width="454px" height="248px" :videoID="1"></video-player>
                         </div>
                     </div>
                 </div>
@@ -142,7 +141,6 @@
 
 <script>
     import progressCircular from 'components/base/progressCircular'
-    import FlvPlayerVue from 'components/videoPlayer/FlvPlayer.vue';
     import {temperatureValue} from "api/surroundings";
     import {equipmentAmount, equipmentScrapped, equipmentCharging, getProcess} from "api/statistics";
     import api from 'gql/home.gql'
@@ -367,7 +365,6 @@
 
         components: {
             progressCircular,
-            "video-player": FlvPlayerVue,
             serviceDialog
         },
 
