@@ -62,7 +62,7 @@
                     </div>
                 </div>
                 <div class="safety_table_box" data-test="table_box">
-                    <safety-table ref="safetyTable" :currentNode="tree.currentNode" v-if="status.tableFlag" :table="table" :disable="status.buttonDisable" :distribution="status.distribution" @success="successTable"></safety-table>
+                    <safety-table ref="safetyTable" :currentNode="tree.currentNode" v-if="status.tableFlag" :table="table" :disable="status.buttonDisable" :distribution="status.distribution" @success="successTable" @updateCategory="updateCategory"></safety-table>
                 </div>
             </div>
         </div>
@@ -138,11 +138,26 @@
             },
             updateCategory(data){
                 let categorySet=this.tree.currentNode.categorySet;
-                categorySet.forEach(item=>{
-                    if(item.id===data.id){
-                        item.name=data.name
-                    }
-                });
+               if(data.type==='update'){
+                   categorySet.forEach(item=>{
+                       if(item.id===data.res.id){
+                           item.name=data.res.name
+                       }
+                   });
+               }else if(data.type==='add'){
+                   let addCategory={};
+                   data.res.categorySet.forEach(item=>{
+                       if(item.name===data.res.categoryName){
+                           addCategory={id:item.id,name:item.name}
+                       }
+                   });
+                   categorySet.push(addCategory)
+               }else {
+                   categorySet=_.remove(categorySet, (item)=>{
+                       return item.id !== data.id;
+                   });
+                   this.$set(this.tree.currentNode,'categorySet',categorySet);
+               }
                 findAllCategoryById(this.tree.currentNode.id).then(res => {
                     this.table.tableData = res;
                 });

@@ -32,7 +32,7 @@
                             <bos-table-column lable="可用/领用"
                                               :filter="(row)=>row.inHouseCount+'/'+row.receiveHouseCount"
                                               :align="'left'"></bos-table-column>
-                            <bos-table-column lable="待保养/可保养" :filter="(row)=>row.needKeepCount+'/'+row.toKeepCount"
+                            <bos-table-column lable="需要保养/可保养" :filter="(row)=>row.needKeepCount+'/'+row.toKeepCount"
                                               :align="'left'"></bos-table-column>
 
                             <el-table-column type="expand">
@@ -143,7 +143,7 @@
                         <el-table :data="dialogList" max-height="2.7917rem">
                             <bos-table-column lable="装备名称" field="equipName"></bos-table-column>
                             <bos-table-column lable="装备型号" field="equipModel"></bos-table-column>
-                            <bos-table-column lable="待保养/本次保养"
+                            <bos-table-column lable="需要保养/本次保养"
                                               :filter="(row)=>row.totalProgress+'/'+row.currentProgress"
                                               :align="'left'"></bos-table-column>
                         </el-table>

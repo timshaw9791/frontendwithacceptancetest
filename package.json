@@ -1,5 +1,5 @@
 {
-  "name": "3",
+  "name": "qcwarehouse",
   "version": "0.1.0",
   "private": true,
   "description": "A minimal Electron application",
@@ -19,8 +19,9 @@
   "dependencies": {
     "apollo-link-error": "^1.1.10",
     "apollo-link-http": "^1.5.14",
+    "axios": "^0.19.0",
     "core-js": "^2.6.5",
-    "d3": "^5.9.7",
+    "d3": "^5.14.2",
     "element-ui": "^2.4.5",
     "file-saver": "^2.0.2",
     "graphql-type-json": "^0.2.1",
@@ -31,10 +32,13 @@
     "pdfjs-dist": "^2.0.943",
     "regenerator-runtime": "^0.13.2",
     "shortid": "^2.2.8",
+    "video.js": "^7.6.6",
     "vue": "^2.6.6",
     "vue-apollo": "^3.0.0-beta.11",
     "vue-quill-editor": "^3.0.6",
     "vue-router": "^3.0.1",
+    "vue-touch-keyboard": "^0.3.1",
+    "vue-video-player": "^5.0.2",
     "vuex": "^3.0.1",
     "xlsx": "^0.15.3"
   },
@@ -44,7 +48,7 @@
     "@vue/cli-plugin-unit-jest": "^3.5.0",
     "@vue/cli-service": "^3.5.0",
     "@vue/test-utils": "1.0.0-beta.29",
-    "axios": "^0.18.0",
+    "axios": "^0.19.0",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^23.6.0",
@@ -120,9 +124,9 @@
     "testURL": "http://localhost/"
   },
   "build": {
-    "appId": "库房管理系统A端",
+    "appId": "库房管理系统C端",
     "copyright": "华安安全",
-    "productName": "库房管理系统A端",
+    "productName": "库房管理系统C端",
     "directories": {
       "output": "build"
     },
