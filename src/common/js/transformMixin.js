@@ -13,13 +13,15 @@ export const transformMixin = {
         //         return '暂无'
         //     }
         // },
-        chargeingTime(chargeingTime){
-            let chargeingTimes = chargeingTime/ 1000 / 60 / 60;
-            if(chargeingTimes<1){
-                return '不足一小时'
-            }else {
-                return Math.round(chargeingTimes)+'小时'
-            }
+        chargeingTime(my_time){
+            let days    = my_time / 1000 / 60 / 60 / 24;
+            let daysRound = Math.floor(days);
+            let hours = my_time / 1000 / 60 / 60 - (24 * daysRound);
+            let hoursRound = Math.floor(hours);
+            let minutes = my_time / 1000 / 60 - (24 * 60 * daysRound) - (60 * hoursRound);
+            let minutesRound = Math.floor(minutes);
+            let time = hoursRound + '小时' + minutesRound+'分钟';
+            return time;
         },
         workType(data) {
             console.log("--------SprWu--------");
@@ -59,9 +61,8 @@ export const transformMixin = {
              let cahrgeDay=chargeCountdown/1000/60/60/24;
              let type='';
              if(cahrgeDay<0){
-                 type='逾期:';
-             }else {};
-             if(Math.abs(cahrgeDay)<1){
+                 cahrgeDay=0;
+             }else if(Math.abs(0<cahrgeDay)<1){
                  cahrgeDay='不足一'
              }else {
                  cahrgeDay=Math.round(cahrgeDay)

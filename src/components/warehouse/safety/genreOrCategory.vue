@@ -132,7 +132,6 @@
                         this.categroyList = item.categorySet;
                     }
                 });
-                console.log(this.selectData, this.categroyList)
             },
             changeCategory(data) {
                 this.select.selectCategroy = data
@@ -146,7 +145,7 @@
                         })
                     } else {
                         categorySaveCategory({name: this.genre}, this.genreData.id).then(res => {
-                            this.$emit('sucess', res);
+                            this.$emit('sucessUpdateCategory', {type:'add',res:{categorySet:res.categorySet,categoryName:this.genre}});
                             this.result();
                         })
                     }
@@ -168,7 +167,7 @@
                             });
                             categoryData.name = this.genre;
                             updateCategory(categoryData).then(res => {
-                                this.$emit('sucessUpdateCategory', res);
+                                this.$emit('sucessUpdateCategory', {type:'update',res:res});
                                 this.result();
                             })
                         }

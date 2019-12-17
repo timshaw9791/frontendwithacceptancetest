@@ -85,7 +85,7 @@
             deleteButton(type, row) {
                 if (type === 'category') {
                     deleteCategory(row.category.id).then(res => {
-                        this.$emit('success', 'category');
+                        this.$emit('updateCategory', {type:'delete', id:row.category.id});
                     })
                 } else {
                     this.equipArg = row.equipArg;
