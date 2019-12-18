@@ -10,7 +10,7 @@
         <!--</div>-->
         <div class="agency-matters_main_box" data-test="main_box">
             <div class="main_table_box" data-test="table_box">
-                <p_table ref="processTable" :table="table" :typeUrl="'process'" :otherParams="true" @clickTable="clickTable" v-if="status.tableOrUniversalFlag"></p_table>
+                <div style="padding: 0px 0.09375rem"><p_table ref="processTable" :table="table" :typeUrl="'process'" :otherParams="true" @clickTable="clickTable" v-if="status.tableOrUniversalFlag"></p_table></div>
                 <p_universal @back="black" :url="universal.url" :title="universal.title" :universalObj="universal.universalObj" v-if="!status.tableOrUniversalFlag"></p_universal>
             </div>
         </div>
@@ -32,10 +32,11 @@
             return{
                 table: {
                     labelList: [
-                        {lable: '请求标题', field: 'action',filter: this.filterProcessName},
+                        {lable: '请求标题', field: 'title'},
                         {lable: '工作流', field: 'operator', filter: this.filterProcessType},
                         {lable: '创建时间', field: 'startTime', filter: (ns) => this.$filterTime(ns.createTime)},
                     ],
+                    align:'left',
                     height:'618px',
                     url:'/tasks/page',
                     tableAction:{
@@ -73,21 +74,6 @@
                     case "DIRECT_ALLOT":
                         return '直调流程'
                 }
-            },
-            filterProcessName(ns){
-                let type,name=JSON.parse(localStorage.getItem('user')).name,time=(new Date(ns.startTime)).toLocaleDateString();
-                switch (ns.processVariables.processConfig.type) {
-                    case "SCRAP":
-                        type = '报废流程';
-                        break;
-                    case "TRANSFER":
-                        type = '调拨流程';
-                        break;
-                    case "DIRECT_ALLOT":
-                        type = '直调流程';
-                        break;
-                }
-                return type+'-'+name+'-'+time.replace(/\//g,'-')
             },
             getSearch(data){
                 this.table.search=data
