@@ -9,7 +9,7 @@ export const ERR_OK = 0;
 
 
 
-var baseURL = 'http://10.128.1.166:8010/warehouse';
+var baseURL = 'http://10.128.1.109:8010/warehouse';
 var baseBURL = 'http://10.128.1.166:8020/police-support-platform';
 var localTitle = "龙湾区公安局应急装备物资管理系统";
 

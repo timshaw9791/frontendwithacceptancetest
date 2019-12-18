@@ -48,7 +48,7 @@
                         label:'操作',
                         button:[{name:'详情',type:'primary'}]
                     },
-                    params:{assignee:JSON.parse(localStorage.getItem('user')).id,direction:'DESC',property:'createTime'},
+                    params:{assignee:JSON.parse(localStorage.getItem('user')).id},
                     search:''
                 },
                 universal:{},

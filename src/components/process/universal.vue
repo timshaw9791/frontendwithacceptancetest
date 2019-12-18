@@ -292,16 +292,12 @@
             isOutHouse(){
                 let flag=false;
                 if(this.title!=='报废'){
-                    if(this.$route.meta.title==='我的流程'){
-                        if(this.universalObj.currentTask.assigneeName===JSON.parse(localStorage.getItem("user")).name){
-                            if(this.universalObj.currentTask.name.indexOf('出库')!==-1){
-                                flag=true;
-                            }else {
-                                flag=false;
-                            }
+                    if(this.universalObj.currentTask.assigneeName===JSON.parse(localStorage.getItem("user")).name){
+                        if(this.universalObj.currentTask.name.indexOf('出库')!==-1){
+                            flag=true;
+                        }else {
+                            flag=false;
                         }
-                    }else if(this.$route.meta.title==='待办事宜'){
-                        this.universalObj.taskDefinitionKey==='equips_outbound_house'?flag=true:flag=false;
                     }
                 }
                 return flag
