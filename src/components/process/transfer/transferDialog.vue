@@ -43,7 +43,7 @@
                 <div class="directAdjustmentDialog-body">
                     <div class="leftTable">
                         <el-table
-                                :data="typeOperational==='入库'?directObj.processVariables.outboundEquipsOrder.equips:directObj.processVariables.applyOrder.equips"
+                                :data="directObj.processVariables?typeOperational==='入库'?directObj.processVariables.outboundEquipsOrder.equips:directObj.processVariables.applyOrder.equips:[]"
                                 height="531"
                                 style="width: 100%"
                                 :align="align"

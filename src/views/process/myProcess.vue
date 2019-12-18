@@ -96,7 +96,7 @@
             },
             clickTable(table) {
                 historyProcessInstancesById(table.row.id).then(res=>{
-                    this.universal={title:this.getTitle(table.row.processDefinitionKey),universalObj:res};
+                    this.universal={title:this.getTitle(res.processDefinitionKey),universalObj:res};
                     let url;
                     switch (this.universal.title) {
                         case "报废":
