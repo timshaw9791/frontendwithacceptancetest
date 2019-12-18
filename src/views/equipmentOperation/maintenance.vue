@@ -149,7 +149,7 @@
                         </el-table>
                     </div>
                 </servicedialog>
-                <servicedialog title="结束维修装备清单" ref="maintenanceEndDialog" :width="'4.7552rem'" @cancel="cancel"
+                <servicedialog title="结束保养装备清单" ref="maintenanceEndDialog" :width="'4.7552rem'" @cancel="cancel"
                                @confirm="repairPush(false)">
                     <div class="maintenance_end_table">
                         <el-table :data="dialogList" max-height="2.7865rem">
@@ -157,7 +157,7 @@
                             <bos-table-column lable="装备型号" field="item.equipArg.model"></bos-table-column>
                             <bos-table-column lable="装备位置"
                                               :filter="(row)=>surface(row.item.location)"></bos-table-column>
-                            <bos-table-column lable="装备件数" field="Number"></bos-table-column>
+                            <bos-table-column lable="装备件数" field="number"></bos-table-column>
                         </el-table>
                     </div>
                 </servicedialog>
