@@ -5,7 +5,7 @@
                 <span class="_card-title">{{$route.meta.title}}</span>
             </div>
             <div class="action-bar">
-            <div class="_buttons" style="margin-right: 18px">
+            <div class="_buttons" style="margin-right: 18px;">
             <BosInput
                     placeholder="名称/人员"
                     suffix="el-icon-search"
@@ -107,11 +107,10 @@
     }
 
   .main_table{
-      
+      border-top: 1px solid rgba(112,112,112, 0.13);
   }
   .action-bar{
       height: 50px;
       width:400px;
-     
   }
 </style>
