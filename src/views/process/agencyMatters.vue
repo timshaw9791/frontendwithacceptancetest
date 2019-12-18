@@ -23,6 +23,7 @@
     import select_apply from 'components/process/processDialog/selectApplyProcess'
     import p_universal from 'components/process/universal'
     import myHeader from 'components/base/header/header'
+    import {historyProcessInstancesById} from 'api/process'
     export default {
         name: "myProcess",
         components:{
@@ -32,18 +33,18 @@
             return{
                 table: {
                     labelList: [
-                        {lable: '请求标题', field: 'title'},
-                        {lable: '工作流', field: 'operator', filter: this.filterProcessType},
-                        {lable: '创建时间', field: 'startTime', filter: (ns) => this.$filterTime(ns.createTime)},
+                        {lable: '请求标题', field: 'processInstanceName'},
+                        {lable: '任务名称', field: 'name'},
+                        {lable: '创建时间', field: 'createTime', filter: (ns) => this.$filterTime(ns.createTime)},
                     ],
                     align:'left',
                     height:'618px',
-                    url:'/tasks/page',
+                    url:'/workflow/todo-task',
                     tableAction:{
                         label:'操作',
                         button:[{name:'详情',type:'primary'}]
                     },
-                    params:{assignee:JSON.parse(localStorage.getItem('user')).id,includeTaskVariables:true,includeProcessVariables:true},
+                    params:{assignee:JSON.parse(localStorage.getItem('user')).id,direction:'DESC',property:'createTime'},
                     search:''
                 },
                 universal:{
@@ -89,21 +90,24 @@
                 }
             },
             clickTable(table) {
-                this.universal={title:this.getTitle(table.row.processVariables.processConfig.type),universalObj:table.row};
-                let url;
-                switch (this.universal.title) {
-                    case "报废":
-                        url={outHouse:''} ;
-                        break;
-                    case "调拨":
-                        url={outHouse:'/workflow/transfer/equips-outbound',inHouse:'/workflow/transfer/equips-inbound'};
-                        break;
-                    case "直调":
-                        url={outHouse:''}
-                        break;
-                };
-                this.universal.url=url;
-                this.status.tableOrUniversalFlag=!this.status.tableOrUniversalFlag;
+                historyProcessInstancesById(table.row.processInstanceId).then(res=>{
+                    this.universal={title:this.getTitle(res.processVariables.processConfig.type),universalObj:res};
+                    let url;
+                    switch (this.universal.title) {
+                        case "报废":
+                            url={outHouse:''} ;
+                            break;
+                        case "调拨":
+                            url={outHouse:'/workflow/transfer/equips-outbound',inHouse:'/workflow/transfer/equips-inbound',transfer:'/workflow/transfer/to-excel'};
+                            break;
+                        case "直调":
+                            url={outHouse:'/workflow/direct-allot/equips-outbound',inHouse:'/workflow/direct-allot/equips-inbound',transfer:'/workflow/direct-allot/to-excel'};
+                            break;
+                    }
+                    this.universal.url=url;
+                    this.status.tableOrUniversalFlag=!this.status.tableOrUniversalFlag;
+                });
+
             }
         }
     }

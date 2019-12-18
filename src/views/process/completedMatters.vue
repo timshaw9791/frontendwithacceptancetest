@@ -26,6 +26,7 @@
     import select_apply from 'components/process/processDialog/selectApplyProcess'
     import p_universal from 'components/process/universal'
     import myHeader from 'components/base/header/header'
+    import {historyProcessInstancesById} from 'api/process'
     export default {
         name: "myProcess",
         components:{
@@ -35,32 +36,44 @@
             return{
                 table: {
                     labelList: [
-                        {lable: '请求标题', field: 'name'},
-                        {lable: '工作流', field: 'processDefinitionName'},
-                        {lable: '创建时间', field: 'startTime', filter: (ns) => this.$filterTime(ns.stateTime)},
-                        {lable: '当前节点', field: 'currentTask.name'},
-                        {lable: '未操作者', field: 'currentTask.assigneeName'}
+                        {lable: '请求标题', field: 'processInstanceName'},
+                        {lable: '任务名称', field: 'name'},
+                        {lable: '办理时间', field: 'endTime', filter: (ns) => this.$filterTime(ns.endTime)},
+                        {lable: '处理用时', field: 'endTime', filter: (ns) => this.minuteFormate(ns)}
                     ],
                     align:'left',
                     height:'618px',
-                    url:'/process-instances/page',
+                    url:'/workflow/done-task',
                     tableAction:{
                         label:'操作',
                         button:[{name:'详情',type:'primary'}]
                     },
-                    params:{assignee:JSON.parse(localStorage.getItem('user')).id,includeCurrentTask:true,includeProcessVariables:true},
+                    params:{assignee:JSON.parse(localStorage.getItem('user')).id,direction:'DESC',property:'createTime'},
                     search:''
                 },
-                universal:{
-
-                },
+                universal:{},
                 status:{
                     tableOrUniversalFlag:true,
-
                 }
             }
         },
         methods:{
+            minuteFormate(ns){
+                let minute=0;
+                minute=ns.endTime-ns.createTime;
+                let timeStr = '预计 ';
+                let time = parseInt(minute);
+                if((time/60>>0) > 0 ){
+                    timeStr += (time/60>>0) + '小时'
+                }
+                if(time%60 > 0){
+                    timeStr += time%60 + "分钟";
+                }
+                return timeStr
+            },
+            filterTime(ns){
+                return ns.endTime-ns.startTime
+            },
             black(){
                 this.status.tableOrUniversalFlag=!this.status.tableOrUniversalFlag;
             },
@@ -94,21 +107,24 @@
                 }
             },
             clickTable(table) {
-                this.universal={title:this.getTitle(table.row.processDefinitionKey),universalObj:table.row};
-                this.status.tableOrUniversalFlag=!this.status.tableOrUniversalFlag;
-                let url;
-                switch (this.universal.title) {
-                    case "报废":
-                        url={outHouse:''} ;
-                        break;
-                    case "调拨":
-                        url={outHouse:'/workflow/transfer/equips-outbound',inHouse:'/workflow/transfer/equips-inbound'};
-                        break;
-                    case "直调":
-                        url={outHouse:''};
-                        break;
-                };
-                this.universal.url=url;
+                historyProcessInstancesById(table.row.processInstanceId).then(res=>{
+                    this.universal={title:this.getTitle(table.row.processDefinitionKey),universalObj:res};
+                    let url;
+                    switch (this.universal.title) {
+                        case "报废":
+                            url={outHouse:''} ;
+                            break;
+                        case "调拨":
+                            url={transfer:'/workflow/transfer/to-excel'};
+                            break;
+                        case "直调":
+                            url={transfer:'/workflow/direct-allot/to-excel'};
+                            break;
+                    }
+                    this.universal.url=url;
+                    this.status.tableOrUniversalFlag=!this.status.tableOrUniversalFlag;
+                })
+
             }
         }
     }

@@ -87,7 +87,6 @@
                 this.typeCountermeasure(this.table.tableType)
             },
             typeCountermeasure(data) {
-                console.log(data);
                 switch (data) {
                     case 'All':
                         this.table.height = '3.78125rem';
@@ -139,7 +138,13 @@
 
             },
             getAmountList() {
-                lossStatistic(this.table.params).then(res => {
+                let params={};
+                _.forIn(this.table.params,(key,value)=>{
+                   if (value!==''){
+                       this.$set(params,key,value)
+                   }
+                });
+                lossStatistic(params).then(res => {
                     this.$set(this.table, 'list', res);
                     if(this.table.tableType!=='All'){
                         this.computeFunction(JSON.parse(JSON.stringify(this.table.list)))

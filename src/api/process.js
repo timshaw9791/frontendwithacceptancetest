@@ -3,6 +3,24 @@ import {baseBURL} from "./config";
 
 
 
+export function transferProcess(url,id) {
+    return request({
+        url: `${baseBURL}${url}?processInstanceId=${id}`,
+        method: 'get',
+    })
+}
+export function historyProcessInstancesById(processInstanceId) {
+    return request({
+        url: `${baseBURL}/history/process-instances/${processInstanceId}?includeCurrentTask=true&includeProcessVariables=true`,
+        method: 'get'
+    })
+}
+export function processInstancesById(processInstanceId) {
+    return request({
+        url: `${baseBURL}/process-instances/${processInstanceId}?includeCurrentTask=true&includeProcessVariables=true`,
+        method: 'get'
+    })
+}
 export function findInHouseNumberLike(params) {
     return request({
         url: `/inouthouse/findInHouseNumberLike?`,

@@ -26,6 +26,7 @@
     import select_apply from 'components/process/processDialog/selectApplyProcess'
     import p_universal from 'components/process/universal'
     import myHeader from 'components/base/header/header'
+    import {historyProcessInstancesById} from 'api/process'
     export default {
         name: "handlingMatters",
         components:{
@@ -94,21 +95,24 @@
                 }
             },
             clickTable(table) {
-                this.universal={title:this.getTitle(table.row.processDefinitionKey),universalObj:table.row};
-                this.status.tableOrUniversalFlag=!this.status.tableOrUniversalFlag;
-                let url;
-                switch (this.universal.title) {
-                    case "报废":
-                        url={outHouse:''} ;
-                        break;
-                    case "调拨":
-                        url={outHouse:'/workflow/transfer/equips-outbound',inHouse:'/workflow/transfer/equips-inbound'};
-                        break;
-                    case "直调":
-                        url={outHouse:''};
-                        break;
-                };
-                this.universal.url=url;
+                historyProcessInstancesById(table.row.id).then(res=>{
+                    this.universal={title:this.getTitle(table.row.processDefinitionKey),universalObj:res};
+                    let url;
+                    switch (this.universal.title) {
+                        case "报废":
+                            url={outHouse:''} ;
+                            break;
+                        case "调拨":
+                            url={transfer:'/workflow/transfer/to-excel'};
+                            break;
+                        case "直调":
+                            url={transfer:'/workflow/direct-allot/to-excel'};
+                            break;
+                    }
+                    this.universal.url=url;
+                    this.status.tableOrUniversalFlag=!this.status.tableOrUniversalFlag;
+                })
+
             }
         }
     }

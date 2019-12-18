@@ -85,14 +85,17 @@
                     paramskey = {
                         page: this.paginator.page,
                         size: this.paginator.size,
-                        search: this.table.search,
                         direction: "DESC",
                         properties: "updateTime"
                     };
                 } else {
-                    paramskey = {page: this.paginator.page, size: this.paginator.size, search: this.table.search};
+                    paramskey = {page: this.paginator.page, size: this.paginator.size};
                     url=baseBURL + this.table.url
                 }
+                if(this.table.search!==''){
+                    paramskey={...paramskey,search:this.table.search}
+                }
+
                 let params = {};
                 if (this.otherParams) {
                     params = {...paramskey, ...this.table.params};

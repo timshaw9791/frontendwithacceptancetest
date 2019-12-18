@@ -9,21 +9,21 @@
                 <el-button v-if="isInHouse" class="universal-header-button" @click="inHouse">入库</el-button>
                 <text-button v-if="haveInHouse" style="margin-left: 0.125rem" :iconClass="'查看出库单'" :buttonName="'查看入库单'" @click="lookInHouse"></text-button>
                 <text-button v-if="haveOutHouse" style="margin-left: 0.125rem" :iconClass="'查看出库单'" :buttonName="'查看出库单'" @click="lookOutHouse"></text-button>
-                <text-button style="margin-left: 0.125rem" :iconClass="'导出'" :buttonName="'导出'" @click="transfer"></text-button>
+                <text-button style="margin-left: 0.125rem" v-if="title!=='报废'" :iconClass="'导出'" :buttonName="'导出'" @click="transfer"></text-button>
             </div>
         </div>
         <div class="body">
             <div class="info">
                 <div>申请单号: {{universalObj.processVariables.applyOrder.number}}</div>
-                <div v-show="notScrap">接收机构: {{ universalObj.processVariables.applyOrder.inboundOrganUnit.name}}</div>
-                <div v-show="notScrap">出库机构: {{ universalObj.processVariables.applyOrder.outboundOrganUnit.name }}</div>
+                <div v-if="notScrap">接收机构: {{ universalObj.processVariables.applyOrder.inboundOrganUnit.name}}</div>
+                <div v-if="notScrap">出库机构: {{ universalObj.processVariables.applyOrder.outboundOrganUnit.name }}</div>
                 <div>申请时间: {{this.$filterTime(universalObj.processVariables.applyOrder.applyTime)}}</div>
-                <div v-show="notScrap">接收库房: {{ universalObj.processVariables.applyOrder.inboundWarehouse.name}}</div>
-                <div v-show="notScrap">出库库房: {{ universalObj.processVariables.applyOrder.outboundWarehouse?universalObj.processVariables.applyOrder.outboundWarehouse.name:'-'}}</div>
+                <div v-if="notScrap">接收库房: {{ universalObj.processVariables.applyOrder.inboundWarehouse.name}}</div>
+                <div v-if="notScrap">出库库房: {{ universalObj.processVariables.applyOrder.outboundWarehouse?universalObj.processVariables.applyOrder.outboundWarehouse.name:'-'}}</div>
                 <div>申请人员: {{universalObj.processVariables.applyOrder.applicant.name }}</div>
-                <div v-show="notScrap">接收人员: {{ universalObj.processVariables.applyOrder.inboundUser.name}}</div>
-                <div v-show="notScrap">出库人员: {{universalObj.processVariables.applyOrder.outboundUser?universalObj.processVariables.applyOrder.outboundUser.name:'-'}}</div>
-                <div v-show="!notScrap">报废原因: {{form.note }}</div>
+                <div v-if="notScrap">接收人员: {{ universalObj.processVariables.applyOrder.inboundUser.name}}</div>
+                <div v-if="notScrap">出库人员: {{universalObj.processVariables.applyOrder.outboundUser?universalObj.processVariables.applyOrder.outboundUser.name:'-'}}</div>
+                <div v-if="!notScrap">报废原因: {{universalObj.processVariables.applyOrder.note }}</div>
             </div>
             <div>装备统计:</div>
             <el-table :data="universalObj.processVariables.applyOrder.equips" height="350" style="border: 1px solid #ccc;margin-top: 6px">
@@ -31,7 +31,7 @@
                 <bos-table-column lable="装备型号" field="model"></bos-table-column>
                 <bos-table-column lable="装备数量" field="count"></bos-table-column>
             </el-table>
-            <div class="process-inOut-box">
+            <div class="process-inOut-box" v-if="notScrap">
                 <div class="process-inOut-item" v-if="universalObj.processVariables.applyOrder.inboundInfo!=null">
                     <div class="process-inOut-item-box"><div style="width: 70px;text-align: right"><span v-text="'入库情况:'"></span></div><span v-text="`【单号】${universalObj.processVariables.applyOrder.inboundInfo.orderNumber}【总价合计】¥${universalObj.processVariables.applyOrder.inboundInfo.price/100}`"></span></div>
                     <div class="process-inOut-item-box" v-if="inHouseHaveMissequip" style="margin-top: 8px"><div style="width: 70px;text-align: right"><span v-text="'备注:'"></span></div><span v-text="`\xa0\xa0${universalObj.processVariables.applyOrder.inboundInfo.note}`"></span></div>
@@ -70,7 +70,7 @@
 
 <script>
     import serviceDialog from "components/base/serviceDialog"
-    import { historyTasks,activeTasks,workflow,equipsOutInbound,findInHouseNumberLike,findOutHouseNumberLike} from "api/process"
+    import { historyTasks,activeTasks,workflow,equipsOutInbound,findInHouseNumberLike,findOutHouseNumberLike,transferProcess} from "api/process"
     import textButton from 'components/base/textButton'
     import select_apply from 'components/process/processDialog/selectApplyProcess'
     import t_dialog from 'components/process/transfer/transferDialog'
@@ -141,18 +141,6 @@
                     };
                     this.$refs.lookUp.show();
                 });
-              // let equip=_.groupBy(JSON.parse(JSON.stringify(this.universalObj.processVariables.inboundEquipsOrder.equips)), 'model');
-              //   for (let key in equip) {
-              //       equips.push({name:equip[key][0].name,model:key,count:equip[key].length})
-              //   }
-              // this.lookUp={
-              //     title:this.universalObj.processVariables.inboundEquipsOrder.note===''?'入库单':'入库单（异常）',
-              //     number:this.universalObj.processVariables.applyOrder.number,
-              //     user:this.universalObj.processVariables.applyOrder.inboundUser.name,
-              //     order:this.universalObj.processVariables.inboundEquipsOrder,
-              //     table:equips
-              // };
-              // this.$refs.lookUp.show();
             },
             lookOutHouse(){
                 let equips=[],equip;
@@ -170,14 +158,11 @@
                     };
                     this.$refs.lookUp.show();
                 });
-                // let equip=_.groupBy(JSON.parse(JSON.stringify(this.universalObj.processVariables.outboundEquipsOrder.equips)), 'model');
-                // for (let key in equip) {
-                //     equips.push({name:equip[key][0].name,model:key,count:equip[key].length})
-                // }
-
             },
             transfer(){
+                transferProcess(this.url.transfer,this.universalObj.id).then(res=>{
 
+                })
             },
             sucesssInOrOut() {
                 this.$refs.transferDialog.close();
@@ -211,7 +196,7 @@
                 this.$emit('back',true)
             },
             toReview() {
-                this.$refs.review.show()
+                this.$refs.review.show();
             },
             refill(){
                 let ref;
@@ -230,35 +215,30 @@
                     this.$emit('back',true)
                 })
             },
-
             processReviewInfo() {
                 let id='';
-                if(this.$route.meta.title==='待办事宜'){
-                    id=this.universalObj.processInstanceId
-                }else {
-                    id=this.universalObj.id
-                }
+                id=this.universalObj.id;
                 let params = {processInstanceId: id, includeProcessVariables: false, includeTaskVariables: true},
                     lable = "";
-
+                console.log(params);
                 historyTasks(params).then(res => {
                     let tempList = [];
                     res.forEach(item => {
                         switch (item.taskDefinitionKey) {
                             case 'apply':
-                                lable = "申请"
+                                lable = "申请";
                                 break;
                             case 'audit':
-                                lable = "审核"
+                                lable = "审核";
                                 break;
                             default:
-                                lable = "审批"
+                                lable = "审批";
                                 break;
                         }
                         tempList.push({
                             lable,
                             name: item.taskVariables.name,
-                            passVal: item.taskVariables.pass == undefined?0:item.taskVariables.pass?1:2,
+                            passVal: item.taskVariables.pass === undefined?0:item.taskVariables.pass?1:2,
                             note: item.taskVariables.note || '',
                             time: item.endTime?this.$filterTime(item.endTime):'-'
                         })
@@ -277,7 +257,6 @@
                     })
                 }else if(this.$route.meta.title==='待办事宜'){
                     this.activeTask.id=this.universalObj.id;
-
                 }
             }
         },
@@ -293,7 +272,6 @@
                         }
                     }
                 }
-
                 return flag
             },
             haveInHouse(){
@@ -324,47 +302,55 @@
             },
             inHouseHaveMissequip(){
                 let flag=false,inHouseBound={};
-                inHouseBound=this.universalObj.processVariables.applyOrder.inboundInfo;
-               if (inHouseBound.missEquips!=null){
-                   inHouseBound.missEquips.length===0?flag=false:flag=true
-               }
+                if(this.title!=='报废'){
+                    inHouseBound=this.universalObj.processVariables.applyOrder.inboundInfo;
+                    if (inHouseBound.missEquips!=null){
+                        inHouseBound.missEquips.length===0?flag=false:flag=true
+                    }
+                }
                 return flag
             },
             outHouseHaveMissequip(){
                 let flag=false,outHouseBound={};
-                outHouseBound=this.universalObj.processVariables.applyOrder.outboundInfo;
-                if (outHouseBound.missEquips!=null){
-                    outHouseBound.missEquips.length===0?flag=false:flag=true
+                if(this.title!=='报废'){
+                    outHouseBound=this.universalObj.processVariables.applyOrder.outboundInfo;
+                    if (outHouseBound.missEquips!=null){
+                        outHouseBound.missEquips.length===0?flag=false:flag=true
+                    }
                 }
                 return flag
             },
             isInHouse(){
-                let flag;
-                if(this.$route.meta.title==='我的流程'){
-                    if(this.universalObj.currentTask.assigneeName===JSON.parse(localStorage.getItem("user")).name){
-                        if(this.universalObj.currentTask.name.indexOf('入库')!==-1){
-                            flag=true;
-                        }else {
-                            flag=false;
+                let flag=false;
+                if(this.title!=='报废'){
+                    if(this.$route.meta.title==='我的流程'){
+                        if(this.universalObj.currentTask.assigneeName===JSON.parse(localStorage.getItem("user")).name){
+                            if(this.universalObj.currentTask.name.indexOf('入库')!==-1){
+                                flag=true;
+                            }else {
+                                flag=false;
+                            }
                         }
+                    }else if(this.$route.meta.title==='待办事宜'){
+                        this.universalObj.taskDefinitionKey==='equips_inbound_house'?flag=true:flag=false;
                     }
-                }else if(this.$route.meta.title==='待办事宜'){
-                    this.universalObj.taskDefinitionKey==='equips_inbound_house'?flag=true:flag=false;
                 }
                 return flag
             },
             isOutHouse(){
-                let flag;
-                if(this.$route.meta.title==='我的流程'){
-                    if(this.universalObj.currentTask.assigneeName===JSON.parse(localStorage.getItem("user")).name){
-                        if(this.universalObj.currentTask.name.indexOf('出库')!==-1){
-                            flag=true;
-                        }else {
-                            flag=false;
+                let flag=false;
+                if(this.title!=='报废'){
+                    if(this.$route.meta.title==='我的流程'){
+                        if(this.universalObj.currentTask.assigneeName===JSON.parse(localStorage.getItem("user")).name){
+                            if(this.universalObj.currentTask.name.indexOf('出库')!==-1){
+                                flag=true;
+                            }else {
+                                flag=false;
+                            }
                         }
+                    }else if(this.$route.meta.title==='待办事宜'){
+                        this.universalObj.taskDefinitionKey==='equips_outbound_house'?flag=true:flag=false;
                     }
-                }else if(this.$route.meta.title==='待办事宜'){
-                    this.universalObj.taskDefinitionKey==='equips_outbound_house'?flag=true:flag=false;
                 }
                 return flag
             }
@@ -372,8 +358,9 @@
         created() {
             this.activeTasks();
             this.processReviewInfo();
-            if(this.title == '报废') {
-                this.notScrap = false
+            if(this.title === '报废') {
+                this.notScrap = false;
+                console.log(this.notScrap)
             }
         },
         props: {

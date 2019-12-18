@@ -128,7 +128,6 @@
         },
         created(){
             this.defaultList();
-            // this.getEquipInfo();
             this.getUnitAndHouse();
         },
         computed:{
@@ -194,23 +193,6 @@
             },
             submit(data){
                 console.log(data);
-                // let dataSubmit = data;
-                // let index =dataSubmit.orderItems.length-1
-                // if(dataSubmit.orderItems[index].model==''){
-                //     dataSubmit.orderItems.splice(index,1)
-                // }
-                // let url = baseURL+'/secondments/up-to-down';
-                // request({
-                //     method:'post',
-                //     url:url,
-                //     data:dataSubmit
-                // }).then(res=>{
-                //     if(res){
-                //         this.$message.success('操作成功');
-                //         this.$refs.addDirectAdjustment.close();
-                //         this.$refs.directAdjustmentTable.getList();
-                //     }
-                // })
             },
             getEquipInfo() {
                 this.gqlQuery(api.getEquipList1, '', (res) => {
@@ -238,9 +220,6 @@
                 },true)
             },
             toSee(data){
-                // this.directDefault=data.row;
-                // this.downloadSrc=baseURL+'/secondments/up-to-down/export-excel'+'?secondmentOrderId='+this.directDefault.id;
-                // this.viewStatus.flag=!this.viewStatus.flag
                 this.billData=data.row.variables;
                 this.select.singleStatus=this.select.single;
 
