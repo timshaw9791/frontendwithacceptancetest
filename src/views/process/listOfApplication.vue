@@ -41,21 +41,21 @@
                 table: {
                     type:'调拨申请单',
                     labelList: [
-                        {lable: '请求标题', field: 'name'},
-                        {lable: '出库机构', field: 'name'},
-                        {lable: '出库人员', field: 'startTime'},
-                        {lable: '接收机构', field: 'currentTask.name'},
-                        {lable: '接收人员', field: 'currentTask.assigneeName'},
-                        {lable: '创建时间', field: 'startTime', filter: (ns) => this.$filterTime(ns.endTime)},
+                        {lable: '请求标题', field: 'title'},
+                        {lable: '出库机构', field: 'outboundOrganUnit.name'},
+                        {lable: '出库人员', field: 'outboundUser.name'},
+                        {lable: '接收机构', field: 'inboundOrganUnit.name'},
+                        {lable: '接收人员', field: 'inboundUser.name'},
+                        {lable: '申请时间', field: 'applyTime', filter: (ns) => this.$filterTime(ns.applyTime)},
                     ],
                     align:'left',
                     height:'618px',
-                    url:'',
+                    url:'/workflow/transfer/apply-orders',
                     tableAction:{
                         label:'操作',
                         button:[{name:'详情',type:'primary'}]
                     },
-                    params:{assignee:JSON.parse(localStorage.getItem('user')).id,includeCurrentTask:true,includeProcessVariables:true},
+                    params:{assignee:JSON.parse(localStorage.getItem('user')).id},
                     search:''
                 },
                 clickButton:[{name:'调拨申请单',click:false},{name:'直调申请单',click:false},{name:'报废申请单',click:false}],
@@ -72,11 +72,53 @@
             clickApplication(item){
                 this.clickButton.forEach(clickItem=>{
                     if(clickItem===item){
-                        clickItem.click=!clickItem.click;
+                        item.click=true;
                     }else {
                         clickItem.click=false;
                     }
-                })
+                });
+                let table={};
+                if(item.name==='调拨申请单'){
+                    table={
+                        type:'调拨申请单',
+                        labelList: [
+                            {lable: '请求标题', field: 'title'},
+                            {lable: '出库机构', field: 'outboundOrganUnit.name'},
+                            {lable: '出库人员', field: 'outboundUser.name'},
+                            {lable: '接收机构', field: 'inboundOrganUnit.name'},
+                            {lable: '接收人员', field: 'inboundUser.name'},
+                            {lable: '申请时间', field: 'applyTime', filter: (ns) => this.$filterTime(ns.applyTime)},
+                        ],
+                        url:'/workflow/transfer/apply-orders',
+                    }
+                }else if (item.name==='直调申请单') {
+                    table={
+                        type:'直调申请单',
+                        labelList: [
+                            {lable: '请求标题', field: 'title'},
+                            {lable: '出库机构', field: 'outboundOrganUnit.name'},
+                            {lable: '出库人员', field: 'outboundUser.name'},
+                            {lable: '接收机构', field: 'inboundOrganUnit.name'},
+                            {lable: '接收人员', field: 'inboundUser.name'},
+                            {lable: '申请时间', field: 'applyTime', filter: (ns) => this.$filterTime(ns.applyTime)},
+                        ],
+                        url:'/workflow/direct-allot/apply-orders',
+                    }
+                }else {
+                    table={
+                        type:'报废申请单',
+                        labelList: [
+                            {lable: '请求标题', field: 'title'},
+                            {lable: '操作人员', field: 'applicant.name'},
+                            {lable: '申请时间', field: 'applyTime', filter: (ns) => this.$filterTime(ns.applyTime)},
+                        ],
+                        url:'/workflow/scrap/scrap-orders',
+                    }
+                }
+                _.update(this.table, 'type', ()=>{ return table.type});
+                _.update(this.table, 'labelList', ()=>{ return table.labelList});
+                _.update(this.table, 'url', ()=>{ return table.url});
+                this.$refs.processTable.refetch();
             },
             black(){
                 this.status.tableOrUniversalFlag=!this.status.tableOrUniversalFlag;

@@ -49,7 +49,7 @@
                         label:'操作',
                         button:[{name:'详情',type:'primary'}]
                     },
-                    params:{startUserId:JSON.parse(localStorage.getItem('user')).id,includeCurrentTask:true,includeProcessVariables:true},
+                    params:{startUserId:JSON.parse(localStorage.getItem('user')).id},
                     search:''
                 },
                 universal:{
