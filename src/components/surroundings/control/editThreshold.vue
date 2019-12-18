@@ -6,14 +6,14 @@
                 <div class="airConditioning-bottom">
                     <span v-text="'空调温度阈值：'"></span>
                     <input class="input" :style="flag?'border:none;':''" v-model="threshold.min" :disabled="flag"/><span>~~</span>
-                    <input class="input" :style="flag?'border:none;':''" v-model="threshold.max" :disabled="flag"/><span>摄氏度</span>
+                    <input class="input" :style="flag?'border:none;':''" v-model="threshold.max" :disabled="flag"/><span>&#8451</span>
                     <div @click="toSetThreshold">
                         <svg-icon icon-class="编辑" style="width: 18px;height: 18px;margin-left: 24px"></svg-icon>
                     </div>
                 </div>
                 <div class="airConditioning-bottom">
                     <span v-text="'除湿器湿度阈值：'"></span>
-                    <input class="input" :style="humidityFlag?'border:none;':''" v-model="humidityThreshold" :disabled="humidityFlag"/>
+                    <input class="input" :style="humidityFlag?'border:none;':''" v-model="humidityThreshold" :disabled="humidityFlag"/><span>%</span>
                     
                     <div @click="toSetHumidityThreshold">
                         <svg-icon icon-class="编辑" style="width: 18px;height: 18px;margin-left: 24px"></svg-icon>
