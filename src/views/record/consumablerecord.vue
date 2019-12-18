@@ -105,10 +105,13 @@
                 handler(data){
                     this.params.page=1;
                     console.log("data",data)
-                    if(data){
-                        this.params.startTime = this.getDatamillseconds(data[0])
-                        this.params.endTime = this.getDatamillseconds(data[1])+24*60*60*1000-1
-                        this.getList(this.params)
+                    let time2 = JSON.parse(JSON.stringify(this.table.time)) 
+                    if(time2){
+                        time2[0] = time2[0].replace(new RegExp("-","gm"),"/");
+                        this.params.startTime = (new Date(time2[0])).getTime();
+                        time2[1] = time2[1].replace(new RegExp("-","gm"),"/");
+                        this.params.endTime = (new Date(time2[1])).getTime()+24*60*60*1000-1;
+                        console.log("this.params",this.params)
                     }else{
                         this.params.startTime=''
                         this.params.endTime=''

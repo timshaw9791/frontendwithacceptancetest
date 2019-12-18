@@ -102,11 +102,12 @@
                 handler(data){
                     this.params.page=1;
                     console.log("data",data)
-                    if(data){
-                        data[0] = data[0].replace(new RegExp("-","gm"),"/");
-                        this.params.startTime = (new Date(data[0])).getTime();
-                        data[1] = data[1].replace(new RegExp("-","gm"),"/");
-                        this.params.endTime = (new Date(data[1])).getTime()+24*60*60*1000-1;
+                    let time2 = JSON.parse(JSON.stringify(this.time)) 
+                    if(time2){
+                        time2[0] = time2[0].replace(new RegExp("-","gm"),"/");
+                        this.params.startTime = (new Date(time2[0])).getTime();
+                        time2[1] = time2[1].replace(new RegExp("-","gm"),"/");
+                        this.params.endTime = (new Date(time2[1])).getTime()+24*60*60*1000-1;
                         console.log("this.params",this.params)
                     }
                     else{
