@@ -36,14 +36,14 @@
                             <el-button class="submits" v-text="'停止'" @click="stopGetEquip"></el-button>
                         </div>
                     </div>
-                    <div class="header-item"><span v-text="'申请装备表单：'"></span>
+                    <div class="header-item"><span v-text="typeOperational==='入库'?'出库装备表单：':'申请装备表单：'"></span>
 
                     </div>
                 </div>
                 <div class="directAdjustmentDialog-body">
                     <div class="leftTable">
                         <el-table
-                                :data="directObj.processVariables?directObj.processVariables.applyOrder.equips:[]"
+                                :data="typeOperational==='入库'?directObj.processVariables.outboundEquipsOrder.equips:directObj.processVariables.applyOrder.equips"
                                 height="531"
                                 style="width: 100%"
                                 :align="align"
