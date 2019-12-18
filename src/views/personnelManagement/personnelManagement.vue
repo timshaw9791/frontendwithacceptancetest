@@ -12,7 +12,7 @@
                     <div class="add-personnel-item"><svg-icon icon-class='同步' style="margin-left: 38px" class="icon-search"></svg-icon>
                         <span style="color: #2F2F76" @click="synchronization" data-test="button">信息头像同步</span></div>
                     <div class="add-personnel-item">
-                        <svg-icon icon-class='加' style="margin-left: 38px" class="icon-search"></svg-icon>
+                        <svg-icon icon-class='加号' style="margin-left: 38px" class="icon-search"></svg-icon>
                         <span style="color: #2F2F76" @click="addPersonnel" data-test="button" >新增人员</span>
                     </div>
                     <!-- <div class="add-personnel-item"><svg-icon icon-class='同步' style="margin-left: 38px" class="icon-search"></svg-icon>
