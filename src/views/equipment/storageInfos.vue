@@ -673,7 +673,6 @@
 
         created() {
             this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];//获取到串口号
-            //killProcess();
         },
         mounted() {
             //不同的入口进入的展示不同页面
