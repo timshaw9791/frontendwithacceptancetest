@@ -382,6 +382,22 @@
 </script>
 
 <style lang="scss" scoped>
+.el-table {
+        ::-webkit-scrollbar {
+            width: 5px;
+            background-color: white;
+        }
+        ::-webkit-scrollbar-track-piece {
+            background: white;
+        }
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: gray;
+            border-radius: 20px;
+        }
+    }
     .plan {
         font-size: 0.0833rem;
     }
