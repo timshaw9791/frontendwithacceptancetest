@@ -11,7 +11,7 @@
             style="margin-left: 1vw; min-width: 100px"
             @selected="selected"
           ></tb-select> -->
-          <div style="width:200px;cursor: pointer;">
+          <div style="width:200px;cursor: pointer;margin-left:15px">
           <el-input v-model="msgTitle" placeholder="消息标题"></el-input>
           </div>
           <!-- <span class="msgReaded">
@@ -34,10 +34,6 @@
                            </div>
                         </template>
                         </el-table-column>
-                        
-                        
-
-    
                     </el-table>
          <servicedialog title="详情" ref="dialog1" :button="false" :ismore="true" :secondary="false" width="500">
             <div>
@@ -273,7 +269,7 @@ created(){
 
 <style lang="scss" scoped>
 .message {
-  margin-left: 100px;
+  // margin-left: 100px;
   font-size: 16px;
 }
 
@@ -288,9 +284,11 @@ created(){
     border-bottom: 1px solid rgb(228, 231, 237);
   }
   .message_box{
+    margin-left: 0.9375rem;
+    // border:1px solid red;
       margin:0 auto;
-      width: 1500px;
-      height: 700px;
+      width: 8rem;
+      height: 3.5rem;
     //   border: 1px solid red
   }
   .left-tab {

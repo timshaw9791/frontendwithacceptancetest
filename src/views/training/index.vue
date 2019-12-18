@@ -1,11 +1,11 @@
 <template>
 <div class="teaching">
     <div>
-    <my-header :title="'教学培训'" :searchFlag="false" :haveBlack="viewStatus.hasBlack" @h_black="black"></my-header>
-     <div style="float:right;margin-left:20px" v-if="viewStatus.insFlag">
+    <my-header :title="'教学培训'" :searchFlag="false" :haveBlack="viewStatus.hasBlack" @h_black="back"></my-header>
+     <!-- <div style="float:right;margin-left:20px" v-if="viewStatus.insFlag">
             <svg-icon icon-class="返回" class="svg-info"></svg-icon>
             <span v-text="'返回'" @click="back"></span>
-        </div>
+        </div> -->
     </div>
     <div class="action-bar">
         <el-button type="text" class="_textBt" v-if="!viewStatus.insFlag" @click="edit" data-test="button">
@@ -374,6 +374,7 @@ export default {
                 typeName: 'MP4'
             };
             console.log(this.insData);
+            this.viewStatus.hasBlack=!this.viewStatus.hasBlack
             this.title=data.name+data.model
             this.viewStatus.rMFlag = false;
             this.viewStatus.insFlag = true;
@@ -386,6 +387,7 @@ export default {
                 name: name,
                 typeName: 'PDF'
             };
+            this.viewStatus.hasBlack=!this.viewStatus.hasBlack
             this.title=data.name+data.model
             this.viewStatus.rMFlag = false;
             this.viewStatus.insFlag = true;
@@ -394,6 +396,7 @@ export default {
         back() {
             this.pageFlag=!this.pageFlag
             this.viewStatus.insFlag = false;
+            this.viewStatus.hasBlack=!this.viewStatus.hasBlack
         },
         getListGql() {
              this.params.page=this.paginator.page
