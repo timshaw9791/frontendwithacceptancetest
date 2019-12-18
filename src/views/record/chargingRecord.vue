@@ -49,9 +49,9 @@
                         {lable: '装备名称', field: 'equipInfo.equipName',sort:false},
                         {lable: '装备型号', field: 'equipInfo.model',sort:false},
                         {lable: '装备位置', field: 'equipInfo',filter: (ns) => this.fixposition(ns.equipInfo)},
-                        {lable: '充电周期', field: 'equipInfo.duration',filter: (ns) => this.useTime(ns.equipInfo.duration,"周期")},
+                        {lable: '充电周期', field: 'equipInfo.duration',filter: (ns) => milliToDay(ns.equipInfo.duration)},
                         {lable: '开始充电时间', field: 'createTime' ,filter: (ns) => this.$filterTime(parseInt(ns.createTime))},
-                        {lable: '已充时间', field: 'equipInfo.useTime',filter: (ns) => this.useTime(ns.equipInfo.useTime,"已冲")},
+                        {lable: '已充时间', field: 'equipInfo.useTime',filter: (ns) => chargeingTime(row.useTime)},
                     ],
                     search:'',
                 },
@@ -86,17 +86,6 @@
                 this.params.page=data;
                 this.getList()
             },
-            useTime(data,info){
-                var days = parseInt(data / (1000 * 60 * 60 * 24));
-                var hours = parseInt((data % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                var minutes = parseInt((data % (1000 * 60 * 60)) / (1000 * 60));
-                var seconds = (data % (1000 * 60)) / 1000;
-                if(info=="周期"){
-                    return days + " 天 ";
-                }else{
-                    return days + " 天 " + hours + " 小时 ";
-                }
-            }
         },
         created(){
             this.getList()
