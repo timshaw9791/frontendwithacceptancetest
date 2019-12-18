@@ -23,7 +23,7 @@
     import select_apply from 'components/process/processDialog/selectApplyProcess'
     import p_universal from 'components/process/universal'
     import myHeader from 'components/base/header/header'
-    import {historyProcessInstancesById} from 'api/process'
+    import {historyProcessInstancesById,processInstancesById} from 'api/process'
     export default {
         name: "myProcess",
         components:{
@@ -90,7 +90,7 @@
                 }
             },
             clickTable(table) {
-                historyProcessInstancesById(table.row.processInstanceId).then(res=>{
+                processInstancesById(table.row.processInstanceId).then(res=>{
                     this.universal={title:this.getTitle(res.processVariables.processConfig.type),universalObj:res};
                     let url;
                     switch (this.universal.title) {
