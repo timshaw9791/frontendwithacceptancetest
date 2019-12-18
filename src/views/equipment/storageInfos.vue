@@ -266,7 +266,10 @@
                 index: 0, // 标识当前扫入是否是第一件装备
                 com: 0,
                 copyRfidList: {},
-                judgeEdit: {},// 判断是否对数据进行修改
+                judgeEdit: {
+                    form: {},
+                    zbForm: {}
+                },// 判断是否对数据进行修改
                 isClick: false, // 避免提交按钮快速点击
             }
         },
@@ -333,25 +336,27 @@
             },
             //离开页面
             black() {
-                if(this.title.includes('新增装备参数') && !this.isEqual() || this.title.includes('装备参数详情') && !this.edit) {
+                if(!this.isEqual()) {
                     this.$refs.dialog.show()
                 } else {
-                    if(this.title.includes('入库装备')) {
-                        killProcess(this.pid)
-                    }
                     this.$emit('black');
                 }
             },
             /* 判断两次数据是否相等 */
             isEqual() {
-                let a = JSON.stringify(this.form) == JSON.stringify(this.judgeEdit);
-                console.log(a);
-                console.log(JSON.stringify(this.form));
-                console.log(JSON.stringify(this.judgeEdit));
-                return JSON.stringify(this.form) == JSON.stringify(this.judgeEdit)
+                let flag1 = JSON.stringify(this.form) == JSON.stringify(this.judgeEdit.form),
+                    flag2 = JSON.stringify(this.zbForm) == JSON.stringify(this.judgeEdit.zbForm)
+                    console.log(JSON.stringify(this.form));
+                    console.log(JSON.stringify(this.judgeEdit.form));
+                    console.log(flag1);
+                    console.log(flag2);
+                return flag1&&flag2
             },
             // 弹窗点击确认后退出
             dialogConfirm() {
+                if(this.title.includes('入库装备')) {
+                    killProcess(this.pid)
+                }
                 this.$emit('black');
             },
 
@@ -367,29 +372,30 @@
                     let tempForm = JSON.parse(JSON.stringify(this.form)),
                         tempZbForm = JSON.parse(JSON.stringify(this.zbForm)),
                         requestBody = {
-                        equipArg: {
-                            chargeCycle: tempForm.chargeCycle*1000*3600*24,
-                            upkeepCycle: tempForm.upkeepCycle*1000*3600*24,
-                            id: tempForm.id,
-                            model: tempForm.model,
-                            name: tempForm.name,
-                            shelfLife: tempForm.shelfLifeQ*1000*3600*24,
+                            equipArg: {
+                                chargeCycle: tempForm.chargeCycle*1000*3600*24,
+                                upkeepCycle: tempForm.upkeepCycle*1000*3600*24,
+                                id: tempForm.id,
+                                model: tempForm.model,
+                                name: tempForm.name,
+                                shelfLife: tempForm.shelfLifeQ*1000*3600*24,
+                            },
+                            location: {
+                                floor: tempZbForm.floorL,
+                                number: tempZbForm.numberL,
+                                section: tempZbForm.sectionL,
+                                surface: tempZbForm.surfaceL
+                            },
+                            price: tempZbForm.price * 100,
+                            productDate: tempZbForm.productDateQ
                         },
-                        location: {
-                            floor: tempZbForm.floorL,
-                            number: tempZbForm.numberL,
-                            section: tempZbForm.sectionL,
-                            surface: tempZbForm.surfaceL
-                        },
-                        price: tempZbForm.price * 100,
-                        productDate: tempZbForm.productDateQ
-                    },
-                    rfidList = [],
-                    serialList = [];
+                        rfidList = [],
+                        serialList = [];
                     this.list.forEach(equip => {
                         rfidList.push(equip.rfid)
                         serialList.push(['', undefined, null].includes(equip.serial)?'""':equip.serial)
                     })
+                    console.log(this.list);
                     console.log(rfidList);
                     console.log(serialList);
                     this.$refs.form.validate.then(() => {
@@ -399,8 +405,7 @@
                         }, requestBody, (state, res) => {
                             // 关闭硬件
                             killProcess(this.pid)
-                            this.pid = ''
-                            this.hardwareOpen = false
+                            this.init()
                             this.$message.success("入库成功")
                             this.$emit('black')  
                         })
@@ -610,6 +615,8 @@
                                 this.getEquipInfo()
                             }
                         }
+                        this.judgeEdit.form = JSON.parse(JSON.stringify(this.form))
+                        this.judgeEdit.zbForm = JSON.parse(JSON.stringify(this.zbForm))
                     })
                 } else if(this.title.includes('装备信息详情')) {
                     findEquip(this.equipId).then(res => {
@@ -640,6 +647,8 @@
                             productDateQ: result.productDate,
                             price: result.price/100
                         }
+                        this.judgeEdit.form = JSON.parse(JSON.stringify(this.form))
+                        this.judgeEdit.zbForm = JSON.parse(JSON.stringify(this.zbForm))
                     })
                 } else if(this.title.includes('装备参数详情')) {
                     let tempForm = JSON.parse(JSON.stringify(this.equipList))
@@ -657,13 +666,13 @@
                         phoneM: tempForm.supplier.phone,
                         supplierId: tempForm.supplier.id
                     }
+                    this.judgeEdit.form = JSON.parse(JSON.stringify(this.form))
                 }
             }
         },
 
         created() {
             this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];//获取到串口号
-            //killProcess();
         },
         mounted() {
             //不同的入口进入的展示不同页面
@@ -674,9 +683,10 @@
                 
             } else if (this.title.includes('新增装备参数')) {
                 this.edit = false;
-                this.judgeEdit = JSON.parse(JSON.stringify(this.form))
+                this.judgeEdit.form = JSON.parse(JSON.stringify(this.form))
+                this.judgeEdit.zbForm = JSON.parse(JSON.stringify(this.zbForm))
             } else if (this.title.includes('装备参数详情')) {
-                
+                this.judgeEdit.zbForm = JSON.parse(JSON.stringify(this.zbForm))
             }
             if(this.getPropEquip) {
                 this.useProp = true

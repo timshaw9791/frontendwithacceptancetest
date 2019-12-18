@@ -191,6 +191,9 @@
             cancelDb() {
                 this.$refs.applyScrap.cancel();
             },
+        },
+        beforeDestroy() {
+            killProcess(this.pid)
         }
     }
 </script>

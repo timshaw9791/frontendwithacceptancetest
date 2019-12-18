@@ -135,7 +135,7 @@
 .action-bar {
     padding-right: 23px;
     margin-top: 8px;
-    border-top: rgba(112, 112, 112, 0.13) solid 1px;
+    /* border-top: rgba(112, 112, 112, 0.13) solid 1px; */
     border-bottom: rgba(112, 112, 112, 0.13) solid 1px;
     font-size: 16px;
     font-family: "PingFang SC";

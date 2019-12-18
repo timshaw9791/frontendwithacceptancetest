@@ -579,8 +579,8 @@ export default {
 }
 
 .teaching .action-bar {
-    margin-top: 0.0417rem;
-    border-top: rgba(112, 112, 112, 0.13) solid 1px;
+    // margin-top: 0.0417rem;
+    //border-top: rgba(112, 112, 112, 0.13) solid 1px;
     border-bottom: rgba(112, 112, 112, 0.13) solid 1px;
     height: 0.2969rem;
     display: flex;
