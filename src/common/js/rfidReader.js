@@ -141,8 +141,8 @@ export function handheld(errCB) {
                 }
                 resolve(JSON.stringify(result))
             } else {
-                if(errTip) errCB("文件不存在");
-                console.log("文件不存在");
+                if(errTip) errCB("测试文件不存在");
+                console.log("测试文件不存在");
                 console.log("inventoryFile", inventoryFile)
             }
         });
@@ -179,8 +179,8 @@ export function handheld(errCB) {
                 }
                 resolve(JSON.stringify(result));
             } else {
-                if(errTip) errCB("文件不存在");
-                console.log("文件不存在");
+                if(errTip) errCB("手持机文件导出失败");
+                console.log("手持机文件导出失败");
             }
             console.log('out code：' + code);
         });
@@ -225,7 +225,7 @@ export function writeFile(content, cb, fileName) {
             if(code == 0) {
                 cb({state: true, message: "同步手持机成功"})
             } else {
-                cb({state: false, message: `命令发生错误，退出码${code}`})
+                cb({state: false, message: `手持机连接失败，退出码${code}`})
             }
         }
         console.log('out code: ' + code);

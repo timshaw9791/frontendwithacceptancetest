@@ -2,7 +2,7 @@
     <div class="label">
         <div>
             <field-table :list="list" :labelList="table.labelList"
-                         :tableAction="table.tableAction" :pageInfo="paginator" @tableCurrentPageChanged="changePage"
+                         :tableAction="table.tableAction" :align="table.align" :pageInfo="paginator" @tableCurrentPageChanged="changePage"
                          @clickTableCloum="clickTableCloum" style="width: 100%" :height="table.height">
             </field-table>
         </div>

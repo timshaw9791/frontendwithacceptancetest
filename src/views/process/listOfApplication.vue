@@ -1,16 +1,16 @@
 <template>
-    <div class="handling-matters">
-        <my-header :title="'办结事宜'" :searchFlag="false" :haveBlack="!status.tableOrUniversalFlag" @h_black="black"></my-header>
-        <div class="handling-matters_action_box" data-test="action_box" v-if="status.tableOrUniversalFlag">
-            <div></div>
+    <div class="agency-matters">
+        <my-header :title="'申请单列表'" :searchFlag="false" :haveBlack="!status.tableOrUniversalFlag" @h_black="black"></my-header>
+        <div class="agency-matters_action_box" data-test="action_box" v-if="status.tableOrUniversalFlag">
+            <div style="width: 10px;height: 10px"></div>
             <div class="action_right_box">
                 <div style="width: 1.6875rem">
-                    <p_search @search="getSearch" :placeholder="'标题/工作流'"></p_search>
+                    <p_search @search="getSearch" :placeholder="'标题'"></p_search>
                 </div>
             </div>
         </div>
-        <div class="handling-matters_main_box" data-test="main_box">
-            <div class="main_table_box" data-test="table_box">
+        <div class="agency-matters_main_box" data-test="main_box">
+            <div class="main_table_box"  data-test="table_box">
                 <div style="padding: 0px 0.09375rem"><p_table ref="processTable" :table="table" :typeUrl="'process'" :otherParams="true" @clickTable="clickTable" v-if="status.tableOrUniversalFlag"></p_table></div>
                 <p_universal @back="black" :url="universal.url" :title="universal.title" :universalObj="universal.universalObj" v-if="!status.tableOrUniversalFlag"></p_universal>
             </div>
@@ -27,7 +27,7 @@
     import p_universal from 'components/process/universal'
     import myHeader from 'components/base/header/header'
     export default {
-        name: "handlingMatters",
+        name: "myProcess",
         components:{
             textButton,p_search,p_table,select_apply,p_universal,myHeader
         },
@@ -36,19 +36,20 @@
                 table: {
                     labelList: [
                         {lable: '请求标题', field: 'name'},
-                        {lable: '工作流', field: 'operator', filter: this.filterProcessType},
-                        {lable: '创建时间', field: 'startTime', filter: (ns) => this.$filterTime(ns.startTime)},
-                        {lable: '当前节点', field: 'currentTask.name'},
-                        {lable: '未操作者', field: 'currentTask.assigneeName'},
+                        {lable: '出库机构', field: 'name'},
+                        {lable: '出库人员', field: 'startTime'},
+                        {lable: '接收机构', field: 'currentTask.name'},
+                        {lable: '接收人员', field: 'currentTask.assigneeName'},
+                        {lable: '创建时间', field: 'startTime', filter: (ns) => this.$filterTime(ns.endTime)},
                     ],
                     align:'left',
                     height:'618px',
-                    url:'/history/process-instances/page',
+                    url:'',
                     tableAction:{
                         label:'操作',
                         button:[{name:'详情',type:'primary'}]
                     },
-                    params:{assignee:JSON.parse(localStorage.getItem('user')).id,includeCurrentTask:true,includeProcessVariables:true,onlyFinished:true},
+                    params:{assignee:JSON.parse(localStorage.getItem('user')).id,includeCurrentTask:true,includeProcessVariables:true},
                     search:''
                 },
                 universal:{
@@ -115,12 +116,12 @@
 </script>
 
 <style lang="scss" scoped>
-    .handling-matters{
+    .agency-matters{
         width: 100%;
         color:#707070FF;
         font-size: 16px;
     }
-    .handling-matters .handling-matters_header{
+    .agency-matters .agency-matters_header{
         height: 0.3021rem;
         width: 100%;
         font-size: 20px;
@@ -129,7 +130,7 @@
         padding-left: 0.09375rem;
         border-bottom:1px solid rgba(112,112,112,0.13);
     }
-    .handling-matters .handling-matters_action_box{
+    .agency-matters .agency-matters_action_box{
         height: 0.2917rem;
         width: 100%;
         display: flex;
@@ -140,7 +141,7 @@
         color: #2F2F76FF!important;
         border-bottom:0.0052rem solid rgba(112,112,112,0.13);
     }
-    .handling-matters_action_box .action_right_box{
+    .agency-matters_action_box .action_right_box{
 
     }
 </style>

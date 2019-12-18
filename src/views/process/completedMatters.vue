@@ -1,17 +1,17 @@
 <template>
     <div class="agency-matters">
         <my-header :title="'已办事宜'" :searchFlag="false" :haveBlack="!status.tableOrUniversalFlag" @h_black="black"></my-header>
-        <!--<div class="agency-matters_action_box" data-test="action_box" v-if="status.tableOrUniversalFlag">-->
-            <!--<text-button :iconSize="20" :iconClass="'加号'" :buttonName="'申请流程'" @click="apply"></text-button>-->
-            <!--<div class="action_right_box">-->
-                <!--<div style="width: 1.6875rem">-->
-                    <!--<p_search @search="getSearch" :placeholder="'标题/工作流'"></p_search>-->
-                <!--</div>-->
-            <!--</div>-->
-        <!--</div>-->
+        <div class="agency-matters_action_box" data-test="action_box" v-if="status.tableOrUniversalFlag">
+            <div style="width: 10px;height: 10px"></div>
+            <div class="action_right_box">
+                <div style="width: 1.6875rem">
+                    <p_search @search="getSearch" :placeholder="'标题/工作流'"></p_search>
+                </div>
+            </div>
+        </div>
         <div class="agency-matters_main_box" data-test="main_box">
             <div class="main_table_box" data-test="table_box">
-                <p_table ref="processTable" :table="table" :typeUrl="'process'" :otherParams="true" @clickTable="clickTable" v-if="status.tableOrUniversalFlag"></p_table>
+                <div style="padding: 0px 0.09375rem"><p_table ref="processTable" :table="table" :typeUrl="'process'" :otherParams="true" @clickTable="clickTable" v-if="status.tableOrUniversalFlag"></p_table></div>
                 <p_universal @back="black" :url="universal.url" :title="universal.title" :universalObj="universal.universalObj" v-if="!status.tableOrUniversalFlag"></p_universal>
             </div>
         </div>
@@ -35,14 +35,15 @@
             return{
                 table: {
                     labelList: [
-                        {lable: '请求标题', field: 'action',filter: this.filterProcessName},
-                        {lable: '工作流', field: 'name'},
-                        {lable: '创建时间', field: 'startTime', filter: (ns) => this.$filterTime(ns.endTime)},
+                        {lable: '请求标题', field: 'name'},
+                        {lable: '工作流', field: 'processDefinitionName'},
+                        {lable: '创建时间', field: 'startTime', filter: (ns) => this.$filterTime(ns.stateTime)},
                         {lable: '当前节点', field: 'currentTask.name'},
                         {lable: '未操作者', field: 'currentTask.assigneeName'}
                     ],
+                    align:'left',
                     height:'618px',
-                    url:'/history/tasks/page',
+                    url:'/process-instances/page',
                     tableAction:{
                         label:'操作',
                         button:[{name:'详情',type:'primary'}]
@@ -78,21 +79,6 @@
                     case "DIRECT_ALLOT":
                         return '直调流程'
                 }
-            },
-            filterProcessName(ns){
-                let type,name=JSON.parse(localStorage.getItem('user')).name,time=(new Date(ns.startTime)).toLocaleDateString();
-                switch (ns.processDefinitionKey) {
-                    case "SCRAP":
-                        type = '报废流程';
-                        break;
-                    case "TRANSFER":
-                        type = '调拨流程';
-                        break;
-                    case "DIRECT_ALLOT":
-                        type = '直调流程';
-                        break;
-                }
-                return type+'-'+name+'-'+time.replace(/\//g,'-')
             },
             getSearch(data){
                 this.table.search=data

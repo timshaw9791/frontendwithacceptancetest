@@ -128,6 +128,12 @@ export const asyncRouterMap = [
                 component: _import('process/handlingMatters'),
                 meta: {title: '办结事宜'},
             },
+            {
+                path: 'listOfApplication',
+                name: 'listOfApplication',
+                component: _import('process/listOfApplication'),
+                meta: {title: '申请单列表'},
+            }
             // {
             //     path: 'scrapped',
             //     name: 'scrapped',
