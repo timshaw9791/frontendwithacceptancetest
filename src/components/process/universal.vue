@@ -43,18 +43,7 @@
                     <div class="process-inOut-item-box" v-if="outHouseHaveMissequip" style="margin-top: 8px"><div style="width: 70px;text-align: right"><span v-text="'异常装备:'"></span></div><span v-text="getErrorEquip(universalObj.processVariables.applyOrder.outboundInfo.missEquips)"></span></div>
                 </div>
             </div>
-            <div class="process-info-box">
-                <div class="title">审批流程</div>
-                <div class="process-info" v-for="(item, i) in processList" :key="i" v-show="item.name">
-                    <div class="people">{{ item.lable }}人员</div>
-                    <div>{{ item.name }}</div>
-                    <div class="pass" v-if="item.passVal == 1">通过</div>
-                    <div class="turn" v-else-if="item.passVal == 2">驳回 <a style="color: #2F2F76" @click="lookReson(item.note)">[查看原因]</a></div>
-                    <div v-else></div>
-                    <div>{{ item.lable }}时间:</div>
-                    <div>{{ item.time }}</div>
-                </div>
-            </div>
+            <process-info :preData="processList" v-if="startShow"></process-info>
         </div>
         <service-dialog title="查看原因" ref="reson" :button="false" :secondary="false" confirmInfo="提交" width="600px">
             驳回原因: <el-input type="textarea" v-model="reson" :disabled="true" :autosize="true" resize="none" style="margin-top: 6px"></el-input>
@@ -75,25 +64,13 @@
     import select_apply from 'components/process/processDialog/selectApplyProcess'
     import t_dialog from 'components/process/transfer/transferDialog'
     import lookUp from './lookUp'
+    import processInfo from "components/process/processInfo"
     var _ = require("lodash");
     export default {
         name: 'doneuniversal',
         data() {
             return {
-                form: {
-                    applyOrderId: '',
-                    receiveAgency: '',
-                    outAgency: '',
-                    applyTime: '',
-                    receiveStore: '',
-                    outStore: '',
-                    applyPeople: '',
-                    receivePeople: '',
-                    outPeple: '',
-                    note: '',
-                    taskId: '', // 申请单id
-                    processInstanceId: '', // 申请单流程id
-                },
+                startShow:false,
                 directObj:{},
                 activeTask:{},
                 list: [],
@@ -218,32 +195,11 @@
             processReviewInfo() {
                 let id='';
                 id=this.universalObj.id;
-                let params = {processInstanceId: id, includeProcessVariables: false, includeTaskVariables: true},
-                    lable = "";
+                let params = {processInstanceId: id, includeProcessVariables: false, includeTaskVariables: true};
                 console.log(params);
                 historyTasks(params).then(res => {
-                    let tempList = [];
-                    res.forEach(item => {
-                        switch (item.taskDefinitionKey) {
-                            case 'apply':
-                                lable = "申请";
-                                break;
-                            case 'audit':
-                                lable = "审核";
-                                break;
-                            default:
-                                lable = "审批";
-                                break;
-                        }
-                        tempList.push({
-                            lable,
-                            name: item.taskVariables.name,
-                            passVal: item.taskVariables.pass === undefined?0:item.taskVariables.pass?1:2,
-                            note: item.taskVariables.note || '',
-                            time: item.endTime?this.$filterTime(item.endTime):'-'
-                        })
-                    });
-                    this.processList = tempList
+                    this.processList = JSON.parse(JSON.stringify(res));
+                    this.startShow = true
                 })
             },
             lookReson(reson) {
@@ -380,7 +336,8 @@
             textButton,
             select_apply,
             t_dialog,
-            lookUp
+            lookUp,
+            processInfo
         }
     }
 </script>
@@ -422,7 +379,6 @@
     }
     .body {
         width: 800px;
-        height: 600px;
         margin: 20px auto;
         font-size: 16px;
         font-family:PingFang SC;
@@ -448,28 +404,9 @@
             width: 100%;
             color: #707070;
         }
-        .process-info-box {
-            color: #707070;
-            margin-top: 16px;
-        }
         .title {
             padding-bottom: 16px;
             border-bottom: 1px solid rgba(112,112,112,0.13);
-        }
-        .process-info {
-            display: grid;
-            grid-template-columns: 15% 30% 25% 10% 20%;
-            padding: 6px 0;
-            border-bottom: 1px solid rgba(112,112,112,0.13);
-            .people {
-                color: #2F2F76;
-            }
-            .pass {
-                color: #009B4C;
-            }
-            .turn {
-                color: #EF4545;
-            }
         }
     }
     /deep/.el-table__body-wrapper::-webkit-scrollbar {
