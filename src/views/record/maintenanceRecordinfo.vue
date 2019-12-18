@@ -19,7 +19,7 @@
                     <bos-table-column lable="联系方式" field="supplierInfo.phone" align="center"
                     ></bos-table-column>
                     <bos-table-column lable="保养周期" field="equipInfo.duration"
-                        :filter="(ns) => parseInt((ns.equipInfo.duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))+'小时'"
+                        :filter="(row)=>milliToDay(row.equipInfo.duration)"
                         align="center"
                     ></bos-table-column>
                     <bos-table-column lable="数量" field="count"  align="center"
