@@ -220,7 +220,7 @@
     }
     .personnelManagement .personnel-action-bar {
         margin-top: 8px;
-        border-top: rgba(112, 112, 112, 0.13) solid 1px;
+        /* border-top: rgba(112, 112, 112, 0.13) solid 1px; */
         border-bottom: rgba(112, 112, 112, 0.13) solid 1px;
         height: 57px;
         width: 100%;
