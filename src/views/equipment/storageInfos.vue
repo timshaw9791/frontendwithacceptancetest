@@ -266,7 +266,10 @@
                 index: 0, // 标识当前扫入是否是第一件装备
                 com: 0,
                 copyRfidList: {},
-                judgeEdit: {},// 判断是否对数据进行修改
+                judgeEdit: {
+                    form: {},
+                    zbForm: {}
+                },// 判断是否对数据进行修改
                 isClick: false, // 避免提交按钮快速点击
             }
         },
@@ -333,21 +336,27 @@
             },
             //离开页面
             black() {
-                if(this.title.includes('新增装备参数') && !this.isEqual() || this.title.includes('装备参数详情') && !this.edit) {
+                if(!this.isEqual()) {
                     this.$refs.dialog.show()
                 } else {
-                    if(this.title.includes('入库装备')) {
-                        killProcess(this.pid)
-                    }
                     this.$emit('black');
                 }
             },
             /* 判断两次数据是否相等 */
             isEqual() {
-                return JSON.stringify(this.form) == JSON.stringify(this.judgeEdit)
+                let flag1 = JSON.stringify(this.form) == JSON.stringify(this.judgeEdit.form),
+                    flag2 = JSON.stringify(this.zbForm) == JSON.stringify(this.judgeEdit.zbForm)
+                    console.log(JSON.stringify(this.form));
+                    console.log(JSON.stringify(this.judgeEdit.form));
+                    console.log(flag1);
+                    console.log(flag2);
+                return flag1&&flag2
             },
             // 弹窗点击确认后退出
             dialogConfirm() {
+                if(this.title.includes('入库装备')) {
+                    killProcess(this.pid)
+                }
                 this.$emit('black');
             },
 
@@ -606,6 +615,8 @@
                                 this.getEquipInfo()
                             }
                         }
+                        this.judgeEdit.form = JSON.parse(JSON.stringify(this.form))
+                        this.judgeEdit.zbForm = JSON.parse(JSON.stringify(this.zbForm))
                     })
                 } else if(this.title.includes('装备信息详情')) {
                     findEquip(this.equipId).then(res => {
@@ -636,6 +647,8 @@
                             productDateQ: result.productDate,
                             price: result.price/100
                         }
+                        this.judgeEdit.form = JSON.parse(JSON.stringify(this.form))
+                        this.judgeEdit.zbForm = JSON.parse(JSON.stringify(this.zbForm))
                     })
                 } else if(this.title.includes('装备参数详情')) {
                     let tempForm = JSON.parse(JSON.stringify(this.equipList))
@@ -653,6 +666,7 @@
                         phoneM: tempForm.supplier.phone,
                         supplierId: tempForm.supplier.id
                     }
+                    this.judgeEdit.form = JSON.parse(JSON.stringify(this.form))
                 }
             }
         },
@@ -670,9 +684,10 @@
                 
             } else if (this.title.includes('新增装备参数')) {
                 this.edit = false;
-                this.judgeEdit = JSON.parse(JSON.stringify(this.form))
+                this.judgeEdit.form = JSON.parse(JSON.stringify(this.form))
+                this.judgeEdit.zbForm = JSON.parse(JSON.stringify(this.zbForm))
             } else if (this.title.includes('装备参数详情')) {
-                
+                this.judgeEdit.zbForm = JSON.parse(JSON.stringify(this.zbForm))
             }
             if(this.getPropEquip) {
                 this.useProp = true
