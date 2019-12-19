@@ -4,7 +4,7 @@
         <div class="action-bar">
             <div style="width:400px" data-test="time_search">
                 <el-date-picker
-                    v-model="table.time"
+                    v-model="time"
                     type="daterange"
                     value-format="yyyy-MM-dd"
                     range-separator="至"
@@ -101,11 +101,11 @@
 
                 }
             },
-            'table.time':{
+            'time':{
                 handler(data){
                     this.params.page=1;
                     console.log("data",data)
-                    let time2 = JSON.parse(JSON.stringify(this.table.time)) 
+                    let time2 = JSON.parse(JSON.stringify(this.time))
                     if(time2){
                         time2[0] = time2[0].replace(new RegExp("-","gm"),"/");
                         this.params.startTime = (new Date(time2[0])).getTime();
@@ -115,8 +115,8 @@
                     }else{
                         this.params.startTime=''
                         this.params.endTime=''
-                        this.getList(this.params)
                     }
+                    this.getList()
                     
                 }
             },
