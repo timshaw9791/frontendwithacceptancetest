@@ -54,9 +54,9 @@
                                          :buttonName="' '"></text-button>
                             <text-button :iconClass="'确定'" :dataTest="'disable'" v-if="status.buttonDisable" :havePoint="false"
                                          :buttonName="' '" style="margin-left: 0.0521rem"></text-button>
-                            <text-button :iconClass="'取消1'"  :dataTest="'取消_icon'" v-if="!status.buttonDisable" :buttonName="' '"
+                            <text-button :iconClass="'取消选中'"  :dataTest="'取消_icon'" v-if="!status.buttonDisable" :buttonName="' '"
                                          @click="modifyStock('result')"></text-button>
-                            <text-button :iconClass="'确定1'" :dataTest="'确定_icon'" v-if="!status.buttonDisable" :buttonName="' '"
+                            <text-button :iconClass="'确定选中'" :dataTest="'确定_icon'" v-if="!status.buttonDisable" :buttonName="' '"
                                          @click="modifyStock('modify')" style="margin-left: 0.0521rem"></text-button>
                         </div>
                     </div>

@@ -2,12 +2,12 @@
   <defs>
     <style>
       .cls-1 {
-        fill: ;
+        fill: #cfcfcf;
       }
 
       .cls-2 {
         fill: none;
-        stroke: red;
+        stroke: #cfcfcf;
         stroke-linecap: round;
         stroke-width: 1.3px;
       }
