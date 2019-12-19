@@ -121,31 +121,7 @@
                     key: 'SYNC',
                     tag: "导入手持机"
                 }],
-                toDoList: [{
-                    info: "调拨流程申请-王小明",
-                    type: "调拨流程",
-                    time: "2019-11-30"
-                },{
-                    info: "调拨流程申请-王小明",
-                    type: "调拨流程",
-                    time: "2019-11-30"
-                },{
-                    info: "调拨流程申请-王小明",
-                    type: "调拨流程",
-                    time: "2019-11-30"
-                },{
-                    info: "调拨流程申请-王小明",
-                    type: "调拨流程",
-                    time: "2019-11-30"
-                },{
-                    info: "调拨流程申请-王小明",
-                    type: "调拨流程",
-                    time: "2019-11-30"
-                },{
-                    info: "调拨流程申请-王小明",
-                    type: "调拨流程",
-                    time: "2019-11-30"
-                }],
+                toDoList: [],
                 inventoryList: [],
                 totalCanUse: 0,
                 totalIsUse: 0,
