@@ -32,3 +32,11 @@ export function receiveConsumable(data) {
         data:data
     })
 }
+
+export function updateConsumableName(data) {
+    return request({
+        url: '/consumable/updateNameAndDescribes',
+        method: 'post',
+        data:data
+    })
+}
