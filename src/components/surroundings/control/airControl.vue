@@ -4,9 +4,9 @@
             <div class="lighting-control-body">
                  <svg-icon icon-class="空调" style="width: 70px;height: 48px"></svg-icon>
                     <span v-text="'空调控制'" style="margin-top: 19px"></span>
-                    <switch-control :active="refrigerationActive" :inactive="refrigerationInactive" :status="refrigeration" style="margin-top: 31px" @handleChange="refrigerationControl"></switch-control>
-                    <switch-control :active="hotActive" :inactive="hotInactive" :status='hot' style="margin-top: 16px"  @handleChange="hotControl"></switch-control>
-                    <switch-control :active="dehumidificationActive" :inactive="dehumidificationInactive" :status="dehumidification" style="margin-top: 16px"  @handleChange="dehumidificationControl"></switch-control>
+                    <switch-control ref="switch_single1" :active="refrigerationActive" :inactive="refrigerationInactive" :status="refrigeration" style="margin-top: 31px" @handleChange="refrigerationControl"></switch-control>
+                    <switch-control ref="switch_single2" :active="hotActive" :inactive="hotInactive" :status='hot' style="margin-top: 16px"  @handleChange="hotControl"></switch-control>
+                    <switch-control ref="switch_single3" :active="dehumidificationActive" :inactive="dehumidificationInactive" :status="dehumidification" style="margin-top: 16px"  @handleChange="dehumidificationControl"></switch-control>
             </div>
         </surrounding-card>
     </div>
@@ -128,6 +128,16 @@
                 }).then((res)=>{
                     this.$message.success('操作成功')
                 }).catch(err=>{
+                    if(data==1)
+                    {
+                    this.$refs.switch_single1.fail()
+                    }
+                    if(data==2){
+                    this.$refs.switch_single2.fail()
+                    }
+                    if(data==3){
+                    this.$refs.switch_single3.fail()
+                    }
                     this.$message.error(err);
                 });
             },

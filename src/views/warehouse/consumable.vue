@@ -34,6 +34,11 @@
                     <bos-table-column lable="耗材名称" field="name"></bos-table-column>
                     <bos-table-column lable="耗材数量" field="count"></bos-table-column>
                     <bos-table-column lable="耗材用途" field="describes"></bos-table-column>
+                    <el-table-column label="操作" align="left">
+                        <template slot-scope="scope">
+                            <el-button type="primary" size="mini" class="actionButton" @click="edit(scope.row)" data-test="button">编辑</el-button>
+                        </template>
+                    </el-table-column>
                 </el-table>
                 <bos-paginator v-if="this.list!=''" :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
             </div>
@@ -49,13 +54,21 @@
             </form-container>
             
         </serviceDialog>
+        <serviceDialog title="编辑耗材" ref="dialog1" @confirm="submitEdit" :data-test="title">
+            <form-container ref="form">
+                <field-input label="耗材名称" v-model="name" width="10"></field-input>
+                <field-input label="耗材数量" :disabled="true" v-model="count" width="10"></field-input>
+                <field-input label="耗材用途" v-model="remark" :disabled="disabled" :type="'textarea'" width="10"></field-input>
+            </form-container>
+            
+        </serviceDialog>
     </div>
 </template>
 
 <script>
     import {formRulesMixin} from 'field/common/mixinTableRest';
     import serviceDialog from 'components/base/serviceDialog'
-    import {getConsumableList,addConsumable,updateConsumable,receiveConsumable } from 'api/consumable'
+    import {getConsumableList,addConsumable,updateConsumable,receiveConsumable,updateConsumableName } from 'api/consumable'
 
 
     export default {
@@ -95,6 +108,14 @@
             changePage(data) {
                 this.paginator.page = data;
                 this.getConsumableList()
+            },
+            edit(data){
+                console.log("edit-data",data);
+                this.from = JSON.parse(JSON.stringify(data))
+                this.name = data.name;
+                this.remark = data.describes;
+                this.count = data.count
+                this.$refs.dialog1.show();
             },
             submit() {
                 if(this.title == "新增耗材"){
@@ -147,6 +168,21 @@
                         });
                     }
                 }
+            },
+            submitEdit(){
+                this.from.name = this.name
+                this.from.describes = this.remark
+                console.log(this.remark)
+                this.from.count = this.count
+                let data = JSON.parse(JSON.stringify(this.from))
+                console.log("submitEdit-data",data)
+                updateConsumableName(data).then((res)=>{
+                    this.$message.success('操作成功')
+                    this.$refs.dialog1.hide();
+                    this.getConsumableList()
+                }).catch(err=>{
+                    this.$message.error(err.response.data.message)
+                });
             },
             getallList(){
                 getConsumableList().then(res => {
@@ -221,5 +257,13 @@
 
     .el-card {
         border: none !important;
+    }
+    
+    .actionButton{
+        width:70px;
+        height:32px;
+        opacity:1;
+        color: white;
+        border-radius:4px;
     }
 </style>
