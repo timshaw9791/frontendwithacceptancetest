@@ -308,12 +308,18 @@
             },
             isInHouse(){
                 let flag=false;
+                let currentTask='';
+                if(this.$route.meta.title==='我的流程'){
+                    currentTask=this.universalObj.currentTask.name;
+                }else if(this.$route.meta.title==='待办事宜'){
+                    currentTask=this.universalObj.name
+                }
                 if(this.title!=='报废'&&this.$route.meta.title!=='申请单列表'){
-                    if(this.universalObj.currentTask.assigneeName===JSON.parse(localStorage.getItem("user")).name){
-                        if(this.universalObj.currentTask.name.indexOf('入库')!==-1){
-                            flag=true;
-                        }else {
-                            flag=false;
+                    if(this.universalObj.processVariables.applyOrder.inboundUser!=null){
+                        if(this.universalObj.processVariables.applyOrder.inboundUser.name===JSON.parse(localStorage.getItem("user")).name){
+                            if(currentTask.indexOf('入库')!==-1){
+                                flag=true;
+                            }
                         }
                     }
                 }
@@ -321,12 +327,18 @@
             },
             isOutHouse(){
                 let flag=false;
+                let currentTask='';
+                if(this.$route.meta.title==='我的流程'){
+                    currentTask=this.universalObj.currentTask.name;
+                }else if(this.$route.meta.title==='待办事宜'){
+                    currentTask=this.universalObj.name
+                }
                 if(this.title!=='报废'&&this.$route.meta.title!=='申请单列表'){
-                    if(this.universalObj.currentTask.assigneeName===JSON.parse(localStorage.getItem("user")).name){
-                        if(this.universalObj.currentTask.name.indexOf('出库')!==-1){
-                            flag=true;
-                        }else {
-                            flag=false;
+                    if(this.universalObj.processVariables.applyOrder.inboundUser!=null){
+                        if(this.universalObj.processVariables.applyOrder.inboundUser.name===JSON.parse(localStorage.getItem("user")).name){
+                            if(currentTask.indexOf('出库')!==-1){
+                                flag=true;
+                            }
                         }
                     }
                 }

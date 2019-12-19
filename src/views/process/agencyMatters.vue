@@ -23,7 +23,7 @@
     import select_apply from 'components/process/processDialog/selectApplyProcess'
     import p_universal from 'components/process/universal'
     import myHeader from 'components/base/header/header'
-    import {historyProcessInstancesById,processInstancesById} from 'api/process'
+    import {historyProcessInstancesById,processInstancesById,transferApply} from 'api/process'
     export default {
         name: "myProcess",
         components:{
@@ -90,7 +90,8 @@
                 }
             },
             clickTable(table) {
-                processInstancesById(table.row.processInstanceId).then(res=>{
+               let url = `/tasks/${table.row.id}?includeProcessVariables=true&includeTaskVariables=true`;
+                transferApply(url).then(res=>{
                     this.universal={title:this.getTitle(res.processVariables.processConfig.type),universalObj:res};
                     let url;
                     switch (this.universal.title) {
@@ -107,7 +108,6 @@
                     this.universal.url=url;
                     this.status.tableOrUniversalFlag=!this.status.tableOrUniversalFlag;
                 });
-
             }
         }
     }
