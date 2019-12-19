@@ -190,6 +190,12 @@
             directObj: {
                 type: Object
             },
+            leftList:{
+              type:Array,
+              default(){
+                  return []
+              }
+            },
             billName:{
               type:String
             },
@@ -206,7 +212,6 @@
                     {value: '手持机', label: '手持机'},
                     {value: 'RFID读写器', label: 'RFID读写器'},
                 ],
-                leftList:[],
                 rightList: [],
                 outList: [],
                 equipGroup:{},
@@ -251,7 +256,6 @@
         },
         created() {
             this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];
-            this.initLeftList();
         },
         computed: {
             actionReset(){
@@ -265,22 +269,6 @@
             }
         },
         methods: {
-            initLeftList(){
-               if(this.$route.meta.title!=='申请单列表'){
-                   let list=[],group;
-                   if(this.typeOperational==='出库'){
-                       this.directObj.processVariables?list=this.directObj.processVariables.applyOrder.equips:list=[];
-                   }else {
-                       console.log('list',list)
-                       group=_.groupBy(JSON.parse(JSON.stringify(this.directObj.processVariables.outboundEquipsOrder.equips)), 'model');
-                       _.forIn(group,(value,key)=>{
-                           list.push({name:value[0].name,model:value[0].model,count:group[key].length})
-                       })
-                   }
-
-                   this.leftList=list;
-               }
-            },
             errorEquip(data){
               let count,tip,name=`[${data.name+data.model}]`;
                 data.count<0?tip='缺':tip='增';

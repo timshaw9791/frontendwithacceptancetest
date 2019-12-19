@@ -54,7 +54,7 @@
            <div class="cancel">您确定要作废此申请单吗？</div>
         </service-dialog>
         <select_apply ref="selectUniversalApply" :taskId="activeTask.id" @sucessApply="sucessRefill"></select_apply>
-        <t_dialog ref="transferDialog" @inHouse="inHouseByProcess" @outHouse="outHouseByProcess" :typeOperational="typeOperational" :directObj="directObj" @sucesssInOrOut="sucesssInOrOut"></t_dialog>
+        <t_dialog  ref="transferDialog" :leftList="leftList" @inHouse="inHouseByProcess" @outHouse="outHouseByProcess" :typeOperational="typeOperational" :directObj="universalObj" @sucesssInOrOut="sucesssInOrOut"></t_dialog>
         <look-up :lookUp="lookUp" ref="lookUp"></look-up>
         <a :href="downloadSrc" style="z-index: -10"  ref="aDownload" download> </a>
     </div>
@@ -77,6 +77,7 @@
             return {
                 downloadSrc:'',
                 startShow:false,
+                startShowDIalog:false,
                 directObj:{},
                 activeTask:{},
                 list: [],
@@ -91,6 +92,7 @@
                 resonAble: true, // 驳回原因是否可以填写
                 highest: false, // 是否是最高等级
                 notScrap: true,
+                leftList:[]
             }
         },
         methods: {
@@ -153,8 +155,8 @@
                 this.$emit('closeBill', true);
             },
             inHouse(){
-                this.$set(this,'directObj',this.universalObj);
                 this.typeOperational='入库';
+                this.leftList=this.initLeftList('入库');
                 this.$refs.transferDialog.showDialog();
             },
             inHouseByProcess(data){
@@ -165,8 +167,8 @@
                 })
             },
             outHouse(){
-                this.$set(this,'directObj',this.universalObj);
                 this.typeOperational='出库';
+                this.leftList=this.initLeftList('出库');
                 this.$refs.transferDialog.showDialog();
             },
             outHouseByProcess(data){
@@ -175,6 +177,20 @@
                    this.$message.success('操作成功');
                    this.$emit('back',true)
                 })
+            },
+            initLeftList(typeOperational){
+                if(this.$route.meta.title!=='申请单列表'){
+                    let list=[],group;
+                    if(typeOperational==='出库'){
+                        this.universalObj.processVariables?list=this.universalObj.processVariables.applyOrder.equips:list=[];
+                    }else {
+                        group=_.groupBy(JSON.parse(JSON.stringify(this.universalObj.processVariables.outboundEquipsOrder.equips)), 'model');
+                        _.forIn(group,(value,key)=>{
+                            list.push({name:value[0].name,model:value[0].model,count:group[key].length})
+                        })
+                    }
+                    return list;
+                }
             },
             sucessRefill(){
                 this.$emit('back',true)
