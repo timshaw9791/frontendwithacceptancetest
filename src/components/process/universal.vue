@@ -309,11 +309,9 @@
             isInHouse(){
                 let flag=false;
                 if(this.title!=='报废'&&this.$route.meta.title!=='申请单列表'){
-                    if(this.universalObj.currentTask.assigneeName===JSON.parse(localStorage.getItem("user")).name){
-                        if(this.universalObj.currentTask.name.indexOf('入库')!==-1){
+                    if(this.universalObj.processVariables.applyOrder.inboundUser!=null){
+                        if(this.universalObj.processVariables.applyOrder.inboundUser.name===JSON.parse(localStorage.getItem("user")).name){
                             flag=true;
-                        }else {
-                            flag=false;
                         }
                     }
                 }
@@ -322,14 +320,21 @@
             isOutHouse(){
                 let flag=false;
                 if(this.title!=='报废'&&this.$route.meta.title!=='申请单列表'){
-                    if(this.universalObj.currentTask.assigneeName===JSON.parse(localStorage.getItem("user")).name){
-                        if(this.universalObj.currentTask.name.indexOf('出库')!==-1){
+                    if(this.universalObj.processVariables.applyOrder.outboundUser!=null){
+                        if(this.universalObj.processVariables.applyOrder.outboundUser.name===JSON.parse(localStorage.getItem("user")).name){
                             flag=true;
-                        }else {
-                            flag=false;
                         }
                     }
                 }
+                // if(this.title!=='报废'&&this.$route.meta.title!=='申请单列表'){
+                //     if(this.universalObj.currentTask.assigneeName===JSON.parse(localStorage.getItem("user")).name){
+                //         if(this.universalObj.currentTask.name.indexOf('出库')!==-1){
+                //             flag=true;
+                //         }else {
+                //             flag=false;
+                //         }
+                //     }
+                // }
                 return flag
             }
         },

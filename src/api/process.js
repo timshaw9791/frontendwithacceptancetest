@@ -3,6 +3,7 @@ import {baseBURL} from "./config";
 
 
 
+
 export function transferApply(url) {
     return request({
         url: `${baseBURL}${url}`,
