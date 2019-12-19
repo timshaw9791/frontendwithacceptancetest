@@ -48,7 +48,7 @@
 
                         </div>
                         <div style="display: flex;" v-if="table.tableType!=='category'">
-                            <text-button v-if="table.tableType==='unallocated'":iconClass="'装备分类'" :buttonName="'装备分类'"
+                            <text-button v-if="table.tableType==='unallocated'" :iconClass="'装备分类'" :buttonName="'装备分类'"
                                          @click="distributionClick" style="margin-right: 0.0921rem"></text-button>
                             <text-button :iconClass="'取消'" :dataTest="'disable'" v-if="status.buttonDisable" :havePoint="false"
                                          :buttonName="' '"></text-button>

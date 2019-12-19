@@ -1,7 +1,7 @@
 <template>
     <div class="button_box" :style="havePoint?'cursor: pointer;':'cursor: no-drop;'" :data-test="dataTest"
          @click="clickButton">
-        <svg-icon :style="iconSize?`font-size: ${iconSize}px`:''" :icon-class="iconClass"></svg-icon>
+        <svg-icon :style="iconSize?`font-size: ${iconSize}px;`:''" :icon-class="iconClass"></svg-icon>
         <span :class="havePoint?'cursor_point':''" :style="'margin-left:'+marginLeft+'rem'" v-text="buttonName"></span>
     </div>
 </template>
@@ -9,6 +9,11 @@
 <script>
     export default {
         name: "textButton",
+        data(){
+          return{
+              color:'red'
+          }
+        },
         props: {
             iconSize: {
                 type: Number,
@@ -50,8 +55,17 @@
         display: flex;
         flex-direction: row;
         align-items: center;
+
+    }
+    /deep/.cls-1 {
+        fill: red;
     }
 
+    /deep/ .cls-2 {
+        stroke: red;
+        stroke-linecap: round;
+        stroke-width: 1.3px;
+    }
     .cursor_point {
         cursor: pointer;
     }

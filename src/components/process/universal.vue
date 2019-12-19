@@ -200,10 +200,33 @@
             },
             refill(){
                 let ref;
-                switch (this.universalObj.processDefinitionKey) {
-                    case "TRANSFER":
-                        ref='allocation';
+                if(this.$route.meta.title==='待办事宜'){
+
+                    switch (this.universalObj.name) {
+                        case "申请调拨":
+                            ref='allocation';
+                            break;
+                        case "申请直调":
+                            ref='direct';
+                            break;
+                        case "申请报废":
+                            ref='scrap';
+                            break;
+                    }
+                }else {
+                    switch (this.universalObj.processDefinitionKey) {
+                        case "TRANSFER":
+                            ref='allocation';
+                            break;
+                        case "DIRECT_ALLOT":
+                            ref='direct';
+                            break;
+                        case "SCRAP":
+                            ref='scrap';
+                            break;
+                    }
                 }
+                console.log(ref)
                 this.$refs.selectUniversalApply.apply(ref)
             },
             cancel(){
@@ -218,9 +241,13 @@
             processReviewInfo() {
                 if(this.$route.meta.title!=='申请单列表'){
                     let id='';
-                    id=this.universalObj.id;
+                    if(this.$route.meta.title==='待办事宜'){
+                        id=this.universalObj.processInstanceId;
+                    }else {
+                        id=this.universalObj.id;
+                    }
+
                     let params = {processInstanceId: id, includeProcessVariables: false, includeTaskVariables: true};
-                    console.log(params);
                     historyTasks(params).then(res => {
                         this.processList = JSON.parse(JSON.stringify(res));
                         this.startShow = true
@@ -350,7 +377,6 @@
             this.processReviewInfo();
             if(this.title === '报废') {
                 this.notScrap = false;
-                console.log(this.notScrap)
             }
         },
         props: {
