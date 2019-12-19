@@ -36,14 +36,12 @@
                             <el-button class="submits" v-text="'停止'" @click="stopGetEquip"></el-button>
                         </div>
                     </div>
-                    <div class="header-item"><span v-text="typeOperational==='入库'?'出库装备表单：':'申请装备表单：'"></span>
-
-                    </div>
+                    <div class="header-item"><span v-text="typeOperational==='入库'?'出库装备表单：':'申请装备表单：'"></span></div>
                 </div>
                 <div class="directAdjustmentDialog-body">
                     <div class="leftTable">
                         <el-table
-                                :data="directObj.processVariables?typeOperational==='入库'?directObj.processVariables.outboundEquipsOrder.equips:directObj.processVariables.applyOrder.equips:[]"
+                                :data="leftList"
                                 height="531"
                                 style="width: 100%"
                                 :align="align"
@@ -208,6 +206,7 @@
                     {value: '手持机', label: '手持机'},
                     {value: 'RFID读写器', label: 'RFID读写器'},
                 ],
+                leftList:[],
                 rightList: [],
                 outList: [],
                 equipGroup:{},
@@ -252,6 +251,7 @@
         },
         created() {
             this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];
+            this.initLeftList();
         },
         computed: {
             actionReset(){
@@ -262,15 +262,33 @@
                     name = '重新读取数据'
                 }
                 return name
-            },
-
+            }
         },
         methods: {
+            initLeftList(){
+               if(this.$route.meta.title!=='申请单列表'){
+                   let list=[],group;
+                   if(this.typeOperational==='出库'){
+                       this.directObj.processVariables?list=this.directObj.processVariables.applyOrder.equips:list=[];
+                   }else {
+                       console.log('list',list)
+                       group=_.groupBy(JSON.parse(JSON.stringify(this.directObj.processVariables.outboundEquipsOrder.equips)), 'model');
+                       _.forIn(group,(value,key)=>{
+                           list.push({name:value[0].name,model:value[0].model,count:group[key].length})
+                       })
+                   }
+
+                   this.leftList=list;
+               }
+            },
             errorEquip(data){
               let count,tip,name=`[${data.name+data.model}]`;
                 data.count<0?tip='缺':tip='增';
                 count= Math.abs(JSON.parse(JSON.stringify(data)).count);
                 return `${tip}\xa0\xa0\xa0\xa0${name}\xa0\xa0\xa0\xa0${count}'件'`
+            },
+            getEquip(){
+
             },
             locationIsNull(){
                 let flag=false;
@@ -460,15 +478,15 @@
                 }
             },
             handheldMachine() {
-                // modifyFileName('search.json');
-                // handheld((err) => this.$message.error(err)).then((data) => {
-                //     let json = JSON.parse(data);
-                //     this.getOutDataCopy(json.rfid);
-                //     this.deleteFile();
-                //     // findByRfids(json.rfid).then(res => {
-                //     //     this.$refs.maintenanceEndDialog.show();
-                //     // });
-                // });
+                modifyFileName('search.json');
+                handheld((err) => this.$message.error(err)).then((data) => {
+                    let json = JSON.parse(data);
+                    this.getOutDataCopy(json.rfid);
+                    this.deleteFile();
+                    // findByRfids(json.rfid).then(res => {
+                    //     this.$refs.maintenanceEndDialog.show();
+                    // });
+                });
                 //todo 要换回来
                 // let data = inventoryData;
                 // if(this.typeOperational=='出库'){
@@ -483,7 +501,7 @@
                 // }else {
                 //     this.getOutDataCopy(['222','19080012']);,20088892,20088888
                 // }
-                this.getOutDataCopy(['308C00111112131415161718'])
+                // this.getOutDataCopy(['308C00111112131415161718'])
             },
             // getOutData(data){
             //     console.log(data);
@@ -508,7 +526,6 @@
                     if(equip!=undefined){
                         equip.location=this.location;
                         equip.equipArg={id:equip.equipArgId};
-                        // this.inHouseEquip.push(_.omit(equip, ['equipArgId','id','name', 'model']));
                         this.inHouseEquip.push(equip);
                         this.getCategroy([equip])
                     }else {
@@ -520,7 +537,6 @@
                 let group,flag=true;
                 if(this.typeOperational==='出库'){
                     group=_.groupBy(data, 'equipArg.model');
-                    console.log('getCategroy',group)
                 }else {
                     group=_.groupBy(data, 'model');
                 }

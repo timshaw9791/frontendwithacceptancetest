@@ -15,7 +15,7 @@
                            v-if="typeOperational!=''">
                     {{typeOperational}}
                 </el-button>
-                <a :href="downloadSrc" style="display: none" ref="aDownload">a标签</a>
+                <a :href="downloadSrc" style="display: none" ref="aDownload" download>a标签</a>
                 <div class="bill-action-box-button-box-svg" @click="download">
                     <svg-icon icon-class="导出" style="margin-right: 3px"/>
                     导出

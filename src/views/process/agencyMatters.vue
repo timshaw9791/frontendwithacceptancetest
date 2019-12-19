@@ -98,10 +98,10 @@
                             url={outHouse:''} ;
                             break;
                         case "调拨":
-                            url={outHouse:'/workflow/transfer/equips-outbound',inHouse:'/workflow/transfer/equips-inbound',transfer:'/workflow/transfer/to-excel'};
+                            url={outHouse:'/workflow/transfer/equips-outbound',inHouse:'/workflow/transfer/equips-inbound',transfer:'/workflow/transfer/to-excel?processInstanceId='};
                             break;
                         case "直调":
-                            url={outHouse:'/workflow/direct-allot/equips-outbound',inHouse:'/workflow/direct-allot/equips-inbound',transfer:'/workflow/direct-allot/to-excel'};
+                            url={outHouse:'/workflow/direct-allot/equips-outbound',inHouse:'/workflow/direct-allot/equips-inbound',transfer:'/workflow/direct-allot/to-excel?processInstanceId='};
                             break;
                     }
                     this.universal.url=url;

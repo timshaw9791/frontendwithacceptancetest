@@ -11,6 +11,8 @@
                 <text-button v-if="haveOutHouse" style="margin-left: 0.125rem" :iconClass="'查看出库单'" :buttonName="'查看出库单'" @click="lookOutHouse"></text-button>
                 <text-button style="margin-left: 0.125rem" v-if="title!=='报废'" :iconClass="'导出'" :buttonName="'导出'" @click="transfer"></text-button>
             </div>
+
+            <a :href="downloadSrc"  ref="aDownload" download>a标签</a>
         </div>
         <div class="body">
             <div class="info">
@@ -65,11 +67,14 @@
     import t_dialog from 'components/process/transfer/transferDialog'
     import lookUp from './lookUp'
     import processInfo from "components/process/processInfo"
+    import {baseBURL} from "../../api/config";
+
     var _ = require("lodash");
     export default {
         name: 'doneuniversal',
         data() {
             return {
+                downloadSrc:'',
                 startShow:false,
                 directObj:{},
                 activeTask:{},
@@ -137,9 +142,9 @@
                 });
             },
             transfer(){
-                transferProcess(this.url.transfer,this.universalObj.id).then(res=>{
-
-                })
+                this.downloadSrc=baseBURL+this.url.transfer+this.universalObj.id;
+                console.log('this.downloadSrc',this.downloadSrc);
+                // this.$refs.aDownload.click();
             },
             sucesssInOrOut() {
                 this.$refs.transferDialog.close();
@@ -193,14 +198,17 @@
                 })
             },
             processReviewInfo() {
-                let id='';
-                id=this.universalObj.id;
-                let params = {processInstanceId: id, includeProcessVariables: false, includeTaskVariables: true};
-                console.log(params);
-                historyTasks(params).then(res => {
-                    this.processList = JSON.parse(JSON.stringify(res));
-                    this.startShow = true
-                })
+                if(this.$route.meta.title!=='申请单列表'){
+                    let id='';
+                    id=this.universalObj.id;
+                    let params = {processInstanceId: id, includeProcessVariables: false, includeTaskVariables: true};
+                    console.log(params);
+                    historyTasks(params).then(res => {
+                        this.processList = JSON.parse(JSON.stringify(res));
+                        this.startShow = true
+                    })
+                }
+
             },
             lookReson(reson) {
                 this.reson = reson;
@@ -233,12 +241,14 @@
             haveInHouse(){
                 let inUser='';
                 let flag=false;
-                if(this.universalObj.processVariables.applyOrder.inboundUser!=null){
-                    inUser=this.universalObj.processVariables.applyOrder.inboundUser.id
-                }
-                if (inUser===JSON.parse(localStorage.getItem("user")).id&&this.title!=='报废'){
-                    if(this.universalObj.processVariables.applyOrder.inboundInfo!==null&&this.universalObj.processVariables.applyOrder.inboundInfo!==undefined){
-                        flag=true
+                if (this.$route.meta.title!=='申请单列表'){
+                    if(this.universalObj.processVariables.applyOrder.inboundUser!=null){
+                        inUser=this.universalObj.processVariables.applyOrder.inboundUser.id
+                    }
+                    if (inUser===JSON.parse(localStorage.getItem("user")).id&&this.title!=='报废'){
+                        if(this.universalObj.processVariables.applyOrder.inboundInfo!==null&&this.universalObj.processVariables.applyOrder.inboundInfo!==undefined){
+                            flag=true
+                        }
                     }
                 }
                 return flag
@@ -246,19 +256,21 @@
             haveOutHouse(){
                 let outUser='';
                 let flag=false;
-                if(this.universalObj.processVariables.applyOrder.outboundUser!=null&&this.title!=='报废'){
-                    outUser=this.universalObj.processVariables.applyOrder.outboundUser.id
-                }
-                if (outUser===JSON.parse(localStorage.getItem("user")).id){
-                    if(this.universalObj.processVariables.applyOrder.outboundInfo!==null){
-                        flag=true
+                if (this.$route.meta.title!=='申请单列表'){
+                    if(this.universalObj.processVariables.applyOrder.outboundUser!=null&&this.title!=='报废'){
+                        outUser=this.universalObj.processVariables.applyOrder.outboundUser.id
+                    }
+                    if (outUser===JSON.parse(localStorage.getItem("user")).id){
+                        if(this.universalObj.processVariables.applyOrder.outboundInfo!==null){
+                            flag=true
+                        }
                     }
                 }
                 return flag
             },
             inHouseHaveMissequip(){
                 let flag=false,inHouseBound={};
-                if(this.title!=='报废'){
+                if(this.title!=='报废'&&this.$route.meta.title!=='申请单列表'){
                     inHouseBound=this.universalObj.processVariables.applyOrder.inboundInfo;
                     if (inHouseBound.missEquips!=null){
                         inHouseBound.missEquips.length===0?flag=false:flag=true
@@ -268,7 +280,7 @@
             },
             outHouseHaveMissequip(){
                 let flag=false,outHouseBound={};
-                if(this.title!=='报废'){
+                if(this.title!=='报废'&&this.$route.meta.title!=='申请单列表'){
                     outHouseBound=this.universalObj.processVariables.applyOrder.outboundInfo;
                     if (outHouseBound.missEquips!=null){
                         outHouseBound.missEquips.length===0?flag=false:flag=true
@@ -278,7 +290,7 @@
             },
             isInHouse(){
                 let flag=false;
-                if(this.title!=='报废'){
+                if(this.title!=='报废'&&this.$route.meta.title!=='申请单列表'){
                     if(this.universalObj.currentTask.assigneeName===JSON.parse(localStorage.getItem("user")).name){
                         if(this.universalObj.currentTask.name.indexOf('入库')!==-1){
                             flag=true;
@@ -291,7 +303,7 @@
             },
             isOutHouse(){
                 let flag=false;
-                if(this.title!=='报废'){
+                if(this.title!=='报废'&&this.$route.meta.title!=='申请单列表'){
                     if(this.universalObj.currentTask.assigneeName===JSON.parse(localStorage.getItem("user")).name){
                         if(this.universalObj.currentTask.name.indexOf('出库')!==-1){
                             flag=true;
