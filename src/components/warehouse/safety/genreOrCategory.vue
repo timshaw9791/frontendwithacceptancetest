@@ -142,11 +142,15 @@
                         categorySaveGenre({name: this.genre}).then(res => {
                             this.$emit('sucess', res);
                             this.result();
+                        }).catch(err=>{
+                            this.$message.error(err.response.data.message);
                         })
                     } else {
                         categorySaveCategory({name: this.genre}, this.genreData.id).then(res => {
                             this.$emit('sucessUpdateCategory', {type:'add',res:{categorySet:res.categorySet,categoryName:this.genre}});
                             this.result();
+                        }).catch(err=>{
+                            this.$message.error(err.response.data.message);
                         })
                     }
                 } else if (this.title !== '装备分配') {
@@ -157,6 +161,8 @@
                             updateGenre(data).then(res => {
                                 this.$emit('sucess', res);
                                 this.result();
+                            }).catch(err=>{
+                                this.$message.error(err.response.data.message);
                             })
                         } else {
                             let categoryData = {};
@@ -169,6 +175,8 @@
                             updateCategory(categoryData).then(res => {
                                 this.$emit('sucessUpdateCategory', {type:'update',res:res});
                                 this.result();
+                            }).catch(err=>{
+                                this.$message.error(err.response.data.message);
                             })
                         }
 
@@ -186,6 +194,8 @@
                     relateCategories(categoryId, equipArgs).then(res => {
                         this.$emit('sucessDistribution', 'unallocated');
                         this.result();
+                    }).catch(err=>{
+                        this.$message.error(err.response.data.message);
                     })
                 }
 
