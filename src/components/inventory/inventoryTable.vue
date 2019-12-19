@@ -80,12 +80,12 @@
                 //killProcess();
             },
             copyRfid() {
-                startOne("java -jar writing.jar", (err, data) => {
-                    console.log(data);
-                    if (data.includes('succeed')) {
+                startOne("java -jar writing.jar", (data) => {
+                    console.log("data",data);
+                    if(data&&data.indexOf('succeed')!=-1){
                         this.$message.success('复制成功!');
                         this.$refs.copyRfidDialog.hide();
-                    } else {
+                    }else {
                         this.$message.error('复制失败!');
                     }
                 }, this.cRfid)
