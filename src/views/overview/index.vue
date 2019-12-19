@@ -16,8 +16,8 @@
                 <div class="title">待办事宜</div>
                 <div class="event-list">
                     <div class="event-box" v-for="(event, i) in toDoList" :key="i">
-                        <div>{{ event.info }}</div>
-                        <div>{{ event.type }}</div>
+                        <div>{{ event.title }}</div>
+                        <div>{{ event.name }}</div>
                         <div>{{ event.time }}</div>
                     </div>
                 </div>
@@ -164,16 +164,9 @@
                 })
             },
             getToDoTasks() {
-                tasks().then(res => {
-                    let result = JSON.parse(JSON.stringify(res)), list = [],userName = JSON.parse(localStorage.getItem("user")).name;
-                    result.forEach(item => {
-                        list.push({
-                            info: `${item.name}-${userName}-${this.$filterTime(item.createTime, '{y}-{m}-{d}')}`,
-                            type: item.name,
-                            time: this.$filterTime(item.createTime)
-                        })
-                    })
-                    this.toDoList = list
+                tasks({assignee: JSON.parse(localStorage.getItem('user')).id, includeProcessVariables: false, includeTaskVariables: false}).then(res => {
+                    let result = JSON.parse(JSON.stringify(res)); 
+                    this.toDoList = result.map(item => Object.assign({}, item, {time: this.$filterTime(item.createTime)}))
                 })
             },
             syncHandheld() {

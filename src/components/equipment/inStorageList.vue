@@ -94,7 +94,7 @@ import { start, killProcess, handheld, modifyFileName } from 'common/js/rfidRead
         methods: {
             //离开页面以后为父组件抛出black 杀死进程
             black() {
-              killProcess(this.pid);
+              if(this.pid != '') killProcess(this.pid);
               this.$emit('black', true);
             },
             // 切换硬件后
