@@ -11,8 +11,6 @@
                 <text-button v-if="haveOutHouse" style="margin-left: 0.125rem" :iconClass="'查看出库单'" :buttonName="'查看出库单'" @click="lookOutHouse"></text-button>
                 <text-button style="margin-left: 0.125rem" v-if="title!=='报废'" :iconClass="'导出'" :buttonName="'导出'" @click="transfer"></text-button>
             </div>
-
-            <a :href="downloadSrc"  ref="aDownload" download>a标签</a>
         </div>
         <div class="body">
             <div class="info">
@@ -29,9 +27,11 @@
             </div>
             <div>装备统计:</div>
             <el-table :data="universalObj.processVariables.applyOrder.equips" height="350" style="border: 1px solid #ccc;margin-top: 6px">
-                <bos-table-column lable="装备名称" field="name"></bos-table-column>
+                <bos-table-column lable="RFID" field="rfid" v-if="!notScrap"></bos-table-column>
+                <!--<bos-table-column lable="装备序号" field="name" v-if="!notScrap"></bos-table-column>-->
+                <bos-table-column lable="装备名称" field="name" ></bos-table-column>
                 <bos-table-column lable="装备型号" field="model"></bos-table-column>
-                <bos-table-column lable="装备数量" field="count"></bos-table-column>
+                <bos-table-column lable="装备数量" field="count" v-if="notScrap"></bos-table-column>
             </el-table>
             <div class="process-inOut-box" v-if="notScrap">
                 <div class="process-inOut-item" v-if="universalObj.processVariables.applyOrder.inboundInfo!=null">
@@ -56,6 +56,7 @@
         <select_apply ref="selectUniversalApply" :taskId="activeTask.id" @sucessApply="sucessRefill"></select_apply>
         <t_dialog ref="transferDialog" @inHouse="inHouseByProcess" @outHouse="outHouseByProcess" :typeOperational="typeOperational" :directObj="directObj" @sucesssInOrOut="sucesssInOrOut"></t_dialog>
         <look-up :lookUp="lookUp" ref="lookUp"></look-up>
+        <a :href="downloadSrc" style="z-index: -10"  ref="aDownload" download> </a>
     </div>
 </template>
 
@@ -143,8 +144,9 @@
             },
             transfer(){
                 this.downloadSrc=baseBURL+this.url.transfer+this.universalObj.id;
-                console.log('this.downloadSrc',this.downloadSrc);
-                // this.$refs.aDownload.click();
+                setTimeout(()=>{
+                    this.$refs.aDownload.click();
+                },100)
             },
             sucesssInOrOut() {
                 this.$refs.transferDialog.close();
@@ -270,7 +272,7 @@
             },
             inHouseHaveMissequip(){
                 let flag=false,inHouseBound={};
-                if(this.title!=='报废'&&this.$route.meta.title!=='申请单列表'){
+                if(this.title!=='报废'){
                     inHouseBound=this.universalObj.processVariables.applyOrder.inboundInfo;
                     if (inHouseBound.missEquips!=null){
                         inHouseBound.missEquips.length===0?flag=false:flag=true
@@ -280,7 +282,7 @@
             },
             outHouseHaveMissequip(){
                 let flag=false,outHouseBound={};
-                if(this.title!=='报废'&&this.$route.meta.title!=='申请单列表'){
+                if(this.title!=='报废'){
                     outHouseBound=this.universalObj.processVariables.applyOrder.outboundInfo;
                     if (outHouseBound.missEquips!=null){
                         outHouseBound.missEquips.length===0?flag=false:flag=true

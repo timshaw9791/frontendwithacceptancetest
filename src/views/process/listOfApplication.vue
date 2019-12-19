@@ -61,7 +61,7 @@
                     },
                     params:{assignee:JSON.parse(localStorage.getItem('user')).id},
                     search:'',
-                    clickUrl:'/workflow/transfer/order-details'
+                    clickUrl:'/workflow/transfer/order-details?transferApplyOrderId='
                 },
                 checkStatus:'',
                 clickButton:[{name:'调拨申请单',click:true},{name:'直调申请单',click:false},{name:'报废申请单',click:false}],
@@ -105,7 +105,7 @@
                             {lable: '申请时间', field: 'applyTime', filter: (ns) => this.$filterTime(ns.applyTime)},
                         ],
                         url:'/workflow/transfer/apply-orders',
-                        clickUrl:'/workflow/transfer/order-details'
+                        clickUrl:'/workflow/transfer/order-details?transferApplyOrderId='
                     }
                 }else if (item.name==='直调申请单') {
                     table={
@@ -119,7 +119,7 @@
                             {lable: '申请时间', field: 'applyTime', filter: (ns) => this.$filterTime(ns.applyTime)},
                         ],
                         url:'/workflow/direct-allot/apply-orders',
-                        clickUrl:'/workflow/transfer/order-details'
+                        clickUrl:'/workflow/direct-allot/order-details?directApplyOrderId='
                     }
                 }else {
                     table={
@@ -130,7 +130,7 @@
                             {lable: '申请时间', field: 'applyTime', filter: (ns) => this.$filterTime(ns.applyTime)},
                         ],
                         url:'/workflow/scrap/scrap-orders',
-                        clickUrl:'/workflow/transfer/order-details'
+                        clickUrl:'/workflow/scrap/order-details?scrapApplyOrderId='
                     }
                 }
                 _.update(this.table, 'type', ()=>{ return table.type});
@@ -162,7 +162,8 @@
                 this.table.search=data
             },
             clickTable(table) {
-                transferApply(this.table.clickUrl,table.row.id).then(res=>{
+                let url =this.table.clickUrl+table.row.id;
+                transferApply(url).then(res=>{
                     console.log(res);
                     this.universal={title:this.table.type,universalObj:{id:res.id,processVariables:{applyOrder:res}}};
                     this.status.tableOrUniversalFlag=!this.status.tableOrUniversalFlag;
@@ -179,7 +180,6 @@
                             break;
                     }
                     this.universal.url=url;
-                    console.log(this.universal.title)
                 })
 
             }

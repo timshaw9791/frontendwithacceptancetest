@@ -3,9 +3,9 @@ import {baseBURL} from "./config";
 
 
 
-export function transferApply(url,id) {
+export function transferApply(url) {
     return request({
-        url: `${baseBURL}${url}?transferApplyOrderId=${id}`,
+        url: `${baseBURL}${url}`,
         method: 'get',
     })
 }
