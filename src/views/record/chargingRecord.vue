@@ -49,9 +49,9 @@
                         {lable: '装备名称', field: 'equipInfo.equipName',sort:false},
                         {lable: '装备型号', field: 'equipInfo.model',sort:false},
                         {lable: '装备位置', field: 'equipInfo',filter: (ns) => this.fixposition(ns.equipInfo)},
-                        {lable: '充电周期', field: 'equipInfo.duration',filter: (ns) => milliToDay(ns.equipInfo.duration)},
+                        {lable: '充电周期', field: 'equipInfo.duration',filter: (ns) => this.milliToDay(ns.equipInfo.duration)},
                         {lable: '开始充电时间', field: 'createTime' ,filter: (ns) => this.$filterTime(parseInt(ns.createTime))},
-                        {lable: '已充时间', field: 'equipInfo.useTime',filter: (ns) => chargeingTime(row.useTime)},
+                        {lable: '已充时间', field: 'equipInfo.useTime',filter: (ns) => this.chargeingTime(parseInt(ns.equipInfo.useTime))},
                     ],
                     search:'',
                 },
@@ -78,6 +78,7 @@
                     this.list=[];
                     this.list=res.content;
                     console.log("res",res)
+                    console.log("this.list",this.list)
                     this.params.totalPages = res.totalPages
                     this.params.totalElements = res.totalElements
                 })

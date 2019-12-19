@@ -65,7 +65,7 @@
                 },
                 time:'',
                 list:[],
-                infolist:[],
+                infolist:{},
                 show:true,
                 params:{
                     endTime:'',
