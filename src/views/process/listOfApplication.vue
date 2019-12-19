@@ -7,6 +7,9 @@
                     <span v-text="item.name"></span>
                     <div class="click-line" v-if="item.click"></div>
                 </div>
+                <div class="click-item" style="color: #2F2F76FF">
+                    <el-checkbox v-model="checkStatus">异常</el-checkbox>
+                </div>
             </div>
             <div class="action_right_box">
                 <div style="width: 1.6875rem">
@@ -31,6 +34,7 @@
     import select_apply from 'components/process/processDialog/selectApplyProcess'
     import p_universal from 'components/process/universal'
     import myHeader from 'components/base/header/header'
+    import {transferApply} from 'api/process'
     export default {
         name: "myProcess",
         components:{
@@ -39,7 +43,7 @@
         data(){
             return{
                 table: {
-                    type:'调拨申请单',
+                    type:'调拨',
                     labelList: [
                         {lable: '请求标题', field: 'title'},
                         {lable: '出库机构', field: 'outboundOrganUnit.name'},
@@ -56,15 +60,26 @@
                         button:[{name:'详情',type:'primary'}]
                     },
                     params:{assignee:JSON.parse(localStorage.getItem('user')).id},
-                    search:''
+                    search:'',
+                    clickUrl:'/workflow/transfer/order-details?transferApplyOrderId='
                 },
-                clickButton:[{name:'调拨申请单',click:false},{name:'直调申请单',click:false},{name:'报废申请单',click:false}],
-                universal:{
-
-                },
+                checkStatus:'',
+                clickButton:[{name:'调拨申请单',click:true},{name:'直调申请单',click:false},{name:'报废申请单',click:false}],
+                universal:{},
                 status:{
                     tableOrUniversalFlag:true,
 
+                }
+            }
+        },
+        watch:{
+            'checkStatus':{
+                handler(newVal) {
+                    if(newVal){
+                        this.table.params={...this.table.params,state:'ABNORMAL'}
+                    }else{
+                        this.table.params={assignee:JSON.parse(localStorage.getItem('user')).id}
+                    }
                 }
             }
         },
@@ -80,7 +95,7 @@
                 let table={};
                 if(item.name==='调拨申请单'){
                     table={
-                        type:'调拨申请单',
+                        type:'调拨',
                         labelList: [
                             {lable: '请求标题', field: 'title'},
                             {lable: '出库机构', field: 'outboundOrganUnit.name'},
@@ -90,10 +105,11 @@
                             {lable: '申请时间', field: 'applyTime', filter: (ns) => this.$filterTime(ns.applyTime)},
                         ],
                         url:'/workflow/transfer/apply-orders',
+                        clickUrl:'/workflow/transfer/order-details?transferApplyOrderId='
                     }
                 }else if (item.name==='直调申请单') {
                     table={
-                        type:'直调申请单',
+                        type:'直调',
                         labelList: [
                             {lable: '请求标题', field: 'title'},
                             {lable: '出库机构', field: 'outboundOrganUnit.name'},
@@ -103,21 +119,24 @@
                             {lable: '申请时间', field: 'applyTime', filter: (ns) => this.$filterTime(ns.applyTime)},
                         ],
                         url:'/workflow/direct-allot/apply-orders',
+                        clickUrl:'/workflow/direct-allot/order-details?directApplyOrderId='
                     }
                 }else {
                     table={
-                        type:'报废申请单',
+                        type:'报废',
                         labelList: [
                             {lable: '请求标题', field: 'title'},
                             {lable: '操作人员', field: 'applicant.name'},
                             {lable: '申请时间', field: 'applyTime', filter: (ns) => this.$filterTime(ns.applyTime)},
                         ],
                         url:'/workflow/scrap/scrap-orders',
+                        clickUrl:'/workflow/scrap/order-details?scrapApplyOrderId='
                     }
                 }
                 _.update(this.table, 'type', ()=>{ return table.type});
                 _.update(this.table, 'labelList', ()=>{ return table.labelList});
                 _.update(this.table, 'url', ()=>{ return table.url});
+                _.update(this.table, 'clickUrl', ()=>{ return table.clickUrl});
                 this.$refs.processTable.refetch();
             },
             black(){
@@ -142,32 +161,27 @@
             getSearch(data){
                 this.table.search=data
             },
-            getTitle(type){
-                switch (type) {
-                    case "SCRAP":
-                        return '报废';
-                    case "TRANSFER":
-                        return '调拨';
-                    case "DIRECT_ALLOT":
-                        return '直调'
-                }
-            },
             clickTable(table) {
-                this.universal={title:this.getTitle(table.row.processDefinitionKey),universalObj:table.row};
-                this.status.tableOrUniversalFlag=!this.status.tableOrUniversalFlag;
-                let url;
-                switch (this.universal.title) {
-                    case "报废":
-                        url={outHouse:''} ;
-                        break;
-                    case "调拨":
-                        url={outHouse:'/workflow/transfer/equips-outbound',inHouse:'/workflow/transfer/equips-inbound'};
-                        break;
-                    case "直调":
-                        url={outHouse:''};
-                        break;
-                };
-                this.universal.url=url;
+                let url =this.table.clickUrl+table.row.id;
+                transferApply(url).then(res=>{
+                    console.log(res);
+                    this.universal={title:this.table.type,universalObj:{id:res.id,processVariables:{applyOrder:res}}};
+                    this.status.tableOrUniversalFlag=!this.status.tableOrUniversalFlag;
+                    let url;
+                    switch (this.universal.title) {
+                        case "报废":
+                            url={transfer:'/workflow/transfer/to-excel'};
+                            break;
+                        case "调拨":
+                            url={transfer:'/workflow/transfer/order-to-excel?applyOrderId='};
+                            break;
+                        case "直调":
+                            url={transfer:'/workflow/direct-allot/to-excel'};
+                            break;
+                    }
+                    this.universal.url=url;
+                })
+
             }
         }
     }

@@ -103,10 +103,10 @@
                             url={outHouse:''} ;
                             break;
                         case "调拨":
-                            url={transfer:'/workflow/transfer/to-excel'};
+                            url={transfer:'/workflow/transfer/to-excel?processInstanceId='};
                             break;
                         case "直调":
-                            url={transfer:'/workflow/direct-allot/to-excel'};
+                            url={transfer:'/workflow/direct-allot/to-excel?processInstanceId='};
                             break;
                     }
                     this.universal.url=url;

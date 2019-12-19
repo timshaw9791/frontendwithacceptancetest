@@ -19,7 +19,7 @@
                 getOrganUnitById({id:data.unitId}).then(res=>{
                     this.name = res.name;
                 });
-                console.log('this.name',this.name)
+                // console.log('this.name',this.name)
                 // getUserInfo(data.id).then(res=>{
                 //     this.name = res.data.OrganUnit.name;
                 // })

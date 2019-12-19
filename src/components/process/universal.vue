@@ -27,9 +27,11 @@
             </div>
             <div>装备统计:</div>
             <el-table :data="universalObj.processVariables.applyOrder.equips" height="350" style="border: 1px solid #ccc;margin-top: 6px">
-                <bos-table-column lable="装备名称" field="name"></bos-table-column>
+                <bos-table-column lable="RFID" field="rfid" v-if="!notScrap"></bos-table-column>
+                <!--<bos-table-column lable="装备序号" field="name" v-if="!notScrap"></bos-table-column>-->
+                <bos-table-column lable="装备名称" field="name" ></bos-table-column>
                 <bos-table-column lable="装备型号" field="model"></bos-table-column>
-                <bos-table-column lable="装备数量" field="count"></bos-table-column>
+                <bos-table-column lable="装备数量" field="count" v-if="notScrap"></bos-table-column>
             </el-table>
             <div class="process-inOut-box" v-if="notScrap">
                 <div class="process-inOut-item" v-if="universalObj.processVariables.applyOrder.inboundInfo!=null">
@@ -52,8 +54,9 @@
            <div class="cancel">您确定要作废此申请单吗？</div>
         </service-dialog>
         <select_apply ref="selectUniversalApply" :taskId="activeTask.id" @sucessApply="sucessRefill"></select_apply>
-        <t_dialog ref="transferDialog" @inHouse="inHouseByProcess" @outHouse="outHouseByProcess" :typeOperational="typeOperational" :directObj="directObj" @sucesssInOrOut="sucesssInOrOut"></t_dialog>
+        <t_dialog  ref="transferDialog" :leftList="leftList" @inHouse="inHouseByProcess" @outHouse="outHouseByProcess" :typeOperational="typeOperational" :directObj="universalObj" @sucesssInOrOut="sucesssInOrOut"></t_dialog>
         <look-up :lookUp="lookUp" ref="lookUp"></look-up>
+        <a :href="downloadSrc" style="z-index: -10"  ref="aDownload" download> </a>
     </div>
 </template>
 
@@ -65,12 +68,16 @@
     import t_dialog from 'components/process/transfer/transferDialog'
     import lookUp from './lookUp'
     import processInfo from "components/process/processInfo"
+    import {baseBURL} from "../../api/config";
+
     var _ = require("lodash");
     export default {
         name: 'doneuniversal',
         data() {
             return {
+                downloadSrc:'',
                 startShow:false,
+                startShowDIalog:false,
                 directObj:{},
                 activeTask:{},
                 list: [],
@@ -85,6 +92,7 @@
                 resonAble: true, // 驳回原因是否可以填写
                 highest: false, // 是否是最高等级
                 notScrap: true,
+                leftList:[]
             }
         },
         methods: {
@@ -137,17 +145,18 @@
                 });
             },
             transfer(){
-                transferProcess(this.url.transfer,this.universalObj.id).then(res=>{
-
-                })
+                this.downloadSrc=baseBURL+this.url.transfer+this.universalObj.id;
+                setTimeout(()=>{
+                    this.$refs.aDownload.click();
+                },100)
             },
             sucesssInOrOut() {
                 this.$refs.transferDialog.close();
                 this.$emit('closeBill', true);
             },
             inHouse(){
-                this.$set(this,'directObj',this.universalObj);
                 this.typeOperational='入库';
+                this.leftList=this.initLeftList('入库');
                 this.$refs.transferDialog.showDialog();
             },
             inHouseByProcess(data){
@@ -158,8 +167,8 @@
                 })
             },
             outHouse(){
-                this.$set(this,'directObj',this.universalObj);
                 this.typeOperational='出库';
+                this.leftList=this.initLeftList('出库');
                 this.$refs.transferDialog.showDialog();
             },
             outHouseByProcess(data){
@@ -168,6 +177,20 @@
                    this.$message.success('操作成功');
                    this.$emit('back',true)
                 })
+            },
+            initLeftList(typeOperational){
+                if(this.$route.meta.title!=='申请单列表'){
+                    let list=[],group;
+                    if(typeOperational==='出库'){
+                        this.universalObj.processVariables?list=this.universalObj.processVariables.applyOrder.equips:list=[];
+                    }else {
+                        group=_.groupBy(JSON.parse(JSON.stringify(this.universalObj.processVariables.outboundEquipsOrder.equips)), 'model');
+                        _.forIn(group,(value,key)=>{
+                            list.push({name:value[0].name,model:value[0].model,count:group[key].length})
+                        })
+                    }
+                    return list;
+                }
             },
             sucessRefill(){
                 this.$emit('back',true)
@@ -193,14 +216,17 @@
                 })
             },
             processReviewInfo() {
-                let id='';
-                id=this.universalObj.id;
-                let params = {processInstanceId: id, includeProcessVariables: false, includeTaskVariables: true};
-                console.log(params);
-                historyTasks(params).then(res => {
-                    this.processList = JSON.parse(JSON.stringify(res));
-                    this.startShow = true
-                })
+                if(this.$route.meta.title!=='申请单列表'){
+                    let id='';
+                    id=this.universalObj.id;
+                    let params = {processInstanceId: id, includeProcessVariables: false, includeTaskVariables: true};
+                    console.log(params);
+                    historyTasks(params).then(res => {
+                        this.processList = JSON.parse(JSON.stringify(res));
+                        this.startShow = true
+                    })
+                }
+
             },
             lookReson(reson) {
                 this.reson = reson;
@@ -233,12 +259,14 @@
             haveInHouse(){
                 let inUser='';
                 let flag=false;
-                if(this.universalObj.processVariables.applyOrder.inboundUser!=null){
-                    inUser=this.universalObj.processVariables.applyOrder.inboundUser.id
-                }
-                if (inUser===JSON.parse(localStorage.getItem("user")).id&&this.title!=='报废'){
-                    if(this.universalObj.processVariables.applyOrder.inboundInfo!==null&&this.universalObj.processVariables.applyOrder.inboundInfo!==undefined){
-                        flag=true
+                if (this.$route.meta.title!=='申请单列表'){
+                    if(this.universalObj.processVariables.applyOrder.inboundUser!=null){
+                        inUser=this.universalObj.processVariables.applyOrder.inboundUser.id
+                    }
+                    if (inUser===JSON.parse(localStorage.getItem("user")).id&&this.title!=='报废'){
+                        if(this.universalObj.processVariables.applyOrder.inboundInfo!==null&&this.universalObj.processVariables.applyOrder.inboundInfo!==undefined){
+                            flag=true
+                        }
                     }
                 }
                 return flag
@@ -246,12 +274,14 @@
             haveOutHouse(){
                 let outUser='';
                 let flag=false;
-                if(this.universalObj.processVariables.applyOrder.outboundUser!=null&&this.title!=='报废'){
-                    outUser=this.universalObj.processVariables.applyOrder.outboundUser.id
-                }
-                if (outUser===JSON.parse(localStorage.getItem("user")).id){
-                    if(this.universalObj.processVariables.applyOrder.outboundInfo!==null){
-                        flag=true
+                if (this.$route.meta.title!=='申请单列表'){
+                    if(this.universalObj.processVariables.applyOrder.outboundUser!=null&&this.title!=='报废'){
+                        outUser=this.universalObj.processVariables.applyOrder.outboundUser.id
+                    }
+                    if (outUser===JSON.parse(localStorage.getItem("user")).id){
+                        if(this.universalObj.processVariables.applyOrder.outboundInfo!==null){
+                            flag=true
+                        }
                     }
                 }
                 return flag
@@ -278,12 +308,18 @@
             },
             isInHouse(){
                 let flag=false;
-                if(this.title!=='报废'){
-                    if(this.universalObj.currentTask.assigneeName===JSON.parse(localStorage.getItem("user")).name){
-                        if(this.universalObj.currentTask.name.indexOf('入库')!==-1){
-                            flag=true;
-                        }else {
-                            flag=false;
+                let currentTask='';
+                if(this.$route.meta.title==='我的流程'){
+                    currentTask=this.universalObj.currentTask.name;
+                }else if(this.$route.meta.title==='待办事宜'){
+                    currentTask=this.universalObj.name
+                }
+                if(this.title!=='报废'&&this.$route.meta.title!=='申请单列表'){
+                    if(this.universalObj.processVariables.applyOrder.inboundUser!=null){
+                        if(this.universalObj.processVariables.applyOrder.inboundUser.name===JSON.parse(localStorage.getItem("user")).name){
+                            if(currentTask.indexOf('入库')!==-1){
+                                flag=true;
+                            }
                         }
                     }
                 }
@@ -291,12 +327,18 @@
             },
             isOutHouse(){
                 let flag=false;
-                if(this.title!=='报废'){
-                    if(this.universalObj.currentTask.assigneeName===JSON.parse(localStorage.getItem("user")).name){
-                        if(this.universalObj.currentTask.name.indexOf('出库')!==-1){
-                            flag=true;
-                        }else {
-                            flag=false;
+                let currentTask='';
+                if(this.$route.meta.title==='我的流程'){
+                    currentTask=this.universalObj.currentTask.name;
+                }else if(this.$route.meta.title==='待办事宜'){
+                    currentTask=this.universalObj.name
+                }
+                if(this.title!=='报废'&&this.$route.meta.title!=='申请单列表'){
+                    if(this.universalObj.processVariables.applyOrder.inboundUser!=null){
+                        if(this.universalObj.processVariables.applyOrder.inboundUser.name===JSON.parse(localStorage.getItem("user")).name){
+                            if(currentTask.indexOf('出库')!==-1){
+                                flag=true;
+                            }
                         }
                     }
                 }

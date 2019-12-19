@@ -79,34 +79,30 @@
         },
         methods: {
             handleSelectionChange(val) {
-               this.table.checkBoxData=val
-                console.log('this.table.checkBoxData',this.table.checkBoxData)
+               this.table.checkBoxData=val;
             },
             deleteButton(type, row) {
                 if (type === 'category') {
                     deleteCategory(row.category.id).then(res => {
                         this.$emit('updateCategory', {type:'delete', id:row.category.id});
+                    }).catch(err=>{
+                        this.$message.error(err.response.data.message);
                     })
                 } else {
                     this.equipArg = row.equipArg;
                     this.$refs.deleteEquipArg.show();
-                    // deleteCategory(row.category.id).then(res=>{
-                    //     this.$emit('success','category');
-                    // })
                 }
             },
             resultCheckBox(){
                 this.$refs.unallocated.clearSelection();
             },
             deleteEquipArgId() {
-                console.log(this.equipArg);
                 relateCategory({categoryId:this.currentNode.id,equipArgId:this.equipArg.id,flag:false}).then(res=>{
                     this.$emit('success', 'equipArg');
                     this.$refs.deleteEquipArg.hide();
+                }).catch(err=>{
+                    this.$message.error(err.response.data.message);
                 });
-                // deleteCategory(row.category.id).then(res=>{
-                //     this.$emit('success','category');
-                // })
             }
         }
     }
