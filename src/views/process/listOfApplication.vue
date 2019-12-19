@@ -180,6 +180,8 @@
                             break;
                     }
                     this.universal.url=url;
+                }).catch(err=>{
+                    this.$message.error(err.response.data.message);
                 })
 
             }

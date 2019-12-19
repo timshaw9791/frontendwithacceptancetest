@@ -125,6 +125,8 @@
                         time:res.content[0].createTime
                     };
                     this.$refs.lookUp.show();
+                }).catch(err=>{
+                    this.$message.error(err.response.data.message);
                 });
             },
             lookOutHouse(){
@@ -142,6 +144,8 @@
                         time:res.content[0].createTime
                     };
                     this.$refs.lookUp.show();
+                }).catch(err=>{
+                    this.$message.error(err.response.data.message);
                 });
             },
             transfer(){
@@ -164,6 +168,8 @@
                 equipsOutInbound(url,data).then(res=>{
                     this.$message.success('操作成功');
                     this.$emit('back',true)
+                }).catch(err=>{
+                    this.$message.error(err.response.data.message);
                 })
             },
             outHouse(){
@@ -176,6 +182,8 @@
                 equipsOutInbound(url,data).then(res=>{
                    this.$message.success('操作成功');
                    this.$emit('back',true)
+                }).catch(err=>{
+                    this.$message.error(err.response.data.message);
                 })
             },
             initLeftList(typeOperational){
@@ -226,7 +234,7 @@
                             break;
                     }
                 }
-                console.log(ref)
+                console.log(ref);
                 this.$refs.selectUniversalApply.apply(ref)
             },
             cancel(){
@@ -236,6 +244,8 @@
                 workflow(this.universalObj.id,JSON.parse(localStorage.getItem("user")).id).then(res=>{
                     this.$message.success('操作成功');
                     this.$emit('back',true)
+                }).catch(err=>{
+                    this.$message.error(err.response.data.message);
                 })
             },
             processReviewInfo() {
@@ -251,6 +261,8 @@
                     historyTasks(params).then(res => {
                         this.processList = JSON.parse(JSON.stringify(res));
                         this.startShow = true
+                    }).catch(err=>{
+                        this.$message.error(err.response.data.message);
                     })
                 }
 
@@ -263,6 +275,8 @@
                 if(this.$route.meta.title==='我的流程'){
                     activeTasks({includeprocessVariables:true,includeTaskprocessVariables:true,processInstanceId:this.universalObj.id}).then(res=>{
                         this.activeTask=res;
+                    }).catch(err=>{
+                        this.$message.error(err.response.data.message);
                     })
                 }else if(this.$route.meta.title==='待办事宜'){
                     this.activeTask.id=this.universalObj.id;
@@ -361,8 +375,8 @@
                     currentTask=this.universalObj.name
                 }
                 if(this.title!=='报废'&&this.$route.meta.title!=='申请单列表'){
-                    if(this.universalObj.processVariables.applyOrder.inboundUser!=null){
-                        if(this.universalObj.processVariables.applyOrder.inboundUser.name===JSON.parse(localStorage.getItem("user")).name){
+                    if(this.universalObj.processVariables.applyOrder.outboundUser!=null){
+                        if(this.universalObj.processVariables.applyOrder.outboundUser.name===JSON.parse(localStorage.getItem("user")).name){
                             if(currentTask.indexOf('出库')!==-1){
                                 flag=true;
                             }

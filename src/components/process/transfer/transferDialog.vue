@@ -400,15 +400,18 @@
                             equips.push({id:item.id,name:item.equipArg.name,model:item.equipArg.model,price:item.price,serial:item.serial,productDate:item.productDate,equipArgId:item.equipArg.id,rfid:item.rfid})
                         });
                         this.$emit('outHouse',{outboundEquipsOrder:{equips:equips},outboundInfo:{note:note,missEquips:this.missEquip,orderNumber:res.orderNumber,price:price}})
+                    }).catch(err=>{
+                        this.$message.error(err.response.data.message);
                     })
                     // equips=[{id:'2121',name:'item.equipArg.name',model:'item.equipArg.model',price:'item.price',serial:'item.serial',productDate:'item.productDate',equipArgId:'item.equipArg.id',rfid:'item.rfid'}],
-
                 }else {
                     inHouses(equips).then(res=>{
                         res.equips.forEach(item=>{
                             price=price+item.price;
                         });
                         this.$emit('inHouse',{orderNumber:orderNumber,price:price,note:note,missEquips:this.missEquip})
+                    }).catch(err=>{
+                        this.$message.error(err.response.data.message);
                     })
                 }
 
@@ -502,6 +505,8 @@
                         }else {
                             this.$message.error(`无法识别当前装备的RFID:[${data}]`)
                         }
+                    }).catch(err=>{
+                        this.$message.error(err.response.data.message);
                     });
                 }else {
                     let equips=this.directObj.processVariables.outboundEquipsOrder.equips;

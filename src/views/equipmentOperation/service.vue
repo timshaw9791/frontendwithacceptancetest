@@ -86,8 +86,9 @@
             </div>
         </servicedialog>
 
-        <field-dialog title="申请报废" ref="dialog1" @confirm="dialogConfirm">
-            <form-container ref="inlineForm" :model="inlineForm">
+
+        <servicedialog title="申请报废" ref="dialog1" @confirm="dialogConfirm">
+            <form-container ref="inlineForm" style="margin-top: 30px" :model="inlineForm">
                 <field-input v-model="inlineForm.auditor" label="申请人员" width="3.5" :disabled="true"></field-input>
                 <br/>
                 <field-select label="审核人" v-model="inlineForm.leader" width="3.5"
@@ -99,7 +100,7 @@
                 <field-input v-model="inlineForm.reason" label="申请原因" width="5" type="textarea"
                              :rules="r(true).all(R.require)" prop="reason"></field-input>
             </form-container>
-        </field-dialog>
+        </servicedialog>
 
 
     </div>
@@ -110,8 +111,9 @@
     import tabs from 'components/base/tabs/index'
     import {formRulesMixin} from 'field/common/mixinComponent';
     import servicedialog from 'components/base/gailiangban'
-    import api from 'gql/operation.gql'
+    import p_select from 'components/base/selected'
     import {transformMixin} from 'common/js/transformMixin'
+    import {getHouseInfo,getApplyLeader} from 'api/process'
     import {
         retirementApplication,
         getEquipsList,
@@ -139,8 +141,11 @@
                 inlineForm: {
                     auditor: JSON.parse(localStorage.getItem('user')).name,
                 },
+                applyObject:{house:{}},
                 paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
                 leadershipList: [],
+                copyLeaderList:[],
+                processConfigId:'',
                 unitId: JSON.parse(localStorage.getItem('user')).unitId,
                 equipId: '',
                 inquire: '',
@@ -155,17 +160,40 @@
             // this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];
         },
         mounted() {
-            this.getEquipServiceList()
+            this.getEquipServiceList();
+            this.init()
         },
 
         methods: {
+            init(){
+                getHouseInfo().then(res=>{
+                    this.$set(this.applyObject,'house',res);
+                }).catch(err=>{
+                    this.$message.error(err.response.data.message);
+                });
+            },
+            getLeaderList(){
+                getApplyLeader({organUnitId:this.applyObject.house.organUnitId,type:'SCRAP'}).then(res=>{
+                    let leader=[];
+                    res.auditors.forEach(item=>{
+                        if(item.level===1){
+                            leader.push(item.leader)
+                        }
+                    });
+                    this.processConfigId=res.id;
+                    this.copyLeaderList=JSON.parse(JSON.stringify(leader));
+                    this.leadershipList = leader.map((item) => {
+                        return {key: item.name, val: item.id}
+                    });
+                });
+            },
             selected(data) {
                 console.log(data);
             },
             repairTime(repairTime) {
                 let repairTimes = repairTime / 1000 / 60 / 60;
                 if (repairTimes < 1) {
-                    return '不足一小时'
+                    return repairTimes=1;
                 } else {
                     return Math.round(repairTimes) + '小时'
                 }
@@ -284,8 +312,7 @@
                         }
                     }
                 });
-                this.dialogList=dialogList
-                console.log(this.dialogList);
+                this.dialogList=dialogList;
             },
 
             cancel() {
@@ -307,13 +334,14 @@
                 )
             },
             scrapped(row) {
-                this.gqlQuery(api.getUserList, {}, (res) => {
-                    let data = JSON.parse(JSON.stringify(res.data.UserList.content));
-                    this.leadershipList = data.map((item) => {
-                        return {key: item.name, val: item.id}
-                    });
-                });
+                // this.gqlQuery(api.getUserList, {}, (res) => {
+                //     let data = JSON.parse(JSON.stringify(res.data.UserList.content));
+                //     this.leadershipList = data.map((item) => {
+                //         return {key: item.name, val: item.id}
+                //     });
+                // });
                 this.equipId = row.id;
+                this.getLeaderList();
                 this.$refs.dialog1.show();
             },
             submit() {
@@ -335,13 +363,8 @@
                     return res.id
                 });
             },
+
             getEquipServiceList() {
-                // let params = {
-                //     page: this.paginator.page,
-                //     size: this.paginator.size,
-                //     search: this.inquire,
-                //     state: "MAINTAIN"
-                // };
                 this.loading = true;
                 findrepairingEquips().then(res => {
                     let result = JSON.parse(JSON.stringify(res));
@@ -369,7 +392,8 @@
         components: {
             equip,
             tabs,
-            servicedialog
+            servicedialog,
+            p_select
         },
         watch: {
             inquire(newVal, oldVal) {

@@ -107,6 +107,8 @@
                     }
                     this.universal.url=url;
                     this.status.tableOrUniversalFlag=!this.status.tableOrUniversalFlag;
+                }).catch(err=>{
+                    this.$message.error(err.response.data.message);
                 });
             }
         }
