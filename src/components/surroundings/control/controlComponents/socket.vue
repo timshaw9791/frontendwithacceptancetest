@@ -10,7 +10,7 @@
                     <span v-text="time" style="margin-top: 0.026rem;font-size: 14px"  v-if="socket.chargingTime!=''&&flag"></span>
                     <span v-text="'空闲'" style="margin-top: 0.1042rem;margin-bottom: 0.0625rem" v-if="!flag||socket.name==''"></span>
                 </div>
-                <switch-control style="margin-top: 0.0677rem" width="0.3646rem" :status="socket.status==1?false:true" @handleChange="change"></switch-control>
+                <switch-control ref="switch_single" style="margin-top: 0.0677rem" width="0.3646rem" :status="socket.status==1?false:true" @handleChange="change"></switch-control>
             </div>
         </surrounding-card>
     </div>
@@ -73,7 +73,10 @@
                     this.$emit('sucess',resData);
                     this.$message.success('成功');
                 }).catch(err=>{
+                    console.log(err);
                     this.$message.error(err);
+                    this.$refs.switch_single.fail()
+                    
                 });
             }
         }

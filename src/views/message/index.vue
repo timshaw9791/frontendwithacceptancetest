@@ -11,8 +11,15 @@
             style="margin-left: 1vw; min-width: 100px"
             @selected="selected"
           ></tb-select> -->
-          <div style="width:200px;cursor: pointer;margin-left:15px">
-          <el-input v-model="msgTitle" placeholder="消息标题"></el-input>
+          <div class="btn1">
+            <BosInput
+                        placeholder="消息标题"
+                        suffix="el-icon-search"
+                        v-model="msgTitle"
+                        style="width:285px;">
+
+                </BosInput>
+          <!-- <el-input v-model="msgTitle" placeholder="消息标题"></el-input> -->
           </div>
           <!-- <span class="msgReaded">
             标记为已读
@@ -267,12 +274,24 @@ created(){
 };
 </script>
 
+<style lang="scss">
+.btn1{
+    width:200px;
+    cursor: pointer;
+    margin-left:15px;
+    .el-input__inner {
+    border-radius: 19px;
+  }
+  }
+</style>
 <style lang="scss" scoped>
 .message {
   // margin-left: 100px;
   font-size: 16px;
 }
-
+.el_input{
+  border-radius: 19px;
+}
 .msgContents {
   display: flex;
   height: 85vh;
@@ -372,6 +391,7 @@ created(){
       position: absolute;
     }
   }
+  
   .ulList::-webkit-scrollbar {
     width: 4px;
     height: 10px;

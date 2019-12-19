@@ -159,7 +159,7 @@
     background:rgba(255,255,255,1);
     border:1px solid rgba(112,112,112,1);
     opacity:1;
-    border-radius:19px;
+    /* border-radius:19px; */
     padding-left: 15px;
     outline:medium;
     color: #707070;
