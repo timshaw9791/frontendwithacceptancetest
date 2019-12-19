@@ -121,6 +121,7 @@
                         this.params.endTime = '';
                         this.getList(this.params)
                     }
+                    this.getList()
                 }
             }
         }
