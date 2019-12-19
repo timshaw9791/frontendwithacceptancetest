@@ -346,15 +346,11 @@
             isEqual() {
                 let flag1 = JSON.stringify(this.form) == JSON.stringify(this.judgeEdit.form),
                     flag2 = JSON.stringify(this.zbForm) == JSON.stringify(this.judgeEdit.zbForm)
-                    console.log(JSON.stringify(this.form));
-                    console.log(JSON.stringify(this.judgeEdit.form));
-                    console.log(flag1);
-                    console.log(flag2);
                 return flag1&&flag2
             },
             // 弹窗点击确认后退出
             dialogConfirm() {
-                if(this.title.includes('入库装备')) {
+                if(this.title.includes('入库装备') && this.hardwareOpen) {
                     killProcess(this.pid)
                 }
                 this.$emit('black');
@@ -615,8 +611,10 @@
                                 this.getEquipInfo()
                             }
                         }
-                        this.judgeEdit.form = JSON.parse(JSON.stringify(this.form))
-                        this.judgeEdit.zbForm = JSON.parse(JSON.stringify(this.zbForm))
+                        if(this.judgeEdit.form.name == undefined) {
+                            this.judgeEdit.form = JSON.parse(JSON.stringify(this.form))
+                            this.judgeEdit.zbForm = JSON.parse(JSON.stringify(this.zbForm))
+                        }
                     })
                 } else if(this.title.includes('装备信息详情')) {
                     findEquip(this.equipId).then(res => {
