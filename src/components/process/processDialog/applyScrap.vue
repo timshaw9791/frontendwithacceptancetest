@@ -87,7 +87,7 @@
                     applicant: {
                         id: JSON.parse(localStorage.getItem('user')).id,
                         name: JSON.parse(localStorage.getItem('user')).name,
-                        organUnitId: this.applyObject.house.organUnitId
+                        organUnitId: ''
                     },
                     reason:''
                 },
@@ -98,6 +98,7 @@
             }
         },
         mounted(){
+           console.log(this.applyObject);
            setTimeout(()=>{
                this.mixiGetLeader({organUnitId:this.applyObject.house.organUnitId,type:this.form.type});
            },2000)
@@ -112,7 +113,6 @@
                     //     this.end(this.pid)
                     // }
                     if (newVal === '手持机') {
-                        console.log('watch',newVal);
                         this.handheldMachine();
                     } else if (newVal === 'RFID读写器') {
                         this.getListUsb();
@@ -121,7 +121,7 @@
             }
         },
         methods: {
-            apply(data) {
+            apply() {
                 let equips = [];
                 this.form.equips.forEach(item => {
                     equips.push({id:item.id,rfid:item.rfid,name:item.equipArg.name,model:item.equipArg.model})
@@ -135,6 +135,7 @@
                         name: this.applyObject.house.houseName
                     }
                 };
+                apply.applicant.organUnitId=this.applyObject.house.organUnitId;
                 scrapStarts(apply, this.form.leader.id, this.mixinObject.processConfigId).then(res => {
                     this.$message.success('操作成功');
                     this.$emit('applySucess',true);
@@ -164,7 +165,7 @@
                 });
                 //todo 要换回来
                 // let data = inventoryData;
-                // this.getEquipByRfid(['40058889','40058890'])
+                // this.getEquipByRfid(['190800150000000000000000'])
             },
             getListUsb() {//todo
                 start("java -jar scan.jar", (data) => {
