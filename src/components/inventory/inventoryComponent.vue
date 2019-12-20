@@ -29,7 +29,7 @@
             </div>
         </div>
         <div class="body">
-            <span v-text="'未在库装备统计：'"></span>
+            <span v-text="'未知装备统计'"></span>
             <inventory-table :tableData="tableData" style="margin-top: 7px"></inventory-table>
         </div>
         <div class="bottom">

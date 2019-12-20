@@ -33,6 +33,7 @@
     import i_inventory from 'components/inventory/inventoryComponent'
     import i_dialog from 'components/inventory/inventoryDialog'
     import {getHouseInfo, getApplyLeader, scrapStarts} from 'api/process'
+    import {scrapByProcess} from 'api/expired'
     // import inventoryData from './inventoryData'
     import {getToken} from "../../common/js/auth";
     import request from 'common/js/request'
@@ -77,6 +78,7 @@
                         name:""
                     }
                 },
+                scrapRfidlist:[],
                 nextAssignee:"",
                 processConfigId:"",
                 leaderList:[],
@@ -93,6 +95,7 @@
                 handheld((err) => this.$message.error(err)).then(data => {
                     this.getInventoryRf(JSON.parse(data));
                 });
+
                 // this.getInventoryRf();
                 // this.getInventoryRfCopy();
                 //todo 记得合并前换回来
@@ -138,7 +141,9 @@
                                 model:item.equipInfo.model
                             }
                             this.scrapList.equips.push(a)
+                            this.scrapRfidlist.push(item.equipInfo.rfid)
                         })
+                        console.log("this.scrapRfidlist",this.scrapRfidlist)
                         console.log("this.scrapList.equips",this.scrapList.equips)
                         this.$refs.scrap_dialog.show()
                     }
@@ -157,8 +162,11 @@
                 }else if(JSON.parse(localStorage.getItem('user')).organUnitName==this.houseList.houseName){
                     this.scrapList.applicant.organUnitId = this.houseList.houseId
                 }
+                scrapByProcess(this.scrapRfidlist).then(res=>{
+                    this.$message.success('装备报废成功');
+                })
                 scrapStarts(this.scrapList,this.nextAssignee,this.processConfigId).then(res=>{
-                    this.$message.success('报废成功');
+                    this.$message.success('报废流程成功');
                     this.handleSubmission2()
                     this.$refs.scrap_dialog.hide()
                     this.leaderList=[],

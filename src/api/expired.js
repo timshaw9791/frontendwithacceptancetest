@@ -19,3 +19,13 @@ export function scrap(data) {
         }
     })
 }
+export function scrapByProcess(data) {
+    return request({
+        url: '/equipmaintain/scrap',
+        method: 'post',
+        params: {
+            category:'PROCESS',
+            rfids:data
+        }
+    })
+}

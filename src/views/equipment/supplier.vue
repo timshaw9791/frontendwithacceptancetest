@@ -35,7 +35,7 @@
             </div>
         </el-card>
 
-        <service-dialog :title="title" ref="dialog" @confirm="dialogConfirm">
+        <service-dialog :title="title" ref="dialog" @firstCancel="cancel" @cancel="cancel" @confirm="dialogConfirm" :secondary="scondary">
             <form-container ref="inlineForm" :model="inlineForm">
                 <field-input v-model="inlineForm.name" label="供应商" width="8"
                              :rules="r(true).all(R.require)" prop="name"
@@ -79,6 +79,8 @@
             return {
                 title: '',
                 inlineForm: {},
+                scondary: false,
+                editInlineForm: false,
                 list: [],
                 inquire: '',
                 paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
@@ -118,6 +120,8 @@
                     this.$message.success(`${this.title}成功`)
                     this.$refs.dialog.hide()
                     this.paginator.page = 1
+                    this.editInlineForm = false
+                    this.scondary = false
                     this.getSupplierList()
                 })
             },
@@ -129,12 +133,27 @@
                     this.inlineForm = {};
                 }
                 this.$refs.dialog.show();
+            },
+            cancel() {
+                this.editInlineForm = false
+                this.scondary = false
+            }
+        },
+        watch: {
+            inlineForm: {
+                handler(bal) {
+                    if(this.editInlineForm) {
+                        this.scondary = true
+                    } else {
+                        this.editInlineForm = true
+                    }
+                },
+                deep: true
             }
         },
         created() {
             this.getSupplierList()
         },
-
     }
 </script>
 
