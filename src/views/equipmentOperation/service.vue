@@ -113,7 +113,7 @@
     import servicedialog from 'components/base/gailiangban'
     import p_select from 'components/base/selected'
     import {transformMixin} from 'common/js/transformMixin'
-    import {getHouseInfo,getApplyLeader} from 'api/process'
+    import {getHouseInfo,getApplyLeader,scrapStarts,equipMaintainScrapByProcess} from 'api/process'
     import {
         retirementApplication,
         getEquipsList,
@@ -148,6 +148,7 @@
                 processConfigId:'',
                 unitId: JSON.parse(localStorage.getItem('user')).unitId,
                 equipId: '',
+                equip:'',
                 inquire: '',
                 pid: '',
                 dialogList: [],
@@ -186,6 +187,14 @@
                         return {key: item.name, val: item.id}
                     });
                 });
+            },
+            equipMaintainScrapByProcess(rfids){
+                equipMaintainScrapByProcess(rfids).then(res=>{
+                    this.getEquipServiceList();
+
+                }).catch(err=>{
+                    this.$message.error(err.response.data.message)
+                })
             },
             selected(data) {
                 console.log(data);
@@ -275,6 +284,7 @@
             repairPush(Bool) {
                 repairEquipMaintain(this.rfids,Bool).then(res => {
                     this.$message.success('操作成功');
+                    this.getEquipServiceList();
                     if(Bool){
                         this.$refs.dialog.cancel()
                     }else {
@@ -320,18 +330,44 @@
             },
 
             dialogConfirm() {
-                this.$refs.inlineForm.axiosData(
-                    retirementApplication({
-                        equipIdList: this.equipId,
-                        leaderId: this.inlineForm.leader,
-                        reason: this.inlineForm.reason,
-                    }).then((res) => {
-                        console.log(res);
-                        this.$refs.dialog1.hide();
-                        this.getEquipServiceList();
-                        this.callback('报废已经申请');
-                    })
-                )
+                this.apply();
+                // this.$refs.inlineForm.axiosData(
+                //     retirementApplication({
+                //         equipIdList: this.equipId,
+                //         leaderId: this.inlineForm.leader,
+                //         reason: this.inlineForm.reason,
+                //     }).then((res) => {
+                //         console.log(res);
+                //         this.$refs.dialog1.hide();
+                //         this.getEquipServiceList();
+                //         this.callback('报废已经申请');
+                //     })
+                // )
+            },
+
+            apply() {
+                let equips = [{id:this.equip.id,rfid:this.equip.rfid,name:this.equip.equipArg.name,model:this.equip.equipArg.model}];
+                let apply = {
+                    applicant: {
+                        id: JSON.parse(localStorage.getItem('user')).id,
+                        name: JSON.parse(localStorage.getItem('user')).name,
+                        organUnitId: ''
+                    },
+                    equips: equips,
+                    note:this.inlineForm.reason,
+                    warehouse:{
+                        id: this.applyObject.house.houseId,
+                        name: this.applyObject.house.houseName
+                    }
+                };
+                apply.applicant.organUnitId=this.applyObject.house.organUnitId;
+                scrapStarts(apply, this.inlineForm.leader, this.processConfigId).then(res => {
+                    this.equipMaintainScrapByProcess([this.equipId]);
+                    this.$refs.dialog1.show();
+                    this.$message.success('操作成功');
+                }).catch(err=>{
+                    this.$message.error(err.response.data.message);
+                })
             },
             scrapped(row) {
                 // this.gqlQuery(api.getUserList, {}, (res) => {
@@ -341,6 +377,7 @@
                 //     });
                 // });
                 this.equipId = row.id;
+                this.equip=row;
                 this.getLeaderList();
                 this.$refs.dialog1.show();
             },
