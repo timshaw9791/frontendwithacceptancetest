@@ -39,7 +39,7 @@
                         {lable: '请求标题', field: 'processInstanceName'},
                         {lable: '任务名称', field: 'name'},
                         {lable: '办理时间', field: 'endTime', filter: (ns) => this.$filterTime(ns.endTime)},
-                        {lable: '处理用时', field: 'endTime', filter: (ns) => this.minuteFormate(ns)}
+                        {lable: '处理用时', field: 'endTime', filter: (ns) => this.minuteFormate(ns.endTime-ns.createTime)}
                     ],
                     align:'left',
                     height:'618px',
@@ -58,18 +58,43 @@
             }
         },
         methods:{
-            minuteFormate(ns){
-                let minute=0;
-                minute=ns.endTime-ns.createTime;
-                let timeStr = '预计 ';
-                let time = parseInt(minute);
-                if((time/60>>0) > 0 ){
-                    timeStr += (time/60>>0) + '小时'
+            minuteFormate(my_time){
+                let days    = my_time / 1000 / 60 / 60 / 24;
+                let daysRound = Math.floor(days);
+                let hours = my_time / 1000 / 60 / 60 - (24 * daysRound);
+                let hoursRound = Math.floor(hours);
+                let minutes = my_time / 1000 / 60 - (24 * 60 * daysRound) - (60 * hoursRound);
+                let minutesRound = Math.floor(minutes);
+                let seconds = my_time / 1000 - (24 * 60 * 60 * daysRound) - (60 * 60 * hoursRound) - (60 * minutesRound);
+                console.log('转换时间:', daysRound + '天', hoursRound + '时', minutesRound + '分', seconds + '秒');
+                let time = '';
+                let h,m,s;
+                if(hoursRound===0){
+                    h=''
+                }else {
+                    h=hoursRound+'小时'
                 }
-                if(time%60 > 0){
-                    timeStr += time%60 + "分钟";
+                if(minutesRound===0){
+                    m=''
+                }else {
+                    m=minutesRound+'分钟'
                 }
-                return timeStr
+                if(seconds===0){
+                    s=''
+                }else {
+                    s=seconds.toFixed(2)+'秒'
+                }
+                time=h+m+s;
+                return time
+                // let timeStr = '预计 ';
+                // let time = parseInt(minute);
+                // if((time/60>>0) > 0 ){
+                //     timeStr += (time/60>>0) + '小时'
+                // }
+                // if(time%60 > 0){
+                //     timeStr += time%60 + "分钟";
+                // }
+                // return timeStr
             },
             filterTime(ns){
                 return ns.endTime-ns.startTime
