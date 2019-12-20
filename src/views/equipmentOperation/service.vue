@@ -230,53 +230,6 @@
                         this.$refs.dialog.show();
                     });
                 });
-                // let rfid=['00003645','19080011','00002','00001545','198023242222222222222222','00008','5555555555'];
-                // findByRfids(rfid).then(res=>{
-                //     this.classify(res);
-                // });
-                // this.rfids=rfid;
-
-
-                // const process = exec(`java -jar scan.jar ${this.com}`, {cwd: cmdPath});
-                // this.pid = process.pid;
-                // let index = 0;
-
-
-                // process.stderr.on('data', (err) => {
-                //     console.log(err);
-                //     this.$message.error('设备故障请重新插拔!插入后请重新打开维修');
-                //     index = 1;
-                //     killProcess();
-                //     this.$refs.dialog.hide();
-                // });
-
-
-                // process.stdout.on('data', (data) => {
-                //     console.log(data);
-                //     if (index > 0) {
-                //         getRfidinfo([`${data}`]).then(res => {
-                //             if (0 in res) {
-                //                 this.dialogList.push(res[0]);
-                //                 this.listPush.push(res[0].id);
-                //             } else {
-                //                 this.$message.error(`${data}该RFID不在库房内`);
-                //                 index = 1;
-                //             }
-                //         })
-                //     }
-                //     if (data.includes('succeed')) {
-                //         index = 1;
-                //     }
-                // });
-
-                // process.on('exit', (code) => {
-                //     if (index === 0) {
-                //         this.$message.error('设备未插入或串口号错误,插入后请重新打开维修!');
-                //         this.$refs.dialog.hide();
-                //     }
-                //     console.log(`子进程退出，退出码 ${code}`);
-                // });
-
             },
             repairPush(Bool) {
                 repairEquipMaintain(this.rfids,Bool).then(res => {
@@ -290,14 +243,6 @@
                 }).catch(err=>{
                     this.$message.error(err.response.data.message)
                 })
-                // this.gqlMutate(api.admin_maintainEquips, {
-                //     equipIdList: this.listPush
-                // }, (res) => {
-                //     this.callback('已经申请维修!');
-                //     this.$refs.dialog.hide();
-                //     //spawn("taskkill", ["/PID", this.pid, "/T", "/F"]);
-                //     killProcess(this.pid)
-                // })
             },
             classify(data){
                 let dialogList=[];
@@ -328,21 +273,10 @@
 
             dialogConfirm() {
                 this.apply();
-                // this.$refs.inlineForm.axiosData(
-                //     retirementApplication({
-                //         equipIdList: this.equipId,
-                //         leaderId: this.inlineForm.leader,
-                //         reason: this.inlineForm.reason,
-                //     }).then((res) => {
-                //         console.log(res);
-                //         this.$refs.dialog1.hide();
-                //         this.getEquipServiceList();
-                //         this.callback('报废已经申请');
-                //     })
-                // )
             },
 
             apply() {
+                let rfids=[this.equip.rfid];
                 let equips = [{id:this.equip.id,rfid:this.equip.rfid,name:this.equip.equipArg.name,model:this.equip.equipArg.model}];
                 let apply = {
                     applicant: {
@@ -359,7 +293,7 @@
                 };
                 apply.applicant.organUnitId=this.applyObject.house.organUnitId;
                 scrapStarts(apply, this.inlineForm.leader, this.processConfigId).then(res => {
-                    this.equipMaintainScrapByProcess([this.equipId]);
+                    this.equipMaintainScrapByProcess(rfids);
                     this.$refs.dialog1.show();
                     this.$message.success('操作成功');
                 }).catch(err=>{
@@ -381,7 +315,6 @@
             submit() {
                 if (0 in this.equipList) {
                     equipsReturn(this.equipList).then(res => {
-                        console.log(res);
                         this.$message.success("入库成功");
                         this.equipList = [];
                         this.batch = !this.batch;
