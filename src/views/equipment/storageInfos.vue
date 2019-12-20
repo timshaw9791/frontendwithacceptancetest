@@ -650,12 +650,12 @@
                     })
                 } else if(this.title.includes('装备参数详情')) {
                     let tempForm = JSON.parse(JSON.stringify(this.equipList))
-                    this.tempImage = tempForm.image
                     this.form = {
                         id: tempForm.id,
                         name: tempForm.name,
                         model: tempForm.model,
                         image: `${imgBaseUrl}${tempForm.image}`,
+                        imageAddress: tempForm.image,
                         shelfLifeQ: tempForm.shelfLife/1000/3600/24,
                         upkeepCycle: tempForm.upkeepCycle==0?'':tempForm.upkeepCycle/1000/3600/24,
                         chargeCycle: tempForm.chargeCycle==0?'':tempForm.chargeCycle/1000/3600/24,
