@@ -145,8 +145,8 @@
                 this.rfidlist.forEach(item => {
                     rfidC.push(item.rfids);
                 });
-                let rfid = this.getString(rfidC);
-                scrap(rfid).then(res=>{
+                console.log("rfidC",rfidC)
+                scrap({rfids:rfidC}).then(res=>{
                     this.$message.success('操作成功')
                     this.$refs.dialog1.hide();
                 }).catch((error) => {
