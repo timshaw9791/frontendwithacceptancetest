@@ -201,7 +201,7 @@
             repairTime(repairTime) {
                 let repairTimes = repairTime / 1000 / 60 / 60;
                 if (repairTimes < 1) {
-                    return repairTimes=1;
+                    return repairTimes= '1天';
                 } else {
                     return Math.round(repairTimes) + '小时'
                 }
