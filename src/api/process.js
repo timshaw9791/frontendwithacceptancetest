@@ -4,6 +4,12 @@ import {baseBURL} from "./config";
 
 
 
+export function equipMaintainScrapByProcess(rfids) {
+    return request({
+        url: `/equipMaintain/scrap?category=PROCESS&rfids=${rfids}`,
+        method: 'post',
+    })
+}
 export function transferApply(url) {
     return request({
         url: `${baseBURL}${url}`,

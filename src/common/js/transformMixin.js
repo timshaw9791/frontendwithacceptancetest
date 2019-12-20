@@ -91,7 +91,7 @@ export const transformMixin = {
             let date = JSON.parse(JSON.stringify(data));
             let day = Math.round(date / 24 / 60 / 60 / 1000);
             if(day<1){
-                return day=1;
+                return day=1+'天';
             }else {
                 return day+'天'
             }

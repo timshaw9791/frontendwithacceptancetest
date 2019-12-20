@@ -619,7 +619,7 @@
                 } else if(this.title.includes('装备信息详情')) {
                     findEquip(this.equipId).then(res => {
                         let result = JSON.parse(JSON.stringify(res))
-                        this.tempImage = result.image
+                        this.tempImage = result.equipArg.image
                         this.copyRfidList.rfid = result.rfid
                         this.form = {
                             id: result.id,
@@ -627,7 +627,7 @@
                             name: result.equipArg.name,
                             model: result.equipArg.model,
                             serial: result.serial == '""'?'':result.serial,
-                            image: `${imgBaseUrl}${result.image}`,
+                            image: `${imgBaseUrl}${result.equipArg.image}`,
                             shelfLifeQ: result.equipArg.shelfLife/1000/3600/24,
                             chargeCycle: result.equipArg.chargeCycle==0?'':result.equipArg.chargeCycle/1000/3600/24,
                             upkeepCycle: result.equipArg.upkeepCycle==0?'':result.equipArg.upkeepCycle/1000/3600/24,

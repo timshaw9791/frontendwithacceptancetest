@@ -24,7 +24,7 @@
                             <div class="fold_body">
                                 <div class="fold_item" v-for="(item,index) in props.row.equipCountByLocations" :style="index==0?'padding-left: 0.038rem;':''">
                                     <div class="fold_body_item" v-text="surface(item)"></div>
-                                    <div class="fold_body_item"> {{item.number}}</div>
+                                    <div class="fold_body_item"> {{item.count}}</div>
                                 </div>
 
                             </div>
