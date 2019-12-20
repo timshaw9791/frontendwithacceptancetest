@@ -118,7 +118,7 @@
                         equips.push({name:equip[key][0].name,model:key,count:equip[key].length})
                     }
                     this.lookUp={
-                        title:'出库单',
+                        title:'入库',
                         number:res.content[0].orderNumber,
                         user:res.content[0].operatorInfo.operator,
                         table:equips,
@@ -137,7 +137,7 @@
                         equips.push({name:equip[key][0].name,model:key,count:equip[key].length})
                     }
                     this.lookUp={
-                        title:'入库单',
+                        title:'出库',
                         number:res.content[0].orderNumber,
                         user:res.content[0].operatorInfo.operator,
                         table:equips,

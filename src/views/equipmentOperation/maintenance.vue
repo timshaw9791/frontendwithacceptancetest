@@ -337,6 +337,7 @@
             repairPush(Bool) {
                 upkeep(this.rfids, Bool).then(res => {
                     this.$message.success('操作成功');
+                    this.getList();
                     if(Bool){
                         this.$refs.maintenanceDialog.cancel()
                     }else {
@@ -358,7 +359,6 @@
                         this.equipMaintenance += item.currentProgress;
                         this.rfids=[...this.rfids,...item.rfids]
                     });
-                    console.log(this.rfids);
                     this.$refs.maintenanceDialog.show();
                 });
 

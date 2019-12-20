@@ -1,13 +1,13 @@
 <template>
     <div>
-        <serviceDialog :title="lookUp.title" ref="lookUpService" width="6.6979rem"
+        <serviceDialog :title="`${lookUp.title}单`" ref="lookUpService" width="6.6979rem"
                        :button="false">
             <div class="look-up">
                 <div class="look-up-body">
                     <div class="look-up-header">
-                        <span v-text="`入库单号：${lookUp.number}`"></span>
+                        <span v-text="`${lookUp.title}单号：${lookUp.number}`"></span>
                         <span v-text="`操作人员：${lookUp.user}`"></span>
-                        <span v-text="`入库时间：${filterTime()}`"></span>
+                        <span v-text="`${lookUp.title}时间：${filterTime()}`"></span>
                     </div>
                     <div class="look-up-table">
                         <span v-text="`装备统计：`"></span>

@@ -51,7 +51,7 @@
                 this.$emit('sucessApply',true)
             },
             init(){
-                getHouseInfo({organUnitId:this.applyObject.house.organUnitId,type:this.form.type}).then(res=>{
+                getHouseInfo().then(res=>{
                     this.$set(this.applyObject,'house',res);
                 }).catch(err=>{
                     this.$message.error(err.response.data.message);

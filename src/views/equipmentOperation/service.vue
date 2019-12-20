@@ -189,9 +189,8 @@
                 });
             },
             equipMaintainScrapByProcess(rfids){
-                equipMaintainScrapByProcess(rfids).then(res=>{
+                equipMaintainScrapByProcess(_.join(rfids, ',')).then(res=>{
                     this.getEquipServiceList();
-
                 }).catch(err=>{
                     this.$message.error(err.response.data.message)
                 })

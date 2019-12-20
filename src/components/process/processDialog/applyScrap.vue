@@ -58,7 +58,7 @@
     import processCascader from '../processCascader'
     import textButton from 'components/base/textButton'
     import {applyProcessMixin} from "common/js/applyProcessMixin";
-    import {scrapStarts,equipById} from "api/process"
+    import {scrapStarts,equipById,equipMaintainScrapByProcess} from "api/process"
     import {start, delFile, handheld, killProcess,modifyFileName} from 'common/js/rfidReader'
     export default {
         name: "applyScrap",
@@ -98,7 +98,7 @@
             }
         },
         mounted(){
-           console.log(this.applyObject);
+           console.log('mounted',this.applyObject);
            setTimeout(()=>{
                this.mixiGetLeader({organUnitId:this.applyObject.house.organUnitId,type:this.form.type});
            },2000)
@@ -123,8 +123,10 @@
         methods: {
             apply() {
                 let equips = [];
+                let rfids=[];
                 this.form.equips.forEach(item => {
                     equips.push({id:item.id,rfid:item.rfid,name:item.equipArg.name,model:item.equipArg.model})
+                    rfids.push(item.rfid);
                 });
                 let apply = {
                     applicant: this.form.applicant,
@@ -137,6 +139,9 @@
                 };
                 apply.applicant.organUnitId=this.applyObject.house.organUnitId;
                 scrapStarts(apply, this.form.leader.id, this.mixinObject.processConfigId).then(res => {
+                    equipMaintainScrapByProcess(_.join(rfids, ',')).then(res=>{}).catch(err=>{
+                        this.$message.error(err.response.data.message);
+                    })
                     this.$message.success('操作成功');
                     this.$emit('applySucess',true);
                     this.cancelDb()
