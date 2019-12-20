@@ -308,7 +308,7 @@
                             this.getList();
                             this.$message.success('新增成功');
                         }).catch(err => {
-                            this.$message.error(err.message);
+                            this.$message.error(err.response.data.message);
                         })
                         }
                         
@@ -336,7 +336,7 @@
                         }).catch(err => {
                             console.log("err");
                             console.log(err);
-                            this.$message.error(err.message);
+                            this.$message.error(err.response.data.message);
                         })
                     } else {
                         this.$message.error('请选择装备');
@@ -353,7 +353,7 @@
                     this.$message.success('删除成功');
                     this.getList();
                 }).catch(err => {
-                    this.$message.error(err.message);
+                    this.$message.error(err.response.data.message);
                 })
             },
             delList(row) {

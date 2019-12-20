@@ -37,7 +37,7 @@
                         <template slot-scope="scope">
                             <div >
                             {{flexContent(scope.row.content)}}
-                            <span @click="moreContent(scope.row.content,scope.row.id)" v-if="viewFlag" style="cursor: pointer;">[详]</span>
+                            <span @click="moreContent(scope.row.content,scope.row.id)" v-if="viewFlag" style="cursor: pointer;color:blue">[详]</span>
                            </div>
                         </template>
                         </el-table-column>
@@ -148,7 +148,7 @@ created(){
         //   this.list.push(result)
         // // }
         this.list.forEach(item=>{
-            if(item.status=='false')
+            if(item.status==false)
             {
                 item.status='未读'
             }else{
@@ -158,8 +158,6 @@ created(){
       });
     },
     moreContent(data,id){
-        console.log("id");
-        console.log(id);
     this.moreCont=data,
     this.$refs.dialog1.show();
     this.read(id)
@@ -174,6 +172,9 @@ created(){
       if (value.length > 12) {   
           this.viewFlag=true      
         return value.slice(0,12)+'...' 
+      }
+      else {
+        this.viewFlag=false
       }
       return value
     },
@@ -303,10 +304,10 @@ created(){
     border-bottom: 1px solid rgb(228, 231, 237);
   }
   .message_box{
-    margin-left: 0.9375rem;
+     margin-left: 0.9375rem;
     // border:1px solid red;
       margin:0 auto;
-      width: 8rem;
+      width: 9.4rem;
       height: 3.5rem;
     //   border: 1px solid red
   }
