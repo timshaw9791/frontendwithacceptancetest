@@ -141,7 +141,7 @@
                 scrapStarts(apply, this.form.leader.id, this.mixinObject.processConfigId).then(res => {
                     equipMaintainScrapByProcess(_.join(rfids, ',')).then(res=>{}).catch(err=>{
                         this.$message.error(err.response.data.message);
-                    })
+                    });
                     this.$message.success('操作成功');
                     this.$emit('applySucess',true);
                     this.cancelDb()

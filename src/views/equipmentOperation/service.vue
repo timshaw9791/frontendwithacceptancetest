@@ -343,7 +343,6 @@
             },
 
             apply() {
-
                 let equips = [{id:this.equip.id,rfid:this.equip.rfid,name:this.equip.equipArg.name,model:this.equip.equipArg.model}];
                 let apply = {
                     applicant: {

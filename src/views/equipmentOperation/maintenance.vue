@@ -143,7 +143,7 @@
                         <el-table :data="dialogList" max-height="2.7917rem">
                             <bos-table-column lable="装备名称" field="equipName"></bos-table-column>
                             <bos-table-column lable="装备型号" field="equipModel"></bos-table-column>
-                            <bos-table-column lable="需要保养/本次保养"
+                            <bos-table-column lable="可保养/本次保养"
                                               :filter="(row)=>row.totalProgress+'/'+row.currentProgress"
                                               :align="'left'"></bos-table-column>
                         </el-table>
