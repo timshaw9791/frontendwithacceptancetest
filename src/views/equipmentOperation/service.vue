@@ -294,7 +294,7 @@
                 apply.applicant.organUnitId=this.applyObject.house.organUnitId;
                 scrapStarts(apply, this.inlineForm.leader, this.processConfigId).then(res => {
                     this.equipMaintainScrapByProcess(rfids);
-                    this.$refs.dialog1.show();
+                    this.$refs.dialog1.cancel();
                     this.$message.success('操作成功');
                 }).catch(err=>{
                     this.$message.error(err.response.data.message);
