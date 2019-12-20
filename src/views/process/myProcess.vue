@@ -98,6 +98,7 @@
                 historyProcessInstancesById(table.row.id).then(res=>{
                     this.universal={title:this.getTitle(res.processDefinitionKey),universalObj:res};
                     let url;
+
                     switch (this.universal.title) {
                         case "报废":
                             url={} ;

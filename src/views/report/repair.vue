@@ -94,7 +94,7 @@
                         this.$set(this.table, 'labelList', [
                             {lable: '装备大类', field: 'genre'},
                             {lable: '装备总数', field: 'totalCount'},
-                            {lable: '装备总价(元)', field: 'totalPrice',filter: this.filterTotalPrice},
+                            {lable: '装备总价(元)', field: 'totalPrice'},
                             {lable: '维修数量', field: 'count',},
                             {lable: '维修率(%)',filter: this.filterRate}
                         ]);
@@ -106,7 +106,7 @@
                         this.$set(this.table, 'labelList', [
                             {lable: '装备小类', field: 'category'},
                             {lable: '装备总数', field: 'totalCount'},
-                            {lable: '装备总价(元)', field: 'totalPrice',filter: this.filterTotalPrice},
+                            {lable: '装备总价(元)', field: 'totalPrice'},
                             {lable: '维修数量', field: 'count',},
                             {lable: '维修率(%)', filter: this.filterRate}
                         ]);
@@ -119,7 +119,7 @@
                             {lable: '装备名称', field: 'name'},
                             {lable: '装备型号', field: 'model'},
                             {lable: '装备总数', field: 'totalCount'},
-                            {lable: '装备总价(元)', field: 'totalPrice',filter: this.filterTotalPrice},
+                            {lable: '装备总价(元)', field: 'totalPrice'},
                             {lable: '维修数量', field: 'count'},
                             {lable: '维修率(%)', filter: this.filterRate},
                             {lable: '供应商', field: 'supplier',width:240}
@@ -136,6 +136,9 @@
             getAmountList() {
                 repairStatistic(this.table.params).then(res => {
                     this.$set(this.table, 'list', res);
+                    this.table.list.forEach(item=>{
+                        item.totalPrice=item.totalPrice/100;
+                    });
                     if(this.table.tableType!=='All'){
                         this.computeFunction(JSON.parse(JSON.stringify(this.table.list)))
                     }else {
@@ -171,10 +174,10 @@
                 if(totalCount!=0){
                     rate=count/totalCount
                 }
-                this.table.info=`装备总数：${totalCount}装备总价(元)：${totalPrice/100}维修数量：${count}维修率(%)：${rate}`;
+                this.table.info=`装备总数：${totalCount}装备总价(元)：${totalPrice}维修数量：${count}维修率(%)：${rate}`;
                 this.computeTotal={
                     totalCount:totalCount,
-                    totalPrice:totalPrice/100,
+                    totalPrice:totalPrice,
                     count:count,
                     rate:rate
                 }

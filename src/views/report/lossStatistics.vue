@@ -95,9 +95,9 @@
                         this.$set(this.table, 'labelList', [
                             {lable: '装备大类', field: 'genre'},
                             {lable: '装备总数', field: 'totalCount'},
-                            {lable: '装备总价(元)', field: 'totalPrice',filter: this.filterTotalPrice},
+                            {lable: '装备总价(元)', field: 'totalPrice'},
                             {lable: '损耗数量', field: 'count',},
-                            {lable: '损耗总额', field: 'action', filter: this.filterTotalLoss},
+                            {lable: '损耗总额', field: 'action'},
                             {lable: '损耗率(%)',filter: this.filterRate}
                         ]);
                         break;
@@ -108,9 +108,9 @@
                         this.$set(this.table, 'labelList', [
                             {lable: '装备小类', field: 'category'},
                             {lable: '装备总数', field: 'totalCount'},
-                            {lable: '装备总价(元)', field: 'totalPrice',filter: this.filterTotalPrice},
+                            {lable: '装备总价(元)', field: 'totalPrice'},
                             {lable: '损耗数量', field: 'count',},
-                            {lable: '损耗总额', field: 'totalLoss', filter: this.filterTotalLoss},
+                            {lable: '损耗总额', field: 'totalLoss'},
                             {lable: '损耗率(%)', filter: this.filterRate}
                         ]);
                         break;
@@ -122,9 +122,9 @@
                             {lable: '装备名称', field: 'name'},
                             {lable: '装备型号', field: 'model'},
                             {lable: '装备总数', field: 'totalCount'},
-                            {lable: '装备总价(元)', field: 'totalPrice', filter: this.filterTotalPrice},
+                            {lable: '装备总价(元)', field: 'totalPrice'},
                             {lable: '损耗数量', field: 'count',},
-                            {lable: '损耗总额', field: 'totalLoss', filter: this.filterTotalLoss},
+                            {lable: '损耗总额', field: 'totalLoss'},
                             {lable: '损耗率(%)', filter: this.filterRate},
                             {lable: '供应商', field: 'supplier',width:200}
                         ]);
@@ -146,6 +146,10 @@
                 });
                 lossStatistic(params).then(res => {
                     this.$set(this.table, 'list', res);
+                    this.table.list.forEach(item=>{
+                        item.totalPrice=item.totalPrice/100;
+                        item.totalLoss=item.totalLoss/100
+                    });
                     if(this.table.tableType!=='All'){
                         this.computeFunction(JSON.parse(JSON.stringify(this.table.list)))
                     }else {
@@ -153,12 +157,6 @@
                     }
 
                 })
-            },
-            filterTotalPrice(data) {
-               return data.totalPrice/100
-            },
-            filterTotalLoss(data) {
-                return data.totalLoss/100
             },
             filterRate(data){
                 if(data.totalCount!==0){
@@ -183,12 +181,12 @@
                 if(totalCount!=0){
                     rate=count/totalCount
                 }
-                this.table.info=`装备总数：${totalCount}装备总价(元)：${totalPrice/100}损耗数量：${count}损耗总额：${totalLoss/100}损耗率(%)：${rate}`;
+                this.table.info=`装备总数：${totalCount}装备总价(元)：${totalPrice}损耗数量：${count}损耗总额：${totalLoss}损耗率(%)：${rate}`;
                 this.computeTotal={
                     totalCount:totalCount,
-                    totalPrice:totalPrice/100,
+                    totalPrice:totalPrice,
                     count:count,
-                    totalLoss:totalLoss/100,
+                    totalLoss:totalLoss,
                     rate:rate
                 }
             }

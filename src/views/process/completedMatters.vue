@@ -86,15 +86,6 @@
                 }
                 time=h+m+s;
                 return time
-                // let timeStr = '预计 ';
-                // let time = parseInt(minute);
-                // if((time/60>>0) > 0 ){
-                //     timeStr += (time/60>>0) + '小时'
-                // }
-                // if(time%60 > 0){
-                //     timeStr += time%60 + "分钟";
-                // }
-                // return timeStr
             },
             filterTime(ns){
                 return ns.endTime-ns.startTime
@@ -133,7 +124,7 @@
             },
             clickTable(table) {
                 historyProcessInstancesById(table.row.processInstanceId).then(res=>{
-                    this.universal={title:this.getTitle(table.row.processDefinitionKey),universalObj:res};
+                    this.universal={title:this.getTitle(res.processDefinitionKey),universalObj:res};
                     let url;
                     switch (this.universal.title) {
                         case "报废":

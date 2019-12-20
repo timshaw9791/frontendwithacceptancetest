@@ -96,7 +96,7 @@
                             {lable: '装备总数', field: 'totality'},
                             {lable: '可用数量', field: 'inHouseCount'},
                             {lable: '领用数量', field: 'receiveUseCount'},
-                            {lable: '装备总价(元)', field: 'totalPrice',filter: this.filterTotalPrice}
+                            {lable: '装备总价(元)', field: 'totalPrice'}
                         ]);
                         break;
                     case 'Genre':
@@ -108,7 +108,7 @@
                             {lable: '装备总数', field: 'totality'},
                             {lable: '可用数量', field: 'inHouseCount'},
                             {lable: '领用数量', field: 'receiveUseCount'},
-                            {lable: '装备总价(元)', field: 'totalPrice',filter: this.filterTotalPrice}
+                            {lable: '装备总价(元)', field: 'totalPrice'}
                         ]);
                         break;
                     case 'Category':
@@ -121,7 +121,7 @@
                             {lable: '装备总数', field: 'totality'},
                             {lable: '可用数量', field: 'inHouseCount'},
                             {lable: '领用数量', field: 'receiveUseCount'},
-                            {lable: '装备总价(元)', field: 'totalPrice',filter: this.filterTotalPrice},
+                            {lable: '装备总价(元)', field: 'totalPrice'},
                             {lable: '供应商', field: 'supplier',width:200}
                         ]);
                         break;
@@ -136,6 +136,9 @@
             getAmountList() {
                 findEquipMoneyStatistic(this.table.params).then(res => {
                     this.$set(this.table, 'list', res);
+                    this.table.list.forEach(item=>{
+                        item.totalPrice=item.totalPrice/100;
+                    });
                     if(this.table.tableType!=='All'){
                         this.computeFunction(JSON.parse(JSON.stringify(this.table.list)))
                     }else {
@@ -169,10 +172,10 @@
                     inHouseCount+=item.inHouseCount;
                     receiveUseCount+=item.receiveUseCount;
                 });
-                this.table.info=`装备总数：${totalCount}可用数量：${inHouseCount}领用数量：${receiveUseCount}装备总价(元)：${totalPrice/100}`;
+                this.table.info=`装备总数：${totalCount}可用数量：${inHouseCount}领用数量：${receiveUseCount}装备总价(元)：${totalPrice}`;
                 this.computeTotal={
                     totalCount:totalCount,
-                    totalPrice:totalPrice/100,
+                    totalPrice:totalPrice,
                     inHouseCount:inHouseCount,
                     receiveUseCount:receiveUseCount
                 };
