@@ -1,4 +1,5 @@
 import request from 'common/js/request'
+var qs = require('qs')
 
 // 根据名字查询
 export function findScarEquipByNameLike(data) {
@@ -11,17 +12,13 @@ export function findScarEquipByNameLike(data) {
 
 export function scrap(data) {
     return request({
-        url: '/equipmaintain/scrap',
+        url: `/equipMaintain/scrap?category=MATURITY&${qs.stringify(data,{indices:false})}`,
         method: 'post',
-        params: {
-            category:'MATURITY',
-            rfids:data
-        }
     })
 }
 export function scrapByProcess(data) {
     return request({
-        url: '/equipmaintain/scrap',
+        url: '/equipMaintain/scrap',
         method: 'post',
         params: {
             category:'PROCESS',

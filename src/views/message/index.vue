@@ -30,14 +30,14 @@
         </div>
         <div class="message_box">
             <el-table :data="list"  highlight-current-row height="3.55rem" align="center">
-                        <bos-table-column lable="消息状态" field="status"  align="center"></bos-table-column>
-                        <bos-table-column lable="通知时间" field="createTime"  :filter="(row)=>$filterTime(parseInt(row.createTime))"></bos-table-column>
-                        <bos-table-column lable="消息标题" field="titleDesc"  algin="center"></bos-table-column>
-                        <el-table-column label="消息内容" align="center"    >
+                        <bos-table-column lable="消息状态" field="status"></bos-table-column>
+                        <bos-table-column lable="通知时间" field="createTime" :filter="(row)=>$filterTime(parseInt(row.createTime))"></bos-table-column>
+                        <bos-table-column lable="消息标题" field="titleDesc" algin="center"></bos-table-column>
+                        <el-table-column label="消息内容" align="center"  min-width="'3.75rem'" fit >
                         <template slot-scope="scope">
                             <div >
                             {{flexContent(scope.row.content)}}
-                            <span @click="moreContent(scope.row.content,scope.row.id)" v-if="scope.row.content.length>12" style="cursor: pointer;color:blue">[详]</span>
+                            <span @click="moreContent(scope.row.content,scope.row.id)" v-if="scope.row.content.length > 12" style="cursor: pointer;color:blue">[详]</span>
                            </div>
                         </template>
                         </el-table-column>
@@ -123,6 +123,7 @@ created(){
 },
   methods: {
     getList() {
+        // console.log(state);
       let data = {
         id: JSON.parse(localStorage.getItem("user")).id,
         page: this.paginator.page,
@@ -230,11 +231,13 @@ created(){
       }
     },
     selected(data) {
+        console.log(data);
       this.isSelect = true
       this.page = 1
       if(data=='全部')
       {
           this.searchTitle=''
+          console.log("111111");
       this.getList()
       }else{
       this.searchTitle=data
@@ -282,8 +285,6 @@ created(){
 </style>
 <style lang="scss" scoped>
 .message {
-  // border:1px solid red;
-  width:9.5rem;
   // margin-left: 100px;
   font-size: 16px;
 }
@@ -304,7 +305,7 @@ created(){
      margin-left: 0.9375rem;
     // border:1px solid red;
       margin:0 auto;
-      width:9.5rem;
+      width: 9.4rem;
       height: 3.5rem;
     //   border: 1px solid red
   }
