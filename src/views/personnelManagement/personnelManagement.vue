@@ -86,7 +86,7 @@
                 // },
                 personnel: {
                     table: {
-                        paginator: {size: 12, page: 1},
+                        paginator: {size: 10, page: 1},
                         query: {queryValue: '', role: ''}
                     },
                     personenlData: {}
