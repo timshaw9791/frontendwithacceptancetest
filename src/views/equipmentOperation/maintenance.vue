@@ -337,10 +337,11 @@
             repairPush(Bool) {
                 upkeep(this.rfids, Bool).then(res => {
                     this.$message.success('操作成功');
-                    this.$refs.rightTable.getList();
                     if(Bool){
+                        this.getList();
                         this.$refs.maintenanceDialog.cancel()
                     }else {
+                        this.$refs.rightTable.getList();
                         this.$refs.maintenanceEndDialog.cancel();
                     }
                 }).catch(err=>{
