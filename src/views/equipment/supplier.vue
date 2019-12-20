@@ -91,11 +91,6 @@
         components: {
             serviceDialog
         },
-        watch: {
-            inquire(newVal, oldVal) {
-                this.getSupplierList()
-            }
-        },
         methods: {
             getSupplierList() {
                 let params = {page: this.paginator.page, size: this.paginator.size, name: this.inquire, direction: "DESC",properties: "updateTime"};
@@ -149,6 +144,9 @@
                     }
                 },
                 deep: true
+            },
+            inquire(newVal, oldVal) {
+                this.getSupplierList()
             }
         },
         created() {
