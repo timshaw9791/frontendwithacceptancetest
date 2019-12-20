@@ -37,7 +37,7 @@
                         <template slot-scope="scope">
                             <div >
                             {{flexContent(scope.row.content)}}
-                            <span @click="moreContent(scope.row.content,scope.row.id)" v-if="viewFlag" style="cursor: pointer;color:blue">[详]</span>
+                            <span @click="moreContent(scope.row.content,scope.row.id)" v-if="scope.row.content.length > 12" style="cursor: pointer;color:blue">[详]</span>
                            </div>
                         </template>
                         </el-table-column>
@@ -130,8 +130,6 @@ created(){
         size:this.paginator.size,
         title:this.searchTitle
       };
-      console.log("data.title");
-      console.log(data.title);
       if(data.title=="")
       {
           delete data.title
