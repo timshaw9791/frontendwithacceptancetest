@@ -159,7 +159,8 @@
                data.forEach(item=>{
                    this.form.equips=[];
                    equipById(item).then(res=>{
-                       this.form.equips.push(res.content[0])
+                       console.log(res);
+                       this.form.equips.push(res.content[0]);
                    }).catch(err=>{
                        this.$message.error(err.response.data.message);
                    })

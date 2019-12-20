@@ -208,8 +208,6 @@
             },
             serviceEnd(){
                 this.dialogList = [];
-                // let rfid=['00003645','19080011','00002','00001545','198023242222222222222222','00008','5555555555'];
-                // this.rfids=rfid;
                 modifyFileName('search.json');
                 handheld((err) => this.$message.error(err)).then((data) => {
                     let json = JSON.parse(data);
@@ -345,6 +343,7 @@
             },
 
             apply() {
+
                 let equips = [{id:this.equip.id,rfid:this.equip.rfid,name:this.equip.equipArg.name,model:this.equip.equipArg.model}];
                 let apply = {
                     applicant: {

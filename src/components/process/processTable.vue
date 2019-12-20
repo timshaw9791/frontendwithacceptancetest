@@ -19,7 +19,7 @@
             <el-table-column label="装备型号" align="left">
                 <template scope="scope">
                     <div class="table-row-item">
-                        <el-select v-model="scope.row.equip.model" value-key="id">
+                        <el-select v-model="scope.row.equip.model" value-key="id" @change="selectModel(scope.row)">
                             <el-option
                                     v-for="item in scope.row.equipArg.equipArgModels"
                                     :key="item.id"
@@ -103,9 +103,11 @@
                 }
             },
             changeModel(row){
-                row.equip.name=row.equipArg.name;
-                row.equip.model=row.equipArg.equipArgModels[0].model;
-                this.$set(row.equip,'count','');
+                this.$set(row.equip,'name',row.equipArg.name);
+                this.$set(row.equip,'model',row.equipArg.equipArgModels[0].model);
+            },
+            selectModel(row){
+                this.$set(row.equip,'model',row.equip.model);
             },
             changeCount(row, event){
                 let count=row.row.equip.count;
