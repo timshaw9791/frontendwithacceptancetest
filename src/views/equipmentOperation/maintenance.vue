@@ -133,7 +133,7 @@
                     </serviceDialog>
                 </div>
 
-                <right :batch="batch" @cancel="cancel" @tobatch="change" v-if="!show"></right>
+                <right :batch="batch" ref="rightTable" @cancel="cancel" @tobatch="change" v-if="!show"></right>
                 <servicedialog title="开始保养装备清单" ref="maintenanceDialog" :width="'4.151rem'" @cancel="cancel"
                                @confirm="repairPush(true)">
                     <div class="maintenance_start_table">
@@ -337,7 +337,7 @@
             repairPush(Bool) {
                 upkeep(this.rfids, Bool).then(res => {
                     this.$message.success('操作成功');
-                    this.getList();
+                    this.$refs.rightTable.getList();
                     if(Bool){
                         this.$refs.maintenanceDialog.cancel()
                     }else {
