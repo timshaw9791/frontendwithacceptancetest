@@ -121,12 +121,16 @@
                         this.$message.success('操作成功');
                         this.$emit('applySucess',true);
                         this.cancelDb()
+                    }).catch(err=>{
+                        this.$message.error(err.response.data.message);
                     })
                 }else {
                     transferStart(apply, this.form.leader.id, this.mixinObject.processConfigId).then(res => {
                         this.$message.success('操作成功');
                         this.$emit('applySucess',true);
                         this.cancelDb()
+                    }).catch(err=>{
+                        this.$message.error(err.response.data.message);
                     })
                 }
 

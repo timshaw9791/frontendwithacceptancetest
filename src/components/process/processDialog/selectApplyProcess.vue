@@ -53,6 +53,8 @@
             init(){
                 getHouseInfo().then(res=>{
                     this.$set(this.applyObject,'house',res);
+                }).catch(err=>{
+                    this.$message.error(err.response.data.message);
                 });
             },
             apply(key) {

@@ -133,7 +133,7 @@
                     </serviceDialog>
                 </div>
 
-                <right :batch="batch" @cancel="cancel" @tobatch="change" v-if="!show"></right>
+                <right :batch="batch" ref="rightTable" @cancel="cancel" @tobatch="change" v-if="!show"></right>
                 <servicedialog title="开始保养装备清单" ref="maintenanceDialog" :width="'4.151rem'" @cancel="cancel"
                                @confirm="repairPush(true)">
                     <div class="maintenance_start_table">
@@ -143,7 +143,7 @@
                         <el-table :data="dialogList" max-height="2.7917rem">
                             <bos-table-column lable="装备名称" field="equipName"></bos-table-column>
                             <bos-table-column lable="装备型号" field="equipModel"></bos-table-column>
-                            <bos-table-column lable="需要保养/本次保养"
+                            <bos-table-column lable="可保养/本次保养"
                                               :filter="(row)=>row.totalProgress+'/'+row.currentProgress"
                                               :align="'left'"></bos-table-column>
                         </el-table>
@@ -338,8 +338,10 @@
                 upkeep(this.rfids, Bool).then(res => {
                     this.$message.success('操作成功');
                     if(Bool){
+                        this.getList();
                         this.$refs.maintenanceDialog.cancel()
                     }else {
+                        this.$refs.rightTable.getList();
                         this.$refs.maintenanceEndDialog.cancel();
                     }
                 }).catch(err=>{
@@ -358,7 +360,6 @@
                         this.equipMaintenance += item.currentProgress;
                         this.rfids=[...this.rfids,...item.rfids]
                     });
-                    console.log(this.rfids);
                     this.$refs.maintenanceDialog.show();
                 });
 
