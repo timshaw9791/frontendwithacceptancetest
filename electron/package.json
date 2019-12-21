@@ -1,5 +1,5 @@
 {
-  "name": "qcwarehouse",
+  "name": "qcwarehouse_a",
   "version": "0.1.0",
   "private": true,
   "description": "A minimal Electron application",
@@ -92,9 +92,9 @@
     "testURL": "http://localhost/"
   },
   "build": {
-    "appId": "库房管理系统C端",
+    "appId": "库房管理系统A端",
     "copyright": "华安安全",
-    "productName": "库房管理系统C端",
+    "productName": "库房管理系统A端",
     "directories": {
       "output": "build"
     },
