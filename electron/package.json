@@ -2,53 +2,28 @@
   "name": "qcwarehouse",
   "version": "0.1.0",
   "private": true,
+  "description": "A minimal Electron application",
+  "main": "main.js",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "dev": "vue-cli-service serve",
-    "build": "vue-cli-service build --dest ./electron/dist",
-    "lint": "vue-cli-service lint",
-    "apollo": "vue-cli-service apollo:watch",
-    "apollo:run": "vue-cli-service apollo:run",
-    "test:unit": "vue-cli-service test:unit --watch"
-   },
-  "dependencies": {
-    "apollo-link-error": "^1.1.10",
-    "apollo-link-http": "^1.5.14",
-    "axios": "^0.19.0",
-    "core-js": "^2.6.5",
-    "d3": "^5.14.2",
-    "element-ui": "^2.4.5",
-    "file-saver": "^2.0.2",
-    "graphql-type-json": "^0.2.1",
-    "js-cookie": "^2.2.0",
-    "lowdb": "^1.0.0",
-    "mkdirp": "^0.5.1",
-    "nprogress": "^0.2.0",
-    "pdfjs-dist": "^2.0.943",
-    "regenerator-runtime": "^0.13.2",
-    "shortid": "^2.2.8",
-    "video.js": "^7.6.6",
-    "vue": "^2.6.6",
-    "vue-apollo": "^3.0.0-beta.11",
-    "vue-quill-editor": "^3.0.6",
-    "vue-router": "^3.0.1",
-    "vue-touch-keyboard": "^0.3.1",
-    "vue-video-player": "^5.0.2",
-    "vuex": "^3.0.1",
-    "xlsx": "^0.15.3"
+    "start": "cross-env NODE_ENV=dev electron .",
+    "package": "electron-builder --win --x64",
+    "postinstall": "electron-builder install-app-deps"
   },
+  "dependencies": {},
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.5.0",
     "@vue/cli-plugin-eslint": "^3.5.0",
     "@vue/cli-plugin-unit-jest": "^3.5.0",
     "@vue/cli-service": "^3.5.0",
     "@vue/test-utils": "1.0.0-beta.29",
-    "axios": "^0.19.0",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^23.6.0",
     "babel-plugin-component": "^1.1.1",
     "cross-env": "^6.0.3",
+    "electron": "^7.0.1",
+    "electron-builder": "^21.2.0",
+    "electron-rebuild": "^1.8.6",
     "eslint": "^5.8.0",
     "eslint-plugin-graphql": "^2.1.1",
     "eslint-plugin-vue": "^5.0.0",
@@ -115,5 +90,25 @@
       "**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)"
     ],
     "testURL": "http://localhost/"
+  },
+  "build": {
+    "appId": "库房管理系统C端",
+    "copyright": "华安安全",
+    "productName": "库房管理系统C端",
+    "directories": {
+      "output": "build"
+    },
+    "win": {
+      "icon": "index.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "runAfterFinish": true,
+      "allowToChangeInstallationDirectory": false
+    },
+    "extraFiles": [
+      "external/"
+    ]
   }
 }
