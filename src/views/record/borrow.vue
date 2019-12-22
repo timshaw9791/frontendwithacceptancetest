@@ -40,6 +40,7 @@
     import serviceDialog from 'components/base/gailiangban'
     import {baseURL} from "../../api/config";
     import {findByStartTimeAndEndTimeBetweenAndArgsLike} from "api/equiprecord";
+    import {startProcessCamVideo} from '@/externalProcess'
 
     export default {
         name: "borrow",
@@ -118,9 +119,7 @@
                     console.log("this.infolist",this.infolist)
                     this.$refs.dialogLinghuan.show()
                 }else if(data.name=="监控"){
-                    console.log("222")
-                    this.address=baseURL+'/records/'+data.row.video;
-                    this.$refs.recordVideo.show()
+                    startProcessCamVideo(data.row.createTime);
                 }
             }
         },

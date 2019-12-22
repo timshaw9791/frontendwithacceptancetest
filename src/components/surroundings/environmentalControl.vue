@@ -28,7 +28,7 @@
     import exhaust from './control/exhaust'
     import disinfection from './control/disinfection'
     import {baseURL} from "../../api/config";
-   
+    import {startProcessCamVideo} from '@/externalProcess'
 
     export default {
         name: "environmentalControl",
@@ -112,7 +112,8 @@
                 
                 let clickRef;
                 if(clickItem=='视频监控'){
-                   this.$emit('toVideo')
+                    startProcessCamVideo();
+                   //this.$emit('toVideo')
                 }else {
                     this.clickRefList.forEach(item=>{
                         if(clickItem==item.name){
