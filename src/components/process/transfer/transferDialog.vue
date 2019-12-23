@@ -184,8 +184,6 @@
 <script>
     import dialogSvices from 'components/base/gailiangban'
     // import inventoryData from 'views/warehouse/inventoryData'
-    import request from 'common/js/request'
-    import {baseURL,baseBURL} from "../../../api/config"
     import {findByRfids,outHouse,checkUser,inHouses} from 'api/process'
     import { start, delFile, handheld, killProcess,modifyFileName } from 'common/js/rfidReader'
     var _ = require("lodash");
@@ -280,6 +278,7 @@
         methods: {
             getLocation(data){
                 let location='';
+                console.log(data);
                 location=data.number+'架/'+data.surface+'面/'+data.section+'节/'+data.floor+'层';
                 return location
             },
@@ -485,15 +484,15 @@
                 }
             },
             handheldMachine() {
-                modifyFileName('search.json');
-                handheld((err) => this.$message.error(err)).then((data) => {
-                    let json = JSON.parse(data);
-                    this.getOutDataCopy(json.rfid);
-                    this.deleteFile();
-                    // findByRfids(json.rfid).then(res => {
-                    //     this.$refs.maintenanceEndDialog.show();
-                    // });
-                });
+                // modifyFileName('search.json');
+                // handheld((err) => this.$message.error(err)).then((data) => {
+                //     let json = JSON.parse(data);
+                //     this.getOutDataCopy(json.rfid);
+                //     this.deleteFile();
+                //     // findByRfids(json.rfid).then(res => {
+                //     //     this.$refs.maintenanceEndDialog.show();
+                //     // });
+                // });
                 //todo 要换回来
                 // let data = inventoryData;
                 // if(this.typeOperational=='出库'){
@@ -508,7 +507,7 @@
                 // }else {
                 //     this.getOutDataCopy(['222','19080012']);,20088892,20088888
                 // }
-                // this.getOutDataCopy(['110000050000000000000000'])
+                this.getOutDataCopy(['110000050000000000000000'])
             },
             // getOutData(data){
             //     console.log(data);
@@ -616,6 +615,11 @@
                         flag=false;
                     }
                 });
+                if(this.typeOperational==='入库'){
+                    rightLists.forEach(item=>{
+                        item.location=this.location
+                    })
+                }
                 this.rightList=rightLists;
                 this.submitFlag=flag//todo
             },

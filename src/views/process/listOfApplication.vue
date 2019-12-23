@@ -170,13 +170,13 @@
                     let url;
                     switch (this.universal.title) {
                         case "报废":
-                            url={transfer:'/workflow/transfer/to-excel'};
+                            url={transfer:'/workflow/scrap/order-to-excel?applyOrderId='};
                             break;
                         case "调拨":
                             url={transfer:'/workflow/transfer/order-to-excel?applyOrderId='};
                             break;
                         case "直调":
-                            url={transfer:'/workflow/direct-allot/to-excel'};
+                            url={transfer:'/workflow/direct-allot/to-excel?applyOrderId='};
                             break;
                     }
                     this.universal.url=url;

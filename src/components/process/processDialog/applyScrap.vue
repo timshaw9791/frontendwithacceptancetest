@@ -97,7 +97,8 @@
                 selectButtons: [{name: '', label: '调拨流程'}, {name: '', label: '借用流程'}, {
                     name: '',
                     label: '直调流程'
-                }, {name: '', label: '报废流程'}]
+                }, {name: '', label: '报废流程'}],
+                pid:0
             }
         },
         mounted(){
@@ -110,7 +111,6 @@
             'hardware': {
                 deep:true,
                 handler(newVal, oldVal) {
-
                     if (newVal === '手持机') {
                         this.handheldMachine();
                     } else if (newVal === 'RFID读写器') {
@@ -121,7 +121,12 @@
         },
         methods: {
             clearEquip(){
+                this.end(this.pid);
                 this.$set(this.form,'equips',[]);
+                this.getListUsb();
+            },
+            end(pid) {
+                if (pid) {killProcess(this.pid)}
             },
             apply() {
                 let equips = [];

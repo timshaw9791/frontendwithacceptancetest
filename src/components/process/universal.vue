@@ -9,7 +9,7 @@
                 <el-button v-if="isInHouse" class="universal-header-button" @click="inHouse">入库</el-button>
                 <text-button v-if="haveInHouse" style="margin-left: 0.125rem" :iconClass="'查看出库单'" :buttonName="'查看入库单'" @click="lookInHouse"></text-button>
                 <text-button v-if="haveOutHouse" style="margin-left: 0.125rem" :iconClass="'查看出库单'" :buttonName="'查看出库单'" @click="lookOutHouse"></text-button>
-                <text-button style="margin-left: 0.125rem" v-if="title!=='报废'" :iconClass="'导出'" :buttonName="'导出'" @click="transfer"></text-button>
+                <text-button style="margin-left: 0.125rem"  :iconClass="'导出'" :buttonName="'导出'" @click="transfer"></text-button>
             </div>
         </div>
         <div class="body">
@@ -149,7 +149,7 @@
                 });
             },
             transfer(){
-                if(this.$route.meta.title==='代办事宜'){
+                if(this.$route.meta.title==='待办事宜'){
                     this.downloadSrc=baseBURL+this.url.transfer+this.universalObj.processInstanceId;
                 }else {
                     this.downloadSrc=baseBURL+this.url.transfer+this.universalObj.id;
