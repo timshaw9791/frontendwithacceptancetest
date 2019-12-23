@@ -33,7 +33,7 @@
                 </div>
                 <div class="apply-scrap-footer">
                     <div class="action-footer-item">
-                        <text-button style="color: #2F2F76FF!important;" :buttonName="'清空列表'" :iconClass="'删除'"></text-button>
+                        <text-button style="color: #2F2F76FF!important;" :buttonName="'清空列表'" :iconClass="'删除'" @click="clearEquip()"></text-button>
                     </div>
                     <div class="action-footer-item">
                         <span v-text="'申请人员：'"></span>
@@ -107,11 +107,7 @@
             'hardware': {
                 deep:true,
                 handler(newVal, oldVal) {
-                    // if (oldVal == 'RFID读写器' && newVal == '手持机') {
-                    //     this.end(this.pid)
-                    // } else if (newVal == '') {
-                    //     this.end(this.pid)
-                    // }
+
                     if (newVal === '手持机') {
                         this.handheldMachine();
                     } else if (newVal === 'RFID读写器') {
@@ -121,6 +117,9 @@
             }
         },
         methods: {
+            clearEquip(){
+                this.$set(this.form,'equips',[]);
+            },
             apply() {
                 let equips = [];
                 let rfids=[];
@@ -197,6 +196,8 @@
                 }
             },
             show() {
+                this.$set(this.form,'equips',[]);
+                this.$set(this.form,'reason','');
                 this.$refs.applyScrap.show()
             },
             cancelDb() {

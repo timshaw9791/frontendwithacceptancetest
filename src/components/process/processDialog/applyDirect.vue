@@ -147,6 +147,7 @@
                 console.log(data);
             },
             show() {
+                this.$set(this.form, 'equips', [{equipArg: {}, equip: {}}]);
                 this.$refs.applyDirect.show()
             },
             cancelDb() {
