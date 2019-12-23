@@ -58,7 +58,7 @@
     import processCascader from '../processCascader'
     import textButton from 'components/base/textButton'
     import {applyProcessMixin} from "common/js/applyProcessMixin";
-    import {scrapStarts,equipById,equipMaintainScrapByProcess} from "api/process"
+    import {scrapStarts,scrapRefill,equipById,equipMaintainScrapByProcess} from "api/process"
     import {start, delFile, handheld, killProcess,modifyFileName} from 'common/js/rfidReader'
     export default {
         name: "applyScrap",
@@ -72,6 +72,9 @@
         props:{
             applyObject:{
                 type:Object
+            },
+            taskId:{
+                type: String
             }
         },
         mixins: [applyProcessMixin],
@@ -137,16 +140,30 @@
                     }
                 };
                 apply.applicant.organUnitId=this.applyObject.house.organUnitId;
-                scrapStarts(apply, this.form.leader.id, this.mixinObject.processConfigId).then(res => {
-                    equipMaintainScrapByProcess(_.join(rfids, ',')).then(res=>{}).catch(err=>{
+                if (this.taskId){
+                    scrapRefill(apply, this.form.leader.id, this.taskId).then(res => {
+                        equipMaintainScrapByProcess(_.join(rfids, ',')).then(res=>{}).catch(err=>{
+                            this.$message.error(err.response.data.message);
+                        });
+                        this.$message.success('操作成功');
+                        this.$emit('applySucess',true);
+                        this.cancelDb()
+                    }).catch(err=>{
                         this.$message.error(err.response.data.message);
-                    });
-                    this.$message.success('操作成功');
-                    this.$emit('applySucess',true);
-                    this.cancelDb()
-                }).catch(err=>{
-                    this.$message.error(err.response.data.message);
-                })
+                    })
+                }else {
+                    scrapStarts(apply, this.form.leader.id, this.mixinObject.processConfigId).then(res => {
+                        equipMaintainScrapByProcess(_.join(rfids, ',')).then(res=>{}).catch(err=>{
+                            this.$message.error(err.response.data.message);
+                        });
+                        this.$message.success('操作成功');
+                        this.$emit('applySucess',true);
+                        this.cancelDb()
+                    }).catch(err=>{
+                        this.$message.error(err.response.data.message);
+                    })
+                }
+
             },
             selectLeader(data) {
                 this.$set(this.form,'leader',data);

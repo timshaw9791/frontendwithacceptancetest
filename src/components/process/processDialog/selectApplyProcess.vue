@@ -11,9 +11,9 @@
                 </div>
             </div>
         </serviceDialog>
-        <apply-borrow :applyObject="applyObject" ref="borrow"></apply-borrow>
-        <apply-scrap :applyObject="applyObject" ref="scrap" @applySucess="sucessApply"></apply-scrap>
-        <apply-direct :applyObject="applyObject" ref="direct" @applySucess="sucessApply"></apply-direct>
+        <apply-borrow :taskId="taskId" :applyObject="applyObject" ref="borrow"></apply-borrow>
+        <apply-scrap :taskId="taskId" :applyObject="applyObject" ref="scrap" @applySucess="sucessApply"></apply-scrap>
+        <apply-direct :taskId="taskId" :applyObject="applyObject" ref="direct" @applySucess="sucessApply"></apply-direct>
         <apply-allocation :taskId="taskId" :applyObject="applyObject" ref="allocation" @applySucess="sucessApply"></apply-allocation>
     </div>
 </template>
