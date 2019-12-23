@@ -91,6 +91,7 @@
                             <el-table-column
                                     label="装备位置"
                                     :align="align"
+                                    v-if="typeOperational==='入库'"
                             >
                                 <template slot-scope="scope">
                                   <span v-text="getLocation(scope.row.location)"></span>
@@ -482,15 +483,15 @@
                 }
             },
             handheldMachine() {
-                modifyFileName('search.json');
-                handheld((err) => this.$message.error(err)).then((data) => {
-                    let json = JSON.parse(data);
-                    this.getOutDataCopy(json.rfid);
-                    this.deleteFile();
-                    // findByRfids(json.rfid).then(res => {
-                    //     this.$refs.maintenanceEndDialog.show();
-                    // });
-                });
+                // modifyFileName('search.json');
+                // handheld((err) => this.$message.error(err)).then((data) => {
+                //     let json = JSON.parse(data);
+                //     this.getOutDataCopy(json.rfid);
+                //     this.deleteFile();
+                //     // findByRfids(json.rfid).then(res => {
+                //     //     this.$refs.maintenanceEndDialog.show();
+                //     // });
+                // });
                 //todo 要换回来
                 // let data = inventoryData;
                 // if(this.typeOperational=='出库'){
@@ -505,7 +506,7 @@
                 // }else {
                 //     this.getOutDataCopy(['222','19080012']);,20088892,20088888
                 // }
-                // this.getOutDataCopy(['308C00111112131415161718'])
+                this.getOutDataCopy(['110000050000000000000000'])
             },
             // getOutData(data){
             //     console.log(data);
