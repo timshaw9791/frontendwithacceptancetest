@@ -85,6 +85,7 @@
                     this.innerVisible = true;
                 } else {
                     this.hide();
+                    this.$emit('firstCancel')
                 }
             },
             cancelDb() {
