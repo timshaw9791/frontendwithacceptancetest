@@ -149,6 +149,7 @@
                 scrap({rfids:rfidC}).then(res=>{
                     this.$message.success('操作成功')
                     this.$refs.dialog1.hide();
+                    this.getList()
                 }).catch((error) => {
                     console.error(error);  //服务器错误或者网络状态问题
                     this.$message.error(`${error}`);
