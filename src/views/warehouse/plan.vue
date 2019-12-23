@@ -148,7 +148,7 @@
     import servicedialog from 'components/base/serviceDialog'
     import {getPlanList, savePlan, delectPlan, searchPlan, getEquipList,updatePlan} from "api/plan"
     import api from 'gql/home.gql'
-
+    var _ = require("lodash");
     export default {
         data() {
             return {
@@ -214,7 +214,6 @@
             dialogShow(type, item) {
                 if (type === 'add') {
                     this.title = '新增预案';
-                    console.log(this.title)
                     this.$set(this.form,'name','');
                     this.$set(this.form,'remark','');
                     this.form['equipArgItemList'] = [{equipArg: {name:'',model:''}, location: {}}];
@@ -248,8 +247,6 @@
                 })
             },
             changeModel(data,scope,$event,title){
-                console.log("data");
-                console.log(data);
                 this.modelList=[]
                this.equipList.forEach(item=>{
                    if(data==item.name)
@@ -261,8 +258,6 @@
             },
             getEquipInfo() {
                 getEquipList().then(res => {
-                    console.log("这里是获得装备信息")
-                    console.log(res);
                     this.equipList=res;
                     res.forEach(item=>{
                         let flag=false;
@@ -281,9 +276,11 @@
                 })
             },
             submit() {
-                console.log("输出form")
-                console.log(this.form);
+
                 this.$refs.form.validate.then(res => {
+                   
+
+
                     if (this.form.equipArgItemList[this.form.equipArgItemList.length - 1].equipArg.name === ''&&this.form.equipArgItemList.length!=1) {
                         this.form.equipArgItemList.splice(this.form.equipArgItemList.length - 1, 1);
                     }
@@ -303,6 +300,7 @@
                         {
                             this.$message.error('预案内容不得为空')
                         }else{
+                        this.form.equipArgItemList=_.uniqWith(this.form.equipArgItemList, _.isEqual)
                         savePlan(this.form).then(item => {
                             this.$refs.dialog.hide();
                             this.getList();
@@ -334,16 +332,12 @@
                             this.getList();
                             this.$message.success('编辑成功');
                         }).catch(err => {
-                            console.log("err");
-                            console.log(err);
                             this.$message.error(err.response.data.message);
                         })
                     } else {
                         this.$message.error('请选择装备');
                     }
                 }).catch(err => {
-                    console.log("err");
-                            console.log(err);
                     this.$message.error('未通过检验');
                 })
             },
@@ -357,7 +351,6 @@
                 })
             },
             delList(row) {
-                console.log(row);
                 this.delId = row.id;
                 this.$refs.dialog1.show();
             }
@@ -374,7 +367,6 @@
             inquire(newVal, oldVal) {
             
                 this.params.name = newVal;
-                console.log(newVal);
                 this.getList()
             }
         }

@@ -5,12 +5,6 @@
         <my-header title="消息通知" 
                    ></my-header>
         <div class="top">
-          <!-- <tb-select
-            :options="options"
-            indexDefault="全部"
-            style="margin-left: 1vw; min-width: 100px"
-            @selected="selected"
-          ></tb-select> -->
           <div class="btn1">
             <BosInput
                         placeholder="消息标题"
@@ -30,10 +24,16 @@
         </div>
         <div class="message_box">
             <el-table :data="list"  highlight-current-row height="3.55rem" align="center">
-                        <bos-table-column lable="消息状态" field="status"></bos-table-column>
+                        <!-- <bos-table-column lable="消息状态" field="status"></bos-table-column> -->
+                        <el-table-column label="消息状态" width="250">
+                         <template slot-scope="scope">
+                           <span v-if="scope.row.status=='未读'" style="color:red">{{scope.row.status}}</span>
+                           <span v-if="scope.row.status=='已读'" >{{scope.row.status}}</span>
+                         </template>
+                        </el-table-column>
                         <bos-table-column lable="通知时间" field="createTime" :filter="(row)=>$filterTime(parseInt(row.createTime))"></bos-table-column>
                         <bos-table-column lable="消息标题" field="titleDesc" algin="center"></bos-table-column>
-                        <el-table-column label="消息内容" align="center"  min-width="'3.75rem'" fit >
+                        <el-table-column label="消息内容" align="center"   fit >
                         <template slot-scope="scope">
                             <div >
                             {{flexContent(scope.row.content)}}
@@ -84,15 +84,6 @@ export default {
       viewFlag:false,
       searchTitle:'',
       msgTitle:'',
-      options: [
-        { label: "全部", value: "全部" },
-        { label: "报废", value: "EQUIP_SCRAP_MESSAGE" },
-        { label: "充电", value: "CHARGE_REMIND" },
-        { label: "保养", value: "MAINTAIN_REMIND" },
-        { label: "未归还", value: "LONG_TIME_NOT_RETURN" },
-        { label: "过保", value: "PERIOD_EXCEED_SHELF_LIFE" },
-        { label: "标准库存", value: "SAFE_SOCK_REMIND" }
-      ],
     };
   },
   mixins: [formRulesMixin, transformMixin],
@@ -123,7 +114,6 @@ created(){
 },
   methods: {
     getList() {
-        // console.log(state);
       let data = {
         id: JSON.parse(localStorage.getItem("user")).id,
         page: this.paginator.page,
@@ -140,11 +130,6 @@ created(){
         this.loading = false
         let result = JSON.parse(JSON.stringify(res.content))
         this.list=result
-        // // if(state) {
-        // //   this.list = result;
-        // // } else {
-        //   this.list.push(result)
-        // // }
         this.list.forEach(item=>{
             if(item.status==false)
             {
@@ -213,7 +198,7 @@ created(){
       readMsg({
           ids:id
       }).then(res => {
-        // this.getList(false)
+        this.getList()
       });
     },
     ulClick(data, index) {
@@ -231,13 +216,11 @@ created(){
       }
     },
     selected(data) {
-        console.log(data);
       this.isSelect = true
       this.page = 1
       if(data=='全部')
       {
           this.searchTitle=''
-          console.log("111111");
       this.getList()
       }else{
       this.searchTitle=data
@@ -287,13 +270,13 @@ created(){
 .message {
   // margin-left: 100px;
   font-size: 16px;
+  //  width: 9.4rem;
+  //     height: 3.5rem;
 }
 .el_input{
   border-radius: 19px;
 }
 .msgContents {
-  display: flex;
-  height: 85vh;
   .top {
     display: flex;
     align-items: center;
@@ -305,8 +288,7 @@ created(){
      margin-left: 0.9375rem;
     // border:1px solid red;
       margin:0 auto;
-      width: 9.4rem;
-      height: 3.5rem;
+     
     //   border: 1px solid red
   }
   .left-tab {
@@ -424,21 +406,9 @@ created(){
     }
   }
   .msgReaded{
-    margin-left:15px;
-    width:112px;
-    height:40px;
-    background:rgba(47,47,118,1);
-    opacity:1;
-    border-radius:4px;
+   color: red;
   }
-  .msgRead{
-    margin-left:15px;
-    width:112px;
-    height:40px;
-    background:rgba(47,47,118,1);
-    opacity:1;
-    border-radius:4px;
-  }
+  
   .mes {
     width: 100%;
     display: flex;
