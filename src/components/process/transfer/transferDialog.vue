@@ -381,6 +381,8 @@
                             state='ABNORMAL'
                         }
                         this.transferEquipInOrOut(state)
+                    }).catch(res=>{
+                        this.$message.error(err.response.data.message);
                     })
                }else {
                    this.$message.info('请先填写完整')
