@@ -93,7 +93,7 @@
                         <!--<el-button type="primary" class="button" @click="pushForm" v-if="!equipId">提交</el-button>-->
                         <div class="imgUp">
                             <imgUp @success="successUp" :disabled="edit"
-                                   :image="form.image" :upload="title.includes('入库')?false:true" :noimg="tempImage==null"></imgUp>
+                                   :image="form.image" :upload="title.includes('入库')?false:true" :noimg="tempImage == null"></imgUp>
                         </div>
                     </div>
 
@@ -650,6 +650,7 @@
                     })
                 } else if(this.title.includes('装备参数详情')) {
                     let tempForm = JSON.parse(JSON.stringify(this.equipList))
+                    this.tempImage = tempForm.image || null
                     this.form = {
                         id: tempForm.id,
                         name: tempForm.name,
