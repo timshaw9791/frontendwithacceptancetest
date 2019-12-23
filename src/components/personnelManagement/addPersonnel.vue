@@ -55,8 +55,8 @@
                 <form method="post" class="img-form"  enctype="multipart/form-data">
                     <input type="file" name="file" @change="PreviewImage" class="input-file" id="personnelImg" data-test="upImg"/>
                 </form>
-                <div style="color:red;font-size:5px;width:200px;margin-top:10px">
-                    <span>提示：照片大小2M之内,不要加美颜！</span>
+                <div style="color:red;font-size:16px;width:200px;margin-top:10px；margin-left:10px">
+                    <span>提示：请上传规范证件照，照片大小不超过2M</span>
                 </div>
             </div>
         </div>
