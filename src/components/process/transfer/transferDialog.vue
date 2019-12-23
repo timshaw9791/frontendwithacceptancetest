@@ -89,6 +89,14 @@
                             >
                             </el-table-column>
                             <el-table-column
+                                    label="装备位置"
+                                    :align="align"
+                            >
+                                <template slot-scope="scope">
+                                  <span v-text="getLocation(scope.row.location)"></span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
                                     prop="count"
                                     label="装备数量"
                                     :align="align"
@@ -269,6 +277,11 @@
             }
         },
         methods: {
+            getLocation(data){
+                let location='';
+                location=data.number+'架/'+data.surface+'面/'+data.section+'节/'+data.floor+'层';
+                return location
+            },
             errorEquip(data){
               let count,tip,name=`[${data.name+data.model}]`;
                 data.count<0?tip='缺':tip='增';

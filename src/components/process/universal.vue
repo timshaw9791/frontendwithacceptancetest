@@ -149,7 +149,12 @@
                 });
             },
             transfer(){
-                this.downloadSrc=baseBURL+this.url.transfer+this.universalObj.id;
+                if(this.$route.meta.title==='代办事宜'){
+                    this.downloadSrc=baseBURL+this.url.transfer+this.universalObj.processInstanceId;
+                }else {
+                    this.downloadSrc=baseBURL+this.url.transfer+this.universalObj.id;
+                }
+
                 setTimeout(()=>{
                     this.$refs.aDownload.click();
                 },100)
