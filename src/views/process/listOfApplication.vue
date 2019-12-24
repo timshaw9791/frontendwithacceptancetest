@@ -162,6 +162,7 @@
                 this.table.search=data
             },
             clickTable(table) {
+                console.log(table.row)
                 let url =this.table.clickUrl+table.row.id;
                 transferApply(url).then(res=>{
                     console.log(res);
@@ -176,7 +177,7 @@
                             url={transfer:'/workflow/transfer/order-to-excel?applyOrderId='};
                             break;
                         case "直调":
-                            url={transfer:'/workflow/direct-allot/to-excel?applyOrderId='};
+                            url={transfer:'/workflow/direct-allot/order-to-excel?applyOrderId='};
                             break;
                     }
                     this.universal.url=url;
