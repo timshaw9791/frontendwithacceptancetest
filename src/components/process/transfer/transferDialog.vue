@@ -261,6 +261,7 @@
                             this.handheldMachine();
                         }
                     } else if (newVal === 'RFID读写器') {
+                        this.end(this.pid);
                         this.closeUsb = false;
                         this.rightList = [];
                         if (this.typeOperational === '出库') {

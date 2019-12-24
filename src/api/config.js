@@ -26,8 +26,8 @@ if (process.env.NODE_ENV == "production") {
     baseURL = `http://${result.HOUSE_SERVER}`;
     baseBURL = `http://${result.B_SERVER}`;
     localTitle = `${result.A_CLIENT_TITLE}`;
-    setCom(result.UHF_READ_COM)
-    getHandheldPath(result.INVENTORY_PATH)
+    setCom(result.UHF_READ_COM);
+    getHandheldPath(result.INVENTORY_PATH);
     getDevelopment(result.TEST_DEVELOPMENT)
 }
 

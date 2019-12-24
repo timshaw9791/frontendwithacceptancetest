@@ -176,7 +176,7 @@
                             url={transfer:'/workflow/transfer/order-to-excel?applyOrderId='};
                             break;
                         case "直调":
-                            url={transfer:'/workflow/direct-allot/to-excel?applyOrderId='};
+                            url={transfer:'/workflow/direct-allot/order-to-excel?applyOrderId='};
                             break;
                     }
                     this.universal.url=url;
