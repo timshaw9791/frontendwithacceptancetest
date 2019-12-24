@@ -73,9 +73,10 @@
                     this.$emit('sucess',resData);
                     this.$message.success('成功');
                 }).catch(err=>{
-                    console.log(err);
-                    this.$message.error(err);
+                    this.$message.error(err.response.data.message);
+                    this.$parent.show()
                     this.$refs.switch_single.fail()
+                    
                     
                 });
             }

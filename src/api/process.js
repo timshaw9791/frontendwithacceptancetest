@@ -138,6 +138,21 @@ export function getApplyLeader(params) {
         params:params
     })
 }
+
+export function directRefill(data,nextAssignee,processConfigId) {
+    return  request({
+        url:`${baseBURL}/workflow/direct-allot/apply?nextAssignee=${nextAssignee}&&taskId=${processConfigId}`,
+        method:'put',
+        data
+    })
+}
+export function scrapRefill(data,nextAssignee,processConfigId) {
+    return  request({
+        url:`${baseBURL}/workflow/scrap/apply?nextAssignee=${nextAssignee}&&taskId=${processConfigId}`,
+        method:'put',
+        data
+    })
+}
 export function transferRefill(data,nextAssignee,processConfigId) {
     return  request({
         url:`${baseBURL}/workflow/transfer/apply?nextAssignee=${nextAssignee}&&taskId=${processConfigId}`,

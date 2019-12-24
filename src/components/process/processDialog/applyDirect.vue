@@ -50,7 +50,7 @@
     import processTable from '../processTable'
     import processCascader from '../processCascader'
     import {applyProcessMixin} from "common/js/applyProcessMixin";
-    import {directStarts} from "api/process"
+    import {directStarts,directRefill} from "api/process"
 
     export default {
         name: "applyDirect",
@@ -86,6 +86,9 @@
         props: {
             applyObject: {
                 type: Object
+            },
+            taskId:{
+                type: String
             }
         },
         created() {
@@ -119,13 +122,23 @@
                     inboundUser: this.form.inboundUser,
                     outboundOrganUnit: outboundOrganUnit
                 };
-                directStarts(apply, this.form.leader.id, this.mixinObject.processConfigId).then(res => {
-                    this.$message.success('操作成功');
-                    this.$emit('applySucess',true);
-                    this.cancelDb()
-                }).catch(err=>{
-                    this.$message.error(err.response.data.message);
-                })
+                if (this.taskId){
+                    directRefill(apply, this.form.leader.id, this.taskId).then(res => {
+                        this.$message.success('操作成功');
+                        this.$emit('applySucess',true);
+                        this.cancelDb()
+                    }).catch(err=>{
+                        this.$message.error(err.response.data.message);
+                    })
+                }else {
+                    directStarts(apply, this.form.leader.id, this.mixinObject.processConfigId).then(res => {
+                        this.$message.success('操作成功');
+                        this.$emit('applySucess',true);
+                        this.cancelDb()
+                    }).catch(err=>{
+                        this.$message.error(err.response.data.message);
+                    })
+                }
             },
             selectLeader(data) {
                 this.form.leader = data;
@@ -147,6 +160,7 @@
                 console.log(data);
             },
             show() {
+                this.$set(this.form, 'equips', [{equipArg: {}, equip: {}}]);
                 this.$refs.applyDirect.show()
             },
             cancelDb() {

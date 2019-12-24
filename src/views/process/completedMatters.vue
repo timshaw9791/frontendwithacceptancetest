@@ -128,7 +128,7 @@
                     let url;
                     switch (this.universal.title) {
                         case "报废":
-                            url={outHouse:''} ;
+                            url={transfer:'/workflow/scrap/to-excel?processInstanceId='} ;
                             break;
                         case "调拨":
                             url={transfer:'/workflow/transfer/to-excel?processInstanceId='};

@@ -55,6 +55,9 @@
                 <form method="post" class="img-form"  enctype="multipart/form-data">
                     <input type="file" name="file" @change="PreviewImage" class="input-file" id="personnelImg" data-test="upImg"/>
                 </form>
+                <div style="color:red;font-size:16px;width:200px;margin-top:10px；margin-left:10px">
+                    <span>提示：请上传规范证件照，照片大小不超过2M</span>
+                </div>
             </div>
         </div>
         <div class="add-personneo-bottom">
@@ -237,8 +240,14 @@
             PreviewImage(event){
                 let formData = new FormData();
                 let file = event.target.files[0];
-                formData.append('file',file);
-                this.Ajax(formData);
+                console.log(file);
+                console.log(file.size);
+                if(file.size/1024>2048){
+                    this.$message.error('照片大小不得超过2M');
+                }else{
+                    formData.append('file',file);
+                    this.Ajax(formData);
+                }
             },
             uploadImg(){
                 if(this.disabled){}else {

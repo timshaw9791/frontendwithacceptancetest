@@ -33,7 +33,7 @@
                 </div>
                 <div class="apply-scrap-footer">
                     <div class="action-footer-item">
-                        <text-button style="color: #2F2F76FF!important;" :buttonName="'清空列表'" :iconClass="'删除'"></text-button>
+                        <text-button style="color: #2F2F76FF!important;" :buttonName="'清空列表'" :iconClass="'删除'" @click="clearEquip()"></text-button>
                     </div>
                     <div class="action-footer-item">
                         <span v-text="'申请人员：'"></span>
@@ -58,7 +58,7 @@
     import processCascader from '../processCascader'
     import textButton from 'components/base/textButton'
     import {applyProcessMixin} from "common/js/applyProcessMixin";
-    import {scrapStarts,equipById,equipMaintainScrapByProcess} from "api/process"
+    import {scrapStarts,scrapRefill,equipById,equipMaintainScrapByProcess} from "api/process"
     import {start, delFile, handheld, killProcess,modifyFileName} from 'common/js/rfidReader'
     export default {
         name: "applyScrap",
@@ -72,6 +72,9 @@
         props:{
             applyObject:{
                 type:Object
+            },
+            taskId:{
+                type: String
             }
         },
         mixins: [applyProcessMixin],
@@ -94,7 +97,8 @@
                 selectButtons: [{name: '', label: '调拨流程'}, {name: '', label: '借用流程'}, {
                     name: '',
                     label: '直调流程'
-                }, {name: '', label: '报废流程'}]
+                }, {name: '', label: '报废流程'}],
+                pid:0
             }
         },
         mounted(){
@@ -107,11 +111,6 @@
             'hardware': {
                 deep:true,
                 handler(newVal, oldVal) {
-                    // if (oldVal == 'RFID读写器' && newVal == '手持机') {
-                    //     this.end(this.pid)
-                    // } else if (newVal == '') {
-                    //     this.end(this.pid)
-                    // }
                     if (newVal === '手持机') {
                         this.handheldMachine();
                     } else if (newVal === 'RFID读写器') {
@@ -121,6 +120,14 @@
             }
         },
         methods: {
+            clearEquip(){
+                this.end(this.pid);
+                this.$set(this.form,'equips',[]);
+                this.getListUsb();
+            },
+            end(pid) {
+                if (pid) {killProcess(this.pid)}
+            },
             apply() {
                 let equips = [];
                 let rfids=[];
@@ -138,16 +145,30 @@
                     }
                 };
                 apply.applicant.organUnitId=this.applyObject.house.organUnitId;
-                scrapStarts(apply, this.form.leader.id, this.mixinObject.processConfigId).then(res => {
-                    equipMaintainScrapByProcess(_.join(rfids, ',')).then(res=>{}).catch(err=>{
+                if (this.taskId){
+                    scrapRefill(apply, this.form.leader.id, this.taskId).then(res => {
+                        equipMaintainScrapByProcess(_.join(rfids, ',')).then(res=>{}).catch(err=>{
+                            this.$message.error(err.response.data.message);
+                        });
+                        this.$message.success('操作成功');
+                        this.$emit('applySucess',true);
+                        this.cancelDb()
+                    }).catch(err=>{
                         this.$message.error(err.response.data.message);
-                    });
-                    this.$message.success('操作成功');
-                    this.$emit('applySucess',true);
-                    this.cancelDb()
-                }).catch(err=>{
-                    this.$message.error(err.response.data.message);
-                })
+                    })
+                }else {
+                    scrapStarts(apply, this.form.leader.id, this.mixinObject.processConfigId).then(res => {
+                        equipMaintainScrapByProcess(_.join(rfids, ',')).then(res=>{}).catch(err=>{
+                            this.$message.error(err.response.data.message);
+                        });
+                        this.$message.success('操作成功');
+                        this.$emit('applySucess',true);
+                        this.cancelDb()
+                    }).catch(err=>{
+                        this.$message.error(err.response.data.message);
+                    })
+                }
+
             },
             selectLeader(data) {
                 this.$set(this.form,'leader',data);
@@ -197,6 +218,8 @@
                 }
             },
             show() {
+                this.$set(this.form,'equips',[]);
+                this.$set(this.form,'reason','');
                 this.$refs.applyScrap.show()
             },
             cancelDb() {
