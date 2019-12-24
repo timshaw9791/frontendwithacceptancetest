@@ -162,7 +162,6 @@
                 this.table.search=data
             },
             clickTable(table) {
-                console.log(table.row)
                 let url =this.table.clickUrl+table.row.id;
                 transferApply(url).then(res=>{
                     console.log(res);
