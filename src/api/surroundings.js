@@ -50,3 +50,12 @@ export function HunSwitch(params) {
     })
 }
 
+export function Salutatory(data) {
+    return request({
+        url: '/exhibition/salutatory',
+        method: 'POST',
+        data:data
+    })
+}
+
+
