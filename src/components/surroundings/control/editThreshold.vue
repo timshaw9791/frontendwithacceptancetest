@@ -5,61 +5,36 @@
                
                 <div class="airConditioning-bottom">
                     <span v-text="'空调温度阈值：'"></span>
-                    <input class="input" :style="flag?'border:none;':''" v-model="threshold.min" :disabled="flag"/><span>~~</span>
-                    <input class="input" :style="flag?'border:none;':''" v-model="threshold.max" :disabled="flag"/><span>&#8451</span>
-                    <div @click="toSetThreshold">
-                        <svg-icon icon-class="编辑" style="width: 18px;height: 18px;margin-left: 24px"></svg-icon>
-                    </div>
+                    <input class="input" style="border:1px solid #DCDFE6" v-model="thresholdMin" /><span>~~</span>
+                    <input class="input" style="border:1px solid #DCDFE6" v-model="thresholdMax" /><span>&#8451</span>
+                
                 </div>
                 <div class="airConditioning-bottom">
                     <span v-text="'除湿器湿度阈值：'"></span>
-                    <input class="input" :style="humidityFlag?'border:none;':''" v-model="humidityThreshold" :disabled="humidityFlag"/><span>%</span>
-                    
-                    <div @click="toSetHumidityThreshold">
-                        <svg-icon icon-class="编辑" style="width: 18px;height: 18px;margin-left: 24px"></svg-icon>
-                    </div>
+                    <input class="input" style="border:1px solid #DCDFE6" v-model="humidityThreshold" /><span> %</span>
                 </div>
                 <div class="airConditioning-bottom">
                     <span v-text="'烟雾浓度报警阈值：'"></span>
-                    <input class="input" :style="smokeFlag?'border:none;':''" v-model="smokeThreshold" :disabled="smokeFlag"/><span>ppm</span>
-                    <div @click="toSetSmokeThreshold">
-                        <svg-icon icon-class="编辑" style="width: 18px;height: 18px;margin-left: 24px"></svg-icon>
-                    </div>
+                    <input class="input"  v-model="smokeThreshold" style="border:1px solid #DCDFE6"/><span> ppm</span>
                 </div>
                 <div class="airConditioning-bottom">
                     <span v-text="'欢迎词轮播时间：'" ></span>
-                    <input class="input" :style="smokeFlag?'border:none;':''" v-model="lunbotime" :disabled="timeFlag"/><span>s</span>
-                    <div @click="toTime">
-                        <svg-icon icon-class="编辑" style="width: 18px;height: 18px;margin-left: 24px"></svg-icon>
-                    </div>
+                    <input class="input" style="border:1px solid #DCDFE6" v-model="lunbotime" /><span>s</span>
                 </div>
                 <div class="lunboBox">
                     <span v-text="'欢迎词: '" style="width:100px;"></span>
                     <el-input
-                            :autosize="{ minRows: 1, maxRows: 5}"
+                            :autosize="{ minRows: 1, maxRows: 3}"
                             type="textarea"
                             placeholder="请输入内容"
                             v-model="lunboContent"
-                            :disabled="lunboFlag"
                             >
                     </el-input>
-                    <div @click="toTime">
-                        <svg-icon icon-class="编辑" style="width: 18px;height: 18px;margin-left: 24px"></svg-icon>
-                    </div>
                 </div>
                     <span class="tip" v-if="num">请输入-100~100以内的数值</span>
                     <span class="tip" v-if="order">请从低到高输入温度</span>
-                <div class="airConditioning-button" v-if="!flag">
-                    <span v-text="'取消'" @click="cancel('温度')" class="cancel"></span><span v-text="'提交'" @click="submission('温度')" class="submission"></span>
-                </div>
-                <div class="airConditioning-button" v-if="!smokeFlag">
-                    <span v-text="'取消'" @click="cancel('smoke')" class="cancel"></span><span v-text="'提交'" @click="submission('smoke')" class="submission"></span>
-                </div>
-                <div class="airConditioning-button" v-if="!humidityFlag">
-                    <span v-text="'取消'" @click="cancel('humidity')" class="cancel"></span><span v-text="'提交'" @click="submission('humidity')" class="submission"></span>
-                </div>
-                <div class="airConditioning-button" v-if="!timeFlag">
-                    <span v-text="'取消'" @click="cancel('时间')" class="cancel"></span><span v-text="'提交'" @click="submission('时间')" class="submission"></span>
+                <div class="airConditioning-button" >
+                   <span v-text="'提交'" @click="submission('时间')" class="submission"></span>
                 </div>
                 
                 
@@ -113,22 +88,27 @@
                 heating:false,
                 dehumidification:false,
                 flag:true,
-                timeFlag:true,
-                lunboFlag:true,
-                smokeFlag:true,
-                lunbotime:0,
-                humidityFlag:true,
+                thresholdMin:'',
+                oldThresholdMin:'',
+                oldThresholdMax:'',
+                oldThreshold:'',
+                oldDehumi:'',
+                oldSmoke:'',
+                oldTime:'',
+                oldContent:'',
+                thresholdMax:'',
                 threshold:{
                     max:'',
                     min:''
                 },
                 lunboContent:'',
                 humidityThreshold:0,
-                smokeThreshold:0
+                smokeThreshold:0,
+                lunbotime:5
             }
         },
         created(){
-       
+        
         },
         methods:{
             refrigerationControl(data){
@@ -182,48 +162,14 @@
             show(){
                 this.getThreshold();
                 this.getHumidity();
-                this.getSmoke()
+                this.getSmoke();
+                this.getLunbo()
                 this.$refs.dialog.show();
             },
             close(){
                 this.$refs.dialog.close();
             },
-            toSetThreshold(){
-                this.flag=!this.flag
-            },
-            toSetHumidityThreshold(){
-                this.humidityFlag=!this.humidityFlag
-            },
-            toSetSmokeThreshold(){
-                this.smokeFlag=!this.smokeFlag
-            },
-            toTime(){
-            this.timeFlag=!this.timeFlag
-            this.lunboFlag=!this.lunboFlag
-            },
-            toTextArea(){
-                this.lunboFlag=!this.lunboFlag
-            },
-            cancel(title){
-                if(title=='温度')
-                {
-                    this.flag=!this.flag
-                }
-                if(title=='smoke')
-                {
-                    this.smokeFlag=!this.smokeFlag
-                }
-                if(title=='humidity')
-                {
-                    this.humidityFlag=!this.humidityFlag
-                }
-                if(title=='时间')
-                {
-                    this.timeFlag=!this.timeFlag
-                    this.lunboFlag=!this.lunboFlag
-                }
-                
-            },
+
             controlAir(data){
                 this.$ajax({
                     method:'post',
@@ -236,15 +182,16 @@
                 });
             },
             submission(data){
-                this.submissionThreshold(data)
+                this.submissionThreshold()
             },
-            submissionThreshold(data){
-                if(data=='温度')
+            submissionThreshold(){
+                if(this.thresholdMin!=this.oldThresholdMin||this.thresholdMax!=this.oldThresholdMax)
                 {
-                if(this.threshold.min>this.threshold.max){
+                   
+                 if(this.thresholdMin>this.thresholdMax){
                     this.num = false
                     this.order = true
-                }else if(this.threshold.min<-100||this.threshold.max>100){
+                }else if(this.thresholdMin<-100||this.thresholdMax>100){
                     this.order = false
                     this.num = true
                 }else{
@@ -253,63 +200,66 @@
                     this.$ajax({
                         method:'post',
                         url:baseURL+'/environment/temperatureThresholdSet',
-                        params:{max:this.threshold.max,min:this.threshold.min}
+                        params:{max:this.thresholdMax,min:this.thresholdMin}
                     }).then((res)=>{
-                        this.flag=!this.flag;
+                        this.oldThresholdMin=this.thresholdMin
+                        this.oldThresholdMax=this.thresholdMax
                         this.$message.success('设置成功');
                     }).catch(err=>{
                         this.$message.error(err);
                     });
                 }
                 }
-                
-                if(data=='smoke')
+                if(this.smokeThreshold!=this.oldSmoke)
                 {
-                    setSmokeThreshold({max: this.smokeThreshold}).then(res => {
+                setSmokeThreshold({max: this.smokeThreshold}).then(res => {
+                    this.oldSmoke=this.smokeThreshold
                         this.$message.success("设置成功")
-                        this.smokeFlag=!this.smokeFlag
                     })
-                
+                  
                 }
-                
-                if(data=='humidity')
+                if(this.humidityThreshold!=this.oldDehumi)
                 {
-                    this.$ajax({
+                    
+                this.$ajax({
                     method:'post',
                     url:baseURL+'/environment/humidityThresholdSet',
                     params:{max:this.humidityThreshold}
                 }).then((res)=>{
-                    this.humidityFlag=!this.humidityFlag;
+                    this.oldDehumi=this.humidityThreshold
                     this.$message.success('提交成功');
                 }).catch(err=>{
                     this.$message.error(err);
                 });
                 }
-                if(data=="时间"||data=="欢迎词")
+                if(this.lunboContent!=this.oldContent||this.lunbotime!=this.oldTime)
                 {
-                    let postData=[]
+                 
+                 let postData=[]
                    postData[0]=this.lunboContent
                     Salutatory({
                         time:this.lunbotime,
                         words:postData
                     }).then((res)=>{
-                    this.timeFlag=!this.timeFlag
-                    this.lunboFlag=!this.lunboFlag
+                 this.oldTime=this.lunbotime
+                 this.oldContent=this.lunboContent
                     this.$message.success('提交成功');
                 }).catch(err=>{
                     this.$message.error(err);
                 });
                 }
-            },
 
+                   
+
+            },
             getHumidity()
             {
               this.$ajax({
                     method:'post',
                     url:baseURL+'/environment/humidityThreshold',
                 }).then((res)=>{
-                    console.log(res);
                     this.humidityThreshold=res.data.data.humidityThreshold;
+                    this.oldThreshold=res.data.data.humidityThreshold
                 }).catch(err=>{
                     this.$message.error(err);
                 });
@@ -320,9 +270,21 @@
                     method:'post',
                     url:baseURL+'/environment/smokeThreshold',
                 }).then((res)=>{
-                    console.log("烟雾");
-                    console.log(res);
                     this.smokeThreshold=res.data.data;
+                    this.oldSmoke=res.data.data
+                }).catch(err=>{
+                    this.$message.error(err);
+                });
+            },
+            getLunbo(){
+            this.$ajax({
+                    method:'get',
+                    url:baseURL+'/exhibition/salutatory',
+                }).then((res)=>{
+                    this.lunbotime=res.data.time;
+                    this.lunboContent=res.data.words[0];
+                    this.oldTime=res.data.time;
+                    this.oldContent=res.data.words[0];
                 }).catch(err=>{
                     this.$message.error(err);
                 });
@@ -332,38 +294,17 @@
                     method:'post',
                     url:baseURL+'/environment/temperatureThreshold',
                 }).then((res)=>{
-                    this.threshold.max=res.data.data.temperatureMaximum;
-                    this.threshold.min=res.data.data.temperatureMinimum;
+                    this.thresholdMax=res.data.data.temperatureMaximum;
+                    this.thresholdMin=res.data.data.temperatureMinimum;
+                    this.oldThresholdMin=res.data.data.temperatureMinimum;
+                    this.oldThresholdMax=res.data.data.temperatureMaximum
+                    // this.changeThreshold=false
+                   
+                    console.log(this.changeThreshold);
                 }).catch(err=>{
                     this.$message.error(err);
                 });
-                // this.$ajax({
-                //     method:'post',
-                //     url:baseURL+'/environment/airConditionerStatus',
-                // }).then((res)=>{
-                //     let status = res.data.data.STATUS;
-                //     if(status=='REFRIGERATION'){
-                //         this.refrigeration=true;
-                //         this.initStatus('refrigeration')
-                //     }else if(status=='HOT'){
-                //         this.heating=true;
-                //         this.initStatus('heating')
-                //     }else if(status=='DEHUMIDIFICATION'){
-                //         this.dehumidification=true;
-                //         this.initStatus('dehumidification')
-                //     }else if(status=='CLOSE'){
-                //         this.initStatus('close')
-                //     }
-                //     //"REFRIGERATION"'"HOT""DEHUMIDIFICATION"
-                //     // if(res.data){
-                //     //     this.closeFlag=true
-                //     // }else {
-                //     //     this.closeFlag=false
-                //     // }
-
-                // }).catch(err=>{
-                //     this.$message.error(err);
-                // });
+                
             }
         }
     }
