@@ -348,6 +348,10 @@
                 }, (pid, err) => {
                     pid ? this.pid = pid : this.$message.error(err)
                 });
+               //  let list=['190800150000000000000000','110000020000000000000000','110000050000000000000000']
+               // list.forEach(item=>{
+               //     this.getOutDataCopy([item]);
+               // })
             },
             deleteRow(row, index) {
                 _.omit(this.equipGroup, [row.model]);
@@ -477,7 +481,7 @@
                 this.$emit('sucesssInOrOut', true);
             },
             submit() {
-                console.log(this.submitFlag)
+                console.log(this.submitFlag);
                 if (this.submitFlag) {
                     if (this.typeOperational === '出库') {
                         this.$refs.transFerDialogApplyConfirm.show();
@@ -602,7 +606,7 @@
                     this.equipGroup = group;
                 } else {
                     for (let key in group) {
-                        if (this.equipGroup[key].length !== 0 && this.equipGroup[key] !== undefined) {
+                        if (this.equipGroup[key] !== undefined&&this.equipGroup[key].length !== 0) {
                             if (_.differenceBy(this.equipGroup[key], group[key], 'rfid').length != 0) {
                                 this.equipGroup[key] = [...this.equipGroup[key], ...group[key]]
                             } else {
@@ -636,7 +640,7 @@
                 } else {
                     let leftGroup = _.groupBy(JSON.parse(JSON.stringify(this.directObj.processVariables.outboundEquipsOrder.equips)), 'model');
                     _.forIn(leftGroup, (value, key) => {
-                        leftList.push({name: value[0].name, model: value[0].model, count: group[key].length})
+                        leftList.push({name: value[0].name, model: value[0].model, count: leftGroup[key].length})
                     })
                 }
                 leftList.forEach(item => {
@@ -667,12 +671,14 @@
                         flag = false;
                     }
                 });
+                this.rightList = rightLists;
                 if (this.typeOperational === '入库') {
-                    rightLists.forEach(item => {
-                        item.location = this.location
+                    this.rightList.forEach(item=>{
+                        if(item.location===undefined){
+                            item.location=this.location;
+                        }
                     })
                 }
-                this.rightList = rightLists;
                 this.submitFlag = flag//todo
             },
             indexMethod(index) {

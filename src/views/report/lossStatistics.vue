@@ -139,7 +139,7 @@
             },
             getAmountList() {
                 let params={};
-                _.forIn(this.table.params,(key,value)=>{
+                _.forIn(this.table.params,(value,key)=>{
                    if (value!==''){
                        this.$set(params,key,value)
                    }
