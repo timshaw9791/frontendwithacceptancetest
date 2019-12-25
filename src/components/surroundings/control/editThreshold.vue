@@ -26,6 +26,27 @@
                         <svg-icon icon-class="编辑" style="width: 18px;height: 18px;margin-left: 24px"></svg-icon>
                     </div>
                 </div>
+                <div class="airConditioning-bottom">
+                    <span v-text="'欢迎词轮播时间：'" ></span>
+                    <input class="input" :style="smokeFlag?'border:none;':''" v-model="lunbotime" :disabled="timeFlag"/><span>s</span>
+                    <div @click="toTime">
+                        <svg-icon icon-class="编辑" style="width: 18px;height: 18px;margin-left: 24px"></svg-icon>
+                    </div>
+                </div>
+                <div class="lunboBox">
+                    <span v-text="'欢迎词: '" style="width:100px;"></span>
+                    <el-input
+                            :autosize="{ minRows: 1, maxRows: 5}"
+                            type="textarea"
+                            placeholder="请输入内容"
+                            v-model="lunboContent"
+                            :disabled="lunboFlag"
+                            >
+                    </el-input>
+                    <div @click="toTime">
+                        <svg-icon icon-class="编辑" style="width: 18px;height: 18px;margin-left: 24px"></svg-icon>
+                    </div>
+                </div>
                     <span class="tip" v-if="num">请输入-100~100以内的数值</span>
                     <span class="tip" v-if="order">请从低到高输入温度</span>
                 <div class="airConditioning-button" v-if="!flag">
@@ -37,6 +58,10 @@
                 <div class="airConditioning-button" v-if="!humidityFlag">
                     <span v-text="'取消'" @click="cancel('humidity')" class="cancel"></span><span v-text="'提交'" @click="submission('humidity')" class="submission"></span>
                 </div>
+                <div class="airConditioning-button" v-if="!timeFlag">
+                    <span v-text="'取消'" @click="cancel('时间')" class="cancel"></span><span v-text="'提交'" @click="submission('时间')" class="submission"></span>
+                </div>
+                
                 
             </div>
         </dialogs>
@@ -48,7 +73,7 @@
     import surroundingCard from '../surroundingCard'
     import switchControl from './controlComponents/switchControl'
     import {baseURL} from "../../../api/config";
-     import {setSmokeThreshold } from "api/surroundings"
+     import {setSmokeThreshold,Salutatory } from "api/surroundings"
     export default {
         name: "airConditioning",
         components: {
@@ -88,12 +113,16 @@
                 heating:false,
                 dehumidification:false,
                 flag:true,
+                timeFlag:true,
+                lunboFlag:true,
                 smokeFlag:true,
+                lunbotime:0,
                 humidityFlag:true,
                 threshold:{
                     max:'',
                     min:''
                 },
+                lunboContent:'',
                 humidityThreshold:0,
                 smokeThreshold:0
             }
@@ -168,6 +197,13 @@
             toSetSmokeThreshold(){
                 this.smokeFlag=!this.smokeFlag
             },
+            toTime(){
+            this.timeFlag=!this.timeFlag
+            this.lunboFlag=!this.lunboFlag
+            },
+            toTextArea(){
+                this.lunboFlag=!this.lunboFlag
+            },
             cancel(title){
                 if(title=='温度')
                 {
@@ -181,6 +217,12 @@
                 {
                     this.humidityFlag=!this.humidityFlag
                 }
+                if(title=='时间')
+                {
+                    this.timeFlag=!this.timeFlag
+                    this.lunboFlag=!this.lunboFlag
+                }
+                
             },
             controlAir(data){
                 this.$ajax({
@@ -238,6 +280,21 @@
                     params:{max:this.humidityThreshold}
                 }).then((res)=>{
                     this.humidityFlag=!this.humidityFlag;
+                    this.$message.success('提交成功');
+                }).catch(err=>{
+                    this.$message.error(err);
+                });
+                }
+                if(data=="时间"||data=="欢迎词")
+                {
+                    let postData=[]
+                   postData[0]=this.lunboContent
+                    Salutatory({
+                        time:this.lunbotime,
+                        words:postData
+                    }).then((res)=>{
+                    this.timeFlag=!this.timeFlag
+                    this.lunboFlag=!this.lunboFlag
                     this.$message.success('提交成功');
                 }).catch(err=>{
                     this.$message.error(err);
@@ -343,6 +400,13 @@
         align-items: center;
         justify-content: center;
     }
+    .airConditioning-body .lunboBox{
+
+        margin-top: 29px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
     .airConditioning-bottom .input{
         width: 41px;
         outline:none;
@@ -368,6 +432,7 @@
         align-items: center;
         justify-content: center;
         color: #707070;
+        cursor: pointer;
     }
     .airConditioning-button .submission{
         width:70px;
@@ -381,6 +446,7 @@
         align-items: center;
         justify-content: center;
         margin-left: 27px;
+        cursor: pointer;
     }
     .tip{
         color: red;
