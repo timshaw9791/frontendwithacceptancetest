@@ -264,6 +264,9 @@
 </style>
 
 <style lang="scss" scoped>
+    .app-main {
+        box-shadow: none !important;
+    }
 
     /deep/ .hover-row {
         cursor: pointer;

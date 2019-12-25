@@ -561,7 +561,7 @@
                     id: temp.id,
                     image: `${imgBaseUrl}${temp.image}`
                 })
-                this.tempImage = temp.image
+                this.tempImage = temp.image || null
                 // 硬件开启 hardwareOpen
                 if(!this.hardwareOpen) {
                     start("java -jar scan.jar", (data) => {
