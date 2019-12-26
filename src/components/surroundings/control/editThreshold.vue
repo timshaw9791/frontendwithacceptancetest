@@ -19,7 +19,7 @@
                 </div>
                 <div class="airConditioning-bottom">
                     <span v-text="'欢迎词轮播时间：'" ></span>
-                    <input class="input" style="border:1px solid #DCDFE6" v-model="lunbotime" /><span>s</span>
+                    <input class="input" style="border:1px solid #DCDFE6" v-model="lunbotime" /><span> s</span>
                 </div>
                 <div class="lunboBox">
                     <span v-text="'欢迎词: '" style="width:100px;"></span>
@@ -204,7 +204,7 @@
                     }).then((res)=>{
                         this.oldThresholdMin=this.thresholdMin
                         this.oldThresholdMax=this.thresholdMax
-                        this.$message.success('设置成功');
+                        this.$message.success('温度设置成功');
                     }).catch(err=>{
                         this.$message.error(err);
                     });
@@ -214,7 +214,7 @@
                 {
                 setSmokeThreshold({max: this.smokeThreshold}).then(res => {
                     this.oldSmoke=this.smokeThreshold
-                        this.$message.success("设置成功")
+                        this.$message.success("烟雾浓度设置成功")
                     })
                   
                 }
@@ -227,7 +227,7 @@
                     params:{max:this.humidityThreshold}
                 }).then((res)=>{
                     this.oldDehumi=this.humidityThreshold
-                    this.$message.success('提交成功');
+                    this.$message.success('湿度设置成功');
                 }).catch(err=>{
                     this.$message.error(err);
                 });
@@ -243,7 +243,7 @@
                     }).then((res)=>{
                  this.oldTime=this.lunbotime
                  this.oldContent=this.lunboContent
-                    this.$message.success('提交成功');
+                 this.$message.success('轮播词设置成功');
                 }).catch(err=>{
                     this.$message.error(err);
                 });
@@ -300,7 +300,6 @@
                     this.oldThresholdMax=res.data.data.temperatureMaximum
                     // this.changeThreshold=false
                    
-                    console.log(this.changeThreshold);
                 }).catch(err=>{
                     this.$message.error(err);
                 });
@@ -335,6 +334,7 @@
         box-shadow:0px 3px 6px rgba(0,0,0,0.16);
     }
     .airConditioning-body .airConditioning-bottom{
+        
         height: 22px;
         margin-top: 29px;
         display: flex;
