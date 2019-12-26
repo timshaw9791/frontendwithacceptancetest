@@ -487,12 +487,12 @@
             submit() {
                 if(this.rightList.length!==0){
                     if (this.submitFlag) {
-                        // if (this.typeOperational === '出库') {
-                        //     this.$refs.transFerDialogApplyConfirm.show();
-                        //     // this.transferEquipInOrOut('NORMAL')
-                        // } else {
-                        //     this.transferEquipInOrOut('NORMAL')
-                        // }
+                        if (this.typeOperational === '出库') {
+                            this.$refs.transFerDialogApplyConfirm.show();
+                            // this.transferEquipInOrOut('NORMAL')
+                        } else {
+                            this.transferEquipInOrOut('NORMAL')
+                        }
                     } else {
                         this.$refs.transFerDialogTips.show();
                     }

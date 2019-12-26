@@ -67,7 +67,6 @@
                     type: 'DIRECT_ALLOT',
                     leader: {},
                     equips: [{equipArg: {}, equip: {}}],
-
                     inboundOrganUnit: {},
                     inboundWarehouse: {},
                     inboundUser: {},
@@ -122,6 +121,7 @@
                     inboundUser: this.form.inboundUser,
                     outboundOrganUnit: outboundOrganUnit
                 };
+                apply.applicant.organUnitId=this.applyObject.house.organUnitId;
                 if (this.taskId){
                     directRefill(apply, this.form.leader.id, this.taskId).then(res => {
                         this.$message.success('操作成功');

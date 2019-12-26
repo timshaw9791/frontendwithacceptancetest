@@ -116,6 +116,7 @@
                     inboundWarehouse: inboundWarehouse,
                     outboundOrganUnit: this.form.outboundOrganUnit
                 };
+                apply.applicant.organUnitId=this.applyObject.house.organUnitId;
                 if (this.taskId){
                     transferRefill(apply, this.form.leader.id, this.taskId).then(res => {
                         this.$message.success('操作成功');
