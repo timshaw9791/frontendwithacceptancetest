@@ -47,6 +47,7 @@
             </el-table>
         </div>
         <tips ref="deleteEquipArg" :contentText="'您确定要解除装备类别绑定吗'" @confirm="deleteEquipArgId"></tips>
+        <tips ref="deleteCateage" :contentText="'您确定要删除此小类吗'" @confirm="deleteCateage"></tips>
     </div>
 </template>
 <script>
@@ -59,6 +60,7 @@
         data() {
             return {
                 equipArg: {},
+                deleteRow:{}
             }
         },
         props: {
@@ -83,15 +85,20 @@
             },
             deleteButton(type, row) {
                 if (type === 'category') {
-                    deleteCategory(row.category.id).then(res => {
-                        this.$emit('updateCategory', {type:'delete', id:row.category.id});
-                    }).catch(err=>{
-                        this.$message.error(err.response.data.message);
-                    })
+                    this.deleteRow=row;
+                    this.$refs.deleteCateage.show();
+
                 } else {
                     this.equipArg = row.equipArg;
                     this.$refs.deleteEquipArg.show();
                 }
+            },
+            deleteCateage(){
+                deleteCategory(this.deleteRow.category.id).then(res => {
+                    this.$emit('updateCategory', {type:'delete', id:row.category.id});
+                }).catch(err=>{
+                    this.$message.error(err.response.data.message);
+                })
             },
             resultCheckBox(){
                 this.$refs.unallocated.clearSelection();
