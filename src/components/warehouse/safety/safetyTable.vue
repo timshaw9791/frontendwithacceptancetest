@@ -87,7 +87,6 @@
                 if (type === 'category') {
                     this.deleteRow=row;
                     this.$refs.deleteCateage.show();
-
                 } else {
                     this.equipArg = row.equipArg;
                     this.$refs.deleteEquipArg.show();
@@ -95,7 +94,8 @@
             },
             deleteCateage(){
                 deleteCategory(this.deleteRow.category.id).then(res => {
-                    this.$emit('updateCategory', {type:'delete', id:row.category.id});
+                    this.$emit('updateCategory', {type:'delete', id:this.deleteRow.category.id});
+                    this.$refs.deleteCateage.hide();
                 }).catch(err=>{
                     this.$message.error(err.response.data.message);
                 })
