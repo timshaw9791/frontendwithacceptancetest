@@ -59,7 +59,7 @@
     import textButton from 'components/base/textButton'
     import {applyProcessMixin} from "common/js/applyProcessMixin";
     import {scrapStarts,scrapRefill,equipById,equipMaintainScrapByProcess} from "api/process"
-    import {start, delFile, handheld, killProcess,modifyFileName} from 'common/js/rfidReader'
+    import {start, delFile, handheld, killProcess,modifyFileName,clearRfid} from 'common/js/rfidReader'
     export default {
         name: "applyScrap",
         components: {
@@ -115,15 +115,16 @@
                         this.handheldMachine();
                     } else if (newVal === 'RFID读写器') {
                         this.getListUsb();
+                    }else if(newVal==='手持机'&&oldVal==='RFID读写器'){
+                        this.end(this.pid)
                     }
                 }
             }
         },
         methods: {
             clearEquip(){
-                this.end(this.pid);
+                clearRfid();
                 this.$set(this.form,'equips',[]);
-                this.getListUsb();
             },
             end(pid) {
                 if (pid) {killProcess(this.pid)}
@@ -199,7 +200,7 @@
                 // this.getEquipByRfid(['190800150000000000000000'])
             },
             getListUsb() {//todo
-                start("java -jar scan.jar", (data) => {
+                start("java -jar scanning.jar", (data) => {
                     this.getEquipByRfid([data]);
                 }, (fail) => {
                     this.$message.error(fail)
@@ -210,19 +211,20 @@
             deleteFile() {
                 delFile(newFile_path, () => {})
             },
-            end(pid) {
-                if (pid) {
-                    //spawn("taskkill", ["/PID", pid, "/T", "/F"]);
-                    killProcess(this.pid);
-                    this.index = 0;
-                }
-            },
+            // end(pid) {
+            //     if (pid) {
+            //         //spawn("taskkill", ["/PID", pid, "/T", "/F"]);
+            //         killProcess(this.pid);
+            //         this.index = 0;
+            //     }
+            // },
             show() {
                 this.$set(this.form,'equips',[]);
                 this.$set(this.form,'reason','');
                 this.$refs.applyScrap.show()
             },
             cancelDb() {
+                killProcess(this.pid);
                 this.$refs.applyScrap.cancel();
             },
         },
