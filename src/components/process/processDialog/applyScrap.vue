@@ -202,7 +202,7 @@
                 // this.getEquipByRfid(['190800150000000000000000'])
             },
             getListUsb() {//todo
-                start("java -jar scanning.jar", (data) => {
+                start("java -jar scan.jar", (data) => {
                     this.getEquipByRfid([data]);
                 }, (fail) => {
                     this.$message.error(fail)
