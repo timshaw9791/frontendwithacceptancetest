@@ -39,10 +39,10 @@
         data(){
           return{
               filterText: '',
+              clickData:{},
               tree: {
                   treeData: [],
                   copyTreeData:[],
-                  currentNode: {},
                   props: {
                       children: 'categorySet',
                       label: 'name'
@@ -82,9 +82,12 @@
                 this.filterText = data
             },
             handleNodeClick(data) {
-                this.$set(data, 'click', !data.click);
-                this.$emit('clickNode',data);
-                this.getColor(data);
+                if(this.clickData===data){}else {
+                    this.$set(data, 'click', !data.click);
+                    this.clickData=data;
+                    this.$emit('clickNode',data);
+                    this.getColor(data);
+                }
 
             },
             getColor(data) {
