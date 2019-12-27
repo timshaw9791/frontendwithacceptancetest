@@ -103,41 +103,46 @@
                 this.mixiGetLeader(params);
             },
             apply() {
-                let equips = [];
-                this.form.equips.forEach(item => {
-                    if (item.equip.name != undefined) {
-                        equips.push(item.equip);
+                let flag=true;
+                if(flag){
+                    let equips = [];
+                    this.form.equips.forEach(item => {
+                        if (item.equip.name != undefined) {
+                            equips.push(item.equip);
+                        }
+                    });
+                    let outboundOrganUnit = {
+                        id: this.applyObject.house.organUnitId,
+                        name: this.applyObject.house.organUnitName
+                    };
+                    let apply = {
+                        applicant: this.form.applicant,
+                        equips: equips,
+                        inboundOrganUnit: this.form.inboundOrganUnit,
+                        inboundWarehouse: this.form.inboundWarehouse,
+                        inboundUser: this.form.inboundUser,
+                        outboundOrganUnit: outboundOrganUnit
+                    };
+                    apply.applicant.organUnitId=this.applyObject.house.organUnitId;
+                    if (this.taskId){
+                        directRefill(apply, this.form.leader.id, this.taskId).then(res => {
+                            this.$message.success('操作成功');
+                            this.$emit('applySucess',true);
+                            this.cancelDb()
+                        }).catch(err=>{
+                            this.$message.error(err.response.data.message);
+                        })
+                    }else {
+                        directStarts(apply, this.form.leader.id, this.mixinObject.processConfigId).then(res => {
+                            this.$message.success('操作成功');
+                            this.$emit('applySucess',true);
+                            this.cancelDb()
+                        }).catch(err=>{
+                            this.$message.error(err.response.data.message);
+                        })
                     }
-                });
-                let outboundOrganUnit = {
-                    id: this.applyObject.house.organUnitId,
-                    name: this.applyObject.house.organUnitName
-                };
-                let apply = {
-                    applicant: this.form.applicant,
-                    equips: equips,
-                    inboundOrganUnit: this.form.inboundOrganUnit,
-                    inboundWarehouse: this.form.inboundWarehouse,
-                    inboundUser: this.form.inboundUser,
-                    outboundOrganUnit: outboundOrganUnit
-                };
-                apply.applicant.organUnitId=this.applyObject.house.organUnitId;
-                if (this.taskId){
-                    directRefill(apply, this.form.leader.id, this.taskId).then(res => {
-                        this.$message.success('操作成功');
-                        this.$emit('applySucess',true);
-                        this.cancelDb()
-                    }).catch(err=>{
-                        this.$message.error(err.response.data.message);
-                    })
                 }else {
-                    directStarts(apply, this.form.leader.id, this.mixinObject.processConfigId).then(res => {
-                        this.$message.success('操作成功');
-                        this.$emit('applySucess',true);
-                        this.cancelDb()
-                    }).catch(err=>{
-                        this.$message.error(err.response.data.message);
-                    })
+
                 }
             },
             selectLeader(data) {

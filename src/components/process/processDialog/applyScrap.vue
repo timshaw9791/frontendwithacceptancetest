@@ -59,7 +59,7 @@
     import textButton from 'components/base/textButton'
     import {applyProcessMixin} from "common/js/applyProcessMixin";
     import {scrapStarts,scrapRefill,equipById,equipMaintainScrapByProcess} from "api/process"
-    import {start, delFile, handheld, killProcess,modifyFileName,clearRfid} from 'common/js/rfidReader'
+    import {start, delFile, handheld, killProcess,modifyFileName} from 'common/js/rfidReader'
     export default {
         name: "applyScrap",
         components: {
