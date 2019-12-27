@@ -3,11 +3,11 @@
         <my-header :title="'我的流程'" :searchFlag="false" :haveBlack="!status.tableOrUniversalFlag" @h_black="black"></my-header>
         <div class="agency-matters_action_box" data-test="action_box" v-if="status.tableOrUniversalFlag">
             <text-button :iconSize="20" :iconClass="'加号'" :buttonName="'申请流程'" @click="apply"></text-button>
-            <div class="action_right_box">
-                <div style="width: 1.6875rem">
-                    <p_search @search="getSearch" :placeholder="'标题'"></p_search>
-                </div>
-            </div>
+            <!--<div class="action_right_box">-->
+                <!--<div style="width: 1.6875rem">-->
+                    <!--<p_search @search="getSearch" :placeholder="'标题'"></p_search>-->
+                <!--</div>-->
+            <!--</div>-->
         </div>
         <div class="agency-matters_main_box" data-test="main_box">
             <div class="main_table_box" data-test="table_box">
