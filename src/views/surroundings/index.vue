@@ -141,7 +141,7 @@
                 this.initTime=data.initTime;
                 this.region=data.region;
                 this.ticksNumber=(this.threshold.max-this.threshold.min)/5;
-                this.characterType='°';
+                this.characterType='°C';
                 this.flag=false;
                 this.isVideo=false;
                 this.isLineChart=true;
