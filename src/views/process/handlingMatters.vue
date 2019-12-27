@@ -37,7 +37,7 @@
                     labelList: [
                         {lable: '请求标题', field: 'name'},
                         {lable: '工作流', field: 'operator', filter: this.filterProcessType},
-                        {lable: '创建时间', field: 'startTime', filter: (ns) => this.$filterTime(ns.startTime)},
+                        {lable: '申请时间', field: 'startTime', filter: (ns) => this.$filterTime(ns.startTime)},
                         {lable: '当前节点', field: 'currentTask.name'},
                         {lable: '未操作者', field: 'currentTask.assigneeName'},
                     ],
