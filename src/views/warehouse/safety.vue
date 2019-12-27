@@ -227,8 +227,10 @@
                 });
             },
             handleNodeClick(data, node) {
-                this.$set(data, 'click', !data.click);
-                this.tree.currentNode = data;
+                if(this.tree.currentNode===data){}else {
+                    this.$set(data, 'click', !data.click);
+                    this.tree.currentNode = data;
+                }
                 this.reSultStatus();
                 this.status.tableFlag=false;
                 if(data.name!=='未分类装备'){
@@ -288,7 +290,7 @@
                 } else if (type === 'modify') {
                     if(this.table.tableType==='unallocated'){
                         this.title.titleType = 'unallocated';
-                        this.title.genreTitle ='装备分配';
+                        this.title.genreTitle ='装备分类';
                         this.$refs.genreOrCategory.show()
                     }else{
                         let category = [];
