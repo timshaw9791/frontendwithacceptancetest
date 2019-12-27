@@ -54,7 +54,7 @@
                     search:'',
                     tableAction:{
                         label:'操作',
-                        button:[{name:'视频',type:'primary'}]
+                        button:[{name:'监控',type:'primary'}]
                     },
                 },
                 time:'',
