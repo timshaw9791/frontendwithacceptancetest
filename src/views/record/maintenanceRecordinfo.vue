@@ -141,6 +141,10 @@
                                         &&this.list[i].equipInfo.surface==fir[j].euqioList[m].surface){
                                             console.log("进入第二层if")
                                             fir[j].count+=1
+                                            console.log("fir[j].euqioList[m].count",fir[j].euqioList[m].count);
+                                            if(m==0){
+                                                fir[j].euqioList[m].count=0
+                                            }
                                             fir[j].euqioList[m].count+=1
                                     }else{
                                         let a ={
@@ -150,6 +154,7 @@
                                             surface:this.list[i].equipInfo.surface,
                                         }
                                         fir[j].count+=1
+                                        a.count = 1
                                         fir[j].euqioList.push(a)
                                     }
                                 }
@@ -172,6 +177,7 @@
                                         number:this.list[i].equipInfo.number,
                                         section:this.list[i].equipInfo.section,
                                         surface:this.list[i].equipInfo.surface,
+                                        count:1
                                     }],
                                     count:1
                                 }
