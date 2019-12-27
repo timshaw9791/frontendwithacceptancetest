@@ -20,7 +20,7 @@
         <div class="surroundings-body" v-show="!flag">
             <s_video :videoSrc="videoSrc" v-if="isVideo"></s_video>
             <s_line_chart v-show="isLineChart" :chartFlag="chartFlag" :svgData="svgData" :threshold="threshold" :initTime="initTime" :region="region" :ticksNumber="ticksNumber"
-                          :characterType="characterType" :timeType="timeType" @changeDate="changeDate"></s_line_chart>
+                          :characterType="characterType" :timeType="timeType" @changeDate="changeDate" ref="line_chart"></s_line_chart>
         </div>
     </div>
 </template>
@@ -96,6 +96,7 @@
                 this.flag=!this.flag;
                 this.isVideo=false;
                 this.isLineChart=false;
+                this.$refs.line_chart.toZero();
                 if (haveVideo){
 
                 }

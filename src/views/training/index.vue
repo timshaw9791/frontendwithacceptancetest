@@ -78,10 +78,11 @@
                 </div>
                 <div class="up_box">
                     <span>视频限制{{equipModel.video?equipModel.video.length:0}}/3</span>
-                    <span style="margin-left:2.0625rem;">文档限制{{equipModel.pdf?equipModel.pdf.length:0}}/3</span>
-                   
+                    <span style="color:red;margin-left:3px">格式限制：mp4</span>
+                    <span style="margin-left:1.0625rem;">文档限制{{equipModel.pdf?equipModel.pdf.length:0}}/3</span>
+                    <span style="color:red;margin-left:3px">格式限制：pdf</span>
                     <div @click="videoUp" class="up-box" >
-                        <input type="file" ref="fileVideo" @change="videoFileChange" data-test="upFile" >
+                        <input type="file" ref="fileVideo" @change="videoFileChange" data-test="upFile" accept="video/*,.pdf">
                         <span>上传</span>
                     </div>
 
@@ -456,6 +457,7 @@ export default {
                 let files = this.$refs.fileVideo.files[0];
                 var fileSize = (files.size / 1024).toFixed(0)
                 var size=40960
+                
                 if(fileSize<=size||files.type=='video/mp4')
                 {
                 let a=files.name.lastIndexOf(".");
