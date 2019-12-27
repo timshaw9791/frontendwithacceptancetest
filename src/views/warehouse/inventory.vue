@@ -91,15 +91,15 @@
         methods: {
             toInventory() {
                 this.inventoryObj.rflist = [];
-                modifyFileName('in_house.json')
-                handheld((err) => this.$message.error(err)).then(data => {
-                    this.getInventoryRf(JSON.parse(data));
-                });
+                // modifyFileName('in_house.json')
+                // handheld((err) => this.$message.error(err)).then(data => {
+                //     this.getInventoryRf(JSON.parse(data));
+                // });
 
                 // this.getInventoryRf();
                 // this.getInventoryRfCopy();
                 //todo 记得合并前换回来
-                // this.getInventoryRf({"endTime":1574651680308,"rfid":["050001D3"],"size":1,"startTime":1574651671133});
+                this.getInventoryRf({"endTime":1574651680308,"rfid":["110000060000000000000000"],"size":1,"startTime":1574651671133});
             },
             getNote(data) {
                 if (Object.keys(this.inventoryObj.inventoryData.inventory).length != 0) {
@@ -132,6 +132,8 @@
                                 console.log("this.leaderList",this.leaderList)
                             })
                         })
+                        console.log("this.inventoryObj.inventoryData.inventoryItems",this.inventoryObj.inventoryData.inventoryItems.length!=0);
+                        console.log("this.inventoryObj.inventoryData.inventoryItems",this.inventoryObj.inventoryData.inventoryItems);
                         let listB = JSON.parse(JSON.stringify(this.inventoryObj.inventoryData.inventoryItems))
                         listB.forEach(item=>{
                             let a ={
@@ -145,7 +147,13 @@
                         })
                         console.log("this.scrapRfidlist",this.scrapRfidlist)
                         console.log("this.scrapList.equips",this.scrapList.equips)
-                        this.$refs.scrap_dialog.show()
+                        if(this.inventoryObj.inventoryData.inventoryItems.length!=0){
+                            this.$refs.scrap_dialog.show()
+                        }
+                        else{
+                            this.handleSubmission2()
+                        }
+                        
                     }
                 }
                 
