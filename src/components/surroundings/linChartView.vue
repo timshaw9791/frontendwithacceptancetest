@@ -89,12 +89,15 @@
         },
         created(){
             this.init();
+            // this.date=''
+            console.log("22222");
         },
         methods:{
             changeDate(date){
                 this.$emit('changeDate',date);
             },
             init(){
+                console.log(this.date);
                if(this.timeType=='hour'){
                    let date = new Date();
                    let seperator1 = "-";
@@ -110,6 +113,9 @@
                    let currentdate = year + seperator1 + month + seperator1 + strDate;
                    this.nowTime =currentdate;
                }
+            },
+            toZero(){
+                this.date=''
             }
         }
 
