@@ -111,6 +111,7 @@
                 deep:true,
                 handler(newVal, oldVal) {
                     if (newVal === '手持机') {
+                        this.form.equips=[];
                         this.handheldMachine();
                     } else if (newVal === 'RFID读写器') {
                         this.getListUsb();
@@ -181,9 +182,7 @@
             },
             getEquipByRfid(data){
                data.forEach(item=>{
-                   this.form.equips=[];
                    equipById(item).then(res=>{
-                       console.log(res);
                        this.form.equips.push(res.content[0]);
                    }).catch(err=>{
                        this.$message.error(err.response.data.message);
