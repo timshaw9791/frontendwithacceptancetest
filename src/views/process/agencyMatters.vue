@@ -1,16 +1,17 @@
 <template>
     <div class="agency-matters">
         <my-header :title="'待办事宜'" :searchFlag="false" :haveBlack="!status.tableOrUniversalFlag" @h_black="black"></my-header>
-        <!--<div class="agency-matters_action_box" data-test="action_box" v-if="status.tableOrUniversalFlag">-->
-            <!--<div class="action_right_box">-->
-                <!--<div style="width: 1.6875rem">-->
-                    <!--<p_search @search="getSearch" :placeholder="'标题/工作流'"></p_search>-->
-                <!--</div>-->
-            <!--</div>-->
-        <!--</div>-->
+        <div class="agency-matters_action_box" data-test="action_box" v-if="status.tableOrUniversalFlag">
+            <div style="width: 10px;height: 10px"></div>
+            <div  class="action_right_box">
+                <div style="width: 1.6875rem">
+                    <p_search @search="getSearch" :placeholder="'标题'"></p_search>
+                </div>
+            </div>
+        </div>
         <div class="agency-matters_main_box" data-test="main_box">
             <div class="main_table_box" data-test="table_box">
-                <div style="padding: 0px 0.09375rem"><p_table ref="processTable" :table="table" :typeUrl="'process'" :otherParams="true" @clickTable="clickTable" v-if="status.tableOrUniversalFlag"></p_table></div>
+                <div style="padding: 0px 0.09375rem"><p_table ref="processTable" :table="table" :typeUrl="'process'" :otherParams="true" @clickTable="clickTable" v-show="status.tableOrUniversalFlag"></p_table></div>
                 <p_universal @back="black" :url="universal.url" :title="universal.title" :universalObj="universal.universalObj" v-if="!status.tableOrUniversalFlag"></p_universal>
             </div>
         </div>
@@ -57,14 +58,21 @@
             }
         },
         methods:{
-            black(){
+            black(data){
                 this.status.tableOrUniversalFlag=!this.status.tableOrUniversalFlag;
+                if(data==='refetch'){
+                   this.refetch();
+                }
+            },
+            refetch(){
+                if(this.$refs.processTable.paginator.page===1){
+                    this.$refs.processTable.refetch()
+                }else {
+                    this.$refs.processTable.paginator.page=1
+                }
             },
             apply(){
                 this.$refs.selectApply.show()
-            },
-            sucessApply(){
-                this.$refs.processTable.refetch()
             },
             filterProcessType(ns){
                 switch (ns.processVariables.processConfig.type) {

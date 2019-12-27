@@ -349,11 +349,9 @@
                 }, (pid, err) => {
                     pid ? this.pid = pid : this.$message.error(err)
                 });
-               //  let list=['12345678','110000050000000000000000'];
+               //  let list=['110000010000000000000000','110000040000000000000000'];
                // list.forEach(item=>{
-               //     setTimeout(()=>{
-               //         this.getOutDataCopy([item]);
-               //     },10000)
+               //     this.getOutDataCopy([item]);
                // })
             },
             deleteRow(row, index) {
@@ -639,15 +637,14 @@
             },
             getTrueOrFalse(group) {
                 let flag = true, leftList = [], rightLists = [];
+                this.missEquip=[];
                 if (this.typeOperational === '出库') {
                     leftList = this.directObj.processVariables.applyOrder.equips;
                     leftList.forEach(item => {
                         if (group[item.model]) {
                             rightLists.push({name: item.name, model: item.model, count: group[item.model].length});
                             let index = _.findIndex(rightLists, ['model', item.model]);
-                            if (rightLists[index].count === item.count) {
-                                flag = true
-                            } else {
+                            if (rightLists[index].count === item.count) {} else {
                                 let miss = JSON.parse(JSON.stringify(rightLists[index]));
                                 miss.count = rightLists[index].count - item.count;
                                 this.missEquip.push(miss);
@@ -670,7 +667,6 @@
                         }
                     });
                 } else {
-                    this.missEquip=[];
                     let leftGroup = _.groupBy(JSON.parse(JSON.stringify(this.directObj.processVariables.outboundEquipsOrder.equips)), 'model');
                     _.forIn(leftGroup, (value, key) => {
                         leftList.push({name: value[0].name, model: value[0].model, count: leftGroup[key].length})
@@ -693,7 +689,7 @@
                         let model=item.model;
                         let index=_.findIndex(rightLists, ['model', model]);
                         if (index===-1) {
-                            this.missEquip.push({name: item.name, model: item.model, count: item.count});
+                            this.missEquip.push({name: item.name, model: item.model, count: -item.count});
                             flag = false;
                         }else {
                             if(rightLists[index].allCount===item.count){}else {

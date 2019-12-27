@@ -71,7 +71,7 @@
                 categroyList: [],
                 select: {
                     selectGenre: '',
-                    selectCategroy: '',
+                    selectCategroy: ''
                 }
             }
         },
@@ -113,6 +113,9 @@
         },
         methods: {
             show() {
+                this.$set(this,'genre','');
+                this.$set(this,'value','');
+                this.$set(this,'select',{selectGenre: '', selectCategroy: ''});
                 this.$refs.genreOrCategory.show()
             },
             result() {

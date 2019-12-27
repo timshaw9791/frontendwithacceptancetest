@@ -5,7 +5,7 @@
             <text-button :iconSize="20" :iconClass="'加号'" :buttonName="'申请流程'" @click="apply"></text-button>
             <div class="action_right_box">
                 <div style="width: 1.6875rem">
-                    <p_search @search="getSearch" :placeholder="'标题/工作流'"></p_search>
+                    <p_search @search="getSearch" :placeholder="'标题'"></p_search>
                 </div>
             </div>
         </div>
@@ -38,7 +38,7 @@
                     labelList: [
                         {lable: '请求标题', field: 'name'},
                         {lable: '工作流', field: 'operator', filter: this.filterProcessType},
-                        {lable: '创建时间', field: 'startTime', filter: (ns) => this.$filterTime(ns.startTime)},
+                        {lable: '申请时间', field: 'startTime', filter: (ns) => this.$filterTime(ns.startTime)},
                         {lable: '当前节点', field: 'currentTask.name'},
                         {lable: '未操作者', field: 'currentTask.assigneeName'},
                     ],
@@ -62,14 +62,24 @@
             }
         },
         methods:{
-            black(){
+            black(data){
                 this.status.tableOrUniversalFlag=!this.status.tableOrUniversalFlag;
+                if(data==='refetch'){
+                    this.refetch();
+                }
             },
             apply(){
                 this.$refs.selectApply.show()
             },
             sucessApply(){
-                this.$refs.processTable.refetch()
+                this.refetch();
+            },
+            refetch(){
+                if(this.$refs.processTable.paginator.page===1){
+                    this.$refs.processTable.refetch()
+                }else {
+                    this.$refs.processTable.paginator.page=1
+                }
             },
             filterProcessType(ns){
                 switch (ns.processDefinitionKey) {

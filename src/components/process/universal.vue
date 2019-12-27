@@ -172,7 +172,7 @@
                 let url=`${this.url.inHouse}?taskId=${this.activeTask.id}`;
                 equipsOutInbound(url,data).then(res=>{
                     this.$message.success('操作成功');
-                    this.$emit('back',true)
+                    this.$emit('back','refetch')
                 }).catch(err=>{
                     this.$message.error(err.response.data.message);
                 })
@@ -186,7 +186,7 @@
                 let url=`${this.url.outHouse}?taskId=${this.activeTask.id}`;
                 equipsOutInbound(url,data).then(res=>{
                    this.$message.success('操作成功');
-                   this.$emit('back',true)
+                   this.$emit('back','refetch')
                 }).catch(err=>{
                     this.$message.error(err.response.data.message);
                 })
@@ -206,7 +206,7 @@
                 }
             },
             sucessRefill(){
-                this.$emit('back',true)
+                this.$emit('back','refetch')
             },
             toReview() {
                 this.$refs.review.show();
@@ -248,7 +248,7 @@
             closeApply(){
                 workflow(this.universalObj.id,JSON.parse(localStorage.getItem("user")).id).then(res=>{
                     this.$message.success('操作成功');
-                    this.$emit('back',true)
+                    this.$emit('back','refetch')
                 }).catch(err=>{
                     this.$message.error(err.response.data.message);
                 })

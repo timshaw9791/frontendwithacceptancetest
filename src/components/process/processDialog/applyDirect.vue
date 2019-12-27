@@ -103,42 +103,48 @@
                 this.mixiGetLeader(params);
             },
             apply() {
-                let equips = [];
+                let equips = [],index;
                 this.form.equips.forEach(item => {
                     if (item.equip.name != undefined) {
                         equips.push(item.equip);
                     }
                 });
-                let outboundOrganUnit = {
-                    id: this.applyObject.house.organUnitId,
-                    name: this.applyObject.house.organUnitName
-                };
-                let apply = {
-                    applicant: this.form.applicant,
-                    equips: equips,
-                    inboundOrganUnit: this.form.inboundOrganUnit,
-                    inboundWarehouse: this.form.inboundWarehouse,
-                    inboundUser: this.form.inboundUser,
-                    outboundOrganUnit: outboundOrganUnit
-                };
-                apply.applicant.organUnitId=this.applyObject.house.organUnitId;
-                if (this.taskId){
-                    directRefill(apply, this.form.leader.id, this.taskId).then(res => {
-                        this.$message.success('操作成功');
-                        this.$emit('applySucess',true);
-                        this.cancelDb()
-                    }).catch(err=>{
-                        this.$message.error(err.response.data.message);
-                    })
+                index=_.findIndex(equips,(o)=>{ return o.count === '0'||o.count===''; })
+                if(index===-1){
+                    let outboundOrganUnit = {
+                        id: this.applyObject.house.organUnitId,
+                        name: this.applyObject.house.organUnitName
+                    };
+                    let apply = {
+                        applicant: this.form.applicant,
+                        equips: equips,
+                        inboundOrganUnit: this.form.inboundOrganUnit,
+                        inboundWarehouse: this.form.inboundWarehouse,
+                        inboundUser: this.form.inboundUser,
+                        outboundOrganUnit: outboundOrganUnit
+                    };
+                    apply.applicant.organUnitId=this.applyObject.house.organUnitId;
+                    if (this.taskId){
+                        directRefill(apply, this.form.leader.id, this.taskId).then(res => {
+                            this.$message.success('操作成功');
+                            this.$emit('applySucess',true);
+                            this.cancelDb()
+                        }).catch(err=>{
+                            this.$message.error(err.response.data.message);
+                        })
+                    }else {
+                        directStarts(apply, this.form.leader.id, this.mixinObject.processConfigId).then(res => {
+                            this.$message.success('操作成功');
+                            this.$emit('applySucess',true);
+                            this.cancelDb()
+                        }).catch(err=>{
+                            this.$message.error(err.response.data.message);
+                        })
+                    }
                 }else {
-                    directStarts(apply, this.form.leader.id, this.mixinObject.processConfigId).then(res => {
-                        this.$message.success('操作成功');
-                        this.$emit('applySucess',true);
-                        this.cancelDb()
-                    }).catch(err=>{
-                        this.$message.error(err.response.data.message);
-                    })
+                    this.$message.error('装备数量不能为0和空');
                 }
+
             },
             selectLeader(data) {
                 this.form.leader = data;

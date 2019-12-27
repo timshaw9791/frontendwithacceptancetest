@@ -57,12 +57,7 @@ export function killProcessSync() {
     })
 
 }
-export function clearRfid(a) {
-    const process = exec(`clear`, {cwd: cmdPath});
-    process.stderr.on('data', (err) => {
-        console.log(err);
-    });
-}
+
 export function killProcess(pid) {
     spawn("taskkill", ["/PID", pid, "/T", "/F"]);
 }
@@ -108,7 +103,7 @@ export function startOne(cmd, callBack, rfid = null) {
         cwd: cwd
     }, (err, data) => {
         callBack(data)
-    })
+    });
     else exec(`${cmd} ${com}`, {
         cwd: cwd
     }, (err, data) => {

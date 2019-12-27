@@ -33,7 +33,7 @@
             <el-table-column label="装备数量" align="left">
                 <template scope="scope">
                     <div class="table-row-item">
-                        <el-input v-model="scope.row.equip.count" @blur="changeCount(scope,$event)"></el-input>
+                        <el-input  v-model="scope.row.equip.count" @blur="changeCount(scope,$event)"></el-input>
                     </div>
                 </template>
             </el-table-column>
@@ -111,13 +111,20 @@
             },
             changeCount(row, event){
                 let count=row.row.equip.count;
-                if(row.row.equip.count!==''){
-                    if(Number(count)===0){
-                        this.$message.error('装备数量不能为零')
+                let reg=/^[0-9]+.?[0-9]*$/; //判断字符串是否为数字 ，判断正整数用/^[1-9]+[0-9]*]*$/
+                if(row.row.equip.count!==''&&row.row.equip.count!==undefined){
+                    if(reg.test(Number(count))){
+                        if(Number(count)===0){
+                            this.$message.error('装备数量不能为零')
+                        }else {
+                            this.nowRow = row;
+                            this.addRow();
+                        }
                     }else {
-                        this.nowRow = row;
-                        this.addRow();
+                        this.$set(row.row.equip,'count','');
+                        this.$message.error('请输入数字')
                     }
+
                 }
             }
         }
