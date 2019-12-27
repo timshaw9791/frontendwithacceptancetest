@@ -3,11 +3,11 @@
         <my-header :title="'办结事宜'" :searchFlag="false" :haveBlack="!status.tableOrUniversalFlag" @h_black="black"></my-header>
         <div class="handling-matters_action_box" data-test="action_box" v-if="status.tableOrUniversalFlag">
             <div></div>
-            <div class="action_right_box">
-                <div style="width: 1.6875rem">
-                    <p_search @search="getSearch" :placeholder="'标题'"></p_search>
-                </div>
-            </div>
+            <!--<div class="action_right_box">-->
+                <!--<div style="width: 1.6875rem">-->
+                    <!--<p_search @search="getSearch" :placeholder="'标题'"></p_search>-->
+                <!--</div>-->
+            <!--</div>-->
         </div>
         <div class="handling-matters_main_box" data-test="main_box">
             <div class="main_table_box" data-test="table_box">
