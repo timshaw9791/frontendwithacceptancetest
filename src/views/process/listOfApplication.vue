@@ -19,7 +19,7 @@
         </div>
         <div class="agency-matters_main_box" data-test="main_box">
             <div class="main_table_box"  data-test="table_box">
-                <div style="padding: 0px 0.09375rem"><p_table ref="processTable" :table="table" :typeUrl="'process'" :otherParams="true" @clickTable="clickTable" v-if="status.tableOrUniversalFlag"></p_table></div>
+                <div style="padding: 0px 0.09375rem"><p_table ref="processTable" :table="table" :typeUrl="'process'" :otherParams="true" @clickTable="clickTable" v-show="status.tableOrUniversalFlag"></p_table></div>
                 <p_universal @back="black" :url="universal.url" :title="universal.title" :universalObj="universal.universalObj" v-if="!status.tableOrUniversalFlag"></p_universal>
             </div>
         </div>
@@ -76,9 +76,11 @@
             'checkStatus':{
                 handler(newVal) {
                     if(newVal){
-                        this.table.params={...this.table.params,state:'ABNORMAL'}
+                        this.table.params={...this.table.params,state:'ABNORMAL'};
+                        this.$refs.processTable.paginator.page=1;
                     }else{
-                        this.table.params={assignee:JSON.parse(localStorage.getItem('user')).id}
+                        this.table.params={assignee:JSON.parse(localStorage.getItem('user')).id};
+                        this.$refs.processTable.paginator.page=1;
                     }
                 }
             }

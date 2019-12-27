@@ -689,7 +689,7 @@
                         let model=item.model;
                         let index=_.findIndex(rightLists, ['model', model]);
                         if (index===-1) {
-                            this.missEquip.push({name: item.name, model: item.model, count: item.count});
+                            this.missEquip.push({name: item.name, model: item.model, count: -item.count});
                             flag = false;
                         }else {
                             if(rightLists[index].allCount===item.count){}else {

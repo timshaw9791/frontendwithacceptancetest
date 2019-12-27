@@ -5,7 +5,7 @@
             <text-button :iconSize="20" :iconClass="'加号'" :buttonName="'申请流程'" @click="apply"></text-button>
             <div class="action_right_box">
                 <div style="width: 1.6875rem">
-                    <p_search @search="getSearch" :placeholder="'标题/工作流'"></p_search>
+                    <p_search @search="getSearch" :placeholder="'标题'"></p_search>
                 </div>
             </div>
         </div>
@@ -62,14 +62,24 @@
             }
         },
         methods:{
-            black(){
+            black(data){
                 this.status.tableOrUniversalFlag=!this.status.tableOrUniversalFlag;
+                if(data==='refetch'){
+                    this.refetch();
+                }
             },
             apply(){
                 this.$refs.selectApply.show()
             },
             sucessApply(){
-                this.$refs.processTable.refetch()
+                this.refetch();
+            },
+            refetch(){
+                if(this.$refs.processTable.paginator.page===1){
+                    this.$refs.processTable.refetch()
+                }else {
+                    this.$refs.processTable.paginator.page=1
+                }
             },
             filterProcessType(ns){
                 switch (ns.processDefinitionKey) {
