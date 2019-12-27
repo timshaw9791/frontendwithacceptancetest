@@ -33,7 +33,7 @@
                 </div>
                 <div class="apply-scrap-footer">
                     <div class="action-footer-item">
-                        <text-button style="color: #2F2F76FF!important;" :buttonName="'清空列表'" :iconClass="'删除'" @click="clearEquip()"></text-button>
+                        <!--<text-button style="color: #2F2F76FF!important;" :buttonName="'清空列表'" :iconClass="'删除'" @click="clearEquip()"></text-button>-->
                     </div>
                     <div class="action-footer-item">
                         <span v-text="'申请人员：'"></span>
@@ -102,7 +102,6 @@
             }
         },
         mounted(){
-           console.log('mounted',this.applyObject);
            setTimeout(()=>{
                this.mixiGetLeader({organUnitId:this.applyObject.house.organUnitId,type:this.form.type});
            },2000)
@@ -123,7 +122,6 @@
         },
         methods: {
             clearEquip(){
-                clearRfid();
                 this.$set(this.form,'equips',[]);
             },
             end(pid) {
@@ -136,40 +134,44 @@
                     equips.push({id:item.id,rfid:item.rfid,name:item.equipArg.name,model:item.equipArg.model})
                     rfids.push(item.rfid);
                 });
-                let apply = {
-                    applicant: this.form.applicant,
-                    equips: equips,
-                    note:this.form.reason,
-                    warehouse:{
-                        id: this.applyObject.house.houseId,
-                        name: this.applyObject.house.houseName
+                if(equips.length!==0){
+                    let apply = {
+                        applicant: this.form.applicant,
+                        equips: equips,
+                        note:this.form.reason,
+                        warehouse:{
+                            id: this.applyObject.house.houseId,
+                            name: this.applyObject.house.houseName
+                        }
+                    };
+                    apply.applicant.organUnitId=this.applyObject.house.organUnitId;
+                    if (this.taskId){
+                        scrapRefill(apply, this.form.leader.id, this.taskId).then(res => {
+                            equipMaintainScrapByProcess(_.join(rfids, ',')).then(res=>{}).catch(err=>{
+                                this.$message.error(err.response.data.message);
+                            });
+                            this.$message.success('操作成功');
+                            this.$emit('applySucess',true);
+                            this.cancelDb()
+                        }).catch(err=>{
+                            this.$message.error(err.response.data.message);
+                        })
+                    }else {
+                        scrapStarts(apply, this.form.leader.id, this.mixinObject.processConfigId).then(res => {
+                            equipMaintainScrapByProcess(_.join(rfids, ',')).then(res=>{}).catch(err=>{
+                                this.$message.error(err.response.data.message);
+                            });
+                            this.$message.success('操作成功');
+                            this.$emit('applySucess',true);
+                            this.cancelDb()
+                        }).catch(err=>{
+                            this.$message.error(err.response.data.message);
+                        })
                     }
-                };
-                apply.applicant.organUnitId=this.applyObject.house.organUnitId;
-                if (this.taskId){
-                    scrapRefill(apply, this.form.leader.id, this.taskId).then(res => {
-                        equipMaintainScrapByProcess(_.join(rfids, ',')).then(res=>{}).catch(err=>{
-                            this.$message.error(err.response.data.message);
-                        });
-                        this.$message.success('操作成功');
-                        this.$emit('applySucess',true);
-                        this.cancelDb()
-                    }).catch(err=>{
-                        this.$message.error(err.response.data.message);
-                    })
-                }else {
-                    scrapStarts(apply, this.form.leader.id, this.mixinObject.processConfigId).then(res => {
-                        equipMaintainScrapByProcess(_.join(rfids, ',')).then(res=>{}).catch(err=>{
-                            this.$message.error(err.response.data.message);
-                        });
-                        this.$message.success('操作成功');
-                        this.$emit('applySucess',true);
-                        this.cancelDb()
-                    }).catch(err=>{
-                        this.$message.error(err.response.data.message);
-                    })
-                }
 
+                }else {
+                    this.$message.success('请先录入装备');
+                }
             },
             selectLeader(data) {
                 this.$set(this.form,'leader',data);

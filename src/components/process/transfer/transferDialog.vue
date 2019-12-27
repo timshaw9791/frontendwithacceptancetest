@@ -349,7 +349,7 @@
                 }, (pid, err) => {
                     pid ? this.pid = pid : this.$message.error(err)
                 });
-               //  let list=['110000010000000000000000','110000040000000000000000','110000060000000000000000'];
+               //  let list=['110000010000000000000000','110000040000000000000000'];
                // list.forEach(item=>{
                //     this.getOutDataCopy([item]);
                // })
@@ -415,66 +415,66 @@
 
             },
             transferEquipInOrOut(state) {
-                // let equips = [], note = '', rfids = [], orderNumber = '', price = 0;
-                // if (this.typeOperational === '出库') {
-                //     _.forIn(this.equipGroup, function (value, key) {
-                //         value.forEach(item => {
-                //             rfids.push(item.rfid)
-                //         })
-                //     });
-                // } else {
-                //     _.forIn(this.equipGroup, (value) => {
-                //         value.forEach(item => {
-                //             equips.push(_.omit(item, ['equipArgId', 'id', 'name', 'model']))
-                //         });
-                //     });
-                // }
-                // if (state === 'ABNORMAL') {
-                //     note = this.reason;
-                // }
-                // if (this.typeOperational === '出库') {
-                //     outHouse(_.join(rfids, ',')).then(res => {
-                //         res.equips.forEach(item => {
-                //             price = price + item.price;
-                //             equips.push({
-                //                 id: item.id,
-                //                 name: item.equipArg.name,
-                //                 model: item.equipArg.model,
-                //                 price: item.price,
-                //                 serial: item.serial,
-                //                 productDate: item.productDate,
-                //                 equipArgId: item.equipArg.id,
-                //                 rfid: item.rfid
-                //             })
-                //         });
-                //         this.$emit('outHouse', {
-                //             outboundEquipsOrder: {equips: equips},
-                //             outboundInfo: {
-                //                 note: note,
-                //                 missEquips: this.missEquip,
-                //                 orderNumber: res.orderNumber,
-                //                 price: price
-                //             }
-                //         })
-                //     }).catch(err => {
-                //         this.$message.error(err.response.data.message);
-                //     })
-                //     // equips=[{id:'2121',name:'item.equipArg.name',model:'item.equipArg.model',price:'item.price',serial:'item.serial',productDate:'item.productDate',equipArgId:'item.equipArg.id',rfid:'item.rfid'}],
-                // } else {
-                //     inHouses(equips).then(res => {
-                //         res.equips.forEach(item => {
-                //             price = price + item.price;
-                //         });
-                //         this.$emit('inHouse', {
-                //             orderNumber: orderNumber,
-                //             price: price,
-                //             note: note,
-                //             missEquips: this.missEquip
-                //         })
-                //     }).catch(err => {
-                //         this.$message.error(err.response.data.message);
-                //     })
-                // }
+                let equips = [], note = '', rfids = [], orderNumber = '', price = 0;
+                if (this.typeOperational === '出库') {
+                    _.forIn(this.equipGroup, function (value, key) {
+                        value.forEach(item => {
+                            rfids.push(item.rfid)
+                        })
+                    });
+                } else {
+                    _.forIn(this.equipGroup, (value) => {
+                        value.forEach(item => {
+                            equips.push(_.omit(item, ['equipArgId', 'id', 'name', 'model']))
+                        });
+                    });
+                }
+                if (state === 'ABNORMAL') {
+                    note = this.reason;
+                }
+                if (this.typeOperational === '出库') {
+                    outHouse(_.join(rfids, ',')).then(res => {
+                        res.equips.forEach(item => {
+                            price = price + item.price;
+                            equips.push({
+                                id: item.id,
+                                name: item.equipArg.name,
+                                model: item.equipArg.model,
+                                price: item.price,
+                                serial: item.serial,
+                                productDate: item.productDate,
+                                equipArgId: item.equipArg.id,
+                                rfid: item.rfid
+                            })
+                        });
+                        this.$emit('outHouse', {
+                            outboundEquipsOrder: {equips: equips},
+                            outboundInfo: {
+                                note: note,
+                                missEquips: this.missEquip,
+                                orderNumber: res.orderNumber,
+                                price: price
+                            }
+                        })
+                    }).catch(err => {
+                        this.$message.error(err.response.data.message);
+                    })
+                    // equips=[{id:'2121',name:'item.equipArg.name',model:'item.equipArg.model',price:'item.price',serial:'item.serial',productDate:'item.productDate',equipArgId:'item.equipArg.id',rfid:'item.rfid'}],
+                } else {
+                    inHouses(equips).then(res => {
+                        res.equips.forEach(item => {
+                            price = price + item.price;
+                        });
+                        this.$emit('inHouse', {
+                            orderNumber: orderNumber,
+                            price: price,
+                            note: note,
+                            missEquips: this.missEquip
+                        })
+                    }).catch(err => {
+                        this.$message.error(err.response.data.message);
+                    })
+                }
 
             },
             sucessInOrOut() {
@@ -637,6 +637,7 @@
             },
             getTrueOrFalse(group) {
                 let flag = true, leftList = [], rightLists = [];
+                this.missEquip=[];
                 if (this.typeOperational === '出库') {
                     leftList = this.directObj.processVariables.applyOrder.equips;
                     leftList.forEach(item => {
@@ -666,7 +667,6 @@
                         }
                     });
                 } else {
-                    this.missEquip=[];
                     let leftGroup = _.groupBy(JSON.parse(JSON.stringify(this.directObj.processVariables.outboundEquipsOrder.equips)), 'model');
                     _.forIn(leftGroup, (value, key) => {
                         leftList.push({name: value[0].name, model: value[0].model, count: leftGroup[key].length})

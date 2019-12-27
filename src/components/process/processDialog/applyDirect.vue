@@ -103,14 +103,14 @@
                 this.mixiGetLeader(params);
             },
             apply() {
-                let flag=true;
-                if(flag){
-                    let equips = [];
-                    this.form.equips.forEach(item => {
-                        if (item.equip.name != undefined) {
-                            equips.push(item.equip);
-                        }
-                    });
+                let equips = [],index;
+                this.form.equips.forEach(item => {
+                    if (item.equip.name != undefined) {
+                        equips.push(item.equip);
+                    }
+                });
+                index=_.findIndex(equips,(o)=>{ return o.count === '0'||o.count===''; })
+                if(index===-1){
                     let outboundOrganUnit = {
                         id: this.applyObject.house.organUnitId,
                         name: this.applyObject.house.organUnitName
@@ -142,8 +142,9 @@
                         })
                     }
                 }else {
-
+                    this.$message.error('装备数量不能为0和空');
                 }
+
             },
             selectLeader(data) {
                 this.form.leader = data;
