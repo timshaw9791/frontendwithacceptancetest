@@ -4,7 +4,7 @@
             <div class="thermometer-body">
                 <div class="thermometer-top">
                     <span v-text="'当前温度： '"></span>
-                    <span style="font-size:  0.1563rem" v-text="temperature+'°'"></span>
+                    <span style="font-size:  0.1563rem" v-text="temperature+'°C'"></span>
                 </div>
                 <s_thermometer-component style="margin-top: 0.2448rem" :scale="scale" :temperature="temperature" :color="color"></s_thermometer-component>
                 <span v-text="'查看温度曲线'" style="margin-top: 0.3229rem; color:blue;cursor: pointer" @click="toTemLineChart"></span>

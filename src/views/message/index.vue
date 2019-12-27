@@ -249,6 +249,7 @@ created(){
     },
     msgTitle(newVal){
       this.searchTitle=newVal;
+      this.paginator.page=1
       this.getList()
     }
 
