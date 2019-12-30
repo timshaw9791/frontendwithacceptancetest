@@ -135,6 +135,7 @@
                     equips.push({id:item.id,rfid:item.rfid,name:item.equipArg.name,model:item.equipArg.model})
                     rfids.push(item.rfid);
                 });
+
                 if(equips.length!==0){
                     let apply = {
                         applicant: this.form.applicant,
@@ -147,6 +148,7 @@
                     };
                     apply.applicant.organUnitId=this.applyObject.house.organUnitId;
                     if (this.taskId){
+                        console.log(this.taskId);
                         scrapRefill(apply, this.form.leader.id, this.taskId).then(res => {
                             equipMaintainScrapByProcess(_.join(rfids, ',')).then(res=>{}).catch(err=>{
                                 this.$message.error(err.response.data.message);
@@ -201,12 +203,16 @@
                 // this.getEquipByRfid(['190800150000000000000000'])
             },
             getListUsb() {//todo
-                start("java -jar scan.jar", (data) => {
-                    this.getEquipByRfid([data]);
-                }, (fail) => {
-                    this.$message.error(fail)
-                }, (pid, err) => {
-                    pid ? this.pid = pid : this.$message.error(err)
+                // start("java -jar scan.jar", (data) => {
+                //     this.getEquipByRfid([data]);
+                // }, (fail) => {
+                //     this.$message.error(fail)
+                // }, (pid, err) => {
+                //     pid ? this.pid = pid : this.$message.error(err)
+                // })
+                 let list=['110000010000000000000000','110000050000000000000000','1100000A0000000000000000'];
+                list.forEach(item=>{
+                    this.getEquipByRfid([item]);
                 })
             },
             deleteFile() {
