@@ -1,7 +1,7 @@
 <template>
     <div>
         <serviceDialog :title="'申请报废流程'" ref="applyScrap" width="5.4167rem"
-                       :button="false">
+                       :button="false" @cancel="cancelDialog">
             <div class="apply-scrap-box">
                 <div class="apply-scrap-action">
                     <div class="action-button-item">
@@ -116,64 +116,78 @@
                     } else if (newVal === 'RFID读写器') {
                         this.getListUsb();
                     }else if(newVal==='手持机'&&oldVal==='RFID读写器'){
-                        this.end(this.pid)
+                        killProcess(this.pid)
                     }
                 }
             }
         },
         methods: {
+            cancelDialog(){
+                killProcess(this.pid)
+            },
             clearEquip(){
                 this.$set(this.form,'equips',[]);
             },
-            end(pid) {
-                if (pid) {killProcess(this.pid)}
-            },
             apply() {
-                let equips = [];
-                let rfids=[];
+                let equips = [],rfids=[],flag=true;
                 this.form.equips.forEach(item => {
-                    equips.push({id:item.id,rfid:item.rfid,name:item.equipArg.name,model:item.equipArg.model})
+                    equips.push({id:item.id,rfid:item.rfid,name:item.equipArg.name,model:item.equipArg.model});
                     rfids.push(item.rfid);
                 });
-
-                if(equips.length!==0){
-                    let apply = {
-                        applicant: this.form.applicant,
-                        equips: equips,
-                        note:this.form.reason,
-                        warehouse:{
-                            id: this.applyObject.house.houseId,
-                            name: this.applyObject.house.houseName
-                        }
-                    };
-                    apply.applicant.organUnitId=this.applyObject.house.organUnitId;
-                    if (this.taskId){
-                        console.log(this.taskId);
-                        scrapRefill(apply, this.form.leader.id, this.taskId).then(res => {
-                            equipMaintainScrapByProcess(_.join(rfids, ',')).then(res=>{}).catch(err=>{
-                                this.$message.error(err.response.data.message);
-                            });
-                            this.$message.success('操作成功');
-                            this.$emit('applySucess',true);
-                            this.cancelDb()
-                        }).catch(err=>{
-                            this.$message.error(err.response.data.message);
-                        })
-                    }else {
-                        scrapStarts(apply, this.form.leader.id, this.mixinObject.processConfigId).then(res => {
-                            equipMaintainScrapByProcess(_.join(rfids, ',')).then(res=>{}).catch(err=>{
-                                this.$message.error(err.response.data.message);
-                            });
-                            this.$message.success('操作成功');
-                            this.$emit('applySucess',true);
-                            this.cancelDb()
-                        }).catch(err=>{
-                            this.$message.error(err.response.data.message);
-                        })
+                let apply = {
+                    applicant: this.form.applicant,
+                    equips: equips,
+                    note:this.form.reason,
+                    warehouse:{
+                        id: this.applyObject.house.houseId,
+                        name: this.applyObject.house.houseName
                     }
+                };
+                apply.applicant.organUnitId=this.applyObject.house.organUnitId;
+                _.forIn(apply,(value)=>{
+                    this.judgeObj(value)?'':flag=false;
+                });
+                this.judgeObj(this.form.leader)?'':flag=false;
+                if(flag){
+                    if(equips.length!==0){
+                        if (this.taskId){
+                            scrapRefill(apply, this.form.leader.id, this.taskId).then(res => {
+                                equipMaintainScrapByProcess(_.join(rfids, ',')).then(res=>{}).catch(err=>{
+                                    this.$message.error(err.response.data.message);
+                                });
+                                this.$message.success('操作成功');
+                                this.$emit('applySucess',true);
+                                this.cancelDb()
+                            }).catch(err=>{
+                                this.$message.error(err.response.data.message);
+                            })
+                        }else {
+                            scrapStarts(apply, this.form.leader.id, this.mixinObject.processConfigId).then(res => {
+                                equipMaintainScrapByProcess(_.join(rfids, ',')).then(res=>{}).catch(err=>{
+                                    this.$message.error(err.response.data.message);
+                                });
+                                this.$message.success('操作成功');
+                                this.$emit('applySucess',true);
+                                this.cancelDb()
+                            }).catch(err=>{
+                                this.$message.error(err.response.data.message);
+                            })
+                        }
 
+                    }else {
+                        this.$message.error('请先录入装备');
+                    }
                 }else {
-                    this.$message.success('请先录入装备');
+                    this.$message.error('请先将信息填写完整');
+                }
+
+            },
+            judgeObj(data){
+                let judeData=JSON.parse(JSON.stringify(data));
+                if (JSON.stringify(judeData)!=='{}'&&JSON.stringify(judeData)!=='[]'){
+                    return true
+                }else{
+                    return false
                 }
             },
             selectLeader(data) {
@@ -185,7 +199,7 @@
             getEquipByRfid(data){
                data.forEach(item=>{
                    equipById(item).then(res=>{
-                       this.form.equips.push(res.content[0]);
+                       this.form.equips=[...this.form.equips,...res.content];
                    }).catch(err=>{
                        this.$message.error(err.response.data.message);
                    })
@@ -209,8 +223,8 @@
                     this.$message.error(fail)
                 }, (pid, err) => {
                     pid ? this.pid = pid : this.$message.error(err)
-                })
-                //  let list=['110000070000000000000000','110000050000000000000000'];
+                });
+                //  let list=['1100000A0000000000000000','190800150000000000000000'];
                 // list.forEach(item=>{
                 //     this.getEquipByRfid([item]);
                 // })

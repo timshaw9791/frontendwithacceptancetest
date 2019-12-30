@@ -95,49 +95,66 @@
                 this.mixiGetLeader(params);
             },
             apply() {
-                let equips = [],index;
+                let equips = [],flag=true,index;
                 this.form.equips.forEach(item => {
                     if (item.equip.name != undefined) {
                         equips.push(item.equip);
                     }
                 });
-                index=_.findIndex(equips,(o)=>{ return o.count === '0'||o.count===''; });
-                if(index===-1){
-                    let inboundOrganUnit = {
-                        id: this.applyObject.house.organUnitId,
-                        name: this.applyObject.house.organUnitName
-                    };
-                    let inboundWarehouse = {
-                        id: this.applyObject.house.houseId,
-                        name: this.applyObject.house.houseName
-                    };
-                    let apply = {
-                        applicant: this.form.applicant,
-                        equips: equips,
-                        inboundOrganUnit: inboundOrganUnit,
-                        inboundWarehouse: inboundWarehouse,
-                        outboundOrganUnit: this.form.outboundOrganUnit
-                    };
-                    apply.applicant.organUnitId=this.applyObject.house.organUnitId;
-                    if (this.taskId){
-                        transferRefill(apply, this.form.leader.id, this.taskId).then(res => {
-                            this.$message.success('操作成功');
-                            this.$emit('applySucess',true);
-                            this.cancelDb()
-                        }).catch(err=>{
-                            this.$message.error(err.response.data.message);
-                        })
+                let inboundOrganUnit = {
+                    id: this.applyObject.house.organUnitId,
+                    name: this.applyObject.house.organUnitName
+                };
+                let inboundWarehouse = {
+                    id: this.applyObject.house.houseId,
+                    name: this.applyObject.house.houseName
+                };
+                let apply = {
+                    applicant: this.form.applicant,
+                    equips: equips,
+                    inboundOrganUnit: inboundOrganUnit,
+                    inboundWarehouse: inboundWarehouse,
+                    outboundOrganUnit: this.form.outboundOrganUnit
+                };
+                apply.applicant.organUnitId=this.applyObject.house.organUnitId;
+                _.forIn(apply,(value)=>{
+                    this.judgeObj(value)?'':flag=false;
+                });
+                this.judgeObj(this.form.leader)?'':flag=false;
+                index=_.findIndex(equips,(o)=>{ return o.count === '0'||o.count===''||o.count===undefined; });
+                if(flag){
+                    if(index===-1){
+                        if (this.taskId){
+                            transferRefill(apply, this.form.leader.id, this.taskId).then(res => {
+                                this.$message.success('操作成功');
+                                this.$emit('applySucess',true);
+                                this.cancelDb()
+                            }).catch(err=>{
+                                this.$message.error(err.response.data.message);
+                            })
+                        }else {
+                            transferStart(apply, this.form.leader.id, this.mixinObject.processConfigId).then(res => {
+                                this.$message.success('操作成功');
+                                this.$emit('applySucess',true);
+                                this.cancelDb()
+                            }).catch(err=>{
+                                this.$message.error(err.response.data.message);
+                            })
+                        }
                     }else {
-                        transferStart(apply, this.form.leader.id, this.mixinObject.processConfigId).then(res => {
-                            this.$message.success('操作成功');
-                            this.$emit('applySucess',true);
-                            this.cancelDb()
-                        }).catch(err=>{
-                            this.$message.error(err.response.data.message);
-                        })
+                        this.$message.error('装备数量不能为0和空');
                     }
                 }else {
-                    this.$message.error('装备数量不能为0和空');
+                    this.$message.error('请先将信息填写完整');
+                }
+
+            },
+            judgeObj(data){
+                let judeData=JSON.parse(JSON.stringify(data));
+                if (JSON.stringify(judeData)!=='{}'&&JSON.stringify(judeData)!=='[]'){
+                    return true
+                }else{
+                    return false
                 }
             },
             selectLeader(data) {

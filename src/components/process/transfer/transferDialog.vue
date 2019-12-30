@@ -1,6 +1,6 @@
 <template>
     <div>
-        <dialog-svices ref="transFerDialogApply" width="7.9635rem" :title="typeOperational" :button="false">
+        <dialog-svices ref="transFerDialogApply" width="7.9635rem" :title="typeOperational" @cancel="cancelDialog" :button="false">
             <div class="directAdjustmentDialog">
                 <div class="directAdjustmentDialog-header">
                     <div class="header-item">
@@ -253,7 +253,7 @@
             'hardware': {
                 handler(newVal, oldVal) {
                     if (oldVal === 'RFID读写器' && newVal === '手持机') {
-                        this.end(this.pid)
+                        killProcess(this.pid)
                     }
                     if (newVal === '手持机') {
                         this.rightList = [];
@@ -261,7 +261,7 @@
                             this.handheldMachine();
                         }
                     } else if (newVal === 'RFID读写器') {
-                        this.end(this.pid);
+                        killProcess(this.pid)
                         this.closeUsb = false;
                         this.rightList = [];
                         if (this.typeOperational === '出库') {
@@ -286,6 +286,9 @@
             }
         },
         methods: {
+            cancelDialog(){
+                killProcess(this.pid)
+            },
             getLocation(data) {
                 let location = '';
                 location = data.number + '架/' + data.surface + '面/' + data.section + '节/' + data.floor + '层';
@@ -328,17 +331,12 @@
             },
             stopGetEquip() {
                 if(this.hardware === 'RFID读写器'){
-                    this.end(this.pid);
+                    killProcess(this.pid)
                 }
             },
             // deleteFile() {
             //     delFile(newFile_path, () => {console.log('删除文件' + newFile_path + '成功')})
             // },
-            end(pid) {
-                if (pid) {
-                    killProcess(this.pid)
-                }
-            },
             getListUsb() {//todo
                 start("java -jar scan.jar", (data) => {
                     let arr = [];
@@ -362,7 +360,7 @@
             close() {
                 this.hardware = '';
                 this.closeUsb = true;
-                this.end(this.pid);
+                killProcess(this.pid)
                 this.$refs.transFerDialogApply.cancelDb();
             },
             closeTextarea() {
@@ -478,7 +476,7 @@
 
             },
             sucessInOrOut() {
-                this.end(this.pid);
+                killProcess(this.pid)
                 this.closeUsb = true;
                 this.$emit('sucesssInOrOut', true);
             },

@@ -53,7 +53,6 @@
                 this.$emit('cancel','end');
             },
             handleClose(done) {
-
                 this.cancel()
             },
             cancelDb() {

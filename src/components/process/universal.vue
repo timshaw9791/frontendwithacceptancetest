@@ -246,7 +246,7 @@
                 this.$refs.cancel.show();
             },
             closeApply(){
-                workflow(this.activeTask.id,JSON.parse(localStorage.getItem("user")).id).then(res=>{
+                workflow(this.$route.meta.title==='我的流程'?this.activeTask.processInstanceId:this.activeTask.id,JSON.parse(localStorage.getItem("user")).id).then(res=>{
                     this.$message.success('操作成功');
                     this.$emit('back','refetch')
                 }).catch(err=>{
