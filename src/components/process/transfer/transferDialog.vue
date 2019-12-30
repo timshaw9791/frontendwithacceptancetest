@@ -523,7 +523,8 @@
             },
             clickResult() {
                 if (this.hardware == '手持机') {
-                    this.rightList = [];
+                    this.$set(this,'rightList',[]);
+                    this.$set(this,'equipGroup',{});
                     this.handheldMachine();
                 } else {
                     this.getListUsb()
@@ -541,25 +542,9 @@
                     let json = JSON.parse(data);
                     this.getOutDataCopy(json.rfid);
                     this.deleteFile();
-                    // findByRfids(json.rfid).then(res => {
-                    //     this.$refs.maintenanceEndDialog.show();
-                    // });
                 });
                 //todo 要换回来
-                // let data = inventoryData;
-                // if(this.typeOperational=='出库'){
-                //     this.rightList.push({
-                //         name: '圣爱大厦',
-                //         model: '茶山是生',
-                //         count: 22,
-                //         rfid: ['222','19080012'],
-                //         flag: false
-                //     });
-                //     this.getTrueOrFalse();
-                // }else {
-                //     this.getOutDataCopy(['222','19080012']);,20088892,20088888
-                // }
-                // this.getOutDataCopy(['12345678','110000050000000000000000'])
+                // this.getOutDataCopy(['12345678','110000010000000000000000'])
             },
             // getOutData(data){
             //     console.log(data);
@@ -613,7 +598,6 @@
                             } else {
                                 flag = false
                             }
-                            // this.equipGroup[key] = [...this.equipGroup[key], ...group[key]]
                         } else {
                             this.equipGroup[key] = group[key]
                         }

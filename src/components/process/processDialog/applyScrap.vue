@@ -218,13 +218,6 @@
             deleteFile() {
                 delFile(newFile_path, () => {})
             },
-            // end(pid) {
-            //     if (pid) {
-            //         //spawn("taskkill", ["/PID", pid, "/T", "/F"]);
-            //         killProcess(this.pid);
-            //         this.index = 0;
-            //     }
-            // },
             show() {
                 this.$set(this.form,'equips',[]);
                 this.$set(this.form,'reason','');

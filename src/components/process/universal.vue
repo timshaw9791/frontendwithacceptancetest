@@ -246,7 +246,7 @@
                 this.$refs.cancel.show();
             },
             closeApply(){
-                workflow(this.universalObj.id,JSON.parse(localStorage.getItem("user")).id).then(res=>{
+                workflow(this.activeTask.id,JSON.parse(localStorage.getItem("user")).id).then(res=>{
                     this.$message.success('操作成功');
                     this.$emit('back','refetch')
                 }).catch(err=>{
@@ -284,7 +284,7 @@
                         this.$message.error(err.response.data.message);
                     })
                 }else if(this.$route.meta.title==='待办事宜'){
-                    this.activeTask.id=this.universalObj.id;
+                    this.activeTask.id=this.universalObj.processInstanceId;
                 }
             }
         },
