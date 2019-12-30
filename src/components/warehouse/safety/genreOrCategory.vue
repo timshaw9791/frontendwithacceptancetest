@@ -156,7 +156,7 @@
                             this.$message.error(err.response.data.message);
                         })
                     }
-                } else if (this.title !== '装备分配') {
+                } else if (this.title !== '装备分类') {
                     if (this.genreData) {
                         let data = JSON.parse(JSON.stringify(this.genreData));
                         data.name = this.genre;
