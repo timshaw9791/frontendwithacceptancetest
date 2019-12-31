@@ -84,7 +84,6 @@ a:hover {
   min-height: 87vh;
   max-height: 87vh;
   margin: 2%;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
   position: relative;
 
   .list {
@@ -171,7 +170,8 @@ a:hover {
 
 
 ._card-title {
-  font-size: 18px;
+  color: #707070;
+  font-size: 20px;
 }
 
 ._box-bottom {
