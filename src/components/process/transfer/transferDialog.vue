@@ -464,7 +464,7 @@
                             price = price + item.price;
                         });
                         this.$emit('inHouse', {
-                            orderNumber: orderNumber,
+                            orderNumber: res.orderNumber,
                             price: price,
                             note: note,
                             missEquips: this.missEquip
