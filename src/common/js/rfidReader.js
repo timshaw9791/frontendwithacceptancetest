@@ -74,7 +74,8 @@ export function start(cmd, success, failure, callBack) {
     callBack(process.pid, null);
     process.stderr.on("data", err => {
         console.log(err);
-        if (!err.includes("Error")) failure.call(this, err);
+        if (!err.includes("Error")) failure.call(this, err)
+        else failure("请插拔读卡器后重试")
         index = 1;
         //callBack(null, "设备故障请重新插拔!插入后请重新选择装备")
         spawn("taskkill", ["/PID", process.pid, "/T", "/F"]);

@@ -20,13 +20,13 @@
                         </el-button>
 
 
-                        <el-button type="text" class="topIcon" @click="edit=!edit" v-if="title.includes('装备参数详情')">
+                        <el-button type="text" class="topIcon" @click="editJuadge" v-if="title.includes('装备参数详情')">
                             <svg-icon icon-class="编辑"/>
                             {{edit?'编辑':'取消编辑'}}
                         </el-button>
 
 
-                        <el-button type="text" class="topIcon" @click="extendEdit=!extendEdit"
+                        <el-button type="text" class="topIcon" @click="extendEditJudge"
                                    v-if="title.includes('装备信息详情')">
                             <svg-icon icon-class="编辑"/>
                             {{extendEdit?'编辑':'取消编辑'}}
@@ -144,7 +144,7 @@
                         <span>绑定序号</span>
                     </div>
                     <div>
-                        <el-table :data="list" fit height="360" class="list" :row-class-name="tableRowClassName">
+                        <el-table :data="list" fit height="330" class="list" :row-class-name="tableRowClassName">
                             <el-table-column label="序号" align="center">
                                 <template scope="scope">
                                     {{scope.$index+1}}
@@ -341,6 +341,20 @@
                 } else {
                     this.$emit('black');
                 }
+            },
+            // 扩展信息 编辑后未提交应初始
+            extendEditJudge() {
+                if(!this.extendEdit) {
+                    this.zbForm = JSON.parse(JSON.stringify(this.judgeEdit.zbForm))
+                }
+                this.extendEdit = !this.extendEdit
+            },
+            // 装备参数 编辑后未提交应初始
+            editJuadge() {
+              if(!this.edit) {
+                  this.form = JSON.parse(JSON.stringify(this.judgeEdit.form))
+              }  
+              this.edit = !this.edit
             },
             /* 判断两次数据是否相等 */
             isEqual() {
@@ -712,6 +726,14 @@
 
     .el-card {
         border: none !important;
+        /deep/ .el-card__header {
+            padding: 3px 15px !important;
+        }
+    }
+    .el-form {
+        /deep/ .el-form-item {
+            margin-bottom: 10px;
+        }
     }
 
 
@@ -746,27 +768,6 @@
 
             .formList {
                 width: 974px;
-                margin: 0 auto;
-            }
-
-            .video {
-                margin: 0 0.2604rem 0.1042rem 0.2604rem;
-                cursor: pointer;
-                text-align: center;
-
-                input {
-                    display: none;
-                }
-
-                .icon {
-                    font-size: 0.2604rem;
-                    color: #2f2f76;
-                }
-
-                div {
-                    text-align: center;
-                    word-wrap: break-word;
-                }
             }
         }
 
@@ -778,7 +779,7 @@
 
         .list {
             width: 80%;
-            margin: 3% auto;
+            margin: 0 auto;
             max-height: 40vh;
             border: 1px solid #EBEEF5;
             border-bottom: none !important;
