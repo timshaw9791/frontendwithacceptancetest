@@ -154,6 +154,21 @@
             let _form = JSON.stringify(this.form)
             this.form2 = JSON.parse(_form)
         },
+        watch:{
+            'disabled':{
+                handler(data){
+                    if(data){
+                        console.log("111");
+                        if(this.judgeForm!=this.form){
+                            console.log("333");
+                            this.form = JSON.parse(JSON.stringify(this.judgeForm))
+                        }
+                    }else{
+                        console.log("222");
+                    }
+                }
+            }
+        },
         computed:{
           img(){
               let img;

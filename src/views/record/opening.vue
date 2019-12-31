@@ -35,6 +35,7 @@
     import r_video from 'components/record/recordDialog'
     import {baseURL} from "../../api/config";
     import {findByOperatorName} from "api/openrecord"
+    import {startProcessCamVideo} from '@/externalProcess'
 
     export default {
         name: "opening",
@@ -77,9 +78,7 @@
             clickTableCloum(table) {
                 let data = table.row;
                 if (data) {
-                    console.log("data",data);
-                    this.address=baseURL+'/records/'+data.video;
-                    this.$refs.recordVideo.show()
+                    startProcessCamVideo(data.createTime);
                 }
             },
             
