@@ -34,57 +34,57 @@
                     </div>
                     <div class="box-body">
                         <form-container ref="form" :model="form" class="formList">
-                           <field-input v-model="form.name" label="装备名称" width="3" name="装备名称"
+                           <field-input v-model="form.name" label="装备名称" width="2.5" name="装备名称"
                                          :rules="r(true).all(R.require)" prop="name"
                                          v-if="['新增装备参数', '装备参数详情', '装备信息详情'].includes(title)"
                                          :disabled="edit"
                             ></field-input>
-                            <field-select label="装备名称" v-model="form.name" width="3" name="装备名称"
+                            <field-select label="装备名称" v-model="form.name" width="2.5" name="装备名称"
                                           :list="equipment.name" :rules="r(true).all(R.require)"
                                           @change="equipNameSelected" placeholder="请选择" prop="name"
                                           v-else></field-select>
             
-                            <field-input v-model="form.model" label="装备型号" width="3"
+                            <field-input v-model="form.model" label="装备型号" width="2.5"
                                          :rules="r(true).all(R.require)" prop="model"
                                          v-if="['新增装备参数', '装备参数详情', '装备信息详情'].includes(title)"
                                          :disabled="edit" :class="{'occupy-position': !title.includes('装备信息详情')}"
                             ></field-input>
-                            <field-select label="装备型号" v-model="form.model" width="3" name="装备型号" prop="model"
+                            <field-select label="装备型号" v-model="form.model" width="2.5" name="装备型号" prop="model"
                                           :list="equipment.model" :rules="r(true).all(R.require)"
                                           @change="equipSelected" placeholder="请选择"
                                           :class="{'occupy-position': !title.includes('装备信息详情')}" v-else></field-select>
 
-                            <field-input v-model="form.serial" label="装备序号" width="3" :disabled="true"
+                            <field-input v-model="form.serial" label="装备序号" width="2.5" :disabled="true"
                                         v-if="title.includes('装备信息详情')"
                                       prop="serial"></field-input>
                             
-                            <field-input v-model="form.shelfLifeQ" label="保质期(天)" width="3" :disabled="edit"
+                            <field-input v-model="form.shelfLifeQ" label="保质期(天)" width="2.5" :disabled="edit"
                                          :rules="r(true).all(R.integer)" prop="shelfLifeQ"></field-input>
 
-                            <field-input v-model="form.chargeCycle" label="充电周期(天)" width="3"
+                            <field-input v-model="form.chargeCycle" label="充电周期(天)" width="2.5"
                                          :rules="r(false).all(R.num)" prop="chargeCycle"
                                          :disabled="edit"
                             ></field-input>
 
-                            <field-input v-model="form.upkeepCycle" label="保养周期(天)" width="3"
+                            <field-input v-model="form.upkeepCycle" label="保养周期(天)" width="2.5"
                                          :rules="r(false).all(R.num)" prop="upkeepCycle"
                                          :disabled="edit"
                             ></field-input>
 
-                            <field-input v-model="form.vendorId" label="供应商" width="3"
+                            <field-input v-model="form.vendorId" label="供应商" width="2.5"
                                          :rules="r(true).all(R.require)" prop="vendorId"
                                          :disabled="true" v-if="['入库装备', '装备信息详情'].includes(title)"
                             ></field-input>
-                            <field-select label="供应商" v-model="form.vendorId" width="3" name="供应商"
+                            <field-select label="供应商" v-model="form.vendorId" width="2.5" name="供应商"
                                           :rules="r(true).all(R.require)"
                                           prop="vendorId" @change="vendor(form.vendorId)"
                                           :disabled="edit" :list="supplierArr"
                                           v-else></field-select>
 
-                            <field-input v-model="form.personM" label="联系人员" width="3" :disabled="true"
+                            <field-input v-model="form.personM" label="联系人员" width="2.5" :disabled="true"
                                          :rules="r(true).all(R.require)" prop="personM"></field-input>
                                          
-                            <field-input v-model="form.phoneM" label="联系方式" width="3" :disabled="true"
+                            <field-input v-model="form.phoneM" label="联系方式" width="2.5" :disabled="true"
                                          :rules="r(true).all(R.require)" prop="phoneM"></field-input>
 
                         </form-container>
@@ -106,7 +106,7 @@
                         <span>扩展信息</span>
                     </div>
                     <div>
-                        <form-container ref="zbForm" :model="zbForm">
+                        <form-container ref="zbForm" :model="zbForm" class="zbFormList">
 
 
                             <field-input v-model="zbForm.numberL" label="架体编号" width="2.5"
@@ -726,16 +726,12 @@
 
     .el-card {
         border: none !important;
-        /deep/ .el-card__header {
-            padding: 3px 15px !important;
-        }
     }
     .el-form {
         /deep/ .el-form-item {
             margin-bottom: 10px;
         }
     }
-
 
     .black {
         /* 可调整 */
@@ -767,7 +763,7 @@
             }
 
             .formList {
-                width: 974px;
+                width: 6.7708rem;
             }
         }
 
@@ -785,9 +781,12 @@
             border-bottom: none !important;
         }
 
+        .zbFormList {
+            width: 6.7708rem;
+        }
     }
     .occupy-position {
-        margin-right: 1.0417rem
+        margin-right: 2.0833rem;
     }
 
 </style>
