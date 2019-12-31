@@ -214,7 +214,6 @@
             refill(){
                 let ref;
                 if(this.$route.meta.title==='待办事宜'){
-
                     switch (this.universalObj.name) {
                         case "申请调拨":
                             ref='allocation';
@@ -246,7 +245,7 @@
                 this.$refs.cancel.show();
             },
             closeApply(){
-                workflow(this.$route.meta.title==='我的流程'?this.activeTask.processInstanceId:this.activeTask.id,JSON.parse(localStorage.getItem("user")).id).then(res=>{
+                workflow(this.activeTask.processInstanceId,JSON.parse(localStorage.getItem("user")).id).then(res=>{
                     this.$message.success('操作成功');
                     this.$emit('back','refetch')
                 }).catch(err=>{
@@ -284,7 +283,7 @@
                         this.$message.error(err.response.data.message);
                     })
                 }else if(this.$route.meta.title==='待办事宜'){
-                    this.activeTask.id=this.universalObj.processInstanceId;
+                    this.activeTask=this.universalObj;
                 }
             }
         },
