@@ -84,7 +84,7 @@
                                 arr.push(item.name)
                             })
                             //str = this._.truncate(this._.uniq(arr).join(','), {'length': 24,'separator': /,? +/})
-                            item = Object.assign({}, item, {equips: this._.truncate(this._.uniq(arr).join(','), {'length': 9,'separator': /,? +/})})
+                            item = Object.assign({}, item, {equips: this._.truncate(this._.uniq(arr).join(','), {'length': 9,'separator': /,?/})})
                         }
                         return item
                     });

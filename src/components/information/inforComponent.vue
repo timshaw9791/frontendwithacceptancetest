@@ -66,7 +66,7 @@
         <div class="add-personneo-bottom" v-show="!disabled">
             <el-button type="primary" @click="confirm">提交</el-button>
         </div>
-        <tips :innerVisible="tipStatus" @confirm="tipConfirm" @cancel="cancel"></tips>
+        <tips ref="tips" :innerVisible="tipStatus" @confirm="tipConfirm" @cancel="cancel"></tips>
     </div>
 </template>
 
@@ -190,9 +190,13 @@
         methods: {
             edit(){
              if(this.modifyStatus){
+                 console.log("触发");
                  this.tipStatus=!this.tipStatus
+                 this.$refs.tips.show()
              }else {
+                 
                  this.disabled=!this.disabled
+                
              }
             },
             cancel(data){
@@ -217,6 +221,7 @@
                }else {
                    this.initForm();
                    this.tipStatus=!this.tipStatus;
+                   this.$refs.tips.hide()
                    this.disabled=!this.disabled
                }
             },
