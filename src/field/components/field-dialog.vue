@@ -1,8 +1,8 @@
 <template>
-    <el-dialog :title="title" :visible.sync="showFlag" v-if="showFlag" center>
+    <el-dialog :title="title" :visible.sync="showFlag" :close-on-click-modal="false" :close-on-press-escape="false" v-if="showFlag" center>
         <slot></slot>
         <div slot="footer" class="dialog-footer">
-            <el-button @click="showFlag = false">取 消</el-button>
+            <el-button @click="cancel">取 消</el-button>
             <el-button type="primary" :disabled="isClick" @click="dialogConfirm">确 定</el-button>
         </div>
     </el-dialog>
@@ -30,6 +30,10 @@
             },
             hide() {
                 this.showFlag = false;
+            },
+            cancel() {
+                this.showFlag = false
+                this.$emit('cancel')
             },
             dialogConfirm() {
                 this.isClick = true
