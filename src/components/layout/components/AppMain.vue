@@ -27,6 +27,7 @@
                 handler(to, from) {
                     this.className = to.name == "overview/index"?"app-main":"app-main-shadow"
                 },
+                immediate: true
             }
         },
     }
