@@ -5,7 +5,7 @@
         <my-header title="消息通知" 
                    ></my-header>
         <div class="top">
-          <div class="btn1">
+          <div class="_buttons">
             <BosInput
                         placeholder="消息标题"
                         suffix="el-icon-search"
@@ -126,7 +126,6 @@ created(){
           delete data.title
       }
       getMsgList(data).then(res => {
-        this.messageNum=0
         this.paginator.totalPages = res.totalPages
         this.paginator.totalElements = res.totalElements  
         this.loading = false
@@ -135,13 +134,26 @@ created(){
         this.list.forEach(item=>{
             if(item.status==false)
             {
-                this.messageNum++
                 item.status='未读'
             }else{
                 item.status='已读'
             }
         })
-        this.$store.commit('SET_MESSAGE', this.messageNum);    
+      });
+    },
+    getMessageList() {
+            let data = {
+                id: JSON.parse(localStorage.getItem("user")).id,
+            };
+            getMsgList(data).then(res => {
+              this.messageNum=0
+              res.content.forEach(item=>{
+                  if(item.status==false)
+                  {
+                      this.messageNum++
+                  }
+              })
+              this.$store.commit('SET_MESSAGE', this.messageNum);    
       });
     },
     moreContent(data,id){
@@ -263,7 +275,8 @@ created(){
 
 <style lang="scss">
 .btn1{
-    width:200px;
+    width:300px;
+    float:right;
     cursor: pointer;
     margin-left:15px;
     .el-input__inner {
@@ -286,7 +299,13 @@ created(){
     display: flex;
     align-items: center;
     padding: 0.0833rem 0;
+    height: 57px;
+    
     text-align: center;
+    // .btn1{
+    //   position:relative;
+    //   right:0
+    // }
     border-bottom: 1px solid rgb(228, 231, 237);
   }
   .message_box{
