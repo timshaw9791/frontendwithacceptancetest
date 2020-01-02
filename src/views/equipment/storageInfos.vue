@@ -345,7 +345,7 @@
             },
             // 扩展信息 编辑后未提交应初始
             extendEditJudge() {
-                if(!this.extendEdit) {
+                if(!this.extendEdit && !this.isEqual()) {
                     this.isEditDialog = true
                     this.$refs.dialog.show()
                 } else {
@@ -354,7 +354,7 @@
             },
             // 装备参数 编辑后未提交应初始
             editJuadge() {
-              if(!this.edit) {
+              if(!this.edit && !this.isEqual()) {
                   this.isEditDialog = true
                   this.$refs.dialog.show()
               } else {
