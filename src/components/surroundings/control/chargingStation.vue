@@ -107,8 +107,7 @@
             },
             getChargingStationtNumber(number){
                 getChangeStationStatus({station:number}).then(res=>{
-                    console.log("成功+++++++");
-                   console.log(typeof(res));
+                   
                     let soList=''
                     soList=res.toString()
                     let socket = soList.split('').reverse();
@@ -126,10 +125,8 @@
                             })
                         }
                     });
-                    console.log("socketCopy");
-                    console.log(socketCopy);
+                   
                     this.socketList=socketCopy
-                    console.log(this.socketList);
                     this.flag=true;
                     this.getContextGql(number,socketCopy)
                 })
@@ -186,14 +183,9 @@
             },
             getContextGql(number,copyList){
                 getEquipChargeRecordList({station:number}).then(res=>{
-                    console.log("wdwadw");
-                    console.log(res);
-                    console.log("copyList");
-                    console.log(copyList);
                     res.equipInfo.forEach(item=>{
                             let number = Number(item.chargeNumber)-1;
                             if(copyList[number].name==''){
-                                console.log("触发我了");
                                 copyList[number].name=item.equipName;
                                 copyList[number].number=item.chargeNumber;
                                 copyList[number].station=item.chargeStation;
