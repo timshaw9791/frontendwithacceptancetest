@@ -126,7 +126,6 @@ created(){
           delete data.title
       }
       getMsgList(data).then(res => {
-        this.messageNum=0
         this.paginator.totalPages = res.totalPages
         this.paginator.totalElements = res.totalElements  
         this.loading = false
@@ -135,13 +134,26 @@ created(){
         this.list.forEach(item=>{
             if(item.status==false)
             {
-                this.messageNum++
                 item.status='未读'
             }else{
                 item.status='已读'
             }
         })
-        this.$store.commit('SET_MESSAGE', this.messageNum);    
+      });
+    },
+    getMessageList() {
+            let data = {
+                id: JSON.parse(localStorage.getItem("user")).id,
+            };
+            getMsgList(data).then(res => {
+              this.messageNum=0
+              res.content.forEach(item=>{
+                  if(item.status==false)
+                  {
+                      this.messageNum++
+                  }
+              })
+              this.$store.commit('SET_MESSAGE', this.messageNum);    
       });
     },
     moreContent(data,id){
