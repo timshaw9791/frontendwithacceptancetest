@@ -199,11 +199,11 @@
                 console.log(data);
             },
             repairTime(repairTime) {
-                let repairTimes = repairTime / 1000 / 60 / 60;
+                let repairTimes = repairTime / 1000 / 60 / 60 / 24;
                 if (repairTimes < 1) {
                     return repairTimes= '1天';
                 } else {
-                    return Math.round(repairTimes) + '小时'
+                    return Math.round(repairTimes) + '天'
                 }
             },
             serviceEnd(){
