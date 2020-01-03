@@ -33,7 +33,7 @@
                             type="selection"
                             width="55">
                     </el-table-column>
-                    <bos-table-column lable="RFID" field="rfid"></bos-table-column>
+                    <bos-table-column lable="RFID" field="rfid" :width="220"></bos-table-column>
                     <bos-table-column lable="装备序号" field="serial"></bos-table-column>
                     <bos-table-column lable="装备名称" field="equipArg.name"></bos-table-column>
                     <bos-table-column lable="装备型号" field="equipArg.model"></bos-table-column>
