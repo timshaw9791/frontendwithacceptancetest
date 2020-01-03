@@ -11,11 +11,19 @@
         <el-button type="text" class="_textBt" v-if="!viewStatus.insFlag" @click="edit" data-test="button">
             <svg-icon icon-class="加号" class="textBt" /> 编辑视频与文档
         </el-button>
-        <div class="input-box" v-if="!viewStatus.insFlag" data-test="search">
+        <!-- <div class="input-box" v-if="!viewStatus.insFlag" data-test="search">
             <svg-icon icon-class="搜索" class="icon-search"></svg-icon>
             <input class="input" v-model="search" :placeholder="'装备名称'" accept="video/*,.pdf"></input>
-        </div>
-        
+        </div> -->
+         <div class="_buttons" style="margin-right: 18px" v-if="!viewStatus.insFlag">
+                <BosInput
+                        placeholder="装备名称"
+                        suffix="el-icon-search"
+                        v-model="search"
+                        style="width:285px;">
+
+                </BosInput>
+            </div>
         <span v-if="viewStatus.insFlag">
                 {{this.title+'使用方法'}}
             </span>
