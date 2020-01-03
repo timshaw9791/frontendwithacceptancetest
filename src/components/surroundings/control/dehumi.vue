@@ -3,7 +3,7 @@
         <surrounding-card :header="(index+1)+'号除湿器'" :height="39">
             <div class="hum_body">
                  <svg-icon icon-class="除湿器" style="width: 70px;height: 48px"></svg-icon>
-                   <switch-control :active="active" :inactive="inactive" style="margin-top: 31px" :status="dehumidificationStatus?true:false" @handleChange="dehumidificationControl"></switch-control>
+                   <switch-control ref="switch_single" :active="active" :inactive="inactive" style="margin-top: 31px" :status="dehumidificationStatus?true:false" @handleChange="dehumidificationControl"></switch-control>
             </div>
         </surrounding-card>
     </div>
@@ -57,7 +57,6 @@
                     method:'post',
                     url:baseURL+'/environment/dehumidifierStatus'+'?number='+ind,
                 }).then((res)=>{
-                    console.log(res.data.data);
                     this.dehumidificationStatus=res.data.data
                 }).catch(err=>{
                     this.$message.error(err);
@@ -76,9 +75,11 @@
                             this.$message.success('关闭成功');
                         }
                     }
-               }).catch(err=>[
-                   this.$message.error("操作失败")
-               ])
+               }).catch(err=>{
+                   this.$message.error(err.response.data.message);
+                   this.$refs.switch_single.fail()
+                   
+               })
              
             },
             show(){

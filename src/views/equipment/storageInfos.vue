@@ -20,13 +20,13 @@
                         </el-button>
 
 
-                        <el-button type="text" class="topIcon" @click="edit=!edit" v-if="title.includes('装备参数详情')">
+                        <el-button type="text" class="topIcon" @click="editJuadge" v-if="title.includes('装备参数详情')">
                             <svg-icon icon-class="编辑"/>
                             {{edit?'编辑':'取消编辑'}}
                         </el-button>
 
 
-                        <el-button type="text" class="topIcon" @click="extendEdit=!extendEdit"
+                        <el-button type="text" class="topIcon" @click="extendEditJudge"
                                    v-if="title.includes('装备信息详情')">
                             <svg-icon icon-class="编辑"/>
                             {{extendEdit?'编辑':'取消编辑'}}
@@ -34,57 +34,57 @@
                     </div>
                     <div class="box-body">
                         <form-container ref="form" :model="form" class="formList">
-                           <field-input v-model="form.name" label="装备名称" width="3" name="装备名称"
+                           <field-input v-model="form.name" label="装备名称" width="2.5" name="装备名称"
                                          :rules="r(true).all(R.require)" prop="name"
                                          v-if="['新增装备参数', '装备参数详情', '装备信息详情'].includes(title)"
                                          :disabled="edit"
                             ></field-input>
-                            <field-select label="装备名称" v-model="form.name" width="3" name="装备名称"
+                            <field-select label="装备名称" v-model="form.name" width="2.5" name="装备名称"
                                           :list="equipment.name" :rules="r(true).all(R.require)"
                                           @change="equipNameSelected" placeholder="请选择" prop="name"
                                           v-else></field-select>
             
-                            <field-input v-model="form.model" label="装备型号" width="3"
+                            <field-input v-model="form.model" label="装备型号" width="2.5"
                                          :rules="r(true).all(R.require)" prop="model"
                                          v-if="['新增装备参数', '装备参数详情', '装备信息详情'].includes(title)"
                                          :disabled="edit" :class="{'occupy-position': !title.includes('装备信息详情')}"
                             ></field-input>
-                            <field-select label="装备型号" v-model="form.model" width="3" name="装备型号" prop="model"
+                            <field-select label="装备型号" v-model="form.model" width="2.5" name="装备型号" prop="model"
                                           :list="equipment.model" :rules="r(true).all(R.require)"
                                           @change="equipSelected" placeholder="请选择"
                                           :class="{'occupy-position': !title.includes('装备信息详情')}" v-else></field-select>
 
-                            <field-input v-model="form.serial" label="装备序号" width="3" :disabled="true"
+                            <field-input v-model="form.serial" label="装备序号" width="2.5" :disabled="true"
                                         v-if="title.includes('装备信息详情')"
                                       prop="serial"></field-input>
                             
-                            <field-input v-model="form.shelfLifeQ" label="保质期(天)" width="3" :disabled="edit"
+                            <field-input v-model="form.shelfLifeQ" label="保质期(天)" width="2.5" :disabled="edit"
                                          :rules="r(true).all(R.integer)" prop="shelfLifeQ"></field-input>
 
-                            <field-input v-model="form.chargeCycle" label="充电周期(天)" width="3"
+                            <field-input v-model="form.chargeCycle" label="充电周期(天)" width="2.5"
                                          :rules="r(false).all(R.num)" prop="chargeCycle"
                                          :disabled="edit"
                             ></field-input>
 
-                            <field-input v-model="form.upkeepCycle" label="保养周期(天)" width="3"
+                            <field-input v-model="form.upkeepCycle" label="保养周期(天)" width="2.5"
                                          :rules="r(false).all(R.num)" prop="upkeepCycle"
                                          :disabled="edit"
                             ></field-input>
 
-                            <field-input v-model="form.vendorId" label="供应商" width="3"
+                            <field-input v-model="form.vendorId" label="供应商" width="2.5"
                                          :rules="r(true).all(R.require)" prop="vendorId"
                                          :disabled="true" v-if="['入库装备', '装备信息详情'].includes(title)"
                             ></field-input>
-                            <field-select label="供应商" v-model="form.vendorId" width="3" name="供应商"
+                            <field-select label="供应商" v-model="form.vendorId" width="2.5" name="供应商"
                                           :rules="r(true).all(R.require)"
                                           prop="vendorId" @change="vendor(form.vendorId)"
                                           :disabled="edit" :list="supplierArr"
                                           v-else></field-select>
 
-                            <field-input v-model="form.personM" label="联系人员" width="3" :disabled="true"
+                            <field-input v-model="form.personM" label="联系人员" width="2.5" :disabled="true"
                                          :rules="r(true).all(R.require)" prop="personM"></field-input>
                                          
-                            <field-input v-model="form.phoneM" label="联系方式" width="3" :disabled="true"
+                            <field-input v-model="form.phoneM" label="联系方式" width="2.5" :disabled="true"
                                          :rules="r(true).all(R.require)" prop="phoneM"></field-input>
 
                         </form-container>
@@ -106,7 +106,7 @@
                         <span>扩展信息</span>
                     </div>
                     <div>
-                        <form-container ref="zbForm" :model="zbForm">
+                        <form-container ref="zbForm" :model="zbForm" class="zbFormList">
 
 
                             <field-input v-model="zbForm.numberL" label="架体编号" width="2.5"
@@ -144,7 +144,7 @@
                         <span>绑定序号</span>
                     </div>
                     <div>
-                        <el-table :data="list" fit height="360" class="list" :row-class-name="tableRowClassName">
+                        <el-table :data="list" fit height="330" class="list" :row-class-name="tableRowClassName">
                             <el-table-column label="序号" align="center">
                                 <template scope="scope">
                                     {{scope.$index+1}}
@@ -182,7 +182,7 @@
             </div>
         </el-card>
 
-        <field-dialog title="提示" ref="dialog" @confirm="dialogConfirm">
+        <field-dialog title="提示" ref="dialog" @cancel="isEditDialog=false" @confirm="dialogConfirm">
             <div class="_dialogDiv">
                 您确定要放弃本次操作吗?
             </div>
@@ -256,6 +256,7 @@
                 allSupplier: [], // 供应商所有数据列表
                 edit: true, // 装备参数详情的编辑
                 extendEdit: true, // 装备信息详情的编辑
+                isEditDialog: false, // 是否由 取消编辑 触发的弹窗
                 submitShow: false, // 提交按钮是否显示
                 hardwareOpen: false, // 硬件是否启动
                 useProp: false, // 装备入库是否自动选择
@@ -342,6 +343,24 @@
                     this.$emit('black');
                 }
             },
+            // 扩展信息 编辑后未提交应初始
+            extendEditJudge() {
+                if(!this.extendEdit && !this.isEqual()) {
+                    this.isEditDialog = true
+                    this.$refs.dialog.show()
+                } else {
+                    this.extendEdit = !this.extendEdit
+                }
+            },
+            // 装备参数 编辑后未提交应初始
+            editJuadge() {
+              if(!this.edit && !this.isEqual()) {
+                  this.isEditDialog = true
+                  this.$refs.dialog.show()
+              } else {
+                  this.edit = !this.edit
+              }  
+            },
             /* 判断两次数据是否相等 */
             isEqual() {
                 let flag1 = JSON.stringify(this.form) == JSON.stringify(this.judgeEdit.form),
@@ -353,7 +372,20 @@
                 if(this.title.includes('入库装备') && this.hardwareOpen) {
                     killProcess(this.pid)
                 }
-                this.$emit('black');
+                if(this.isEditDialog) {
+                    this.isEditDialog = false
+                    if(this.title.includes("装备参数详情")) {
+                        this.edit = !this.edit
+                        this.form = JSON.parse(JSON.stringify(this.judgeEdit.form))
+                    }
+                    if(this.title.includes("装备信息详情")) {
+                        this.extendEdit = !this.extendEdit
+                        this.zbForm = JSON.parse(JSON.stringify(this.judgeEdit.zbForm))
+                    }
+                    this.$refs.dialog.hide()
+                } else {
+                    this.$emit('black');
+                }
             },
 
             //点击提交后 根据从什么入口进入的执行对应的  新增  入库  装备基础信息修改 装备入库信息修改
@@ -713,7 +745,11 @@
     .el-card {
         border: none !important;
     }
-
+    .el-form {
+        /deep/ .el-form-item {
+            margin-bottom: 10px;
+        }
+    }
 
     .black {
         /* 可调整 */
@@ -745,28 +781,7 @@
             }
 
             .formList {
-                width: 974px;
-                margin: 0 auto;
-            }
-
-            .video {
-                margin: 0 0.2604rem 0.1042rem 0.2604rem;
-                cursor: pointer;
-                text-align: center;
-
-                input {
-                    display: none;
-                }
-
-                .icon {
-                    font-size: 0.2604rem;
-                    color: #2f2f76;
-                }
-
-                div {
-                    text-align: center;
-                    word-wrap: break-word;
-                }
+                width: 6.7708rem;
             }
         }
 
@@ -778,15 +793,18 @@
 
         .list {
             width: 80%;
-            margin: 3% auto;
+            margin: 0 auto;
             max-height: 40vh;
             border: 1px solid #EBEEF5;
             border-bottom: none !important;
         }
 
+        .zbFormList {
+            width: 6.7708rem;
+        }
     }
     .occupy-position {
-        margin-right: 1.0417rem
+        margin-right: 2.0833rem;
     }
 
 </style>

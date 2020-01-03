@@ -8,14 +8,14 @@
         <div class="icons">
             <div @click="$router.push('/overview/index')">
                 <el-tooltip class="item" effect="dark" content="主页" placement="bottom">
-                    <el-badge :is-dot="$store.state.socket.message?true:false">
+                    <el-badge :is-dot="false">
                         <svg-icon icon-class="主页" class="svg"/>
                     </el-badge>
                 </el-tooltip>
             </div>
             <div @click="$router.push('/message/index')">
                 <el-tooltip class="item" effect="dark" content="消息中心" placement="bottom">
-                    <el-badge :is-dot="$store.state.socket.message?true:false">
+                    <el-badge  :value="$store.state.socket.message" >
                         <svg-icon icon-class="通知" class="svg"/>
                     </el-badge>
                 </el-tooltip>
@@ -59,7 +59,7 @@
     import Hamburger from 'components/base/Hamburger'
     import {startSocket} from "common/js/webSocket";
     import { localTitle } from 'api/config'
-
+    import { readMsg, getMsgList, getMsgListWithType } from "api/message";
 
     // const cmdPath = 'C:\\Users\\Administrator';
     // const exec = window.require('child_process').exec;
@@ -67,7 +67,9 @@
     export default {
         data() {
             return {
-                title: localTitle
+                title: localTitle,
+                haveMessage:false,
+                messageNum:0
             }
         },
         components: {
@@ -116,15 +118,40 @@
                 // setTimeout(() => {
                 //
                 // }, 500)
-            }
+            },
+            getList() {
+            let data = {
+                id: JSON.parse(localStorage.getItem("user")).id,
+            };
+            getMsgList(data).then(res => {
+              this.messageNum=0
+              res.content.forEach(item=>{
+                  if(item.status==false)
+                  {
+                      this.messageNum++
+                  }
+              })
+              this.$store.commit('SET_MESSAGE', this.messageNum);    
+      });
+    },
+        },
+        created(){
+        this.getList()
         },
         mounted() {
             startSocket(JSON.parse(localStorage.getItem('user')).id);
         }
     }
 </script>
-
 <style rel="stylesheet/scss" lang="scss" scoped>
+    .el-badge {
+        /deep/.el-badge__content
+    {
+        margin-top:0.06rem;
+    } 
+    }
+    
+    
     .navbar {
         font-size: .083rem;
         height: 0.3125rem;
@@ -156,7 +183,6 @@
             }
 
         }
-
         .hamburger-container {
             height: 0.2604rem;
             float: left;

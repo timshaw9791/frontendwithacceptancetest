@@ -25,19 +25,21 @@
         watch: {
             $route: {
                 handler(to, from) {
-                    this.className = to.name == "overview/index"?"app-main-none":"app-main"
+                    this.className = to.name == "overview/index"?"app-main":"app-main-shadow"
                 },
+                immediate: true
             }
         },
     }
 </script>
 
 <style lang="scss" scoped>
-.app-main-none {
+.app-main-shadow {
     min-height: 87vh;
     max-height: 87vh;
     margin: 2%;
     position: relative;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
     .list {
         max-height: 87vh;
     }
