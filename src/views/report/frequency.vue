@@ -305,6 +305,7 @@
         padding-left: 0.09375rem;
         border-bottom: 1px solid rgba(112, 112, 112, 0.13);
         color: #707070;
+        font-size: 20px;
     }
 
     .frequency_box .frequency_body {

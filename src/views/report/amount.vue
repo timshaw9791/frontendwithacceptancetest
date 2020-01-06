@@ -315,6 +315,7 @@
         padding-left: 0.09375rem;
         border-bottom: 0.0052rem solid rgba(112, 112, 112, 0.13);
         color: #707070;
+        font-size: 20px;
     }
 
     .amount_box .amount_body {
