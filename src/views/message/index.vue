@@ -112,6 +112,7 @@ export default {
 //     },
 created(){
   this.getList()
+  this.getMessageList()
 },
   methods: {
     getList() {
@@ -215,6 +216,7 @@ created(){
           ids:id
       }).then(res => {
         this.getList()
+        this.getMessageList()
       });
     },
     ulClick(data, index) {

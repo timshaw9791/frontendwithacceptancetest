@@ -89,16 +89,12 @@
                     method:'post',
                     url:baseURL+'/environment/lightQuery',
                 }).then((res)=>{
-                    console.log("嘤嘤嘤  我在干什么");
-                    console.log(res);
                     let resData=''
                     resData=res.data[0]
                     let listCopy=[]
                     let lig=[]
                     lig=resData.split('')
                     lig=lig.reverse()
-                    console.log("lightList")
-                    console.log(lig);
                     lig.forEach((item,index)=>{
                         listCopy.push({
                             number:index+1,
@@ -115,7 +111,7 @@
                     this.getlightInfo();
                     
                 }).catch(err=>{
-                    this.$message.error(err);
+                    this.$message.error(err.response.data.message);
                 });
             },
             getlightInfo(){
