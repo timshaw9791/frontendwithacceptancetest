@@ -41,7 +41,7 @@
         </div>
         <div class="bottom">
             <span v-text="'备注：'"></span>
-            <span v-model="overview.remark"></span>
+            <span v-text="overview.remark"></span>
         </div>
     </div>
 </template>

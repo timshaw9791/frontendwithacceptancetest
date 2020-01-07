@@ -218,10 +218,9 @@
 
         methods: {
             batchstorage() {
-                // this.batch = !this.batch;
                 this.dialogList = [];
                 modifyFileName('search.json');
-                handheld((err) => this.$message.error(err)).then((data) => {
+                handheld((err) => this.$message.error(err)).then((data) =>{
                     let json = JSON.parse(data);
                     this.rfids = json.rfid;
                     findByRfids(this.rfids).then(res => {
