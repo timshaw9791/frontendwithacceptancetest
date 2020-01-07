@@ -6,7 +6,7 @@
             </div>
             <div class="action_button_box_right">
                 <div class="action_search">
-                    <r_search ref="report_search" :placeholder="table.placeholder" @search="getSearch"></r_search>
+                    <r_search ref="report_search" :width="324" :placeholder="table.placeholder" @search="getSearch"></r_search>
                 </div>
                 <div class="action_export">
                     <text-button :iconClass="'导出'" :buttonName="'导出'" @click="toExport"></text-button>

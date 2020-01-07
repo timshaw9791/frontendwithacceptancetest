@@ -2,7 +2,7 @@
     <div class="safety_tree" data-test="tree_box">
         <div class="safety_tree_filter">
             <div style="width: 1.6875rem">
-                <s_search @search="getSearch" :placeholder="'小类'"></s_search>
+                <s_search @search="getSearch" :width="324" :placeholder="'小类'"></s_search>
             </div>
         </div>
         <div class="safety_tree_body" data-test="tree_box">

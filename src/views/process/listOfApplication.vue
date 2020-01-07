@@ -12,9 +12,7 @@
                 </div>
             </div>
             <div class="action_right_box">
-                <div style="width: 1.6875rem">
-                    <p_search @search="getSearch" :placeholder="'标题'"></p_search>
-                </div>
+                <p_search @search="getSearch" :placeholder="'标题'"></p_search>
             </div>
         </div>
         <div class="agency-matters_main_box" data-test="main_box">
