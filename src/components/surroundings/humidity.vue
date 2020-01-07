@@ -99,7 +99,7 @@
                     };
                     this.$emit('humidity',dataHumidity);
                 }).catch(err=>{
-                    this.$message.error(err);
+                    this.$message.error(err.response.data.message);
                 });
             },
             getMonthDays(month,year){
@@ -114,7 +114,7 @@
                     }).then((res)=>{
                         resolve(res.data.data)
                     }).catch(err=>{
-                        this.$message.error(err);
+                        this.$message.error(err.response.data.message);
                     });
                 });
                 return promise
@@ -153,7 +153,7 @@
                     };
                     this.$emit('humidity',dataHumidity);
                 }).catch(err=>{
-                    this.$message.error(err);
+                    this.$message.error(err.response.data.message);
                 });
             },
             getThreshold(copyList){

@@ -72,7 +72,7 @@
                     }).then((res)=>{
                         resolve(res.data.data)
                     }).catch(err=>{
-                        this.$message.error(err);
+                        this.$message.error(err.response.data.message);
                     });
                 });
                return promise
@@ -113,7 +113,7 @@
                     };
                     this.$emit('temperature',dataTemperature);
                 }).catch(err=>{
-                    this.$message.error(err);
+                    this.$message.error(err.response.data.message);
                 });
             },
             getMonthDays(month,year){
@@ -155,7 +155,7 @@
                     this.$emit('temperature',dataTemperature);
                     // this.$refs.tLine.show();
                 }).catch(err=>{
-                    this.$message.error(err);
+                    this.$message.error(err.response.data.message);
                 });
             },
             getThreshold(copyList){

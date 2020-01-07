@@ -60,7 +60,7 @@
                 }).then((res)=>{
                     this.humNum=res.data.data.DEHUMIDIFIER_COUNT
                 }).catch(err=>{
-                    this.$message.error(err);
+                    this.$message.error(err.response.data.message);
                 });
             },
             
@@ -78,7 +78,7 @@
                         }
                     }
                 }).catch(err=>{
-                    this.$message.error(err);
+                    this.$message.error(err.response.data.message);
                 });
             },
             gethumList(){
@@ -121,7 +121,7 @@
                     this.flag=!this.flag;
                     this.$message.success('提交成功');
                 }).catch(err=>{
-                    this.$message.error(err);
+                    this.$message.error(err.response.data.message);
                 });
             },
             getThreshold(){
@@ -131,7 +131,7 @@
                 }).then((res)=>{
                     this.threshold=res.data.data.humidityThreshold
                 }).catch(err=>{
-                    this.$message.error(err);
+                    this.$message.error(err.response.data.message);
                 });
             }
         }

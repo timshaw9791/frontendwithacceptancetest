@@ -178,7 +178,7 @@
                 }).then((res)=>{
                     this.$message.success('操作成功')
                 }).catch(err=>{
-                    this.$message.error(err);
+                    this.$message.error(err.response.data.message);
                 });
             },
             submission(data){
@@ -206,7 +206,7 @@
                         this.oldThresholdMax=this.thresholdMax
                         this.$message.success('温度设置成功');
                     }).catch(err=>{
-                        this.$message.error(err);
+                        this.$message.error(err.response.data.message);
                     });
                 }
                 }
@@ -229,7 +229,7 @@
                     this.oldDehumi=this.humidityThreshold
                     this.$message.success('湿度设置成功');
                 }).catch(err=>{
-                    this.$message.error(err);
+                    this.$message.error(err.response.data.message);
                 });
                 }
                 if(this.lunboContent!=this.oldContent||this.lunbotime!=this.oldTime)
@@ -245,7 +245,7 @@
                  this.oldContent=this.lunboContent
                  this.$message.success('轮播词设置成功');
                 }).catch(err=>{
-                    this.$message.error(err);
+                    this.$message.error(err.response.data.message);
                 });
                 }
 
@@ -261,7 +261,7 @@
                     this.humidityThreshold=res.data.data.humidityThreshold;
                     this.oldThreshold=res.data.data.humidityThreshold
                 }).catch(err=>{
-                    this.$message.error(err);
+                    this.$message.error(err.response.data.message);
                 });
             },
             getSmoke(){
@@ -273,7 +273,7 @@
                     this.smokeThreshold=res.data.data;
                     this.oldSmoke=res.data.data
                 }).catch(err=>{
-                    this.$message.error(err);
+                    this.$message.error(err.response.data.message);
                 });
             },
             getLunbo(){
@@ -286,7 +286,7 @@
                     this.oldTime=res.data.time;
                     this.oldContent=res.data.words[0];
                 }).catch(err=>{
-                    this.$message.error(err);
+                    this.$message.error(err.response.data.message);
                 });
             },
             getThreshold(){
@@ -301,7 +301,7 @@
                     // this.changeThreshold=false
                    
                 }).catch(err=>{
-                    this.$message.error(err);
+                    this.$message.error(err.response.data.message);
                 });
                 
             }

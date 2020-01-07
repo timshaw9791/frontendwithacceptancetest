@@ -53,7 +53,9 @@
                     this.airNum=res.data.data.AIR_CONDITIONER_COUNT
                     console.log("设备信息");
                     console.log(this.airNum);
-                })
+                }).catch(err=>{
+                    this.$message.error(err.response.data.message);
+                });
             },
             getAirStatusList(){
                this.$ajax({
@@ -65,7 +67,9 @@
                     this.airList=newList
                     console.log(this.airList);
                     console.log(res);
-                })
+                }).catch(err=>{
+                    this.$message.error(err.response.data.message);
+                });
             },
             refrigerationControl(data){
                if(data){

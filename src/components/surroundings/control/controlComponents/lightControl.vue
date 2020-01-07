@@ -41,7 +41,7 @@
                     this.$message.success('成功')
                 }).catch(err=>{
                     //  this.state = false
-                    this.$message.error(err);
+                    this.$message.error(err.response.data.message);
                     this.$refs.switch_single.fail()
                     
                 });
