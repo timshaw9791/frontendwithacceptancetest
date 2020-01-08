@@ -62,7 +62,7 @@
                 }).then((res)=>{
                     this.concentration=res.data.data
                 }).catch(err=>{
-                    this.$message.error(err);
+                    this.$message.error(err.response.data.message);
                 });
                 
                 smokeThreshold().then(res => {

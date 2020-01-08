@@ -64,7 +64,7 @@
                     this.changeCount=res.data.data.ENVIRONMENT_CHARGE_COUNT
                     console.log('getConfigs',res.data.data.ENVIRONMENT_CHARGE_COUNT);
                 }).catch(err=>{
-                    this.$message.error(err);
+                    this.$message.error(err.response.data.message);
                 });
             },
             getChargingStationtList(){
@@ -197,7 +197,9 @@
                         setTimeout(()=>{
                             this.flag=true;
                         },0)
-                })
+                }).catch(err=>{
+                    this.$message.error(err.response.data.message);
+                });
                 // this.qfilter.value=String(number);
                 // this.gqlQuery(surroundings.getEquipChargeRecordList,{qfilter:this.qfilter}, (data) => {
                 //     data.forEach(item=>{
@@ -236,7 +238,7 @@
                     }).then((res)=>{
                         sCallback.call(this,res);
                     }).catch(err=>{
-                        this.$message.error(err);
+                        this.$message.error(err.response.data.message);
                     })
                 }else {
                     this.$ajax({
@@ -245,7 +247,7 @@
                     }).then((res)=>{
                         sCallback.call(this,res);
                     }).catch(err=>{
-                        this.$message.error(err);
+                        this.$message.error(err.response.data.message);
                     })
                 }
                /* this.query(graphql, variables).then((data) => {
