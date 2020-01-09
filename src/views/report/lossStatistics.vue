@@ -7,13 +7,13 @@
             <report_tree @clickNode="clickNode"></report_tree>
             <report_table ref="table" :table="table">
                 <div class="table_header_box" v-if="table.tableType!=='All'&&table.tableType!==''&&computeTotal.rate!==undefined">
-                  <div class="table_header">
-                      <div class="table_header_item"><span v-text="`装备总数：${computeTotal.totalCount}`"></span></div>
-                      <div class="table_header_item"><span v-text="`装备总价(元)：${computeTotal.totalPrice}`"></span></div>
-                      <div class="table_header_item"><span v-text="`损耗数量：${computeTotal.count}`"></span></div>
-                      <div class="table_header_item"><span v-text="`损耗总额：${computeTotal.totalLoss}`"></span></div>
-                      <div class="table_header_item"><span v-text="`损耗率(%)：${computeTotal.rate}`"></span></div>
-                  </div>
+                    <div class="table_header">
+                        <div class="table_header_item"><span v-text="`装备总数：${computeTotal.totalCount}`"></span></div>
+                        <div class="table_header_item"><span v-text="`装备总价(元)：${computeTotal.totalPrice}`"></span></div>
+                        <div class="table_header_item"><span v-text="`损耗数量：${computeTotal.count}`"></span></div>
+                        <div class="table_header_item"><span v-text="`损耗总额：${computeTotal.totalLoss}`"></span></div>
+                        <div class="table_header_item"><span v-text="`损耗率(%)：${computeTotal.rate}`"></span></div>
+                    </div>
                 </div>
             </report_table>
         </div>
@@ -97,7 +97,7 @@
                             {lable: '装备总数', field: 'totalCount'},
                             {lable: '装备总价(元)', field: 'totalPrice'},
                             {lable: '损耗数量', field: 'count',},
-                            {lable: '损耗总额', field: 'action'},
+                            {lable: '损耗总额', field: 'totalLoss'},
                             {lable: '损耗率(%)',filter: this.filterRate}
                         ]);
                         break;
@@ -140,9 +140,9 @@
             getAmountList() {
                 let params={};
                 _.forIn(this.table.params,(value,key)=>{
-                   if (value!==''){
-                       this.$set(params,key,value)
-                   }
+                    if (value!==''){
+                        this.$set(params,key,value)
+                    }
                 });
                 lossStatistic(params).then(res => {
                     this.$set(this.table, 'list', res);
@@ -160,7 +160,7 @@
             },
             filterRate(data){
                 if(data.totalCount!==0){
-                    return data.count/data.totalCount
+                    return (data.count/data.totalCount)*100;
                 }else {
                     return 0
                 }
@@ -179,7 +179,7 @@
                     totalLoss+=item.totalLoss;
                 });
                 if(totalCount!=0){
-                    rate=count/totalCount
+                    rate=(count/totalCount)*100;
                 }
                 this.table.info=`装备总数：${totalCount}装备总价(元)：${totalPrice}损耗数量：${count}损耗总额：${totalLoss}损耗率(%)：${rate}`;
                 this.computeTotal={
