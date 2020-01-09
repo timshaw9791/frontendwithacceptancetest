@@ -39,7 +39,6 @@
                         {lable: '工作流', field: 'operator', filter: this.filterProcessType},
                         {lable: '申请时间', field: 'startTime', filter: (ns) => this.$filterTime(ns.startTime)},
                         {lable: '当前节点', field: 'currentTask.name'},
-                        {lable: '未操作者', field: 'currentTask.assigneeName'},
                     ],
                     align:'left',
                     height:'618px',
