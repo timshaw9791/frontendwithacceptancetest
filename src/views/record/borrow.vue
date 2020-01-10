@@ -66,7 +66,7 @@
                     ],
                     tableAction:{
                         label:'操作',
-                        button:[{name:'查看',type:'primary'},{name:'监控',type:'primary'}]
+                        button:[{name:'详情',type:'primary'},{name:'监控',type:'primary'}]
                     },
                     flag:false
                 },
