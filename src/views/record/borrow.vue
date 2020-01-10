@@ -113,7 +113,7 @@
             },
             clickTableCloum(data){
                 console.log("data",data)
-                if(data.name=="查看"){
+                if(data.name=="详情"){
                     console.log("111")
                     this.infolist = data.row.recordDetailSet
                     console.log("this.infolist",this.infolist)
