@@ -19,7 +19,6 @@
     import selectChargingStation from 'components/personnelManagement/personnelSelect'
     import socket from './controlComponents/socket'
     import {fetchMixin} from 'field/common/mixinFetch'
-    import  surroundings from 'gql/surroundings.gql'
     import {baseURL} from "../../../api/config";
     import {getEquipChargeRecordList,getChangeStationStatus} from 'api/surroundings'
 
@@ -61,8 +60,9 @@
                     method:'post',
                     url:baseURL+'/environment/deviceConfig',
                 }).then((res)=>{
-                    this.changeCount=res.data.data.ENVIRONMENT_CHARGE_COUNT
-                    console.log('getConfigs',res.data.data.ENVIRONMENT_CHARGE_COUNT);
+                    console.log(res);
+                    this.changeCount=res.data.ENVIRONMENT_CHARGE_COUNT;
+                    console.log('getConfigs',res.data.ENVIRONMENT_CHARGE_COUNT);
                 }).catch(err=>{
                     this.$message.error(err.response.data.message);
                 });
@@ -107,9 +107,8 @@
             },
             getChargingStationtNumber(number){
                 getChangeStationStatus({station:number}).then(res=>{
-                   
-                    let soList=''
-                    soList=res.toString()
+                    let soList='';
+                    soList=res.toString();
                     let socket = soList.split('').reverse();
                     let socketCopy=[];
                     socket.forEach((item,index)=>{
@@ -126,7 +125,7 @@
                         }
                     });
                    
-                    this.socketList=socketCopy
+                    this.socketList=socketCopy;
                     this.flag=true;
                     this.getContextGql(number,socketCopy)
                 })
@@ -222,7 +221,7 @@
 
             },
             show(){
-                this.getConfigs()
+                this.getConfigs();
                 this.getChargingStationtList();
 
             },
