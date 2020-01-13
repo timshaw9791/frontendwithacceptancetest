@@ -103,7 +103,7 @@
                     method:'post',
                     url:baseURL+'/environment/lightQuery',
                 }).then(res=>{
-                    let resData=res;
+                    let resData=res.data.data;
                     this.lightCopy=JSON.parse(JSON.stringify(resData));
                     this.select.selectList=[];
                     resData.forEach((item,index)=>{

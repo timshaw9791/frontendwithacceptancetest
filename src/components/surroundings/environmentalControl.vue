@@ -100,8 +100,6 @@
                 });
             },
             toConctrol(data){
-                console.log("dawdawd");
-                console.log(data);
                if(data.flag){
                    this.handleClick(data.text);
                }else {

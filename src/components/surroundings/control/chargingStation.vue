@@ -60,9 +60,8 @@
                     method:'post',
                     url:baseURL+'/environment/deviceConfig',
                 }).then((res)=>{
-                    console.log(res);
-                    this.changeCount=res.data.ENVIRONMENT_CHARGE_COUNT;
-                    console.log('getConfigs',res.data.ENVIRONMENT_CHARGE_COUNT);
+                    this.changeCount=res.data.data.ENVIRONMENT_CHARGE_COUNT
+                    console.log('getConfigs',res.data.data.ENVIRONMENT_CHARGE_COUNT);
                 }).catch(err=>{
                     this.$message.error(err.response.data.message);
                 });
@@ -107,8 +106,9 @@
             },
             getChargingStationtNumber(number){
                 getChangeStationStatus({station:number}).then(res=>{
-                    let soList='';
-                    soList=res.toString();
+
+                    let soList=''
+                    soList=res.toString()
                     let socket = soList.split('').reverse();
                     let socketCopy=[];
                     socket.forEach((item,index)=>{
