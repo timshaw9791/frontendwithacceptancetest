@@ -52,7 +52,6 @@
                     }
                 },
                 lightList:[],
-                lightCopy:[],
                 inactive:{
                     all:{
                         text:'一键关灯',
@@ -69,8 +68,7 @@
         },
         methods:{
             selectSation(data){
-                let route=_.findIndex(this.lightCopy,(item)=>{ return item === data; }),list=[];
-                let li=data;
+                let route=_.findLastIndex(this.select.selectList,(item)=>{ return item.value === data; })+1,list=[],li=data;
                 list=[{number:1,route:route, status:li[8]},{number:2,route:route, status:li[7]}];
                 this.lightList=list;
             },
@@ -103,8 +101,7 @@
                     method:'post',
                     url:baseURL+'/environment/lightQuery',
                 }).then(res=>{
-                    let resData=res.data.data;
-                    this.lightCopy=JSON.parse(JSON.stringify(resData));
+                    let resData=res.data;
                     this.select.selectList=[];
                     resData.forEach((item,index)=>{
                         let i=index+1;

@@ -60,8 +60,7 @@
                     method:'post',
                     url:baseURL+'/environment/deviceConfig',
                 }).then((res)=>{
-                    this.changeCount=res.data.data.ENVIRONMENT_CHARGE_COUNT
-                    console.log('getConfigs',res.data.data.ENVIRONMENT_CHARGE_COUNT);
+                    this.changeCount=res.data.data.ENVIRONMENT_CHARGE_COUNT;
                 }).catch(err=>{
                     this.$message.error(err.response.data.message);
                 });
