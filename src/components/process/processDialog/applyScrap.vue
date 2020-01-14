@@ -110,7 +110,6 @@
             'hardware': {
                 deep:true,
                 handler(newVal, oldVal) {
-                    console.log(newVal);
                     if (newVal === '手持机') {
                         this.form.equips=[];
                         this.handheldMachine();
@@ -240,7 +239,7 @@
                 this.$refs.applyScrap.show()
             },
             cancelDb() {
-                // killProcess(this.pid);
+                killProcess(this.pid);
                 this.$refs.applyScrap.cancel();
             },
         },
