@@ -15,7 +15,7 @@
         </div>
         <div class="report_table_box" data-test="table_box">
             <slot></slot>
-            <field-table :align="'left'" :list="table.list" :labelList="table.labelList" :havePage="false" :height="table.height" style="width: 100%"></field-table>
+            <field-table v-if="table.show" :align="'left'" :list="table.list" :labelList="table.labelList" :havePage="false" :height="table.height" style="width: 100%"></field-table>
         </div>
         <div v-show="false" style="position: absolute;z-index: -2">
             <excel-table ref="table_excel" :fileName="fileName" :list="table.list" :tableHeader="{bigTitle:$route.meta.title,lableList:table.labelList,smallTitle:table.tableTitle,info:table.info}"></excel-table>

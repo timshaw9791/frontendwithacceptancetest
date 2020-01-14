@@ -5,7 +5,7 @@
         </div>
         <div class="frequency_body" data-test="main_box">
             <report_tree @clickNode="clickNode"></report_tree>
-            <report_table ref="table" :table="table" @export="toExport">
+            <report_table ref="table" :table="table">
                 <div class="table_header_box" v-if="table.tableType!=='All'&&table.tableType!==''&&computeTotal.count!==undefined">
                     <div class="table_header">
                         <div class="table_header_item"><span v-text="`装备总数：${computeTotal.totalCount}`"></span></div>
@@ -44,7 +44,8 @@
                     placeholder: '全部大类',
                     height: '3.78125rem',
                     params: {id: '', level: '', search: ''},
-                    info:''
+                    info:'',
+                    show:false
                 },
                 computeTotal:{},
                 current: {}
@@ -54,7 +55,7 @@
             'table.params.search': {
                 deep: true,
                 handler() {
-                    this.getAmountList()
+                    this.getFrequencyList()
                 }
             }
         },
@@ -62,6 +63,7 @@
         },
         methods: {
             clickNode(data) {
+                this.table.show=false;
                 if (this.current.id !== data.id) {
                     this.$refs.table.emptySearch()
                 }
@@ -123,13 +125,13 @@
                         break;
                 }
                 if (this.table.params.search === '') {
-                    this.getAmountList()
+                    this.getFrequencyList()
                 } else {
                     this.$set(this.table.params, 'search', '')
                 }
 
             },
-            getAmountList() {
+            getFrequencyList() {
                 frequencyStatistic(this.table.params).then(res => {
                     this.$set(this.table, 'list', res);
                     this.table.list.forEach(item=>{
@@ -140,16 +142,10 @@
                     }else {
                         this.table.info=''
                     }
-
+                    if(!this.table.show){
+                        this.table.show=true
+                    }
                 })
-            },
-            filterRate(data){
-                if(data.totalCount!==0){
-                    return data.count/data.totalCount
-                }else {
-                    return 0
-                }
-
             },
             computeFunction(data){
                 let totalCount = 0;
@@ -166,106 +162,7 @@
                     totalPrice:totalPrice,
                     count:count,
                 }
-            },
-            toExport(){
-                console.log('toExport')
             }
-            // distributionClick(){
-            //     this.status.buttonDisable=!this.status.buttonDisable;
-            //     this.status.distribution=!this.status.buttonDisable;
-            //     if(!this.status.distribution){
-            //         this.$refs.frequencyTable.resultCheckBox();
-            //     }
-            // },
-            // getTotalAndStockCount() {
-            //     let count = 0;
-            //     this.table.stock = this.tree.currentNode.stock;
-            //     this.table.tableData.forEach(item => {
-            //         count = count + item.count
-            //     });
-            //     this.table.totalCount = count + '\xa0\xa0{件}'
-            // },
-            // refetch() {
-            //     this.getGenreAll();
-            //     if (this.table.tableType === 'genre') {
-            //         findAllCategoryById(this.tree.currentNode.id).then(res => {
-            //             this.table.tableData = res;
-            //         });
-            //     } else {
-            //         findAllEquipArgs(this.tree.currentNode.id).then(res => {
-            //             this.table.tableData = res;
-            //             this.getTotalAndStockCount();
-            //         })
-            //     }
-            //     this.$message.success('操作成功');
-            //     this.$refs.genreOrCategory.cancelDb()
-            // },
-            // modifyStock(type) {
-            //     if (type === 'status') {
-            //         this.status.buttonDisable = !this.status.buttonDisable;
-            //         this.table.copyTableData = JSON.parse(JSON.stringify(this.table.tableData));
-            //     } else if (type === 'modify') {
-            //         if(this.table.tableType==='unallocated'){
-            //             this.title.titleType = 'unallocated';
-            //             this.title.genreTitle ='装备分配';
-            //             this.$refs.genreOrCategory.show()
-            //         }else{
-            //             let category = [];
-            //             this.table.tableData.forEach(item => {
-            //                 category.push(item.category)
-            //             });
-            //             frequencyStock(category).then(res => {
-            //                 this.$message.success('操作成功');
-            //                 this.status.buttonDisable = !this.status.buttonDisable
-            //             });
-            //         }
-            //     } else {
-            //         if(this.table.tableType==='unallocated'){
-            //             this.$refs.frequencyTable.resultCheckBox();
-            //             this.status.distribution=false;
-            //         }else{
-            //             this.table.tableData = this.table.copyTableData;
-            //         }
-            //         this.status.buttonDisable = !this.status.buttonDisable;
-            //     }
-            // },
-            // addOrModifyGenre(data, type) {
-            //     if (data === 'add') {
-            //         this.title.genreTitle = type === 'tree' ? '添加大类' : '添加小类';
-            //     } else {
-            //         this.title.genreTitle = type === 'tree' ? '修改大类' : '修改小类';
-            //     }
-            //     this.title.titleType = type;
-            //     this.$refs.genreOrCategory.show()
-            // },
-            // deleteGenreById() {
-            //     deleteGenreById(this.tree.currentNode.id).then(res => {
-            //         this.getGenreAll();
-            //         this.$refs.deleteGenre.hide();
-            //     })
-            // },
-            // deleteGenre() {
-            //     this.$refs.deleteGenre.show();
-            // },
-            //
-
-            // filterNode(value, data) {
-            //     console.log(value, data)
-            //     if (!value) return true;
-            //     return data.name.indexOf(value) !== -1;
-            // },
-            // renderContent(h, {node, data, store}) {
-            //     return (
-            //         < span
-            // class
-            //     = "custom-tree-node" >
-            //         < span
-            // class
-            //     = {data.click ? 'treeColorClick' : 'treeColorNoClick'} > {node.label} < /span>
-            //         < /span>
-            // )
-            //     ;
-            // },
         }
     }
 </script>
