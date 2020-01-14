@@ -160,7 +160,7 @@
             },
             filterRate(data){
                 if(data.totalCount!==0){
-                    return (data.count/data.totalCount)*100;
+                    return ((data.count/(data.totalCount+data.count))*100).toFixed(2);
                 }else {
                     return 0
                 }
@@ -179,7 +179,7 @@
                     totalLoss+=item.totalLoss;
                 });
                 if(totalCount!=0){
-                    rate=(count/totalCount)*100;
+                    rate=((count/(totalCount+count))*100).toFixed(2);
                 }
                 this.table.info=`装备总数：${totalCount}装备总价(元)：${totalPrice}损耗数量：${count}损耗总额：${totalLoss}损耗率(%)：${rate}`;
                 this.computeTotal={

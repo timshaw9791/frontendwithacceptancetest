@@ -155,7 +155,7 @@
             },
             filterRate(data){
                 if(data.totalCount!==0){
-                    return (data.count/data.totalCount)*100
+                    return ((data.count/data.totalCount)*100).toFixed(2)
                 }else {
                     return 0
                 }
@@ -172,7 +172,7 @@
                     count+=item.count;
                 });
                 if(totalCount!=0){
-                    rate=(count/totalCount)*100;
+                    rate=((count/totalCount)*100).toFixed(2);
                 }
                 console.log('computeFunction',totalCount);
                 this.table.info=`装备总数：${totalCount}装备总价(元)：${totalPrice}维修数量：${count}维修率(%)：${rate}`;
