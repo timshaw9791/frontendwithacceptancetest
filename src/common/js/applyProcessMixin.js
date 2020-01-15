@@ -37,6 +37,7 @@ export const applyProcessMixin = {
                 });
                 this.mixinObject.processConfigId=res.id;
                 this.$set(this.mixinObject,'leaderList',leader);
+                console.log('this.mixinObject',this.mixinObject)
             })
         },
         classify(data){

@@ -44,7 +44,8 @@
                 function fs(item) {
                     item.value={
                         name:item.name,
-                        id:item.id
+                        id:item.id,
+                        level:item.level
                     };
                     if(item.lowers!==null){
                         item.lowers.forEach(lowerItem=>{

@@ -89,7 +89,13 @@
         methods: {
             changeUnit(data) {
                 this.$refs.transferSelect.toEmpty();
-                let params = {organUnitId: data[0].id, type: this.form.type};
+                let id='';
+                if(data[data.length-1].level==='POLICE_STATION'){
+                    id=data[data.length-2].id
+                }else {
+                    id=data[data.length-1].id
+                }
+                let params = {organUnitId: id, type: this.form.type};
                 this.form.outboundOrganUnit = data[data.length - 1];
                 this.mixinEquipArgs();
                 this.mixiGetLeader(params);

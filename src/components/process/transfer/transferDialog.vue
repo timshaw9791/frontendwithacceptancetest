@@ -360,7 +360,7 @@
             close() {
                 this.hardware = '';
                 this.closeUsb = true;
-                killProcess(this.pid)
+                killProcess(this.pid);
                 this.$refs.transFerDialogApply.cancelDb();
             },
             closeTextarea() {
