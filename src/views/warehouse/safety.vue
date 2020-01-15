@@ -172,6 +172,7 @@
                 }
             },
             successTable(data) {
+                console.log('successTable',this.tree);
                 if (data === 'category') {
                     this.refetch();
                 }else if(data !== 'unallocated'){
@@ -271,6 +272,7 @@
             refetch() {
                 this.getGenreAll();
                 if (this.table.tableType === 'genre') {
+
                     findAllCategoryById(this.tree.currentNode.id).then(res => {
                         this.table.tableData = res;
                     });
@@ -299,6 +301,13 @@
                         });
                         safetyStock(category).then(res => {
                             this.$message.success('操作成功');
+                            this.tree.currentNode.categorySet.forEach(item=>{
+                                category.forEach(categoryItem=>{
+                                    if (categoryItem.id===item.id){
+                                        item.stock=Number(categoryItem.stock)
+                                    }
+                                })
+                            });
                             this.status.buttonDisable = !this.status.buttonDisable
                         });
                     }

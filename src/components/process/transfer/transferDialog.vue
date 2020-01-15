@@ -409,9 +409,6 @@
                     this.$message.info('请先填写完整')
                 }
             },
-            outHouseByRfid(rfids) {
-
-            },
             transferEquipInOrOut(state) {
                 let equips = [], note = '', rfids = [], orderNumber = '', price = 0;
                 if (this.typeOperational === '出库') {
