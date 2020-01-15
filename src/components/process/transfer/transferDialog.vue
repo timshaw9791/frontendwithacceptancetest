@@ -402,7 +402,7 @@
                             state = 'ABNORMAL'
                         }
                         this.transferEquipInOrOut(state)
-                    }).catch(res => {
+                    }).catch(err => {
                         this.$message.error(err.response.data.message);
                     })
                 } else {
