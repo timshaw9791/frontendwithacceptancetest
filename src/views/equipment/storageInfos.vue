@@ -758,9 +758,14 @@
                     //     rfidList.push(equip.rfid)
                     //     serialList.push(['', undefined, null].includes(equip.serial)?'""':equip.serial)
                     // })
-                    console.log(this.list);
-                    console.log(rfidList);
-                    console.log(serialList);
+                    requestBody = Object.assign({}, requestBody, {location: {
+                                floor: tempZbForm.floorL,
+                                number: tempZbForm.numberL,
+                                section: tempZbForm.sectionL,
+                                surface: tempZbForm.surfaceL
+                            }})
+                    console.log("请求体");
+                    console.log(requestBody);
                     this.$refs.form.validate.then(() => {
                             this.$refs.zbForm.postValidate(inHouse, {
                             rfids: rfidList,
@@ -898,9 +903,25 @@
                 }, this.copyRfidList.rfid)
             },
             // getRfid(){
-            //     let data={
-            //         rfid:["123","456"]
-            //     }
+            //     this.bindRfidList=[
+            //         {
+            //             rfid:'',
+            //             details:[{
+            //                 rfid:'123',
+            //                 serial:''
+            //                 },
+            //                 {
+            //                     rfid:'568',
+            //                     serial:''
+            //                     }]
+                                
+                                
+            //         },
+            //         {
+            //             rfid:"1256",
+            //             details:[{
+            //                 rfid:"999",
+            //                 serial:""}]}]
                 
             // },
             fetchRfid(row,index)
