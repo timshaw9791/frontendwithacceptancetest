@@ -637,10 +637,14 @@
               this.rfidList = []
               setTimeout(() => this.throttle = false, 2000)
               handheld((err) => this.$message.error(err)).then(data => {
+                  console.log("手持机扫描到的数据");
+                  console.log(data);
+                  console.log(JSON.parse(data));
+                  console.log(JSON.parse(data).rfid)
                   if(!this.isFlag)//在绑定箱码界面时
                   {
-                      JSON.parse(data).forEach(item=>{
-                      this.bindRfidList.push({rfid:item.rfid,details:[]})
+                      JSON.parse(data).rfid.forEach(item=>{
+                      this.bindRfidList.push({rfid:item,details:[]})
                 })
                 this.bindRfidList.forEach((item,index)=>{//在明细界面时
                         if((item.rfid==null||item.rfid=='')&&index!=0)
@@ -655,7 +659,7 @@
                         if(item.rfid==this.findRfid)
                         {
     
-                            JSON.parse(data).forEach(it=>{
+                            JSON.parse(data).rfid.forEach(it=>{
                             item.details.push(it)
                 })
                         }
