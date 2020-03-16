@@ -876,7 +876,7 @@
 
             // 复制RFID
             copyRfid() {
-                startOne("java -jar writing.jar", (data) => {
+                startOne("java -jar scan.jar", (data) => {
                     if (data.includes('succeed')) {
                         this.$message.success('复制成功!');
                         this.$refs.copyRfidDialog.hide();
