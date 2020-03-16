@@ -147,7 +147,7 @@
                         <div >
                         <div class="header_tab">
                         <div :class="isFlag?'header_tab_box':'header_tab_box_now'" @click="changeTab" style="cursor:pointer">绑定箱码</div><div :class="isFlag?'header_tab_box_now':'header_tab_box'">明细</div>
-                        <!-- <div @click="getRfid">假装扫描</div> -->
+                        <div @click="getRfid">假装扫描</div>
                         <div style="display: flex;
             justify-content: flex-start;margin-left:300px; algin-item:center;line-height:38px;">
             
@@ -489,20 +489,18 @@
                 }
             },
             toMore(row,index){
-               
+            if(row.rfid!==null)
+            {
+            this.isFlag=true
+            this.findRfid=row.rfid;
+            }
             if(index==0)
             {
-                 console.log("触发");
-                this.isFlag=!this.isFlag;
+                
+                this.isFlag=true;
                 this.findRfid=-1;
             }
             this.findIndex=index;
-            if(row.rfid!==null)
-            {
-            this.isFlag=!this.isFlag
-            this.findRfid=row.rfid;
-            }
-            
             },
             addqrr()
             {
@@ -767,10 +765,7 @@
                     console.log("请求体");
                     console.log(requestBody);
                     this.$refs.form.validate.then(() => {
-                            this.$refs.zbForm.postValidate(inHouse, {
-                            rfids: rfidList,
-                            serials: serialList
-                        }, requestBody, (state, res) => {
+                            this.$refs.zbForm.postValidate(inHouse,requestBody, (state, res) => {
                             // 关闭硬件
                             // killProcess(this.pid)
                             this.init()
@@ -902,28 +897,28 @@
                     }
                 }, this.copyRfidList.rfid)
             },
-            // getRfid(){
-            //     this.bindRfidList=[
-            //         {
-            //             rfid:'',
-            //             details:[{
-            //                 rfid:'123',
-            //                 serial:''
-            //                 },
-            //                 {
-            //                     rfid:'568',
-            //                     serial:''
-            //                     }]
+            getRfid(){
+                this.bindRfidList=[
+                    {
+                        rfid:'',
+                        details:[{
+                            rfid:'123',
+                            serial:''
+                            },
+                            {
+                                rfid:'568',
+                                serial:''
+                                }]
                                 
                                 
-            //         },
-            //         {
-            //             rfid:"1256",
-            //             details:[{
-            //                 rfid:"999",
-            //                 serial:""}]}]
+                    },
+                    {
+                        rfid:"1256",
+                        details:[{
+                            rfid:"999",
+                            serial:""}]}]
                 
-            // },
+            },
             fetchRfid(row,index)
             {
                  console.log("读卡器开始扫描");

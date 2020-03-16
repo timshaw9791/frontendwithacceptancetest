@@ -53,11 +53,11 @@
                 });
             },
             // 同时传 params和data
-            postValidate(func, params, data, sCallback) {
+            postValidate(func,data, sCallback) {
                  this.validate.then(() => {
                     let nPramas = JSON.parse(JSON.stringify(params)),
                         nData = JSON.parse(JSON.stringify(data));
-                    func(nPramas, nData).then(res => {
+                    func(nData).then(res => {
                         sCallback(true, res)
                     }).catch(err => {
                         this.$message.error(err.response.data.message)
