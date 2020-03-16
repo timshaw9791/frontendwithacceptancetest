@@ -909,30 +909,42 @@
                  console.log(this.hardware.selected);
                  if(this.hardware.selected!=''&&this.hardware.selected!=='Handheld')
                  {
-                     
-                     startOne("java -jar reading.jar", (data) => {
+                     if(!this.isFlag)
+                     {
+                         startOne("java -jar reading.jar", (data) => {
                          console.log("读到的data",data);
                     if (data.includes('succeed')) {
                         this.$message.success('扫描成功!');
-                        if(!this.isFlag)//如果是箱子的RFID
-                        {
+
                             this.bindRfidList[index].rfid=data.split('\n')[1]
-                        }
-                        else {
-                            this.bindRfidList.forEach(item=>{
-                                if(item.rfid==this.findRfid)
-                                {
-                                    item.details[index].rfid=data.split('\n')[1]
-                                }
-                                if(this.findRfid==-1){
-                                this.bindRfidList[0].details[index].rfid=data.split('\n')[1]
-                            }
-                            })
-                        }
+
+
                     } else {
                         this.$message.error('扫描失败!');
                     }
                 }, )
+                     }
+                     else {
+                         start("java -jar scan.jar", (data) => {
+                        console.log("连续读Rfid");
+                        console.log(data);
+                    this.bindRfidList.forEach(item=>{
+                                if(item.rfid==this.findRfid)
+                                {
+                                    item.details[index].rfid=data
+                                }
+                                if(this.findRfid==-1){
+                                this.bindRfidList[0].details[index].rfid=data
+                            }
+                            })
+                }, (fail) => {
+                    this.$message.error(fail)
+                }, (pid, err) => {
+                    pid?this.pid = pid:this.$message.error(err)
+                })
+                         
+                     }
+                     
                  }
                 else{
                     
