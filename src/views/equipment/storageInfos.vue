@@ -193,7 +193,7 @@
                              </template>
                             </el-table-column>
                         </el-table>
-                        <el-table :data="bindRfidList[findIndex].details" fit height="330" class="list" :header-cell-style="{background:'Gainsboro'}" border highlight-current-row  v-if="isFlag" >
+                        <el-table :data="bindRfidList[findIndex].details" fit height="330" class="list" :header-cell-style="{background:'Gainsboro'}" show-summary border highlight-current-row  v-if="isFlag" :summary-method="getSummaries">
                             <el-table-column  label="序号" width="100px">
                              <template scope="scope">
                               <span>{{scope.$index+1}}</span>
@@ -222,11 +222,11 @@
                               </el-input>
                              </template>
                             </el-table-column>
-                            <el-table-column  label="装备数量">
+                            <!-- <el-table-column  label="装备数量">
                              <template scope="scope">
                               <span v-text="scope.row.rfid!=null?'1':'0'"></span>
                              </template>
-                            </el-table-column>
+                            </el-table-column> -->
                         </el-table>
                         <!-- <el-table :data="list" fit height="330" class="list" :row-class-name="tableRowClassName">
                             <el-table-column label="序号" align="center">
@@ -564,8 +564,21 @@
                     })
                 }
             })
-            console.log("总计")
-            console.log(len)
+            return len
+            },
+            addNum2(){
+                let len=0;
+            this.bindRfidList.forEach((item,index)=>{
+               if(item.rfid==this.findRfid)
+               {
+                   this.bindRfidList[index].details.forEach(it=>{
+                       if(it.rfid!=null&&it.rfid!='')
+                       {
+                           len++
+                       }
+                   })
+               }
+            })
             return len
             },
             getSummaries(param) {
@@ -579,9 +592,14 @@
             }
         })
         columns.forEach((column, index) => {
-          if (index === 0) {
+          if (index === 0&&!this.isFlag) {
             let len=this.addNum();
             sums[index] = '总计'+boxLen+'箱'+len+'件';
+            return;
+          }
+           if (index === 0&&this.isFlag) {
+            let len=this.addNum2();
+            sums[index] = '总计'+len+'件';
             return;
           }
         });
@@ -612,7 +630,7 @@
             changeTab(){
             this.isFlag=false;
             },
-            readerHandheld() {
+            readerHandheld() {//手持机读取数据
               if(this.throttle) return
               this.throttle = true
               this.list = []
@@ -893,6 +911,7 @@
                  {
                      
                      startOne("java -jar writing.jar", (data) => {
+                         console.log("读到的data",data);
                     if (data.includes('succeed')) {
                         this.$message.success('扫描成功!');
                         if(!this.isFlag)//如果是箱子的RFID
