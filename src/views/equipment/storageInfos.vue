@@ -910,22 +910,22 @@
                  if(this.hardware.selected!=''&&this.hardware.selected!=='Handheld')
                  {
                      
-                     startOne("java -jar read.jar", (data) => {
+                     startOne("java -jar reading.jar", (data) => {
                          console.log("读到的data",data);
                     if (data.includes('succeed')) {
                         this.$message.success('扫描成功!');
                         if(!this.isFlag)//如果是箱子的RFID
                         {
-                            this.bindRfidList[index].rfid=data
+                            this.bindRfidList[index].rfid=data.split('\n')[1]
                         }
                         else {
                             this.bindRfidList.forEach(item=>{
                                 if(item.rfid==this.findRfid)
                                 {
-                                    item.details[index].rfid=data
+                                    item.details[index].rfid=data.split('\n')[1]
                                 }
                                 if(this.findRfid==-1){
-                                this.bindRfidList[0].details[index].rfid=data
+                                this.bindRfidList[0].details[index].rfid=data.split('\n')[1]
                             }
                             })
                         }
@@ -1087,6 +1087,7 @@
         },
 
         created() {
+            modifyFileName('search.json');
             // this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];//获取到串口号
         },
         mounted() {
