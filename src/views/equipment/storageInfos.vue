@@ -910,7 +910,7 @@
                  if(this.hardware.selected!=''&&this.hardware.selected!=='Handheld')
                  {
                      
-                     startOne("java -jar scan.jar", (data) => {
+                     startOne("java -jar read.jar", (data) => {
                          console.log("读到的data",data);
                     if (data.includes('succeed')) {
                         this.$message.success('扫描成功!');
