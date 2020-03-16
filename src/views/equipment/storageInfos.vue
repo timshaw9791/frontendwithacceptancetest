@@ -905,6 +905,10 @@
             // },
             fetchRfid(row,index)
             {
+                if(this.pid) {
+                    killProcess(this.pid)
+                }
+                
                  console.log("读卡器开始扫描");
                  console.log(this.hardware.selected);
                  if(this.hardware.selected!=''&&this.hardware.selected!=='Handheld')
