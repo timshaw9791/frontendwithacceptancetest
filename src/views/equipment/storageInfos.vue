@@ -628,6 +628,7 @@
 
             changeTab(){
             this.isFlag=false;
+            killProcess(this.pid);//推出详细界面时杀掉进程
             },
             readerHandheld() {//手持机读取数据
               if(this.throttle) return
