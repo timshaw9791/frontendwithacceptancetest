@@ -995,22 +995,20 @@
                     }
                 }, )
                  }
-                 }
             },
             fetchRfid2(row,index)
             {
-                if(this.pid)
-                {
-                    killProcess(this.pid)
-                }
+                killProcess(this.pid)
                 start("java -jar scan.jar", (data) => {
-                      if(this.bindRfidList[this.findIndex].details[0].rfid==null)
-                      { 
-                          this.bindRfidList[this.findIndex].details[0].rfid=data
-                      }
-                      else{
-                           this.bindRfidList[this.findIndex].details.push({rfid:data,serial:''})
-                      }
+                       this.bindRfidList.forEach(item=>{
+                                if(item.rfid==this.findRfid)
+                                {
+                                    item.details.push({rfid:data,serial:''})
+                                }
+                                if(this.findRfid==-1){
+                                this.bindRfidList[0].details.push({rfid:data,serial:''})
+                            }
+                            })
                     }, (fail) => {
                         this.index = 1;
                         this.$message.error(fail);
