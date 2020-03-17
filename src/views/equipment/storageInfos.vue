@@ -911,9 +911,11 @@
             },
             fetchRfid(row,index)
             {
-                if(row.rfid==null)//如果当前行为rfid为null 才触发 避免双击时触发事情
-                {
-                    console.log("读卡器开始扫描");
+                if(this.pid) {
+                    killProcess(this.pid)
+                }
+                
+                 console.log("读卡器开始扫描");
                  console.log(this.hardware.selected);
                   if(this.hardware.selected!=''&&this.hardware.selected!=='Handheld')//不是手持机的事情
                  {
