@@ -74,7 +74,7 @@ export function equipArgsByName(params) {
 }
 
 /* 入库装备 */
-export function inHouse(data) {
+export function inHouse(params,data) {
     return request({
         url: "/equip/batch-in-house",
         method: "POST",
