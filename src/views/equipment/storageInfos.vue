@@ -147,7 +147,7 @@
                         <div >
                         <div class="header_tab">
                         <div :class="isFlag?'header_tab_box':'header_tab_box_now'" @click="changeTab" style="cursor:pointer">绑定箱码</div><div :class="isFlag?'header_tab_box_now':'header_tab_box'">明细</div>
-                        <div @click="getRfid">假装扫描</div>
+                        <!-- <div @click="getRfid">假装扫描</div> -->
                         <div style="display: flex;
             justify-content: flex-start;margin-left:300px; algin-item:center;line-height:38px;">
             
@@ -209,7 +209,7 @@
                             </el-table-column>
                             <el-table-column  label="RFID">
                              <template scope="scope">
-                              <div  @click="fetchRfid2(scope.row)" style="cursor:pointer">
+                              <div  @click="fetchRfid2(scope.row,scope.$index)" style="cursor:pointer">
                                  <span v-text="scope.row.rfid" ></span>
                                  <span v-text="'单击扫描'" v-if="scope.row.rfid==''||scope.row.rfid==null" ></span>
                              </div>
@@ -904,70 +904,53 @@
                 }, this.copyRfidList.rfid)
             },
             getRfid(){
-                let data="123456"
-                this.bindRfidList[1].rfid="5678"
+                // this.bindRfidList=[
+                //     {
+                //         rfid:'',
+                //         details:[{
+                //             rfid:'123',
+                //             serial:''
+                //             },
+                //             {
+                //                 rfid:'568',
+                //                 serial:''
+                //                 }]
+                                
+                                
+                //     },
+                //     {
+                //         rfid:"1256",
+                //         details:[{
+                //             rfid:"999",
+                //             serial:""}]}]
+                let data={rfid:["123456","56879"]}
+                if(!this.isFlag)//在绑定箱码界面时
+                  {
+                      data.rfid.forEach(item=>{
+                      this.bindRfidList.push({rfid:item,details:[]})
+                })
                 
-                
-            },
-            fetchRfid(row,index)
-            {
-                if(this.pid) {
-                    killProcess(this.pid)
-                }
-                
-                 console.log("读卡器开始扫描");
-                 console.log(this.hardware.selected);
-                  if(this.hardware.selected!=''&&this.hardware.selected!=='Handheld')//不是手持机的事情
-                 {
-                     
-                     startOne("java -jar reading.jar", (data) => {
-                         console.log("读到的data",data);
-                    if (data.includes('succeed')) {
-                        this.$message.success('扫描成功!');
-                        this.bindRfidList[index].rfid=data.split('\n')[1]//箱子绑定rfid
-                        
-                        
-                    } else {
-                        this.$message.error('扫描失败!');
-                    }
-                }, )
-                 }
-                }
-                 
-            },
-            fetchRfid2(row)
-            {
-                // killProcess(this.pid)
-                start("java -jar scan.jar", (data) => {
-                    this.bindRfidList.forEach((item,index)=>{//循环
-                                if(item.rfid==this.findRfid)//找到标记的rfid 
-                                {
-                                    this.bindRfidList[index].details.forEach((it,ind)=>{//
-                                        if(it.rfid==null&&ind==0)//第一行
-                                        {
-                                            it.rfid=data
-                                        }
-                                        else{
-                                            this.bindRfidList[index].details.push({rfid:data,serial:''})//增加新的元素
-                                        }
-                                        
-                                    })
-                                }
-                            }) 
-                if(this.findRfid==-1)//散件的明细
-                {
-                   if(this.bindRfidList[0].details[0].rfid==null)//第一行
-                   {
-                       this.bindRfidList[0].details[0].rfid=data
-                   }else {//第一行已经有rfid
-                       this.bindRfidList[0].details.push({rfid:data,serial:''})
-                   }
-                }
+                  }
+                else {
                    
-                    }, (fail) => {
-                        this.index = 1;
-                        this.$message.error(fail);
-                    }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
+                    this.bindRfidList.forEach(item=>{//在明细界面时
+                        if(item.rfid==this.findRfid)
+                        {
+                            console.log("手持机明细读取数据");
+                            data.rfid.forEach(it=>{
+                            item.details.push({rfid:it,serial:''})
+                })
+                        }
+                        
+                    })
+                    if(this.findRfid==-1)
+                        {
+                             data.rfid.forEach(it=>{
+                            this.bindRfidList[0].details.push({rfid:it,serial:''})
+                })
+                        }
+                    
+                }
                 this.bindRfidList.forEach((item,index)=>{
                     if((item.rfid==''||item.rfid==null)&&index!=0)
                     {
@@ -985,6 +968,54 @@
                     })
                 })
 
+                
+            },
+            fetchRfid(row,index)
+            {
+                if(this.pid)
+                {
+                    killProcess(this.pid)
+                }
+                 if(row.rfid==null)
+                 {
+                     console.log("读卡器开始扫描");
+                 console.log(this.hardware.selected);
+                  if(this.hardware.selected!=''&&this.hardware.selected!=='Handheld')
+                 {
+                     
+                     startOne("java -jar reading.jar", (data) => {
+                         console.log("读到的data",data);
+                    if (data.includes('succeed')) {
+                        this.$message.success('扫描成功!');
+                        this.bindRfidList[index].rfid=data.split('\n')[1]
+                        
+                        
+                    } else {
+                        this.$message.error('扫描失败!');
+                    }
+                }, )
+                 }
+                 }
+            },
+            fetchRfid2(row,index)
+            {
+                if(this.pid)
+                {
+                    killProcess(this.pid)
+                }
+                start("java -jar scan.jar", (data) => {
+                      if(this.bindRfidList[this.findIndex].details[0].rfid==null)
+                      { 
+                          this.bindRfidList[this.findIndex].details[0].rfid=data
+                      }
+                      else{
+                           this.bindRfidList[this.findIndex].details.push({rfid:data,serial:''})
+                      }
+                    }, (fail) => {
+                        this.index = 1;
+                        this.$message.error(fail);
+                    }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
+               
             },
             // 装备实体扫描列表点击删除
             delqaq(row) {
