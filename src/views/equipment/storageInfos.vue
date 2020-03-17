@@ -147,7 +147,7 @@
                         <div >
                         <div class="header_tab">
                         <div :class="isFlag?'header_tab_box':'header_tab_box_now'" @click="changeTab" style="cursor:pointer">绑定箱码</div><div :class="isFlag?'header_tab_box_now':'header_tab_box'">明细</div>
-                        <div @click="getRfid">假装扫描</div>
+                        <!-- <div @click="getRfid">假装扫描</div> -->
                         <div style="display: flex;
             justify-content: flex-start;margin-left:300px; algin-item:center;line-height:38px;">
             
@@ -209,7 +209,7 @@
                             </el-table-column>
                             <el-table-column  label="RFID">
                              <template scope="scope">
-                              <div  @click="fetchRfid(scope.row,scope.$index)" style="cursor:pointer">
+                              <div  @click="fetchRfid2(scope.row,scope.$index)" style="cursor:pointer">
                                  <span v-text="scope.row.rfid" ></span>
                                  <span v-text="'单击扫描'" v-if="scope.row.rfid==''||scope.row.rfid==null" ></span>
                              </div>
@@ -981,26 +981,48 @@
                          console.log("读到的data",data);
                     if (data.includes('succeed')) {
                         this.$message.success('扫描成功!');
-                        if(!this.isFlag)//如果是箱子的RFID
-                        {
-                            this.bindRfidList[index].rfid=data.split('\n')[1]
-                        }
-                        else {
-                            this.bindRfidList.forEach(item=>{
-                                if(item.rfid==this.findRfid)
-                                {
-                                    item.details[index].rfid=data.split('\n')[1]
-                                }
-                                if(this.findRfid==-1){
-                                this.bindRfidList[0].details[index].rfid=data.split('\n')[1]
-                            }
-                            })
-                        }
+                        this.bindRfidList[index].rfid=data.split('\n')[1]
+                        
+                        
                     } else {
                         this.$message.error('扫描失败!');
                     }
                 }, )
                  }
+            },
+            fetchRfid2(row,index)
+            {
+                killProcess(this.pid)
+                start("java -jar scan.jar", (data) => {
+                       this.bindRfidList.forEach(item=>{
+                                if(item.rfid==this.findRfid)
+                                {
+                                    item.details.push({rfid:data,serial:''})
+                                }
+                                if(this.findRfid==-1){
+                                this.bindRfidList[0].details.push({rfid:data,serial:''})
+                            }
+                            })
+                    }, (fail) => {
+                        this.index = 1;
+                        this.$message.error(fail);
+                    }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
+               this.bindRfidList.forEach((item,index)=>{
+                    if((item.rfid==''||item.rfid==null)&&index!=0)
+                    {
+                        console.log(index);
+                        this.bindRfidList.splice(index,1)
+                    }
+                })
+                this.bindRfidList.forEach((item,Tindex)=>{
+                    item.details.forEach((it,index)=>{
+                      if((it.rfid==''||it.rfid==null))
+                    {
+                        console.log(index);
+                        this.bindRfidList[Tindex].details.splice(index,1)
+                    }  
+                    })
+                })
             },
             // 装备实体扫描列表点击删除
             delqaq(row) {
