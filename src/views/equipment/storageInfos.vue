@@ -995,6 +995,7 @@
                     }
                 }, )
                  }
+                 }
             },
             fetchRfid2(row,index)
             {
