@@ -107,7 +107,7 @@ export const asyncRouterMap = [
             {
                 path: 'myProcess',
                 name: 'myProcess',
-                component: _import('process/myProcess'),
+                component: _import('process/myProcessNew'),
                 meta: {title: '我的流程'},
             },
             {
