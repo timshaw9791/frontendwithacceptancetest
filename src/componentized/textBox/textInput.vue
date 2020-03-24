@@ -6,7 +6,7 @@
                   @change="reg"
                   :clearable="clearable"
                   v-model="insideValue">
-            <template slot="prepend">{{ titleName }}</template>
+            <div slot="prepend" :class="{'prefix': true, 'disabled': disabled}">{{ titleName }}</div>
             <span slot="prepend" class="required" v-if="required">*</span>
         </el-input>
     </div>
@@ -18,6 +18,7 @@
         data() {
           return {
               inputPt: null,
+              inputPrePt: null,
               insideValue: "",
           }
         },
@@ -75,6 +76,17 @@
                 } else {
                     this.inputPt.classList.remove('error')
                 }
+            },
+            changePreStyle(state=true) {
+                this.inputPrePt.style.background = state?'#f5f7fa':'white';
+                this.inputPrePt.style.cursor = state?'not-allowed':'auto';
+            }
+        },
+        watch: {
+            disabled: {
+                handler(val) {
+                    this.changePreStyle(val);
+                },
             }
         },
         created() {
@@ -82,6 +94,8 @@
         },
         mounted() {
             this.inputPt = document.querySelector('.text-input-container');
+            this.inputPrePt = document.querySelector('.el-input-group__prepend');
+            // console.log(document.getElementsByClassName('el-input-group__prepend'));
             // document.querySelector('#elInput').setAttribute('maxlength', 5); // 限制最大输入长度
             // document.querySelector('#elInput').setAttribute('minlength', 2); // 无效
             // document.querySelector('#elInput').style.borderColor = 'red'; // 更改边框颜色(验证)
@@ -94,8 +108,9 @@
     /deep/ .el-input {
         font-size: 16px;
         .el-input-group__prepend {
-            background-color: white;
-            padding: 9px 0 9px 10px;
+            // background-color: white;
+            // padding: 9px 0 9px 10px;
+            padding: 0;
             border: none;
             line-height: 20px;
         }
@@ -121,5 +136,18 @@
     }
     .error {
         border-color: red;
+    }
+    .prefix {
+        width: auto;
+        height: 37px;
+        line-height: 37px !important;
+        padding-left: 10px;
+        background-color: white;
+    }
+    .prefix:hover {
+        border-color: #409EFF;
+    }
+    .disabled {
+        background-color: #f5f7fa !important;
     }
 </style>
