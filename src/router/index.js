@@ -110,13 +110,13 @@ export const asyncRouterMap = [
                 component: _import('process/myProcessNew'),
                 meta: {title: '我的流程'},
             },
-            // {
-            //     path: 'myProcess/:type',
-            //     name: 'processType',
-            //     component: _import('process/processDOM'),
-            //     hidden: true,
-            //     meta: {title: '报废流程'}
-            // },
+            {
+                path: 'myProcess/:type',
+                name: 'processApply',
+                component: _import('process/processApply'),
+                hidden: true,
+                meta: {title: '报废流程'}
+            },
             {
                 path: 'agencyMatters',
                 name: 'agencyMatters',

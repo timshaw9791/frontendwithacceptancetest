@@ -57,6 +57,11 @@
                 }
             },
             apply() { // 申请流程
+              this.$router.push({
+                  name: 'processType',
+                  params: {'type': 'sprwu', 'name': 'asdasd'}
+              })
+                return;
                this.indexPage = false;
                this.title = "我的流程/申请流程"
             }
