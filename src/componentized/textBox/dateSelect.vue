@@ -10,7 +10,8 @@
                 :end-placeholder="endPlaceholder"
                 :disabled="disabled"
                 :editable="editable"
-                :default-time="defaultTime">
+                :default-time="defaultTime"
+                @change="change">
         </el-date-picker>
     </div>
 </template>
@@ -68,8 +69,13 @@
               default: true
             }
         },
+        methods: {
+          change(value) {
+            this.$emit('input', value)
+          }
+        },
         created() {
-          this.selectValue = new Date().getTime()
+          this.selectValue = this.value
         }
     }
 </script>

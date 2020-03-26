@@ -2,13 +2,21 @@
     <div class="text-input-container" :style="'width:'+width+'px;height:'+height+'px'">
         <el-input id="elInput" ref="elInput" placeholder="请输入内容"
                   :disabled="disabled"
-                  @input="change"
                   @change="reg"
+                  v-if="!haveTip"
                   :clearable="clearable"
                   v-model="insideValue">
             <div slot="prepend" :class="{'prefix': true, 'disabled': disabled}">{{ titleName }}</div>
             <span slot="prepend" class="required" v-if="required">*</span>
         </el-input>
+        <el-autocomplete class="inline-input"
+        v-model="insideValue"
+        :fetch-suggestions="querySearch"
+        v-if="haveTip"
+        :disabled="disabled"
+        placeholder="请输入内容">
+        <div slot="prepend" :class="{'prefix': true, 'disabled': disabled}">{{ titleName }}</div>
+        </el-autocomplete>
     </div>
 </template>
 
@@ -64,12 +72,19 @@
                 default() {
                     return () => true
                 }
+            },
+            haveTip: { // 是否启用建议输入
+                type: Boolean,
+                default: false
+            },
+            tips: {
+                type: Array,
+                default() {
+                    return []
+                }
             }
         },
         methods: {
-            change(value) {
-                this.$emit('input', value);
-            },
             reg(value) {
                 if(!this.validate(value)) {
                     this.inputPt.classList.add('error')
@@ -80,6 +95,17 @@
             changePreStyle(state=true) {
                 this.inputPrePt.style.background = state?'#f5f7fa':'white';
                 this.inputPrePt.style.cursor = state?'not-allowed':'auto';
+            },
+            querySearch(queryString, cb) {
+                var restaurants = this.tips;
+                var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+                // 调用 callback 返回建议列表的数据
+                cb(results);
+            },
+            createFilter(queryString) {
+                return (restaurant) => {
+                    return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+                };
             }
         },
         watch: {
@@ -87,6 +113,9 @@
                 handler(val) {
                     this.changePreStyle(val);
                 },
+            },
+            insideValue(val) {
+                this.$emit('input', val)
             }
         },
         created() {

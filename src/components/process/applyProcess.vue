@@ -8,8 +8,9 @@
         <div class="apply-process-body">
             <div class="process-info">
                 <text-input titleName="当前库房" v-model="processInfo.currentHouse" :disabled="true"></text-input>
-                <date-select></date-select>
+                <date-select v-model="processInfo.date" :disabled="true"></date-select>
                 <text-input titleName="申请人员" v-model="processInfo.applyPerson" :disabled="true"></text-input>
+                <text-input titleName="申请原因" v-model="processInfo.applyReson" :haveTip="true" :tips="processInfo.tips"></text-input>
             </div>
         </div>
     </div>
@@ -48,9 +49,11 @@
                 },
                 processInfo: {
                     currentHouse: "XXXXXX",
-                    date: new Date(),
-                    applyPerson: "王小明"
-                }
+                    date: new Date().getTime(),
+                    applyPerson: "王小明",
+                    applyReson: "",
+                    tips: [{value: '直接报废', key: '1'}, {value: '装备拿去维修，无法修补', key: '2'}]
+                },
             }
         },
         methods:{
