@@ -1,6 +1,6 @@
 <template>
     <div class="apply-process-container">
-        <my-header :title="title" :searchFlag="false" :haveBlack="!status.tableOrUniversalFlag" @h_black="black"></my-header>
+        <my-header :title="title" :haveBlack="true" @h_black="black"></my-header>
         <div class="apply-process">
             <div class="apply-process-top" data-test="action_box" v-if="status.tableOrUniversalFlag">
                 <text-input label="单号" v-model="oddNumber" :disabled="true" class="odd-number"></text-input>
@@ -71,10 +71,7 @@
         },
         methods:{
             black(data){
-                this.status.tableOrUniversalFlag=!this.status.tableOrUniversalFlag;
-                if(data==='refetch'){
-                    this.refetch();
-                }
+                this.$router.back()
             },
         },
         created() {
@@ -108,7 +105,7 @@
             }
         }
         .apply-process-body {
-            padding: 18px;
+            padding: 0 18px;
             .process-info {
                 padding: 18px 0;
                 display: flex;
