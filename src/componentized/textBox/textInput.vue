@@ -1,12 +1,12 @@
 <template>
-    <div class="text-input-container" :style="'width:'+width+'px;height:'+height+'px'">
+    <div class="text-input-container" :style="'width:'+fixWidth+';height:'+height+'px'">
         <el-input id="elInput" ref="elInput" placeholder="请输入内容"
                   :disabled="disabled"
                   @change="reg"
                   v-if="!haveTip"
                   :clearable="clearable"
                   v-model="insideValue">
-            <div slot="prepend" :class="{'prefix': true, 'disabled': disabled}">{{ titleName }}</div>
+            <div slot="prepend" :class="{'prefix': true, 'disabled': disabled}">{{ label }}</div>
             <span slot="prepend" class="required" v-if="required">*</span>
         </el-input>
         <el-autocomplete class="inline-input"
@@ -15,7 +15,7 @@
         v-if="haveTip"
         :disabled="disabled"
         placeholder="请输入内容">
-        <div slot="prepend" :class="{'prefix': true, 'disabled': disabled}">{{ titleName }}</div>
+        <div slot="prepend" :class="{'prefix': true, 'disabled': disabled}">{{ label }}</div>
         </el-autocomplete>
     </div>
 </template>
@@ -31,16 +31,16 @@
           }
         },
         props: {
-            titleName: {
+            label: {
                 type: String,
                 default: "标题"
             },
             value: {
-                type: String,
+                type: [String, Number],
                 default: ""
             },
             width: {
-                type: Number,
+                type: [Number, String],
                 default: 288
             },
             height: {
@@ -107,6 +107,15 @@
                     return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
                 };
             }
+        },
+        computed: {
+          fixWidth() {
+              if(isNaN(this.width)) {
+                  return this.width;
+              } else {
+                  return this.width + 'px';
+              }
+          }  
         },
         watch: {
             disabled: {

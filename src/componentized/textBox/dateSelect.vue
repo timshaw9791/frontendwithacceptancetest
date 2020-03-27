@@ -1,5 +1,6 @@
 <template>
-    <div class="date-select-continer" :style="'width:'+width+'px;height:'+height+'px'">
+    <div :class="{'date-select-continer':true,disabled}" :style="'width:'+width+'px;height:'+height+'px'">
+        <div class="label">{{ label }}</div>
         <el-date-picker
                 v-model="selectValue"
                 :type="type"
@@ -11,6 +12,7 @@
                 :disabled="disabled"
                 :editable="editable"
                 :default-time="defaultTime"
+                prefix-icon="el-icon-date"
                 @change="change">
         </el-date-picker>
     </div>
@@ -31,6 +33,10 @@
             type: { // year/month/date/week/ datetime/datetimerange/daterange
               type: String,
               default: 'datetime'
+            },
+            label: {
+              type: [String, Number],
+              default: "日期"
             },
             defaultTime: {
                 type: String,
@@ -81,5 +87,32 @@
 </script>
 
 <style lang="scss" scoped>
-
+  /deep/ .el-date-editor {
+    width: 203px !important;
+    .el-input__inner {
+      padding: 0 10px !important;
+      border: none;
+      border-bottom: 1px solid #E4E7ED;
+    }
+    .el-input__prefix {
+      pointer-events: none; // 自身不捕获鼠标事件，将其传递下去
+    }
+    .el-icon-date {
+      margin-left: 150px;
+    }
+  }
+  .date-select-continer {
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid #E4E7ED;
+    border-radius: 4px;
+  }
+  .label {
+    flex-shrink: 0; // 在父元素宽度不够的情况下不自动收缩
+    padding: 10px;
+  }
+  .disabled {
+    background-color: #F5F7FA;
+    color: #C0C4CC;
+  }
 </style>

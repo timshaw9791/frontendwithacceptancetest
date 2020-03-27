@@ -1,6 +1,6 @@
 <template>
-  <div class="base-button-container" style="'width:'+width+'px;height:'+height+'px'">
-    <el-button :type="type" :disabled="disabled">{{ name }}</el-button>
+  <div class="base-button-container" :style="'width:'+width+'px;height:'+height+'px'">
+    <el-button :type="type" :disabled="disabled" @click="emitOut" :style="'width:'+width+'px;padding:0;height:'+height+'px;font-size:'+fontSize+'px'">{{ name }}</el-button>
   </div>
 </template>
 
@@ -29,7 +29,16 @@ export default {
       type: Number,
       default: 40
     },
+    fontSize: {
+      type: Number,
+      default: 16
+    },
     name
+  },
+  methods: {
+    emitOut() {
+      this.$emit('inClick');
+    }
   }
 }
 </script>

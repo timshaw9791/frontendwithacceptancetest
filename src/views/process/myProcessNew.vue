@@ -1,13 +1,17 @@
 <template>
-    <div class="agency-matters">
+    <div class="my-process-container">
         <my-header :title="title" :searchFlag="false" :haveBlack="!status.tableOrUniversalFlag" @h_black="black"></my-header>
-        <div class="agency-matters-body" data-test="action_box" v-if="indexPage">
-            <text-input titleName="请求标题" v-model="requestTitle"></text-input>
-            <process-select v-model="select.selected" :selectList="select.processList"></process-select>
-            <base-button name="查询"></base-button>
-            <base-button name="申请报废" style="float:right" @click.native="apply"></base-button>
+        <div class="my-process" data-test="action_box">
+            <div class="my-process-info">
+                <text-input label="请求标题" v-model="requestTitle"></text-input>
+                <process-select v-model="select.selected" :selectList="select.processList"></process-select>
+                <base-button name="查询"></base-button>
+                <base-button name="申请报废" style="float:right" :width="96" @inClick="apply"></base-button>
+            </div>
+            <div class="my-process-body">
+                <div class="table">表格组件</div>
+            </div>
         </div>
-        <apply-process v-if="!indexPage"></apply-process>
     </div>
 </template>
 
@@ -16,7 +20,6 @@
     import textInput from '@/componentized/textBox/textInput.vue'
     import processSelect from '@/componentized/textBox/processSelect.vue'
     import baseButton from "@/componentized/buttonBox/baseButton.vue"
-    import applyProcess from "@/components/process/applyProcess"
     export default {
         name: "myProcessNew",
         components:{
@@ -24,7 +27,6 @@
             textInput,
             processSelect,
             baseButton,
-            applyProcess
         },
         data(){
             return{
@@ -58,25 +60,24 @@
             },
             apply() { // 申请流程
               this.$router.push({
-                  name: 'processType',
-                  params: {'type': 'sprwu', 'name': 'asdasd'}
+                  name: 'processApply',
+                  params: {'type': 'applyScrap', title: '我的流程/申请报废'}
               })
-                return;
-               this.indexPage = false;
-               this.title = "我的流程/申请流程"
             }
         }
     }
 </script>
 
 <style lang="scss" scoped>
-    .agency-matters{
+    .my-process-container{
         width: 100%;
         color:#707070FF;
         font-size: 16px;
-        .agency-matters-body {
+        border: 1px solid black;
+        .my-process-info {
             width: 100%;
             padding: 16px 0.1198rem 16px 0.09375rem;
+            overflow: hidden;
             .text-input-container {
                 float: left;
             }
@@ -88,29 +89,12 @@
                 margin-left: 16px;
             }
         }
+        .my-process-body {
+            padding: 0 0.1198rem 0 0.09375rem;
+            .table {
+                height: 672px;
+                border: 1px solid orange;
+            }
+        }
     }
-    // .agency-matters .agency-matters_header{
-    //     height: 0.3021rem;
-    //     width: 100%;
-    //     font-size: 20px;
-    //     display: flex;
-    //     align-items: center;
-    //     padding-top: 16px;
-    //     padding-left: 0.09375rem;
-    //     border-bottom:1px solid rgba(112,112,112,0.13);
-    // }
-    // .agency-matters .agency-matters_action_box{
-    //     height: 0.2917rem;
-    //     width: 100%;
-    //     display: flex;
-    //     align-items: center;
-    //     justify-content: space-between;
-    //     padding-left: 0.09375rem;
-    //     padding-right: 0.1198rem;
-    //     color: #2F2F76FF!important;
-    //     border-bottom:0.0052rem solid rgba(112,112,112,0.13);
-    // }
-    // .agency-matters_action_box .action_right_box{
-
-    // }
 </style>

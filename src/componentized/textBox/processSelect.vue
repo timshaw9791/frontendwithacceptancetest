@@ -8,7 +8,7 @@
                 :value="item.value">
 <!--                <span><el-checkbox v-model="item.sel">{{ item.label }}</el-checkbox></span>-->
             </el-option>
-            <div class="title-name" slot="prefix">{{ titleName}}</div>
+            <div class="title-name" slot="prefix">{{ label }}</div>
         </el-select>
     </div>
 </template>
@@ -22,7 +22,7 @@
             }
         },
         props: {
-            titleName: { // 标题名
+            label: { // 标题名
                 type: String,
                 default: "流程管理"
             },
@@ -47,7 +47,7 @@
         methods: {
             init() {
                 let sel = document.querySelector('#select');
-                sel.style.paddingLeft = this.titleName.length?30+this.titleName.length*15 + 'px':"15px";
+                sel.style.paddingLeft = this.label.length?30+this.label.length*15 + 'px':"15px";
             },
             change(value) {
                 this.$emit('input', value)
