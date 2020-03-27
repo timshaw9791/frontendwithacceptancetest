@@ -3,7 +3,7 @@
         <my-header :title="title" :haveBlack="true" @h_black="black"></my-header>
         <div class="apply-process">
             <div class="apply-process-top" data-test="action_box" v-if="status.tableOrUniversalFlag">
-                <text-input label="单号" v-model="oddNumber" :disabled="true" class="odd-number"></text-input>
+                <text-input label="单号" v-model="number" :disabled="true" class="odd-number"></text-input>
                 <base-button name="读取数据" :disabled="!select.selected" class="read" :width="96"></base-button>
                 <process-select label="硬件选择" v-model="select.selected" :selectList="select.handWareList" class="handheld"></process-select>
             </div>
@@ -47,7 +47,7 @@
                 status:{
                     tableOrUniversalFlag:true,
                 },
-                oddNumber: 20200324,
+                number: 20200324,
                 select: {
                     handWareList: [{
                         label: "手持机",
