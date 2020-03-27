@@ -1,0 +1,97 @@
+<template>
+  <div class="process-infos-container">
+    <div class="title">审批流程</div>
+    <div class="process-infos-body" :style="'height:'+fixHeight">
+      <div class="info" v-for="(item, i) in list" :key="i">
+        <div>{{ item.type }}人员</div>
+        <div>{{ item.person }}</div>
+        <div>{{ item.state }}</div>
+        <div class="reson">[查看驳回原因]</div>
+        <div>{{ item.type }}时间</div>
+        <div>{{ item.time }}</div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'processInfos',
+  props: {
+    list: {
+      type: Array,
+      default() {
+        return [{
+          type: '审核',
+          person: 'SprWu',
+          state: '通过',
+          reson: true,
+          time: '2020/3/27'
+        },{
+          type: '审核',
+          person: 'SprWu',
+          state: '通过',
+          reson: true,
+          time: '2020/3/27'
+        },{
+          type: '审核',
+          person: 'SprWu',
+          state: '通过',
+          reson: true,
+          time: '2020/3/27'
+        }]
+      }
+    },
+    height: {
+      type: [String, Number],
+      default: 0
+    }
+  },
+  computed: {
+    fixHeight() {
+      if(isNaN(this.height)) {
+        return this.height;
+      } else {
+        return this.height-37+'px';
+      }
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+  .process-infos-container {
+    font-size: 16px;
+  }
+  .title {
+    color: #3F5FE0;
+    padding-bottom: 19px;
+  }
+  .process-infos-body {
+    overflow-x: hidden;
+    overflow-y: auto;
+    &::-webkit-scrollbar-track-piece {
+      background: #d3dce6;
+    }
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: rgba(144, 147, 153, 0.1);
+      border-radius: 20px;
+    }
+  }
+  .info {
+    display: grid;
+    grid-template-columns: 10% 40% 10% 10% 10% 20%;
+    line-height: 30px;
+    padding: 10px 0;
+    border-top: 1px solid rgba(112,112,112,0.13);
+
+    .reson {
+      color: #3F5FE0;
+      cursor: pointer;
+    }
+
+  }
+</style>

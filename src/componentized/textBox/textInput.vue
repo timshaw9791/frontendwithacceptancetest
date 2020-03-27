@@ -1,6 +1,6 @@
 <template>
     <div class="text-input-container" :style="'width:'+fixWidth+';height:'+height+'px'">
-        <el-input id="elInput" ref="elInput" placeholder="请输入内容"
+        <el-input placeholder="请输入内容"
                   :disabled="disabled"
                   @change="reg"
                   v-if="!haveTip"
@@ -164,6 +164,7 @@
     .text-input-container {
         border: 1px solid #DCDFE6;
         border-radius:4px;
+        font-size: 16px;
     }
     .text-input-container:hover {
         border-color: #409EFF;

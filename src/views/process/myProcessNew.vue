@@ -1,6 +1,6 @@
 <template>
     <div class="my-process-container">
-        <my-header :title="title" :searchFlag="false" :haveBlack="!status.tableOrUniversalFlag" @h_black="black"></my-header>
+        <my-header :title="title" :haveBlack="false"></my-header>
         <div class="my-process" data-test="action_box">
             <div class="my-process-info">
                 <text-input label="请求标题" v-model="requestTitle"></text-input>
@@ -30,9 +30,6 @@
         },
         data(){
             return{
-                status:{
-                    tableOrUniversalFlag:true,
-                },
                 title: "我的流程",
                 requestTitle: "",
                 indexPage: true,
@@ -52,12 +49,6 @@
             }
         },
         methods:{
-            black(data){
-                this.status.tableOrUniversalFlag=!this.status.tableOrUniversalFlag;
-                if(data==='refetch'){
-                    this.refetch();
-                }
-            },
             apply() { // 申请流程
               this.$router.push({
                   name: 'processApply',
