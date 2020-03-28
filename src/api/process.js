@@ -190,18 +190,41 @@ export function scrapStarts(data,nextAssignee,processConfigId) {
 }
 
 /***********  工作流接口 ************/
+export function getAllProcess() { // 获取所有流程定义
+    return request({
+        url: baseBURL+'/process-definitions',
+        method: 'GET'
+    })
+}
+
+export function getOrder(params) { // 申请单号
+    return request({
+        url: baseBURL+"/workflow/order",
+        method: 'GET',
+        params
+    })
+}
+
 export function processStart(params, data) { // 流程启动
     return request({
-        url: '/workflow/processes/start',
+        url: baseBURL+'/workflow/processes/start',
         method: 'POST',
         params,
         data
     })
 }
 
-export function processDelete(params) {
+export function getHistoryTasks(params) { // 历史任务实例
     return request({
-        url: '/workflow/processes/delete',
+      url: '/workflow/history-tasks',
+      method: 'GET',
+      params
+    })
+  }
+
+export function processDelete(params) { // 删除流程
+    return request({
+        url: baseBURL+'/workflow/processes/delete',
         method: 'DELETE',
         params
     })

@@ -37,7 +37,7 @@ export default {
   },
   methods: {
     emitOut() {
-      this.$emit('inClick');
+      this.$emit('click');
     }
   }
 }
