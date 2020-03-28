@@ -32,7 +32,6 @@
             return{
                 title: "我的流程",
                 requestTitle: "",
-                indexPage: true,
                 select: {
                     processList: [{ // 选择列表
                         label: "报废流程",
@@ -52,7 +51,7 @@
             apply() { // 申请流程
               this.$router.push({
                   name: 'processApply',
-                  params: {'type': 'applyScrap', title: '我的流程/申请报废'}
+                  params: {'type': 'apply', title: '我的流程/申请报废'}
               })
             }
         }

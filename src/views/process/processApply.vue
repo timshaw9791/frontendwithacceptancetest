@@ -2,20 +2,20 @@
     <div class="apply-process-container">
         <my-header :title="title" :haveBlack="true" @h_black="black"></my-header>
         <div class="apply-process">
-            <div class="apply-process-top" data-test="action_box" v-if="status.tableOrUniversalFlag">
-                <text-input label="单号" v-model="number" :disabled="true" class="odd-number"></text-input>
+            <div class="apply-process-top" data-test="action_box">
+                <text-input label="单号" v-model="applyOrder.number" :disabled="true" class="odd-number"></text-input>
                 <base-button name="读取数据" :disabled="!select.selected" class="read" :width="96"></base-button>
                 <process-select label="硬件选择" v-model="select.selected" :selectList="select.handWareList" class="handheld"></process-select>
             </div>
             <div class="apply-process-body">
                 <div class="process-info">
-                    <text-input label="当前库房" v-model="processInfo.currentHouse" :disabled="true"></text-input>
-                    <date-select v-model="processInfo.date" :disabled="true"></date-select>
-                    <text-input label="申请人员" v-model="processInfo.applyPerson" :disabled="true"></text-input>
-                    <text-input label="申请原因" v-model="processInfo.applyReson" :haveTip="true" :tips="processInfo.tips"></text-input>
+                    <text-input label="当前库房" v-model="applyOrder.warehouse.name" :disabled="true"></text-input>
+                    <date-select v-model="applyOrder.applyTime" :disabled="true"></date-select>
+                    <text-input label="申请人员" v-model="applyOrder.applicant.name" :disabled="true"></text-input>
+                    <text-input label="申请原因" v-model="applyOrder.applyReson" :haveTip="true" :tips="tips"></text-input>
                 </div>
                 <div class="table">表格组件</div>
-                <text-input label="备注" v-model="reMarks" width="100%" :height="40" class="remark"></text-input>
+                <text-input label="备注" v-model="applyOrder.note" width="100%" :height="40" class="remark"></text-input>
                 <div class="buttom">
                     <base-button name="提交" :width="128" :height="72" :fontSize="20" class="submit"></base-button>
                     <base-button name="清空" :width="128" :height="72" :fontSize="20" type="danger" class="clear"></base-button>
@@ -44,10 +44,42 @@
         data(){
             return{
                 title: "",
-                status:{
-                    tableOrUniversalFlag:true,
+                applyOrder: {
+                    type: 'scrap',
+                    processInstanceId: '',
+                    number: 20200324,
+                    warehouse: {
+                        id: 'sjkfa',
+                        name: '市局库房a'
+                    },
+                    applyTime: new Date().getTime(),
+                    applicant: {
+                        id: '',
+                        name: '',
+                        organUnitId: ''
+                    },
+                    applyReson: "",
+                    note: "",
+                    equips: [{
+                        id: '1',
+                        rfid: '00001',
+                        name: "伸缩警棍",
+                        model: 'ssjg',
+                        count: 1
+                    },{
+                        id: '2',
+                        rfid: '00002',
+                        name: "手铐",
+                        model: 'sk',
+                        count: 1
+                    },{
+                        id: '3',
+                        rfid: '00003',
+                        name: '照明灯',
+                        model: 'zmd',
+                        count: 1
+                    }]
                 },
-                number: 20200324,
                 select: {
                     handWareList: [{
                         label: "手持机",
@@ -58,14 +90,7 @@
                     }],
                     selected: ""
                 },
-                processInfo: {
-                    currentHouse: "XXXXXX",
-                    date: new Date().getTime(),
-                    applyPerson: "王小明",
-                    applyReson: "",
-                    tips: [{value: '直接报废', key: '1'}, {value: '装备拿去维修，无法修补', key: '2'}]
-                },
-                reMarks: "",
+                tips: [{value: '直接报废', key: '1'}, {value: '装备拿去维修，无法修补', key: '2'}],
                 sumEquip: 0
             }
         },
@@ -76,6 +101,8 @@
         },
         created() {
             this.title = this.$route.params.title;
+            let userInfo = JSON.parse(localStorage.getItem('user'));
+            this.applyOrder.applicant = {id: userInfo.id, name: userInfo.name, organUnitId: userInfo.organUnitId}
         }
     }
 </script>

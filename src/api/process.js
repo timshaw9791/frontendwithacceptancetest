@@ -189,6 +189,23 @@ export function scrapStarts(data,nextAssignee,processConfigId) {
     })
 }
 
+/***********  工作流接口 ************/
+export function processStart(params, data) { // 流程启动
+    return request({
+        url: '/workflow/processes/start',
+        method: 'POST',
+        params,
+        data
+    })
+}
+
+export function processDelete(params) {
+    return request({
+        url: '/workflow/processes/delete',
+        method: 'DELETE',
+        params
+    })
+}
 
 
 
