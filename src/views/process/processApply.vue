@@ -32,7 +32,7 @@
     import processSelect from '@/componentized/textBox/processSelect.vue'
     import baseButton from "@/componentized/buttonBox/baseButton.vue"
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
-    import { getOrder, processStart } from 'api/process'
+    import { complete, getOrder, processStart, processDetail } from 'api/process'
     export default {
         name: "applyProcess",
         components:{
@@ -110,11 +110,27 @@
                     this.show = true;
                 })
             },
+            getData() {
+                processDetail({processInstanceId: this.$route.params.processInstanceId}).then(res => {
+                    this.order = Object.assign(this.order, res.processVariables.order)
+                    this.show = true;
+                })
+            },
             submit() {
-                processStart({key: this.$route.params.processType, orderType: this.order.type}, this.order).then(res => {
+                if(this.$route.params.number) {
+                    let userId = JSON.parse(localStorage.getItem('user')).id;
+                    complete(this.$route.params.taskId, {userId: userId}, {
+                        order: this.order
+                    }).then(res => {
+                        this.$message.success("申请成功")
+                        this.$router.push({name: 'myProcess'});
+                    })
+                } else {
+                    processStart({key: this.$route.params.processType, orderType: this.order.type}, this.order).then(res => {
                     this.$message.success('流程申请成功');
                     this.$router.push({name: 'myProcess'});
                 })
+                }
             },
             black(data){
                 this.$router.back()
@@ -122,7 +138,11 @@
         },
         created() {
             this.title = this.$route.params.title;
-            this.init();
+            if(this.$route.params.number) {
+                this.getData();
+            } else {
+                this.init();
+            }
         }
     }
 </script>

@@ -214,9 +214,17 @@ export function processStart(params, data) { // 流程启动
     })
 }
 
+export function processDetail(params) { // 流程内容
+    return request({
+      url: baseBURL+"/workflow/process-instance-detail",
+      method: "GET",
+      params
+    })
+  }
+
 export function getHistoryTasks(params) { // 历史任务实例
     return request({
-      url: '/workflow/history-tasks',
+      url: baseBURL+'/workflow/history-tasks',
       method: 'GET',
       params
     })
@@ -229,6 +237,15 @@ export function processDelete(params) { // 删除流程
         params
     })
 }
+
+export function complete(taskId, params, data) {
+    return request({
+      url: baseBURL+`/workflow/tasks/${taskId}/complete`,
+      method: 'PUT',
+      params,
+      data
+    })
+  }
 
 
 

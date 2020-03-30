@@ -2,21 +2,33 @@
   <div class="process-infos-container">
     <div class="title">审批流程</div>
     <div class="process-infos-body" :style="'height:'+fixHeight">
-      <div class="info" v-for="(item, i) in list" :key="i">
-        <div>{{ item.type }}人员</div>
-        <div>{{ item.person }}</div>
-        <div>{{ item.state }}</div>
-        <div class="reson">[查看驳回原因]</div>
-        <div>{{ item.type }}时间</div>
-        <div>{{ item.time }}</div>
+      <div class="info" v-for="(item, i) in list" :key="i" v-show="!item.name.includes('用户申请')">
+        <div>{{ item.name }}</div>
+        <div>{{ item.assigneeName }}</div> 
+        <div>{{ item | stateToWord}}</div>
+        <div class="reson"><span v-show="item.taskVariables&&!item.taskVariables.pass" @click="lookReson(item.taskVariables.note)">[查看驳回原因]</span></div>
+        <div>操作时间</div>
+        <div>{{ item.endTime }}</div>
       </div>
     </div>
+    <service-dialog title="驳回" ref="ratify" confirmInfo="确定" :secondary="false">
+      <center>
+        <text-input label="驳回原因" v-model="reson" width="100%" :disabled="true"></text-input>
+      </center>
+    </service-dialog>
   </div>
 </template>
 
 <script>
+import serviceDialog from "components/base/serviceDialog"
+import textInput from '@/componentized/textBox/textInput'
 export default {
   name: 'processInfos',
+  data() {
+    return {
+        reson: ""
+    }
+  },
   props: {
     list: {
       type: Array,
@@ -55,6 +67,27 @@ export default {
         return this.height-37+'px';
       }
     }
+  },
+  methods: {
+    lookReson(note) {
+      this.reson = note;
+      this.$refs.ratify.show();
+    }
+  },
+  filters: {
+    stateToWord(value) {
+      if(value.name.includes("申请")) {
+        return "通过"
+      } else if(value.taskVariables.pass == undefined) {
+        return ""
+      } else {
+        return value.taskVariables.pass?"通过":"驳回"
+      }
+    }
+  },
+  components: {
+    serviceDialog,
+    textInput
   }
 }
 </script>

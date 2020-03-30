@@ -116,7 +116,7 @@ export const asyncRouterMap = [
                 component: _import('process/processApply'),
                 hidden: true,
             },{
-                path: 'myProcess/:type/:aduit',
+                path: 'myProcess/:type/:audit',
                 name: 'applyAudit',
                 component: _import('process/processForm'),
                 hidden: true,
