@@ -62,17 +62,18 @@ const user = {
                         response.role = ['ADMINISTRATOR'];
                     }
                     localStorage.setItem('user', JSON.stringify(response));
-                    setDeploy();
-                    getdeploy().then((res) => {
-                        console.log(res);
-                        // localStorage.setItem('deploy', JSON.stringify(res.data));
-                        if (process.env.NODE_ENV == "production") {
+                    // 打包应用去注释
+                    // setDeploy();
+                    // getdeploy().then((res) => {
+                    //     console.log(res);
+                    //     // localStorage.setItem('deploy', JSON.stringify(res.data));
+                    //     if (process.env.NODE_ENV == "production") {
 
-                        }else {
-                            localStorage.setItem('deploy', JSON.stringify(res.data));
-                        }
-                        commit('SET_DEPLOY', res);
-                    });
+                    //     }else {
+                    //         localStorage.setItem('deploy', JSON.stringify(res.data));
+                    //     }
+                    //     commit('SET_DEPLOY', res);
+                    // });
                     // commit('SET_USERID', response.id);
                     /*  const data = response.data
                       setToken(data.token)

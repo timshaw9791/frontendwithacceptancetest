@@ -63,7 +63,6 @@
         width: 100%;
         color:#707070FF;
         font-size: 16px;
-        border: 1px solid black;
         .my-process-info {
             width: 100%;
             padding: 16px 0.1198rem 16px 0.09375rem;
