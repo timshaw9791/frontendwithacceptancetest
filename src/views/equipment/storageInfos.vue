@@ -572,7 +572,7 @@
         columns.forEach((column, index) => {
           if (index === 0&&!this.isFlag) {
             let len=this.addNum();
-            sums[index] = '总计'+boxLen+'箱'+len+'件';
+            sums[index] = '共'+boxLen+'箱'+'共'+len+'件';
             return;
           }
            if (index === 0&&this.isFlag) {
