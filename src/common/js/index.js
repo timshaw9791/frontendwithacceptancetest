@@ -35,6 +35,9 @@ export function parseTime(time, cFormat) {
     if (('' + time).length === 10) time = parseInt(time) * 1000
     date = new Date(time)
   }
+  if(date == null || date == undefined) {
+    return ""
+  }
   const formatObj = {
     y: date.getFullYear(),
     m: date.getMonth() + 1,
