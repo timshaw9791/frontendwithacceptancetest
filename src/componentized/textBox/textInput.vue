@@ -6,8 +6,11 @@
                   v-if="!haveTip"
                   :clearable="clearable"
                   v-model="insideValue">
-            <div slot="prepend" :class="{'prefix': true, 'disabled': disabled}">{{ label }}</div>
-            <span slot="prepend" class="required" v-if="required">*</span>
+            <div slot="prepend" :class="{'prefix': true, 'disabled': disabled}">
+                {{ label }}
+                <span class="required" v-if="required">*</span>
+            </div>
+            
         </el-input>
         <el-autocomplete class="inline-input"
         v-model="insideValue"

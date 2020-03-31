@@ -99,7 +99,7 @@
                 console.log(table);
                 this.$router.push({
                     name: 'applyAudit',
-                    params: {type:'apply', audit: 'order', processInstanceId: table.row.processInstanceId, taskId: table.row.taskId}
+                    params: {type:'apply', audit: 'order', info: {processInstanceId: table.row.processInstanceId, taskId: table.row.taskId}}
                 })
             //    let url = `/tasks/${table.row.id}?includeProcessVariables=true&includeTaskVariables=true`;
             //     transferApply(url).then(res=>{

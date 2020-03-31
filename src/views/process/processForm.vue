@@ -1,6 +1,6 @@
 <template>
   <div class="process-form-container">
-    <my-header :title="title" :haveBlack="true" @h_black="black"></my-header>
+    <my-header :title="title" :haveBlack="false"></my-header>
     <div class="process-form-top" v-if="show">
       <text-input label="单号" v-model="order.number" :disabled="true" class="odd-number"></text-input>
       <base-button label="导出" type="none" class="out"></base-button>
@@ -13,7 +13,8 @@
       <div class="process-info">
           <text-input label="所在库房" v-model="order.warehouse.name" :disabled="true"></text-input>
           <date-select v-model="order.applyTime" :disabled="true"></date-select>
-          <text-input label="申请人员" v-model="order.applicant.name" :disabled="true"></text-input>
+          <!-- <text-input label="申请人员" v-model="order.applicant.name" :disabled="true"></text-input> -->
+          <entity-input label="申请人员" v-model="order.applicant" :disabled="true"></entity-input>
           <text-input label="申请原因" v-model="order.applyReson" :haveTip="true" :tips="tips" :disabled="true"></text-input>
       </div>
       <div class="table">表格组件</div>
@@ -36,6 +37,7 @@ import textInput from '@/componentized/textBox/textInput'
 import baseButton from '@/componentized/buttonBox/baseButton'
 import dateSelect from '@/componentized/textBox/dateSelect'
 import serviceDialog from "components/base/serviceDialog"
+import entityInput from '@/componentized/entity/entityInput'
 import { processDetail, getHistoryTasks, processDelete } from 'api/process'
 export default {
   name: 'processForm',
@@ -67,11 +69,11 @@ export default {
   },
   methods: {
     getData() {
-      processDetail({processInstanceId: this.$route.params.processInstanceId}).then(res => {
+      processDetail({processInstanceId: this.$route.params.info.processInstanceId}).then(res => {
         this.order = Object.assign(this.order, res.processVariables.order)
         this.show = true;
       })
-      getHistoryTasks({processInstanceId: this.$route.params.processInstanceId}).then(res => {
+      getHistoryTasks({processInstanceId: this.$route.params.info.processInstanceId}).then(res => {
         this.historyTasks = res
       })
     },
@@ -93,13 +95,15 @@ export default {
           console.log(err);
         }
       })
-    },
-    black() {
-      this.$router.back()
     }
   },
   created() {
-    this.getData();
+    if(this.$route.params.info == undefined) {
+      this.$message.info("数据丢失，返回待办界面");
+      this.$router.push({name: 'agencyMatters'});
+    } else {
+      this.getData();
+    }
   },
   components: {
     myHeader,
@@ -107,7 +111,8 @@ export default {
     textInput,
     baseButton,
     dateSelect,
-    serviceDialog
+    serviceDialog,
+    entityInput
   }
 }
 </script>

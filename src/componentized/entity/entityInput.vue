@@ -5,10 +5,12 @@
                 :disabled="disabled"
                 v-model="insideValue"
                 readonly>
-          <div slot="prepend" :class="{'prefix': true, 'disabled': disabled}">{{ label }}</div>
-          <span slot="prepend" class="required" v-if="required">*</span>
-          <i slot="suffix" class="iconfont iconwenbenkuangshanchu clear" @click="clear" v-show="insideValue"></i>
-          <i slot="suffix" class="iconfont iconsousuo" @click="showConnect"></i>
+          <div slot="prepend" :class="{'prefix': true, 'disabled': disabled}">
+            {{ label }}
+            <span class="required" v-if="required">*</span>
+          </div>
+            <i slot="suffix" class="iconfont iconwenbenkuangshanchu clear" @click="clear" v-show="insideValue&&!disabled"></i>
+            <i slot="suffix" class="iconfont iconsousuo" @click="showConnect" v-show="!disabled"></i>
       </el-input>
     </div>
     <service-dialog title="申请人员选择" ref="applicant" :button="false">
@@ -148,6 +150,7 @@ export default {
         border-color: #409EFF;
     }
     .required {
+      position: absolute;
         font-size: 16px;
         color: red;
     }

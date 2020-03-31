@@ -12,6 +12,7 @@
         <bos-table-column lable="工作流名称" field="name" align="center"></bos-table-column>
         <bos-table-column lable="部署时间" field="time" align="center"></bos-table-column>
       </el-table>
+      <bos-paginator v-if="this.list!=''" :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
     </div>
   </div>
 </template>
@@ -25,6 +26,7 @@ export default {
   data() {
     return {
       list: [],
+      paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0}
     }
   },
   methods: {
@@ -38,6 +40,9 @@ export default {
         name: 'processApply',
         params: {type: 'apply', info: data}
       })
+    },
+    changePage(page) {
+      this.paginator.page = page;
     }
   },
   created() {

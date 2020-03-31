@@ -6,7 +6,6 @@
                 <text-input label="请求标题" v-model="requestTitle"></text-input>
                 <process-select v-model="select.selected" :selectList="select.processList"></process-select>
                 <base-button label="查询"></base-button>
-                <base-button label="申请报废" style="float:right" :width="96" @click="apply"></base-button>
             </div>
             <div class="my-process-body">
                 <div class="table">表格组件</div>
@@ -48,12 +47,6 @@
             }
         },
         methods:{
-            apply() { // 申请流程
-                this.$router.push({
-                    name: 'processApply',
-                    params: {'type': 'apply', title: '我的流程/申请报废', processType: 'scrap'}
-                })
-            }
         }
     }
 </script>

@@ -12,7 +12,7 @@
                     <text-input label="所在库房" v-model="order.warehouse.name" :disabled="true"></text-input>
                     <date-select v-model="order.applyTime" :disabled="true"></date-select>
                     <!-- <text-input label="申请人员" v-model="order.applicant.name" :disabled="true"></text-input> -->
-                    <entity-input label="申请人员" v-model="order.applicant" placeholder="请选择"></entity-input>
+                    <entity-input label="申请人员" v-model="order.applicant" :required="true" placeholder="请选择"></entity-input>
                     <text-input label="申请原因" v-model="order.applyReson" :haveTip="true" :tips="tips"></text-input>
                 </div>
                 <div class="table">表格组件</div>
@@ -128,7 +128,7 @@
                         this.$router.push({name: 'myProcess'});
                     })
                 } else {
-                    processStart({key: this.$route.params.info.processType, orderType: this.order.type}, this.order).then(res => {
+                    processStart({key: this.$route.params.info.key, orderType: this.order.type}, this.order).then(res => {
                     this.$message.success('流程申请成功');
                     this.$router.push({name: 'myProcess'});
                 })
