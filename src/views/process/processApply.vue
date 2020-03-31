@@ -13,10 +13,10 @@
                     <date-select v-model="order.applyTime" :disabled="true"></date-select>
                     <!-- <text-input label="申请人员" v-model="order.applicant.name" :disabled="true"></text-input> -->
                     <entity-input label="申请人员" v-model="order.applicant" :required="true" placeholder="请选择"></entity-input>
-                    <text-input label="申请原因" v-model="order.applyReson" :haveTip="true" :tips="tips"></text-input>
+                    <text-input label="申请原因" v-model="order.note" :haveTip="true" :tips="tips" :title="order.note"></text-input>
                 </div>
                 <div class="table">表格组件</div>
-                <text-input label="备注" v-model="order.note" width="100%" :height="40" class="remark"></text-input>
+                <!-- <text-input label="备注" v-model="order.note" width="100%" :height="40" class="remark"></text-input> -->
                 <div class="buttom">
                     <base-button label="提交" :width="128" :height="72" :fontSize="20" class="submit" @click="submit"></base-button>
                     <base-button label="清空" :width="128" :height="72" :fontSize="20" type="danger" class="clear"></base-button>

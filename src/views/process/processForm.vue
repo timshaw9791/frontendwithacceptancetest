@@ -15,10 +15,10 @@
           <date-select v-model="order.applyTime" :disabled="true"></date-select>
           <!-- <text-input label="申请人员" v-model="order.applicant.name" :disabled="true"></text-input> -->
           <entity-input label="申请人员" v-model="order.applicant" :disabled="true"></entity-input>
-          <text-input label="申请原因" v-model="order.applyReson" :haveTip="true" :tips="tips" :disabled="true"></text-input>
+          <text-input label="申请原因" v-model="order.note" :haveTip="true" :tips="tips" :disabled="true"></text-input>
       </div>
       <div class="table">表格组件</div>
-      <text-input label="备注" v-model="order.note" width="100%" :height="40" class="remark" :disabled="true"></text-input>
+      <!-- <text-input label="备注" v-model="order.note" width="100%" :height="40" class="remark" :disabled="true"></text-input> -->
     </div>
     <div class="process-form-bottom">
       <process-infos :list="historyTasks" :height="154"></process-infos>
