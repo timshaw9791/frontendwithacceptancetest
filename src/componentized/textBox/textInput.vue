@@ -1,6 +1,6 @@
 <template>
     <div class="text-input-container" :style="'width:'+fixWidth+';height:'+height+'px'">
-        <el-input placeholder="请输入内容"
+        <el-input :placeholder="placeholder"
                   :disabled="disabled"
                   @change="reg"
                   v-if="!haveTip"
@@ -14,7 +14,7 @@
         :fetch-suggestions="querySearch"
         v-if="haveTip"
         :disabled="disabled"
-        placeholder="请输入内容">
+        :placeholder="placeholder">
         <div slot="prepend" :class="{'prefix': true, 'disabled': disabled}">{{ label }}</div>
         </el-autocomplete>
     </div>
@@ -82,6 +82,10 @@
                 default() {
                     return []
                 }
+            },
+            placeholder: {
+                type: [Number, String],
+                default: "请输入内容"
             }
         },
         methods: {

@@ -238,7 +238,7 @@ export function processDelete(params) { // 删除流程
     })
 }
 
-export function complete(taskId, params, data) {
+export function complete(taskId, params, data) { // 流程操作(审核、驳回、重填后发起)
     return request({
       url: baseBURL+`/workflow/tasks/${taskId}/complete`,
       method: 'PUT',
@@ -246,6 +246,14 @@ export function complete(taskId, params, data) {
       data
     })
   }
+
+export function processDefinitions(params) { // 查询流程定义
+    return request({
+        url: baseBURL+'/process-definitions',
+        method: 'GET',
+        params
+    })
+}
 
 
 

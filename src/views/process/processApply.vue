@@ -4,21 +4,22 @@
         <div class="apply-process" v-if="show">
             <div class="apply-process-top" data-test="action_box">
                 <text-input label="单号" v-model="order.number" :disabled="true" class="odd-number"></text-input>
-                <base-button name="读取数据" :disabled="!select.selected" class="read" :width="96"></base-button>
+                <base-button label="读取数据" :disabled="!select.selected" class="read" :width="96"></base-button>
                 <process-select label="硬件选择" v-model="select.selected" :selectList="select.handWareList" class="handheld"></process-select>
             </div>
             <div class="apply-process-body">
                 <div class="process-info">
                     <text-input label="所在库房" v-model="order.warehouse.name" :disabled="true"></text-input>
                     <date-select v-model="order.applyTime" :disabled="true"></date-select>
-                    <text-input label="申请人员" v-model="order.applicant.name" :disabled="true"></text-input>
+                    <!-- <text-input label="申请人员" v-model="order.applicant.name" :disabled="true"></text-input> -->
+                    <entity-input label="申请人员" v-model="order.applicant" placeholder="请选择"></entity-input>
                     <text-input label="申请原因" v-model="order.applyReson" :haveTip="true" :tips="tips"></text-input>
                 </div>
                 <div class="table">表格组件</div>
                 <text-input label="备注" v-model="order.note" width="100%" :height="40" class="remark"></text-input>
                 <div class="buttom">
-                    <base-button name="提交" :width="128" :height="72" :fontSize="20" class="submit" @click="submit"></base-button>
-                    <base-button name="清空" :width="128" :height="72" :fontSize="20" type="danger" class="clear"></base-button>
+                    <base-button label="提交" :width="128" :height="72" :fontSize="20" class="submit" @click="submit"></base-button>
+                    <base-button label="清空" :width="128" :height="72" :fontSize="20" type="danger" class="clear"></base-button>
                     <div class="sum-equip">装备总数： {{ sumEquip }}</div>
                 </div>
             </div>
@@ -32,6 +33,7 @@
     import processSelect from '@/componentized/textBox/processSelect.vue'
     import baseButton from "@/componentized/buttonBox/baseButton.vue"
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
+    import entityInput from '@/componentized/entity/entityInput'
     import { complete, getOrder, processStart, processDetail } from 'api/process'
     export default {
         name: "applyProcess",
@@ -40,7 +42,8 @@
             textInput,
             processSelect,
             baseButton,
-            dateSelect
+            dateSelect,
+            entityInput
         },
         data(){
             return{
@@ -80,12 +83,9 @@
         },
         methods:{
             init() {
-                getOrder({processDefinitionKey: this.$route.params.processType}).then(res => {
+                getOrder({processDefinitionKey: this.$route.params.info.key}).then(res => {
                     let userInfo = JSON.parse(localStorage.getItem('user'));
-                    console.log(userInfo);
                     this.order = Object.assign(this.order, res, {
-                        applicant: {id: userInfo.id, name: userInfo.name, organUnitId: userInfo.organUnitId}
-                    }, {
                         warehouse: {id: '1', name: '1号公共库房'}
                     });
                     this.order.equips = [{
@@ -108,16 +108,18 @@
                         count: 1
                     }]
                     this.show = true;
+                }).catch(err => {
+                    this.$message.error(err.response.data.message);
                 })
             },
             getData() {
-                processDetail({processInstanceId: this.$route.params.processInstanceId}).then(res => {
+                processDetail({processInstanceId: this.$route.params.info.processInstanceId}).then(res => {
                     this.order = Object.assign(this.order, res.processVariables.order)
                     this.show = true;
                 })
             },
             submit() {
-                if(this.$route.params.number) {
+                if(this.$route.params.info.number) {
                     let userId = JSON.parse(localStorage.getItem('user')).id;
                     complete(this.$route.params.taskId, {userId: userId}, {
                         order: this.order
@@ -126,7 +128,7 @@
                         this.$router.push({name: 'myProcess'});
                     })
                 } else {
-                    processStart({key: this.$route.params.processType, orderType: this.order.type}, this.order).then(res => {
+                    processStart({key: this.$route.params.info.processType, orderType: this.order.type}, this.order).then(res => {
                     this.$message.success('流程申请成功');
                     this.$router.push({name: 'myProcess'});
                 })
@@ -137,8 +139,13 @@
             },
         },
         created() {
-            this.title = this.$route.params.title;
-            if(this.$route.params.number) {
+            if(this.$route.params.info == undefined) {
+                this.$message.info("数据丢失，返回新启流程");
+                this.$router.push({name: 'newProcess'});
+                return
+            }
+            this.title = "我的流程/申请" + this.$route.params.info.name.substr(0, 2);
+            if(this.$route.params.info.number) {
                 this.getData();
             } else {
                 this.init();

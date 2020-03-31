@@ -3,9 +3,9 @@
     <my-header :title="title" :haveBlack="true" @h_black="black"></my-header>
     <div class="process-form-top" v-if="show">
       <text-input label="单号" v-model="order.number" :disabled="true" class="odd-number"></text-input>
-      <base-button name="导出" type="none" class="out"></base-button>
-      <base-button name="重填" class="reset" @click="refill"></base-button>
-      <base-button name="作废" class="delete" @click="$refs.ratify.show()"></base-button>
+      <base-button label="导出" type="none" class="out"></base-button>
+      <base-button label="重填" class="reset" @click="refill"></base-button>
+      <base-button label="作废" class="delete" @click="$refs.ratify.show()"></base-button>
       <!-- <base-button name="审核"></base-button>
       <base-button name="驳回"></base-button> -->
     </div>
@@ -67,7 +67,6 @@ export default {
   },
   methods: {
     getData() {
-      console.log({processInstanceId: this.$route.params.processInstanceId});
       processDetail({processInstanceId: this.$route.params.processInstanceId}).then(res => {
         this.order = Object.assign(this.order, res.processVariables.order)
         this.show = true;
@@ -79,7 +78,7 @@ export default {
     refill() {
       this.$router.push({
         name: 'processApply',
-        params: {type: 'apply',title: '我的流程/申请报废', processInstanceId: this.order.processInstanceId, taskId: this.$route.params.taskId, number: this.order.number}
+        params: {type: 'apply', info: {name: this.order.title, processInstanceId: this.order.processInstanceId, taskId: this.$route.params.taskId, number: this.order.number}}
       })
     },
     nullify() { // 作废
