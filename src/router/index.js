@@ -111,13 +111,13 @@ export const asyncRouterMap = [
                 meta: {title: '我的流程'},
             },
             {
-                path: 'myProcess/:type',
+                path: 'myProcess/:type', // 工作流申请
                 name: 'processApply',
                 component: _import('process/processApply'),
                 hidden: true,
             },{
-                path: 'myProcess/:type/form',
-                name: 'applyForm',
+                path: 'myProcess/:type/:audit',
+                name: 'applyAudit',
                 component: _import('process/processForm'),
                 hidden: true,
             },{

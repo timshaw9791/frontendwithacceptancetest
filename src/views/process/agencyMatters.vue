@@ -96,26 +96,31 @@
                 }
             },
             clickTable(table) {
-               let url = `/tasks/${table.row.id}?includeProcessVariables=true&includeTaskVariables=true`;
-                transferApply(url).then(res=>{
-                    this.universal={title:this.getTitle(res.processVariables.processConfig.type),universalObj:res};
-                    let url;
-                    switch (this.universal.title) {
-                        case "报废":
-                            url={transfer:'/workflow/scrap/to-excel?processInstanceId='} ;
-                            break;
-                        case "调拨":
-                            url={outHouse:'/workflow/transfer/equips-outbound',inHouse:'/workflow/transfer/equips-inbound',transfer:'/workflow/transfer/to-excel?processInstanceId='};
-                            break;
-                        case "直调":
-                            url={outHouse:'/workflow/direct-allot/equips-outbound',inHouse:'/workflow/direct-allot/equips-inbound',transfer:'/workflow/direct-allot/to-excel?processInstanceId='};
-                            break;
-                    }
-                    this.universal.url=url;
-                    this.status.tableOrUniversalFlag=!this.status.tableOrUniversalFlag;
-                }).catch(err=>{
-                    this.$message.error(err.response.data.message);
-                });
+                console.log(table);
+                this.$router.push({
+                    name: 'applyAudit',
+                    params: {type:'apply', audit: 'order', processInstanceId: table.row.processInstanceId, taskId: table.row.taskId}
+                })
+            //    let url = `/tasks/${table.row.id}?includeProcessVariables=true&includeTaskVariables=true`;
+            //     transferApply(url).then(res=>{
+            //         this.universal={title:this.getTitle(res.processVariables.processConfig.type),universalObj:res};
+            //         let url;
+            //         switch (this.universal.title) {
+            //             case "报废":
+            //                 url={transfer:'/workflow/scrap/to-excel?processInstanceId='} ;
+            //                 break;
+            //             case "调拨":
+            //                 url={outHouse:'/workflow/transfer/equips-outbound',inHouse:'/workflow/transfer/equips-inbound',transfer:'/workflow/transfer/to-excel?processInstanceId='};
+            //                 break;
+            //             case "直调":
+            //                 url={outHouse:'/workflow/direct-allot/equips-outbound',inHouse:'/workflow/direct-allot/equips-inbound',transfer:'/workflow/direct-allot/to-excel?processInstanceId='};
+            //                 break;
+            //         }
+            //         this.universal.url=url;
+            //         this.status.tableOrUniversalFlag=!this.status.tableOrUniversalFlag;
+            //     }).catch(err=>{
+            //         this.$message.error(err.response.data.message);
+            //     });
             }
         }
     }

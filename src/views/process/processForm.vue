@@ -1,25 +1,31 @@
 <template>
   <div class="process-form-container">
     <my-header :title="title" :haveBlack="true" @h_black="black"></my-header>
-    <div class="process-form-top">
-      <text-input label="单号" v-model="oddNumber" :disabled="true" class="odd-number"></text-input>
+    <div class="process-form-top" v-if="show">
+      <text-input label="单号" v-model="order.number" :disabled="true" class="odd-number"></text-input>
       <base-button name="导出" type="none" class="out"></base-button>
-      <base-button name="重填" class="reset"></base-button>
-      <base-button name="作废" class="delete"></base-button>
+      <base-button name="重填" class="reset" @click="refill"></base-button>
+      <base-button name="作废" class="delete" @click="$refs.ratify.show()"></base-button>
+      <!-- <base-button name="审核"></base-button>
+      <base-button name="驳回"></base-button> -->
     </div>
-    <div class="process-form-body">
+    <div class="process-form-body" v-if="show">
       <div class="process-info">
-          <text-input label="当前库房" v-model="processInfo.currentHouse" :disabled="true"></text-input>
-          <date-select v-model="processInfo.date" :disabled="true"></date-select>
-          <text-input label="申请人员" v-model="processInfo.applyPerson" :disabled="true"></text-input>
-          <text-input label="申请原因" v-model="processInfo.applyReson" :haveTip="true" :tips="processInfo.tips" :disabled="true"></text-input>
+          <text-input label="所在库房" v-model="order.warehouse.name" :disabled="true"></text-input>
+          <date-select v-model="order.applyTime" :disabled="true"></date-select>
+          <text-input label="申请人员" v-model="order.applicant.name" :disabled="true"></text-input>
+          <text-input label="申请原因" v-model="order.applyReson" :haveTip="true" :tips="tips" :disabled="true"></text-input>
       </div>
       <div class="table">表格组件</div>
-      <text-input label="备注" v-model="reMarks" width="100%" :height="40" class="remark"></text-input>
+      <text-input label="备注" v-model="order.note" width="100%" :height="40" class="remark" :disabled="true"></text-input>
     </div>
     <div class="process-form-bottom">
-      <process-infos :height="154"></process-infos>
+      <process-infos :list="historyTasks" :height="154"></process-infos>
     </div>
+
+    <service-dialog title="作废" ref="ratify" confirmInfo="确定" :secondary="false" @confirm="nullify">
+      <center>确定要作废此单？</center>
+    </service-dialog>
   </div>
 </template>
 
@@ -29,33 +35,80 @@ import processInfos from 'components/process/processInfos'
 import textInput from '@/componentized/textBox/textInput'
 import baseButton from '@/componentized/buttonBox/baseButton'
 import dateSelect from '@/componentized/textBox/dateSelect'
+import serviceDialog from "components/base/serviceDialog"
+import { processDetail, getHistoryTasks, processDelete } from 'api/process'
 export default {
   name: 'processForm',
   data() {
     return {
       title: "我的流程/报废申请单",
-      oddNumber: 20200324,
-        processInfo: {
-        currentHouse: "XXXXXX",
-        date: new Date().getTime(),
-        applyPerson: "王小明",
+      show: false,
+      order: {
+        type: 'scrap',
+        processInstanceId: '',
+        number: "",
+        warehouse: {
+            id: 'sjkfa',
+            name: '市局库房a'
+        },
+        applyTime: 0,
+        applicant: {
+            id: '',
+            name: '',
+            organUnitId: ''
+        },
         applyReson: "",
-        tips: [{value: '直接报废', key: '1'}, {value: '装备拿去维修，无法修补', key: '2'}]
-      },
-      reMarks: "",
+        note: "",
+        equips: []
+    },
+      tips: [{value: '直接报废', key: '1'}, {value: '装备拿去维修，无法修补', key: '2'}],
+      historyTasks: []
     }
   },
   methods: {
+    getData() {
+      console.log({processInstanceId: this.$route.params.processInstanceId});
+      processDetail({processInstanceId: this.$route.params.processInstanceId}).then(res => {
+        this.order = Object.assign(this.order, res.processVariables.order)
+        this.show = true;
+      })
+      getHistoryTasks({processInstanceId: this.$route.params.processInstanceId}).then(res => {
+        this.historyTasks = res
+      })
+    },
+    refill() {
+      this.$router.push({
+        name: 'processApply',
+        params: {type: 'apply',title: '我的流程/申请报废', processInstanceId: this.order.processInstanceId, taskId: this.$route.params.taskId, number: this.order.number}
+      })
+    },
+    nullify() { // 作废
+      let userId = JSON.parse(localStorage.getItem('user')).id;
+      processDelete({processInstanceId: this.order.processInstanceId, startUserId: userId}).then(res => {
+        this.$message.success("操作成功！");
+        this.$router.push({name: 'agencyMatters'});
+      }).catch(err => {
+        if(err.response) {
+          this.$message.error(err.response.data.message)
+        } else {
+          console.log(err);
+        }
+      })
+    },
     black() {
       this.$router.back()
     }
+  },
+  created() {
+    this.getData();
   },
   components: {
     myHeader,
     processInfos,
     textInput,
     baseButton,
-    dateSelect
+    dateSelect,
+    serviceDialog
   }
 }
 </script>

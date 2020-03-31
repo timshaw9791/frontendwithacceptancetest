@@ -2,21 +2,34 @@
   <div class="process-infos-container">
     <div class="title">审批流程</div>
     <div class="process-infos-body" :style="'height:'+fixHeight">
-      <div class="info" v-for="(item, i) in list" :key="i">
-        <div>{{ item.type }}人员</div>
-        <div>{{ item.person }}</div>
+      <div class="info" v-for="(item, i) in processList" :key="i">
+        <div>{{ item.name }}</div>
+        <div>{{ item.assigneeName }}</div> 
         <div>{{ item.state }}</div>
-        <div class="reson">[查看驳回原因]</div>
-        <div>{{ item.type }}时间</div>
+        <div class="reson"><span v-show="item.state=='驳回'" @click="lookReson(item.note)">[查看驳回原因]</span></div>
+        <div>操作时间</div>
         <div>{{ item.time }}</div>
       </div>
     </div>
+    <service-dialog title="驳回" ref="ratify" confirmInfo="确定" :secondary="false">
+      <center>
+        <text-input label="驳回原因" v-model="reson" width="100%" :disabled="true"></text-input>
+      </center>
+    </service-dialog>
   </div>
 </template>
 
 <script>
+import serviceDialog from "components/base/serviceDialog"
+import textInput from '@/componentized/textBox/textInput'
 export default {
   name: 'processInfos',
+  data() {
+    return {
+      processList: [],
+      reson: ""
+    }
+  },
   props: {
     list: {
       type: Array,
@@ -55,6 +68,48 @@ export default {
         return this.height-37+'px';
       }
     }
+  },
+  watch: {
+    list: {
+      handler() {
+        this.fixList();
+      },
+      deep: true
+    }
+  },
+  methods: {
+    fixList() {
+      this.processList = this.list.map((obj, i) => {
+        let state = "", note = "";
+        switch (obj.taskVariables.pass) {
+          case undefined:
+            state = "";
+            break;
+          case true:
+            state = "通过";
+          case false:
+            state = "驳回";
+            note = obj.taskVariables.note;
+          default:
+            break;
+        }
+        return {
+          name: obj.name,
+          assigneeName: obj.assigneeName,
+          state: obj.name.includes('用户申请')?"通过":state,
+          note,
+          time: this.$filterTime(obj.endTime)
+        };
+      })
+    },
+    lookReson(note) {
+      this.reson = note;
+      this.$refs.ratify.show();
+    }
+  },
+  components: {
+    serviceDialog,
+    textInput
   }
 }
 </script>
