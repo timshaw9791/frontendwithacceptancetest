@@ -1,5 +1,5 @@
 <template>
-    <div class="text-input-container" :style="'width:'+fixWidth+';height:'+height+'px'">
+    <div :class="{'text-input-container':true, 'bg-disabled':disabled}" :style="'width:'+fixWidth+';height:'+height+'px'">
         <el-input :placeholder="placeholder"
                   :disabled="disabled"
                   @change="reg"
@@ -42,9 +42,9 @@
                 type: [String, Number],
                 default: ""
             },
-            width: {
-                type: [Number, String],
-                default: 288
+            column: {
+                type: Number,
+                default: 5
             },
             height: {
                 type: Number,
@@ -117,11 +117,7 @@
         },
         computed: {
           fixWidth() {
-              if(isNaN(this.width)) {
-                  return this.width;
-              } else {
-                  return this.width + 'px';
-              }
+              return `calc(${8.33*this.column}% - 0.1042rem)`;
           }  
         },
         watch: {
@@ -172,6 +168,9 @@
         border: 1px solid #DCDFE6;
         border-radius:4px;
         font-size: 16px;
+        margin: 0 0.0521rem;
+        display: inline-block;
+		box-sizing: border-box;
     }
     .text-input-container:hover {
         border-color: #409EFF;
@@ -192,6 +191,10 @@
     }
     .prefix:hover {
         border-color: #409EFF;
+    }
+    .bg-disabled {
+        background-color: #F5F7FA;
+        color: #C0C4CC;
     }
     .disabled {
         background-color: #f5f7fa !important;

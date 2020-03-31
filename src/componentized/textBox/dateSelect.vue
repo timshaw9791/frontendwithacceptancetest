@@ -1,5 +1,5 @@
 <template>
-    <div :class="{'date-select-continer':true,disabled}" :style="'width:'+width+'px;height:'+height+'px'">
+    <div :class="{'date-select-continer':true,disabled}" :style="'width:'+fixWidth+';height:'+height+'px'">
         <div class="label">{{ label }}</div>
         <el-date-picker
                 v-model="selectValue"
@@ -42,9 +42,9 @@
                 type: String,
                 default: "12:00:00"
             },
-            width: {
+            column: {
               type: Number,
-              default: 288
+              default: 5
             },
             height: {
               type: Number,
@@ -75,6 +75,11 @@
               default: true
             }
         },
+        computed: {
+          fixWidth() {
+              return `calc(${8.33*this.column}% - 0.1042rem)`;
+          }  
+        },
         methods: {
           change(value) {
             this.$emit('input', value)
@@ -88,17 +93,16 @@
 
 <style lang="scss" scoped>
   /deep/ .el-date-editor {
-    width: 203px !important;
+    // width: 203px !important;
     .el-input__inner {
       padding: 0 10px !important;
       border: none;
       border-bottom: 1px solid #E4E7ED;
     }
     .el-input__prefix {
+      right: 20px;
+      text-align: right;
       pointer-events: none; // 自身不捕获鼠标事件，将其传递下去
-    }
-    .el-icon-date {
-      margin-left: 150px;
     }
   }
   .date-select-continer {
@@ -106,6 +110,8 @@
     justify-content: space-between;
     border: 1px solid #E4E7ED;
     border-radius: 4px;
+    margin: 0 0.0521rem;
+		box-sizing: border-box;
   }
   .label {
     flex-shrink: 0; // 在父元素宽度不够的情况下不自动收缩

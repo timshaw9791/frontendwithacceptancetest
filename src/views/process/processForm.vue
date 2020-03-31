@@ -2,20 +2,18 @@
   <div class="process-form-container">
     <my-header :title="title" :haveBlack="false"></my-header>
     <div class="process-form-top" v-if="show">
-      <text-input label="单号" v-model="order.number" :disabled="true" class="odd-number"></text-input>
-      <base-button label="导出" type="none" class="out"></base-button>
-      <base-button label="重填" class="reset" @click="refill"></base-button>
-      <base-button label="作废" class="delete" @click="$refs.ratify.show()"></base-button>
-      <!-- <base-button name="审核"></base-button>
-      <base-button name="驳回"></base-button> -->
+      <text-input label="单号" v-model="order.number" :column="3" :disabled="true"></text-input>
+      <base-button label="导出" type="none" align="right"></base-button>
+      <base-button label="重填" align="right" @click="refill"></base-button>
+      <base-button label="作废" align="right" @click="$refs.ratify.show()"></base-button>
     </div>
     <div class="process-form-body" v-if="show">
       <div class="process-info">
-          <text-input label="所在库房" v-model="order.warehouse.name" :disabled="true"></text-input>
-          <date-select v-model="order.applyTime" :disabled="true"></date-select>
+          <text-input label="所在库房" v-model="order.warehouse.name" :column="3" :disabled="true"></text-input>
+          <date-select v-model="order.applyTime" :column="3" :disabled="true"></date-select>
           <!-- <text-input label="申请人员" v-model="order.applicant.name" :disabled="true"></text-input> -->
-          <entity-input label="申请人员" v-model="order.applicant" :disabled="true"></entity-input>
-          <text-input label="申请原因" v-model="order.note" :haveTip="true" :tips="tips" :disabled="true"></text-input>
+          <entity-input label="申请人员" v-model="order.applicant" :column="3" :disabled="true"></entity-input>
+          <text-input label="申请原因" v-model="order.note" :column="3" :haveTip="true" :tips="tips" :disabled="true"></text-input>
       </div>
       <div class="table">表格组件</div>
       <!-- <text-input label="备注" v-model="order.note" width="100%" :height="40" class="remark" :disabled="true"></text-input> -->
@@ -122,21 +120,12 @@ export default {
     font-size: 16px;
   }
   .process-form-top {
-    padding: 18px;
+    padding: 18px 7px;
     border-bottom: 1px solid #EBEEF5;
     overflow: hidden;
-    .odd-number {
-      float: left;
-    }
-    .out,
-    .reset,
-    .delete {
-      float: right;
-      margin-right: 10px;
-    }
   }
   .process-form-body {
-    padding: 0 18px;
+    padding: 0 7px;
     .process-info {
         padding: 18px 0;
         display: flex;

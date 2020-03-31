@@ -3,23 +3,25 @@
         <my-header :title="title" :haveBlack="false" @h_black="black"></my-header>
         <div class="apply-process" v-if="show">
             <div class="apply-process-top" data-test="action_box">
-                <text-input label="单号" v-model="order.number" :disabled="true" class="odd-number"></text-input>
-                <base-button label="读取数据" :disabled="!select.selected" class="read" :width="96"></base-button>
-                <process-select label="硬件选择" v-model="select.selected" :selectList="select.handWareList" class="handheld"></process-select>
+                <text-input label="单号" v-model="order.number" :column="3" :disabled="true" class="odd-number"></text-input>
+                <div-tmp></div-tmp>
+                <div-tmp></div-tmp>
+                <base-select label="硬件选择" v-model="select.selected" :column="2" :selectList="select.handWareList"></base-select>
+                <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96"></base-button>
             </div>
             <div class="apply-process-body">
                 <div class="process-info">
-                    <text-input label="所在库房" v-model="order.warehouse.name" :disabled="true"></text-input>
-                    <date-select v-model="order.applyTime" :disabled="true"></date-select>
+                    <text-input label="所在库房" v-model="order.warehouse.name" :column="3" :disabled="true"></text-input>
+                    <date-select v-model="order.applyTime" :column="3" :disabled="true"></date-select>
                     <!-- <text-input label="申请人员" v-model="order.applicant.name" :disabled="true"></text-input> -->
-                    <entity-input label="申请人员" v-model="order.applicant" :required="true" placeholder="请选择"></entity-input>
-                    <text-input label="申请原因" v-model="order.note" :haveTip="true" :tips="tips" :title="order.note"></text-input>
+                    <entity-input label="申请人员" v-model="order.applicant" :column="3" :required="true" placeholder="请选择"></entity-input>
+                    <text-input label="申请原因" v-model="order.note" :haveTip="true" :column="3" :tips="tips" :title="order.note"></text-input>
                 </div>
                 <div class="table">表格组件</div>
                 <!-- <text-input label="备注" v-model="order.note" width="100%" :height="40" class="remark"></text-input> -->
                 <div class="buttom">
-                    <base-button label="提交" :width="128" :height="72" :fontSize="20" class="submit" @click="submit"></base-button>
-                    <base-button label="清空" :width="128" :height="72" :fontSize="20" type="danger" class="clear"></base-button>
+                    <base-button label="提交" align="right" :width="128" :height="72" :fontSize="20" @click="submit"></base-button>
+                    <base-button label="清空" align="right" :width="128" :height="72" :fontSize="20" type="danger"></base-button>
                     <div class="sum-equip">装备总数： {{ sumEquip }}</div>
                 </div>
             </div>
@@ -30,20 +32,22 @@
 <script>
     import myHeader from 'components/base/header/header';
     import textInput from '@/componentized/textBox/textInput.vue'
-    import processSelect from '@/componentized/textBox/processSelect.vue'
     import baseButton from "@/componentized/buttonBox/baseButton.vue"
+    import baseSelect from '@/componentized/textBox/baseSelect.vue'
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
+    import divTmp from '@/componentized/divTmp'
     import { complete, getOrder, processStart, processDetail } from 'api/process'
     export default {
         name: "applyProcess",
         components:{
             myHeader,
             textInput,
-            processSelect,
             baseButton,
+            baseSelect,
             dateSelect,
-            entityInput
+            entityInput,
+            divTmp
         },
         data(){
             return{
@@ -119,6 +123,14 @@
                 })
             },
             submit() {
+                if(this.order.applicant.id == '') {
+                    this.$message.warning('未选择申请人');
+                    return;
+                }
+                if(this.order.equips.length == 0) {
+                    this.$message.warning('未扫入装备');
+                    return;
+                }
                 if(this.$route.params.info.number) {
                     let userId = JSON.parse(localStorage.getItem('user')).id;
                     complete(this.$route.params.taskId, {userId: userId}, {
@@ -164,22 +176,12 @@
         width: 100%;
         border: 1px slid orange;
         .apply-process-top {
-            padding: 18px;
+            padding: 18px 7px;
             border-bottom: 1px solid #EBEEF5;
             overflow: hidden;
-            .odd-number {
-                float: left;
-            }
-            .read {
-                float: right;
-            }
-            .handheld {
-                margin-right: 18px;
-                float: right;
-            }
         }
         .apply-process-body {
-            padding: 0 18px;
+            padding: 0 7px;
             .process-info {
                 padding: 18px 0;
                 display: flex;
@@ -197,12 +199,6 @@
                 height: 72px;
                 margin-top: 25px;
                 box-shadow:0px 0px 12px rgba(235,238,245,1);
-                .submit {
-                    float: right;
-                }
-                .clear {
-                    float: right;
-                }
                 .sum-equip {
                     float: right;
                     font-size:20px;

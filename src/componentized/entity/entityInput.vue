@@ -1,6 +1,6 @@
 <template>
-  <div class="entity-input-container">
-    <div class="entity-input" :style="'width:'+fixWidth+';height:'+height+'px'">
+  <div class="entity-input-container" :style="'width:'+fixWidth+';height:'+height+'px'">
+    <div class="entity-input">
       <el-input :placeholder="placeholder"
                 :disabled="disabled"
                 v-model="insideValue"
@@ -39,9 +39,9 @@ export default {
             type: [String, Number, Object],
             default: ""
         },
-        width: {
-            type: [Number, String],
-            default: 288
+        column: {
+            type: Number,
+            default: 5
         },
         height: {
             type: Number,
@@ -91,11 +91,7 @@ export default {
     },
     computed: {
       fixWidth() {
-          if(isNaN(this.width)) {
-              return this.width;
-          } else {
-              return this.width + 'px';
-          }
+        return `calc(${8.33*this.column}% - 0.1042rem)`;
       }  
     },
     watch: {
@@ -140,6 +136,11 @@ export default {
         .error {
             border-color: red;
         }
+    }
+    .entity-input-container {
+      margin: 0 0.0521rem;
+      display: inline-block;
+		  box-sizing: border-box;
     }
     .entity-input {
         border: 1px solid #DCDFE6;
