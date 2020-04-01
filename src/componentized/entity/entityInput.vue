@@ -1,16 +1,17 @@
 <template>
-  <div class="entity-input-container" :style="'width:'+fixWidth+';height:'+height+'px'">
+  <div class="entity-input-container" ref="entityInput" :style="'width:'+fixWidth">
     <div class="entity-input">
       <el-input :placeholder="placeholder"
                 :disabled="disabled"
                 v-model="insideValue"
                 readonly>
-          <div slot="prepend" :class="{'prefix': true, 'disabled': disabled}">
+          <div slot="prepend" :class="{'prefix': true, 'disabled': disabled}" v-if="!inTable">
             {{ label }}
             <span class="required" v-if="required">*</span>
           </div>
-            <i slot="suffix" class="iconfont iconwenbenkuangshanchu clear" @click="clear" v-show="insideValue&&!disabled"></i>
-            <i slot="suffix" class="iconfont iconsousuo" @click="showConnect" v-show="!disabled"></i>
+            <i slot="suffix" class="iconfont iconwenbenkuangshanchu" @click="clear" v-show="insideValue&&!disabled&&!tableEdit"></i>
+            <i slot="suffix" class="iconfont iconsousuo" @click="showConnect" v-show="!disabled&&!tableEdit"></i>
+            <i slot="suffix" class="iconfont iconxiang" v-show="!disabled&&!tableEdit"></i>
       </el-input>
     </div>
     <service-dialog title="申请人员选择" ref="applicant" :button="false">
@@ -28,12 +29,13 @@ export default {
       return {
           inputPrePt: null,
           insideValue: "",
+          inTable: false, // 是否为表格内联
       }
     },
     props: {
         label: {
             type: String,
-            default: "标题"
+            default: ""
         },
         value: {
             type: [String, Number, Object],
@@ -51,13 +53,17 @@ export default {
             type: Boolean,
             default: false
         },
+        tableEdit: { // 是否为表格编辑状态
+          type: Boolean,
+          default: false
+        },
         required: { // 是否必填
             type: Boolean,
             default: false
         },
         placeholder: {
             type: [Number, String],
-            default: "请输入内容"
+            default: ""
         },
         fixData: {
           type: Array,
@@ -74,24 +80,24 @@ export default {
         showConnect() {
           this.$refs.applicant.show();
         },
-        selected(data) {
+        selected(data) { // 联系组件完成
           this.fixValue(data)
           this.$refs.applicant.hide();
         },
-        fixValue(data) {
+        fixValue(data) { // 整理显示的值 可接收函数(未)
           if(data == {}) return;
           if(data.id == '') return;
           this.insideValue = `[${data.policeSign}]${data.name}`;
           this.$emit('input', data)
         },
-        clear() {
+        clear() { // 清空
           this.insideValue = "";
           this.$emit('input', "");
         }
     },
     computed: {
       fixWidth() {
-        return `calc(${8.33*this.column}% - 0.1042rem)`;
+        return this.inTable?`calc(100% - 0.1042rem)`:`calc(${8.33*this.column}% - 0.1042rem)`;
       }  
     },
     watch: {
@@ -114,6 +120,14 @@ export default {
     },
     mounted() {
         this.inputPrePt = document.querySelector('.el-input-group__prepend');
+        // console.log(this.$refs.a.parentNode.parentNode.nodeName);
+        try {
+          if(this.$refs.entityInput.parentNode.parentNode.nodeName == 'TD') {
+            this.inTable = true;
+          }
+        } catch (error) {
+          
+        }
     }
 }
 </script>
@@ -174,10 +188,6 @@ export default {
 
     .iconfont {
       line-height: 40px;
-      cursor: pointer;
-    }
-    .clear {
-      color: red;
       margin-right: 5px;
     }
 </style>

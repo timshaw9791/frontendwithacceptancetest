@@ -8,7 +8,15 @@
                 <base-button label="查询"></base-button>
             </div>
             <div class="my-process-body">
-                <div class="table">表格组件</div>
+                <el-table :data="list" border>
+                    <define-column label="第一列" v-slot="{ data }">
+                        <!-- <el-input  v-model="data.name"></el-input> -->
+                        <entity-input v-model="data.name"></entity-input>
+                    </define-column>
+                    <define-column label="第二列" v-slot="{ data }">
+                        <el-input  v-model="data.age"></el-input>
+                    </define-column>
+                </el-table>
             </div>
         </div>
     </div>
@@ -19,6 +27,11 @@
     import textInput from '@/componentized/textBox/textInput.vue'
     import baseSelect from '@/componentized/textBox/baseSelect.vue'
     import baseButton from "@/componentized/buttonBox/baseButton.vue"
+    import entityInput from '@/componentized/entity/entityInput'
+    
+    import defineTable from '@/componentized/entity/defineTable'
+    import defineColumn from '@/componentized/entity/defineColumn'
+
     import { processDefinitions } from 'api/process'
     export default {
         name: "myProcessNew",
@@ -28,7 +41,17 @@
                 select: {
                     processList: [],
                     selected: "", // 选择结果
-                }
+                },
+                list: [{
+                    name: '123',
+                    age: '10'
+                },{
+                    name: '456',
+                    age: '11'
+                },{
+                    name: '789',
+                    age: '12'
+                }],
             }
         },
         methods:{
@@ -46,6 +69,9 @@
             textInput,
             baseSelect,
             baseButton,
+            defineTable,
+            defineColumn,
+            entityInput
         },
     }
 </script>
