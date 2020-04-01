@@ -8,13 +8,13 @@
                 <base-button label="查询"></base-button>
             </div>
             <div class="my-process-body">
-                <el-table :data="list" border>
+                <el-table :data="list" :highlight-current-row="false" border>
                     <define-column label="第一列" v-slot="{ data }">
                         <!-- <el-input  v-model="data.name"></el-input> -->
-                        <entity-input v-model="data.name"></entity-input>
+                        <entity-input v-model="data.name" :tableEdit="edit"></entity-input>
                     </define-column>
                     <define-column label="第二列" v-slot="{ data }">
-                        <el-input  v-model="data.age"></el-input>
+                        <text-input v-model="data.age" type="Number" :tableEdit="edit"></text-input>
                     </define-column>
                 </el-table>
             </div>
@@ -52,6 +52,7 @@
                     name: '789',
                     age: '12'
                 }],
+                edit: true
             }
         },
         methods:{
@@ -77,6 +78,12 @@
 </script>
 
 <style lang="scss" scoped>
+    /deep/ .el-table {
+        .el-table--enable-row-hover,
+        .el-table__body tr:hover > td {
+            background-color: white;
+        }
+    }
     .my-process-container{
         color:#707070FF;
         font-size: 16px;

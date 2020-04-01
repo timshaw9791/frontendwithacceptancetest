@@ -1,6 +1,6 @@
 <template>
   <div class="entity-input-container" ref="entityInput" :style="'width:'+fixWidth">
-    <div class="entity-input">
+    <div :class="{'entity-input':true,'entity-input-border':tableEdit}">
       <el-input :placeholder="placeholder"
                 :disabled="disabled"
                 v-model="insideValue"
@@ -9,9 +9,9 @@
             {{ label }}
             <span class="required" v-if="required">*</span>
           </div>
-            <i slot="suffix" class="iconfont iconwenbenkuangshanchu" @click="clear" v-show="insideValue&&!disabled&&!tableEdit"></i>
-            <i slot="suffix" class="iconfont iconsousuo" @click="showConnect" v-show="!disabled&&!tableEdit"></i>
-            <i slot="suffix" class="iconfont iconxiang" v-show="!disabled&&!tableEdit"></i>
+            <i slot="suffix" class="iconfont iconwenbenkuangshanchu" @click="clear" v-show="insideValue&&!disabled&&tableEdit"></i>
+            <i slot="suffix" class="iconfont iconsousuo" @click="showConnect" v-show="!disabled&&tableEdit"></i>
+            <i slot="suffix" class="iconfont iconxiang" v-show="!disabled&&tableEdit"></i>
       </el-input>
     </div>
     <service-dialog title="申请人员选择" ref="applicant" :button="false">
@@ -55,7 +55,7 @@ export default {
         },
         tableEdit: { // 是否为表格编辑状态
           type: Boolean,
-          default: false
+          default: true
         },
         required: { // 是否必填
             type: Boolean,
@@ -157,13 +157,16 @@ export default {
 		  box-sizing: border-box;
     }
     .entity-input {
-        border: 1px solid #DCDFE6;
         border-radius:4px;
         font-size: 16px;
     }
     .entity-input:hover {
         border-color: #409EFF;
     }
+    .entity-input-border {
+      border: 1px solid #DCDFE6;
+    }
+
     .required {
       position: absolute;
         font-size: 16px;

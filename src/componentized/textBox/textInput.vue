@@ -1,16 +1,19 @@
 <template>
-    <div :class="{'text-input-container':true, 'bg-disabled':disabled}" :style="'width:'+fixWidth+';height:'+height+'px'">
+    <div :class="{'text-input-container':true, 'bg-disabled':disabled,'border':tableEdit&&eidt}" ref="textInput" 
+        :style="'width:'+fixWidth+';height:'+height+'px'">
         <el-input :placeholder="placeholder"
                   :disabled="disabled"
                   @change="reg"
+                  @focus="changeEditState(true)"
+                  @blur="changeEditState(false)"
                   v-if="!haveTip"
                   :clearable="clearable"
+                  :readonly="!(tableEdit&&eidt)"
                   v-model="insideValue">
-            <div slot="prepend" :class="{'prefix': true, 'disabled': disabled}">
+            <div slot="prepend" :class="{'prefix': true, 'disabled': disabled}" v-if="!inTable">
                 {{ label }}
                 <span class="required" v-if="required">*</span>
             </div>
-            
         </el-input>
         <el-autocomplete class="inline-input"
         v-model="insideValue"
@@ -31,6 +34,9 @@
               inputPt: null,
               inputPrePt: null,
               insideValue: "",
+              inTable: false, // 是否为表格内联
+              // 此处逻辑 !(tableEdit && eidt)
+              eidt: true, // 内部判断是否只读
           }
         },
         props: {
@@ -53,6 +59,14 @@
             disabled: {
                 type: Boolean,
                 default: false
+            },
+            type: {
+                type: String,
+                default: "String"
+            },
+            tableEdit: {
+                type: Boolean,
+                default: true
             },
             clearable: { // 是否可清空
                 type: Boolean,
@@ -93,10 +107,19 @@
         },
         methods: {
             reg(value) {
-                if(!this.validate(value)) {
-                    this.inputPt.classList.add('error')
+                let judge = true;
+                switch (this.type) {
+                    case "Number":
+                        judge = /^\d+$/.test(this.value);
+                        break;
+                    default:
+                        judge = this.validate(value)
+                        break;
+                }
+                if(judge) {
+                    this.$refs.textInput.classList.remove('error');
                 } else {
-                    this.inputPt.classList.remove('error')
+                    this.$refs.textInput.classList.add('error');
                 }
             },
             changePreStyle(state=true) {
@@ -113,11 +136,14 @@
                 return (restaurant) => {
                     return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
                 };
+            },
+            changeEditState(state) {
+                this.eidt = state
             }
         },
         computed: {
           fixWidth() {
-              return `calc(${8.33*this.column}% - 0.1042rem)`;
+              return this.inTable?`calc(100% - 0.1042rem)`:`calc(${8.33*this.column}% - 0.1042rem)`;
           }  
         },
         watch: {
@@ -134,8 +160,15 @@
             this.insideValue = this.value
         },
         mounted() {
-            this.inputPt = document.querySelector('.text-input-container');
             this.inputPrePt = document.querySelector('.el-input-group__prepend');
+            try {
+                if(this.$refs.textInput.parentNode.parentNode.nodeName == 'TD') {
+                    this.inTable = true;
+                    this.eidt = false;
+                }
+            } catch (error) {
+                
+            }
             // console.log(document.getElementsByClassName('el-input-group__prepend'));
             // document.querySelector('#elInput').setAttribute('maxlength', 5); // 限制最大输入长度
             // document.querySelector('#elInput').setAttribute('minlength', 2); // 无效
@@ -165,12 +198,14 @@
         }
     }
     .text-input-container {
-        border: 1px solid #DCDFE6;
         border-radius:4px;
         font-size: 16px;
         margin: 0 0.0521rem;
         display: inline-block;
 		box-sizing: border-box;
+    }
+    .border {
+        border: 1px solid #DCDFE6;
     }
     .text-input-container:hover {
         border-color: #409EFF;
