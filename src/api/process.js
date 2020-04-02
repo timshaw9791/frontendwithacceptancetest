@@ -255,6 +255,13 @@ export function processDefinitions(params) { // 查询流程定义
     })
 }
 
+export function myProcess(params) { // 查询我的流程
+    return request({
+        url: baseBURL+'/workflow/my-process',
+        method: "GET",
+        params
+    })
+}
 
 
 

@@ -3,19 +3,23 @@
         <my-header title="我的流程" :haveBlack="false"></my-header>
         <div class="my-process" data-test="action_box">
             <div class="my-process-info">
-                <text-input label="请求标题" v-model="requestTitle" :column="3"></text-input>
+                <text-input label="请求标题" v-model="requestTitle" :column="3" placeholder="请输入标题"></text-input>
                 <base-select label="流程类型" v-model="select.selected" :column="3" :selectList="select.processList"></base-select>
-                <base-button label="查询"></base-button>
+                <base-button label="查询" @click="getMyProcess()"></base-button>
             </div>
             <div class="my-process-body">
-                <el-table :data="list" :highlight-current-row="false" border>
-                    <define-column label="第一列" v-slot="{ data }">
-                        <entity-input v-model="data.row" :tableEdit="edit"></entity-input>
+                <el-table :data="myProcessList" fit height="3.6458rem" border>
+                    <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
+                    <define-column label="操作">
+                        <i class="iconfont iconxiangqing"></i>
                     </define-column>
-                    <define-column label="第二列" v-slot="{ data }">
-                        <text-input v-model="data.row.age" type="Number" :tableEdit="edit"></text-input>
-                    </define-column>
+                    <define-column label="请求标题" field="name"></define-column>
+                    <define-column label="工作流" field="type"></define-column>
+                    <define-column label="创建时间" :filter="(row)=>$filterTime(row.createTime)"></define-column>
+                    <define-column label="当前节点" field="taskName"></define-column>
+                    <define-column label="未操作者" field="userName"></define-column>
                 </el-table>
+                <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage"></bos-paginator>
             </div>
         </div>
     </div>
@@ -31,12 +35,13 @@
     import defineTable from '@/componentized/entity/defineTable'
     import defineColumn from '@/componentized/entity/defineColumn'
 
-    import { processDefinitions } from 'api/process'
+    import { processDefinitions, myProcess } from 'api/process'
     export default {
         name: "myProcessNew",
         data(){
             return{
                 requestTitle: "",
+                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0, startUserId: JSON.parse(localStorage.getItem('user')).id},
                 select: {
                     processList: [],
                     selected: "", // 选择结果
@@ -51,6 +56,7 @@
                     name: '789',
                     age: '12'
                 }],
+                myProcessList: [],
                 edit: true
             }
         },
@@ -59,10 +65,27 @@
                 processDefinitions().then(res => {
                     this.select.processList = res.map(obj => ({label: obj.name, value: obj.name}));
                 })
+            },
+            getMyProcess() {
+                myProcess(Object.assign(this.paginator, {search: this.search})).then(res => {
+                    this.myProcessList = res.content;
+                    this.paginator.totalElements = res.totalElements;
+                    this.paginator.totalPages = res.totalPages;
+                })
+            },
+            changePage(page) {
+                this.paginator.page = page;
+                this.getMyProcess();
+            }
+        },
+        computed: {
+            search() {
+                return this.requestTitle + this.select.selected
             }
         },
         created() {
             this.getProcessDefinitions();
+            this.getMyProcess();
         },
         components:{
             myHeader,
