@@ -18,21 +18,22 @@
                     <div-tmp :column="8.49"></div-tmp>
                     <base-select label="硬件选择" v-model="select.selected" :column="2" :selectList="select.handWareList"></base-select>
                     <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96"></base-button>
-                        <el-table :data="order.equips" fit height="500px" border>
+                        <el-table :data="order.equips" fit height="505px" border>
                             <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
-                            <define-column label="操作" width="100">
-                                <i class="iconfont icontianjia"></i>
-                                <i class="iconfont iconyichu"></i>
+                            <define-column label="操作" width="100" v-slot="{ data }">
+                                <i class="iconfont icontianjia" @click="changeRow(true,data)"></i>
+                                <i class="iconfont iconyichu" @click="changeRow(false,data)"></i>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
-                                <entity-input v-model="data.model"></entity-input>
+                                <entity-input v-model="data.row.param" :options="{search: 'equipParam'}" format="{name}({model})"></entity-input>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
-                                <text-input v-model="data.count"></text-input>
+                                <text-input v-model="data.row.count" type="Number"></text-input>
                             </define-column>
                         </el-table>
                 </div>
-                <text-input label="合计" :column="12"></text-input>
+                <!-- <text-input label="合计" :column="12" :disabled="true"></text-input> -->
+				<div class="total"><span>合计</span><span>{{ total }}</span></div>
                 <!-- <text-input label="备注" v-model="order.note" width="100%" :height="40" class="remark"></text-input> -->
                 <div class="buttom">
                     <base-button label="提交" align="right" :width="128" :height="72" :fontSize="20" @click="submit"></base-button>
@@ -98,8 +99,7 @@
                     }],
                     selected: ""
                 },
-                tips: [{value: '直接报废', key: '1'}, {value: '装备拿去维修，无法修补', key: '2'}],
-                sumEquip: 0
+                tips: [{value: '直接报废', key: '1'}, {value: '装备拿去维修，无法修补', key: '2'}]
             }
         },
         methods:{
@@ -109,24 +109,46 @@
                     this.order = Object.assign(this.order, res, {
                         warehouse: {id: '1', name: '1号公共库房'}
                     });
+                    // this.order.equips = [{
+                    //     id: '1',
+                    //     rfid: '00001',
+                    //     name: "伸缩警棍",
+                    //     model: 'ssjg',
+                    //     count: 1
+                    // },{
+                    //     id: '2',
+                    //     rfid: '00002',
+                    //     name: "手铐",
+                    //     model: 'sk',
+                    //     count: 1
+                    // },{
+                    //     id: '3',
+                    //     rfid: '00003',
+                    //     name: '照明灯',
+                    //     model: 'zmd',
+                    //     count: 1
+                    // }]
                     this.order.equips = [{
-                        id: '1',
-                        rfid: '00001',
-                        name: "伸缩警棍",
-                        model: 'ssjg',
-                        count: 1
+                        param: {},
+                        count: ''
                     },{
-                        id: '2',
-                        rfid: '00002',
-                        name: "手铐",
-                        model: 'sk',
-                        count: 1
+                        param: {},
+                        count: ''
                     },{
-                        id: '3',
-                        rfid: '00003',
-                        name: '照明灯',
-                        model: 'zmd',
-                        count: 1
+                        param: {},
+                        count: ''
+                    },{
+                        param: {},
+                        count: ''
+                    },{
+                        param: {},
+                        count: ''
+                    },{
+                        param: {},
+                        count: ''
+                    },{
+                        param: {},
+                        count: ''
                     }]
                     this.show = true;
                 }).catch(err => {
@@ -155,18 +177,45 @@
                     }).then(res => {
                         this.$message.success("申请成功")
                         this.$router.push({name: 'myProcess'});
+                    }).catch(err => {
+                        this.$message.error(err.response.data.message)
                     })
                 } else {
+                    // 缺少rfid
+                    let temp = JSON.parse(JSON.stringify(this.order.equips)); // 用以提交失败，还原equips
+                    this.order.equips = this.order.equips.map((obj, i)=>Object.assign({count: obj.count||0, rfid: i+1}, obj.param))
+                                        .filter(obj => obj.name&&obj.model); 
+                    console.log(this.order.equips);
                     processStart({key: this.$route.params.info.key, orderType: this.order.type}, this.order).then(res => {
-                    this.$message.success('流程申请成功');
-                    this.$router.push({name: 'myProcess'});
-                })
+                        this.$message.success('流程申请成功');
+                        this.$router.push({name: 'myProcess'});
+                    }).catch(err => {
+                        this.order.equips = JSON.parse(JSON.stringify(temp));
+                        this.$message.error(err.response.data.message);
+                    })
                 }
+            },
+            changeRow(state, data) {
+                let temp = JSON.parse(JSON.stringify(this.order.equips));
+				if(state) {
+					temp.splice(data.$index+1, 0, {count: '', param: {}});
+				} else if(this.order.equips.length>1) {
+					temp.splice(data.$index, 1); 
+				}
+				this.order.equips = temp;
             },
             black(data){
                 this.$router.back()
             },
-        },
+		},
+		computed: {
+			total() {
+				return this.order.equips.reduce((pre, cur) => typeof pre == 'object'?Number(pre.count)+Number(cur.count):pre+Number(cur.count))
+			},
+			sumEquip() {
+				return this.order.equips.filter(obj => obj.param.name&&obj.param.model).length;
+			}
+		},
         created() {
             if(this.$route.params.info == undefined) {
                 this.$message.info("数据丢失，返回新启流程");
@@ -226,6 +275,16 @@
                     margin-right: 72px;
                 }
             }
+			.total {
+				height: 36px;
+				border: 1px solid #DCDFE6;
+				display: flex;
+				justify-content: space-between;
+				margin: 0 10px;
+				padding: 0 15px;
+				font-size: 16px;
+				align-items: center;
+			}
         }
     }
 </style>

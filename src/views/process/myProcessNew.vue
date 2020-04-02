@@ -10,7 +10,7 @@
             <div class="my-process-body">
                 <el-table :data="list" :highlight-current-row="false" border>
                     <define-column label="第一列" v-slot="{ data }">
-                        <entity-input v-model="data.row.name" :tableEdit="edit"></entity-input>
+                        <entity-input v-model="data.row" :tableEdit="edit"></entity-input>
                     </define-column>
                     <define-column label="第二列" v-slot="{ data }">
                         <text-input v-model="data.row.age" type="Number" :tableEdit="edit"></text-input>

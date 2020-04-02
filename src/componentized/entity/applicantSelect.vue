@@ -42,7 +42,7 @@ export default {
       this.getUserList();
     },
     select(data) {
-      this.$emit('select', data);
+      this.$emit('select', {data, ref: 'applicant'});
     }
   },
   watch: {

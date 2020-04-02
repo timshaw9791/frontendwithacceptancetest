@@ -12,12 +12,15 @@
             <span class="required" v-if="required">*</span>
           </div>
             <i slot="suffix" class="iconfont iconwenbenkuangshanchu" @click="clear" v-show="insideValue&&!disabled&&tableEdit&&edit"></i>
-            <i slot="suffix" class="iconfont iconsousuo" @click="showConnect" v-show="!disabled&&tableEdit&&edit"></i>
-            <i slot="suffix" class="iconfont iconxiang" v-show="!disabled&&tableEdit&&edit"></i>
+            <i slot="suffix" class="iconfont iconsousuo" @click="showSearch" v-show="search&&!disabled&&tableEdit&&edit"></i>
+            <i slot="suffix" class="iconfont iconxiang" @click="showDetail" v-show="detail&&!disabled&&tableEdit&&edit"></i>
       </el-input>
     </div>
-    <service-dialog title="申请人员选择" ref="applicant" :button="false">
+    <service-dialog title="申请人员选择" ref="applicant" :button="false" :secondary="false">
       <applicant-select @select="selected"></applicant-select>
+    </service-dialog>
+    <service-dialog title="装备参数选择" ref="equipParam" width="1300px" :button="false" :secondary="false">
+      <equip-params @select="selected"></equip-params>
     </service-dialog>
   </div>
 </template>
@@ -25,6 +28,7 @@
 <script>
 import serviceDialog from "components/base/serviceDialog"
 import applicantSelect from "./applicantSelect"
+import equipParams from './equipParams'
 export default {
     name: 'textInput',
     data() {
@@ -33,6 +37,8 @@ export default {
           insideValue: "",
           inTable: false, // 是否为表格内联
           edit: true, // 内部是否可编辑
+          search: false, // 是否显示搜索图标
+          detail: false, // 是否显示详情图标
       }
     },
     props: {
@@ -68,6 +74,14 @@ export default {
             type: [Number, String],
             default: ""
         },
+        options: {
+          type: Object,
+          default() {
+            return {
+              search: 'applicant',
+            }
+          }
+        },
         format: {
           type: String,
           default: '[{policeSign}{name}]'
@@ -78,18 +92,23 @@ export default {
             this.inputPrePt.style.background = state?'#f5f7fa':'white';
             this.inputPrePt.style.cursor = state?'not-allowed':'auto';
         },
-        showConnect() {
-          this.$refs.applicant.show();
+        showSearch() {
+          this.$refs[this.options.search].show();
+        },
+        showDetail() {
+          this.$refs.equipParam.show();
         },
         selected(data) { // 联系组件完成
-          this.fixValue(data)
-          this.$refs.applicant.hide();
+          this.fixValue(data.data)
+          this.$refs[data.ref].hide();
         },
         fixValue(data) { // 整理显示的值 可接收函数(未)
-          if(data == {}) return;
-          if(data.id == '') return;
+          if(JSON.stringify(data) == '{}' || data.id == '') {
+            this.insideValue = "";
+            return;
+          }
           this.insideValue = this.format.replace(/{([a-zA-Z]+)}/g, (r, k) => data[k]);
-          this.$emit('input', data)
+          this.$emit('input', data);
         },
         clear() { // 清空
           this.insideValue = "";
@@ -110,11 +129,22 @@ export default {
             handler(val) {
                 this.changePreStyle(val);
             },
+        },
+        value: {
+          handler(val) {
+            if(typeof this.value == 'object') {
+              this.fixValue(this.value);
+            } else {
+              this.insideValue = this.value
+            }
+          },
+          deep: true
         }
     },
     components: {
       serviceDialog,
-      applicantSelect
+      applicantSelect,
+      equipParams
     },
     created() {
       if(typeof this.value == 'object') {
@@ -125,7 +155,9 @@ export default {
     },
     mounted() {
         this.inputPrePt = document.querySelector('.el-input-group__prepend');
-        // console.log(this.$refs.a.parentNode.parentNode.nodeName);
+        Object.keys(this.options).forEach(item => {
+          this[item] = true
+        })
         try {
           if(this.$refs.entityInput.parentNode.parentNode.nodeName == 'TD') {
             this.inTable = true;

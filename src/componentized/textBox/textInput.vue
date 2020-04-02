@@ -1,11 +1,11 @@
 <template>
     <div :class="{'text-input-container':true, 'bg-disabled':disabled,'border':tableEdit&&eidt}" ref="textInput" 
         :style="'width:'+fixWidth+';height:'+height+'px'"
-        @mouseover="changeEditState(true)"
-        @mouseout="changeEditState(false)">
+        @click="changeEditState(true)">
         <el-input :placeholder="placeholder"
                   :disabled="disabled"
                   @change="reg"
+                  @blur="changeEditState(false)"
                   @keydown.native.13="changeEditState(false)"
                   v-if="!haveTip"
                   :clearable="clearable"
@@ -156,6 +156,11 @@
             },
             insideValue(val) {
                 this.$emit('input', val)
+            },
+            value: {
+                handler() {
+                    this.insideValue = this.value
+                }
             }
         },
         created() {

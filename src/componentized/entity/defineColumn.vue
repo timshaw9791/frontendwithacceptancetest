@@ -1,5 +1,5 @@
 <template>
-  <el-table-column :label="label" :align="align" :width="cWidth" :min-width="'0.3125rem'" :sortable="sort">
+  <el-table-column :label="label" :align="align" :width="cWidth" :min-width="'0.3125rem'" :fixed="fixed" :sortable="sort">
     <template slot-scope="scope">
       <slot :data="scope">{{getResult(scope.row,field)}}</slot>
     </template>
@@ -44,6 +44,10 @@
       sort:{
           type:[Boolean,String],
           default:false
+      },
+      fixed: {
+        type: Boolean,
+        default: false
       }
     },
     computed:{

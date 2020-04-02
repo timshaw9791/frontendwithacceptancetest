@@ -64,11 +64,20 @@ export function getEquipById(id) {
 }
 
 
-/* 查询装备参数 */
+/* 查询装备参数  通过名称*/
 export function equipArgsByName(params) {
     return request({
         url: "/equip/equipArgsByName",
         method: "GET",
+        params
+    })
+}
+
+/* 查询装备参数 通过名称和型号 */
+export function equipArgsByNameModel(params) {
+    return request({
+        url: '/equip/findByNameOrModelLike',
+        method: 'GET',
         params
     })
 }
