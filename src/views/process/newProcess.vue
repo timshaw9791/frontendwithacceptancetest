@@ -4,13 +4,11 @@
     <div class="new-process-body">
       <el-table :data="list" fit height="600px">
         <el-table-column label="序号" type="index" width="100px" align="center"></el-table-column>
-        <el-table-column label="操作" align="center">
-          <template slot-scope="scope">
-            <i class="iconfont iconjiahao" @click="apply(scope.row)"></i>
-          </template>
-        </el-table-column>
-        <bos-table-column lable="工作流名称" field="name" align="center"></bos-table-column>
-        <bos-table-column lable="部署时间" field="time" align="center"></bos-table-column>
+        <define-column label="操作" align="center" v-slot="{ data }">
+          <i class="iconfont iconjiahao" @click="apply(data.row)"></i>
+        </define-column>
+        <define-column label="工作流名称" field="name" align="center"></define-column>
+        <define-column label="部署时间" field="time" align="center"></define-column>
       </el-table>
       <bos-paginator v-if="this.list!=''" :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
     </div>
@@ -21,6 +19,7 @@
 import entityInput from '@/componentized/entity/entityInput'
 import myHeader from 'components/base/header/header'
 import { processDefinitions } from 'api/process'
+import defineColumn from '@/componentized/entity/defineColumn'
 export default {
   name: 'newProcess',
   data() {
@@ -36,6 +35,7 @@ export default {
       })
     },
     apply(data) {
+      console.log(data);
       this.$router.push({
         name: 'processApply',
         params: {type: 'apply', info: data}
@@ -49,7 +49,8 @@ export default {
     this.getList();
   },
   components: {
-    myHeader
+    myHeader,
+    defineColumn
   }
 }
 </script>

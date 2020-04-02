@@ -4,10 +4,6 @@
         <div class="apply-process" v-if="show">
             <div class="apply-process-top" data-test="action_box">
                 <text-input label="单号" v-model="order.number" :column="3" :disabled="true" class="odd-number"></text-input>
-                <div-tmp></div-tmp>
-                <div-tmp></div-tmp>
-                <base-select label="硬件选择" v-model="select.selected" :column="2" :selectList="select.handWareList"></base-select>
-                <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96"></base-button>
             </div>
             <div class="apply-process-body">
                 <div class="process-info">
@@ -17,7 +13,26 @@
                     <entity-input label="申请人员" v-model="order.applicant" :column="3" :required="true" placeholder="请选择"></entity-input>
                     <text-input label="申请原因" v-model="order.note" :haveTip="true" :column="3" :tips="tips" :title="order.note"></text-input>
                 </div>
-                <div class="table">表格组件</div>
+                <div class="table-box">
+                    <base-button label="总清单" type="none"></base-button>
+                    <div-tmp :column="8.49"></div-tmp>
+                    <base-select label="硬件选择" v-model="select.selected" :column="2" :selectList="select.handWareList"></base-select>
+                    <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96"></base-button>
+                        <el-table :data="order.equips" fit height="500px" border>
+                            <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
+                            <define-column label="操作" width="100">
+                                <i class="iconfont icontianjia"></i>
+                                <i class="iconfont iconyichu"></i>
+                            </define-column>
+                            <define-column label="装备参数" v-slot="{ data }">
+                                <entity-input v-model="data.model"></entity-input>
+                            </define-column>
+                            <define-column label="装备数量" v-slot="{ data }">
+                                <text-input v-model="data.count"></text-input>
+                            </define-column>
+                        </el-table>
+                </div>
+                <text-input label="合计" :column="12"></text-input>
                 <!-- <text-input label="备注" v-model="order.note" width="100%" :height="40" class="remark"></text-input> -->
                 <div class="buttom">
                     <base-button label="提交" align="right" :width="128" :height="72" :fontSize="20" @click="submit"></base-button>
@@ -37,6 +52,7 @@
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
+    import defineColumn from '@/componentized/entity/defineColumn'
     import { complete, getOrder, processStart, processDetail } from 'api/process'
     export default {
         name: "applyProcess",
@@ -47,7 +63,8 @@
             baseSelect,
             dateSelect,
             entityInput,
-            divTmp
+            divTmp,
+            defineColumn
         },
         data(){
             return{
@@ -188,9 +205,11 @@
                 justify-content: space-between;
                 overflow: hidden;
             }
-            .table {
-                height: 500px;
-                border: 1px solid orange;
+            .table-box {
+                padding: 0 10px;
+                .iconfont {
+                    margin: 0 5px;
+                }
             }
             .remark {
                 margin-top: 18px;

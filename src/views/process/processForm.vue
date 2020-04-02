@@ -15,7 +15,22 @@
           <entity-input label="申请人员" v-model="order.applicant" :column="3" :disabled="true"></entity-input>
           <text-input label="申请原因" v-model="order.note" :column="3" :haveTip="true" :tips="tips" :disabled="true"></text-input>
       </div>
-      <div class="table">表格组件</div>
+      <div class="table-box">
+        <el-table :data="order.equips" fit height="500px" border>
+          <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
+          <define-column label="操作" width="100">
+            <i class="iconfont icontianjia"></i>
+            <i class="iconfont iconyichu"></i>
+          </define-column>
+          <define-column label="装备参数" v-slot="{ data }">
+            <entity-input v-model="data.row" format="{name}({model})" :disabled="true"></entity-input>
+          </define-column>
+          <define-column label="装备数量" v-slot="{ data }">
+            <text-input v-model="data.row.count" :disabled="true"></text-input>
+          </define-column>
+        </el-table>
+      </div>
+       <text-input label="合计" :column="12"></text-input>
       <!-- <text-input label="备注" v-model="order.note" width="100%" :height="40" class="remark" :disabled="true"></text-input> -->
     </div>
     <div class="process-form-bottom">
@@ -36,6 +51,7 @@ import baseButton from '@/componentized/buttonBox/baseButton'
 import dateSelect from '@/componentized/textBox/dateSelect'
 import serviceDialog from "components/base/serviceDialog"
 import entityInput from '@/componentized/entity/entityInput'
+import defineColumn from '@/componentized/entity/defineColumn'
 import { processDetail, getHistoryTasks, processDelete } from 'api/process'
 export default {
   name: 'processForm',
@@ -110,7 +126,8 @@ export default {
     baseButton,
     dateSelect,
     serviceDialog,
-    entityInput
+    entityInput,
+    defineColumn
   }
 }
 </script>
@@ -132,9 +149,11 @@ export default {
         justify-content: space-between;
         overflow: hidden;
     }
-    .table {
-        height: 500px;
-        border: 1px solid orange;
+    .table-box {
+      padding: 0 10px;
+      .iconfont {
+        margin: 0 5px;
+      }
     }
     .remark {
         margin-top: 18px;

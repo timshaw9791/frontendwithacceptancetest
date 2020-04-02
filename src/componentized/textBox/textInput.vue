@@ -1,11 +1,12 @@
 <template>
     <div :class="{'text-input-container':true, 'bg-disabled':disabled,'border':tableEdit&&eidt}" ref="textInput" 
-        :style="'width:'+fixWidth+';height:'+height+'px'">
+        :style="'width:'+fixWidth+';height:'+height+'px'"
+        @mouseover="changeEditState(true)"
+        @mouseout="changeEditState(false)">
         <el-input :placeholder="placeholder"
                   :disabled="disabled"
                   @change="reg"
-                  @focus="changeEditState(true)"
-                  @blur="changeEditState(false)"
+                  @keydown.native.13="changeEditState(false)"
                   v-if="!haveTip"
                   :clearable="clearable"
                   :readonly="!(tableEdit&&eidt)"
@@ -102,7 +103,7 @@
             },
             placeholder: {
                 type: [Number, String],
-                default: "请输入内容"
+                default: ""
             }
         },
         methods: {
@@ -138,6 +139,7 @@
                 };
             },
             changeEditState(state) {
+                if(!this.inTable) return;
                 this.eidt = state
             }
         },
@@ -182,8 +184,6 @@
     /deep/ .el-input {
         font-size: 16px;
         .el-input-group__prepend {
-            // background-color: white;
-            // padding: 9px 0 9px 10px;
             padding: 0;
             border: none;
             line-height: 20px;

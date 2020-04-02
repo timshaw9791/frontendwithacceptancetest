@@ -1,7 +1,7 @@
 <template>
   <el-table-column :label="label" :align="align" :width="cWidth" :min-width="'0.3125rem'" :sortable="sort">
     <template slot-scope="scope">
-      <slot :data="scope.row"></slot>
+      <slot :data="scope">{{getResult(scope.row,field)}}</slot>
     </template>
   </el-table-column>
 </template>
@@ -36,7 +36,7 @@
       },
       align:{
         type: String,
-        default:"left"
+        default:"center"
       },
       width:{
         type: [Number, String],
@@ -54,7 +54,8 @@
     methods:{
       getResult(row,field){
         if(this.filter) return this.filter(row);
-        if(!field)throw new Error('field no set');
+        if(!field)  return;
+        // throw new Error('field no set');
         field=field.split('.');
         let val=row;
         for(let i=0;i<field.length;i++){
@@ -64,7 +65,6 @@
         return val;
       }
     }
-
   }
 </script>
 

@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "13860957",
+      "name": "添加（亮）",
+      "font_class": "tianjialiang",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "13860958",
+      "name": "移除（亮）",
+      "font_class": "yichuliang",
+      "unicode": "e60d",
+      "unicode_decimal": 58893
+    },
+    {
+      "icon_id": "13848872",
+      "name": "c端注销",
+      "font_class": "zhuxiao",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
       "icon_id": "13835381",
       "name": "详",
       "font_class": "xiang",

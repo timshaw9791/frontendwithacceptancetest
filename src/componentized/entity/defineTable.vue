@@ -1,13 +1,7 @@
 <template>
     <div>
-        <el-table
-                :data="list"
-                style="width: 100%;" id="field-table" @sort-change="sortChange" :height="height">
-            <define-column :align="align" v-for="(item, i) in labelList" :lable="item.label" :width="item.width" :key="item+i" :sort="item.sort" :field="item.field" :filter="item.filter">
-              asdasd
-            </define-column>
-        </el-table>
-        <!-- <bos-paginator v-if="list!=''&&havePage"  :pageInfo="pageInfo" @bosCurrentPageChanged="tableChangePage"></bos-paginator> -->
+        <h1>这是表格</h1>
+        <slot :text="{name: 'SprWu'}">abc</slot>
     </div>
 </template>
 
@@ -27,10 +21,6 @@ import defineColumn from './defineColumn'
         props: {
             list: {
                 type: Array
-            },
-            labelList: {
-                type: Array,
-                required: true
             },
             height:{
                 type:String,
@@ -76,6 +66,8 @@ import defineColumn from './defineColumn'
         updated() {
         },
         mounted() {
+            console.log(this.$scopedSlots);
+            console.log('---------');
         },
         methods: {
             someClick(row,name) {

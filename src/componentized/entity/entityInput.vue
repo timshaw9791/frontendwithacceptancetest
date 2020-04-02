@@ -1,6 +1,8 @@
 <template>
-  <div class="entity-input-container" ref="entityInput" :style="'width:'+fixWidth">
-    <div :class="{'entity-input':true,'entity-input-border':tableEdit}">
+  <div class="entity-input-container" ref="entityInput" :style="'width:'+fixWidth"
+              @mouseover="changeEditState(true)"
+              @mouseout="changeEditState(false)">
+    <div :class="{'entity-input':true,'entity-input-border':tableEdit&&edit}">
       <el-input :placeholder="placeholder"
                 :disabled="disabled"
                 v-model="insideValue"
@@ -9,9 +11,9 @@
             {{ label }}
             <span class="required" v-if="required">*</span>
           </div>
-            <i slot="suffix" class="iconfont iconwenbenkuangshanchu" @click="clear" v-show="insideValue&&!disabled&&tableEdit"></i>
-            <i slot="suffix" class="iconfont iconsousuo" @click="showConnect" v-show="!disabled&&tableEdit"></i>
-            <i slot="suffix" class="iconfont iconxiang" v-show="!disabled&&tableEdit"></i>
+            <i slot="suffix" class="iconfont iconwenbenkuangshanchu" @click="clear" v-show="insideValue&&!disabled&&tableEdit&&edit"></i>
+            <i slot="suffix" class="iconfont iconsousuo" @click="showConnect" v-show="!disabled&&tableEdit&&edit"></i>
+            <i slot="suffix" class="iconfont iconxiang" v-show="!disabled&&tableEdit&&edit"></i>
       </el-input>
     </div>
     <service-dialog title="申请人员选择" ref="applicant" :button="false">
@@ -30,6 +32,7 @@ export default {
           inputPrePt: null,
           insideValue: "",
           inTable: false, // 是否为表格内联
+          edit: true, // 内部是否可编辑
       }
     },
     props: {
@@ -65,11 +68,9 @@ export default {
             type: [Number, String],
             default: ""
         },
-        fixData: {
-          type: Array,
-          default() {
-            return ['policeSign', 'name']
-          }
+        format: {
+          type: String,
+          default: '[{policeSign}{name}]'
         }
     },
     methods: {
@@ -87,12 +88,16 @@ export default {
         fixValue(data) { // 整理显示的值 可接收函数(未)
           if(data == {}) return;
           if(data.id == '') return;
-          this.insideValue = `[${data.policeSign}]${data.name}`;
+          this.insideValue = this.format.replace(/{([a-zA-Z]+)}/g, (r, k) => data[k]);
           this.$emit('input', data)
         },
         clear() { // 清空
           this.insideValue = "";
           this.$emit('input', "");
+        },
+        changeEditState(state) {
+          if(!this.inTable) return;
+          this.edit = state
         }
     },
     computed: {
@@ -124,6 +129,7 @@ export default {
         try {
           if(this.$refs.entityInput.parentNode.parentNode.nodeName == 'TD') {
             this.inTable = true;
+            this.edit = false;
           }
         } catch (error) {
           
