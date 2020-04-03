@@ -1,7 +1,7 @@
 <template>
     <div class="dialog">
         <el-dialog :title="title" :visible.sync="showFlag" v-if="showFlag" center :before-close="handleClose"
-                   :width="width">
+                   :width="width" :modal="modal" :top="top">
             <slot></slot>
             <div slot="footer" class="dialog-footer" v-if="button">
                 <el-button @click="cancelDb" data-test="button">取 消</el-button>
@@ -24,6 +24,14 @@
             title: {
                 type: String,
                 default: '标题'
+            },
+            top:{
+                type:String,
+                default:'15vh'
+            },
+            modal: {
+                type: Boolean,
+                default: true
             },
             width: {
                 type: String,
