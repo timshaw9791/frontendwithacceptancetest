@@ -10,7 +10,7 @@
             <div class="my-process-body">
                 <el-table :data="myProcessList" fit height="3.6458rem" border>
                     <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
-                    <define-column label="操作">
+                    <define-column label="操作" width="100">
                         <i class="iconfont iconxiangqing"></i>
                     </define-column>
                     <define-column label="请求标题" field="name"></define-column>
@@ -41,7 +41,7 @@
         data(){
             return{
                 requestTitle: "",
-                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0, startUserId: JSON.parse(localStorage.getItem('user')).id},
+                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0, direction: 'DESC', startUserId: JSON.parse(localStorage.getItem('user')).id},
                 select: {
                     processList: [],
                     selected: "", // 选择结果

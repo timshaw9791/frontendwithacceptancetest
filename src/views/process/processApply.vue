@@ -21,8 +21,8 @@
                         <el-table :data="order.equips" fit height="505px" border>
                             <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
                             <define-column label="操作" width="100" v-slot="{ data }">
-                                <i class="iconfont icontianjia" @click="changeRow(true,data)"></i>
-                                <i class="iconfont iconyichu" @click="changeRow(false,data)"></i>
+                                <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
+                                <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
                                 <entity-input v-model="data.row.param" :options="{search: 'equipParam'}" format="{name}({model})"></entity-input>
@@ -55,6 +55,7 @@
     import divTmp from '@/componentized/divTmp'
     import defineColumn from '@/componentized/entity/defineColumn'
     import { complete, getOrder, processStart, processDetail } from 'api/process'
+    var _ = require('lodash');
     export default {
         name: "applyProcess",
         components:{
@@ -71,6 +72,7 @@
             return{
                 title: "",
                 show: false,
+                isReset: false, // 是否是重填申请
                 order: {
                     type: 'scrap',
                     processInstanceId: '',
@@ -157,7 +159,12 @@
             },
             getData() {
                 processDetail({processInstanceId: this.$route.params.info.processInstanceId}).then(res => {
-                    this.order = Object.assign(this.order, res.processVariables.order)
+                    console.log(res);
+                    this.order = Object.assign(this.order, res.processVariables.order);
+                    this.order.equips = this.order.equips.map(obj => ({
+                        param: _.pick(obj, ['id', 'name', 'model', 'rfid']),
+                        count: obj.count || 0
+                    }))
                     this.show = true;
                 })
             },
@@ -166,26 +173,30 @@
                     this.$message.warning('未选择申请人');
                     return;
                 }
-                if(this.order.equips.length == 0) {
+                 // 缺少rfid
+                let temp = JSON.parse(JSON.stringify(this.order.equips)), equips; // 用以提交失败，还原equips
+                equips = this.order.equips.map((obj, i)=>Object.assign({count: obj.count||1, rfid: i+1}, obj.param))
+                                    .filter(obj => obj.name&&obj.model); 
+                if(!equips.every(obj => obj.count>0&&!isNaN(obj.count))) {
+                    this.$message.warning("请规范填写装备数量");
+                    return;
+                } else if(equips.length == 0) {
                     this.$message.warning('未扫入装备');
                     return;
                 }
+                this.order.equips = JSON.parse(JSON.stringify(equips));
                 if(this.$route.params.info.number) {
                     let userId = JSON.parse(localStorage.getItem('user')).id;
-                    complete(this.$route.params.taskId, {userId: userId}, {
+                    complete(this.$route.params.info.taskId, {userId: userId}, {
                         order: this.order
                     }).then(res => {
                         this.$message.success("申请成功")
                         this.$router.push({name: 'myProcess'});
                     }).catch(err => {
-                        this.$message.error(err.response.data.message)
+                        this.$message.error(err.response.data.message);
+                        this.order.equips = JSON.parse(JSON.stringify(temp));
                     })
                 } else {
-                    // 缺少rfid
-                    let temp = JSON.parse(JSON.stringify(this.order.equips)); // 用以提交失败，还原equips
-                    this.order.equips = this.order.equips.map((obj, i)=>Object.assign({count: obj.count||0, rfid: i+1}, obj.param))
-                                        .filter(obj => obj.name&&obj.model); 
-                    console.log(this.order.equips);
                     processStart({key: this.$route.params.info.key, orderType: this.order.type}, this.order).then(res => {
                         this.$message.success('流程申请成功');
                         this.$router.push({name: 'myProcess'});
@@ -210,10 +221,12 @@
 		},
 		computed: {
 			total() {
+                if(this.order.equips.length == 0) return 0;
 				return this.order.equips.reduce((pre, cur) => typeof pre == 'object'?Number(pre.count)+Number(cur.count):pre+Number(cur.count))
 			},
 			sumEquip() {
-				return this.order.equips.filter(obj => obj.param.name&&obj.param.model).length;
+                if(this.order.equips.length == 0) return 0;
+                return this.order.equips.filter(obj => obj.param.name&&obj.param.model).length;
 			}
 		},
         created() {
@@ -224,6 +237,7 @@
             }
             this.title = "我的流程/申请" + this.$route.params.info.name.substr(0, 2);
             if(this.$route.params.info.number) {
+                this.isReset = true;
                 this.getData();
             } else {
                 this.init();

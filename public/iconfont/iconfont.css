@@ -18,10 +18,12 @@
 
 .icontianjialiang:before {
   content: "\e60c";
+  color: #2f2f76;
 }
 
 .iconyichuliang:before {
   content: "\e60d";
+  color: red;
 }
 
 .iconzhuxiao:before {

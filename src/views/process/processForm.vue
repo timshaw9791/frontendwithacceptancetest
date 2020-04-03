@@ -30,7 +30,8 @@
           </define-column>
         </el-table>
       </div>
-       <text-input label="合计" :column="12"></text-input>
+       <!-- <text-input label="合计" :column="12"></text-input> -->
+       <div class="total"><span>合计</span><span>{{ total }}</span></div>
       <!-- <text-input label="备注" v-model="order.note" width="100%" :height="40" class="remark" :disabled="true"></text-input> -->
     </div>
     <div class="process-form-bottom">
@@ -94,7 +95,7 @@ export default {
     refill() {
       this.$router.push({
         name: 'processApply',
-        params: {type: 'apply', info: {name: this.order.title, processInstanceId: this.order.processInstanceId, taskId: this.$route.params.taskId, number: this.order.number}}
+        params: {type: 'apply', info: {name: this.order.title, processInstanceId: this.order.processInstanceId, taskId: this.$route.params.info.taskId, number: this.order.number}}
       })
     },
     nullify() { // 作废
@@ -111,6 +112,12 @@ export default {
       })
     }
   },
+  computed: {
+    total() {
+      if(this.order.equips.length == 0) return 0;
+      return this.order.equips.reduce((pre, cur) => typeof pre == 'object'?Number(pre.count)+Number(cur.count):pre+Number(cur.count))
+    },
+	},
   created() {
     if(this.$route.params.info == undefined) {
       this.$message.info("数据丢失，返回待办界面");
@@ -133,6 +140,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+/deep/ .el-table {
+  .el-table__row {
+    background-color: #f5f7fa;
+  }
+}
   .process-form-container {
     font-size: 16px;
   }
@@ -177,6 +189,16 @@ export default {
         }
     }
   }
+  .total {
+      height: 36px;
+      border: 1px solid #DCDFE6;
+      display: flex;
+      justify-content: space-between;
+      margin: 0 10px;
+      padding: 0 15px;
+      font-size: 16px;
+      align-items: center;
+    }
   .process-form-bottom {
     padding: 0 18px;
     margin-top: 18px;

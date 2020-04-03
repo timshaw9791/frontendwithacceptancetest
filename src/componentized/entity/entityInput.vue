@@ -84,7 +84,7 @@ export default {
         },
         format: {
           type: String,
-          default: '[{policeSign}{name}]'
+          default: '[{policeSign}]{name}'
         }
     },
     methods: {
