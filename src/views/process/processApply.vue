@@ -106,10 +106,13 @@
         },
         methods:{
             init() {
+                let organUnit = JSON.parse(localStorage.getItem('user'))
                 getOrder({processDefinitionKey: this.$route.params.info.key}).then(res => {
                     let userInfo = JSON.parse(localStorage.getItem('user'));
                     this.order = Object.assign(this.order, res, {
                         warehouse: {id: '1', name: '1号公共库房'}
+                    }, {
+                        organUnit: {id: organUnit.organUnitId, name: organUnit.organUnitName}
                     });
                     // this.order.equips = [{
                     //     id: '1',
@@ -159,7 +162,6 @@
             },
             getData() {
                 processDetail({processInstanceId: this.$route.params.info.processInstanceId}).then(res => {
-                    console.log(res);
                     this.order = Object.assign(this.order, res.processVariables.order);
                     this.order.equips = this.order.equips.map(obj => ({
                         param: _.pick(obj, ['id', 'name', 'model', 'rfid']),
@@ -175,8 +177,10 @@
                 }
                  // 缺少rfid
                 let temp = JSON.parse(JSON.stringify(this.order.equips)), equips; // 用以提交失败，还原equips
-                equips = this.order.equips.map((obj, i)=>Object.assign({count: obj.count||1, rfid: i+1}, obj.param))
+                equips = this.order.equips.map((obj, i)=>Object.assign({count: obj.count||1, rfid: i+1}, _.mapKeys(obj.param, (v,k) => k=='id'?'equipId':k)))
                                     .filter(obj => obj.name&&obj.model); 
+                                    // _.mapKeys(obj.param, (v,k) => k=='id'?'equipId':k))
+                                    // _.pick(obj.param, ['rfid', 'name', 'model'])
                 if(!equips.every(obj => obj.count>0&&!isNaN(obj.count))) {
                     this.$message.warning("请规范填写装备数量");
                     return;
@@ -225,8 +229,11 @@
 				return this.order.equips.reduce((pre, cur) => typeof pre == 'object'?Number(pre.count)+Number(cur.count):pre+Number(cur.count))
 			},
 			sumEquip() {
-                if(this.order.equips.length == 0) return 0;
-                return this.order.equips.filter(obj => obj.param.name&&obj.param.model).length;
+                try {
+                    return this.order.equips.filter(obj => obj.param.name&&obj.param.model).length;
+                } catch (error) {
+                    return this.order.equips.filter(obj => obj.name&&obj.model).length;
+                }
 			}
 		},
         created() {

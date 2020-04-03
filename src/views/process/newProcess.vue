@@ -8,7 +8,7 @@
           <i class="iconfont iconjiahao" @click="apply(data.row)"></i>
         </define-column>
         <define-column label="工作流名称" field="name" align="center"></define-column>
-        <define-column label="部署时间" field="time" align="center"></define-column>
+        <define-column label="部署时间" :filter="(row)=>$filterTime(row.deploymentTime)" align="center"></define-column>
       </el-table>
       <bos-paginator v-if="this.list!=''" :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
     </div>
@@ -35,7 +35,6 @@ export default {
       })
     },
     apply(data) {
-      console.log(data);
       this.$router.push({
         name: 'processApply',
         params: {type: 'apply', info: data}

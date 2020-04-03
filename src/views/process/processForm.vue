@@ -18,10 +18,6 @@
       <div class="table-box">
         <el-table :data="order.equips" fit height="500px" border>
           <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
-          <define-column label="操作" width="100">
-            <i class="iconfont icontianjia"></i>
-            <i class="iconfont iconyichu"></i>
-          </define-column>
           <define-column label="装备参数" v-slot="{ data }">
             <entity-input v-model="data.row" format="{name}({model})" :disabled="true"></entity-input>
           </define-column>
@@ -114,8 +110,14 @@ export default {
   },
   computed: {
     total() {
+      if(!this.order.equips) return 0;
       if(this.order.equips.length == 0) return 0;
-      return this.order.equips.reduce((pre, cur) => typeof pre == 'object'?Number(pre.count)+Number(cur.count):pre+Number(cur.count))
+      let count = 0;
+      this.order.equips.forEach(obj => {
+        count += obj.count;
+      })
+      return count
+      // return this.order.equips.reduce((pre, cur) => typeof pre == 'object'?Number(pre.count)+Number(cur.count):pre+Number(cur.count))
     },
 	},
   created() {
