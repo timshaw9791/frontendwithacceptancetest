@@ -11,7 +11,7 @@
         <div>{{ item.time }}</div>
       </div>
     </div>
-    <service-dialog title="驳回" ref="ratify" confirmInfo="确定" :secondary="false">
+    <service-dialog title="驳回" ref="ratify" confirmInfo="确定" @confirm="$refs.ratify.hide()" :secondary="false">
       <center>
         <text-input label="驳回原因" v-model="reson" width="100%" :disabled="true"></text-input>
       </center>
