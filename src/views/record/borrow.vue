@@ -30,26 +30,36 @@
             <field-table :list="infolist" :labelList="infotable.labelList" @rowclick="clickTableCloum2" :havePage="false"
                          style="width: 100%">
             </field-table>
-        </service-dialog>
-        <service-dialog :title="moretitle" ref="more" width="388px" :button="false">
-            <el-table
-                    :data="rfidlist"
-                    border
-                    style="width: 100%"
-                    align="center"
-            >
-                <el-table-column
-                        label="序号"
-                        type="index"
-                        :index="indexMethod" width="180" align="center">
-                </el-table-column>
-                <el-table-column
-                        prop="equipInfo.rfid"
-                        label="rfid"
+            <service-dialog 
+                :title="moretitle" 
+                ref="more" 
+                width="388px" 
+                top="14vh"
+                :button="false"
+                :modal="false">
+                <div style="height:480px">
+                    <el-table
+                        :data="rfidlist"
+                        border
+                        style="width: 90%;margin:20px auto"
                         align="center"
-                >
-                </el-table-column>
-            </el-table>
+                        height="450px"
+                    >
+                        <el-table-column
+                            label="序号"
+                            type="index"
+                            :index="indexMethod" width="90" align="center">
+                        </el-table-column>
+                        <el-table-column
+                            prop="equipInfo.rfid"
+                            label="rfid"
+                            align="center"
+                        >
+                        </el-table-column>
+                    </el-table>
+                </div>
+                
+            </service-dialog>
         </service-dialog>
     </div>
 </template>
