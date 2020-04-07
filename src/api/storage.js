@@ -74,9 +74,9 @@ export function equipArgsByName(params) {
 }
 
 /* 入库装备 */
-export function inHouse(params,data) {
+export function inHouse(params ,data) {
     return request({
-        url: "/equip/batch-in-house",
+        url: `/equip/inHouse?${qs.stringify(params, { indices: false })}`,
         method: "POST",
         data
     })
@@ -89,7 +89,20 @@ export function inHouseOrder(id) {
         method: "DELETE"
     })
 }
-
+//修改门感设备模式
+export function changeRecognizeModel(model) {
+    return request({
+        url: `/entranceGuard/change-recognize-model?model=${model}`,
+        method: "post"
+    })
+}
+//获取门感读取到的数据
+export function getRfidFromGate() {
+    return request({
+        url: "/entranceGuard/rfids",
+        method: "get"
+    })
+}
 /* 出库装备 */
 export function outHouse(params) {
     return request({

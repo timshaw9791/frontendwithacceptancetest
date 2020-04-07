@@ -144,6 +144,20 @@
                         <span>绑定序号</span>
                     </div>
                     <div>
+                        <div class="header_tab">
+                        <div style="display: flex;
+            justify-content: flex-start;margin-left:300px; algin-item:center;line-height:38px;">
+            
+                            <span>硬件选择： </span>
+                  <el-select v-model="hardware.selected" @change="selectHardware" size="small" style="width: 220px">
+                    <el-option v-for="item in hardware.selectArr" 
+                      :label="item.key" :key="item.val" :value="item.val">
+                    </el-option>
+                  </el-select>
+                  <el-button :class="{'read': true, 'throttle':throttle}" @click="readerHandheld" :disabled="throttle" v-show="hardware.selected == 'Handheld'">{{readText}}</el-button>
+                  <el-button :class="{'read': true, 'throttle':throttle}" @click="getGateAntenna" :disabled="throttle" v-show="hardware.selected == 'gateAntenna'">开启门感</el-button>
+                        </div>
+                        </div>
                         <el-table :data="list" fit height="330" class="list" :row-class-name="tableRowClassName">
                             <el-table-column label="序号" align="center">
                                 <template scope="scope">
@@ -207,10 +221,10 @@
     import axios from 'axios';
     import {imgUpUrl, pdfUpUrl, videoUpUrl, imgBaseUrl, pdfBaseUrl, videoBaseUrl} from "api/config";
     import {delFile} from "api/basic";
-    import { equipArgsByName, inHouse, findEquip, updateEquipArg, getAllSupplier, saveEquipArg, updateEquip} from "api/storage"
+    import { equipArgsByName, inHouse, findEquip, updateEquipArg, getAllSupplier, saveEquipArg, updateEquip,changeRecognizeModel,getRfidFromGate} from "api/storage"
     import serviceDialog from 'components/base/serviceDialog/index'
     import {transformMixin} from "common/js/transformMixin";
-    import { start, startOne, killProcess } from 'common/js/rfidReader'
+    import { start, startOne, killProcess,handheld, modifyFileName} from 'common/js/rfidReader'
     import request from 'common/js/request'
     // const cmdPath = 'C:\\Users\\Administrator';
     // const exec = window.require('child_process').exec;
@@ -264,6 +278,7 @@
                 rfids: [],
                 serialList: [],
                 pid: '',
+                readText:'读取',
                 index: 0, // 标识当前扫入是否是第一件装备
                 com: 0,
                 copyRfidList: {},
@@ -272,6 +287,22 @@
                     zbForm: {}
                 },// 判断是否对数据进行修改
                 isClick: false, // 避免提交按钮快速点击
+                throttle: false,
+                hardware: {//选择硬件
+                  selectArr: [{
+                    val: 'Handheld', 
+                    key: '手持机'
+                  }, {
+                    val: 'cardReader', 
+                    key: '读写器'
+                  },{
+                    val: 'gateAntenna', 
+                    key: '门感天线'
+                  }],
+                  selected: '', // 所选用的硬件
+                  operator: ""
+                },
+                closeGate:false
             }
         },
         mixins: [formRulesMixin, transformMixin],
@@ -337,8 +368,13 @@
             },
             //离开页面
             black() {
+                let gateModel="RECEIVE_RETURN"
+                changeRecognizeModel(gateModel).then(res=>{
+              })
+                this.closeGate=true
                 if(!this.isEqual()) {
                     this.$refs.dialog.show()
+                    
                 } else {
                     this.$emit('black');
                 }
@@ -387,9 +423,79 @@
                     this.$emit('black');
                 }
             },
-
+            selectHardware(val){//选择完硬件
+            this.readText="读取"
+            if(val=="cardReader")
+            {
+                start("java -jar scan.jar", (data) => {
+                        if(this.index == 0) {
+                            this.list[0].rfid = data;
+                        } else {
+                            this.list.push({ rfid: data });
+                        }
+                        this.index = this.index + 1
+                        this.hardwareOpen = true
+                    }, (fail) => {
+                        this.index = 1;
+                        this.$message.error(fail);
+                    }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
+            }
+            },
+            getRfidFromGateAntenna(){//获取门感读取到的rfid
+               
+                getRfidFromGate().then(r=>{
+                      r.forEach(item=>{
+                          this.list.push({rfid:item})
+                      })
+                       this.list=_.uniqBy(this.list,'rfid')//去除多余的rfid
+                       console.log(this.list);
+                  })
+            },
+            getGateAntenna(){//开启门感获得数据
+             if(this.throttle) return
+              this.throttle = true
+              this.list = []
+              this.index=0
+              let gateModel="IN_OUT_HOUSE"
+              setTimeout(() => this.throttle = false, 2000)
+              changeRecognizeModel(gateModel).then(res=>{
+                  this.$message.success('门感开始识别')
+                  let timeId = setInterval(() => {
+                    if (this.closeGate) {
+                    console.log("清除定时器");
+                    clearInterval(timeId)
+                    };
+                    this.getRfidFromGateAntenna();
+                    },3000)
+              })
+            },
+            readerHandheld() {//手持机读取数据
+              if(this.throttle) return
+              this.readText='重新读取'
+              this.throttle = true
+              
+              setTimeout(() => this.throttle = false, 2000)
+              handheld((err) => this.$message.error(err)).then(data => {//["123456","456789"]
+                  console.log("手持机扫描到的数据");
+                  console.log(data);
+                  console.log(JSON.parse(data));
+                  console.log(JSON.parse(data).rfid)
+                  JSON.parse(data).rfid.forEach(item=>{
+                      if(this.index == 0) {
+                            this.list[0].rfid = item;
+                        } else {
+                            this.list.push({ rfid: item });
+                        }
+                        this.index = this.index + 1
+                })
+              })
+            },
             //点击提交后 根据从什么入口进入的执行对应的  新增  入库  装备基础信息修改 装备入库信息修改
             addEquipArg() {
+                 let gateModel="RECEIVE_RETURN"
+                            changeRecognizeModel(gateModel).then(res=>{
+                            })
+                 this.closeGate=true;
                 this.isClick = true;
                 setTimeout(() => {this.isClick = false}, 1600);
                 if(this.title.includes('入库装备')) {
@@ -431,10 +537,13 @@
                             rfids: rfidList,
                             serials: serialList
                         }, requestBody, (state, res) => {
+
                             // 关闭硬件
+                           
                             killProcess(this.pid)
                             this.init()
                             this.$message.success("入库成功")
+                            
                             this.$emit('black')  
                         })
                     }).catch(err => {
@@ -595,20 +704,20 @@
                 })
                 this.tempImage = temp.image || null
                 // 硬件开启 hardwareOpen
-                if(!this.hardwareOpen) {
-                    start("java -jar scan.jar", (data) => {
-                        if(this.index == 0) {
-                            this.list[0].rfid = data;
-                        } else {
-                            this.list.push({ rfid: data });
-                        }
-                        this.index = this.index + 1
-                        this.hardwareOpen = true
-                    }, (fail) => {
-                        this.index = 1;
-                        this.$message.error(fail);
-                    }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
-                }
+                // if(!this.hardwareOpen) {
+                //     start("java -jar scan.jar", (data) => {
+                //         if(this.index == 0) {
+                //             this.list[0].rfid = data;
+                //         } else {
+                //             this.list.push({ rfid: data });
+                //         }
+                //         this.index = this.index + 1
+                //         this.hardwareOpen = true
+                //     }, (fail) => {
+                //         this.index = 1;
+                //         this.$message.error(fail);
+                //     }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
+                // }
             },
             //进入页面获取数据
             getEquipInfo() {
@@ -703,6 +812,8 @@
         },
 
         created() {
+            modifyFileName('search.json');
+            
             this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];//获取到串口号
         },
         mounted() {
@@ -750,7 +861,9 @@
             margin-bottom: 10px;
         }
     }
-
+    /deep/ .elbutton{
+              color: red;
+          }
     .black {
         /* 可调整 */
         font-size: 20px;
@@ -806,5 +919,36 @@
     .occupy-position {
         margin-right: 2.0833rem;
     }
-
+.header_tab{
+            width: 80%;
+            margin: 0 auto;
+            display: flex;
+            height: 40px;
+            
+            justify-content: flex-start;
+            .hardware,
+          .operator {
+            .label {
+              display: block;
+              float: left;
+            }
+            .read {
+              width: 64px;
+              height: 32px;
+              color: white;
+              text-align: center;
+              line-height: 32px;
+              margin-left: 12px;
+              float: right;
+              background-color: red !important ;
+              border-radius:4px;
+              padding: 0;
+              border: 0;
+            }
+            .throttle {
+              background-color: #ddd;
+            }
+          }
+          
+        }
 </style>

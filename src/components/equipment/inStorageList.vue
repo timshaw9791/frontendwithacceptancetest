@@ -19,6 +19,7 @@
                     </el-option>
                   </el-select>
                   <el-button :class="{'read': true, 'throttle':throttle}" @click="readerHandheld" :disabled="throttle" v-show="hardware.selected == 'Handheld'">读取</el-button>
+                  <el-button :class="{'read': true, 'throttle':throttle}" @click="getGateAntenna" :disabled="throttle" v-show="hardware.selected == 'gateAntenna'">读取</el-button>
                 </div>
                 <div class="operator">
                   <div class="label">操作人员： </div>
@@ -49,7 +50,7 @@
 </template>
 
 <script>
-import { outHouse, findByRfids } from "api/storage"
+import { outHouse, findByRfids,changeRecognizeModel,getRfidFromGate} from "api/storage"
 import { start, killProcess, handheld, modifyFileName } from 'common/js/rfidReader'
 
     export default {
@@ -65,6 +66,9 @@ import { start, killProcess, handheld, modifyFileName } from 'common/js/rfidRead
                   }, {
                     val: 'cardReader', 
                     key: '读写器'
+                  },{
+                    val: 'gateAntenna', 
+                    key: '门感天线'
                   }],
                   selected: '', // 所选用的硬件
                   operator: ""
@@ -73,6 +77,7 @@ import { start, killProcess, handheld, modifyFileName } from 'common/js/rfidRead
                 rfidList: [],
                 pid: '',
                 disable: false, // 提交按钮是否可用
+                closeGate:false
             }
         },
         props: {
@@ -94,6 +99,10 @@ import { start, killProcess, handheld, modifyFileName } from 'common/js/rfidRead
         methods: {
             //离开页面以后为父组件抛出black 杀死进程
             black() {
+              let gateModel="RECEIVE_RETURN"
+                changeRecognizeModel(gateModel).then(res=>{
+              })
+              this.closeGate=true
               if(this.pid != '') killProcess(this.pid);
               this.$emit('black', true);
             },
@@ -109,6 +118,29 @@ import { start, killProcess, handheld, modifyFileName } from 'common/js/rfidRead
                   this.getEquipInfo(data)
                 }, (fail) => {this.$message.error(fail)}, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
               }
+            },
+            getRfidFromGateAntenna(){//获取门感读取到的rfid
+                getRfidFromGate().then(r=>{
+                  this.getEquipInfo(r, true)
+                  })
+            },
+            getGateAntenna(){//开启门感获得数据
+             if(this.throttle) return
+              this.throttle = true
+              this.list = []
+              this.index=0
+              let gateModel="IN_OUT_HOUSE"
+              setTimeout(() => this.throttle = false, 2000)
+              changeRecognizeModel(gateModel).then(res=>{
+                  this.$message.success('门感开始识别')
+                  this.getRfidFromGateAntenna()
+                  let timeId = setInterval(() => {
+                    if (this.closeGate) {
+                    clearInterval(this.timeId)
+                    };
+                    this.getRfidFromGateAntenna();
+                    },3000)
+              })
             },
             // 手持机读取
             readerHandheld() {
@@ -154,6 +186,10 @@ import { start, killProcess, handheld, modifyFileName } from 'common/js/rfidRead
                 if(res.length == 0) {
                   this.$message.error("该rfid未对应装备")
                 }
+                let gateModel="RECEIVE_RETURN"
+                changeRecognizeModel(gateModel).then(res=>{//关闭门感读取数据
+              })
+                this.closeGate=true//关闭定时器
                 this.createListData(res)
               }).catch(err => {
                 this.$message.error("该装备不存在")
