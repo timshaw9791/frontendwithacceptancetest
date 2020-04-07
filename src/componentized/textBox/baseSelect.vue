@@ -1,5 +1,5 @@
 <template>
-    <div class="base-select-container" :style="'width:'+fixWidth">
+    <div class="base-select-container" :style="'width:'+fixWidth+';float:'+align">
         <el-select v-model="selectValue" placeholder="请选择" id="select" :multiple="multiple" collapse-tags @change="change">
             <el-option
                 v-for="(item, i) in selectList"
@@ -42,6 +42,10 @@
             multiple: {
                 type: Boolean,
                 default: false
+            },
+            align: {
+                type: String,
+                default: 'none'
             }
         },
         computed: {

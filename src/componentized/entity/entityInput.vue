@@ -113,6 +113,7 @@ export default {
         clear() { // 清空
           this.insideValue = "";
           this.$emit('input', "");
+          this.$emit('clear');
         },
         changeEditState(state) {
           if(!this.inTable) return;

@@ -1,6 +1,6 @@
 <template>
     <div class="apply-process-container">
-        <my-header :title="title" :haveBlack="false" @h_black="black"></my-header>
+        <my-header :title="title" :haveBlack="false"></my-header>
         <div class="apply-process" v-if="show">
             <div class="apply-process-top" data-test="action_box">
                 <text-input label="单号" v-model="order.number" :column="3" :disabled="true" class="odd-number"></text-input>
@@ -9,27 +9,33 @@
                 <div class="process-info">
                     <text-input label="所在库房" v-model="order.warehouse.name" :column="3" :disabled="true"></text-input>
                     <date-select v-model="order.applyTime" :column="3" :disabled="true"></date-select>
-                    <!-- <text-input label="申请人员" v-model="order.applicant.name" :disabled="true"></text-input> -->
                     <entity-input label="申请人员" v-model="order.applicant" :column="3" :required="true" placeholder="请选择"></entity-input>
                     <text-input label="申请原因" v-model="order.note" :haveTip="true" :column="3" :tips="tips" :title="order.note"></text-input>
                 </div>
                 <div class="table-box">
-                    <base-button label="总清单" type="none"></base-button>
-                    <div-tmp :column="8.49"></div-tmp>
-                    <base-select label="硬件选择" v-model="select.selected" :column="2" :selectList="select.handWareList"></base-select>
-                    <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96"></base-button>
-                        <el-table :data="order.equips" fit height="505px" border>
+                    <div :class="{'total-list':true,'active':tabsIndex==1}" @click="switchTab(1)">总清单</div>
+                    <div :class="{'detail-list':true,'active':tabsIndex==2}" @click="switchTab(2)">明细</div>
+                    <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96" @click="readData"></base-button>
+                    <base-select label="硬件选择" v-model="select.selected" :column="2" align="right" :selectList="select.handWareList"></base-select>
+                        <el-table :data="order.equips" fit height="505px" @current-change="selRow" highlight-current-row border v-if="!showDetail">
                             <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
                             <define-column label="操作" width="100" v-slot="{ data }">
                                 <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
                                 <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
-                                <entity-input v-model="data.row.param" :options="{search: 'equipParam'}" format="{name}({model})"></entity-input>
+                                <entity-input v-model="data.row.param" :options="{}" format="{name}({model})"></entity-input>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
-                                <text-input v-model="data.row.count" type="Number"></text-input>
+                                <text-input v-model="data.row.count" type="Number" :disabled="true"></text-input>
                             </define-column>
+                        </el-table>
+                        <el-table :data="detailTable.list" fit height="505px" border v-else>
+                            <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
+                            <define-column label="操作" width="100" v-slot="{ data }">
+                                <i class="iconfont iconyichuliang" @click="changeDetailRow(data)"></i>
+                            </define-column>
+                            <define-column label="RFID" field="rfid"></define-column>
                         </el-table>
                 </div>
                 <!-- <text-input label="合计" :column="12" :disabled="true"></text-input> -->
@@ -38,7 +44,6 @@
                 <div class="buttom">
                     <base-button label="提交" align="right" :width="128" :height="72" :fontSize="20" @click="submit"></base-button>
                     <base-button label="清空" align="right" :width="128" :height="72" :fontSize="20" type="danger"></base-button>
-                    <div class="sum-equip">装备总数： {{ sumEquip }}</div>
                 </div>
             </div>
         </div>
@@ -73,6 +78,12 @@
                 title: "",
                 show: false,
                 isReset: false, // 是否是重填申请
+                tabsIndex: 1,
+                rowData: '', // 选中的单选行数据
+                showDetail: false, // 明细列表
+                detailTable: {
+                    list: [],
+                },
                 order: {
                     type: 'scrap',
                     processInstanceId: '',
@@ -162,13 +173,46 @@
             },
             getData() {
                 processDetail({processInstanceId: this.$route.params.info.processInstanceId}).then(res => {
+                    res.processVariables.order.equips = _.values(_.reduce(res.processVariables.order.equips, (res, obj) => {
+                        if(res[obj.model]) {
+                        res[obj.model].count++;
+                        res[obj.model].param.rfid.push(obj.rfid);
+                        res[obj.model].param.id.push(obj.equipId);
+                        } else {
+                        res[obj.model] = {count: 1, param: Object.assign(obj, {rfid: [obj.rfid], id: [obj.equipId]})};
+                        }
+                        return res;
+                    }, {}))
                     this.order = Object.assign(this.order, res.processVariables.order);
-                    this.order.equips = this.order.equips.map(obj => ({
-                        param: _.pick(obj, ['id', 'name', 'model', 'rfid']),
-                        count: obj.count || 0
-                    }))
                     this.show = true;
                 })
+            },
+            switchTab(index) { // 切换标签卡
+                if(index == 1) {
+                    this.showDetail = false;
+                } else if(this.detailTable.list.length == 0) {
+                    this.$message.warning('未选择装备信息');
+                    return;
+                } else {
+                    this.showDetail = true;
+                }
+                this.tabsIndex = index;
+            },
+            selRow(current) { // 单选表格行
+                if(!current) return; // 避免切换数据时报错
+                this.detailTable.list = [];
+                this.rowData = current;
+                if(current.param.rfid == undefined) return;
+                for(let rfid of current.param.rfid) {
+                    this.detailTable.list.push({
+                        rfid: rfid
+                    })
+                }
+            },
+            readData() { // 读取数据
+                let data = [{param: {id: [4, 5], model: 'slsk', rfid: ['4', '5'], name: 'test_塑料手铐'}, count: 1, index: 0},
+                            {param: {id: [3], model: 'gssk', rfid: ['3'], name: 'test_金属手铐'}, count: 1, index: 1}]
+                    this.order.equips = data;
             },
             submit() {
                 if(this.order.applicant.id == '') {
@@ -176,64 +220,67 @@
                     return;
                 }
                  // 缺少rfid
-                let temp = JSON.parse(JSON.stringify(this.order.equips)), equips; // 用以提交失败，还原equips
-                equips = this.order.equips.map((obj, i)=>Object.assign({count: obj.count||1, rfid: i+1}, _.mapKeys(obj.param, (v,k) => k=='id'?'equipId':k)))
-                                    .filter(obj => obj.name&&obj.model); 
-                                    // _.mapKeys(obj.param, (v,k) => k=='id'?'equipId':k))
-                                    // _.pick(obj.param, ['rfid', 'name', 'model'])
-                if(!equips.every(obj => obj.count>0&&!isNaN(obj.count))) {
-                    this.$message.warning("请规范填写装备数量");
-                    return;
-                } else if(equips.length == 0) {
+                // equips = this.order.equips.map((obj, i)=>Object.assign({count: obj.count||1, rfid: i+1}, _.mapKeys(obj.param, (v,k) => k=='id'?'equipId':k)))
+                //                     .filter(obj => obj.name&&obj.model); 
+                let order = JSON.parse(JSON.stringify(this.order));
+                order.equips = _.filter(_.flatten(_.map(this.order.equips, obj => _.map(obj.param.rfid, (v, i) => Object.assign({rfid: v}, _.pick(obj.param, ['name', 'model']), {equipId: obj.param.id[i]})))), obj=> obj.name&&obj.model);
+                console.log(order);
+            //    if(!order.equips.every(obj => obj.count>0&&!isNaN(obj.count))) {
+            //         this.$message.warning("请规范填写装备数量");
+            //         return;
+            //     } 
+                if(order.equips.length == 0) {
                     this.$message.warning('未扫入装备');
                     return;
                 }
-                this.order.equips = JSON.parse(JSON.stringify(equips));
                 if(this.$route.params.info.number) {
                     let userId = JSON.parse(localStorage.getItem('user')).id;
                     complete(this.$route.params.info.taskId, {userId: userId}, {
-                        order: this.order
+                        order: order
                     }).then(res => {
                         this.$message.success("申请成功")
                         this.$router.push({name: 'myProcess'});
                     }).catch(err => {
                         this.$message.error(err.response.data.message);
-                        this.order.equips = JSON.parse(JSON.stringify(temp));
                     })
                 } else {
-                    processStart({key: this.$route.params.info.key, orderType: this.order.type}, this.order).then(res => {
+                    processStart({processDefinitionKey: this.$route.params.info.key, orderType: this.order.type}, order).then(res => {
                         this.$message.success('流程申请成功');
                         this.$router.push({name: 'myProcess'});
                     }).catch(err => {
-                        this.order.equips = JSON.parse(JSON.stringify(temp));
                         this.$message.error(err.response.data.message);
                     })
                 }
             },
-            changeRow(state, data) {
+            changeRow(state, data) { // 总清单删除
                 let temp = JSON.parse(JSON.stringify(this.order.equips));
 				if(state) {
 					temp.splice(data.$index+1, 0, {count: '', param: {}});
 				} else if(this.order.equips.length>1) {
 					temp.splice(data.$index, 1); 
-				}
+				} else {
+                    temp = [{count: '', param: {}}]
+                }
 				this.order.equips = temp;
             },
-            black(data){
-                this.$router.back()
-            },
+            changeDetailRow(data) { // 明细删除
+                this.detailTable.list.splice(data.$index, 1);
+                this.rowData.param.rfid.splice(data.$index, 1);
+                this.rowData.param.id.splice(data.$index, 1);
+                if(this.detailTable.list.length == 0) {
+                    for(let index in this.order.equips) {
+                        if(JSON.stringify(this.order.equips[index]) == JSON.stringify(this.rowData)) {
+                            this.changeRow(false, {$index: index});
+                            break;
+                        }
+                    }
+                }
+            }
 		},
 		computed: {
 			total() {
                 if(this.order.equips.length == 0) return 0;
-				return this.order.equips.reduce((pre, cur) => typeof pre == 'object'?Number(pre.count)+Number(cur.count):pre+Number(cur.count))
-			},
-			sumEquip() {
-                try {
-                    return this.order.equips.filter(obj => obj.param.name&&obj.param.model).length;
-                } catch (error) {
-                    return this.order.equips.filter(obj => obj.name&&obj.model).length;
-                }
+                return _.reduce(this.order.equips, (r, v, k) => v.count==undefined?r:r+ +v.count, 0);
 			}
 		},
         created() {
@@ -279,6 +326,19 @@
                 padding: 0 10px;
                 .iconfont {
                     margin: 0 5px;
+                }
+                .total-list,
+                .detail-list {
+                    display: inline-block;
+                    border: 1px solid #EAEAEA;
+                    height: 40px;
+                    line-height: 40px;
+                    padding: 0 10px;
+                    background-color: #DCDFE6;
+                    cursor: pointer;
+                }
+                .active {
+                    background-color: white;
                 }
             }
             .remark {
