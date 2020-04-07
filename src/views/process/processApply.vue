@@ -24,7 +24,7 @@
                                 <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
-                                <entity-input v-model="data.row.param" :options="{}" format="{name}({model})"></entity-input>
+                                <entity-input v-model="data.row.param" :options="{}" :disabled="true" format="{name}({model})"></entity-input>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
                                 <text-input v-model="data.row.count" type="Number" :disabled="true"></text-input>
@@ -210,21 +210,23 @@
                 }
             },
             readData() { // 读取数据
-                let data = [{param: {id: [4, 5], model: 'slsk', rfid: ['4', '5'], name: 'test_塑料手铐'}, count: 1, index: 0},
+                let data = [{param: {id: [4, 5], model: 'slsk', rfid: ['4', '5'], name: 'test_塑料手铐'}, count: 2, index: 0},
                             {param: {id: [3], model: 'gssk', rfid: ['3'], name: 'test_金属手铐'}, count: 1, index: 1}]
-                    this.order.equips = data;
+                    // this.order.equips = data;
+                data.forEach((obj, index) => {
+                    this.order.equips[index].count = obj.count; // 这样赋值是为了避免绑定源丢失，导致页面不刷新
+                    this.order.equips[index].param = obj.param;
+                })
             },
             submit() {
                 if(this.order.applicant.id == '') {
                     this.$message.warning('未选择申请人');
                     return;
                 }
-                 // 缺少rfid
                 // equips = this.order.equips.map((obj, i)=>Object.assign({count: obj.count||1, rfid: i+1}, _.mapKeys(obj.param, (v,k) => k=='id'?'equipId':k)))
                 //                     .filter(obj => obj.name&&obj.model); 
                 let order = JSON.parse(JSON.stringify(this.order));
                 order.equips = _.filter(_.flatten(_.map(this.order.equips, obj => _.map(obj.param.rfid, (v, i) => Object.assign({rfid: v}, _.pick(obj.param, ['name', 'model']), {equipId: obj.param.id[i]})))), obj=> obj.name&&obj.model);
-                console.log(order);
             //    if(!order.equips.every(obj => obj.count>0&&!isNaN(obj.count))) {
             //         this.$message.warning("请规范填写装备数量");
             //         return;

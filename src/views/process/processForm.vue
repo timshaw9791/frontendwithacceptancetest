@@ -3,9 +3,9 @@
     <my-header :title="title" :haveBlack="false"></my-header>
     <div class="process-form-top" v-if="show">
       <text-input label="单号" v-model="order.number" :column="3" :disabled="true"></text-input>
-      <base-button label="导出" type="none" align="right"></base-button>
-      <base-button label="重填" align="right" @click="refill"></base-button>
-      <base-button label="作废" align="right" @click="$refs.ratify.show()"></base-button>
+      <base-button label="导出" type="none" align="right" v-show="operate"></base-button>
+      <base-button label="重填" align="right" @click="refill" v-show="operate"></base-button>
+      <base-button label="作废" align="right" @click="$refs.ratify.show()" v-show="operate"></base-button>
     </div>
     <div class="process-form-body" v-if="show">
       <div class="process-info">
@@ -29,7 +29,7 @@
         <el-table :data="detailTable.list" fit height="505px" border v-else>
           <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
           <define-column label="RFID" field="rfid"></define-column>
-      </el-table>
+        </el-table>
       </div>
        <!-- <text-input label="合计" :column="12"></text-input> -->
        <div class="total"><span>合计</span><span>{{ total }}</span></div>
@@ -61,6 +61,7 @@ export default {
     return {
       title: "我的流程/报废申请单",
       show: false,
+      operate: true,
       tabsIndex: 1,
       rowData: '', // 选中的单选行数据
       showDetail: false, // 明细列表
@@ -138,7 +139,7 @@ export default {
           this.showDetail = true;
       }
       this.tabsIndex = index;
-  },
+    },
     selRow(current) { // 单选表格行
       if(!current) return; // 避免切换数据时报错
       this.detailTable.list = [];
@@ -156,7 +157,7 @@ export default {
       if(!this.order.equips) return 0;
       if(this.order.equips.length == 0) return 0;
       return _.reduce(this.order.equips, (r, v, k) => v.count==undefined?r:r+ +v.count, 0);
-    },
+    }
 	},
   created() {
     if(this.$route.params.info == undefined) {
@@ -164,6 +165,9 @@ export default {
       this.$router.push({name: 'agencyMatters'});
     } else {
       this.getData();
+    }
+    if(this.$route.params.info.operate == false) {
+      this.operate = false;
     }
   },
   components: {

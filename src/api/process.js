@@ -263,6 +263,14 @@ export function myProcess(params) { // 查询我的流程
     })
 }
 
+export function todoProcess(params) {
+    return request({
+        url: baseBURL+'/workflow/todo-task',
+        method: 'GET',
+        params
+    })
+}
+
 
 
 

@@ -10,8 +10,8 @@
             <div class="my-process-body">
                 <el-table :data="myProcessList" fit height="3.6458rem" border>
                     <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
-                    <define-column label="操作" width="100">
-                        <i class="iconfont iconxiangqing"></i>
+                    <define-column label="操作" width="100" v-slot="{ data }">
+                        <i class="iconfont iconxiangqing" @click="toDetail(data.row)"></i>
                     </define-column>
                     <define-column label="请求标题" field="name"></define-column>
                     <define-column label="工作流" field="type"></define-column>
@@ -76,6 +76,12 @@
             changePage(page) {
                 this.paginator.page = page;
                 this.getMyProcess();
+            },
+            toDetail(data) {
+                this.$router.push({
+                    name: 'applyAudit',
+                    params: {type:'apply', audit: 'order', info: {processInstanceId: data.processInstanceId, taskId: data.taskId, operate: false}}
+                })
             }
         },
         computed: {
@@ -115,10 +121,6 @@
         }
         .my-process-body {
             padding: 0 17px;
-            .table {
-                height: 672px;
-                border: 1px solid orange;
-            }
         }
     }
 </style>
