@@ -93,7 +93,7 @@
                         <!--<el-button type="primary" class="button" @click="pushForm" v-if="!equipId">提交</el-button>-->
                         <div class="imgUp">
                             <imgUp @success="successUp" :disabled="edit"
-                                   :image="form.image" :upload="title.includes('入库')?false:true" :noimg="tempImage == null"></imgUp>
+                                   :image="form.image" :upload="title.includes('入库')?false:true" :noimg="tempImage == null||tempImage==''"></imgUp>
                         </div>
                     </div>
 
@@ -145,8 +145,7 @@
                     </div>
                     <div>
                         <div class="header_tab">
-                        <div style="display: flex;
-            justify-content: flex-start;margin-left:300px; algin-item:center;line-height:38px;">
+                        <div class="hardware">
             
                             <span>硬件选择： </span>
                   <el-select v-model="hardware.selected" @change="selectHardware" size="small" style="width: 220px">
@@ -302,7 +301,8 @@
                   selected: '', // 所选用的硬件
                   operator: ""
                 },
-                closeGate:false
+                closeGate:false,
+                timeId:''
             }
         },
         mixins: [formRulesMixin, transformMixin],
@@ -456,14 +456,14 @@
               this.throttle = true
               this.list = []
               this.index=0
-              let gateModel="IN_OUT_HOUSE"
+              let gateModel="IN_HOUSE"//入库的时候
               setTimeout(() => this.throttle = false, 2000)
               changeRecognizeModel(gateModel).then(res=>{
                   this.$message.success('门感开始识别')
-                  let timeId = setInterval(() => {
+                  this.timeId = setInterval(() => {
                     if (this.closeGate) {
                     console.log("清除定时器");
-                    clearInterval(timeId)
+                    clearInterval(this.timeId)
                     };
                     this.getRfidFromGateAntenna();
                     },3000)
@@ -839,6 +839,10 @@
             if(this.hardwareOpen || this.pid != '') {
                 killProcess(this.pid)
             }
+             let gateModel="RECEIVE_RETURN"
+                changeRecognizeModel(gateModel).then(res=>{
+              })
+            clearInterval(this.timeId)
         }
 
     }
@@ -921,13 +925,16 @@
     }
 .header_tab{
             width: 80%;
+            // border: 1px solid black;
             margin: 0 auto;
             display: flex;
             height: 40px;
-            
-            justify-content: flex-start;
+            // float: right;
+            // justify-content: flex-start;
             .hardware,
           .operator {
+              margin-left:auto ;
+            //   border: 1px solid red;
             .label {
               display: block;
               float: left;
@@ -940,7 +947,7 @@
               line-height: 32px;
               margin-left: 12px;
               float: right;
-              background-color: red !important ;
+              background-color: #2F2F76;
               border-radius:4px;
               padding: 0;
               border: 0;

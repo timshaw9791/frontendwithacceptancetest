@@ -59,6 +59,7 @@
     import textButton from 'components/base/textButton'
     import {applyProcessMixin} from "common/js/applyProcessMixin";
     import {scrapStarts,scrapRefill,equipById,equipMaintainScrapByProcess} from "api/process"
+    import {equipArgsByName, inHouse, findEquip, updateEquipArg, getAllSupplier, saveEquipArg, updateEquip,changeRecognizeModel,getRfidFromGate} from "api/storage"
     import {start, delFile, handheld, killProcess,modifyFileName} from 'common/js/rfidReader'
     export default {
         name: "applyScrap",
@@ -80,7 +81,7 @@
         mixins: [applyProcessMixin],
         data() {
             return {
-                hardwareSelect:[{name:'手持机',id:'1'},{name:'RFID读写器',id:'2'}],
+                hardwareSelect:[{name:'手持机',id:'1'},{name:'RFID读写器',id:'2'},{name:'门感天线',id:'3'}],
                 hardware:'',
                 form:{
                     type:'SCRAP',
@@ -98,7 +99,9 @@
                     name: '',
                     label: '直调流程'
                 }, {name: '', label: '报废流程'}],
-                pid:0
+                pid:0,
+                closeGate:false,
+                timeId:''
             }
         },
         mounted(){
@@ -113,7 +116,11 @@
                     if (newVal === '手持机') {
                         this.form.equips=[];
                         this.handheldMachine();
-                    } else if (newVal === 'RFID读写器') {
+                    }else if(newVal==='门感天线')
+                    {
+                        this.getGateAntenna()
+                    }
+                     else if (newVal === 'RFID读写器') {
                         this.getListUsb();
                     }else if(newVal==='手持机'&&oldVal==='RFID读写器'){
                         killProcess(this.pid)
@@ -123,6 +130,10 @@
         },
         methods: {
             cancelDialog(){
+                this.closeGate=true
+                let gateModel="RECEIVE_RETURN"
+                changeRecognizeModel(gateModel).then(res=>{
+              })
                 killProcess(this.pid)
             },
             clearEquip(){
@@ -130,6 +141,10 @@
             },
             apply() {
                 let equips = [],rfids=[],flag=true;
+                this.closeGate=true;
+                let gateModel="RECEIVE_RETURN"
+                changeRecognizeModel(gateModel).then(res=>{
+              })
                 this.form.equips.forEach(item => {
                     equips.push({id:item.id,rfid:item.rfid,name:item.equipArg.name,model:item.equipArg.model});
                     rfids.push(item.rfid);
@@ -205,6 +220,31 @@
                    })
                })
             },
+            getRfidFromGateAntenna(){//获取门感读取到的rfid
+               
+                getRfidFromGate().then(r=>{
+                    console.log(r.length);
+                    if(r.length!=0&&r!='')
+                    {
+                        this.getEquipByRfid(r)
+                    }
+                      
+                  })
+            },
+            getGateAntenna(){
+                let gateModel="OUT_HOUSE"
+              setTimeout(() => this.throttle = false, 2000)
+              changeRecognizeModel(gateModel).then(res=>{
+                  this.$message.success('门感开始识别')
+                  this.timeId = setInterval(() => {
+                    if (this.closeGate) {
+                    console.log("清除定时器");
+                    clearInterval(this.timeId)
+                    };
+                    this.getRfidFromGateAntenna();
+                    },3000)
+              })
+            },
             handheldMachine() {
                 modifyFileName('search.json');
                 handheld((err) => this.$message.error(err)).then((data) => {
@@ -245,6 +285,10 @@
         },
         beforeDestroy() {
             killProcess(this.pid)
+            let gateModel="RECEIVE_RETURN"
+                changeRecognizeModel(gateModel).then(res=>{
+              })
+            clearInterval(this.timeId);
         }
     }
 </script>

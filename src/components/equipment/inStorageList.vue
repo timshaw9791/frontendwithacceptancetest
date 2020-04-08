@@ -77,7 +77,8 @@ import { start, killProcess, handheld, modifyFileName } from 'common/js/rfidRead
                 rfidList: [],
                 pid: '',
                 disable: false, // 提交按钮是否可用
-                closeGate:false
+                closeGate:false,
+                timeId:''
             }
         },
         props: {
@@ -99,15 +100,25 @@ import { start, killProcess, handheld, modifyFileName } from 'common/js/rfidRead
         methods: {
             //离开页面以后为父组件抛出black 杀死进程
             black() {
+              this.closeGate=true
+              console.log(this.closeGate);
               let gateModel="RECEIVE_RETURN"
                 changeRecognizeModel(gateModel).then(res=>{
               })
-              this.closeGate=true
+              
               if(this.pid != '') killProcess(this.pid);
               this.$emit('black', true);
             },
             // 切换硬件后
             selectHardware(val) {
+              console.log(val);
+              if(val!='gateAntenna')
+              {
+                this.closeGate=true
+              }
+              else {
+                this.closeGate=false
+              }
               if(this.pid) {
                 killProcess(this.pid)
                 this.pid = ''
@@ -121,7 +132,10 @@ import { start, killProcess, handheld, modifyFileName } from 'common/js/rfidRead
             },
             getRfidFromGateAntenna(){//获取门感读取到的rfid
                 getRfidFromGate().then(r=>{
-                  this.getEquipInfo(r, true)
+                  if(r.length!=0&&r!='')
+                  {
+                    this.getEquipInfo(r, true)
+                  }
                   })
             },
             getGateAntenna(){//开启门感获得数据
@@ -129,17 +143,17 @@ import { start, killProcess, handheld, modifyFileName } from 'common/js/rfidRead
               this.throttle = true
               this.list = []
               this.index=0
-              let gateModel="IN_OUT_HOUSE"
+              let gateModel="OUT_HOUSE"
               setTimeout(() => this.throttle = false, 2000)
               changeRecognizeModel(gateModel).then(res=>{
                   this.$message.success('门感开始识别')
                   this.getRfidFromGateAntenna()
-                  let timeId = setInterval(() => {
+                  this.timeId = setInterval(() => {
                     if (this.closeGate) {
                     clearInterval(this.timeId)
                     };
                     this.getRfidFromGateAntenna();
-                    },3000)
+                    },1000)
               })
             },
             // 手持机读取
@@ -155,6 +169,10 @@ import { start, killProcess, handheld, modifyFileName } from 'common/js/rfidRead
             },
             submit() {
               this.disable = true
+              this.closeGate=true
+               let gateModel="RECEIVE_RETURN"
+                changeRecognizeModel(gateModel).then(res=>{//关闭门感读取数据
+              })
               setTimeout(() => {
                 this.disable = false
               }, 2000)
@@ -251,6 +269,10 @@ import { start, killProcess, handheld, modifyFileName } from 'common/js/rfidRead
           if(this.pid != '') {
             killProcess(this.pid)
           }
+           let gateModel="RECEIVE_RETURN"
+                changeRecognizeModel(gateModel).then(res=>{
+              })
+           clearInterval(this.timeId);
         }
     }
 </script>
