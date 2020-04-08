@@ -2,7 +2,7 @@
   <div class="new-proess-container">
     <my-header title="新建流程" :haveBlack="false"></my-header>
     <div class="new-process-body">
-      <el-table :data="list" fit height="600px">
+      <el-table :data="list" fit height="600px" border>
         <el-table-column label="序号" type="index" width="100px" align="center"></el-table-column>
         <define-column label="操作" align="center" v-slot="{ data }">
           <i class="iconfont iconjiahao" @click="apply(data.row)"></i>
@@ -55,5 +55,7 @@ export default {
 </script>
 
 <style scoped>
-
+.new-process-body {
+  padding: 0 17px;
+}
 </style>

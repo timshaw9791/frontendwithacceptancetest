@@ -1,6 +1,6 @@
 <template>
     <div class="agency-matters">
-        <my-header :title="'待办事宜'" :searchFlag="false"></my-header>
+        <my-header title="待办事宜" :searchFlag="false"></my-header>
         <div class="agency-metters-top">
             <text-input label="请求标题" v-model="paginator.search" :column="3" placeholder="请输入标题"></text-input>
             <base-button label="查询" @click="getList()"></base-button>
@@ -17,8 +17,6 @@
                     <define-column label="创建时间" :filter="(row)=>$filterTime(row.createTime)"></define-column>
                 </el-table>
                 <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage"></bos-paginator>
-                <!-- <div style="padding: 0px 0.09375rem"><p_table ref="processTable" :table="table" :typeUrl="'process'" :otherParams="true" @clickTable="clickTable" v-show="status.tableOrUniversalFlag"></p_table></div>
-                <p_universal @back="black" :url="universal.url" :title="universal.title" :universalObj="universal.universalObj" v-if="!status.tableOrUniversalFlag"></p_universal> -->
             </div>
         </div>
     </div>
@@ -33,7 +31,7 @@
     export default {
         name: "myProcess",
         components:{
-            defineColumn,textInput,baseButton
+            myHeader,defineColumn,textInput,baseButton
         },
         data(){
             return{

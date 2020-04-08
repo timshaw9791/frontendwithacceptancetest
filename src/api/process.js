@@ -263,9 +263,25 @@ export function myProcess(params) { // 查询我的流程
     })
 }
 
-export function todoProcess(params) {
+export function todoProcess(params) { // 查询待办任务
     return request({
         url: baseBURL+'/workflow/todo-task',
+        method: 'GET',
+        params
+    })
+}
+
+export function doneTask(params) { // 查询已办任务
+    return request({
+        url: baseBURL+'/workflow/done-task',
+        method: 'GET',
+        params
+    })
+}
+
+export function doneProcess(params) { // 查询办结任务
+    return request({
+        url: baseBURL+'/workflow/done-process',
         method: 'GET',
         params
     })
