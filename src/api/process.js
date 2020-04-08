@@ -238,7 +238,7 @@ export function processDelete(params) { // 删除流程
     })
 }
 
-export function complete(taskId, params, data) {
+export function complete(taskId, params, data) { // 流程操作(审核、驳回、重填后发起)
     return request({
       url: baseBURL+`/workflow/tasks/${taskId}/complete`,
       method: 'PUT',
@@ -247,6 +247,45 @@ export function complete(taskId, params, data) {
     })
   }
 
+export function processDefinitions(params) { // 查询流程定义
+    return request({
+        url: baseBURL+'/process-definitions',
+        method: 'GET',
+        params
+    })
+}
+
+export function myProcess(params) { // 查询我的流程
+    return request({
+        url: baseBURL+'/workflow/my-process',
+        method: "GET",
+        params
+    })
+}
+
+export function todoProcess(params) { // 查询待办任务
+    return request({
+        url: baseBURL+'/workflow/todo-task',
+        method: 'GET',
+        params
+    })
+}
+
+export function doneTask(params) { // 查询已办任务
+    return request({
+        url: baseBURL+'/workflow/done-task',
+        method: 'GET',
+        params
+    })
+}
+
+export function doneProcess(params) { // 查询办结任务
+    return request({
+        url: baseBURL+'/workflow/done-process',
+        method: 'GET',
+        params
+    })
+}
 
 
 

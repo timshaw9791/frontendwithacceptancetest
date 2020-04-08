@@ -1,5 +1,5 @@
 <template>
-    <div class="process-select-container" :style="'width:'+width+'px'">
+    <div class="base-select-container" :style="'width:'+fixWidth+';float:'+align">
         <el-select v-model="selectValue" placeholder="请选择" id="select" :multiple="multiple" collapse-tags @change="change">
             <el-option
                 v-for="(item, i) in selectList"
@@ -15,7 +15,7 @@
 
 <script>
     export default {
-        name: 'processSelect',
+        name: 'baseSelect',
         data() {
             return {
                 selectValue: "", // 内部绑定值/选中值
@@ -35,14 +35,23 @@
                     return [{label: '默认', value: 'init'}]
                 }
             },
-            width: {
+            column: {
                 type: Number,
-                default: 280
+                default: 5
             },
             multiple: {
                 type: Boolean,
                 default: false
+            },
+            align: {
+                type: String,
+                default: 'none'
             }
+        },
+        computed: {
+            fixWidth() {
+              return `calc(${8.33*this.column}% - 0.1042rem)`;
+          }  
         },
         methods: {
             init() {
@@ -60,8 +69,10 @@
 </script>
 
 <style lang="scss" scoped>
-    .process-select-container {
-        width: 200px;
+    .base-select-container {
+        margin: 0 0.0521rem;
+        display: inline-block;
+		box-sizing: border-box;
     }
     .title-name {
         line-height: 40px;

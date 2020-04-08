@@ -1,20 +1,27 @@
 <template>
-    <div class="text-input-container" :style="'width:'+fixWidth+';height:'+height+'px'">
-        <el-input placeholder="请输入内容"
+    <div :class="{'text-input-container':true, 'bg-disabled':disabled,'border':tableEdit&&eidt}" ref="textInput" 
+        :style="'width:'+fixWidth+';height:'+height+'px'"
+        @click="changeEditState(true)">
+        <el-input :placeholder="placeholder"
                   :disabled="disabled"
                   @change="reg"
+                  @blur="changeEditState(false)"
+                  @keydown.native.13="changeEditState(false)"
                   v-if="!haveTip"
                   :clearable="clearable"
+                  :readonly="!(tableEdit&&eidt)"
                   v-model="insideValue">
-            <div slot="prepend" :class="{'prefix': true, 'disabled': disabled}">{{ label }}</div>
-            <span slot="prepend" class="required" v-if="required">*</span>
+            <div slot="prepend" :class="{'prefix': true, 'disabled': disabled}" v-if="!inTable">
+                {{ label }}
+                <span class="required" v-if="required">*</span>
+            </div>
         </el-input>
         <el-autocomplete class="inline-input"
         v-model="insideValue"
         :fetch-suggestions="querySearch"
         v-if="haveTip"
         :disabled="disabled"
-        placeholder="请输入内容">
+        :placeholder="placeholder">
         <div slot="prepend" :class="{'prefix': true, 'disabled': disabled}">{{ label }}</div>
         </el-autocomplete>
     </div>
@@ -28,6 +35,9 @@
               inputPt: null,
               inputPrePt: null,
               insideValue: "",
+              inTable: false, // 是否为表格内联
+              // 此处逻辑 !(tableEdit && eidt)
+              eidt: true, // 内部判断是否只读
           }
         },
         props: {
@@ -39,9 +49,9 @@
                 type: [String, Number],
                 default: ""
             },
-            width: {
-                type: [Number, String],
-                default: 288
+            column: {
+                type: Number,
+                default: 5
             },
             height: {
                 type: Number,
@@ -50,6 +60,14 @@
             disabled: {
                 type: Boolean,
                 default: false
+            },
+            type: {
+                type: String,
+                default: "String"
+            },
+            tableEdit: {
+                type: Boolean,
+                default: true
             },
             clearable: { // 是否可清空
                 type: Boolean,
@@ -82,14 +100,27 @@
                 default() {
                     return []
                 }
+            },
+            placeholder: {
+                type: [Number, String],
+                default: ""
             }
         },
         methods: {
             reg(value) {
-                if(!this.validate(value)) {
-                    this.inputPt.classList.add('error')
+                let judge = true;
+                switch (this.type) {
+                    case "Number":
+                        judge = /^\d+$/.test(this.value);
+                        break;
+                    default:
+                        judge = this.validate(value)
+                        break;
+                }
+                if(judge) {
+                    this.$refs.textInput.classList.remove('error');
                 } else {
-                    this.inputPt.classList.remove('error')
+                    this.$refs.textInput.classList.add('error');
                 }
             },
             changePreStyle(state=true) {
@@ -106,15 +137,15 @@
                 return (restaurant) => {
                     return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
                 };
+            },
+            changeEditState(state) {
+                if(!this.inTable) return;
+                this.eidt = state
             }
         },
         computed: {
           fixWidth() {
-              if(isNaN(this.width)) {
-                  return this.width;
-              } else {
-                  return this.width + 'px';
-              }
+              return this.inTable?`calc(100% - 0.1042rem)`:`calc(${8.33*this.column}% - 0.1042rem)`;
           }  
         },
         watch: {
@@ -125,14 +156,26 @@
             },
             insideValue(val) {
                 this.$emit('input', val)
+            },
+            value: {
+                handler() {
+                    this.insideValue = this.value
+                }
             }
         },
         created() {
             this.insideValue = this.value
         },
         mounted() {
-            this.inputPt = document.querySelector('.text-input-container');
             this.inputPrePt = document.querySelector('.el-input-group__prepend');
+            try {
+                if(this.$refs.textInput.parentNode.parentNode.nodeName == 'TD') {
+                    this.inTable = true;
+                    this.eidt = false;
+                }
+            } catch (error) {
+                
+            }
             // console.log(document.getElementsByClassName('el-input-group__prepend'));
             // document.querySelector('#elInput').setAttribute('maxlength', 5); // 限制最大输入长度
             // document.querySelector('#elInput').setAttribute('minlength', 2); // 无效
@@ -146,8 +189,6 @@
     /deep/ .el-input {
         font-size: 16px;
         .el-input-group__prepend {
-            // background-color: white;
-            // padding: 9px 0 9px 10px;
             padding: 0;
             border: none;
             line-height: 20px;
@@ -162,9 +203,14 @@
         }
     }
     .text-input-container {
-        border: 1px solid #DCDFE6;
         border-radius:4px;
         font-size: 16px;
+        margin: 0 0.0521rem;
+        display: inline-block;
+		box-sizing: border-box;
+    }
+    .border {
+        border: 1px solid #DCDFE6;
     }
     .text-input-container:hover {
         border-color: #409EFF;
@@ -185,6 +231,10 @@
     }
     .prefix:hover {
         border-color: #409EFF;
+    }
+    .bg-disabled {
+        background-color: #F5F7FA;
+        color: #C0C4CC;
     }
     .disabled {
         background-color: #f5f7fa !important;

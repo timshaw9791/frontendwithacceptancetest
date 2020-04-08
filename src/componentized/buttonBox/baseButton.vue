@@ -1,6 +1,6 @@
 <template>
-  <div class="base-button-container" :style="'width:'+width+'px;height:'+height+'px'">
-    <el-button :type="type" :disabled="disabled" @click="emitOut" :style="'width:'+width+'px;padding:0;height:'+height+'px;font-size:'+fontSize+'px'">{{ name }}</el-button>
+  <div class="base-button-container" :style="'width:'+width+'px;height:'+height+'px;float:'+align">
+    <el-button :type="type" :disabled="disabled" @click="emitOut" :style="'width:'+width+'px;padding:0;height:'+height+'px;font-size:'+fontSize+'px'">{{ label }}</el-button>
   </div>
 </template>
 
@@ -33,7 +33,14 @@ export default {
       type: Number,
       default: 16
     },
-    name
+    label: {
+      type: [String, Number],
+      default: "按钮"
+    },
+    align: {
+      type: String,
+      default: "none"
+    }
   },
   methods: {
     emitOut() {
@@ -45,7 +52,9 @@ export default {
 
 <style lang="scss" scoped>
   .base-button-container {
-    float: left;
+    display: inline-block;
+		box-sizing: border-box;
+    margin: 0 3px;
     font-size:16px;
   }
 </style>
