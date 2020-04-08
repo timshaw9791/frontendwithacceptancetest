@@ -12,7 +12,7 @@
           <text-input label="所在库房" v-model="order.warehouse.name" :column="3" :disabled="true"></text-input>
           <date-select v-model="order.applyTime" :column="3" :disabled="true"></date-select>
           <entity-input label="申请人员" v-model="order.applicant" :column="3" :disabled="true"></entity-input>
-          <text-input label="申请原因" v-model="order.note" :column="3" :haveTip="true" :tips="tips" :disabled="true"></text-input>
+          <text-input label="申请原因" v-model="order.note" :column="3" :haveTip="true" :tips="tips" :title="order.note" :disabled="true"></text-input>
       </div>
       <div class="table-box">
         <div :class="{'total-list':true,'active':tabsIndex==1}" @click="switchTab(1)">总清单</div>
