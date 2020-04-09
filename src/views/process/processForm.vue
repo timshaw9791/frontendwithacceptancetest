@@ -17,7 +17,8 @@
       <div class="table-box">
         <div :class="{'total-list':true,'active':tabsIndex==1}" @click="switchTab(1)">总清单</div>
         <div :class="{'detail-list':true,'active':tabsIndex==2}" @click="switchTab(2)">明细</div>
-        <el-table :data="order.equips" fit height="500px" @current-change="selRow" highlight-current-row border v-if="!showDetail">
+        <el-table :data="order.equips" fit height="2.6042rem" @current-change="selRow" 
+          show-summary :summary-method="sumFunc" highlight-current-row border v-if="!showDetail">
           <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
           <define-column label="装备参数" v-slot="{ data }">
             <entity-input v-model="data.row.param" format="{name}({model})" :disabled="true"></entity-input>
@@ -32,7 +33,7 @@
         </el-table>
       </div>
        <!-- <text-input label="合计" :column="12"></text-input> -->
-       <div class="total"><span>合计</span><span>{{ total }}</span></div>
+       <!-- <div class="total"><span>合计</span><span>{{ total }}</span></div> -->
       <!-- <text-input label="备注" v-model="order.note" width="100%" :height="40" class="remark" :disabled="true"></text-input> -->
     </div>
     <div class="process-form-bottom">
@@ -151,6 +152,22 @@ export default {
           })
       }
     },
+    sumFunc(param) { // 表格合并行计算方法
+      let { columns, data } = param, sums = [];
+      columns.forEach((colum, index) => {
+          if(index == 0) {
+              sums[index] =  '合计';
+          } else if(index == columns.length-1) {
+              const values = data.map(item => item.count?Number(item.count):0);
+              if(!values.every(value => isNaN(value))) {
+                  sums[index] = values.reduce((pre, cur) => !isNaN(cur)?pre+cur:pre);
+              }
+          } else {
+              sums[index] = '';
+          }
+      })
+      return sums;
+    },
   },
   computed: {
     total() {
@@ -187,6 +204,9 @@ export default {
 /deep/ .el-table {
   .el-table__row {
     background-color: #f5f7fa;
+  }
+  .el-table__body-wrapper { // 因为表格切换后，带有合计行的表格高度会变少，所以手动设置其高度
+      height: 2.125rem !important;
   }
 }
   .process-form-container {

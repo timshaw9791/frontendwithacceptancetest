@@ -17,7 +17,8 @@
                     <div :class="{'detail-list':true,'active':tabsIndex==2}" @click="switchTab(2)">明细</div>
                     <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96" @click="readData"></base-button>
                     <base-select label="硬件选择" v-model="select.selected" :column="2" align="right" :selectList="select.handWareList"></base-select>
-                        <el-table :data="order.equips" fit height="505px" @current-change="selRow" highlight-current-row border v-if="!showDetail">
+                        <el-table :data="order.equips" fit height="2.8646rem" @current-change="selRow"
+                            show-summary :summary-method="sumFunc" highlight-current-row border v-if="!showDetail">
                             <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
                             <define-column label="操作" width="100" v-slot="{ data }">
                                 <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
@@ -30,7 +31,7 @@
                                 <text-input v-model="data.row.count" type="Number" :disabled="true"></text-input>
                             </define-column>
                         </el-table>
-                        <el-table :data="detailTable.list" fit height="505px" border v-else>
+                        <el-table :data="detailTable.list" fit height="2.8646rem" border v-else>
                             <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
                             <define-column label="操作" width="100" v-slot="{ data }">
                                 <i class="iconfont iconyichuliang" @click="changeDetailRow(data)"></i>
@@ -39,7 +40,7 @@
                         </el-table>
                 </div>
                 <!-- <text-input label="合计" :column="12" :disabled="true"></text-input> -->
-				<div class="total"><span>合计</span><span>{{ total }}</span></div>
+				<!-- <div class="total"><span>合计</span><span>{{ total }}</span></div> -->
                 <!-- <text-input label="备注" v-model="order.note" width="100%" :height="40" class="remark"></text-input> -->
                 <div class="buttom">
                     <base-button label="提交" align="right" :width="128" :height="72" :fontSize="20" @click="submit"></base-button>
@@ -218,6 +219,22 @@
                     this.order.equips[index].param = obj.param;
                 })
             },
+            sumFunc(param) { // 表格合并行计算方法
+                let { columns, data } = param, sums = [];
+                columns.forEach((colum, index) => {
+                    if(index == 0) {
+                        sums[index] =  '合计';
+                    } else if(index == columns.length-1) {
+                        const values = data.map(item => item.count?Number(item.count):0);
+                        if(!values.every(value => isNaN(value))) {
+                            sums[index] = values.reduce((pre, cur) => !isNaN(cur)?pre+cur:pre);
+                        }
+                    } else {
+                        sums[index] = '';
+                    }
+                })
+                return sums;
+            },
             submit() {
                 if(this.order.applicant.id == '') {
                     this.$message.warning('未选择申请人');
@@ -303,6 +320,11 @@
 </script>
 
 <style lang="scss" scoped>
+    /deep/ .el-table {
+        .el-table__body-wrapper { // 因为表格切换后，带有合计行的表格高度会变少，所以手动设置其高度
+            height: 2.3594rem !important;
+        }
+    }
     .apply-process-container{
         width: 100%;
         color:#707070FF;
