@@ -167,15 +167,8 @@ export default {
           }
       })
       return sums;
-    },
-  },
-  computed: {
-    total() {
-      if(!this.order.equips) return 0;
-      if(this.order.equips.length == 0) return 0;
-      return _.reduce(this.order.equips, (r, v, k) => v.count==undefined?r:r+ +v.count, 0);
     }
-	},
+  },
   created() {
     if(this.$route.params.info == undefined) {
       this.$message.info("数据丢失，返回待办界面");
@@ -266,16 +259,6 @@ export default {
         }
     }
   }
-  .total {
-      height: 36px;
-      border: 1px solid #DCDFE6;
-      display: flex;
-      justify-content: space-between;
-      margin: 0 10px;
-      padding: 0 15px;
-      font-size: 16px;
-      align-items: center;
-    }
   .process-form-bottom {
     padding: 0 18px;
     margin-top: 18px;
