@@ -1,7 +1,11 @@
 <template>
-    <div>
-        <h1>这是表格</h1>
-        <slot :text="{name: 'SprWu'}">abc</slot>
+    <div class="define-table-container">
+        <el-table :data="data" :height="height" :border="border" fit
+                :highlight-current-row="hightLightCurrent" @current-change="changeCurrent"
+                :show-summary="showSummary" :summary-method="summaryFunc">
+            <slot></slot>
+        </el-table>
+        <bos-paginator :pageInfo="pageInfo" @bosCurrentPageChanged="changePage" v-if="havePgae"></bos-paginator>
     </div>
 </template>
 
@@ -11,98 +15,86 @@ import defineColumn from './defineColumn'
         name: "field-table",
         data() {
             return {
-                flag: false
+                
             }
         },
         components: {
-          defineColumn
+
         },
         /*mixins: [formRulesMixin],*/
         props: {
-            list: {
-                type: Array
+            data: {
+                type: Array,
+                default: []
             },
-            height:{
-                type:String,
-                default:'3.45rem'
+            height: {
+                type: String,
+                default: '600px'
             },
-            /*defaultSort:{
-              type:Object,
-              default(){
-                  return{
-                      prop:'',
-                      order:''
-                  }
-              }
-            },*/
-            align:{
-              type:String,
-              default:'center'
+            border: {
+                type: Boolean,
+                default: true
             },
-            havePage:{
-                type:Boolean,
-                default:true
-            },
-            haveButton: {
+            hightLightCurrent: { // 是否高亮当前选中行
                 type: Boolean,
                 default: false
             },
-            tableAction:{
-                type:Object
-            },
-            pageInfo:{
-                type:Object
-            },
-            buttonState: { // 是否启用按钮 隐藏/显示
+            showSummary: { // 是否显示底部合计行
                 type: Boolean,
                 default: false
+            },
+            summaryText: {
+                type: String,
+                default: '合计'  
+            },
+            summaryFunc: { // 底部合计行计算方法
+                type: Function,
+                default: () => {}
+            },
+            pageInfo: { // 分页信息
+                type: Object,
+                default() {
+                    return {
+                        page: 1,
+                        size: 10,
+                        totalElements: 0,
+                        totalPages: 0
+                    }
+                }
+            },
+            havePgae: { // 是否有分页
+                type: Boolean,
+                default: true
             }
         },
-        created() {
-            if(this.tableAction!=undefined){
-                this.flag=true
-            }
-        },
-        updated() {
+        created() {           
         },
         mounted() {
-            console.log(this.$scopedSlots);
-            console.log('---------');
+            
         },
         methods: {
-            someClick(row,name) {
-                let data ={
-                    name:name,
-                    row:row
-                };
-                this.$emit('clickTableCloum',data)
+            changePage(page) {
+                this.$emit('changePage', page);
             },
-            sortChange(data){
-                let obj = {
-                    order:data.order,
-                    name:data.column.label
-                };
-                this.$emit('sortChange',obj)
-            },
-            tableChangePage(newPage){
-                this.$emit('tableCurrentPageChanged',newPage)
-            },
-            judgeState(name, row) {
-                if(!this.buttonState) return true
-                if(!name.includes('删除')) return true
-                let nowTime = new Date().getTime();
-                return (nowTime - row.updateTime)/1000/3600/24 > 1?false:true
+            changeCurrent(current, pre) { // 当前选中行改变
+                this.$emit('changeCurrent', current);
             }
         }
     }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
     .actionButton{
         width:70px;
         height:32px;
         opacity:1;
         color: white;
         border-radius:4px;
+    }
+    /deep/ .el-table {
+        .el-table--enable-row-hover,
+        .el-table__body tr:hover > td {
+            background-color: white;
+        }
     }
 </style>

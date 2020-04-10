@@ -46,6 +46,11 @@
   height: 50px;
 }
 
+.el-table__footer-wrapper tbody td {
+  background-color: white !important;
+  font-size: 16px;
+}
+
 .hideSidebar {
   /deep/ .el-menu {
     max-height: 100vh !important;

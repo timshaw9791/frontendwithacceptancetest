@@ -1,6 +1,6 @@
 <template>
   <div class="process-form-container">
-    <my-header :title="title" :haveBlack="false"></my-header>
+    <my-header :title="'我的流程/'+title+'申请单'" :haveBlack="false"></my-header>
     <div class="process-form-top" v-if="show">
       <text-input label="单号" v-model="order.number" :column="3" :disabled="true"></text-input>
       <base-button label="导出" type="none" align="right" v-show="operate"></base-button>
@@ -17,10 +17,11 @@
       <div class="table-box">
         <div :class="{'total-list':true,'active':tabsIndex==1}" @click="switchTab(1)">总清单</div>
         <div :class="{'detail-list':true,'active':tabsIndex==2}" @click="switchTab(2)">明细</div>
-        <el-table :data="order.equips" fit height="500px" @current-change="selRow" highlight-current-row border v-if="!showDetail">
+        <el-table :data="order.equips" fit height="2.6042rem" @current-change="selRow" 
+          show-summary :summary-method="sumFunc" highlight-current-row border v-if="!showDetail">
           <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
           <define-column label="装备参数" v-slot="{ data }">
-            <entity-input v-model="data.row.param" format="{name}({model})" :disabled="true"></entity-input>
+            <entity-input v-model="data.row.equipArg" format="{name}({model})" :disabled="true"></entity-input>
           </define-column>
           <define-column label="装备数量" v-slot="{ data }">
             <text-input v-model="data.row.count" :disabled="true"></text-input>
@@ -32,7 +33,7 @@
         </el-table>
       </div>
        <!-- <text-input label="合计" :column="12"></text-input> -->
-       <div class="total"><span>合计</span><span>{{ total }}</span></div>
+       <!-- <div class="total"><span>合计</span><span>{{ total }}</span></div> -->
       <!-- <text-input label="备注" v-model="order.note" width="100%" :height="40" class="remark" :disabled="true"></text-input> -->
     </div>
     <div class="process-form-bottom">
@@ -59,7 +60,7 @@ export default {
   name: 'processForm',
   data() {
     return {
-      title: "我的流程/报废申请单",
+      title: "报废",
       show: false,
       operate: true,
       tabsIndex: 1,
@@ -93,15 +94,16 @@ export default {
   methods: {
     getData() {
       processDetail({processInstanceId: this.$route.params.info.processInstanceId}).then(res => {
-        res.processVariables.order.equips = _.values(_.reduce(res.processVariables.order.equips, (res, obj) => {
-          if(res[obj.model]) {
-            res[obj.model].count++;
-            res[obj.model].param.rfid.push(obj.rfid);
-            res[obj.model].param.id.push(obj.equipId);
+        this.title = res.name.substr(0, 2);
+        res.processVariables.order.equips = _.values(_.reduce(res.processVariables.order.equips, (result, obj) => {
+          if(result[obj.equipArg.model]) {
+            result[obj.equipArg.model].count++;
+            result[obj.equipArg.model].rfid.push(obj.rfid);
+            result[obj.equipArg.model].equipId.push(obj.equipId);
           } else {
-            res[obj.model] = {count: 1, param: Object.assign(obj, {rfid: [obj.rfid], id: [obj.equipId]})};
+            result[obj.equipArg.model] = {count: 1, rfid: [obj.rfid], equipId: [obj.equipId], equipArg: obj.equipArg};
           }
-          return res;
+          return result;
         }, {}))
         this.order = Object.assign(this.order, res.processVariables.order)
         this.show = true;
@@ -113,7 +115,7 @@ export default {
     refill() { // 重填
       this.$router.push({
         name: 'processApply',
-        params: {type: 'apply', info: {name: this.order.title, processInstanceId: this.order.processInstanceId, taskId: this.$route.params.info.taskId, number: this.order.number}}
+        params: {type: 'apply', info: {name: this.title, processInstanceId: this.order.processInstanceId, taskId: this.$route.params.info.taskId, number: this.order.number}}
       })
     },
     nullify() { // 作废
@@ -144,21 +146,30 @@ export default {
       if(!current) return; // 避免切换数据时报错
       this.detailTable.list = [];
       this.rowData = current;
-      if(current.param.rfid == undefined) return;
-      for(let rfid of current.param.rfid) {
+      if(current.rfid == undefined) return;
+      for(let rfid of current.rfid) {
           this.detailTable.list.push({
               rfid: rfid
           })
       }
     },
-  },
-  computed: {
-    total() {
-      if(!this.order.equips) return 0;
-      if(this.order.equips.length == 0) return 0;
-      return _.reduce(this.order.equips, (r, v, k) => v.count==undefined?r:r+ +v.count, 0);
+    sumFunc(param) { // 表格合并行计算方法
+      let { columns, data } = param, sums = [];
+      columns.forEach((colum, index) => {
+          if(index == 0) {
+              sums[index] =  '合计';
+          } else if(index == columns.length-1) {
+              const values = data.map(item => item.count?Number(item.count):0);
+              if(!values.every(value => isNaN(value))) {
+                  sums[index] = values.reduce((pre, cur) => !isNaN(cur)?pre+cur:pre);
+              }
+          } else {
+              sums[index] = '';
+          }
+      })
+      return sums;
     }
-	},
+  },
   created() {
     if(this.$route.params.info == undefined) {
       this.$message.info("数据丢失，返回待办界面");
@@ -187,6 +198,9 @@ export default {
 /deep/ .el-table {
   .el-table__row {
     background-color: #f5f7fa;
+  }
+  .el-table__body-wrapper { // 因为表格切换后，带有合计行的表格高度会变少，所以手动设置其高度
+      height: 2.125rem !important;
   }
 }
   .process-form-container {
@@ -246,16 +260,6 @@ export default {
         }
     }
   }
-  .total {
-      height: 36px;
-      border: 1px solid #DCDFE6;
-      display: flex;
-      justify-content: space-between;
-      margin: 0 10px;
-      padding: 0 15px;
-      font-size: 16px;
-      align-items: center;
-    }
   .process-form-bottom {
     padding: 0 18px;
     margin-top: 18px;
