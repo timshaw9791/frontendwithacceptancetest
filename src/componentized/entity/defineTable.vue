@@ -1,9 +1,11 @@
 <template>
     <div class="define-table-container">
-        <el-table :data="data" :height="height" :border="border" fit>
+        <el-table :data="data" :height="height" :border="border" fit
+                :highlight-current-row="hightLightCurrent" @current-change="changeCurrent"
+                :show-summary="showSummary" :summary-method="summaryFunc">
             <slot></slot>
         </el-table>
-        <bos-paginator :pageInfo="pageInfo" @bosCurrentPageChanged="changePage"></bos-paginator>
+        <bos-paginator :pageInfo="pageInfo" @bosCurrentPageChanged="changePage" v-if="havePgae"></bos-paginator>
     </div>
 </template>
 
@@ -33,7 +35,23 @@ import defineColumn from './defineColumn'
                 type: Boolean,
                 default: true
             },
-            pageInfo: {
+            hightLightCurrent: { // 是否高亮当前选中行
+                type: Boolean,
+                default: false
+            },
+            showSummary: { // 是否显示底部合计行
+                type: Boolean,
+                default: false
+            },
+            summaryText: {
+                type: String,
+                default: '合计'  
+            },
+            summaryFunc: { // 底部合计行计算方法
+                type: Function,
+                default: () => {}
+            },
+            pageInfo: { // 分页信息
                 type: Object,
                 default() {
                     return {
@@ -43,6 +61,10 @@ import defineColumn from './defineColumn'
                         totalPages: 0
                     }
                 }
+            },
+            havePgae: { // 是否有分页
+                type: Boolean,
+                default: true
             }
         },
         created() {           
@@ -53,6 +75,9 @@ import defineColumn from './defineColumn'
         methods: {
             changePage(page) {
                 this.$emit('changePage', page);
+            },
+            changeCurrent(current, pre) { // 当前选中行改变
+                this.$emit('changeCurrent', current);
             }
         }
     }
