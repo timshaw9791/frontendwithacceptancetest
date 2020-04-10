@@ -1,6 +1,6 @@
 <template>
   <div class="process-form-container">
-    <my-header :title="title" :haveBlack="false"></my-header>
+    <my-header :title="'我的流程/'+title+'申请单'" :haveBlack="false"></my-header>
     <div class="process-form-top" v-if="show">
       <text-input label="单号" v-model="order.number" :column="3" :disabled="true"></text-input>
       <base-button label="导出" type="none" align="right" v-show="operate"></base-button>
@@ -21,7 +21,7 @@
           show-summary :summary-method="sumFunc" highlight-current-row border v-if="!showDetail">
           <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
           <define-column label="装备参数" v-slot="{ data }">
-            <entity-input v-model="data.row.param" format="{name}({model})" :disabled="true"></entity-input>
+            <entity-input v-model="data.row.equipArg" format="{name}({model})" :disabled="true"></entity-input>
           </define-column>
           <define-column label="装备数量" v-slot="{ data }">
             <text-input v-model="data.row.count" :disabled="true"></text-input>
@@ -60,7 +60,7 @@ export default {
   name: 'processForm',
   data() {
     return {
-      title: "我的流程/报废申请单",
+      title: "报废",
       show: false,
       operate: true,
       tabsIndex: 1,
@@ -94,15 +94,16 @@ export default {
   methods: {
     getData() {
       processDetail({processInstanceId: this.$route.params.info.processInstanceId}).then(res => {
-        res.processVariables.order.equips = _.values(_.reduce(res.processVariables.order.equips, (res, obj) => {
-          if(res[obj.model]) {
-            res[obj.model].count++;
-            res[obj.model].param.rfid.push(obj.rfid);
-            res[obj.model].param.id.push(obj.equipId);
+        this.title = res.name.substr(0, 2);
+        res.processVariables.order.equips = _.values(_.reduce(res.processVariables.order.equips, (result, obj) => {
+          if(result[obj.equipArg.model]) {
+            result[obj.equipArg.model].count++;
+            result[obj.equipArg.model].rfid.push(obj.rfid);
+            result[obj.equipArg.model].equipId.push(obj.equipId);
           } else {
-            res[obj.model] = {count: 1, param: Object.assign(obj, {rfid: [obj.rfid], id: [obj.equipId]})};
+            result[obj.equipArg.model] = {count: 1, rfid: [obj.rfid], equipId: [obj.equipId], equipArg: obj.equipArg};
           }
-          return res;
+          return result;
         }, {}))
         this.order = Object.assign(this.order, res.processVariables.order)
         this.show = true;
@@ -114,7 +115,7 @@ export default {
     refill() { // 重填
       this.$router.push({
         name: 'processApply',
-        params: {type: 'apply', info: {name: this.order.title, processInstanceId: this.order.processInstanceId, taskId: this.$route.params.info.taskId, number: this.order.number}}
+        params: {type: 'apply', info: {name: this.title, processInstanceId: this.order.processInstanceId, taskId: this.$route.params.info.taskId, number: this.order.number}}
       })
     },
     nullify() { // 作废
@@ -145,8 +146,8 @@ export default {
       if(!current) return; // 避免切换数据时报错
       this.detailTable.list = [];
       this.rowData = current;
-      if(current.param.rfid == undefined) return;
-      for(let rfid of current.param.rfid) {
+      if(current.rfid == undefined) return;
+      for(let rfid of current.rfid) {
           this.detailTable.list.push({
               rfid: rfid
           })

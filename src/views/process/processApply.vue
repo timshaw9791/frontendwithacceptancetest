@@ -8,7 +8,7 @@
             <div class="apply-process-body">
                 <div class="process-info">
                     <text-input label="所在库房" v-model="order.warehouse.name" :column="3" :disabled="true"></text-input>
-                    <date-select v-model="order.applyTime" :column="3" :disabled="true"></date-select>
+                    <date-select v-model="order.createTime" :column="3" :disabled="true"></date-select>
                     <entity-input label="申请人员" v-model="order.applicant" :column="3" :required="true" placeholder="请选择"></entity-input>
                     <text-input label="申请原因" v-model="order.note" :haveTip="true" :column="3" :tips="tips" :title="order.note"></text-input>
                 </div>
@@ -25,7 +25,7 @@
                                 <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
-                                <entity-input v-model="data.row.param" :options="{}" :disabled="true" format="{name}({model})"></entity-input>
+                                <entity-input v-model="data.row.equipArg" :options="{}" :disabled="true" format="{name}({model})"></entity-input>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
                                 <text-input v-model="data.row.count" type="Number" :disabled="true"></text-input>
@@ -93,7 +93,7 @@
                         id: 'sjkfa',
                         name: '市局库房a'
                     },
-                    applyTime: 0,
+                    createTime: 0,
                     applicant: {
                         id: '',
                         name: '',
@@ -146,25 +146,32 @@
                     //     count: 1
                     // }]
                     this.order.equips = [{
-                        param: {},
+                        equipArg: {},
+                        rfid: [],
                         count: ''
                     },{
-                        param: {},
+                        equipArg: {},
+                        rfid: [],
                         count: ''
                     },{
-                        param: {},
+                        equipArg: {},
+                        rfid: [],
                         count: ''
                     },{
-                        param: {},
+                        equipArg: {},
+                        rfid: [],
                         count: ''
                     },{
-                        param: {},
+                        equipArg: {},
+                        rfid: [],
                         count: ''
                     },{
-                        param: {},
+                        equipArg: {},
+                        rfid: [],
                         count: ''
                     },{
-                        param: {},
+                        equipArg: {},
+                        rfid: [],
                         count: ''
                     }]
                     this.show = true;
@@ -174,15 +181,15 @@
             },
             getData() {
                 processDetail({processInstanceId: this.$route.params.info.processInstanceId}).then(res => {
-                    res.processVariables.order.equips = _.values(_.reduce(res.processVariables.order.equips, (res, obj) => {
-                        if(res[obj.model]) {
-                        res[obj.model].count++;
-                        res[obj.model].param.rfid.push(obj.rfid);
-                        res[obj.model].param.id.push(obj.equipId);
+                    res.processVariables.order.equips = _.values(_.reduce(res.processVariables.order.equips, (result, obj) => {
+                        if(result[obj.equipArg.model]) {
+                            result[obj.equipArg.model].count++;
+                            result[obj.equipArg.model].rfid.push(obj.rfid);
+                            result[obj.equipArg.model].equipId.push(obj.equipId);
                         } else {
-                        res[obj.model] = {count: 1, param: Object.assign(obj, {rfid: [obj.rfid], id: [obj.equipId]})};
+                            result[obj.equipArg.model] = {count: 1, rfid: [obj.rfid], equipId: [obj.equipId], equipArg: obj.equipArg};
                         }
-                        return res;
+                        return result;
                     }, {}))
                     this.order = Object.assign(this.order, res.processVariables.order);
                     this.show = true;
@@ -203,20 +210,62 @@
                 if(!current) return; // 避免切换数据时报错
                 this.detailTable.list = [];
                 this.rowData = current;
-                if(current.param.rfid == undefined) return;
-                for(let rfid of current.param.rfid) {
+                if(current.rfid == undefined) return;
+                for(let rfid of current.rfid) {
                     this.detailTable.list.push({
                         rfid: rfid
                     })
                 }
             },
             readData() { // 读取数据
-                let data = [{param: {id: [4, 5], model: 'slsk', rfid: ['4', '5'], name: 'test_塑料手铐'}, count: 2, index: 0},
-                            {param: {id: [3], model: 'gssk', rfid: ['3'], name: 'test_金属手铐'}, count: 1, index: 1}]
+                let data = [{equipId: [4, 5], rfid: ['4', '5'], count: 2, equipArg: {"id": "3",
+                            "updateTime": 1585892996324,
+                            "createTime": 1585892992627,
+                            "name": "test_金属手铐",
+                            "model": "gssk",
+                            "shelfLife": 31104000000,
+                            "upkeepCycle": 0,
+                            "chargeCycle": 0,
+                            "supplier": {
+                                "id": "1",
+                                "updateTime": 1586498582568,
+                                "createTime": 1586498581845,
+                                "name": "测试_供应商",
+                                "person": "测试_人员",
+                                "phone": "13922224444"
+                            },
+                            "alphabetic": "JSSK",
+                            "image": "",
+                            "pdf": null,
+                            "video": null,
+                            "categoryId": "1"}},
+                            {equipId: [3], rfid: ['3'], count: 1, equipArg: {"id": "4",
+                            "updateTime": 1585892996324,
+                            "createTime": 1585892992628,
+                            "name": "test_塑料手铐",
+                            "model": "slsk",
+                            "shelfLife": 31104000000,
+                            "upkeepCycle": 0,
+                            "chargeCycle": 0,
+                            "supplier": {
+                                "id": "1",
+                                "updateTime": 1586498582568,
+                                "createTime": 1586498581845,
+                                "name": "测试_供应商",
+                                "person": "测试_人员",
+                                "phone": "13922224444"
+                            },
+                            "alphabetic": "SLSK",
+                            "image": "",
+                            "pdf": null,
+                            "video": null,
+                            "categoryId": "2"}}];
                     // this.order.equips = data;
                 data.forEach((obj, index) => {
                     this.order.equips[index].count = obj.count; // 这样赋值是为了避免绑定源丢失，导致页面不刷新
-                    this.order.equips[index].param = obj.param;
+                    this.order.equips[index].rfid = obj.rfid;
+                    this.order.equips[index].equipArg = obj.equipArg;
+                    this.order.equips[index].equipId = obj.equipId;
                 })
             },
             sumFunc(param) { // 表格合并行计算方法
@@ -240,14 +289,10 @@
                     this.$message.warning('未选择申请人');
                     return;
                 }
-                // equips = this.order.equips.map((obj, i)=>Object.assign({count: obj.count||1, rfid: i+1}, _.mapKeys(obj.param, (v,k) => k=='id'?'equipId':k)))
-                //                     .filter(obj => obj.name&&obj.model); 
                 let order = JSON.parse(JSON.stringify(this.order));
-                order.equips = _.filter(_.flatten(_.map(this.order.equips, obj => _.map(obj.param.rfid, (v, i) => Object.assign({rfid: v}, _.pick(obj.param, ['name', 'model']), {equipId: obj.param.id[i]})))), obj=> obj.name&&obj.model);
-            //    if(!order.equips.every(obj => obj.count>0&&!isNaN(obj.count))) {
-            //         this.$message.warning("请规范填写装备数量");
-            //         return;
-            //     } 
+                // order.equips = _.filter(_.flatten(_.map(this.order.equips, obj => _.map(obj.param.rfid, (v, i) => Object.assign({rfid: v}, _.pick(obj.param, ['name', 'model']), {equipId: obj.param.id[i]})))), obj=> obj.name&&obj.model);
+                 order.equips = _.filter(_.flatten(_.map(this.order.equips, obj => _.map(obj.rfid, (v, i) => Object.assign({rfid: v}, _.pick(obj, 'equipArg'), {equipId: obj.equipId[i]})))), obj=> obj.rfid&&obj.equipId);
+                console.log(order);
                 if(order.equips.length == 0) {
                     this.$message.warning('未扫入装备');
                     return;
@@ -274,18 +319,18 @@
             changeRow(state, data) { // 总清单删除
                 let temp = JSON.parse(JSON.stringify(this.order.equips));
 				if(state) {
-					temp.splice(data.$index+1, 0, {count: '', param: {}});
+					temp.splice(data.$index+1, 0, {count: '', rfid: [], equipId: [], equipArg: {}});
 				} else if(this.order.equips.length>1) {
 					temp.splice(data.$index, 1); 
 				} else {
-                    temp = [{count: '', param: {}}]
+                    temp = [{count: '', rfid: [], equipId: [], equipArg: {}}]
                 }
 				this.order.equips = temp;
             },
             changeDetailRow(data) { // 明细删除
                 this.detailTable.list.splice(data.$index, 1);
-                this.rowData.param.rfid.splice(data.$index, 1);
-                this.rowData.param.id.splice(data.$index, 1);
+                this.rowData.rfid.splice(data.$index, 1);
+                this.rowData.equipId.splice(data.$index, 1);
                 if(this.detailTable.list.length == 0) {
                     for(let index in this.order.equips) {
                         if(JSON.stringify(this.order.equips[index]) == JSON.stringify(this.rowData)) {
