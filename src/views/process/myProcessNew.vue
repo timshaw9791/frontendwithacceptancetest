@@ -8,7 +8,7 @@
                 <base-button label="查询" @click="getMyProcess()"></base-button>
             </div>
             <div class="my-process-body">
-                <el-table :data="myProcessList" fit height="3.6458rem" border>
+                <!-- <el-table :data="myProcessList" fit height="3.6458rem" border>
                     <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
                     <define-column label="操作" width="100" v-slot="{ data }">
                         <i class="iconfont iconxiangqing" @click="toDetail(data.row)"></i>
@@ -19,7 +19,18 @@
                     <define-column label="当前节点" field="taskName"></define-column>
                     <define-column label="未操作者" field="userName"></define-column>
                 </el-table>
-                <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage"></bos-paginator>
+                <bos-paginator :pageInfo="paginator" @bosCurrentPageChanged="changePage"></bos-paginator> -->
+                <define-table :data="myProcessList" height="3.6458rem" :pageInfo="paginator" @changePage="changePage">
+                    <define-column label="序号" columnType="index" width="65"></define-column>
+                    <define-column label="操作" width="100" v-slot="{ data }">
+                        <i class="iconfont iconxiangqing" @click="toDetail(data.row)"></i>
+                    </define-column>
+                    <define-column label="请求标题" field="name"></define-column>
+                    <define-column label="工作流" field="type"></define-column>
+                    <define-column label="创建时间" :filter="(row)=>$filterTime(row.createTime)"></define-column>
+                    <define-column label="当前节点" field="taskName"></define-column>
+                    <define-column label="未操作者" field="userName"></define-column>
+                </define-table>
             </div>
         </div>
     </div>

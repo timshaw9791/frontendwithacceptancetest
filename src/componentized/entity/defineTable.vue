@@ -1,7 +1,9 @@
 <template>
-    <div>
-        <h1>这是表格</h1>
-        <slot :text="{name: 'SprWu'}">abc</slot>
+    <div class="define-table-container">
+        <el-table :data="data" :height="height" :border="border" fit>
+            <slot></slot>
+        </el-table>
+        <bos-paginator :pageInfo="pageInfo" @bosCurrentPageChanged="changePage"></bos-paginator>
     </div>
 </template>
 
@@ -11,98 +13,63 @@ import defineColumn from './defineColumn'
         name: "field-table",
         data() {
             return {
-                flag: false
+                
             }
         },
         components: {
-          defineColumn
+
         },
         /*mixins: [formRulesMixin],*/
         props: {
-            list: {
-                type: Array
+            data: {
+                type: Array,
+                default: []
             },
-            height:{
-                type:String,
-                default:'3.45rem'
+            height: {
+                type: String,
+                default: '600px'
             },
-            /*defaultSort:{
-              type:Object,
-              default(){
-                  return{
-                      prop:'',
-                      order:''
-                  }
-              }
-            },*/
-            align:{
-              type:String,
-              default:'center'
-            },
-            havePage:{
-                type:Boolean,
-                default:true
-            },
-            haveButton: {
+            border: {
                 type: Boolean,
-                default: false
+                default: true
             },
-            tableAction:{
-                type:Object
-            },
-            pageInfo:{
-                type:Object
-            },
-            buttonState: { // 是否启用按钮 隐藏/显示
-                type: Boolean,
-                default: false
+            pageInfo: {
+                type: Object,
+                default() {
+                    return {
+                        page: 1,
+                        size: 10,
+                        totalElements: 0,
+                        totalPages: 0
+                    }
+                }
             }
         },
-        created() {
-            if(this.tableAction!=undefined){
-                this.flag=true
-            }
-        },
-        updated() {
+        created() {           
         },
         mounted() {
-            console.log(this.$scopedSlots);
-            console.log('---------');
+            
         },
         methods: {
-            someClick(row,name) {
-                let data ={
-                    name:name,
-                    row:row
-                };
-                this.$emit('clickTableCloum',data)
-            },
-            sortChange(data){
-                let obj = {
-                    order:data.order,
-                    name:data.column.label
-                };
-                this.$emit('sortChange',obj)
-            },
-            tableChangePage(newPage){
-                this.$emit('tableCurrentPageChanged',newPage)
-            },
-            judgeState(name, row) {
-                if(!this.buttonState) return true
-                if(!name.includes('删除')) return true
-                let nowTime = new Date().getTime();
-                return (nowTime - row.updateTime)/1000/3600/24 > 1?false:true
+            changePage(page) {
+                this.$emit('changePage', page);
             }
         }
     }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
     .actionButton{
         width:70px;
         height:32px;
         opacity:1;
         color: white;
         border-radius:4px;
+    }
+    /deep/ .el-table {
+        .el-table--enable-row-hover,
+        .el-table__body tr:hover > td {
+            background-color: white;
+        }
     }
 </style>
