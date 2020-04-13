@@ -121,6 +121,11 @@ export const asyncRouterMap = [
                 component: _import('process/scrapApply'),
                 hidden: true,
             },{
+                path: 'transferApply', // 调拨申请
+                name: 'transferApply',
+                component: _import('process/transferApply'),
+                hidden: true,
+            },{
                 path: 'myProcess/:type/:audit', // 流程申请单
                 name: 'applyAudit',
                 component: _import('process/processForm'),

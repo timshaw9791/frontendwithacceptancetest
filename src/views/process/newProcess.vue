@@ -42,7 +42,12 @@ export default {
             params: {info : data}
           })
           break;
-      
+        case 'transfer':
+          this.$router.push({
+            name: 'transferApply',
+            params: {info : data}
+          })
+          break;
         default:
           break;
       }
