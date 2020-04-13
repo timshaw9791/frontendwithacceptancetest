@@ -52,7 +52,7 @@ export default {
         },
         column: {
             type: Number,
-            default: 5
+            default: 3
         },
         height: {
             type: Number,
@@ -78,7 +78,7 @@ export default {
           type: Object,
           default() {
             return {
-              search: 'applicant',
+              search: 'applicant'
             }
           }
         },

@@ -2,7 +2,7 @@
     <div class="agency-matters">
         <my-header title="待办事宜" :searchFlag="false"></my-header>
         <div class="agency-metters-top">
-            <text-input label="请求标题" v-model="paginator.search" :column="3" placeholder="请输入标题"></text-input>
+            <text-input label="请求标题" v-model="paginator.search" placeholder="请输入标题"></text-input>
             <base-button label="查询" @click="getList()"></base-button>
         </div>
         <div class="agency-matters_main_box" data-test="main_box">

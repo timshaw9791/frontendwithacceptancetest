@@ -3,14 +3,14 @@
         <my-header :title="title" :haveBlack="false"></my-header>
         <div class="apply-process" v-if="show">
             <div class="apply-process-top" data-test="action_box">
-                <text-input label="单号" v-model="order.number" :column="3" :disabled="true" class="odd-number"></text-input>
+                <text-input label="单号" v-model="order.number" :disabled="true" class="odd-number"></text-input>
             </div>
             <div class="apply-process-body">
                 <div class="process-info">
-                    <text-input label="所在库房" v-model="order.warehouse.name" :column="3" :disabled="true"></text-input>
-                    <date-select v-model="order.createTime" :column="3" :disabled="true"></date-select>
-                    <entity-input label="申请人员" v-model="order.applicant" :column="3" :required="true" placeholder="请选择"></entity-input>
-                    <text-input label="申请原因" v-model="order.note" :haveTip="true" :column="3" :tips="tips" :title="order.note"></text-input>
+                    <text-input label="所在库房" v-model="order.warehouse.name" :disabled="true"></text-input>
+                    <date-select v-model="order.createTime" :disabled="true"></date-select>
+                    <entity-input label="申请人员" v-model="order.applicant" :required="true" placeholder="请选择"></entity-input>
+                    <text-input label="申请原因" v-model="order.note" :haveTip="true" :tips="tips" :title="order.note"></text-input>
                 </div>
                 <div class="table-box">
                     <div :class="{'total-list':true,'active':tabsIndex==1}" @click="switchTab(1)">总清单</div>
@@ -291,7 +291,7 @@
                 }
                 let order = JSON.parse(JSON.stringify(this.order));
                 // order.equips = _.filter(_.flatten(_.map(this.order.equips, obj => _.map(obj.param.rfid, (v, i) => Object.assign({rfid: v}, _.pick(obj.param, ['name', 'model']), {equipId: obj.param.id[i]})))), obj=> obj.name&&obj.model);
-                 order.equips = _.filter(_.flatten(_.map(this.order.equips, obj => _.map(obj.rfid, (v, i) => Object.assign({rfid: v}, _.pick(obj, 'equipArg'), {equipId: obj.equipId[i]})))), obj=> obj.rfid&&obj.equipId);
+                order.equips = _.filter(_.flatten(_.map(this.order.equips, obj => _.map(obj.rfid, (v, i) => Object.assign({rfid: v}, _.pick(obj, 'equipArg'), {equipId: obj.equipId[i]})))), obj=> obj.rfid&&obj.equipId);
                 console.log(order);
                 if(order.equips.length == 0) {
                     this.$message.warning('未扫入装备');
