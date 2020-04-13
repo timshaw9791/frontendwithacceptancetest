@@ -35,10 +35,17 @@ export default {
       })
     },
     apply(data) {
-      this.$router.push({
-        name: 'processApply',
-        params: {type: 'apply', info: data}
-      })
+      switch (data.key) {
+        case 'scrap':
+          this.$router.push({
+            name: 'scrapApply',
+            params: {info : data}
+          })
+          break;
+      
+        default:
+          break;
+      }
     },
     changePage(page) {
       this.paginator.page = page;

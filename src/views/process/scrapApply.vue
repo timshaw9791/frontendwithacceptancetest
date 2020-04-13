@@ -63,7 +63,7 @@
     import { complete, getOrder, processStart, processDetail } from 'api/process'
     var _ = require('lodash');
     export default {
-        name: "applyProcess",
+        name: "scrapApply",
         components:{
             myHeader,
             textInput,
