@@ -1,0 +1,332 @@
+<template>
+    <div class="apply-process-container">
+        <my-header :title="title" :haveBlack="false"></my-header>
+        <div class="apply-process" v-if="show">
+            <div class="apply-process-top" data-test="action_box">
+                <text-input label="单号" v-model="order.number" :disabled="true" class="odd-number"></text-input>
+            </div>
+            <div class="apply-process-body">
+                <div class="process-info">
+                    <date-select  label="申请时间" v-model="order.createTime" :disabled="true"></date-select>
+                    <entity-input label="申请人员" v-model="order.applicant" :disabled="true"  placeholder="请选择"></entity-input>
+                    <entity-input label="入库机构" v-model="order.applicant" :disabled="true"  placeholder=""></entity-input>
+                    <entity-input  label="入库库房" :disabled="true" placeholder="-"></entity-input>
+                </div>
+                <div class="process-info">
+                    <entity-input label="入库人员" v-model="order.applicant" :disabled="true"  placeholder="请选择"></entity-input>
+                    <entity-input label="出库机构" v-model="order.applicant"  :options="{detail:'applicant'}" placeholder=""></entity-input>
+                    <entity-input label="出库库房" v-model="order.applicant" :disabled="true"  placeholder="-"></entity-input>
+                    <entity-input label="出库人员" v-model="order.applicant" :disabled="true"  placeholder="-"></entity-input>
+                </div>
+                <div class="process-info">
+                    <base-select label="申请原因" v-model="order.note" :column="12" align="right" :selectList="tips"></base-select>
+                </div>
+                <div class="table-box">
+                    <div :class="{'total-list':true,'active':tabsIndex==1}">总清单</div>
+                        <el-table :data="order.equips" fit height="2.8646rem"
+                            show-summary :summary-method="sumFunc" highlight-current-row border>
+                            <define-column label="序号" columnType="index" width="65"></define-column>
+                            <define-column label="操作" width="100" v-slot="{ data }">
+                                <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
+                                <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
+                            </define-column>
+                            <define-column label="装备参数" v-slot="{ data }">
+                                <entity-input v-model="data.row.equipArg" :options="{detail:'equipParam'}" format="{name}({model})"></entity-input>
+                            </define-column>
+                            <define-column label="装备数量" v-slot="{ data }">
+                                <text-input v-model="data.row.count" type="number"></text-input>
+                            </define-column>
+                        </el-table>
+                </div>
+                <div class="buttom">
+                    <base-button label="提交" align="right" :width="128" :height="72" :fontSize="20" @click="submit"></base-button>
+                    <base-button label="清空" align="right" :width="128" :height="72" :fontSize="20" type="danger"></base-button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+    import myHeader from 'components/base/header/header';
+    import textInput from '@/componentized/textBox/textInput.vue'
+    import baseButton from "@/componentized/buttonBox/baseButton.vue"
+    import baseSelect from '@/componentized/textBox/baseSelect.vue'
+    import dateSelect from '@/componentized/textBox/dateSelect.vue'
+    import entityInput from '@/componentized/entity/entityInput'
+    import divTmp from '@/componentized/divTmp'
+    import defineColumn from '@/componentized/entity/defineColumn'
+    import { complete, getOrder, processStart, processDetail } from 'api/process'
+    var _ = require('lodash');
+    export default {
+        name: "scrapApply",
+        components:{
+            myHeader,
+            textInput,
+            baseButton,
+            baseSelect,
+            dateSelect,
+            entityInput,
+            divTmp,
+            defineColumn
+        },
+        data(){
+            return{
+                title: "",
+                show: true,
+                isReset: false, // 是否是重填申请
+                tabsIndex: 1,
+                rowData: '', // 选中的单选行数据
+                detailTable: {
+                    list: [],
+                },
+                order: {
+                    type: 'transfer',
+                    processInstanceId: '',
+                    number: "",
+                    createTime: 0,
+                    inboundOrganUnit:{},
+                    outboundOrganUnit:{},
+                    applicant: {
+                        id: '',
+                        name: '',
+                        organUnitId: ''
+                    },
+                    applyReson: "",
+                    note: "",
+                    equips: []
+                },
+                select: {
+                    handWareList: [{
+                        label: "手持机",
+                        value: 'handheld'
+                    }, {
+                        label: "读卡器",
+                        value: "reader"
+                    }],
+                    selected: ""
+                },
+                tips: [{value: '直接报废', key: '1'}, {value: '装备拿去维修，无法修补', key: '2'}]
+            }
+        },
+methods:{
+            init() {
+                let organUnit = JSON.parse(localStorage.getItem('user'))
+                getOrder({processDefinitionKey: this.$route.params.info.key}).then(res => {
+                    let userInfo = JSON.parse(localStorage.getItem('user'));
+                    this.order = Object.assign(this.order, res, {
+                        warehouse: {id: '1', name: '1号公共库房'}
+                    }, {
+                        organUnit: {id: organUnit.organUnitId, name: organUnit.organUnitName}
+                    });
+                    // this.order.equips = [{
+                    //     id: '1',
+                    //     rfid: '00001',
+                    //     name: "伸缩警棍",
+                    //     model: 'ssjg',
+                    //     count: 1
+                    // },{
+                    //     id: '2',
+                    //     rfid: '00002',
+                    //     name: "手铐",
+                    //     model: 'sk',
+                    //     count: 1
+                    // },{
+                    //     id: '3',
+                    //     rfid: '00003',
+                    //     name: '照明灯',
+                    //     model: 'zmd',
+                    //     count: 1
+                    // }]
+                    this.order.equips = [{
+                        equipArg: {},
+                        rfid: [],
+                        count: ''
+                    },{
+                        equipArg: {},
+                        rfid: [],
+                        count: ''
+                    },{
+                        equipArg: {},
+                        rfid: [],
+                        count: ''
+                    },{
+                        equipArg: {},
+                        rfid: [],
+                        count: ''
+                    },{
+                        equipArg: {},
+                        rfid: [],
+                        count: ''
+                    },{
+                        equipArg: {},
+                        rfid: [],
+                        count: ''
+                    },{
+                        equipArg: {},
+                        rfid: [],
+                        count: ''
+                    }]
+                    this.show = true;
+                }).catch(err => {
+                    this.$message.error(err.response.data.message);
+                })
+            },
+            getData() {
+                processDetail({processInstanceId: this.$route.params.info.processInstanceId}).then(res => {
+                    res.processVariables.order.equips = _.values(_.reduce(res.processVariables.order.equips, (result, obj) => {
+                        if(result[obj.equipArg.model]) {
+                            result[obj.equipArg.model].count++;
+                            result[obj.equipArg.model].rfid.push(obj.rfid);
+                            result[obj.equipArg.model].equipId.push(obj.equipId);
+                        } else {
+                            result[obj.equipArg.model] = {count: 1, rfid: [obj.rfid], equipId: [obj.equipId], equipArg: obj.equipArg};
+                        }
+                        return result;
+                    }, {}))
+                    this.order = Object.assign(this.order, res.processVariables.order);
+                    this.show = true;
+                })
+            },
+            sumFunc(param) { // 表格合并行计算方法
+                let { columns, data } = param, sums = [];
+                columns.forEach((colum, index) => {
+                    if(index == 0) {
+                        sums[index] =  '合计';
+                    } else if(index == columns.length-1) {
+                        const values = data.map(item => item.count?Number(item.count):0);
+                        if(!values.every(value => isNaN(value))) {
+                            sums[index] = values.reduce((pre, cur) => !isNaN(cur)?pre+cur:pre);
+                        }
+                    } else {
+                        sums[index] = '';
+                    }
+                })
+                return sums;
+            },
+            submit() {
+                console.log("提交");
+                // let order = JSON.parse(JSON.stringify(this.order));
+                // order.equips = _.filter(_.flatten(_.map(this.order.equips, obj => _.map(obj.rfid, (v, i) => Object.assign({rfid: v}, _.pick(obj, 'equipArg'), {equipId: obj.equipId[i]})))), obj=> obj.rfid&&obj.equipId);
+                // console.log(order);
+                // if(order.equips.length == 0) {
+                //     this.$message.warning('未选择装备');
+                //     return;
+                // }
+                // if(this.$route.params.info.number) {
+                //     let userId = JSON.parse(localStorage.getItem('user')).id;
+                //     complete(this.$route.params.info.taskId, {userId: userId}, {
+                //         order: order
+                //     }).then(res => {
+                //         this.$message.success("申请成功")
+                //         this.$router.push({name: 'myProcess'});
+                //     }).catch(err => {
+                //         this.$message.error(err.response.data.message);
+                //     })
+                // } else {
+                //     processStart({processDefinitionKey: this.$route.params.info.key, orderType: this.order.type}, order).then(res => {
+                //         this.$message.success('流程申请成功');
+                //         this.$router.push({name: 'myProcess'});
+                //     }).catch(err => {
+                //         this.$message.error(err.response.data.message);
+                //     })
+                // }
+            },
+            changeRow(state, data) { // 总清单删除
+                let temp = JSON.parse(JSON.stringify(this.order.equips));
+				if(state) {
+					temp.splice(data.$index+1, 0, {count: '', rfid: [], equipId: [], equipArg: {}});
+				} else if(this.order.equips.length>1) {
+					temp.splice(data.$index, 1); 
+				} else {
+                    temp = [{count: '', rfid: [], equipId: [], equipArg: {}}]
+                }
+				this.order.equips = temp;
+            },
+		},
+        created() {
+            if(this.$route.params.info == undefined) {
+                this.$message.info("数据丢失，返回新启流程");
+                this.$router.push({name: 'newProcess'});
+                return
+            }
+            this.title = "我的流程/申请" + this.$route.params.info.name.substr(0, 2);
+            this.order.createTime=new Date().getTime();
+            // if(this.$route.params.info.number) {
+            //     this.isReset = true;
+            //     this.getData();
+            // } else {
+            //     this.init();
+            // }
+            this.order.equips = [{
+                equipArg: {},
+                count: ''
+            }]
+        }
+    }
+</script>
+
+<style lang="scss" scoped>
+    /deep/ .el-table {
+        .el-table__body-wrapper { // 因为表格切换后，带有合计行的表格高度会变少，所以手动设置其高度
+            height: 2.3594rem !important;
+        }
+    }
+    .apply-process-container{
+        width: 100%;
+        color:#707070FF;
+        font-size: 16px;
+    }
+    .apply-process {
+        width: 100%;
+        border: 1px slid orange;
+        .apply-process-top {
+            padding: 18px 7px;
+            border-bottom: 1px solid #EBEEF5;
+            overflow: hidden;
+        }
+        .apply-process-body {
+            padding: 0 7px;
+            .process-info {
+                padding: 18px 0;
+                display: flex;
+                justify-content: space-between;
+                overflow: hidden;
+            }
+            .table-box {
+                padding: 0 10px;
+                .iconfont {
+                    margin: 0 5px;
+                }
+                .total-list,
+                .detail-list {
+                    display: inline-block;
+                    border: 1px solid #EAEAEA;
+                    height: 40px;
+                    line-height: 40px;
+                    padding: 0 10px;
+                    background-color: #DCDFE6;
+                    cursor: pointer;
+                }
+                .active {
+                    background-color: white;
+                }
+            }
+            .remark {
+                margin-top: 18px;
+            }
+            .buttom {
+                height: 72px;
+                margin-top: 25px;
+                box-shadow:0px 0px 12px rgba(235,238,245,1);
+                .sum-equip {
+                    float: right;
+                    font-size:20px;
+                    color: #3F5FE0;
+                    line-height: 72px;
+                    margin-right: 72px;
+                }
+            }
+        }
+    }
+</style>
