@@ -2,7 +2,7 @@
     <div class="handling-matters">
         <my-header :title="'办结事宜'" :searchFlag="false"></my-header>
         <div class="handling-matters-top" data-test="action_box">
-            <text-input label="请求标题" v-model="paginator.search" :column="3" placeholder="请输入标题"></text-input>
+            <text-input label="请求标题" v-model="paginator.search" placeholder="请输入标题"></text-input>
             <base-button label="查询" @click="getList()"></base-button>
         </div>
         <div class="handling-matters-body" data-test="main_box">
