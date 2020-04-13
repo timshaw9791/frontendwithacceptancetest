@@ -116,9 +116,9 @@ export const asyncRouterMap = [
                 meta: {title: '新启流程'}
             },
             {
-                path: 'myProcess/:type', // 工作流申请
-                name: 'processApply',
-                component: _import('process/processApply'),
+                path: 'scrapApply', // 工作流申请
+                name: 'scrapApply',
+                component: _import('process/scrapApply'),
                 hidden: true,
             },{
                 path: 'myProcess/:type/:audit', // 流程申请单
