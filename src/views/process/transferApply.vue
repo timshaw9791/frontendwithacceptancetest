@@ -8,21 +8,21 @@
             <div class="apply-process-body">
                 <div class="process-info">
                     <date-select  label="申请时间" v-model="order.createTime" :disabled="true"></date-select>
-                    <entity-input label="申请人员" v-model="order.applicant" :disabled="true"  placeholder="请选择"></entity-input>
-                    <entity-input label="入库机构" v-model="order.applicant" :disabled="true"  placeholder=""></entity-input>
+                    <entity-input label="申请人员" v-model="order.applicant" :required="true" placeholder="请选择"></entity-input>
+                    <entity-input label="入库机构" v-model="order.inboundOrganUnit.name"  :options="{detail:'applicant'}" placeholder=""></entity-input>
                     <entity-input  label="入库库房" :disabled="true" placeholder="-"></entity-input>
                 </div>
                 <div class="process-info">
-                    <entity-input label="入库人员" v-model="order.applicant" :disabled="true"  placeholder="请选择"></entity-input>
-                    <entity-input label="出库机构" v-model="order.applicant"  :options="{detail:'applicant'}" placeholder=""></entity-input>
-                    <entity-input label="出库库房" v-model="order.applicant" :disabled="true"  placeholder="-"></entity-input>
-                    <entity-input label="出库人员" v-model="order.applicant" :disabled="true"  placeholder="-"></entity-input>
+                    <entity-input label="入库人员" :disabled="true"  placeholder="请选择"></entity-input>
+                    <entity-input label="出库机构" v-model="order.outboundOrganUnit.name"  :options="{detail:'applicant'}" placeholder=""></entity-input>
+                    <entity-input label="出库库房"  :disabled="true"  placeholder="-"></entity-input>
+                    <entity-input label="出库人员" :disabled="true"  placeholder="-"></entity-input>
                 </div>
                 <div class="process-info">
                     <base-select label="申请原因" v-model="order.note" :column="12" align="right" :selectList="tips"></base-select>
                 </div>
                 <div class="table-box">
-                    <div :class="{'total-list':true,'active':tabsIndex==1}">总清单</div>
+                    <div :class="{'total-list':true,'active':true}">总清单</div>
                         <el-table :data="order.equips" fit height="2.8646rem"
                             show-summary :summary-method="sumFunc" highlight-current-row border>
                             <define-column label="序号" columnType="index" width="65"></define-column>
@@ -73,13 +73,13 @@
         data(){
             return{
                 title: "",
-                show: true,
-                isReset: false, // 是否是重填申请
-                tabsIndex: 1,
-                rowData: '', // 选中的单选行数据
-                detailTable: {
-                    list: [],
-                },
+                show: false,
+                // isReset: false, // 是否是重填申请
+                // tabsIndex: 1,
+                // rowData: '', // 选中的单选行数据
+                // detailTable: {
+                //     list: [],
+                // },
                 order: {
                     type: 'transfer',
                     processInstanceId: '',
@@ -96,29 +96,43 @@
                     note: "",
                     equips: []
                 },
-                select: {
-                    handWareList: [{
-                        label: "手持机",
-                        value: 'handheld'
-                    }, {
-                        label: "读卡器",
-                        value: "reader"
-                    }],
-                    selected: ""
-                },
-                tips: [{value: '直接报废', key: '1'}, {value: '装备拿去维修，无法修补', key: '2'}]
+                // select: {
+                //     handWareList: [{
+                //         label: "手持机",
+                //         value: 'handheld'
+                //     }, {
+                //         label: "读卡器",
+                //         value: "reader"
+                //     }],
+                //     selected: ""
+                // },
+                tips: [{value: '111', key: '1'}, {value: '222', key: '2'}]
             }
         },
 methods:{
             init() {
-                let organUnit = JSON.parse(localStorage.getItem('user'))
+                // let organUnit = JSON.parse(localStorage.getItem('user'))
                 getOrder({processDefinitionKey: this.$route.params.info.key}).then(res => {
-                    let userInfo = JSON.parse(localStorage.getItem('user'));
-                    this.order = Object.assign(this.order, res, {
-                        warehouse: {id: '1', name: '1号公共库房'}
-                    }, {
-                        organUnit: {id: organUnit.organUnitId, name: organUnit.organUnitName}
-                    });
+                    // let userInfo = JSON.parse(localStorage.getItem('user'));
+                    console.log("res",res);
+                    this.order.outboundOrganUnit={
+                        "name": "温州市局",
+                        "level": "MUNICIPAL",
+                        "upperId": "",
+                        "id": "1",
+                        "createTime": 0,
+                        "updateTime": 0,
+                        "number": ""}
+                        this.order.inboundOrganUnit={
+                            "name": "龙湾分局",
+                            "level": "DISTRICT",
+                            "upperId": "1",
+                            "id": "2",
+                            "createTime": 0,
+                            "updateTime": 0,
+                            "number": ""
+                        }
+                    console.log("order",this.order);
                     // this.order.equips = [{
                     //     id: '1',
                     //     rfid: '00001',
@@ -142,52 +156,28 @@ methods:{
                         equipArg: {},
                         rfid: [],
                         count: ''
-                    },{
-                        equipArg: {},
-                        rfid: [],
-                        count: ''
-                    },{
-                        equipArg: {},
-                        rfid: [],
-                        count: ''
-                    },{
-                        equipArg: {},
-                        rfid: [],
-                        count: ''
-                    },{
-                        equipArg: {},
-                        rfid: [],
-                        count: ''
-                    },{
-                        equipArg: {},
-                        rfid: [],
-                        count: ''
-                    },{
-                        equipArg: {},
-                        rfid: [],
-                        count: ''
                     }]
                     this.show = true;
                 }).catch(err => {
                     this.$message.error(err.response.data.message);
                 })
             },
-            getData() {
-                processDetail({processInstanceId: this.$route.params.info.processInstanceId}).then(res => {
-                    res.processVariables.order.equips = _.values(_.reduce(res.processVariables.order.equips, (result, obj) => {
-                        if(result[obj.equipArg.model]) {
-                            result[obj.equipArg.model].count++;
-                            result[obj.equipArg.model].rfid.push(obj.rfid);
-                            result[obj.equipArg.model].equipId.push(obj.equipId);
-                        } else {
-                            result[obj.equipArg.model] = {count: 1, rfid: [obj.rfid], equipId: [obj.equipId], equipArg: obj.equipArg};
-                        }
-                        return result;
-                    }, {}))
-                    this.order = Object.assign(this.order, res.processVariables.order);
-                    this.show = true;
-                })
-            },
+            // getData() {
+            //     processDetail({processInstanceId: this.$route.params.info.processInstanceId}).then(res => {
+            //         res.processVariables.order.equips = _.values(_.reduce(res.processVariables.order.equips, (result, obj) => {
+            //             if(result[obj.equipArg.model]) {
+            //                 result[obj.equipArg.model].count++;
+            //                 result[obj.equipArg.model].rfid.push(obj.rfid);
+            //                 result[obj.equipArg.model].equipId.push(obj.equipId);
+            //             } else {
+            //                 result[obj.equipArg.model] = {count: 1, rfid: [obj.rfid], equipId: [obj.equipId], equipArg: obj.equipArg};
+            //             }
+            //             return result;
+            //         }, {}))
+            //         this.order = Object.assign(this.order, res.processVariables.order);
+            //         this.show = true;
+            //     })
+            // },
             sumFunc(param) { // 表格合并行计算方法
                 let { columns, data } = param, sums = [];
                 columns.forEach((colum, index) => {
@@ -204,15 +194,23 @@ methods:{
                 })
                 return sums;
             },
+            a(data){
+                console.log("data",data);
+            },
             submit() {
                 console.log("提交");
-                // let order = JSON.parse(JSON.stringify(this.order));
-                // order.equips = _.filter(_.flatten(_.map(this.order.equips, obj => _.map(obj.rfid, (v, i) => Object.assign({rfid: v}, _.pick(obj, 'equipArg'), {equipId: obj.equipId[i]})))), obj=> obj.rfid&&obj.equipId);
-                // console.log(order);
-                // if(order.equips.length == 0) {
-                //     this.$message.warning('未选择装备');
-                //     return;
-                // }
+                let order = JSON.parse(JSON.stringify(this.order));
+                console.log(order);
+                console.log("object",_.map(this.order.equips, obj =>Object.assign({count:obj.count},_.pick(obj, 'equipArg'))));
+                console.log("object",_.flatten(_.map(this.order.equips, obj =>Object.assign({count:obj.count},_.pick(obj, 'equipArg')))));
+                // console.log("map",_.map(this.order.equips, obj => _.map(obj.rfid, (v, i) => Object.assign({rfid: v}, _.pick(obj, 'equipArg'), {equipId: obj.equipId[i]}))));
+                order.equips = _.filter(_.flatten(_.map(this.order.equips, obj =>Object.assign({count:obj.count},_.pick(obj, 'equipArg')))), function(a) {return a.count!=0});
+                console.log(order);
+                if(order.equips.length == 0) {
+                    this.$message.warning('未选择装备');
+                    return;
+                }
+
                 // if(this.$route.params.info.number) {
                 //     let userId = JSON.parse(localStorage.getItem('user')).id;
                 //     complete(this.$route.params.info.taskId, {userId: userId}, {
@@ -224,12 +222,13 @@ methods:{
                 //         this.$message.error(err.response.data.message);
                 //     })
                 // } else {
-                //     processStart({processDefinitionKey: this.$route.params.info.key, orderType: this.order.type}, order).then(res => {
-                //         this.$message.success('流程申请成功');
-                //         this.$router.push({name: 'myProcess'});
-                //     }).catch(err => {
-                //         this.$message.error(err.response.data.message);
-                //     })
+                    console.log("order",order);
+                    processStart({processDefinitionKey: this.$route.params.info.key}, order).then(res => {
+                        this.$message.success('流程申请成功');
+                        this.$router.push({name: 'myProcess'});
+                    }).catch(err => {
+                        this.$message.error(err.response.data.message);
+                    })
                 // }
             },
             changeRow(state, data) { // 总清单删除
@@ -251,17 +250,17 @@ methods:{
                 return
             }
             this.title = "我的流程/申请" + this.$route.params.info.name.substr(0, 2);
-            this.order.createTime=new Date().getTime();
-            // if(this.$route.params.info.number) {
-            //     this.isReset = true;
-            //     this.getData();
-            // } else {
-            //     this.init();
-            // }
-            this.order.equips = [{
-                equipArg: {},
-                count: ''
-            }]
+            // this.order.createTime=new Date().getTime();
+            if(this.$route.params.info.number) {
+                this.isReset = true;
+                this.getData();
+            } else {
+                this.init();
+            }
+            // this.order.equips = [{
+            //     equipArg: {},
+            //     count: ''
+            // }]
         }
     }
 </script>
