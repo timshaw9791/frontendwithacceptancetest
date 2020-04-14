@@ -12,14 +12,11 @@
 <script>
 import defineColumn from './defineColumn'
     export default {
-        name: "field-table",
+        name: "definTable",
         data() {
             return {
                 
             }
-        },
-        components: {
-
         },
         /*mixins: [formRulesMixin],*/
         props: {

@@ -4,11 +4,11 @@
     <div class="new-process-body">
       <define-table :data="list" height="600px" :pageInfo="paginator" @changePage="changePage">
         <define-column label="序号" columnType="index" width="65"></define-column>
-        <define-column label="操作" align="center" v-slot="{ data }">
+        <define-column label="操作" v-slot="{ data }">
           <i class="iconfont iconjiahao" @click="apply(data.row)"></i>
         </define-column>
-        <define-column label="工作流名称" field="name" align="center"></define-column>
-        <define-column label="部署时间" :filter="(row)=>$filterTime(row.deploymentTime)" align="center"></define-column>
+        <define-column label="工作流名称" field="name"></define-column>
+        <define-column label="部署时间" :filter="(row)=>$filterTime(row.deploymentTime)"></define-column>
       </define-table>
     </div>
     <entity-input label="测试" :options="{search: 'organUnits'}" format="[{name}]"></entity-input>
