@@ -25,7 +25,9 @@ import defineColumn from './defineColumn'
         props: {
             data: {
                 type: Array,
-                default: []
+                default() {
+                    return []
+                }
             },
             height: {
                 type: String,
