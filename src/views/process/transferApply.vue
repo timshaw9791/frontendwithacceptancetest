@@ -9,12 +9,12 @@
                 <div class="process-info">
                     <date-select  label="申请时间" v-model="order.createTime" :disabled="true"></date-select>
                     <entity-input label="申请人员" v-model="order.applicant" :required="true" placeholder="请选择"></entity-input>
-                    <entity-input label="入库机构" v-model="order.inboundOrganUnit.name"  :options="{detail:'applicant'}" placeholder=""></entity-input>
+                    <entity-input label="入库机构" v-model="order.inboundOrganUnit" format="{name}" :options="{search:'organUnits'}" placeholder=""></entity-input>
                     <entity-input  label="入库库房" :disabled="true" placeholder="-"></entity-input>
                 </div>
                 <div class="process-info">
                     <entity-input label="入库人员" :disabled="true"  placeholder="请选择"></entity-input>
-                    <entity-input label="出库机构" v-model="order.outboundOrganUnit.name"  :options="{detail:'applicant'}" placeholder=""></entity-input>
+                    <entity-input label="出库机构" v-model="order.outboundOrganUnit" format="{name}" :options="{search:'organUnits'}" placeholder=""></entity-input>
                     <entity-input label="出库库房"  :disabled="true"  placeholder="-"></entity-input>
                     <entity-input label="出库人员" :disabled="true"  placeholder="-"></entity-input>
                 </div>
@@ -115,23 +115,6 @@ methods:{
                 getOrder({processDefinitionKey: this.$route.params.info.key}).then(res => {
                     // let userInfo = JSON.parse(localStorage.getItem('user'));
                     console.log("res",res);
-                    this.order.outboundOrganUnit={
-                        "name": "温州市局",
-                        "level": "MUNICIPAL",
-                        "upperId": "",
-                        "id": "1",
-                        "createTime": 0,
-                        "updateTime": 0,
-                        "number": ""}
-                        this.order.inboundOrganUnit={
-                            "name": "龙湾分局",
-                            "level": "DISTRICT",
-                            "upperId": "1",
-                            "id": "2",
-                            "createTime": 0,
-                            "updateTime": 0,
-                            "number": ""
-                        }
                     console.log("order",this.order);
                     // this.order.equips = [{
                     //     id: '1',
