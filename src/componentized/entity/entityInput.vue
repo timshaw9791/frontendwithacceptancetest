@@ -22,6 +22,9 @@
     <service-dialog title="装备参数选择" ref="equipParam" width="1300px" :button="false" :secondary="false">
       <equip-params @select="selected"></equip-params>
     </service-dialog>
+    <service-dialog title="机构选择" ref="organUnits" width="500px" :button="false" :secondary="false">
+      <organ-units @select="selected" @cancel="$refs.organUnits.hide()"></organ-units>
+    </service-dialog>
   </div>
 </template>
 
@@ -29,6 +32,7 @@
 import serviceDialog from "components/base/serviceDialog"
 import applicantSelect from "./applicantSelect"
 import equipParams from './equipParams'
+import organUnits from './organUnits'
 export default {
     name: 'textInput',
     data() {
@@ -145,7 +149,8 @@ export default {
     components: {
       serviceDialog,
       applicantSelect,
-      equipParams
+      equipParams,
+      organUnits
     },
     created() {
       if(typeof this.value == 'object') {

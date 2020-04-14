@@ -11,6 +11,7 @@
         <define-column label="部署时间" :filter="(row)=>$filterTime(row.deploymentTime)" align="center"></define-column>
       </define-table>
     </div>
+    <entity-input label="测试" :options="{search: 'organUnits'}" format="[{name}]"></entity-input>
   </div>
 </template>
 
@@ -62,7 +63,8 @@ export default {
   components: {
     myHeader,
     defineColumn,
-    defineTable
+    defineTable,
+    entityInput
   }
 }
 </script>
