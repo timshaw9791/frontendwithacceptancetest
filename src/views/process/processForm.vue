@@ -4,19 +4,34 @@
     <div class="process-form-top" v-if="show">
       <text-input label="单号" v-model="order.number" :column="3" :disabled="true"></text-input>
       <base-button label="导出" type="none" align="right" v-show="operate"></base-button>
-      <base-button label="重填" align="right" @click="refill" v-show="operate"></base-button>
+      <base-button label="重填" align="right" @click="refill" v-show="operate"  v-if="title!='调拨'"></base-button>
       <base-button label="作废" align="right" @click="$refs.ratify.show()" v-show="operate"></base-button>
     </div>
     <div class="process-form-body" v-if="show">
-      <div class="process-info">
+      <div class="process-info" v-if="title!='调拨'">
           <text-input label="所在库房" v-model="order.warehouse.name" :column="3" :disabled="true"></text-input>
           <date-select v-model="order.applyTime" :column="3" :disabled="true"></date-select>
           <entity-input label="申请人员" v-model="order.applicant" :column="3" :disabled="true"></entity-input>
           <text-input label="申请原因" v-model="order.note" :column="3" :haveTip="true" :tips="tips" :title="order.note" :disabled="true"></text-input>
       </div>
+      <div class="process-info"  v-if="title=='调拨'">
+          <date-select  label="申请时间" v-model="order.createTime" :disabled="true"></date-select>
+          <entity-input label="申请人员" v-model="order.applicant" :disabled="true" :required="true" placeholder="请选择"></entity-input>
+          <entity-input label="入库机构" v-model="order.inboundOrganUnit" :disabled="true" format="{name}" :options="{search:'organUnits'}" placeholder=""></entity-input>
+          <entity-input  label="入库库房" :disabled="true" placeholder="-"></entity-input>
+      </div>
+      <div class="process-info"  v-if="title=='调拨'">
+          <entity-input label="入库人员" :disabled="true"  placeholder="请选择"></entity-input>
+          <entity-input label="出库机构" v-model="order.outboundOrganUnit" :disabled="true" format="{name}" :options="{search:'organUnits'}" placeholder=""></entity-input>
+          <entity-input label="出库库房"  :disabled="true"  placeholder="-"></entity-input>
+          <entity-input label="出库人员" :disabled="true"  placeholder="-"></entity-input>
+      </div>
+      <div class="process-info"  v-if="title=='调拨'">
+          <base-select label="申请原因" v-model="order.note" :column="12" align="right" :selectList="tips"></base-select>
+      </div>
       <div class="table-box">
         <div :class="{'total-list':true,'active':tabsIndex==1}" @click="switchTab(1)">总清单</div>
-        <div :class="{'detail-list':true,'active':tabsIndex==2}" @click="switchTab(2)">明细</div>
+        <div :class="{'detail-list':true,'active':tabsIndex==2}" @click="switchTab(2)"  v-if="title!='调拨'">明细</div>
         <el-table :data="order.equips" fit height="2.6042rem" @current-change="selRow" 
           show-summary :summary-method="sumFunc" highlight-current-row border v-if="!showDetail">
           <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
