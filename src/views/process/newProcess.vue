@@ -11,13 +11,18 @@
         <define-column label="部署时间" :filter="(row)=>$filterTime(row.deploymentTime)"></define-column>
       </define-table>
     </div>
-    <entity-input label="测试" :options="{search: 'organUnits'}" format="[{name}]"></entity-input>
+    <text-input label="测试" type="Number" v-model="test"></text-input>
+    <define-table :data="testList" :havePage='false'>
+      <define-column label="测试列" v-slot="{ data }">
+        <text-input v-model="data.row.val" type="Number"></text-input>
+      </define-column>
+    </define-table>
   </div>
 </template>
 
 <script>
-import entityInput from '@/componentized/entity/entityInput'
 import myHeader from 'components/base/header/header'
+import textInput from '@/componentized/textBox/textInput.vue'
 import { processDefinitions } from 'api/process'
 import defineTable from '@/componentized/entity/defineTable'
 import defineColumn from '@/componentized/entity/defineColumn'
@@ -26,7 +31,11 @@ export default {
   data() {
     return {
       list: [],
-      paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0}
+      paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
+      test: '',
+      testList: [{
+        val: ''
+      }]
     }
   },
   methods: {
@@ -64,7 +73,7 @@ export default {
     myHeader,
     defineColumn,
     defineTable,
-    entityInput
+    textInput
   }
 }
 </script>
