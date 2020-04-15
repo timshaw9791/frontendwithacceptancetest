@@ -11,10 +11,14 @@
         <define-column label="部署时间" :filter="(row)=>$filterTime(row.deploymentTime)"></define-column>
       </define-table>
     </div>
-    <text-input label="测试" type="Number" v-model="test"></text-input>
+
+    <define-input label="测试" v-model="test2" type="Email" :required="true" :disabled="false" :column="1"></define-input>
     <define-table :data="testList" :havePage='false'>
       <define-column label="测试列" v-slot="{ data }">
         <text-input v-model="data.row.val" type="Number"></text-input>
+      </define-column>
+      <define-column label="测试列2" v-slot="{ data }">
+        <define-input v-model="data.row.val" type="Number" :tableEdit="edit"></define-input>
       </define-column>
     </define-table>
   </div>
@@ -23,6 +27,7 @@
 <script>
 import myHeader from 'components/base/header/header'
 import textInput from '@/componentized/textBox/textInput.vue'
+import defineInput from '@/componentized/textBox/defineInput.vue'
 import { processDefinitions } from 'api/process'
 import defineTable from '@/componentized/entity/defineTable'
 import defineColumn from '@/componentized/entity/defineColumn'
@@ -33,6 +38,8 @@ export default {
       list: [],
       paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
       test: '',
+      test2: '123',
+      edit: true,
       testList: [{
         val: ''
       }]
@@ -73,7 +80,8 @@ export default {
     myHeader,
     defineColumn,
     defineTable,
-    textInput
+    textInput,
+    defineInput
   }
 }
 </script>

@@ -3,9 +3,10 @@
         <my-header title="我的流程" :haveBlack="false"></my-header>
         <div class="my-process" data-test="action_box">
             <div class="my-process-info">
-                <text-input label="请求标题" v-model="requestTitle" placeholder="请输入标题"></text-input>
+                <define-input label="请求标题" v-model="requestTitle" placeholder="请输入标题"></define-input>
+                <!-- <text-input label="请求标题" v-model="requestTitle" placeholder="请输入标题"></text-input> -->
                 <base-select label="流程类型" v-model="select.selected" :selectList="select.processList"></base-select>
-                <base-button label="查询" type="info" @click="getMyProcess()"></base-button>
+                <base-button label="查询" @click="getMyProcess()"></base-button>
             </div>
             <div class="my-process-body">
                 <define-table :data="myProcessList" height="3.6458rem" :pageInfo="paginator" @changePage="changePage">
@@ -27,6 +28,7 @@
 <script>
     import myHeader from 'components/base/header/header'
     import textInput from '@/componentized/textBox/textInput.vue'
+    import defineInput from '@/componentized/textBox/defineInput.vue'
     import baseSelect from '@/componentized/textBox/baseSelect.vue'
     import baseButton from "@/componentized/buttonBox/baseButton.vue"
     import entityInput from '@/componentized/entity/entityInput'
@@ -95,6 +97,7 @@
         components:{
             myHeader,
             textInput,
+            defineInput,
             baseSelect,
             baseButton,
             defineColumn,
