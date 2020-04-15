@@ -27,12 +27,9 @@
 
 <script>
     import myHeader from 'components/base/header/header'
-    import textInput from '@/componentized/textBox/textInput.vue'
     import defineInput from '@/componentized/textBox/defineInput.vue'
     import baseSelect from '@/componentized/textBox/baseSelect.vue'
     import baseButton from "@/componentized/buttonBox/baseButton.vue"
-    import entityInput from '@/componentized/entity/entityInput'
-    
     import defineTable from '@/componentized/entity/defineTable'
     import defineColumn from '@/componentized/entity/defineColumn'
 
@@ -96,12 +93,10 @@
         },
         components:{
             myHeader,
-            textInput,
             defineInput,
             baseSelect,
             baseButton,
             defineColumn,
-            entityInput,
             defineTable
         },
     }

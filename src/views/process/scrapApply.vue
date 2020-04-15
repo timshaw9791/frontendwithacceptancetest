@@ -3,11 +3,11 @@
         <my-header :title="title" :haveBlack="false"></my-header>
         <div class="apply-process" v-if="show">
             <div class="apply-process-top" data-test="action_box">
-                <text-input label="单号" v-model="order.number" :disabled="true" class="odd-number"></text-input>
+                <define-input label="单号" v-model="order.number" :disabled="true" class="odd-number"></define-input>
             </div>
             <div class="apply-process-body">
                 <div class="process-info">
-                    <text-input label="所在库房" v-model="order.warehouse.name" :disabled="true"></text-input>
+                    <define-input label="所在库房" v-model="order.warehouse.name" :disabled="true"></define-input>
                     <date-select v-model="order.createTime" :disabled="true"></date-select>
                     <entity-input label="申请人员" v-model="order.applicant" :required="true" placeholder="请选择"></entity-input>
                     <text-input label="申请原因" v-model="order.note" :haveTip="true" :tips="tips" :title="order.note"></text-input>
@@ -54,6 +54,7 @@
 <script>
     import myHeader from 'components/base/header/header';
     import textInput from '@/componentized/textBox/textInput.vue'
+    import defineInput from '@/componentized/textBox/defineInput.vue'
     import baseButton from "@/componentized/buttonBox/baseButton.vue"
     import baseSelect from '@/componentized/textBox/baseSelect.vue'
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
@@ -67,6 +68,7 @@
         components:{
             myHeader,
             textInput,
+            defineInput,
             baseButton,
             baseSelect,
             dateSelect,

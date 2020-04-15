@@ -177,6 +177,8 @@ export default {
   height: 40px;
   max-height: 40px;
   border-radius: 4px;
+  box-sizing: border-box;
+  margin: 0 0.0521rem;
   .label {
     min-width: 55px;
     padding: 0 10px;
@@ -219,6 +221,8 @@ export default {
 .disabled {
   background:rgba(248,249,251,1);
   border:1px solid rgba(220,223,230,1);
-  color:rgba(192,196,204,1);
+  .input {
+    color:rgba(192,196,204,1);
+  }
 }
 </style>

@@ -2,14 +2,14 @@
   <div class="process-form-container">
     <my-header :title="'我的流程/'+title+'申请单'" :haveBlack="false"></my-header>
     <div class="process-form-top" v-if="show">
-      <text-input label="单号" v-model="order.number" :column="3" :disabled="true"></text-input>
+      <define-input label="单号" v-model="order.number" :column="3" :disabled="true"></define-input>
       <base-button label="导出" type="none" align="right" v-show="operate"></base-button>
       <base-button label="重填" align="right" @click="refill" v-show="operate"></base-button>
       <base-button label="作废" align="right" @click="$refs.ratify.show()" v-show="operate"></base-button>
     </div>
     <div class="process-form-body" v-if="show">
       <div class="process-info">
-          <text-input label="所在库房" v-model="order.warehouse.name" :column="3" :disabled="true"></text-input>
+          <define-input label="所在库房" v-model="order.warehouse.name" :column="3" :disabled="true"></define-input>
           <date-select v-model="order.applyTime" :column="3" :disabled="true"></date-select>
           <entity-input label="申请人员" v-model="order.applicant" :column="3" :disabled="true"></entity-input>
           <text-input label="申请原因" v-model="order.note" :column="3" :haveTip="true" :tips="tips" :title="order.note" :disabled="true"></text-input>
@@ -49,6 +49,7 @@
 import myHeader from 'components/base/header/header';
 import processInfos from 'components/process/processInfos'
 import textInput from '@/componentized/textBox/textInput'
+import defineInput from '@/componentized/textBox/defineInput.vue'
 import baseButton from '@/componentized/buttonBox/baseButton'
 import dateSelect from '@/componentized/textBox/dateSelect'
 import serviceDialog from "components/base/serviceDialog"
@@ -185,6 +186,7 @@ export default {
     myHeader,
     processInfos,
     textInput,
+    defineInput,
     baseButton,
     dateSelect,
     serviceDialog,
