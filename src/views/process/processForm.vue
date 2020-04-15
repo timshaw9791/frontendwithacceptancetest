@@ -15,22 +15,22 @@
           <text-input label="申请原因" v-model="order.note" :column="3" :haveTip="true" :tips="tips" :title="order.note" :disabled="true"></text-input>
       </div>
       <div class="table-box">
-        <div :class="{'total-list':true,'active':tabsIndex==1}" @click="switchTab(1)">总清单</div>
-        <div :class="{'detail-list':true,'active':tabsIndex==2}" @click="switchTab(2)">明细</div>
-        <el-table :data="order.equips" fit height="2.6042rem" @current-change="selRow" 
-          show-summary :summary-method="sumFunc" highlight-current-row border v-if="!showDetail">
-          <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
-          <define-column label="装备参数" v-slot="{ data }">
-            <entity-input v-model="data.row.equipArg" format="{name}({model})" :disabled="true"></entity-input>
-          </define-column>
-          <define-column label="装备数量" v-slot="{ data }">
-            <text-input v-model="data.row.count" :disabled="true"></text-input>
-          </define-column>
-        </el-table>
-        <el-table :data="detailTable.list" fit height="505px" border v-else>
-          <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
-          <define-column label="RFID" field="rfid"></define-column>
-        </el-table>
+        <bos-tabs>
+            <define-table :data="order.equips" height="2.6042rem" @changeCurrent="selRow" :havePage="false"
+                :showSummary="true" :summaryFunc="sumFunc" :hightLightCurrent="true" slot="total">
+			    <define-column label="序号" columnType="index" width="65"></define-column>
+				<define-column label="装备参数" v-slot="{ data }">
+                    <entity-input v-model="data.row.equipArg" format="{name}({model})" :disabled="true"></entity-input>
+                </define-column>
+                <define-column label="装备数量" v-slot="{ data }">
+					<define-input v-model="data.row.count" :tableEdit="false"></define-input>
+                </define-column>
+		    </define-table>
+			<define-table :data="detailTable.list" height="2.6042rem" :havePage="false" slot="detail">
+                <define-column label="序号" columnType="index" width="65"></define-column>
+				<define-column label="RFID" field="rfid"></define-column>
+			</define-table>
+        </bos-tabs>
       </div>
        <!-- <text-input label="合计" :column="12"></text-input> -->
        <!-- <div class="total"><span>合计</span><span>{{ total }}</span></div> -->
@@ -54,7 +54,9 @@ import baseButton from '@/componentized/buttonBox/baseButton'
 import dateSelect from '@/componentized/textBox/dateSelect'
 import serviceDialog from "components/base/serviceDialog"
 import entityInput from '@/componentized/entity/entityInput'
+import bosTabs from '@/componentized/table/bosTabs.vue'
 import defineColumn from '@/componentized/entity/defineColumn'
+import defineTable from '@/componentized/entity/defineTable'
 import { processDetail, getHistoryTasks, processDelete } from 'api/process'
 var _ = require('lodash');
 export default {
@@ -191,6 +193,8 @@ export default {
     dateSelect,
     serviceDialog,
     entityInput,
+    bosTabs,
+    defineTable,
     defineColumn
   }
 }

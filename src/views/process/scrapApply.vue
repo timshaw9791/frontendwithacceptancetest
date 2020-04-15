@@ -13,13 +13,14 @@
                     <text-input label="申请原因" v-model="order.note" :haveTip="true" :tips="tips" :title="order.note"></text-input>
                 </div>
                 <div class="table-box">
-                    <div :class="{'total-list':true,'active':tabsIndex==1}" @click="switchTab(1)">总清单</div>
-                    <div :class="{'detail-list':true,'active':tabsIndex==2}" @click="switchTab(2)">明细</div>
-                    <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96" @click="readData"></base-button>
-                    <base-select label="硬件选择" v-model="select.selected" :column="2" align="right" :selectList="select.handWareList"></base-select>
-                        <el-table :data="order.equips" fit height="2.8646rem" @current-change="selRow"
-                            show-summary :summary-method="sumFunc" highlight-current-row border v-if="!showDetail">
-                            <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
+                    <bos-tabs>
+                        <template slot="slotHeader">
+                            <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96" @click="readData"></base-button>
+                            <base-select label="硬件选择" v-model="select.selected" align="right" :selectList="select.handWareList"></base-select>
+                        </template>
+                        <define-table :data="order.equips" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
+                            :hightLightCurrent="true" :showSummary="true" :summaryFunc="sumFunc" slot="total">
+                            <define-column label="序号" columnType="index" width="65"></define-column>
                             <define-column label="操作" width="100" v-slot="{ data }">
                                 <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
                                 <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
@@ -28,20 +29,18 @@
                                 <entity-input v-model="data.row.equipArg" :options="{}" :disabled="true" format="{name}({model})"></entity-input>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
-                                <text-input v-model="data.row.count" type="Number" :disabled="true"></text-input>
+                                <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input>
                             </define-column>
-                        </el-table>
-                        <el-table :data="detailTable.list" fit height="2.8646rem" border v-else>
-                            <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
+                        </define-table>
+                        <define-table :data="detailTable.list" height="2.8646rem" :havePage="false" slot="detail">
+                            <define-column label="序号" columnType="index" width="65"></define-column>
                             <define-column label="操作" width="100" v-slot="{ data }">
                                 <i class="iconfont iconyichuliang" @click="changeDetailRow(data)"></i>
                             </define-column>
                             <define-column label="RFID" field="rfid"></define-column>
-                        </el-table>
+                        </define-table>
+                    </bos-tabs>
                 </div>
-                <!-- <text-input label="合计" :column="12" :disabled="true"></text-input> -->
-				<!-- <div class="total"><span>合计</span><span>{{ total }}</span></div> -->
-                <!-- <text-input label="备注" v-model="order.note" width="100%" :height="40" class="remark"></text-input> -->
                 <div class="buttom">
                     <base-button label="提交" align="right" :width="128" :height="72" :fontSize="20" @click="submit"></base-button>
                     <base-button label="清空" align="right" :width="128" :height="72" :fontSize="20" type="danger"></base-button>
@@ -55,12 +54,14 @@
     import myHeader from 'components/base/header/header';
     import textInput from '@/componentized/textBox/textInput.vue'
     import defineInput from '@/componentized/textBox/defineInput.vue'
+    import bosTabs from '@/componentized/table/bosTabs.vue'
     import baseButton from "@/componentized/buttonBox/baseButton.vue"
     import baseSelect from '@/componentized/textBox/baseSelect.vue'
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
     import defineColumn from '@/componentized/entity/defineColumn'
+    import defineTable from '@/componentized/entity/defineTable'
     import { complete, getOrder, processStart, processDetail } from 'api/process'
     var _ = require('lodash');
     export default {
@@ -74,7 +75,9 @@
             dateSelect,
             entityInput,
             divTmp,
-            defineColumn
+            defineColumn,
+            defineTable,
+            bosTabs
         },
         data(){
             return{
@@ -128,25 +131,6 @@
                     }, {
                         organUnit: {id: organUnit.organUnitId, name: organUnit.organUnitName}
                     });
-                    // this.order.equips = [{
-                    //     id: '1',
-                    //     rfid: '00001',
-                    //     name: "伸缩警棍",
-                    //     model: 'ssjg',
-                    //     count: 1
-                    // },{
-                    //     id: '2',
-                    //     rfid: '00002',
-                    //     name: "手铐",
-                    //     model: 'sk',
-                    //     count: 1
-                    // },{
-                    //     id: '3',
-                    //     rfid: '00003',
-                    //     name: '照明灯',
-                    //     model: 'zmd',
-                    //     count: 1
-                    // }]
                     this.order.equips = [{
                         equipArg: {},
                         rfid: [],

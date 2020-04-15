@@ -1,6 +1,6 @@
 <template>
   <div class="text-input-container" ref="defineInput" :style="`width:${fixWidth}`"
-      :class="[styleObj,{'disabled':disabled,'border':(tableEdit&&edit)}]" @click="changeEditState(true)">
+      :class="[styleObj,{'disabled':disabled&&inTableStateContrl,'border':(tableEdit&&edit)}]" @click="changeEditState(true)">
     <div class="label" v-if="!inTable">{{ label }}
       <span class="required" v-if="required">*</span>
     </div>
@@ -21,6 +21,7 @@ export default {
       insideValue: "",
       inTable: false,
       edit: true, // 内部判断是否只读
+      inTableStateContrl: true,
       styleObj: {
         error: false,
         'table-error': false,
@@ -159,6 +160,10 @@ export default {
       if(this.$refs.defineInput.parentNode.parentNode.nodeName == 'TD') {
         this.inTable = true;
         this.edit = false;
+        if(this.disabled) {
+          this.inTableStateContrl = false;
+          this.tableEdit = false;
+        }
       }
     } catch (error) {
       console.log("当前组件不存在上两级节点");
