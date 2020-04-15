@@ -9,12 +9,12 @@
                 <div class="process-info">
                     <date-select  label="申请时间" v-model="order.createTime" :disabled="true"></date-select>
                     <entity-input label="申请人员" v-model="order.applicant" :required="true" placeholder="请选择"></entity-input>
-                    <entity-input label="入库机构" v-model="order.inboundOrganUnit.name"  :options="{detail:'applicant'}" placeholder=""></entity-input>
+                    <entity-input label="入库机构" v-model="order.inboundOrganUnit" format="{name}" :options="{search:'organUnits'}" placeholder=""></entity-input>
                     <entity-input  label="入库库房" :disabled="true" placeholder="-"></entity-input>
                 </div>
                 <div class="process-info">
                     <entity-input label="入库人员" :disabled="true"  placeholder="请选择"></entity-input>
-                    <entity-input label="出库机构" v-model="order.outboundOrganUnit.name"  :options="{detail:'applicant'}" placeholder=""></entity-input>
+                    <entity-input label="出库机构" v-model="order.outboundOrganUnit" format="{name}" :options="{search:'organUnits'}" placeholder=""></entity-input>
                     <entity-input label="出库库房"  :disabled="true"  placeholder="-"></entity-input>
                     <entity-input label="出库人员" :disabled="true"  placeholder="-"></entity-input>
                 </div>
@@ -23,7 +23,7 @@
                 </div>
                 <div class="table-box">
                     <div :class="{'total-list':true,'active':true}">总清单</div>
-                        <el-table :data="order.equips" fit height="2.8646rem"
+                        <define-table :havePgae="false" :data="order.equips" fit height="2.8646rem"
                             show-summary :summary-method="sumFunc" highlight-current-row border>
                             <define-column label="序号" columnType="index" width="65"></define-column>
                             <define-column label="操作" width="100" v-slot="{ data }">
@@ -36,7 +36,7 @@
                             <define-column label="装备数量" v-slot="{ data }">
                                 <text-input v-model="data.row.count" type="number"></text-input>
                             </define-column>
-                        </el-table>
+                        </define-table>
                 </div>
                 <div class="buttom">
                     <base-button label="提交" align="right" :width="128" :height="72" :fontSize="20" @click="submit"></base-button>
@@ -56,6 +56,7 @@
     import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
     import defineColumn from '@/componentized/entity/defineColumn'
+    import defineTable from '@/componentized/entity/defineTable'
     import { complete, getOrder, processStart, processDetail } from 'api/process'
     var _ = require('lodash');
     export default {
@@ -68,7 +69,8 @@
             dateSelect,
             entityInput,
             divTmp,
-            defineColumn
+            defineColumn,
+            defineTable
         },
         data(){
             return{
@@ -115,23 +117,6 @@ methods:{
                 getOrder({processDefinitionKey: this.$route.params.info.key}).then(res => {
                     // let userInfo = JSON.parse(localStorage.getItem('user'));
                     console.log("res",res);
-                    this.order.outboundOrganUnit={
-                        "name": "温州市局",
-                        "level": "MUNICIPAL",
-                        "upperId": "",
-                        "id": "1",
-                        "createTime": 0,
-                        "updateTime": 0,
-                        "number": ""}
-                        this.order.inboundOrganUnit={
-                            "name": "龙湾分局",
-                            "level": "DISTRICT",
-                            "upperId": "1",
-                            "id": "2",
-                            "createTime": 0,
-                            "updateTime": 0,
-                            "number": ""
-                        }
                     console.log("order",this.order);
                     // this.order.equips = [{
                     //     id: '1',
