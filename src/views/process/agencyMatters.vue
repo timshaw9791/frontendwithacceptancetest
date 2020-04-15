@@ -59,10 +59,26 @@
                 this.getList();
             },
             toDetail(data) {
-                this.$router.push({
-                    name: 'applyAudit',
-                    params: {type:'apply', audit: 'order', info: {processInstanceId: data.processInstanceId, taskId: data.taskId}}
-                })
+                console.log("data",data);
+                if(data.processInstanceName.indexOf("调拨")!=-1){
+                    console.log("调拨");
+                    if(data.name.indexOf("出库")!=-1){
+                        this.$router.push({
+                            name: 'transferStorehouse',
+                            params: {type:'transfer', audit: 'Outbound', info: {processInstanceId: data.processInstanceId, taskId: data.taskId}}
+                        })
+                    }else if(data.name.indexOf("申请")!=-1){
+                        this.$router.push({
+                            name: 'applyAudit',
+                            params: {type:'transfer', audit: 'order', info: {processInstanceId: data.processInstanceId, taskId: data.taskId}}
+                        })
+                    }
+                } else if(data.processInstanceName.indexOf("报废")!=-1){
+                    this.$router.push({
+                        name: 'applyAudit',
+                        params: {type:'apply', audit: 'order', info: {processInstanceId: data.processInstanceId, taskId: data.taskId}}
+                    })
+                }
             }
         },
         created() {

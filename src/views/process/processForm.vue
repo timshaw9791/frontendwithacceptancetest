@@ -27,7 +27,7 @@
           <entity-input label="出库人员" :disabled="true"  placeholder="-"></entity-input>
       </div>
       <div class="process-info"  v-if="title=='调拨'">
-          <base-select label="申请原因" v-model="order.note" :column="12" align="right" :selectList="tips"></base-select>
+          <base-select label="申请原因" v-model="order.note" :column="12" :disabled="true" align="right" :selectList="tips"></base-select>
       </div>
       <div class="table-box">
         <div :class="{'total-list':true,'active':tabsIndex==1}" @click="switchTab(1)">总清单</div>
@@ -66,6 +66,7 @@ import processInfos from 'components/process/processInfos'
 import textInput from '@/componentized/textBox/textInput'
 import baseButton from '@/componentized/buttonBox/baseButton'
 import dateSelect from '@/componentized/textBox/dateSelect'
+import baseSelect from '@/componentized/textBox/baseSelect'
 import serviceDialog from "components/base/serviceDialog"
 import entityInput from '@/componentized/entity/entityInput'
 import defineColumn from '@/componentized/entity/defineColumn'
@@ -202,6 +203,7 @@ export default {
     textInput,
     baseButton,
     dateSelect,
+    baseSelect,
     serviceDialog,
     entityInput,
     defineColumn

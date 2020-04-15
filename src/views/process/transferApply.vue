@@ -23,7 +23,7 @@
                 </div>
                 <div class="table-box">
                     <div :class="{'total-list':true,'active':true}">总清单</div>
-                        <el-table :data="order.equips" fit height="2.8646rem"
+                        <define-table :havePgae="false" :data="order.equips" fit height="2.8646rem"
                             show-summary :summary-method="sumFunc" highlight-current-row border>
                             <define-column label="序号" columnType="index" width="65"></define-column>
                             <define-column label="操作" width="100" v-slot="{ data }">
@@ -36,7 +36,7 @@
                             <define-column label="装备数量" v-slot="{ data }">
                                 <text-input v-model="data.row.count" type="number"></text-input>
                             </define-column>
-                        </el-table>
+                        </define-table>
                 </div>
                 <div class="buttom">
                     <base-button label="提交" align="right" :width="128" :height="72" :fontSize="20" @click="submit"></base-button>
@@ -56,6 +56,7 @@
     import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
     import defineColumn from '@/componentized/entity/defineColumn'
+    import defineTable from '@/componentized/entity/defineTable'
     import { complete, getOrder, processStart, processDetail } from 'api/process'
     var _ = require('lodash');
     export default {
@@ -68,7 +69,8 @@
             dateSelect,
             entityInput,
             divTmp,
-            defineColumn
+            defineColumn,
+            defineTable
         },
         data(){
             return{
