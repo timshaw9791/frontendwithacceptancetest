@@ -23,17 +23,20 @@
           <entity-input label="申请原因" v-model="order.note" :column="12" :disabled="true"></entity-input>
       </div>
       <div class="table-box">
-        <div :class="{'total-list':true,'active':true}">总清单</div>
-        <define-table :data="order.equips" fit height="2.6042rem" @current-change="selRow" 
-          show-summary :summary-method="sumFunc" highlight-current-row border v-if="!showDetail">
-          <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
-          <define-column label="装备参数" v-slot="{ data }">
-            <entity-input v-model="data.row.equipArg" format="{name}({model})" :disabled="true"></entity-input>
-          </define-column>
-          <define-column label="装备数量" v-slot="{ data }">
-            <text-input v-model="data.row.count" :disabled="true"></text-input>
-          </define-column>
-        </define-table>
+        <bos-tabs :label="[{label: '总清单',key: 'total'}]">
+            <template slot="total">
+                <define-table :data="order.equips" fit height="2.6042rem" @current-change="selRow" 
+                show-summary :summary-method="sumFunc" highlight-current-row border v-if="!showDetail">
+                <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
+                <define-column label="装备参数" v-slot="{ data }">
+                    <entity-input v-model="data.row.equipArg" format="{name}({model})" :disabled="true"></entity-input>
+                </define-column>
+                <define-column label="装备数量" v-slot="{ data }">
+                    <text-input v-model="data.row.count" :disabled="true"></text-input>
+                </define-column>
+                </define-table>
+            </template>
+        </bos-tabs>
       </div>
     </div>
     <div class="process-form-bottom">
@@ -55,6 +58,7 @@ import baseSelect from '@/componentized/textBox/baseSelect'
 import serviceDialog from "components/base/serviceDialog"
 import entityInput from '@/componentized/entity/entityInput'
 import defineColumn from '@/componentized/entity/defineColumn'
+import bosTabs from '@/componentized/table/bosTabs'
 import defineTable from '@/componentized/entity/defineTable'
 import { processDetail, getHistoryTasks, processDelete } from 'api/process'
 var _ = require('lodash');
@@ -131,7 +135,8 @@ export default {
     serviceDialog,
     entityInput,
     defineColumn,
-    defineTable
+    defineTable,
+    bosTabs
   }
 }
 </script>

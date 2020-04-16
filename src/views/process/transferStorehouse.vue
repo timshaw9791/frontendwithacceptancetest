@@ -12,7 +12,7 @@
             <entity-input  label="入库库房" :disabled="true" placeholder="-"></entity-input>
         </div>
         <div class="process-info">
-            <entity-input label="入库人员" :disabled="true"  placeholder="请选择"></entity-input>
+            <entity-input label="入库人员" :disabled="true"  placeholder="-"></entity-input>
             <entity-input label="出库机构" v-model="order.outboundOrganUnit" :disabled="true" format="{name}" :options="{search:'organUnits'}" placeholder=""></entity-input>
             <entity-input label="出库库房"  :disabled="true"  placeholder="-"></entity-input>
             <entity-input label="出库人员" :disabled="true"  placeholder="-"></entity-input>
@@ -21,13 +21,11 @@
             <entity-input label="申请原因" v-model="order.note" :disabled="true" :column="12" align="right" ></entity-input>
         </div>
         <div class="table-box">
-            <div :class="{'total-list':true,'active':tabsIndex==1}" @click="switchTab(1)">总清单</div>
-            <div :class="{'detail-list':true,'active':tabsIndex==2}" @click="switchTab(2)">明细</div>
-            <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96" @click="readData"></base-button>
-            <base-select label="硬件选择" v-model="select.selected" :column="2" align="right" :selectList="select.handWareList"></base-select>
-            <div style="width:74%;display:inline;margin-top:5px;float:left">
-            <el-table :havePgae="false" :data="order.equips" fit height="2.6042rem" @current-change="selRow" style="float:left"
-                    show-summary :summary-method="sumFunc" highlight-current-row border v-if="!showDetail">
+          <div style="width:74%;display:inline;margin-top:5px;float:left">
+            <bos-tabs>
+              <template  slot="total">
+                <el-table :havePgae="false" :data="order.equips" fit height="2.6042rem" @current-change="selRow" style="float:left"
+                    show-summary :summary-method="sumFunc" highlight-current-row border>
                     <define-column label="序号" columnType="index" width="65" align="center"></define-column>
                     <define-column label="操作" width="100" v-slot="{ data }">
                         <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
@@ -43,11 +41,17 @@
                         <text-input v-model="data.row.count" :disabled="true"></text-input>
                     </define-column>
                 </el-table>
-                <el-table :havePgae="false" :data="detailTable.list" fit height="2.6042rem" border v-else>
+              </template>
+              <template slot="detail">
+                <el-table :havePgae="false" :data="detailTable.list" fit height="2.6042rem" border>
                     <define-column label="序号" columnType="index" width="65" align="center"></define-column>
                     <define-column label="RFID" field="rfid"></define-column>
                 </el-table> 
-            </div>
+              </template>
+            </bos-tabs>
+          </div>
+            <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96" @click="readData"></base-button>
+            <base-select label="硬件选择" v-model="select.selected" :column="2" align="right" :selectList="select.handWareList"></base-select>
             <div style="width:24%;display:inline;float:left;margin-left:15px;margin-top:5px">
                 <el-table :havePgae="false" :data="applyEquip" height="2.6042rem" border>
                     <define-column label="序号" columnType="index" width="65" align="center"></define-column>
@@ -65,10 +69,6 @@
             <base-button label="清空" align="right" :width="128" :height="72" :fontSize="20" type="danger"></base-button>
         </div>
     </div>
-    <!-- <div class="process-form-bottom">
-      <process-infos :list="historyTasks" :height="136"></process-infos>
-    </div> -->
-    
   </div>
 </template>
 
@@ -82,6 +82,7 @@ import baseSelect from '@/componentized/textBox/baseSelect'
 import serviceDialog from "components/base/serviceDialog"
 import entityInput from '@/componentized/entity/entityInput'
 import defineColumn from '@/componentized/entity/defineColumn'
+import bosTabs from '@/componentized/table/bosTabs'
 import defineTable from '@/componentized/entity/defineTable'
 import { processDetail, getHistoryTasks, processDelete } from 'api/process'
 var _ = require('lodash');
@@ -98,25 +99,10 @@ export default {
         list: [],
       },
       order: {
-        type: 'transfer',
-        processInstanceId: '',
-        number: "",
-        warehouse: {
-            id: 'sjkfa',
-            name: '市局库房a'
-        },
-        applyTime: 0,
-        applicant: {
-            id: '',
-            name: '',
-            organUnitId: ''
-        },
-        applyReson: "",
-        note: "",
-        equips: []
-    },
-    applyEquip:[],
-    select: {
+        // equips: []
+      },
+      applyEquip:[],
+      select: {
         handWareList: [{
             label: "手持机",
             value: 'handheld'
@@ -125,29 +111,26 @@ export default {
             value: "reader"
         }],
         selected: ""
-    },
-    tips: [{value: '111', key: '1'}, {value: '222', key: '2'}],
-    historyTasks: []
-    }
+      },
+      tips: [{value: '111', key: '1'}, {value: '222', key: '2'}],
+      historyTasks: []
+      }
   },
   methods: {
     getData() {
       processDetail({processInstanceId: this.$route.params.info.processInstanceId}).then(res => {
         this.title = res.name.substr(0, 2);
-        this.applyEquip = _.values(_.reduce(res.processVariables.order.equips, (result, obj) => {
-          if(result[obj.equipArg.model]) {
-            result[obj.equipArg.model].count++;
-            result[obj.equipArg.model].rfid.push(obj.rfid);
-            result[obj.equipArg.model].equipId.push(obj.equipId);
-          } else {
-            result[obj.equipArg.model] = {count: 1, rfid: [obj.rfid], equipId: [obj.equipId], equipArg: obj.equipArg};
-          }
-          return result;
-        }, {}))
         this.order = Object.assign(this.order, res.processVariables.order)
-        this.order.equips=[
-            // {count: '', rfid: [], equipId: [], equipArg: {}}
-        ]
+        this.order.equips=[]
+        for(let i = 0;i<10;i++){
+            this.order.equips.push({
+                equipArg: {},
+                count: ''
+                }
+            )
+        }
+        console.log(this.order);
+        this.applyEquip = res.processVariables.order.equips
         this.show = true;
       })
       getHistoryTasks({processInstanceId: this.$route.params.info.processInstanceId}).then(res => {
@@ -208,31 +191,12 @@ export default {
                     "pdf": null,
                     "video": null,
                     "categoryId": "2"}}];
-            // this.order.equips = data;
-            this.order.equips=[]
-        data.forEach((obj, index) => {
-            this.order.equips.push({
-                count:obj.count,
-                rfid:obj.rfid,
-                equipArg:obj.equipArg,
-                equipId:obj.equipId,
-            })
-            // this.order.equips[index].count = obj.count; // 这样赋值是为了避免绑定源丢失，导致页面不刷新
-            // this.order.equips[index].rfid = obj.rfid;
-            // this.order.equips[index].equipArg = obj.equipArg;
-            // this.order.equips[index].equipId = obj.equipId;
-        })
-    },
-    switchTab(index) { // 切换标签卡
-      if(index == 1) {
-          this.showDetail = false;
-      } else if(this.detailTable.list.length == 0) {
-          this.$message.warning('未选择装备信息');
-          return;
-      } else {
-          this.showDetail = true;
-      }
-      this.tabsIndex = index;
+              data.forEach((obj, index) => {
+                  this.order.equips[index].count = obj.count; // 这样赋值是为了避免绑定源丢失，导致页面不刷新
+                  this.order.equips[index].rfid = obj.rfid;
+                  this.order.equips[index].equipArg = obj.equipArg;
+                  this.order.equips[index].equipId = obj.equipId;
+              })
     },
     submit(){
         console.log("提交");
@@ -284,7 +248,8 @@ export default {
     serviceDialog,
     entityInput,
     defineColumn,
-    defineTable
+    defineTable,
+    bosTabs
   }
 }
 </script>

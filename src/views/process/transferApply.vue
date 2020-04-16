@@ -22,22 +22,24 @@
                     <base-select label="申请原因" v-model="order.note" :column="12" align="right" :selectList="tips"></base-select>
                 </div>
                 <div class="table-box">
-                    <bos-tabs :label="[{label: '总清单',key: 'total'}]"></bos-tabs>
-                    <!-- <div :class="{'total-list':true,'active':true}">总清单</div> -->
-                    <define-table :havePgae="false" :data="order.equips" fit height="2.8646rem"
-                        show-summary :summary-method="sumFunc" highlight-current-row border>
-                        <define-column label="序号" columnType="index" width="65"></define-column>
-                        <define-column label="操作" width="100" v-slot="{ data }">
-                            <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
-                            <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
-                        </define-column>
-                        <define-column label="装备参数" v-slot="{ data }">
-                            <entity-input v-model="data.row.equipArg" :options="{detail:'equipParam'}" format="{name}({model})"></entity-input>
-                        </define-column>
-                        <define-column label="装备数量" v-slot="{ data }">
-                            <text-input v-model="data.row.count" type="number"></text-input>
-                        </define-column>
-                    </define-table>
+                    <bos-tabs :label="[{label: '总清单',key: 'total'}]">
+                        <template slot="total">
+                            <define-table :havePgae="false" :data="order.equips" fit height="2.8646rem"
+                                show-summary :summary-method="sumFunc" highlight-current-row border>
+                                <define-column label="序号" columnType="index" width="65"></define-column>
+                                <define-column label="操作" width="100" v-slot="{ data }">
+                                    <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
+                                    <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
+                                </define-column>
+                                <define-column label="装备参数" v-slot="{ data }">
+                                    <entity-input v-model="data.row.equipArg" :options="{detail:'equipParam'}" format="{name}({model})"></entity-input>
+                                </define-column>
+                                <define-column label="装备数量" v-slot="{ data }">
+                                    <text-input v-model="data.row.count" type="number"></text-input>
+                                </define-column>
+                            </define-table>
+                        </template>
+                    </bos-tabs>
                 </div>
                 <div class="buttom">
                     <base-button label="提交" align="right" :width="128" :height="72" :fontSize="20" @click="submit"></base-button>
