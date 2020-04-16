@@ -3,18 +3,18 @@
         <my-header :title="title" :haveBlack="false"></my-header>
         <div class="apply-process" v-if="show">
             <div class="apply-process-top" data-test="action_box">
-                <text-input label="单号" v-model="order.number" :disabled="true" class="odd-number"></text-input>
+                <text-input label="单号" v-model="order.number" :disabled="true" class="odd-number" placeholder="-"></text-input>
             </div>
             <div class="apply-process-body">
                 <div class="process-info">
-                    <date-select  label="申请时间" v-model="order.createTime" :disabled="true"></date-select>
+                    <entity-input  label="申请时间" v-model="order.createTime" :disabled="true" placeholder="-"></entity-input>
                     <entity-input label="申请人员" v-model="order.applicant" :required="true" placeholder="请选择"></entity-input>
-                    <entity-input label="入库机构" v-model="order.inboundOrganUnit" format="{name}" :options="{search:'organUnits'}" placeholder=""></entity-input>
+                    <entity-input label="入库机构" v-model="order.inboundOrganUnit" format="{name}" :options="{search:'organUnits'}" placeholder="请选择"></entity-input>
                     <entity-input  label="入库库房" :disabled="true" placeholder="-"></entity-input>
                 </div>
                 <div class="process-info">
-                    <entity-input label="入库人员" :disabled="true"  placeholder="请选择"></entity-input>
-                    <entity-input label="出库机构" v-model="order.outboundOrganUnit" format="{name}" :options="{search:'organUnits'}" placeholder=""></entity-input>
+                    <entity-input label="入库人员" :disabled="true"  placeholder="-"></entity-input>
+                    <entity-input label="出库机构" v-model="order.outboundOrganUnit" format="{name}" :options="{search:'organUnits'}" placeholder="请选择"></entity-input>
                     <entity-input label="出库库房"  :disabled="true"  placeholder="-"></entity-input>
                     <entity-input label="出库人员" :disabled="true"  placeholder="-"></entity-input>
                 </div>
@@ -22,25 +22,28 @@
                     <base-select label="申请原因" v-model="order.note" :column="12" align="right" :selectList="tips"></base-select>
                 </div>
                 <div class="table-box">
-                    <div :class="{'total-list':true,'active':true}">总清单</div>
-                        <define-table :havePgae="false" :data="order.equips" fit height="2.8646rem"
-                            show-summary :summary-method="sumFunc" highlight-current-row border>
-                            <define-column label="序号" columnType="index" width="65"></define-column>
-                            <define-column label="操作" width="100" v-slot="{ data }">
-                                <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
-                                <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
-                            </define-column>
-                            <define-column label="装备参数" v-slot="{ data }">
-                                <entity-input v-model="data.row.equipArg" :options="{detail:'equipParam'}" format="{name}({model})"></entity-input>
-                            </define-column>
-                            <define-column label="装备数量" v-slot="{ data }">
-                                <text-input v-model="data.row.count" type="number"></text-input>
-                            </define-column>
-                        </define-table>
+                    <bos-tabs :label="[{label: '总清单',key: 'total'}]">
+                        <template slot="total">
+                            <define-table :havePgae="false" :data="order.equips" fit height="2.8646rem"
+                                show-summary :summary-method="sumFunc" highlight-current-row border>
+                                <define-column label="序号" columnType="index" width="65"></define-column>
+                                <define-column label="操作" width="100" v-slot="{ data }">
+                                    <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
+                                    <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
+                                </define-column>
+                                <define-column label="装备参数" v-slot="{ data }">
+                                    <entity-input v-model="data.row.equipArg" :options="{detail:'equipParam'}" format="{name}({model})"></entity-input>
+                                </define-column>
+                                <define-column label="装备数量" v-slot="{ data }">
+                                    <text-input v-model="data.row.count" type="number"></text-input>
+                                </define-column>
+                            </define-table>
+                        </template>
+                    </bos-tabs>
                 </div>
                 <div class="buttom">
                     <base-button label="提交" align="right" :width="128" :height="72" :fontSize="20" @click="submit"></base-button>
-                    <base-button label="清空" align="right" :width="128" :height="72" :fontSize="20" type="danger"></base-button>
+                    <base-button label="清空" align="right" :width="128" :height="72" :fontSize="20" type="danger" @click="clean"></base-button>
                 </div>
             </div>
         </div>
@@ -57,6 +60,7 @@
     import divTmp from '@/componentized/divTmp'
     import defineColumn from '@/componentized/entity/defineColumn'
     import defineTable from '@/componentized/entity/defineTable'
+    import bosTabs from '@/componentized/table/bosTabs'
     import { complete, getOrder, processStart, processDetail } from 'api/process'
     var _ = require('lodash');
     export default {
@@ -70,99 +74,33 @@
             entityInput,
             divTmp,
             defineColumn,
-            defineTable
+            defineTable,
+            bosTabs
         },
         data(){
             return{
                 title: "",
                 show: false,
-                // isReset: false, // 是否是重填申请
-                // tabsIndex: 1,
-                // rowData: '', // 选中的单选行数据
-                // detailTable: {
-                //     list: [],
-                // },
-                order: {
-                    type: 'transfer',
-                    processInstanceId: '',
-                    number: "",
-                    createTime: 0,
-                    inboundOrganUnit:{},
-                    outboundOrganUnit:{},
-                    applicant: {
-                        id: '',
-                        name: '',
-                        organUnitId: ''
-                    },
-                    applyReson: "",
-                    note: "",
-                    equips: []
-                },
-                // select: {
-                //     handWareList: [{
-                //         label: "手持机",
-                //         value: 'handheld'
-                //     }, {
-                //         label: "读卡器",
-                //         value: "reader"
-                //     }],
-                //     selected: ""
-                // },
+                order: {},
                 tips: [{value: '111', key: '1'}, {value: '222', key: '2'}]
             }
         },
-methods:{
+        methods:{
             init() {
-                // let organUnit = JSON.parse(localStorage.getItem('user'))
                 getOrder({processDefinitionKey: this.$route.params.info.key}).then(res => {
-                    // let userInfo = JSON.parse(localStorage.getItem('user'));
-                    console.log("res",res);
-                    console.log("order",this.order);
-                    // this.order.equips = [{
-                    //     id: '1',
-                    //     rfid: '00001',
-                    //     name: "伸缩警棍",
-                    //     model: 'ssjg',
-                    //     count: 1
-                    // },{
-                    //     id: '2',
-                    //     rfid: '00002',
-                    //     name: "手铐",
-                    //     model: 'sk',
-                    //     count: 1
-                    // },{
-                    //     id: '3',
-                    //     rfid: '00003',
-                    //     name: '照明灯',
-                    //     model: 'zmd',
-                    //     count: 1
-                    // }]
-                    this.order.equips = [{
-                        equipArg: {},
-                        rfid: [],
-                        count: ''
-                    }]
+                    this.order = res
+                    for(let i = 0;i<10;i++){
+                        this.order.equips.push({
+                            equipArg: {},
+                            count: ''
+                            }
+                        )
+                    }
                     this.show = true;
                 }).catch(err => {
                     this.$message.error(err.response.data.message);
                 })
             },
-            // getData() {
-            //     processDetail({processInstanceId: this.$route.params.info.processInstanceId}).then(res => {
-            //         res.processVariables.order.equips = _.values(_.reduce(res.processVariables.order.equips, (result, obj) => {
-            //             if(result[obj.equipArg.model]) {
-            //                 result[obj.equipArg.model].count++;
-            //                 result[obj.equipArg.model].rfid.push(obj.rfid);
-            //                 result[obj.equipArg.model].equipId.push(obj.equipId);
-            //             } else {
-            //                 result[obj.equipArg.model] = {count: 1, rfid: [obj.rfid], equipId: [obj.equipId], equipArg: obj.equipArg};
-            //             }
-            //             return result;
-            //         }, {}))
-            //         this.order = Object.assign(this.order, res.processVariables.order);
-            //         this.show = true;
-            //     })
-            // },
             sumFunc(param) { // 表格合并行计算方法
                 let { columns, data } = param, sums = [];
                 columns.forEach((colum, index) => {
@@ -179,42 +117,19 @@ methods:{
                 })
                 return sums;
             },
-            a(data){
-                console.log("data",data);
-            },
             submit() {
-                console.log("提交");
                 let order = JSON.parse(JSON.stringify(this.order));
-                console.log(order);
-                console.log("object",_.map(this.order.equips, obj =>Object.assign({count:obj.count},_.pick(obj, 'equipArg'))));
-                console.log("object",_.flatten(_.map(this.order.equips, obj =>Object.assign({count:obj.count},_.pick(obj, 'equipArg')))));
-                // console.log("map",_.map(this.order.equips, obj => _.map(obj.rfid, (v, i) => Object.assign({rfid: v}, _.pick(obj, 'equipArg'), {equipId: obj.equipId[i]}))));
                 order.equips = _.filter(_.flatten(_.map(this.order.equips, obj =>Object.assign({count:obj.count},_.pick(obj, 'equipArg')))), function(a) {return a.count!=0});
-                console.log(order);
                 if(order.equips.length == 0) {
                     this.$message.warning('未选择装备');
                     return;
                 }
-
-                // if(this.$route.params.info.number) {
-                //     let userId = JSON.parse(localStorage.getItem('user')).id;
-                //     complete(this.$route.params.info.taskId, {userId: userId}, {
-                //         order: order
-                //     }).then(res => {
-                //         this.$message.success("申请成功")
-                //         this.$router.push({name: 'myProcess'});
-                //     }).catch(err => {
-                //         this.$message.error(err.response.data.message);
-                //     })
-                // } else {
-                    console.log("order",order);
-                    processStart({processDefinitionKey: this.$route.params.info.key}, order).then(res => {
-                        this.$message.success('流程申请成功');
-                        this.$router.push({name: 'myProcess'});
-                    }).catch(err => {
-                        this.$message.error(err.response.data.message);
-                    })
-                // }
+                processStart({processDefinitionKey: this.$route.params.info.key}, order).then(res => {
+                    this.$message.success('流程申请成功');
+                    this.$router.push({name: 'myProcess'});
+                }).catch(err => {
+                    this.$message.error(err.response.data.message);
+                })
             },
             changeRow(state, data) { // 总清单删除
                 let temp = JSON.parse(JSON.stringify(this.order.equips));
@@ -227,6 +142,11 @@ methods:{
                 }
 				this.order.equips = temp;
             },
+            clean(){//清空
+                for(let i in this.order.equips){
+					this.order.equips.splice(this.order.equips.i, 0, {count: '', rfid: [], equipId: [], equipArg: {}});
+                }
+            }
 		},
         created() {
             if(this.$route.params.info == undefined) {
@@ -235,17 +155,7 @@ methods:{
                 return
             }
             this.title = "我的流程/申请" + this.$route.params.info.name.substr(0, 2);
-            // this.order.createTime=new Date().getTime();
-            if(this.$route.params.info.number) {
-                this.isReset = true;
-                this.getData();
-            } else {
-                this.init();
-            }
-            // this.order.equips = [{
-            //     equipArg: {},
-            //     count: ''
-            // }]
+            this.init();
         }
     }
 </script>
@@ -281,19 +191,6 @@ methods:{
                 padding: 0 10px;
                 .iconfont {
                     margin: 0 5px;
-                }
-                .total-list,
-                .detail-list {
-                    display: inline-block;
-                    border: 1px solid #EAEAEA;
-                    height: 40px;
-                    line-height: 40px;
-                    padding: 0 10px;
-                    background-color: #DCDFE6;
-                    cursor: pointer;
-                }
-                .active {
-                    background-color: white;
                 }
             }
             .remark {

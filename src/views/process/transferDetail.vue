@@ -2,39 +2,43 @@
   <div class="process-form-container">
     <my-header :title="'我的流程/'+title+'申请单'" :haveBlack="false"></my-header>
     <div class="process-form-top" v-if="show">
-      <define-input label="单号" v-model="order.number" :column="3" :disabled="true"></define-input>
+      <text-input label="单号" v-model="order.number" :column="3" :disabled="true"></text-input>
       <base-button label="导出" type="none" align="right" v-show="operate"></base-button>
       <base-button label="重填" align="right" @click="refill" v-show="operate"></base-button>
       <base-button label="作废" align="right" @click="$refs.ratify.show()" v-show="operate"></base-button>
     </div>
     <div class="process-form-body" v-if="show">
       <div class="process-info">
-          <text-input label="所在库房" v-model="order.warehouse.name" :column="3" :disabled="true"></text-input>
-          <date-select v-model="order.applyTime" :column="3" :disabled="true"></date-select>
-          <entity-input label="申请人员" v-model="order.applicant" :column="3" :disabled="true"></entity-input>
-          <text-input label="申请原因" v-model="order.note" :column="3" :haveTip="true" :tips="tips" :title="order.note" :disabled="true"></text-input>
+          <date-select  label="申请时间" v-model="order.createTime" :disabled="true"></date-select>
+          <entity-input label="申请人员" v-model="order.applicant" :disabled="true" :required="true" placeholder="-"></entity-input>
+          <entity-input label="入库机构" v-model="order.inboundOrganUnit" :disabled="true" format="{name}" :options="{search:'organUnits'}"></entity-input>
+          <entity-input  label="入库库房" :disabled="true" placeholder="-"></entity-input>
+      </div>
+      <div class="process-info">
+          <entity-input label="入库人员" :disabled="true"  placeholder="-"></entity-input>
+          <entity-input label="出库机构" v-model="order.outboundOrganUnit" :disabled="true" format="{name}" :options="{search:'organUnits'}"></entity-input>
+          <entity-input label="出库库房"  :disabled="true"  placeholder="-"></entity-input>
+          <entity-input label="出库人员" :disabled="true"  placeholder="-"></entity-input>
+      </div>
+      <div class="process-info">
+          <entity-input label="申请原因" v-model="order.note" :column="12" :disabled="true"></entity-input>
       </div>
       <div class="table-box">
-        <div :class="{'total-list':true,'active':tabsIndex==1}" @click="switchTab(1)">总清单</div>
-        <div :class="{'detail-list':true,'active':tabsIndex==2}" @click="switchTab(2)">明细</div>
-        <el-table :data="order.equips" fit height="2.6042rem" @current-change="selRow" 
-          show-summary :summary-method="sumFunc" highlight-current-row border v-if="!showDetail">
-          <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
-          <define-column label="装备参数" v-slot="{ data }">
-            <entity-input v-model="data.row.equipArg" format="{name}({model})" :disabled="true"></entity-input>
-          </define-column>
-          <define-column label="装备数量" v-slot="{ data }">
-            <text-input v-model="data.row.count" :disabled="true"></text-input>
-          </define-column>
-        </el-table>
-        <el-table :data="detailTable.list" fit height="505px" border v-else>
-          <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
-          <define-column label="RFID" field="rfid"></define-column>
-        </el-table>
+        <bos-tabs :label="[{label: '总清单',key: 'total'}]">
+            <template slot="total">
+                <define-table  :havePgae="false" :data="order.equips" fit height="2.6042rem" @current-change="selRow" 
+                show-summary :summary-method="sumFunc" highlight-current-row border v-if="!showDetail">
+                <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
+                <define-column label="装备参数" v-slot="{ data }">
+                    <entity-input v-model="data.row.equipArg" format="{name}({model})" :disabled="true"></entity-input>
+                </define-column>
+                <define-column label="装备数量" v-slot="{ data }">
+                    <text-input v-model="data.row.count" :disabled="true"></text-input>
+                </define-column>
+                </define-table>
+            </template>
+        </bos-tabs>
       </div>
-       <!-- <text-input label="合计" :column="12"></text-input> -->
-       <!-- <div class="total"><span>合计</span><span>{{ total }}</span></div> -->
-      <!-- <text-input label="备注" v-model="order.note" width="100%" :height="40" class="remark" :disabled="true"></text-input> -->
     </div>
     <div class="process-form-bottom">
       <process-infos :list="historyTasks" :height="136"></process-infos>
@@ -49,13 +53,13 @@
 import myHeader from 'components/base/header/header';
 import processInfos from 'components/process/processInfos'
 import textInput from '@/componentized/textBox/textInput'
-import defineInput from '@/componentized/textBox/defineInput.vue'
 import baseButton from '@/componentized/buttonBox/baseButton'
 import dateSelect from '@/componentized/textBox/dateSelect'
+import baseSelect from '@/componentized/textBox/baseSelect'
 import serviceDialog from "components/base/serviceDialog"
 import entityInput from '@/componentized/entity/entityInput'
-import bosTabs from '@/componentized/table/bosTabs.vue'
 import defineColumn from '@/componentized/entity/defineColumn'
+import bosTabs from '@/componentized/table/bosTabs'
 import defineTable from '@/componentized/entity/defineTable'
 import { processDetail, getHistoryTasks, processDelete } from 'api/process'
 var _ = require('lodash');
@@ -63,34 +67,10 @@ export default {
   name: 'processForm',
   data() {
     return {
-      title: "报废",
+      title: "调拨",
       show: false,
       operate: true,
-      tabsIndex: 1,
-      rowData: '', // 选中的单选行数据
-      showDetail: false, // 明细列表
-      detailTable: {
-        list: [],
-      },
-      order: {
-        type: 'scrap',
-        processInstanceId: '',
-        number: "",
-        warehouse: {
-            id: 'sjkfa',
-            name: '市局库房a'
-        },
-        applyTime: 0,
-        applicant: {
-            id: '',
-            name: '',
-            organUnitId: ''
-        },
-        applyReson: "",
-        note: "",
-        equips: []
-    },
-      tips: [{value: '直接报废', key: '1'}, {value: '装备拿去维修，无法修补', key: '2'}],
+      order: {},
       historyTasks: []
     }
   },
@@ -98,27 +78,11 @@ export default {
     getData() {
       processDetail({processInstanceId: this.$route.params.info.processInstanceId}).then(res => {
         this.title = res.name.substr(0, 2);
-        res.processVariables.order.equips = _.values(_.reduce(res.processVariables.order.equips, (result, obj) => {
-          if(result[obj.equipArg.model]) {
-            result[obj.equipArg.model].count++;
-            result[obj.equipArg.model].rfid.push(obj.rfid);
-            result[obj.equipArg.model].equipId.push(obj.equipId);
-          } else {
-            result[obj.equipArg.model] = {count: 1, rfid: [obj.rfid], equipId: [obj.equipId], equipArg: obj.equipArg};
-          }
-          return result;
-        }, {}))
         this.order = Object.assign(this.order, res.processVariables.order)
         this.show = true;
       })
       getHistoryTasks({processInstanceId: this.$route.params.info.processInstanceId}).then(res => {
         this.historyTasks = res
-      })
-    },
-    refill() { // 重填
-      this.$router.push({
-        name: 'processApply',
-        params: {type: 'apply', info: {name: this.title, processInstanceId: this.order.processInstanceId, taskId: this.$route.params.info.taskId, number: this.order.number}}
       })
     },
     nullify() { // 作废
@@ -134,27 +98,11 @@ export default {
         }
       })
     },
-    switchTab(index) { // 切换标签卡
-      if(index == 1) {
-          this.showDetail = false;
-      } else if(this.detailTable.list.length == 0) {
-          this.$message.warning('未选择装备信息');
-          return;
-      } else {
-          this.showDetail = true;
-      }
-      this.tabsIndex = index;
-    },
-    selRow(current) { // 单选表格行
-      if(!current) return; // 避免切换数据时报错
-      this.detailTable.list = [];
-      this.rowData = current;
-      if(current.rfid == undefined) return;
-      for(let rfid of current.rfid) {
-          this.detailTable.list.push({
-              rfid: rfid
-          })
-      }
+    refill() { // 重填
+      this.$router.push({
+        name: 'processApply',
+        params: {type: 'apply', info: {name: this.title, processInstanceId: this.order.processInstanceId, taskId: this.$route.params.info.taskId, number: this.order.number}}
+      })
     },
     sumFunc(param) { // 表格合并行计算方法
       let { columns, data } = param, sums = [];
@@ -188,14 +136,14 @@ export default {
     myHeader,
     processInfos,
     textInput,
-    defineInput,
     baseButton,
     dateSelect,
+    baseSelect,
     serviceDialog,
     entityInput,
-    bosTabs,
+    defineColumn,
     defineTable,
-    defineColumn
+    bosTabs
   }
 }
 </script>

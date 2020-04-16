@@ -127,6 +127,11 @@ export const asyncRouterMap = [
                 hidden: true,
             },{
                 path: 'myProcess/:type/:audit', // 调拨出入库
+                name: 'transferDetail',
+                component: _import('process/transferDetail'),
+                hidden: true,
+            },{
+                path: 'myProcess/:type/:audit', // 调拨出入库
                 name: 'transferStorehouse',
                 component: _import('process/transferStorehouse'),
                 hidden: true,
