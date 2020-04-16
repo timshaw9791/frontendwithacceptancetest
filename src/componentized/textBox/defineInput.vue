@@ -99,6 +99,7 @@ export default {
   methods: {
     clear() {
       this.insideValue = "";
+      this.reg(); // 这里貌似没有触发change事件。暂且手动触发
     },
     reg() {
       let judge = true;
@@ -128,8 +129,11 @@ export default {
             judge = /^(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?$/.test(this.value);
             break;
         default:
-            judge = this.validate(this.value)
+            judge = this.validate(this.value);
             break;
+      }
+      if(this.required&&this.insideValue=='') {
+        judge = false;
       }
       if(judge) {
         this.inTable?this.styleObj['table-error']=false:this.styleObj.error=false;

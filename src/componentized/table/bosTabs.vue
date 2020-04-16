@@ -1,6 +1,6 @@
 <template>
   <div class="bos-card-container">
-    <div class="top-tabs">
+    <div class="top-tabs" v-if="tabs">
       <div v-for="(item, i) in label" :key="i" 
         :class="{'tabs':true,'selected':selectedIndex==i}"
         @click="changeTab(i)">{{ item.label }}</div>
@@ -8,8 +8,14 @@
     <div class="slot-component">
       <slot name="slotHeader"></slot>
     </div>
-    <div v-for="(item, i) in label" :key="'slot'+i"  v-show="label[selectedIndex].key == item.key">
-      <slot :name="item.key"></slot>
+    <div class="bos-card-body" :style="'grid-template-columns:'+gridColumn">
+      <div v-for="(item, i) in label" :key="'slot'+i"  v-show="label[selectedIndex].key == item.key" class="slot">
+        <slot :name="item.key"></slot>
+      </div>
+      <div class="contrast-component" v-for="(slotName, j) in contrastKey" :key="j" v-show="contrast">
+        <slot :name="slotName"></slot>
+        <div class="mask" v-show="contrastMask"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -19,7 +25,9 @@ export default {
   name: 'bosTabs',
   data() {
     return {
-      selectedIndex: 0
+      selectedIndex: 0,
+      tabs: false,
+      contrast: false
     }
   },
   props: {
@@ -34,12 +42,53 @@ export default {
           key: 'detail'
         }]
       }
+    },
+    option: {
+      type: Array,
+      default() {
+        return ['tabs']
+      }
+    },
+    contrastKey: {
+      type: Array,
+      default() {
+        return ['contrast']
+      }
+    },
+    contrastMask: {
+      type: Boolean,
+      default: true
+    },
+    layoutRatio: {
+      type: Array,
+      default() {
+        return [1,1]
+      }
+    },
+  },
+  computed: {
+    gridColumn() {
+      if(!this.contrast) return '1fr';
+      return this.layoutRatio.reduce((pre, cur) => {
+        if(!/^\d+(\.\d+)?(fr|px|vw|%|rem)?$/g.test(cur)) {
+          console.error("参数："+cur+",格式不正确")
+        }
+        pre += isNaN(cur)?cur+' ':cur+'fr ';
+        return pre;
+      }, "");
     }
   },
   methods: {
     changeTab(index) {
-      this.selectedIndex = index
+      this.selectedIndex = index;
     }
+  },
+  created() {
+    this.option.forEach(key => {
+      if(['tabs', 'contrast'].includes(key)){
+        this[key] = true;
+      }
+    })
   }
 }
 </script>
@@ -48,6 +97,12 @@ export default {
 .bos-card-container {
   font-size: 16px;
   min-height: 50px;
+  padding: 0 10px;
+}
+.bos-card-body {
+  width: 100%;
+  display: grid;
+  // grid-template-columns: 1fr 1fr;
 }
 .top-tabs {
   width: 50%;
@@ -76,9 +131,27 @@ export default {
   float: right;
   text-align: right;
 }
+.slot {
+  width: auto;
+}
 .selected {
   height: 50px;
   line-height: 50px;
   background-color: white;
+}
+.contrast-component {
+  position: relative;
+  width: auto;
+  // box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+.mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(244,244,248,0.3);
+  pointer-events: none;
+  z-index: 999;
 }
 </style>

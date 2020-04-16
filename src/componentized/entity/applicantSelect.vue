@@ -4,8 +4,8 @@
     <div class="table">
       <el-table :data="list" fit height="2.8646rem" border>
         <el-table-column type="index"></el-table-column>
-        <bos-table-column lable="警号" field="name"></bos-table-column>
-        <bos-table-column lable="姓名" field="policeSign"></bos-table-column>
+        <bos-table-column lable="警号" field="policeSign"></bos-table-column>
+        <bos-table-column lable="姓名" field="name"></bos-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <base-button label="选择" @click="select(scope.row)" :width="40" :height="25"></base-button>

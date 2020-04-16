@@ -12,15 +12,22 @@
       </define-table>
     </div>
 
-    <define-input label="测试" v-model="test2" type="Email" :required="true" :disabled="false" :column="1"></define-input>
-    <define-table :data="testList" :havePage='false'>
-      <define-column label="测试列" v-slot="{ data }">
-        <text-input v-model="data.row.val" type="Number"></text-input>
-      </define-column>
-      <define-column label="测试列2" v-slot="{ data }">
-        <define-input v-model="data.row.val" type="Number" :tableEdit="edit"></define-input>
-      </define-column>
-    </define-table>
+    <define-input label="测试" v-model="test2" :required="true" :disabled="false" :column="1"></define-input>
+    <!-- <bos-tabs :option="['tabs','contrast']" :layoutRatio="[2,1]" :contrastKey="['contrast', 'slot2']">
+      <define-input label="上部控件" v-model="test2" slot="slotHeader"></define-input>
+      <define-table :data="testList" :havePage='false' slot="total">
+        <define-column label="测试列" v-slot="{ data }">
+          <text-input v-model="data.row.val" type="Number"></text-input>
+        </define-column>
+        <define-column label="测试列2" v-slot="{ data }">
+          <define-input v-model="data.row.val" type="Number" :tableEdit="edit"></define-input>
+        </define-column>
+      </define-table>
+      <define-table :data="testList2" :havePage="false" slot="contrast">
+        <define-column label="序号" columnType="index" width="65"></define-column>
+        <define-column label="测试对照列" field="val"></define-column>
+      </define-table>
+    </bos-tabs> -->
   </div>
 </template>
 
@@ -29,6 +36,7 @@ import myHeader from 'components/base/header/header'
 import textInput from '@/componentized/textBox/textInput.vue'
 import defineInput from '@/componentized/textBox/defineInput.vue'
 import { processDefinitions } from 'api/process'
+import bosTabs from '@/componentized/table/bosTabs'
 import defineTable from '@/componentized/entity/defineTable'
 import defineColumn from '@/componentized/entity/defineColumn'
 export default {
@@ -42,6 +50,9 @@ export default {
       edit: true,
       testList: [{
         val: ''
+      }],
+      testList2: [{
+        val: '',
       }]
     }
   },
@@ -81,7 +92,8 @@ export default {
     defineColumn,
     defineTable,
     textInput,
-    defineInput
+    defineInput,
+    bosTabs
   }
 }
 </script>

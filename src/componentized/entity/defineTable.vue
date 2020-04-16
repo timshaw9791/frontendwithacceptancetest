@@ -91,6 +91,14 @@ import defineColumn from './defineColumn'
         border-radius:4px;
     }
     /deep/ .el-table {
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background:rgba(178,178,204,1);
+            border-radius: 20px;
+        }
         .el-table--enable-row-hover,
         .el-table__body tr:hover > td {
             background-color: white;
