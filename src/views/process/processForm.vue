@@ -2,7 +2,7 @@
   <div class="process-form-container">
     <my-header :title="'我的流程/'+title+'申请单'" :haveBlack="false"></my-header>
     <div class="process-form-top" v-if="show">
-      <text-input label="单号" v-model="order.number" :column="3" :disabled="true"></text-input>
+      <define-input label="单号" v-model="order.number" :column="3" :disabled="true"></define-input>
       <base-button label="导出" type="none" align="right" v-show="operate"></base-button>
       <base-button label="重填" align="right" @click="refill" v-show="operate"  v-if="title!='调拨'"></base-button>
       <base-button label="作废" align="right" @click="$refs.ratify.show()" v-show="operate"></base-button>
@@ -64,12 +64,15 @@
 import myHeader from 'components/base/header/header';
 import processInfos from 'components/process/processInfos'
 import textInput from '@/componentized/textBox/textInput'
+import defineInput from '@/componentized/textBox/defineInput.vue'
 import baseButton from '@/componentized/buttonBox/baseButton'
 import dateSelect from '@/componentized/textBox/dateSelect'
 import baseSelect from '@/componentized/textBox/baseSelect'
 import serviceDialog from "components/base/serviceDialog"
 import entityInput from '@/componentized/entity/entityInput'
+import bosTabs from '@/componentized/table/bosTabs.vue'
 import defineColumn from '@/componentized/entity/defineColumn'
+import defineTable from '@/componentized/entity/defineTable'
 import { processDetail, getHistoryTasks, processDelete } from 'api/process'
 var _ = require('lodash');
 export default {
@@ -201,11 +204,14 @@ export default {
     myHeader,
     processInfos,
     textInput,
+    defineInput,
     baseButton,
     dateSelect,
     baseSelect,
     serviceDialog,
     entityInput,
+    bosTabs,
+    defineTable,
     defineColumn
   }
 }

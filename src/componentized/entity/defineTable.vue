@@ -5,7 +5,7 @@
                 :show-summary="showSummary" :summary-method="summaryFunc">
             <slot></slot>
         </el-table>
-        <bos-paginator :pageInfo="pageInfo" @bosCurrentPageChanged="changePage" v-if="havePgae"></bos-paginator>
+        <bos-paginator :pageInfo="pageInfo" @bosCurrentPageChanged="changePage" v-if="havePage"></bos-paginator>
     </div>
 </template>
 
@@ -61,7 +61,7 @@ import defineColumn from './defineColumn'
                     }
                 }
             },
-            havePgae: { // 是否有分页
+            havePage: { // 是否有分页
                 type: Boolean,
                 default: true
             }

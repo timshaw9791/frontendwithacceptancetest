@@ -46,7 +46,6 @@ export default {
 
 <style lang="scss" scoped>
 .bos-card-container {
-  border: 1px solid black;
   font-size: 16px;
   min-height: 50px;
 }

@@ -2,7 +2,7 @@
     <div class="agency-matters">
         <my-header title="待办事宜" :searchFlag="false"></my-header>
         <div class="agency-metters-top">
-            <text-input label="请求标题" v-model="paginator.search" placeholder="请输入标题"></text-input>
+            <define-input label="请求标题" v-model="paginator.search" placeholder="请输入标题"></define-input>
             <base-button label="查询" @click="getList()"></base-button>
         </div>
         <div class="agency-matters_main_box" data-test="main_box">
@@ -23,7 +23,7 @@
 </template>
 
 <script>
-    import textInput from '@/componentized/textBox/textInput.vue'
+    import defineInput from '@/componentized/textBox/defineInput.vue'
     import baseButton from "@/componentized/buttonBox/baseButton.vue"
     import myHeader from 'components/base/header/header'
     import defineColumn from '@/componentized/entity/defineColumn'
@@ -31,7 +31,7 @@
     export default {
         name: "myProcess",
         components:{
-            myHeader,defineColumn,textInput,baseButton
+            myHeader,defineColumn,defineInput,baseButton
         },
         data(){
             return{

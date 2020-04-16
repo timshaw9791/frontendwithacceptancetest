@@ -111,7 +111,28 @@
                 let judge = true;
                 switch (this.type) {
                     case "Number":
-                        judge = /^\d+$/.test(this.value);
+                        judge = /^-?\d+$/.test(this.value);
+                        break;
+                    case "Email":
+                        judge = /^[A-Za-z0-9._%-]+@([A-Za-z0-9-]+\.)+[A-Za-z]{2,4}$/.test(this.value);
+                        break;
+                    case 'Phone':
+                        judge = /^1[3456789]\d{9}$/.test(this.value);
+                        break;
+                    case 'CardId':
+                        judge = /(^\d{15}$)|(^\d{17}(\d|x|X)$)/i.test(this.value);
+                        break;
+                    case 'Integer':
+                        judge = /^-?[0-9]\d*$/.test(this.value);
+                        break;
+                    case 'Decimal':
+                        judge = /^-?([0-9]+\.[0-9]+)$/.test(this.value);
+                        break;
+                    case 'Require':
+                        judge = Boolean(this.value);
+                        break;
+                    case 'URL':
+                        judge = /^(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?$/.test(this.value);
                         break;
                     default:
                         judge = this.validate(value)
@@ -155,7 +176,7 @@
                 },
             },
             insideValue(val) {
-                this.$emit('input', val)
+                this.$emit('input', val);
             },
             value: {
                 handler() {
