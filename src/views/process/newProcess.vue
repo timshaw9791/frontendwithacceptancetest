@@ -12,8 +12,8 @@
       </define-table>
     </div>
 
-    <!-- <define-input label="测试" v-model="test2" type="Email" :required="true" :disabled="false" :column="1"></define-input>
-    <bos-tabs :option="['tabs','contrast']" :layoutRatio="[2,1]" :contrastKey="['contrast', 'slot2']">
+    <define-input label="测试" v-model="test2" :required="true" :disabled="false" :column="1"></define-input>
+    <!-- <bos-tabs :option="['tabs','contrast']" :layoutRatio="[2,1]" :contrastKey="['contrast', 'slot2']">
       <define-input label="上部控件" v-model="test2" slot="slotHeader"></define-input>
       <define-table :data="testList" :havePage='false' slot="total">
         <define-column label="测试列" v-slot="{ data }">
