@@ -7,15 +7,15 @@
     <div class="process-form-body" v-if="show">
         <div class="process-info">
             <date-select  label="申请时间" v-model="order.createTime" :disabled="true"></date-select>
-            <entity-input label="申请人员" v-model="order.applicant" :disabled="true" :required="true" placeholder="请选择"></entity-input>
-            <entity-input label="入库机构" v-model="order.inboundOrganUnit" :disabled="true" format="{name}" :options="{search:'organUnits'}" placeholder=""></entity-input>
-            <entity-input  label="入库库房" :disabled="true" placeholder="-"></entity-input>
+            <entity-input label="申请人员" v-model="order.applicant" :disabled="true" :required="true" placeholder="-"></entity-input>
+            <entity-input label="入库机构" v-model="order.inboundOrganUnit" :disabled="true" format="{name}" :options="{search:'organUnits'}" placeholder="-"></entity-input>
+            <entity-input  label="入库库房" v-model="order.inboundwarehouse" :disabled="true" format="{name}" :options="{search:'organUnits'}" placeholder="-"></entity-input>
         </div>
         <div class="process-info">
-            <entity-input label="入库人员" :disabled="true"  placeholder="-"></entity-input>
-            <entity-input label="出库机构" v-model="order.outboundOrganUnit" :disabled="true" format="{name}" :options="{search:'organUnits'}" placeholder=""></entity-input>
-            <entity-input label="出库库房"  :disabled="true"  placeholder="-"></entity-input>
-            <entity-input label="出库人员" :disabled="true"  placeholder="-"></entity-input>
+            <entity-input label="入库人员" v-model="order.inboundapplicant" :disabled="true" placeholder="-"></entity-input>
+            <entity-input label="出库机构" v-model="order.outboundOrganUnit" :disabled="true" format="{name}" :options="{search:'organUnits'}" placeholder="-"></entity-input>
+            <entity-input label="出库库房"  v-model="order.outboundwarehouse"  format="{name}" :disabled="true"  placeholder="-"></entity-input>
+            <entity-input label="出库人员" v-model="order.outboundapplicant" :disabled="true"  placeholder="-"></entity-input>
         </div>
         <div class="process-info">
             <entity-input label="申请原因" v-model="order.note" :disabled="true" :column="12" align="right" ></entity-input>
@@ -24,7 +24,7 @@
           <div style="width:74%;display:inline;margin-top:5px;float:left">
             <bos-tabs>
               <template  slot="total">
-                <el-table :havePgae="false" :data="order.equips" fit height="2.6042rem" @current-change="selRow" style="float:left"
+                <define-table :havePgae="false" :data="order.equips" fit height="2.6042rem" @changeCurrent="selRow"
                     show-summary :summary-method="sumFunc" highlight-current-row border>
                     <define-column label="序号" columnType="index" width="65" align="center"></define-column>
                     <define-column label="操作" width="100" v-slot="{ data }">
@@ -38,22 +38,22 @@
                         <text-input v-model="data.row.count" :disabled="true"></text-input>
                     </define-column>
                     <define-column label="金额" v-slot="{ data }">
-                        <text-input v-model="data.row.count" :disabled="true"></text-input>
+                        <text-input v-model="data.row.price" :disabled="true"></text-input>
                     </define-column>
-                </el-table>
+                </define-table>
               </template>
               <template slot="detail">
-                <el-table :havePgae="false" :data="detailTable.list" fit height="2.6042rem" border>
+                <define-table :havePgae="false" :data="detailTable.list" fit height="2.6042rem" border>
                     <define-column label="序号" columnType="index" width="65" align="center"></define-column>
                     <define-column label="RFID" field="rfid"></define-column>
-                </el-table> 
+                </define-table> 
               </template>
             </bos-tabs>
           </div>
             <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96" @click="readData"></base-button>
             <base-select label="硬件选择" v-model="select.selected" :column="2" align="right" :selectList="select.handWareList"></base-select>
             <div style="width:24%;display:inline;float:left;margin-left:15px;margin-top:5px">
-                <el-table :havePgae="false" :data="applyEquip" height="2.6042rem" border>
+                <define-table :havePgae="false" :data="applyEquip" height="2.6042rem" border>
                     <define-column label="序号" columnType="index" width="65" align="center"></define-column>
                     <define-column label="装备参数" v-slot="{ data }">
                         <entity-input v-model="data.row.equipArg" format="{name}({model})" :disabled="true"></entity-input>
@@ -61,12 +61,12 @@
                     <define-column label="装备数量" v-slot="{ data }">
                         <text-input v-model="data.row.count" :disabled="true"></text-input>
                     </define-column>
-                </el-table>
+                </define-table>
             </div>
         </div>
         <div class="buttom">
             <base-button label="提交" align="right" :width="128" :height="72" :fontSize="20" @click="submit"></base-button>
-            <base-button label="清空" align="right" :width="128" :height="72" :fontSize="20" type="danger"></base-button>
+            <base-button label="清空" align="right" :width="128" :height="72" :fontSize="20" type="danger" @click="clean"></base-button>
         </div>
     </div>
   </div>
@@ -83,8 +83,10 @@ import serviceDialog from "components/base/serviceDialog"
 import entityInput from '@/componentized/entity/entityInput'
 import defineColumn from '@/componentized/entity/defineColumn'
 import bosTabs from '@/componentized/table/bosTabs'
+import request from 'common/js/request'
+import {baseBURL} from "api/config";
 import defineTable from '@/componentized/entity/defineTable'
-import { processDetail, getHistoryTasks, processDelete } from 'api/process'
+import { processDetail, getHistoryTasks, complete } from 'api/process'
 var _ = require('lodash');
 export default {
   name: 'processForm',
@@ -133,9 +135,13 @@ export default {
         this.applyEquip = res.processVariables.order.equips
         this.show = true;
       })
-      getHistoryTasks({processInstanceId: this.$route.params.info.processInstanceId}).then(res => {
-        this.historyTasks = res
-      })
+      request({
+          method: 'get',
+          url: baseBURL + `/houses/by-organ-unit?organUnitId=${JSON.parse(localStorage.getItem('user')).organUnitId}`})
+          .then(res=>{
+            this.order.warehouse = res[0]
+          })
+      console.log("order",this.order);
     },
     changeRow(state, data) { // 总清单删除
         let temp = JSON.parse(JSON.stringify(this.order.equips));
@@ -155,6 +161,7 @@ export default {
                     "name": "test_金属手铐",
                     "model": "gssk",
                     "shelfLife": 31104000000,
+                    "price":100,
                     "upkeepCycle": 0,
                     "chargeCycle": 0,
                     "supplier": {
@@ -176,6 +183,7 @@ export default {
                     "name": "test_塑料手铐",
                     "model": "slsk",
                     "shelfLife": 31104000000,
+                    "price":100,
                     "upkeepCycle": 0,
                     "chargeCycle": 0,
                     "supplier": {
@@ -196,10 +204,36 @@ export default {
                   this.order.equips[index].rfid = obj.rfid;
                   this.order.equips[index].equipArg = obj.equipArg;
                   this.order.equips[index].equipId = obj.equipId;
+                  this.order.equips[index].price = obj.equipArg.price*obj.count;
               })
     },
     submit(){
         console.log("提交");
+        console.log("this.order",this.order);
+        let opeator={}
+        let user = JSON.parse(localStorage.getItem('user'))
+        opeator.name = user.name;
+        opeator.id = user.id;
+        opeator.policeSign = user.policeSign
+        this.order.opeator = opeator
+        let order = JSON.parse(JSON.stringify(this.order));
+        console.log(_.filter(order.equips,obj=>obj.rfid&&obj.equipId&&obj.price));
+        order.equips=_.filter(order.equips,obj=>obj.rfid&&obj.equipId&&obj.price)
+        if(order.equips.length == 0) {
+          this.$message.warning('未扫入装备');
+          return;
+        }
+        let userId = JSON.parse(localStorage.getItem('user')).id;
+        complete(this.$route.params.info.taskId,{userId:userId},{order:order}).then(res=>{
+          this.$message.success("出库成功")
+          this.$router.push({name: 'myProcess'});
+        })
+    },
+    clean(){
+      for(let i in this.order.equips){
+        this.order.equips.splice(this.order.equips.i, 0, {count: '', rfid: [], equipId: [], equipArg: {}});
+      }
+      this.detailTable.list = []
     },
     selRow(current) { // 单选表格行
       if(!current) return; // 避免切换数据时报错
@@ -228,14 +262,40 @@ export default {
           }
       })
       return sums;
-    }
+    },
+    getinit(){
+      processDetail({processInstanceId: this.$route.params.info.processInstanceId}).then(res => {
+        this.title = res.name.substr(0, 2);
+        this.order = Object.assign(this.order, res.processVariables.order)
+        this.order.equips=[]
+        for(let i = 0;i<10;i++){
+            this.order.equips.push({
+                equipArg: {},
+                count: ''
+                }
+            )
+        }
+        console.log(this.order);
+        this.applyEquip = res.processVariables.order.equips
+        this.show = true;
+      })
+      request({
+          method: 'get',
+          url: baseBURL + `/houses/by-organ-unit?organUnitId=${JSON.parse(localStorage.getItem('user')).organUnitId}`})
+          .then(res=>{
+            this.order.inboundwarehouse = res[0]
+          })
+      console.log("order",this.order);
+    },
   },
   created() {
     if(this.$route.params.info == undefined) {
       this.$message.info("数据丢失，返回待办界面");
       this.$router.push({name: 'agencyMatters'});
-    } else {
+    } else if(this.$route.params.info.house){
       this.getData();
+    } else{
+      this.getinit()
     }
   },
   components: {

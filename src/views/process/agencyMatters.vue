@@ -72,6 +72,11 @@
                             name: 'transferDetail',
                             params: {type:'transfer', audit: 'order', info: {processInstanceId: data.processInstanceId, taskId: data.taskId}}
                         })
+                    }else if(data.name.indexOf("入库")!=-1){
+                        this.$router.push({
+                            name: 'transferStorehouse',
+                            params: {type:'transfer', audit: 'Inbound', info: {processInstanceId: data.processInstanceId, taskId: data.taskId,house:false}}
+                        })
                     }
                 } else if(data.processInstanceName.indexOf("报废")!=-1){
                     this.$router.push({

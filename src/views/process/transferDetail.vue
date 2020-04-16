@@ -4,6 +4,7 @@
     <div class="process-form-top" v-if="show">
       <text-input label="单号" v-model="order.number" :column="3" :disabled="true"></text-input>
       <base-button label="导出" type="none" align="right" v-show="operate"></base-button>
+      <base-button label="重填" align="right" @click="refill" v-show="operate"></base-button>
       <base-button label="作废" align="right" @click="$refs.ratify.show()" v-show="operate"></base-button>
     </div>
     <div class="process-form-body" v-if="show">
@@ -25,7 +26,7 @@
       <div class="table-box">
         <bos-tabs :label="[{label: '总清单',key: 'total'}]">
             <template slot="total">
-                <define-table :data="order.equips" fit height="2.6042rem" @current-change="selRow" 
+                <define-table  :havePgae="false" :data="order.equips" fit height="2.6042rem" @current-change="selRow" 
                 show-summary :summary-method="sumFunc" highlight-current-row border v-if="!showDetail">
                 <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
                 <define-column label="装备参数" v-slot="{ data }">
@@ -95,6 +96,12 @@ export default {
         } else {
           console.log(err);
         }
+      })
+    },
+    refill() { // 重填
+      this.$router.push({
+        name: 'processApply',
+        params: {type: 'apply', info: {name: this.title, processInstanceId: this.order.processInstanceId, taskId: this.$route.params.info.taskId, number: this.order.number}}
       })
     },
     sumFunc(param) { // 表格合并行计算方法
