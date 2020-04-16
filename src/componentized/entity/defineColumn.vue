@@ -1,10 +1,10 @@
 <template>
-  <el-table-column :label="label" :align="align" :width="cWidth" :min-width="'0.3125rem'" :fixed="fixed" :sortable="sort" v-if="columnType=='none'">
+  <el-table-column :label="label" :resizable="resizable" :align="align" :width="cWidth" :min-width="'0.3125rem'" :fixed="fixed" :sortable="sort" v-if="columnType=='none'">
     <template slot-scope="scope">
       <slot :data="scope">{{getResult(scope.row,field)}}</slot>
     </template>
   </el-table-column>
-  <el-table-column :label="label" :type="columnType" :align="align" :width="cWidth" :min-width="'0.3125rem'" v-else></el-table-column>
+  <el-table-column :label="label" :fixed="fixed" :resizable="resizable" :type="columnType" :align="align" :width="cWidth" :min-width="'0.3125rem'" v-else></el-table-column>
 </template>
 
 
@@ -47,12 +47,16 @@
           default:false
       },
       fixed: {
-        type: Boolean,
+        type: [Boolean, String],
         default: false
       },
       columnType: {
         type: String,
         default: 'none'
+      },
+      resizable: {
+        type: Boolean,
+        default: false
       }
     },
     computed:{
