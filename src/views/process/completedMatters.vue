@@ -52,7 +52,7 @@
                 if(data.processInstanceName.indexOf("调拨")!=-1){
                     console.log("调拨");
                     this.$router.push({
-                        name: 'applyAudit',
+                        name: 'transferDetail',
                         params: {type:'transfer', audit: 'order', info: {processInstanceId: data.processInstanceId, taskId: data.taskId, operate: false}}
                     })
                 } else if(data.processInstanceName.indexOf("报废")!=-1){

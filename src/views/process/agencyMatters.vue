@@ -69,7 +69,7 @@
                         })
                     }else if(data.name.indexOf("申请")!=-1){
                         this.$router.push({
-                            name: 'applyAudit',
+                            name: 'transferDetail',
                             params: {type:'transfer', audit: 'order', info: {processInstanceId: data.processInstanceId, taskId: data.taskId}}
                         })
                     }
