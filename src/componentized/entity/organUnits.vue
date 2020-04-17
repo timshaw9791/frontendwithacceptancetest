@@ -13,10 +13,9 @@
 <script>
 import { getAllUnit } from 'api/process'
 import defineTree from '../defineTree'
-import baseButton from '../buttonBox/baseButton'
 export default {
   name: 'organUnits',
-  components: {defineTree,baseButton},
+  components: {defineTree},
   data() {
     return {
       list: [],
