@@ -76,9 +76,11 @@ import dateSelect from '@/componentized/textBox/dateSelect'
 import baseSelect from '@/componentized/textBox/baseSelect'
 import serviceDialog from "components/base/serviceDialog"
 import entityInput from '@/componentized/entity/entityInput'
+import defineColumn from '@/componentized/entity/defineColumn'
 import bosTabs from '@/componentized/table/bosTabs'
 import request from 'common/js/request'
 import {baseBURL} from "api/config";
+import defineTable from '@/componentized/entity/defineTable'
 import { processDetail, getHistoryTasks, complete } from 'api/process'
 var _ = require('lodash');
 export default {
@@ -132,7 +134,7 @@ export default {
           method: 'get',
           url: baseBURL + `/houses/by-organ-unit?organUnitId=${JSON.parse(localStorage.getItem('user')).organUnitId}`})
           .then(res=>{
-            this.order.warehouse = res[0]
+            this.order.outboundwarehouse = res[0]
           })
       console.log("order",this.order);
     },
@@ -218,7 +220,11 @@ export default {
         }
         let userId = JSON.parse(localStorage.getItem('user')).id;
         complete(this.$route.params.info.taskId,{userId:userId},{order:order}).then(res=>{
-          this.$message.success("出库成功")
+          if(this.$route.params.info.house == false){
+            this.$message.success("入库成功")
+          }else{
+            this.$message.success("出库成功")
+          }
           this.$router.push({name: 'myProcess'});
         })
     },
@@ -232,7 +238,6 @@ export default {
       if(!current) return; // 避免切换数据时报错
       this.detailTable.list = [];
       this.rowData = current;
-      console.log("current",current);
       if(current.rfid == undefined) return;
       for(let rfid of current.rfid) {
           this.detailTable.list.push({
@@ -241,12 +246,18 @@ export default {
       }
     },
     sumFunc(param) { // 表格合并行计算方法
+    console.log("param",param);
       let { columns, data } = param, sums = [];
       columns.forEach((colum, index) => {
           if(index == 0) {
               sums[index] =  '合计';
-          } else if(index == columns.length-1) {
+          } else if(index == columns.length-2) {
               const values = data.map(item => item.count?Number(item.count):0);
+              if(!values.every(value => isNaN(value))) {
+                  sums[index] = values.reduce((pre, cur) => !isNaN(cur)?pre+cur:pre);
+              }
+          }  else if(index == columns.length-1) {
+              const values = data.map(item => item.price?Number(item.price):0);
               if(!values.every(value => isNaN(value))) {
                   sums[index] = values.reduce((pre, cur) => !isNaN(cur)?pre+cur:pre);
               }
@@ -257,6 +268,7 @@ export default {
       return sums;
     },
     getinit(){
+      console.log("入库");
       processDetail({processInstanceId: this.$route.params.info.processInstanceId}).then(res => {
         this.title = res.name.substr(0, 2);
         this.order = Object.assign(this.order, res.processVariables.order)
@@ -285,10 +297,10 @@ export default {
     if(this.$route.params.info == undefined) {
       this.$message.info("数据丢失，返回待办界面");
       this.$router.push({name: 'agencyMatters'});
-    } else if(this.$route.params.info.house){
-      this.getData();
-    } else{
+    } else if(this.$route.params.info.house == false){
       this.getinit()
+    } else{
+      this.getData();
     }
   },
   components: {
@@ -301,6 +313,8 @@ export default {
     baseSelect,
     serviceDialog,
     entityInput,
+    defineColumn,
+    defineTable,
     bosTabs
   }
 }
