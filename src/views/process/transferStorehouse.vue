@@ -128,6 +128,11 @@ export default {
         }
         console.log(this.order);
         this.applyEquip = res.processVariables.order.equips
+        this.order.outboundapplicant={
+          name:JSON.parse(localStorage.getItem('user')).name,
+          id:JSON.parse(localStorage.getItem('user')).id,
+          policeSign:JSON.parse(localStorage.getItem('user')).policeSign,
+        }
         this.show = true;
       })
       request({
@@ -282,6 +287,11 @@ export default {
         }
         console.log(this.order);
         this.applyEquip = res.processVariables.order.equips
+        this.order.inboundapplicant={
+          name:JSON.parse(localStorage.getItem('user')).name,
+          id:JSON.parse(localStorage.getItem('user')).id,
+          policeSign:JSON.parse(localStorage.getItem('user')).policeSign,
+        }
         this.show = true;
       })
       request({
