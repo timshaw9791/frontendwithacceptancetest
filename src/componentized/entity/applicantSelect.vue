@@ -1,6 +1,6 @@
 <template>
   <div class="applicant-select-container">
-    <text-input label="搜索" placeholder="警号/姓名" v-model="paginator.search"></text-input>
+    <define-input label="搜索" placeholder="警号/姓名" v-model="paginator.search"></define-input>
     <div class="table">
       <define-table :data="list" height="2.8646rem" :pageInfo="paginator" @changePage="changePage">
         <define-column label="序号" columnType="index" width="65"></define-column>
@@ -15,8 +15,6 @@
 </template>
 
 <script>
-import textInput from '../textBox/textInput'
-import baseButton from '../buttonBox/baseButton'
 import { getUser } from 'api/user'
 export default {
   name: 'applicantSelect',
@@ -51,11 +49,7 @@ export default {
   },
   created() {
     this.getUserList();
-  },
-  components: {
-    textInput,
-    baseButton
-  },
+  }
 }
 </script>
 

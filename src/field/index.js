@@ -31,6 +31,8 @@ import FieldEntity from './components/field-entity.vue';
 
 import defineTable from '@/componentized/entity/defineTable.vue'
 import defineColumn from '@/componentized/entity/defineColumn.vue'
+import defineInput from '@/componentized/textBox/defineInput.vue'
+import baseButton from '@/componentized/buttonBox/baseButton.vue'
 
 
 let componentsList = {
@@ -53,7 +55,9 @@ let componentsList = {
     'FieldInputQuery': FieldInputQuery,
     'TeachTableColumn':TeachTableColumn,
     'defineTable': defineTable,
-    'defineColumn': defineColumn
+    'defineColumn': defineColumn,
+    'defineInput': defineInput,
+    'baseButton': baseButton
 };
 
 

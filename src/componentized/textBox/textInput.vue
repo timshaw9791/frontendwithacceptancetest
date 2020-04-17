@@ -16,13 +16,13 @@
                 <span class="required" v-if="required">*</span>
             </div>
         </el-input>
-        <el-autocomplete class="inline-input"
-        v-model="insideValue"
-        :fetch-suggestions="querySearch"
-        v-if="haveTip"
-        :disabled="disabled"
-        :placeholder="placeholder">
-        <div slot="prepend" :class="{'prefix': true, 'disabled': disabled}">{{ label }}</div>
+        <el-autocomplete style="width: 100%"
+            v-model="insideValue"
+            :fetch-suggestions="querySearch"
+            v-if="haveTip"
+            :disabled="disabled"
+            :placeholder="placeholder">
+            <div slot="prepend" :class="{'prefix': true, 'disabled': disabled}">{{ label }}</div>
         </el-autocomplete>
     </div>
 </template>
@@ -222,6 +222,7 @@
         .error {
             border-color: red;
         }
+        
     }
     .text-input-container {
         border-radius:4px;
