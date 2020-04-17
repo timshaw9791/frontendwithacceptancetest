@@ -1,10 +1,10 @@
 <template>
   <div class="equip-params-container">
-    <text-input label="搜索" v-model="search" placeholder="装备名称/装备型号" :column="3"></text-input>
+    <define-input label="搜索" v-model="search" placeholder="装备名称/装备型号"></define-input>
     <div class="table">
-      <el-table :data="list" fit height="2.8646rem" @current-change="select" highlight-current-row border>
-        <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
-        <define-column label="装备图片" v-slot="{ data }">
+      <define-table :data="list" height="2.8646rem" @changeCurrent="select" :havePage="false" :highLightCurrent="true">
+        <define-column label="序号" columnType="index" width="65"></define-column>
+         <define-column label="装备图片" v-slot="{ data }">
           <img :src="data.row.image" alt="加载失败">
         </define-column>
         <define-column label="装备名称" field="name"></define-column>
@@ -13,7 +13,7 @@
         <define-column label="充电周期(天)" :filter="(row)=>milliToDay(row.chargeCycle)"></define-column>
         <define-column label="保养周期(天)" :filter="(row)=>milliToDay(row.upkeepCycle)"></define-column>
         <define-column label="供应商" field="supplier.name"></define-column>
-      </el-table>
+      </define-table>
     </div>
     <div class="footer">
       <base-button label="确定" @click="selected"></base-button>
@@ -22,12 +22,14 @@
 </template>
 
 <script>
-import textInput from '../textBox/textInput'
+import defineInput from '../textBox/defineInput'
 import baseButton from '../buttonBox/baseButton'
+import defineTable from './defineTable'
 import defineColumn from './defineColumn'
 import { equipArgsByNameModel } from 'api/storage'
 export default {
   name: "equipParams",
+  components: {defineTable,defineColumn,defineInput,baseButton},
   data() {
     return {
       search: '',
@@ -70,11 +72,6 @@ export default {
   },
   created() {
     this.getList();
-  },
-  components: {
-    textInput,
-    baseButton,
-    defineColumn
   }
 }
 </script>

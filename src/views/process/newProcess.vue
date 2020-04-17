@@ -12,7 +12,7 @@
       </define-table>
     </div>
 
-    <define-input label="测试" v-model="test2" :required="true" :disabled="false" :column="1"></define-input>
+    <!-- <define-input label="测试" v-model="test2" :required="true" :disabled="false" :column="1"></define-input> -->
     <!-- <bos-tabs :option="['tabs','contrast']" :layoutRatio="[2,1]" :contrastKey="['contrast', 'slot2']">
       <define-input label="上部控件" v-model="test2" slot="slotHeader"></define-input>
       <define-table :data="testList" :havePage='false' slot="total">
@@ -37,8 +37,6 @@ import textInput from '@/componentized/textBox/textInput.vue'
 import defineInput from '@/componentized/textBox/defineInput.vue'
 import { processDefinitions } from 'api/process'
 import bosTabs from '@/componentized/table/bosTabs'
-import defineTable from '@/componentized/entity/defineTable'
-import defineColumn from '@/componentized/entity/defineColumn'
 export default {
   name: 'newProcess',
   data() {
@@ -89,8 +87,6 @@ export default {
   },
   components: {
     myHeader,
-    defineColumn,
-    defineTable,
     textInput,
     defineInput,
     bosTabs

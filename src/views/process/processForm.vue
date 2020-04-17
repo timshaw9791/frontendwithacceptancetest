@@ -55,8 +55,6 @@ import dateSelect from '@/componentized/textBox/dateSelect'
 import serviceDialog from "components/base/serviceDialog"
 import entityInput from '@/componentized/entity/entityInput'
 import bosTabs from '@/componentized/table/bosTabs.vue'
-import defineColumn from '@/componentized/entity/defineColumn'
-import defineTable from '@/componentized/entity/defineTable'
 import { processDetail, getHistoryTasks, processDelete } from 'api/process'
 var _ = require('lodash');
 export default {
@@ -193,9 +191,7 @@ export default {
     dateSelect,
     serviceDialog,
     entityInput,
-    bosTabs,
-    defineTable,
-    defineColumn
+    bosTabs
   }
 }
 </script>
