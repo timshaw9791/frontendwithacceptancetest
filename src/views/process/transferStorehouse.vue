@@ -2,7 +2,7 @@
   <div class="process-form-container">
     <my-header :title="'我的流程/'+title+'申请单'" :haveBlack="false"></my-header>
     <div class="process-form-top" v-if="show">
-      <text-input label="单号" v-model="order.number" :column="3" :disabled="true"></text-input>
+      <define-input label="单号" v-model="order.number" :disabled="true"></define-input>
     </div>
     <div class="process-form-body" v-if="show">
         <div class="process-info">
@@ -18,10 +18,46 @@
             <entity-input label="出库人员" v-model="order.outboundapplicant" :disabled="true"  placeholder="-"></entity-input>
         </div>
         <div class="process-info">
-            <entity-input label="申请原因" v-model="order.note" :disabled="true" :column="12" align="right" ></entity-input>
+            <text-input label="申请原因" v-model="order.note" :disabled="true" :haveTip="true" :tips="tips" :column="12"></text-input>
         </div>
         <div class="table-box">
-          <div style="width:74%;display:inline;margin-top:5px;float:left">
+          <bos-tabs :option="['tabs', 'contrast']" :layoutRatio="[2,1]">
+            <template slot="slotHeader">
+               <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96" @click="readData"></base-button>
+              <base-select label="硬件选择" v-model="select.selected" align="right" :selectList="select.handWareList"></base-select>
+            </template>
+            <define-table :havePage="false" :data="order.equips" height="2.6042rem" @changeCurrent="selRow"
+              :showSummary="true" :summaryFunc="sumFunc" :highLightCurrent="true" slot="total">
+              <define-column label="序号" columnType="index" width="65"></define-column>
+              <define-column label="操作" width="100" v-slot="{ data }">
+                  <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
+                  <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
+              </define-column>
+              <define-column label="装备参数" v-slot="{ data }">
+                  <entity-input v-model="data.row.equipArg" format="{name}({model})" :disabled="true"></entity-input>
+              </define-column>
+              <define-column label="装备数量" v-slot="{ data }">
+                  <define-input v-model="data.row.count" :disabled="true"></define-input>
+              </define-column>
+              <define-column label="金额" v-slot="{ data }">
+                  <define-input v-model="data.row.price" :disabled="true"></define-input>
+              </define-column>
+            </define-table>
+             <define-table :havePage="false" :data="detailTable.list" height="2.6042rem" slot="detail">
+                <define-column label="序号" columnType="index" width="65"></define-column>
+                <define-column label="RFID" field="rfid"></define-column>
+            </define-table> 
+            <define-table :havePage="false" :data="applyEquip" height="2.6042rem" slot="contrast">
+                <define-column label="序号" columnType="index" width="65"></define-column>
+                <define-column label="装备参数" v-slot="{ data }">
+                    <entity-input v-model="data.row.equipArg" format="{name}({model})" :disabled="true"></entity-input>
+                </define-column>
+                <define-column label="装备数量" v-slot="{ data }">
+                    <define-input v-model="data.row.count" :disabled="true"></define-input>
+                </define-column>
+            </define-table>
+          </bos-tabs>
+          <!-- <div style="width:74%;display:inline;margin-top:5px;float:left">
             <bos-tabs>
               <template  slot="total">
                 <define-table :havePgae="false" :data="order.equips" fit height="2.6042rem" @changeCurrent="selRow"
@@ -62,7 +98,7 @@
                         <text-input v-model="data.row.count" :disabled="true"></text-input>
                     </define-column>
                 </define-table>
-            </div>
+            </div> -->
         </div>
         <div class="buttom">
             <base-button label="提交" align="right" :width="128" :height="72" :fontSize="20" @click="submit"></base-button>
@@ -76,6 +112,7 @@
 import myHeader from 'components/base/header/header';
 import processInfos from 'components/process/processInfos'
 import textInput from '@/componentized/textBox/textInput'
+import defineInput from '@/componentized/textBox/defineInput'
 import baseButton from '@/componentized/buttonBox/baseButton'
 import dateSelect from '@/componentized/textBox/dateSelect'
 import baseSelect from '@/componentized/textBox/baseSelect'
@@ -114,7 +151,7 @@ export default {
         }],
         selected: ""
       },
-      tips: [{value: '111', key: '1'}, {value: '222', key: '2'}],
+      tips: [{value: '直接报废', key: '1'}, {value: '装备拿去维修，无法修补', key: '2'}],
       historyTasks: []
       }
   },
@@ -302,6 +339,7 @@ export default {
     myHeader,
     processInfos,
     textInput,
+    defineInput,
     baseButton,
     dateSelect,
     baseSelect,
@@ -340,8 +378,7 @@ export default {
         overflow: hidden;
     }
     .table-box {
-        border:1px;
-      padding: 0 10px;
+      border:1px;
       .iconfont {
         margin: 0 5px;
       }

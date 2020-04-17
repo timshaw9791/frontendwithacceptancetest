@@ -76,10 +76,23 @@
                 this.getMyProcess();
             },
             toDetail(data) {
-                this.$router.push({
-                    name: 'applyAudit',
-                    params: {type:'apply', audit: 'order', info: {processInstanceId: data.processInstanceId, taskId: data.taskId, operate: false}}
-                })
+                switch (data.type) {
+                    case '报废流程':
+                        this.$router.push({
+                            name: 'applyAudit',
+                            params: {type:'apply', audit: 'order', info: {processInstanceId: data.processInstanceId, taskId: data.taskId, operate: false}}
+                        })
+                        break;
+                    case '调拨流程':
+                        this.$router.push({
+                            name: 'transferDetail',
+                            params: {info: {processInstanceId: data.processInstanceId, taskId: data.taskId, operate: false}}
+                        })
+                        break;
+                    default:
+                        break;
+                }
+                
             }
         },
         computed: {

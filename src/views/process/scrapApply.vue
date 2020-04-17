@@ -19,7 +19,7 @@
                             <base-select label="硬件选择" v-model="select.selected" align="right" :selectList="select.handWareList"></base-select>
                         </template>
                         <define-table :data="order.equips" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
-                            :hightLightCurrent="true" :showSummary="true" :summaryFunc="sumFunc" slot="total">
+                            :highLightCurrent="true" :showSummary="true" :summaryFunc="sumFunc" slot="total">
                             <define-column label="序号" columnType="index" width="65"></define-column>
                             <define-column label="操作" width="100" v-slot="{ data }">
                                 <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>

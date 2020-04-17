@@ -1,7 +1,7 @@
 <template>
     <div class="define-table-container">
         <el-table :data="data" :height="height" :border="border" fit
-                :highlight-current-row="hightLightCurrent" @current-change="changeCurrent"
+                :highlight-current-row="highLightCurrent" @current-change="changeCurrent"
                 :show-summary="showSummary" :summary-method="summaryFunc">
             <slot></slot>
         </el-table>
@@ -34,7 +34,7 @@ import defineColumn from './defineColumn'
                 type: Boolean,
                 default: true
             },
-            hightLightCurrent: { // 是否高亮当前选中行
+            highLightCurrent: { // 是否高亮当前选中行
                 type: Boolean,
                 default: false
             },

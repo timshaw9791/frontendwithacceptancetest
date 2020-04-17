@@ -50,10 +50,18 @@
                })
            },
            toDetail(data) {
-               this.$router.push({
-                   name: 'applyAudit',
-                   params: {type: 'apply', audit: 'order', info: {processInstanceId: data.processInstanceId, taskId: data.taskId, operate: false}}
-               })
+               if(data.processInstanceName.includes("调拨")){
+                    console.log("调拨");
+                    this.$router.push({
+                        name: 'transferDetail',
+                        params: {type:'transfer', audit: 'order', info: {processInstanceId: data.processInstanceId, taskId: data.taskId, operate: false}}
+                    })
+                } else if(data.processInstanceName.includes("报废")){
+                    this.$router.push({
+                        name: 'applyAudit',
+                        params: {type:'apply', audit: 'order', info: {processInstanceId: data.processInstanceId, taskId: data.taskId, operate: false}}
+                    })
+                }
            },
            changePage(page) {
                this.paginator.page = page;

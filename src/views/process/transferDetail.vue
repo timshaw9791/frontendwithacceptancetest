@@ -2,7 +2,7 @@
   <div class="process-form-container">
     <my-header :title="'我的流程/'+title+'申请单'" :haveBlack="false"></my-header>
     <div class="process-form-top" v-if="show">
-      <text-input label="单号" v-model="order.number" :column="3" :disabled="true"></text-input>
+      <define-input label="单号" v-model="order.number" :disabled="true"></define-input>
       <base-button label="导出" type="none" align="right" v-show="operate"></base-button>
       <base-button label="重填" align="right" @click="refill" v-show="operate"></base-button>
       <base-button label="作废" align="right" @click="$refs.ratify.show()" v-show="operate"></base-button>
@@ -21,22 +21,20 @@
           <entity-input label="出库人员" :disabled="true"  placeholder="-"></entity-input>
       </div>
       <div class="process-info">
-          <entity-input label="申请原因" v-model="order.note" :column="12" :disabled="true"></entity-input>
+          <text-input label="申请原因" v-model="order.note" :column="12" :disabled="true"></text-input>
       </div>
       <div class="table-box">
         <bos-tabs :label="[{label: '总清单',key: 'total'}]">
-            <template slot="total">
-                <define-table  :havePgae="false" :data="order.equips" fit height="2.6042rem" @current-change="selRow" 
-                show-summary :summary-method="sumFunc" highlight-current-row border v-if="!showDetail">
-                <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
-                <define-column label="装备参数" v-slot="{ data }">
-                    <entity-input v-model="data.row.equipArg" format="{name}({model})" :disabled="true"></entity-input>
-                </define-column>
-                <define-column label="装备数量" v-slot="{ data }">
-                    <text-input v-model="data.row.count" :disabled="true"></text-input>
-                </define-column>
-                </define-table>
-            </template>
+          <define-table  :havePage="false" :data="order.equips" height="2.6042rem" slot="total"
+            :showSummary="true" :summaryFunc="sumFunc">
+          <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
+          <define-column label="装备参数" v-slot="{ data }">
+              <entity-input v-model="data.row.equipArg" format="{name}({model})" :disabled="true"></entity-input>
+          </define-column>
+          <define-column label="装备数量" v-slot="{ data }">
+              <define-input v-model="data.row.count" :disabled="true"></define-input>
+          </define-column>
+          </define-table>
         </bos-tabs>
       </div>
     </div>
@@ -53,6 +51,7 @@
 import myHeader from 'components/base/header/header';
 import processInfos from 'components/process/processInfos'
 import textInput from '@/componentized/textBox/textInput'
+import defineInput from '@/componentized/textBox/defineInput'
 import baseButton from '@/componentized/buttonBox/baseButton'
 import dateSelect from '@/componentized/textBox/dateSelect'
 import baseSelect from '@/componentized/textBox/baseSelect'
@@ -136,6 +135,7 @@ export default {
     myHeader,
     processInfos,
     textInput,
+    defineInput,
     baseButton,
     dateSelect,
     baseSelect,
