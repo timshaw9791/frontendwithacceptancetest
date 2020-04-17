@@ -23,8 +23,8 @@
 
 <script>
 import textInput from '../textBox/textInput'
-import defineColumn from './defineColumn'
 import baseButton from '../buttonBox/baseButton'
+import defineColumn from './defineColumn'
 import { equipArgsByNameModel } from 'api/storage'
 export default {
   name: "equipParams",
@@ -73,8 +73,8 @@ export default {
   },
   components: {
     textInput,
-    defineColumn,
-    baseButton
+    baseButton,
+    defineColumn
   }
 }
 </script>

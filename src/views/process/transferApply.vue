@@ -3,11 +3,11 @@
         <my-header :title="title" :haveBlack="false"></my-header>
         <div class="apply-process" v-if="show">
             <div class="apply-process-top" data-test="action_box">
-                <text-input label="单号" v-model="order.number" :disabled="true" class="odd-number" placeholder="-"></text-input>
+                <define-input label="单号" v-model="order.number" :disabled="true" placeholder="-"></define-input>
             </div>
             <div class="apply-process-body">
                 <div class="process-info">
-                    <entity-input  label="申请时间" v-model="order.createTime" :disabled="true" placeholder="-"></entity-input>
+                    <date-select label="申请时间" v-model="order.createTime" :disabled="true"></date-select>
                     <entity-input label="申请人员" v-model="order.applicant" :required="true" placeholder="请选择"></entity-input>
                     <entity-input label="入库机构" v-model="order.inboundOrganUnit" format="{name}" :options="{search:'organUnits'}" placeholder="请选择"></entity-input>
                     <entity-input  label="入库库房" :disabled="true" placeholder="-"></entity-input>
@@ -19,26 +19,24 @@
                     <entity-input label="出库人员" :disabled="true"  placeholder="-"></entity-input>
                 </div>
                 <div class="process-info">
-                    <base-select label="申请原因" v-model="order.note" :column="12" align="right" :selectList="tips"></base-select>
+                    <text-input label="申请原因" v-model="order.note" :column="12" :haveTip="true" :tips="tips"></text-input>
                 </div>
                 <div class="table-box">
                     <bos-tabs :label="[{label: '总清单',key: 'total'}]">
-                        <template slot="total">
-                            <define-table :havePgae="false" :data="order.equips" fit height="2.8646rem"
-                                show-summary :summary-method="sumFunc" highlight-current-row border>
-                                <define-column label="序号" columnType="index" width="65"></define-column>
-                                <define-column label="操作" width="100" v-slot="{ data }">
-                                    <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
-                                    <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
-                                </define-column>
-                                <define-column label="装备参数" v-slot="{ data }">
-                                    <entity-input v-model="data.row.equipArg" :options="{detail:'equipParam'}" format="{name}({model})"></entity-input>
-                                </define-column>
-                                <define-column label="装备数量" v-slot="{ data }">
-                                    <text-input v-model="data.row.count" type="number"></text-input>
-                                </define-column>
-                            </define-table>
-                        </template>
+                        <define-table :havePage="false" :data="order.equips" height="2.8646rem"
+                            :showSummary="true" :summaryFunc="sumFunc" slot="total">
+                            <define-column label="序号" columnType="index" width="65"></define-column>
+                            <define-column label="操作" width="100" v-slot="{ data }">
+                                <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
+                                <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
+                            </define-column>
+                            <define-column label="装备参数" v-slot="{ data }">
+                                <entity-input v-model="data.row.equipArg" :options="{detail:'equipParam'}" format="{name}({model})"></entity-input>
+                            </define-column>
+                            <define-column label="装备数量" v-slot="{ data }">
+                                <text-input v-model="data.row.count" type="number"></text-input>
+                            </define-column>
+                        </define-table>
                     </bos-tabs>
                 </div>
                 <div class="buttom">
@@ -53,6 +51,7 @@
 <script>
     import myHeader from 'components/base/header/header';
     import textInput from '@/componentized/textBox/textInput.vue'
+    import defineInput from '@/componentized/textBox/defineInput'
     import baseButton from "@/componentized/buttonBox/baseButton.vue"
     import baseSelect from '@/componentized/textBox/baseSelect.vue'
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
@@ -68,6 +67,7 @@
         components:{
             myHeader,
             textInput,
+            defineInput,
             baseButton,
             baseSelect,
             dateSelect,
@@ -82,7 +82,7 @@
                 title: "",
                 show: false,
                 order: {},
-                tips: [{value: '111', key: '1'}, {value: '222', key: '2'}]
+                tips: [{value: '直接报废', key: '1'}, {value: '装备拿去维修，无法修补', key: '2'}]
             }
         },
         methods:{

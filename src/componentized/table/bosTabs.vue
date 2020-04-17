@@ -102,7 +102,6 @@ export default {
 .bos-card-body {
   width: 100%;
   display: grid;
-  // grid-template-columns: 1fr 1fr;
 }
 .top-tabs {
   width: 50%;

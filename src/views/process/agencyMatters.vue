@@ -60,25 +60,24 @@
             },
             toDetail(data) {
                 console.log("data",data);
-                if(data.processInstanceName.indexOf("调拨")!=-1){
-                    console.log("调拨");
-                    if(data.name.indexOf("出库")!=-1){
+                if(data.processInstanceName.includes("调拨")){
+                    if(data.name.includes("出库")){
                         this.$router.push({
                             name: 'transferStorehouse',
-                            params: {type:'transfer', audit: 'Outbound', info: {processInstanceId: data.processInstanceId, taskId: data.taskId}}
+                            params: {type:'Outbound', info: {processInstanceId: data.processInstanceId, taskId: data.taskId}}
                         })
-                    }else if(data.name.indexOf("申请")!=-1){
+                    }else if(data.name.includes("申请")){
                         this.$router.push({
                             name: 'transferDetail',
-                            params: {type:'transfer', audit: 'order', info: {processInstanceId: data.processInstanceId, taskId: data.taskId}}
+                            params: {info: {processInstanceId: data.processInstanceId, taskId: data.taskId}}
                         })
-                    }else if(data.name.indexOf("入库")!=-1){
+                    }else if(data.name.includes("入库")){
                         this.$router.push({
                             name: 'transferStorehouse',
-                            params: {type:'transfer', audit: 'Inbound', info: {processInstanceId: data.processInstanceId, taskId: data.taskId,house:false}}
+                            params: {type:'Inbound', info: {processInstanceId: data.processInstanceId, taskId: data.taskId,house:false}}
                         })
                     }
-                } else if(data.processInstanceName.indexOf("报废")!=-1){
+                } else if(data.processInstanceName.includes("报废")){
                     this.$router.push({
                         name: 'applyAudit',
                         params: {type:'apply', audit: 'order', info: {processInstanceId: data.processInstanceId, taskId: data.taskId}}

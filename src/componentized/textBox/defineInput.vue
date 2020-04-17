@@ -142,7 +142,7 @@ export default {
       }
     },
     changeEditState(state) {
-      if(!this.inTable) return;
+      if(!this.inTable || this.disabled) return;
       this.edit = state;
     }
   },
@@ -166,7 +166,7 @@ export default {
         this.edit = false;
         if(this.disabled) {
           this.inTableStateContrl = false;
-          this.tableEdit = false;
+          
         }
       }
     } catch (error) {
