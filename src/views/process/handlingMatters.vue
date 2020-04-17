@@ -13,10 +13,8 @@
                         <i class="iconfont iconxiangqing" @click="toDetail(data.row)"></i>
                     </define-column>
                     <define-column label="请求标题" field="name"></define-column>
-                    <define-column label="工作流" field="operate"></define-column>
-                    <define-column label="申请时间" :filter="(row)=>$filterTime(row.startTime)"></define-column>
-                    <define-column label="当前节点" field="currentTask.name"></define-column>
-                    <define-column label="未操作者" field="currentTask.assigneeName"></define-column>
+                    <define-column label="工作流" field="type"></define-column>
+                    <define-column label="申请时间" :filter="(row)=>$filterTime(row.createTime)"></define-column>
                  </define-table>
             </div>
         </div>
