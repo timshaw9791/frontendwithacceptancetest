@@ -13,10 +13,8 @@
                         <i class="iconfont iconxiangqing" @click="toDetail(data.row)"></i>
                     </define-column>
                     <define-column label="请求标题" field="name"></define-column>
-                    <define-column label="工作流" field="operate"></define-column>
-                    <define-column label="申请时间" :filter="(row)=>$filterTime(row.startTime)"></define-column>
-                    <define-column label="当前节点" field="currentTask.name"></define-column>
-                    <define-column label="未操作者" field="currentTask.assigneeName"></define-column>
+                    <define-column label="工作流" field="type"></define-column>
+                    <define-column label="申请时间" :filter="(row)=>$filterTime(row.createTime)"></define-column>
                  </define-table>
             </div>
         </div>
@@ -48,13 +46,14 @@
                })
            },
            toDetail(data) {
-               if(data.processInstanceName.includes("调拨")){
+               console.log(data);
+               if(data.name.includes("调拨")){
                     console.log("调拨");
                     this.$router.push({
                         name: 'transferDetail',
                         params: {type:'transfer', audit: 'order', info: {processInstanceId: data.processInstanceId, taskId: data.taskId, operate: false}}
                     })
-                } else if(data.processInstanceName.includes("报废")){
+                } else if(data.name.includes("报废")){
                     this.$router.push({
                         name: 'applyAudit',
                         params: {type:'apply', audit: 'order', info: {processInstanceId: data.processInstanceId, taskId: data.taskId, operate: false}}
@@ -65,6 +64,9 @@
                this.paginator.page = page;
                this.getList();
            }
+        },
+        created() {
+            this.getList();
         }
     }
 </script>

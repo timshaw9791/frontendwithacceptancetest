@@ -14,9 +14,7 @@ import defineColumn from './defineColumn'
     export default {
         name: "definTable",
         data() {
-            return {
-                
-            }
+            return {}
         },
         /*mixins: [formRulesMixin],*/
         props: {
@@ -65,11 +63,6 @@ import defineColumn from './defineColumn'
                 type: Boolean,
                 default: true
             }
-        },
-        created() {           
-        },
-        mounted() {
-            
         },
         methods: {
             changePage(page) {
