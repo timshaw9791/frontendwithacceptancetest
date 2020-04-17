@@ -57,9 +57,7 @@ import dateSelect from '@/componentized/textBox/dateSelect'
 import baseSelect from '@/componentized/textBox/baseSelect'
 import serviceDialog from "components/base/serviceDialog"
 import entityInput from '@/componentized/entity/entityInput'
-import defineColumn from '@/componentized/entity/defineColumn'
 import bosTabs from '@/componentized/table/bosTabs'
-import defineTable from '@/componentized/entity/defineTable'
 import { processDetail, getHistoryTasks, processDelete } from 'api/process'
 var _ = require('lodash');
 export default {
@@ -141,8 +139,6 @@ export default {
     baseSelect,
     serviceDialog,
     entityInput,
-    defineColumn,
-    defineTable,
     bosTabs
   }
 }

@@ -29,6 +29,9 @@ import BosInput from './components/bos-input'
 
 import FieldEntity from './components/field-entity.vue';
 
+import defineTable from '@/componentized/entity/defineTable.vue'
+import defineColumn from '@/componentized/entity/defineColumn.vue'
+
 
 let componentsList = {
     'FormContainer': FormContainer,
@@ -49,7 +52,8 @@ let componentsList = {
     'BosInput': BosInput,
     'FieldInputQuery': FieldInputQuery,
     'TeachTableColumn':TeachTableColumn,
-
+    'defineTable': defineTable,
+    'defineColumn': defineColumn
 };
 
 

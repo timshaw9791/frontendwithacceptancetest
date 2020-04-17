@@ -2,17 +2,14 @@
   <div class="applicant-select-container">
     <text-input label="搜索" placeholder="警号/姓名" v-model="paginator.search"></text-input>
     <div class="table">
-      <el-table :data="list" fit height="2.8646rem" border>
-        <el-table-column type="index"></el-table-column>
-        <bos-table-column lable="姓名" field="name"></bos-table-column>
-        <bos-table-column lable="警号" field="policeSign"></bos-table-column>
-        <el-table-column label="操作">
-          <template slot-scope="scope">
-            <base-button label="选择" @click="select(scope.row)" :width="40" :height="25"></base-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <bos-paginator v-if="this.list!=''" :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
+      <define-table :data="list" height="2.8646rem" :pageInfo="paginator" @changePage="changePage">
+        <define-column label="序号" columnType="index" width="65"></define-column>
+        <define-column label="警号" field="policeSign"></define-column>
+        <define-column label="姓名" field="name"></define-column>
+        <define-column label="操作" v-slot="{ data }">
+          <base-button label="选择" @click="select(data.row)" :width="40" :height="25"></base-button>
+        </define-column>
+      </define-table>
     </div>
   </div>
 </template>

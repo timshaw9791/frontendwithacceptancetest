@@ -60,8 +60,6 @@
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
-    import defineColumn from '@/componentized/entity/defineColumn'
-    import defineTable from '@/componentized/entity/defineTable'
     import { complete, getOrder, processStart, processDetail } from 'api/process'
     var _ = require('lodash');
     export default {
@@ -75,8 +73,6 @@
             dateSelect,
             entityInput,
             divTmp,
-            defineColumn,
-            defineTable,
             bosTabs
         },
         data(){

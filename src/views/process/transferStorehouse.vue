@@ -57,48 +57,6 @@
                 </define-column>
             </define-table>
           </bos-tabs>
-          <!-- <div style="width:74%;display:inline;margin-top:5px;float:left">
-            <bos-tabs>
-              <template  slot="total">
-                <define-table :havePgae="false" :data="order.equips" fit height="2.6042rem" @changeCurrent="selRow"
-                    show-summary :summary-method="sumFunc" highlight-current-row border>
-                    <define-column label="序号" columnType="index" width="65" align="center"></define-column>
-                    <define-column label="操作" width="100" v-slot="{ data }">
-                        <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
-                        <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
-                    </define-column>
-                    <define-column label="装备参数" v-slot="{ data }">
-                        <entity-input v-model="data.row.equipArg" format="{name}({model})" :disabled="true"></entity-input>
-                    </define-column>
-                    <define-column label="装备数量" v-slot="{ data }">
-                        <text-input v-model="data.row.count" :disabled="true"></text-input>
-                    </define-column>
-                    <define-column label="金额" v-slot="{ data }">
-                        <text-input v-model="data.row.price" :disabled="true"></text-input>
-                    </define-column>
-                </define-table>
-              </template>
-              <template slot="detail">
-                <define-table :havePgae="false" :data="detailTable.list" fit height="2.6042rem" border>
-                    <define-column label="序号" columnType="index" width="65" align="center"></define-column>
-                    <define-column label="RFID" field="rfid"></define-column>
-                </define-table> 
-              </template>
-            </bos-tabs>
-          </div>
-            <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96" @click="readData"></base-button>
-            <base-select label="硬件选择" v-model="select.selected" :column="2" align="right" :selectList="select.handWareList"></base-select>
-            <div style="width:24%;display:inline;float:left;margin-left:15px;margin-top:5px">
-                <define-table :havePgae="false" :data="applyEquip" height="2.6042rem" border>
-                    <define-column label="序号" columnType="index" width="65" align="center"></define-column>
-                    <define-column label="装备参数" v-slot="{ data }">
-                        <entity-input v-model="data.row.equipArg" format="{name}({model})" :disabled="true"></entity-input>
-                    </define-column>
-                    <define-column label="装备数量" v-slot="{ data }">
-                        <text-input v-model="data.row.count" :disabled="true"></text-input>
-                    </define-column>
-                </define-table>
-            </div> -->
         </div>
         <div class="buttom">
             <base-button label="提交" align="right" :width="128" :height="72" :fontSize="20" @click="submit"></base-button>
@@ -118,11 +76,9 @@ import dateSelect from '@/componentized/textBox/dateSelect'
 import baseSelect from '@/componentized/textBox/baseSelect'
 import serviceDialog from "components/base/serviceDialog"
 import entityInput from '@/componentized/entity/entityInput'
-import defineColumn from '@/componentized/entity/defineColumn'
 import bosTabs from '@/componentized/table/bosTabs'
 import request from 'common/js/request'
 import {baseBURL} from "api/config";
-import defineTable from '@/componentized/entity/defineTable'
 import { processDetail, getHistoryTasks, complete } from 'api/process'
 var _ = require('lodash');
 export default {
@@ -345,8 +301,6 @@ export default {
     baseSelect,
     serviceDialog,
     entityInput,
-    defineColumn,
-    defineTable,
     bosTabs
   }
 }

@@ -10,16 +10,13 @@
 
 <script>
     import {initmixinBosInput} from '../../field/common/mixinBosInput';
-    import entityInput from './entityInput'
   export default {
+    name: 'defineColumn',
     data(){
       return {
         search:'',
         basePx: localStorage.getItem('fontSize')
       }
-    },
-    components: {
-      entityInput
     },
     mixins: [initmixinBosInput],
     props: {
