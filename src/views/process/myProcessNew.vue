@@ -10,7 +10,6 @@
             </div>
             <div class="my-process-body">
                 <define-table :data="myProcessList" height="3.6458rem" :pageInfo="paginator" @changePage="changePage">
-                    <define-column label="序号" columnType="index" width="65"></define-column>
                     <define-column label="操作" width="100" v-slot="{ data }">
                         <i class="iconfont iconxiangqing" @click="toDetail(data.row)"></i>
                     </define-column>

@@ -9,32 +9,27 @@
     </div>
     <div class="process-form-body" v-if="show">
       <div class="process-info">
-          <text-input label="所在库房" v-model="order.warehouse.name" :column="3" :disabled="true"></text-input>
+          <define-input label="所在库房" v-model="order.warehouse.name" :column="3" :disabled="true"></define-input>
           <date-select v-model="order.applyTime" :column="3" :disabled="true"></date-select>
           <entity-input label="申请人员" v-model="order.applicant" :column="3" :disabled="true"></entity-input>
           <text-input label="申请原因" v-model="order.note" :column="3" :haveTip="true" :tips="tips" :title="order.note" :disabled="true"></text-input>
       </div>
       <div class="table-box">
-        <div :class="{'total-list':true,'active':tabsIndex==1}" @click="switchTab(1)">总清单</div>
-        <div :class="{'detail-list':true,'active':tabsIndex==2}" @click="switchTab(2)">明细</div>
-        <el-table :data="order.equips" fit height="2.6042rem" @current-change="selRow" 
-          show-summary :summary-method="sumFunc" highlight-current-row border v-if="!showDetail">
-          <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
-          <define-column label="装备参数" v-slot="{ data }">
-            <entity-input v-model="data.row.equipArg" format="{name}({model})" :disabled="true"></entity-input>
-          </define-column>
-          <define-column label="装备数量" v-slot="{ data }">
-            <text-input v-model="data.row.count" :disabled="true"></text-input>
-          </define-column>
-        </el-table>
-        <el-table :data="detailTable.list" fit height="505px" border v-else>
-          <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
-          <define-column label="RFID" field="rfid"></define-column>
-        </el-table>
+        <bos-tabs>
+          <define-table :data="order.equips" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
+            :highLightCurrent="true" :showSummary="true" :summaryFunc="sumFunc" slot="total">
+              <define-column label="装备参数" v-slot="{ data }">
+                <entity-input v-model="data.row.equipArg" format="{name}({model})" :disabled="true"></entity-input>
+              </define-column>
+              <define-column label="装备数量" v-slot="{ data }">
+                <define-input v-model="data.row.count" :disabled="true"></define-input>
+              </define-column>
+            </define-table>
+            <define-table :data="detailTable.list" height="2.8646rem" :havePage="false" slot="detail">
+              <define-column label="RFID" field="rfid"></define-column>
+            </define-table>
+        </bos-tabs>
       </div>
-       <!-- <text-input label="合计" :column="12"></text-input> -->
-       <!-- <div class="total"><span>合计</span><span>{{ total }}</span></div> -->
-      <!-- <text-input label="备注" v-model="order.note" width="100%" :height="40" class="remark" :disabled="true"></text-input> -->
     </div>
     <div class="process-form-bottom">
       <process-infos :list="historyTasks" :height="136"></process-infos>
@@ -49,7 +44,6 @@
 import myHeader from 'components/base/header/header';
 import processInfos from 'components/process/processInfos'
 import textInput from '@/componentized/textBox/textInput'
-import defineInput from '@/componentized/textBox/defineInput.vue'
 import baseButton from '@/componentized/buttonBox/baseButton'
 import dateSelect from '@/componentized/textBox/dateSelect'
 import serviceDialog from "components/base/serviceDialog"
@@ -186,7 +180,6 @@ export default {
     myHeader,
     processInfos,
     textInput,
-    defineInput,
     baseButton,
     dateSelect,
     serviceDialog,

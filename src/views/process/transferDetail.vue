@@ -27,7 +27,6 @@
         <bos-tabs :label="[{label: '总清单',key: 'total'}]">
           <define-table  :havePage="false" :data="order.equips" height="2.6042rem" slot="total"
             :showSummary="true" :summaryFunc="sumFunc">
-          <el-table-column label="序号" type="index" width="65" align="center"></el-table-column>
           <define-column label="装备参数" v-slot="{ data }">
               <entity-input v-model="data.row.equipArg" format="{name}({model})" :disabled="true"></entity-input>
           </define-column>

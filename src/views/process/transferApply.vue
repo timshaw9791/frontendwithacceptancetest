@@ -25,7 +25,6 @@
                     <bos-tabs :label="[{label: '总清单',key: 'total'}]">
                         <define-table :havePage="false" :data="order.equips" height="2.8646rem"
                             :showSummary="true" :summaryFunc="sumFunc" slot="total">
-                            <define-column label="序号" columnType="index" width="65"></define-column>
                             <define-column label="操作" width="100" v-slot="{ data }">
                                 <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
                                 <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>

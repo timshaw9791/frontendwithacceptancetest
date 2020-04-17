@@ -3,7 +3,6 @@
     <my-header title="新建流程" :haveBlack="false"></my-header>
     <div class="new-process-body">
       <define-table :data="list" height="600px" :pageInfo="paginator" @changePage="changePage">
-        <define-column label="序号" columnType="index" width="65"></define-column>
         <define-column label="操作" v-slot="{ data }">
           <i class="iconfont iconjiahao" @click="apply(data.row)"></i>
         </define-column>

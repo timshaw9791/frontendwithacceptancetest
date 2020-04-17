@@ -8,7 +8,6 @@
         <div class="handling-matters-body" data-test="main_box">
              <div class="table_box" data-test="table_box">
                  <define-table :data="list" height="3.6458rem" :pageInfo="paginator" @changePage="changePage">
-                     <define-column label="序号" columnType="index" width="65"></define-column> 
                      <define-column label="操作" width="100" v-slot="{ data }">
                         <i class="iconfont iconxiangqing" @click="toDetail(data.row)"></i>
                     </define-column>

@@ -3,6 +3,9 @@
         <el-table :data="data" :height="height" :border="border" fit
                 :highlight-current-row="highLightCurrent" @current-change="changeCurrent"
                 :show-summary="showSummary" :summary-method="summaryFunc">
+                <el-table-column label="序号" width="65" align="center" v-if="haveIndex">
+                    <template slot-scope="scope">{{(pageInfo.page-1)*pageInfo.size+scope.$index+1}}</template>
+                </el-table-column>
             <slot></slot>
         </el-table>
         <bos-paginator :pageInfo="pageInfo" @bosCurrentPageChanged="changePage" v-if="havePage"></bos-paginator>
@@ -60,6 +63,10 @@ import defineColumn from './defineColumn'
                 }
             },
             havePage: { // 是否有分页
+                type: Boolean,
+                default: true
+            },
+            haveIndex: {
                 type: Boolean,
                 default: true
             }

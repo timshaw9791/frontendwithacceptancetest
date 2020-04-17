@@ -20,7 +20,6 @@
                         </template>
                         <define-table :data="order.equips" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
                             :highLightCurrent="true" :showSummary="true" :summaryFunc="sumFunc" slot="total">
-                            <define-column label="序号" columnType="index" width="65"></define-column>
                             <define-column label="操作" width="100" v-slot="{ data }">
                                 <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
                                 <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
@@ -33,7 +32,6 @@
                             </define-column>
                         </define-table>
                         <define-table :data="detailTable.list" height="2.8646rem" :havePage="false" slot="detail">
-                            <define-column label="序号" columnType="index" width="65"></define-column>
                             <define-column label="操作" width="100" v-slot="{ data }">
                                 <i class="iconfont iconyichuliang" @click="changeDetailRow(data)"></i>
                             </define-column>
