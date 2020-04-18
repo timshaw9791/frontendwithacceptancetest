@@ -222,6 +222,14 @@ export function processDetail(params) { // 流程内容
     })
   }
 
+  export function processwarehouseDetail(params) { // 流程内容
+    return request({
+      url: baseBURL+"/equip-order/process-instance-id",
+      method: "GET",
+      params
+    })
+  }
+
 export function getHistoryTasks(params) { // 历史任务实例
     return request({
       url: baseBURL+'/workflow/history-tasks',

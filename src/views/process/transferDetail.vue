@@ -58,7 +58,7 @@ import baseSelect from '@/componentized/textBox/baseSelect'
 import serviceDialog from "components/base/serviceDialog"
 import entityInput from '@/componentized/entity/entityInput'
 import bosTabs from '@/componentized/table/bosTabs'
-import { processDetail, getHistoryTasks, processDelete } from 'api/process'
+import { processwarehouseDetail, getHistoryTasks, processDelete } from 'api/process'
 var _ = require('lodash');
 export default {
   name: 'processForm',
@@ -73,9 +73,8 @@ export default {
   },
   methods: {
     getData() {
-      processDetail({processInstanceId: this.$route.params.info.processInstanceId}).then(res => {
-        this.title = res.name.substr(0, 2);
-        this.order = Object.assign(this.order, res.processVariables.order)
+      processwarehouseDetail({processInstanceId: this.$route.params.info.processInstanceId}).then(res => {
+        this.order = Object.assign(this.order, res.transferApplyOrder)
         this.show = true;
       })
       getHistoryTasks({processInstanceId: this.$route.params.info.processInstanceId}).then(res => {
