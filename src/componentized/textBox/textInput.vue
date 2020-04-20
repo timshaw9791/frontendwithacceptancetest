@@ -1,28 +1,17 @@
 <template>
-    <div :class="{'text-input-container':true, 'bg-disabled':disabled,'border':tableEdit&&eidt}" ref="textInput" 
-        :style="'width:'+fixWidth+';height:'+height+'px'"
-        @click="changeEditState(true)">
-        <el-input :placeholder="placeholder"
-                  :disabled="disabled"
-                  @change="reg"
-                  @blur="changeEditState(false)"
-                  @keydown.native.13="changeEditState(false)"
-                  v-if="!haveTip"
-                  :clearable="clearable"
-                  :readonly="!(tableEdit&&eidt)"
-                  v-model="insideValue">
-            <div slot="prepend" :class="{'prefix': true, 'disabled': disabled}" v-if="!inTable">
-                {{ label }}
-                <span class="required" v-if="required">*</span>
-            </div>
-        </el-input>
+    <div :class="{'text-input-container':true, 'bg-disabled':disabled}" ref="textInput" 
+        :style="'width:'+fixWidth+';height:'+height+'px'">
         <el-autocomplete style="width: 100%"
             v-model="insideValue"
             :fetch-suggestions="querySearch"
-            v-if="haveTip"
+            :clearable="clearable"
             :disabled="disabled"
+            :maxlenght="maxlength"
             :placeholder="placeholder">
-            <div slot="prepend" :class="{'prefix': true, 'disabled': disabled}">{{ label }}</div>
+            <div slot="prepend" :class="{'prefix': true, 'disabled': disabled}">
+                {{ label }}
+                <span class="required" v-if="required">*</span>
+            </div>
         </el-autocomplete>
     </div>
 </template>
@@ -35,9 +24,6 @@
               inputPt: null,
               inputPrePt: null,
               insideValue: "",
-              inTable: false, // 是否为表格内联
-              // 此处逻辑 !(tableEdit && eidt)
-              eidt: true, // 内部判断是否只读
           }
         },
         props: {
@@ -61,25 +47,13 @@
                 type: Boolean,
                 default: false
             },
-            type: {
-                type: String,
-                default: "String"
-            },
-            tableEdit: {
-                type: Boolean,
-                default: true
-            },
             clearable: { // 是否可清空
                 type: Boolean,
                 default: true
             },
             maxlength: {
                 type: Number,
-                default: 0
-            },
-            minlength: {
-                type: Number,
-                default: 0
+                default: -1
             },
             required: { // 是否必填
                 type: Boolean,
@@ -90,10 +64,6 @@
                 default() {
                     return () => true
                 }
-            },
-            haveTip: { // 是否启用建议输入
-                type: Boolean,
-                default: false
             },
             tips: {
                 type: Array,
@@ -107,43 +77,6 @@
             }
         },
         methods: {
-            reg(value) {
-                let judge = true;
-                switch (this.type) {
-                    case "Number":
-                        judge = /^-?\d+$/.test(this.value);
-                        break;
-                    case "Email":
-                        judge = /^[A-Za-z0-9._%-]+@([A-Za-z0-9-]+\.)+[A-Za-z]{2,4}$/.test(this.value);
-                        break;
-                    case 'Phone':
-                        judge = /^1[3456789]\d{9}$/.test(this.value);
-                        break;
-                    case 'CardId':
-                        judge = /(^\d{15}$)|(^\d{17}(\d|x|X)$)/i.test(this.value);
-                        break;
-                    case 'Integer':
-                        judge = /^-?[0-9]\d*$/.test(this.value);
-                        break;
-                    case 'Decimal':
-                        judge = /^-?([0-9]+\.[0-9]+)$/.test(this.value);
-                        break;
-                    case 'Require':
-                        judge = Boolean(this.value);
-                        break;
-                    case 'URL':
-                        judge = /^(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?$/.test(this.value);
-                        break;
-                    default:
-                        judge = this.validate(value)
-                        break;
-                }
-                if(judge) {
-                    this.$refs.textInput.classList.remove('error');
-                } else {
-                    this.$refs.textInput.classList.add('error');
-                }
-            },
             changePreStyle(state=true) {
                 this.inputPrePt.style.background = state?'#f5f7fa':'white';
                 this.inputPrePt.style.cursor = state?'not-allowed':'auto';
@@ -158,10 +91,6 @@
                 return (restaurant) => {
                     return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
                 };
-            },
-            changeEditState(state) {
-                if(!this.inTable) return;
-                this.eidt = state
             }
         },
         computed: {
@@ -189,14 +118,6 @@
         },
         mounted() {
             this.inputPrePt = document.querySelector('.el-input-group__prepend');
-            try {
-                if(this.$refs.textInput.parentNode.parentNode.nodeName == 'TD') {
-                    this.inTable = true;
-                    this.eidt = false;
-                }
-            } catch (error) {
-                
-            }
             // console.log(document.getElementsByClassName('el-input-group__prepend'));
             // document.querySelector('#elInput').setAttribute('maxlength', 5); // 限制最大输入长度
             // document.querySelector('#elInput').setAttribute('minlength', 2); // 无效
@@ -230,6 +151,7 @@
         margin: 0 0.0521rem;
         display: inline-block;
 		box-sizing: border-box;
+        border: 1px solid #DCDFE6;
     }
     .border {
         border: 1px solid #DCDFE6;

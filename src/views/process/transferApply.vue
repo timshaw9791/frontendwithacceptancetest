@@ -19,7 +19,7 @@
                     <entity-input label="出库人员" :disabled="true"  placeholder="-"></entity-input>
                 </div>
                 <div class="process-info">
-                    <text-input label="申请原因" v-model="order.note" :column="12" :haveTip="true" :tips="tips"></text-input>
+                    <text-input label="申请原因" v-model="order.note" :column="12" :tips="tips"></text-input>
                 </div>
                 <div class="table-box">
                     <bos-tabs :label="[{label: '总清单',key: 'total'}]">
@@ -33,7 +33,7 @@
                                 <entity-input v-model="data.row.equipArg" :options="{detail:'equipParam'}" format="{name}({model})"></entity-input>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
-                                <text-input v-model="data.row.count" type="number"></text-input>
+                                <define-input v-model="data.row.count" type="number"></define-input>
                             </define-column>
                         </define-table>
                     </bos-tabs>

@@ -166,7 +166,6 @@ export default {
         this.edit = false;
         if(this.disabled) {
           this.inTableStateContrl = false;
-          
         }
       }
     } catch (error) {
@@ -188,6 +187,9 @@ export default {
   border-radius: 4px;
   box-sizing: border-box;
   margin: 0 0.0521rem;
+  .iconwenbenkuangshanchu {
+    display: none;
+  }
   .label {
     min-width: 55px;
     padding: 0 10px;
@@ -232,6 +234,11 @@ export default {
   border:1px solid rgba(220,223,230,1);
   .input {
     color:rgba(192,196,204,1);
+  }
+}
+.text-input-container:hover {
+  .iconwenbenkuangshanchu {
+    display: inline-block;
   }
 }
 </style>
