@@ -13,10 +13,10 @@
       <i class="iconfont iconxiang" @click="showDetail" v-show="detail&&!disabled&&tableEdit&&edit"></i>
     </div>
     <service-dialog title="申请人员选择" ref="applicant" :button="false" :secondary="false">
-      <applicant-select @select="selected"></applicant-select>
+      <applicant-select @select="selected" @cancel="$refs.applicant.hide()"></applicant-select>
     </service-dialog>
     <service-dialog title="装备参数选择" ref="equipParam" width="1300px" :button="false" :secondary="false">
-      <equip-params @select="selected"></equip-params>
+      <equip-params @select="selected" @cancel="$refs.equipParam.hide()"></equip-params>
     </service-dialog>
     <service-dialog title="机构选择" ref="organUnits" width="500px" :button="false" :secondary="false">
       <organ-units @select="selected" @cancel="$refs.organUnits.hide()"></organ-units>
