@@ -3,7 +3,7 @@
     <div class="top-tabs" v-if="tabs">
       <div v-for="(item, i) in label" :key="i" 
         :class="{'tabs':true,'selected':selectedIndex==i}"
-        @click="changeTab(i)">{{ item.label }}</div>
+        @click="changeTab(i, item)">{{ item.label }}</div>
     </div>
     <div class="slot-component">
       <slot name="slotHeader"></slot>
@@ -79,8 +79,9 @@ export default {
     }
   },
   methods: {
-    changeTab(index) {
+    changeTab(index, item) {
       this.selectedIndex = index;
+      this.$emit('changeTab', Object.assign({index}, item));
     }
   },
   created() {

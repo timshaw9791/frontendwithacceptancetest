@@ -9,6 +9,7 @@
       </define-table>
     </div>
     <div class="footer">
+      <base-button label="取消" type="none" @click="cancel"></base-button>
       <base-button label="确定" @click="select"></base-button>
     </div>
   </div>
@@ -36,6 +37,9 @@ export default {
     changePage(page) {
       this.paginator.page = page;
       this.getUserList();
+    },
+    cancel() {
+      this.$emit('cancel');
     },
     select() {
       this.$emit('select', {data: this.selected, ref: 'applicant'});

@@ -15,6 +15,7 @@
       </define-table>
     </div>
     <div class="footer">
+      <base-button label="取消" type="none" @click="cancel"></base-button>
       <base-button label="确定" @click="selected"></base-button>
     </div>
   </div>
@@ -38,6 +39,9 @@ export default {
         this.pageInfo.totalPages = res.totalPages;
         this.pageInfo.totalElements = res.totalElements;
       })
+    },
+    cancel() {
+      this.$emit('cancel');
     },
     select(current) {
       this.currentSel = current;
