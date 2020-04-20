@@ -6,6 +6,7 @@
             :fetch-suggestions="querySearch"
             :clearable="clearable"
             :disabled="disabled"
+            :maxlenght="maxlength"
             :placeholder="placeholder">
             <div slot="prepend" :class="{'prefix': true, 'disabled': disabled}">
                 {{ label }}
@@ -46,21 +47,13 @@
                 type: Boolean,
                 default: false
             },
-            type: {
-                type: String,
-                default: "String"
-            },
             clearable: { // 是否可清空
                 type: Boolean,
                 default: true
             },
             maxlength: {
                 type: Number,
-                default: 0
-            },
-            minlength: {
-                type: Number,
-                default: 0
+                default: -1
             },
             required: { // 是否必填
                 type: Boolean,

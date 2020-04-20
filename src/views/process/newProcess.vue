@@ -11,7 +11,8 @@
       </define-table>
     </div>
 
-    <!-- <define-input label="测试" v-model="test2" :required="true" :disabled="false" :column="1"></define-input> -->
+    <define-input label="测试" v-model="test" :required="true" :disabled="false"></define-input>
+    <entity-input label="测试" v-model="test2"></entity-input>
     <!-- <bos-tabs :option="['tabs','contrast']" :layoutRatio="[2,1]" :contrastKey="['contrast', 'slot2']">
       <define-input label="上部控件" v-model="test2" slot="slotHeader"></define-input>
       <define-table :data="testList" :havePage='false' slot="total">
@@ -33,7 +34,7 @@
 <script>
 import myHeader from 'components/base/header/header'
 import textInput from '@/componentized/textBox/textInput.vue'
-import defineInput from '@/componentized/textBox/defineInput.vue'
+import entityInput from '@/componentized/entity/entityInput'
 import { processDefinitions } from 'api/process'
 import bosTabs from '@/componentized/table/bosTabs'
 export default {
@@ -43,7 +44,7 @@ export default {
       list: [],
       paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
       test: '',
-      test2: '123',
+      test2: {},
       edit: true,
       testList: [{
         val: ''
@@ -87,8 +88,8 @@ export default {
   components: {
     myHeader,
     textInput,
-    defineInput,
-    bosTabs
+    bosTabs,
+    entityInput
   }
 }
 </script>

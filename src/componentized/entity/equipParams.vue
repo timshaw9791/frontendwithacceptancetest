@@ -3,7 +3,6 @@
     <define-input label="搜索" v-model="search" placeholder="装备名称/装备型号"></define-input>
     <div class="table">
       <define-table :data="list" height="2.8646rem" @changeCurrent="select" :havePage="false" :highLightCurrent="true">
-        <define-column label="序号" columnType="index" width="65"></define-column>
          <define-column label="装备图片" v-slot="{ data }">
           <img :src="data.row.image" alt="暂无图片">
         </define-column>

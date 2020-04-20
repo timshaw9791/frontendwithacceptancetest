@@ -3,7 +3,6 @@
     <define-input label="搜索" placeholder="警号/姓名" v-model="paginator.search"></define-input>
     <div class="table">
       <define-table :data="list" height="2.8646rem" :pageInfo="paginator" @changePage="changePage">
-        <define-column label="序号" columnType="index" width="65"></define-column>
         <define-column label="警号" field="policeSign"></define-column>
         <define-column label="姓名" field="name"></define-column>
         <define-column label="操作" v-slot="{ data }">
