@@ -78,7 +78,7 @@ import bosTabs from '@/componentized/table/bosTabs'
 import request from 'common/js/request'
 import {baseBURL} from "api/config";
 import defineTable from '@/componentized/entity/defineTable'
-import { processDetail, getHistoryTasks, complete } from 'api/process'
+import { processwarehouseDetail, getHistoryTasks, complete } from 'api/process'
 var _ = require('lodash');
 export default {
   name: 'processForm',
@@ -112,9 +112,8 @@ export default {
   },
   methods: {
     getData() {
-      processDetail({processInstanceId: this.$route.params.info.processInstanceId}).then(res => {
-        this.title = res.name.substr(0, 2);
-        this.order = Object.assign(this.order, res.processVariables.order)
+      processwarehouseDetail({processInstanceId: this.$route.params.info.processInstanceId}).then(res => {
+        this.order = Object.assign(this.order, res.transferApplyOrder)
         this.order.equips=[]
         for(let i = 0;i<10;i++){
             this.order.equips.push({
@@ -124,7 +123,7 @@ export default {
             )
         }
         console.log(this.order);
-        this.applyEquip = res.processVariables.order.equips
+        this.applyEquip = res.transferApplyOrder.equips
         this.order.outboundapplicant={
           name:JSON.parse(localStorage.getItem('user')).name,
           id:JSON.parse(localStorage.getItem('user')).id,
@@ -136,7 +135,7 @@ export default {
           method: 'get',
           url: baseBURL + `/houses/by-organ-unit?organUnitId=${JSON.parse(localStorage.getItem('user')).organUnitId}`})
           .then(res=>{
-            this.order.outboundwarehouse = res[0]
+            this.order.outboundwarehouse = JSON.parse(JSON.stringify(res[0]))
           })
       console.log("order",this.order);
     },
@@ -221,6 +220,7 @@ export default {
           return;
         }
         let userId = JSON.parse(localStorage.getItem('user')).id;
+        console.log("this.order",this.order);
         complete(this.$route.params.info.taskId,{userId:userId},{order:order}).then(res=>{
           if(this.$route.params.info.house == false){
             this.$message.success("入库成功")
@@ -271,9 +271,8 @@ export default {
     },
     getinit(){
       console.log("入库");
-      processDetail({processInstanceId: this.$route.params.info.processInstanceId}).then(res => {
-        this.title = res.name.substr(0, 2);
-        this.order = Object.assign(this.order, res.processVariables.order)
+      processwarehouseDetail({processInstanceId: this.$route.params.info.processInstanceId}).then(res => {
+        this.order = Object.assign(this.order, res.transferApplyOrder)
         this.order.equips=[]
         for(let i = 0;i<10;i++){
             this.order.equips.push({
@@ -283,19 +282,20 @@ export default {
             )
         }
         console.log(this.order);
-        this.applyEquip = res.processVariables.order.equips
+        this.applyEquip = res.transferApplyOrder.equips
         this.order.inboundapplicant={
           name:JSON.parse(localStorage.getItem('user')).name,
           id:JSON.parse(localStorage.getItem('user')).id,
           policeSign:JSON.parse(localStorage.getItem('user')).policeSign,
         }
+        // this.order.outboundapplicant=res.transferApplyOrder.opeator
         this.show = true;
       })
       request({
           method: 'get',
           url: baseBURL + `/houses/by-organ-unit?organUnitId=${JSON.parse(localStorage.getItem('user')).organUnitId}`})
           .then(res=>{
-            this.order.inboundwarehouse = res[0]
+            this.order.inboundwarehouse = JSON.parse(JSON.stringify(res[0]))
           })
       console.log("order",this.order);
     },
