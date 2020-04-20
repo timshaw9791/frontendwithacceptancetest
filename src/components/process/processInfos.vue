@@ -87,6 +87,7 @@ export default {
             break;
           case true:
             state = "通过";
+            break;
           case false:
             state = "驳回";
             note = obj.taskVariables.note;
