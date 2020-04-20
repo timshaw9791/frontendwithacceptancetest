@@ -2,13 +2,14 @@
   <div class="applicant-select-container">
     <define-input label="搜索" placeholder="警号/姓名" v-model="paginator.search"></define-input>
     <div class="table">
-      <define-table :data="list" height="2.8646rem" :pageInfo="paginator" @changePage="changePage">
+      <define-table :data="list" height="550.0032px" :pageInfo="paginator" 
+        :highLightCurrent="true" @changeCurrent="changeCurrent" @changePage="changePage">
         <define-column label="警号" field="policeSign"></define-column>
         <define-column label="姓名" field="name"></define-column>
-        <define-column label="操作" v-slot="{ data }">
-          <base-button label="选择" @click="select(data.row)" :width="40" :height="25"></base-button>
-        </define-column>
       </define-table>
+    </div>
+    <div class="footer">
+      <base-button label="确定" @click="select"></base-button>
     </div>
   </div>
 </template>
@@ -20,6 +21,7 @@ export default {
   data() {
     return {
       list: [],
+      selected: '',
       paginator: {size: 10, page: 1, totalPages: 0, totalElements: 0, search: ''},
     }
   },
@@ -35,8 +37,11 @@ export default {
       this.paginator.page = page;
       this.getUserList();
     },
-    select(data) {
-      this.$emit('select', {data, ref: 'applicant'});
+    select() {
+      this.$emit('select', {data: this.selected, ref: 'applicant'});
+    },
+    changeCurrent(data) {
+      this.selected = data;
     }
   },
   watch: {
@@ -58,5 +63,8 @@ export default {
   }
   .table {
     margin-top: 10px;
+  }
+  .footer {
+    text-align: center;
   }
 </style>

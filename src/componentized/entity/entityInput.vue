@@ -5,7 +5,7 @@
      <div class="label" v-if="!inTable">{{ label }}
       <span class="required" v-if="required">*</span>
     </div>
-    <input type="text" class="input" :disabled="disabled" v-model="insideValue" 
+    <input type="text" class="input" :disabled="disabled" v-model="insideValue"
       readonly :placeholder="placeholder" @keydown.13="changeEditState(false)"/>
     <div class="icon">
       <i class="iconfont iconwenbenkuangshanchu" @click="clear" v-show="insideValue&&!disabled&&tableEdit&&edit"></i>
@@ -216,6 +216,7 @@ export default {
     color: #C0C4CC;
   }
   .icon {
+    min-width: 32px;
     padding: 0 10px;
   }
 }

@@ -11,14 +11,12 @@
       </define-table>
     </div>
 
-  <up-file v-model="test2"></up-file>
   </div>
 </template>
 
 <script>
 import myHeader from 'components/base/header/header'
 import textInput from '@/componentized/textBox/textInput.vue'
-import upFile from '@/componentized/upFile'
 import { processDefinitions } from 'api/process'
 import bosTabs from '@/componentized/table/bosTabs'
 export default {
@@ -72,8 +70,7 @@ export default {
   components: {
     myHeader,
     textInput,
-    bosTabs,
-    upFile
+    bosTabs
   }
 }
 </script>

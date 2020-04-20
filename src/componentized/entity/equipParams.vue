@@ -1,8 +1,8 @@
 <template>
   <div class="equip-params-container">
-    <define-input label="搜索" v-model="search" placeholder="装备名称/装备型号"></define-input>
+    <define-input label="搜索" v-model="pageInfo.search" placeholder="装备名称/装备型号"></define-input>
     <div class="table">
-      <define-table :data="list" height="2.8646rem" @changeCurrent="select" :havePage="false" :highLightCurrent="true">
+      <define-table :data="list" height="560px" @changeCurrent="select" :pageInfo="pageInfo" @changePage="changePage" :highLightCurrent="true">
          <define-column label="装备图片" v-slot="{ data }">
           <img :src="data.row.image" alt="暂无图片">
         </define-column>
@@ -26,15 +26,17 @@ export default {
   name: "equipParams",
   data() {
     return {
-      search: '',
       currentSel: '', // 当前选中行数据
-      list: []
+      list: [],
+      pageInfo: {page: 1, size: 10, totalPages: 1, totalElements: 0, search: ''}
     }
   },
   methods: {
     getList() {
-      equipArgsByNameModel({search: this.search}).then(res => {
+      equipArgsByNameModel(this.pageInfo).then(res => {
         this.list = res.content;
+        this.pageInfo.totalPages = res.totalPages;
+        this.pageInfo.totalElements = res.totalElements;
       })
     },
     select(current) {
@@ -46,6 +48,10 @@ export default {
       } else {
         this.$emit('select', {data: this.currentSel, ref: 'equipParam'});
       }
+    },
+    changePage(page) {
+      this.pageInfo.page = page;
+      this.getList();
     },
     milliToDay(data) {
       let date = JSON.parse(JSON.stringify(data));

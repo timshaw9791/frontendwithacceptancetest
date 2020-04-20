@@ -339,11 +339,11 @@
 </script>
 
 <style lang="scss" scoped>
-    /deep/ .el-table {
-        .el-table__body-wrapper { // 因为表格切换后，带有合计行的表格高度会变少，所以手动设置其高度
-            height: 2.3594rem !important;
-        }
-    }
+    // /deep/ .el-table {
+    //     .el-table__body-wrapper { // 因为表格切换后，带有合计行的表格高度会变少，所以手动设置其高度
+    //         height: 2.3594rem !important;
+    //     }
+    // }
     .apply-process-container{
         width: 100%;
         color:#707070FF;
