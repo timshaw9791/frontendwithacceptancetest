@@ -10,7 +10,7 @@
                     <define-input label="所在库房" v-model="order.warehouse.name" :disabled="true"></define-input>
                     <date-select v-model="order.createTime" :disabled="true"></date-select>
                     <entity-input label="申请人员" v-model="order.applicant" :required="true" placeholder="请选择"></entity-input>
-                    <text-input label="申请原因" v-model="order.note" :haveTip="true" :tips="tips" :title="order.note"></text-input>
+                    <text-input label="申请原因" v-model="order.note" :tips="tips" :title="order.note"></text-input>
                 </div>
                 <div class="table-box">
                     <bos-tabs>

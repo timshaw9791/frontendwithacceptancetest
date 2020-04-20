@@ -18,7 +18,7 @@
             <entity-input label="出库人员" v-model="order.outboundapplicant" :disabled="true"  placeholder="-"></entity-input>
         </div>
         <div class="process-info">
-            <text-input label="申请原因" v-model="order.note" :disabled="true" :haveTip="true" :tips="tips" :column="12"></text-input>
+            <text-input label="申请原因" v-model="order.note" :disabled="true" :tips="tips" :column="12"></text-input>
         </div>
         <div class="table-box">
           <bos-tabs :option="['tabs', 'contrast']" :layoutRatio="[2,1]">
