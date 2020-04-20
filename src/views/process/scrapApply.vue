@@ -25,7 +25,7 @@
                                 <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
-                                <entity-input v-model="data.row.equipArg" :options="{}" :disabled="true" format="{name}({model})"></entity-input>
+                                <entity-input v-model="data.row.equipArg" :options="{}" :tableEdit="true" format="{name}({model})"></entity-input>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
                                 <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input>
