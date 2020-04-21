@@ -3,7 +3,7 @@
         <el-table :data="data" :height="height" :border="border" fit
                 :highlight-current-row="highLightCurrent" @current-change="changeCurrent"
                 :show-summary="showSummary" :summary-method="summaryFunc">
-                <el-table-column label="序号" width="65" align="center" v-if="haveIndex">
+                <el-table-column label="序号" width="65" align="center" v-if="haveIndex" :fixed="indexFixed">
                     <template slot-scope="scope">{{(pageInfo.page-1)*pageInfo.size+scope.$index+1}}</template>
                 </el-table-column>
             <slot></slot>
@@ -68,6 +68,10 @@ import defineColumn from './defineColumn'
             },
             haveIndex: {
                 type: Boolean,
+                default: true
+            },
+            indexFixed: {
+                type: [Boolean, String],
                 default: true
             }
         },
