@@ -9,6 +9,14 @@ export function getCategoryAndGenre() {
     })
 }
 
+export function getInhouseNumber(params) {
+    return request({
+        url: "/inouthouse/findInHouseNumberLike",
+        method: 'get',
+        params:params
+    })
+}
+
 export function saveEquipInfo(categoryId,data) {
     return request({
         url: `/equip-args/${categoryId}`,
