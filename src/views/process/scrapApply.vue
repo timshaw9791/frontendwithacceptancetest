@@ -54,7 +54,6 @@
     import defineInput from '@/componentized/textBox/defineInput.vue'
     import bosTabs from '@/componentized/table/bosTabs.vue'
     import baseButton from "@/componentized/buttonBox/baseButton.vue"
-    import baseSelect from '@/componentized/textBox/baseSelect.vue'
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
@@ -67,7 +66,6 @@
             textInput,
             defineInput,
             baseButton,
-            baseSelect,
             dateSelect,
             entityInput,
             divTmp,
