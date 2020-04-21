@@ -62,6 +62,9 @@
                 this.$emit('input', value)
             }
         },
+        created() {
+            this.selectValue = this.value;
+        },
         mounted() {
             this.init()
         }

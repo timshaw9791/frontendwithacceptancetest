@@ -10,7 +10,6 @@
         <define-column label="部署时间" :filter="(row)=>$filterTime(row.deploymentTime)"></define-column>
       </define-table>
     </div>
-
   </div>
 </template>
 
@@ -24,16 +23,7 @@ export default {
   data() {
     return {
       list: [],
-      paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
-      test: '',
-      test2: [],
-      edit: true,
-      testList: [{
-        val: ''
-      }],
-      testList2: [{
-        val: '',
-      }]
+      paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0}
     }
   },
   methods: {
