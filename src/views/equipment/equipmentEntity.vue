@@ -56,16 +56,16 @@
             <service-dialog title="编辑装备信息" ref="historyDialog" :button="false" :secondary="false">
             <div class="edit-equip">
                 <div class="equip-params">
-                    <text-input label="装备名称"  :disabled="false" column="6" class="left-param"></text-input>
-                    <text-input label="装备型号" :disabled="false" column="6" class="left-param"></text-input>
-                    <text-input label="质保期(天)" :disabled="false" column="6" class="left-param"></text-input>
+                    <text-input label="装备名称" v-model="editList.name" :disabled="false" column="6" class="left-param"></text-input>
+                    <text-input label="装备型号" v-model="editList.model" :disabled="false" column="6" class="left-param"></text-input>
+                    <text-input label="质保期(天)" v-model='editList.shelfLife' :disabled="false" column="6" class="left-param" ></text-input>
                     <text-input label="充电周期(天)" :disabled="false" column="6" class="left-param"></text-input>
                     <text-input label="保养周期(天)" :disabled="false" column="6" class="left-param"></text-input>
-                    <text-input label="供应商" :disabled="false" column="6" class="left-param"></text-input>
-                    <text-input label="RFID" :disabled="false" column="6" class="left-param"></text-input>
-                    <text-input label="装备序号" :disabled="false" column="6" class="left-param"></text-input>
-                    <text-input label="装备位置" :disabled="false" column="6" class="left-param"></text-input>
-                    <text-input label="装备单价" :disabled="false" column="6" class="left-param"></text-input>
+                    <text-input label="供应商" v-model="editList.supplier.name" :disabled="false" column="6" class="left-param"></text-input>
+                    <text-input label="RFID"  v-model="editList.rfid"  :disabled="true" column="6" class="left-param"></text-input>
+                    <text-input label="装备序号" v-model="editList.serial" :disabled="false" column="6" class="left-param"></text-input>
+                    <text-input label="装备位置" v-model="editList.location" :disabled="false" column="6" class="left-param"></text-input>
+                    <text-input label="装备单价" v-model="editList.money" :disabled="false" column="6" class="left-param"></text-input>
                     <text-input label="生产日期" :disabled="false" column="6" class="left-param"></text-input>
                 </div>
               <div class="img-box">
@@ -117,6 +117,7 @@ export default {
                list:[
                    {
                 id: "5",
+                rfid:'12565789',
                 updateTime: 1586480773257,
                 createTime: 1586480772441,
                 name: "test_防爆盾牌",
@@ -124,6 +125,9 @@ export default {
                 shelfLife: 31104000000,
                 upkeepCycle: 0,
                 chargeCycle: 0,
+                money:100,
+                location:'',
+                serial:'123456',
                 supplier: {
                 id: "1",
                 updateTime: 1586480773227,
@@ -140,10 +144,14 @@ export default {
                 },
                 {
                 id: "3",
+                rfid:'12565789',
                 updateTime: 1586480773257,
                 createTime: 1586480772441,
                 name: "test_金属手铐",
                 model: "gssk",
+                money:100,
+                location:'',
+                serial:'123456',
                 shelfLife: 31104000000,
                 upkeepCycle: 0,
                 chargeCycle: 0,
@@ -163,10 +171,14 @@ export default {
                 },
                 {
                 id: "4",
+                rfid:'12565789',
                 updateTime: 1586480773257,
                 createTime: 1586480772441,
                 name: "test_塑料手铐",
                 model: "slsk",
+                money:100,
+                location:'',
+                serial:'123456',
                 shelfLife: 31104000000,
                 upkeepCycle: 0,
                 chargeCycle: 0,
@@ -189,7 +201,11 @@ export default {
                 updateTime: 1586480773257,
                 createTime: 1586480772440,
                 name: "test_T型警棍",
+                rfid:'12565789',
                 model: "txjg",
+                money:100,
+                location:'',
+                serial:'123456',
                 shelfLife: 31104000000,
                 upkeepCycle: 0,
                 chargeCycle: 0,
@@ -208,6 +224,32 @@ export default {
                 categoryId: "1"
                 },
                ],
+               editList:{
+                updateTime: 1586480773257,
+                createTime: 1586480772441,
+                name: "test_防爆盾牌",
+                rfid:'12565789',
+                model: "fbdp",
+                money:100,
+                location:'',
+                serial:'123456',
+                shelfLife: 31104000000,
+                upkeepCycle: 0,
+                chargeCycle: 0,
+                supplier: {
+                id: "1",
+                updateTime: 1586480773227,
+                createTime: 1586480772422,
+                name: "test_华安",
+                person: "test_xxx",
+                phone: "13922223333"
+                },
+                alphabetic: "FBDP",
+                image: "",
+                pdf: null,
+                video: null,
+                categoryId: "3"
+                },
                search:'',
                inAllocation:false
             }
@@ -219,6 +261,8 @@ export default {
             // })
              },
             edit(data){
+                this.editList=JSON.parse(JSON.stringify(data))
+                console.log(this.editList);
                 this.$refs.historyDialog.show()
             },
             selRow(){
@@ -232,6 +276,15 @@ export default {
             },
             successUp(data) {
                 // this.form.imageAddress = data;
+            },
+            milliToDay(data) {
+            let date = JSON.parse(JSON.stringify(data));
+            let day = Math.round(date / 24 / 60 / 60 / 1000);
+            if(day<1){
+                return day=1+'天';
+            }else {
+                return day+'天'
+            }
             },
         },
          created() {
@@ -264,8 +317,9 @@ export default {
 }
 .edit-equip{
     height: 500px;
+    width: 5.625rem;
     .equip-params{
-        width:600px;
+        width:3.5rem;
         height: 400px;
         float: left;
         border: 1px solid black;
@@ -287,7 +341,7 @@ export default {
     
 }
 .btn-box{
-        width: 800px;
+        width: 4rem;
         height: 50px;
         margin-left:20px;
         margin-top: 15px;
