@@ -56,17 +56,18 @@
             <service-dialog title="编辑装备信息" ref="historyDialog" :button="false" :secondary="false">
             <div class="edit-equip">
                 <div class="equip-params">
-                    <text-input label="装备名称" v-model="editList.name" :disabled="false" column="6" class="left-param"></text-input>
-                    <text-input label="装备型号" v-model="editList.model" :disabled="false" column="6" class="left-param"></text-input>
-                    <text-input label="质保期(天)" v-model='editList.shelfLife' :disabled="false" column="6" class="left-param" ></text-input>
-                    <text-input label="充电周期(天)" :disabled="false" column="6" class="left-param"></text-input>
-                    <text-input label="保养周期(天)" :disabled="false" column="6" class="left-param"></text-input>
-                    <text-input label="供应商" v-model="editList.supplier.name" :disabled="false" column="6" class="left-param"></text-input>
-                    <text-input label="RFID"  v-model="editList.rfid"  :disabled="true" column="6" class="left-param"></text-input>
-                    <text-input label="装备序号" v-model="editList.serial" :disabled="false" column="6" class="left-param"></text-input>
-                    <text-input label="装备位置" v-model="editList.location" :disabled="false" column="6" class="left-param"></text-input>
-                    <text-input label="装备单价" v-model="editList.money" :disabled="false" column="6" class="left-param"></text-input>
-                    <text-input label="生产日期" :disabled="false" column="6" class="left-param"></text-input>
+                    <define-input label="装备名称" v-model="editList.name" :disabled="false" column="6" align="left"></define-input>
+                    <define-input label="装备型号" v-model="editList.model" :disabled="false" column="6" align="right"></define-input>
+                    <define-input label="质保期(天)" v-model='editList.shelfLife' :disabled="false" column="6" align="left" ></define-input>
+                    <define-input label="充电周期(天)" v-model='editList.chargeCycle' :disabled="false" column="6" align="right"></define-input>
+                    <define-input label="保养周期(天)" v-model='editList.upkeepCycle' :disabled="false" column="6" align="left"></define-input>
+                    <define-input label="供应商" v-model="editList.supplier.name" :disabled="false" column="6" align="right"></define-input>
+                    <define-input label="RFID"  v-model="editList.rfid"  :disabled="true" column="6" align="left"></define-input>
+                    <define-input label="装备序号" v-model="editList.serial" :disabled="false" column="6" align="right"></define-input>
+                    <define-input label="装备位置" v-model="editList.location" :disabled="false" column="6" align="left"></define-input>
+                    <define-input label="装备单价" v-model="editList.money" :disabled="false" column="6" align="right"></define-input>
+                    <!-- <define-input label="生产日期" v-model="editList.createTime" :disabled="false" column="6" align="left"></define-input> -->
+                    <date-select label="生产日期" v-model="editList.createTime" column="6" align="left"></date-select>
                 </div>
               <div class="img-box">
                    <imgUp @success="successUp" :disabled="edit"
@@ -251,7 +252,8 @@ export default {
                 categoryId: "3"
                 },
                search:'',
-               inAllocation:false
+               inAllocation:false,
+               copyList:''
             }
         },
         methods:{
@@ -261,8 +263,12 @@ export default {
             // })
              },
             edit(data){
+                this.copyList=JSON.parse(JSON.stringify(data))
+                data.shelfLife=this.milliToDay(data.shelfLife)
+                data.createTime=this.getTime(data.createTime)
                 this.editList=JSON.parse(JSON.stringify(data))
-                console.log(this.editList);
+                // this.eqidList.shelfLife=this.milliToDay(this.eqidList.shelfLife)
+                // console.log(this.eqidList.shelfLife);
                 this.$refs.historyDialog.show()
             },
             selRow(){
@@ -281,11 +287,22 @@ export default {
             let date = JSON.parse(JSON.stringify(data));
             let day = Math.round(date / 24 / 60 / 60 / 1000);
             if(day<1){
-                return day=1+'天';
+                return day=1;
             }else {
-                return day+'天'
+                return day
             }
             },
+            getTime(nS) {
+            var date=new Date(parseInt(nS));
+            var year=date.getFullYear();
+            var mon = date.getMonth()+1;
+            var day = date.getDate();
+            // var hours = date.getHours();
+            // var minu = date.getMinutes();
+            // var sec = date.getSeconds();
+            return year+'/'+mon+'/'+day;
+    }
+
         },
          created() {
             this.getList();
