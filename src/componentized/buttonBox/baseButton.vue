@@ -3,7 +3,6 @@
     <el-button :type="type" :disabled="disabled" @click="emitOut" :style="'width:'+width+'px;padding:0;height:'+height+'px;font-size:'+fontSize+'px'">{{ label }}</el-button>
   </div>
 </template>
-
 <script>
 export default {
   name: "baseButton",

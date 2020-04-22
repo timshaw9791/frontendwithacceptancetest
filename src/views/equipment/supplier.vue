@@ -1,40 +1,20 @@
 <template>
     <div class="supplier">
-        <el-card shadow="never">
-            <div slot="header">
-                <span class="_card-title">{{$route.meta.title}}</span>
-            </div>
-            <div>
-                <div class="secondaryTitle">
-                    <el-button type="text" class="_textBt" @click="addChanger('新增供应商')">
-                        <svg-icon icon-class="加号"/>
-                        新增供应商
-                    </el-button>
-                    <div class="_buttons">
-                        <BosInput
-                                placeholder="供应商"
-                                suffix="el-icon-search"
-                                v-model="inquire"
-                                :wrapforlike="true"
-                                style=" width:285px;">
-                        </BosInput>
+        <div class="supplier-container">
+            <my-header title="供应商" :haveBlack="false"></my-header>
+            <div class="supplier">
+                <div class="supplier-body">
+                    <div class="supplier-info">
+                        <base-button label="新增供应商" @click="addChanger('新增供应商')"></base-button>
                     </div>
+                    <define-table :data="list" height="3.6458rem" :pageInfo="paginator">
+                        <define-column label="供应商名称" field="name"></define-column>
+                        <define-column label="联系人" field="person"></define-column>
+                        <define-column label="联系方式" field="phone"></define-column>
+                    </define-table>
                 </div>
-                <el-table :data="list" v-loading.body="false" element-loading-text="Loading"
-                          fit height="3.64rem">
-                    <bos-table-column lable="供应商" field="name"></bos-table-column>
-                    <bos-table-column lable="联系人" field="person"></bos-table-column>
-                    <bos-table-column lable="联系方式" field="phone"></bos-table-column>
-                    <el-table-column label="操作" align="center" width="200px">
-                        <template slot-scope="scope">
-                            <el-button type="primary" size="mini" @click="addChanger('编辑供应商信息',scope.row)">编辑</el-button>
-                        </template>
-                    </el-table-column>
-                </el-table>
-                <bos-paginator v-if="this.list!=''" :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
             </div>
-        </el-card>
-
+        </div>
         <service-dialog :title="title" ref="dialog" @firstCancel="cancel" @cancel="cancel" @confirm="dialogConfirm" :secondary="scondary">
             <form-container ref="inlineForm" :model="inlineForm">
                 <field-input v-model="inlineForm.name" label="供应商" width="8"
@@ -50,22 +30,6 @@
                 ></field-input>
             </form-container>
         </service-dialog>
-
-        <!-- <field-dialog :title="title" ref="dialog" @confirm="dialogConfirm">
-            <form-container ref="inlineForm" :model="inlineForm">
-                <field-input v-model="inlineForm.name" label="供应商" width="5"
-                             :rules="r(true).all(R.require)" prop="name"
-                ></field-input>
-                <br/>
-                <field-input v-model="inlineForm.person" label="联系人" width="5"
-                             :rules="r(true).all(R.require)" prop="person"
-                ></field-input>
-                <br/>
-                <field-input v-model="inlineForm.phone" label="联系方式" width="5"
-                             :rules="r(true).all(R.mobile)" prop="phone"
-                ></field-input>
-            </form-container>
-        </field-dialog> -->
     </div>
 </template>
 
@@ -73,7 +37,8 @@
     import {formRulesMixin} from 'field/common/mixinTableRest';
     import serviceDialog from 'components/base/serviceDialog/index'
     import { supplierFindByName, saveSupplier, updateSupplier } from "api/equip"
-
+    import myHeader from "../../components/base/header/header"
+    import textInput from "../../componentized/textBox/textInput";
     export default {
         data() {
             return {
@@ -89,7 +54,9 @@
         },
         mixins: [formRulesMixin],
         components: {
-            serviceDialog
+            serviceDialog,
+            myHeader,
+            textInput
         },
         methods: {
             getSupplierList() {
@@ -156,20 +123,16 @@
 </script>
 
 <style lang="scss" scoped>
-    .supplier {
-        font-size: 0.0833rem;
-    }
 
-    .secondaryTitle {
-        position: relative;
-        border-bottom: 1px solid #EBEEF5;
-        display: flex;
-        align-items: center;
-        padding-bottom: 16px;
-        height: 0.2292rem;
+    .supplier-container {
+        color: #707070FF;
+        font-size: 16px;
     }
-
-    .el-card {
-        border: none !important;
+    .supplier-info {
+        padding: 16px 7px;
+        overflow: hidden;
+    }
+    .supplier-body {
+        padding: 0 17px;
     }
 </style>

@@ -12,7 +12,7 @@
                 :disabled="disabled"
                 :editable="editable"
                 :default-time="defaultTime"
-                prefix-icon="el-icon-date"
+                prefix-icon= "el-icon-date"
                 @change="change">
         </el-date-picker>
     </div>
