@@ -70,7 +70,6 @@ import textInput from '@/componentized/textBox/textInput'
 import defineInput from '@/componentized/textBox/defineInput'
 import baseButton from '@/componentized/buttonBox/baseButton'
 import dateSelect from '@/componentized/textBox/dateSelect'
-import baseSelect from '@/componentized/textBox/baseSelect'
 import serviceDialog from "components/base/serviceDialog"
 import entityInput from '@/componentized/entity/entityInput'
 import bosTabs from '@/componentized/table/bosTabs'
@@ -315,7 +314,6 @@ export default {
     defineInput,
     baseButton,
     dateSelect,
-    baseSelect,
     serviceDialog,
     entityInput,
     bosTabs

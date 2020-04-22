@@ -102,7 +102,7 @@ export default {
           this.$refs[this.options.search].show();
         },
         showDetail() {
-          this.$refs.equipParam.show();
+          this.$refs[this.options.detail].show();
         },
         selected(data) { // 联系组件完成
           this.fixValue(data.data);

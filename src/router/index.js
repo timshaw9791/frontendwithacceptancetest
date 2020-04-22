@@ -66,6 +66,12 @@ export const asyncRouterMap = [
         meta: {title: '装备出入库', icon: '装备出入库', roles: ['ADMINISTRATOR']},
         children: [
             {
+                path: 'storages',
+                name: 'equipment/storages',
+                component: _import('equipment/storages'),
+                meta: {title: '入库单列表'},
+            },
+            {
                 path: 'storage',
                 name: 'equipment/storage',
                 component: _import('equipment/storage'),
@@ -82,6 +88,12 @@ export const asyncRouterMap = [
                 name: 'equipment/equipParam',
                 component: _import('equipment/equipParam'),
                 meta: {title: '装备参数'},
+            },
+            {
+                path: 'equipmententity',
+                name: 'equipment/equipmententity',
+                component: _import('equipment/equipmentEntity'),
+                meta: {title: '装备实体'},
             },
             {
                 path: 'searchstorage',
@@ -254,10 +266,21 @@ export const asyncRouterMap = [
                 meta: {title: '盘点'},
             },
             {
+                path: 'addPersonal',
+                name: 'addPersonal',
+                component: _import('warehouse/addPersonal'),
+                hidden: true,
+            },
+            {
                 path: 'personnelManagement',
                 name: 'warehouse/personnelManagement',
-                component: _import('personnelManagement/personnelManagement'),
+                component: _import('warehouse/personnelManagement'),
                 meta: {title: '人员管理'},
+            },
+            {   path: 'cabinetManagement',
+            name: 'cabinet/cabinetManagement',
+            component: _import('cabinet/cabinetManagement'),
+            meta: {title: '警柜管理'}
             },
             {
                 path: 'plan',
