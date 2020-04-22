@@ -18,7 +18,7 @@
             <entity-input label="出库人员" v-model="order.outboundapplicant" :disabled="true"  placeholder="-"></entity-input>
         </div>
         <div class="process-info">
-            <text-input label="申请原因" v-model="order.note" :disabled="true" :haveTip="true" :tips="tips" :column="12"></text-input>
+            <text-input label="申请原因" v-model="order.note" :disabled="true" :tips="tips" :column="12"></text-input>
         </div>
         <div class="table-box">
           <bos-tabs :option="['tabs', 'contrast']" :layoutRatio="[2,1]">
@@ -70,14 +70,11 @@ import textInput from '@/componentized/textBox/textInput'
 import defineInput from '@/componentized/textBox/defineInput'
 import baseButton from '@/componentized/buttonBox/baseButton'
 import dateSelect from '@/componentized/textBox/dateSelect'
-import baseSelect from '@/componentized/textBox/baseSelect'
 import serviceDialog from "components/base/serviceDialog"
 import entityInput from '@/componentized/entity/entityInput'
-import defineColumn from '@/componentized/entity/defineColumn'
 import bosTabs from '@/componentized/table/bosTabs'
 import request from 'common/js/request'
 import {baseBURL} from "api/config";
-import defineTable from '@/componentized/entity/defineTable'
 import { processwarehouseDetail, getHistoryTasks, complete } from 'api/process'
 var _ = require('lodash');
 export default {
@@ -317,11 +314,8 @@ export default {
     defineInput,
     baseButton,
     dateSelect,
-    baseSelect,
     serviceDialog,
     entityInput,
-    defineColumn,
-    defineTable,
     bosTabs
   }
 }

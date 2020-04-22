@@ -29,10 +29,11 @@ import BosInput from './components/bos-input'
 
 import FieldEntity from './components/field-entity.vue';
 
-import defineTable from '@/componentized/entity/defineTable.vue'
-import defineColumn from '@/componentized/entity/defineColumn.vue'
+import defineTable from '@/componentized/table/defineTable.vue'
+import defineColumn from '@/componentized/table/defineColumn.vue'
 import defineInput from '@/componentized/textBox/defineInput.vue'
 import baseButton from '@/componentized/buttonBox/baseButton.vue'
+import baseSelect from '@/componentized/textBox/baseSelect.vue'
 
 
 let componentsList = {
@@ -54,10 +55,11 @@ let componentsList = {
     'BosInput': BosInput,
     'FieldInputQuery': FieldInputQuery,
     'TeachTableColumn':TeachTableColumn,
-    'defineTable': defineTable,
-    'defineColumn': defineColumn,
-    'defineInput': defineInput,
-    'baseButton': baseButton
+    defineTable,
+    defineColumn,
+    defineInput,
+    baseButton,
+    baseSelect
 };
 
 

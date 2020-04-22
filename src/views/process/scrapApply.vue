@@ -10,7 +10,7 @@
                     <define-input label="所在库房" v-model="order.warehouse.name" :disabled="true"></define-input>
                     <date-select v-model="order.createTime" :disabled="true"></date-select>
                     <entity-input label="申请人员" v-model="order.applicant" :required="true" placeholder="请选择"></entity-input>
-                    <text-input label="申请原因" v-model="order.note" :haveTip="true" :tips="tips" :title="order.note"></text-input>
+                    <text-input label="申请原因" v-model="order.note" :tips="tips" :title="order.note"></text-input>
                 </div>
                 <div class="table-box">
                     <bos-tabs>
@@ -25,7 +25,7 @@
                                 <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
-                                <entity-input v-model="data.row.equipArg" :options="{}" :disabled="true" format="{name}({model})"></entity-input>
+                                <entity-input v-model="data.row.equipArg" :options="{}" :tableEdit="true" format="{name}({model})"></entity-input>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
                                 <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input>
@@ -54,7 +54,6 @@
     import defineInput from '@/componentized/textBox/defineInput.vue'
     import bosTabs from '@/componentized/table/bosTabs.vue'
     import baseButton from "@/componentized/buttonBox/baseButton.vue"
-    import baseSelect from '@/componentized/textBox/baseSelect.vue'
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
@@ -67,7 +66,6 @@
             textInput,
             defineInput,
             baseButton,
-            baseSelect,
             dateSelect,
             entityInput,
             divTmp,
@@ -339,11 +337,11 @@
 </script>
 
 <style lang="scss" scoped>
-    /deep/ .el-table {
-        .el-table__body-wrapper { // 因为表格切换后，带有合计行的表格高度会变少，所以手动设置其高度
-            height: 2.3594rem !important;
-        }
-    }
+    // /deep/ .el-table {
+    //     .el-table__body-wrapper { // 因为表格切换后，带有合计行的表格高度会变少，所以手动设置其高度
+    //         height: 2.3594rem !important;
+    //     }
+    // }
     .apply-process-container{
         width: 100%;
         color:#707070FF;

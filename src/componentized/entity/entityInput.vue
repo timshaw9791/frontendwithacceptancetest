@@ -1,26 +1,22 @@
 <template>
   <div class="entity-input-container" ref="entityInput" :style="'width:'+fixWidth"
-              @mouseover="changeEditState(true)"
-              @mouseout="changeEditState(false)">
-    <div :class="{'entity-input':true,'entity-input-border':tableEdit&&edit}">
-      <el-input :placeholder="placeholder"
-                :disabled="disabled"
-                v-model="insideValue"
-                readonly>
-          <div slot="prepend" :class="{'prefix': true, 'disabled': disabled}" v-if="!inTable">
-            {{ label }}
-            <span class="required" v-if="required">*</span>
-          </div>
-            <i slot="suffix" class="iconfont iconwenbenkuangshanchu" @click="clear" v-show="insideValue&&!disabled&&tableEdit&&edit"></i>
-            <i slot="suffix" class="iconfont iconsousuo" @click="showSearch" v-show="search&&!disabled&&tableEdit&&edit"></i>
-            <i slot="suffix" class="iconfont iconxiang" @click="showDetail" v-show="detail&&!disabled&&tableEdit&&edit"></i>
-      </el-input>
+              :class="{'disabled':disabled&&inTableStateContrl,'border':(tableEdit&&edit)}" 
+              @click="changeEditState(true)" @mouseleave="changeEditState(false)">
+     <div class="label" v-if="!inTable">{{ label }}
+      <span class="required" v-if="required">*</span>
+    </div>
+    <input type="text" class="input" :disabled="disabled" v-model="insideValue"
+      readonly :placeholder="placeholder" @keydown.13="changeEditState(false)"/>
+    <div class="icon">
+      <i class="iconfont iconwenbenkuangshanchu" @click="clear" v-show="insideValue&&!disabled&&tableEdit&&edit"></i>
+      <i class="iconfont iconsousuo" @click="showSearch" v-show="search&&!disabled&&tableEdit&&edit"></i>
+      <i class="iconfont iconxiang" @click="showDetail" v-show="detail&&!disabled&&tableEdit&&edit"></i>
     </div>
     <service-dialog title="申请人员选择" ref="applicant" :button="false" :secondary="false">
-      <applicant-select @select="selected"></applicant-select>
+      <applicant-select @select="selected" @cancel="$refs.applicant.hide()"></applicant-select>
     </service-dialog>
     <service-dialog title="装备参数选择" ref="equipParam" width="1300px" :button="false" :secondary="false">
-      <equip-params @select="selected"></equip-params>
+      <equip-params @select="selected" @cancel="$refs.equipParam.hide()"></equip-params>
     </service-dialog>
     <service-dialog title="机构选择" ref="organUnits" width="500px" :button="false" :secondary="false">
       <organ-units @select="selected" @cancel="$refs.organUnits.hide()"></organ-units>
@@ -40,6 +36,7 @@ export default {
           inputPrePt: null,
           insideValue: "",
           inTable: false, // 是否为表格内联
+          inTableStateContrl: true,
           edit: true, // 内部是否可编辑
           search: false, // 是否显示搜索图标
           detail: false, // 是否显示详情图标
@@ -100,10 +97,10 @@ export default {
           this.$refs[this.options.search].show();
         },
         showDetail() {
-          this.$refs.equipParam.show();
+          this.$refs[this.options.detail].show();
         },
         selected(data) { // 联系组件完成
-          this.fixValue(data.data)
+          this.fixValue(data.data);
           this.$refs[data.ref].hide();
         },
         fixValue(data) { // 整理显示的值 可接收函数(未)
@@ -168,6 +165,9 @@ export default {
           if(this.$refs.entityInput.parentNode.parentNode.nodeName == 'TD') {
             this.inTable = true;
             this.edit = false;
+            if(this.disabled) {
+              this.inTableStateContrl = false;
+            }
           }
         } catch (error) {
           
@@ -177,64 +177,70 @@ export default {
 </script>
 
 <style lang="scss" scoped> 
-    /deep/ .el-input {
-        font-size: 16px;
-        .el-input-group__prepend {
-            // background-color: white;
-            // padding: 9px 0 9px 10px;
-            padding: 0;
-            border: none;
-            line-height: 20px;
-        }
-        .el-input__inner {
-            border: none;
-            height: 38px !important;
-        }
-        /* error类要放在这里，因为el-input为组件，其样式不在该层(scoped封住了) */
-        .error {
-            border-color: red;
-        }
-    }
-    .entity-input-container {
+  .entity-input-container {
+      display: inline-flex;
+      justify-content: flex-start;
+      align-items: center;
+      font-size: 16px;
+      min-width: 298px;
+      height: 40px;
+      max-height: 40px;
+      border-radius: 4px;
+      box-sizing: border-box;
       margin: 0 0.0521rem;
-      display: inline-block;
-		  box-sizing: border-box;
+    .iconwenbenkuangshanchu {
+      display: none;
     }
-    .entity-input {
-        border-radius:4px;
-        font-size: 16px;
-    }
-    .entity-input:hover {
-        border-color: #409EFF;
-    }
-    .entity-input-border {
-      border: 1px solid #DCDFE6;
-    }
-
-    .required {
-      position: absolute;
-        font-size: 16px;
-        color: red;
-    }
-    .error {
-        border-color: red;
-    }
-    .prefix {
-        width: auto;
-        height: 37px;
-        line-height: 37px !important;
-        padding-left: 10px;
-        background-color: white;
-    }
-    .prefix:hover {
-        border-color: #409EFF;
-    }
-    .disabled {
-        background-color: #f5f7fa !important;
-    }
-
-    .iconfont {
-      line-height: 40px;
-      margin-right: 5px;
-    }
+  .label {
+    min-width: 55px;
+    padding: 0 10px;
+    color: #909399;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .required {
+    color: red;
+  }
+  .input {
+    width: auto;
+    padding: 0 5px 1px 0;
+    flex-grow: 1;
+    height: 100%;
+    font-size: 16px;
+    outline-style: none;
+    border-radius: 4px;
+    border: 0px;
+    background-color: transparent;
+  }
+  input::-webkit-input-placeholder {
+    color: #C0C4CC;
+  }
+  .icon {
+    min-width: 32px;
+    padding: 0 10px;
+  }
+}
+.border {
+  border: 1px solid #DCDFE6;
+}
+.error {
+  border: 1px solid red;
+}
+.table-error {
+  .input {
+    color: red;
+  }
+}
+.disabled {
+  background:rgba(248,249,251,1);
+  border:1px solid rgba(220,223,230,1);
+  .input {
+    color:rgba(192,196,204,1);
+  }
+}
+.entity-input-container:hover {
+  .iconwenbenkuangshanchu {
+    display: inline-block;
+  }
+}
 </style>

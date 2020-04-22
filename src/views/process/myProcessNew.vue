@@ -4,7 +4,6 @@
         <div class="my-process" data-test="action_box">
             <div class="my-process-info">
                 <define-input label="请求标题" v-model="requestTitle" placeholder="请输入标题"></define-input>
-                <!-- <text-input label="请求标题" v-model="requestTitle" placeholder="请输入标题"></text-input> -->
                 <base-select label="流程类型" v-model="select.selected" :selectList="select.processList"></base-select>
                 <base-button label="查询" @click="getMyProcess()"></base-button>
             </div>
@@ -27,7 +26,6 @@
 <script>
     import myHeader from 'components/base/header/header'
     import defineInput from '@/componentized/textBox/defineInput.vue'
-    import baseSelect from '@/componentized/textBox/baseSelect.vue'
     import baseButton from "@/componentized/buttonBox/baseButton.vue"
 
     import { processDefinitions, myProcess } from 'api/process'
@@ -104,7 +102,6 @@
         components:{
             myHeader,
             defineInput,
-            baseSelect,
             baseButton
         },
     }

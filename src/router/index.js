@@ -266,9 +266,15 @@ export const asyncRouterMap = [
                 meta: {title: '盘点'},
             },
             {
+                path: 'addPersonal',
+                name: 'addPersonal',
+                component: _import('warehouse/addPersonal'),
+                hidden: true,
+            },
+            {
                 path: 'personnelManagement',
                 name: 'warehouse/personnelManagement',
-                component: _import('personnelManagement/personnelManagement'),
+                component: _import('warehouse/personnelManagement'),
                 meta: {title: '人员管理'},
             },
             {   path: 'cabinetManagement',

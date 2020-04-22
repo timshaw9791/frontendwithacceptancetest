@@ -19,7 +19,7 @@
                     <entity-input label="出库人员" :disabled="true"  placeholder="-"></entity-input>
                 </div>
                 <div class="process-info">
-                    <text-input label="申请原因" v-model="order.note" :column="12" :haveTip="true" :tips="tips"></text-input>
+                    <text-input label="申请原因" v-model="order.note" :column="12" :tips="tips"></text-input>
                 </div>
                 <div class="table-box">
                     <bos-tabs :label="[{label: '总清单',key: 'total'}]">
@@ -33,7 +33,7 @@
                                 <entity-input v-model="data.row.equipArg" :options="{detail:'equipParam'}" format="{name}({model})"></entity-input>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
-                                <text-input v-model="data.row.count" type="number"></text-input>
+                                <define-input v-model="data.row.count" type="number"></define-input>
                             </define-column>
                         </define-table>
                     </bos-tabs>
@@ -52,7 +52,6 @@
     import textInput from '@/componentized/textBox/textInput.vue'
     import defineInput from '@/componentized/textBox/defineInput'
     import baseButton from "@/componentized/buttonBox/baseButton.vue"
-    import baseSelect from '@/componentized/textBox/baseSelect.vue'
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
@@ -66,7 +65,6 @@
             textInput,
             defineInput,
             baseButton,
-            baseSelect,
             dateSelect,
             entityInput,
             divTmp,
@@ -156,11 +154,11 @@
 </script>
 
 <style lang="scss" scoped>
-    /deep/ .el-table {
-        .el-table__body-wrapper { // 因为表格切换后，带有合计行的表格高度会变少，所以手动设置其高度
-            height: 2.3594rem !important;
-        }
-    }
+    // /deep/ .el-table {
+    //     .el-table__body-wrapper { // 因为表格切换后，带有合计行的表格高度会变少，所以手动设置其高度
+    //         height: 2.3594rem !important;
+    //     }
+    // }
     .apply-process-container{
         width: 100%;
         color:#707070FF;
