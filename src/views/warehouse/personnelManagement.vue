@@ -19,7 +19,7 @@
                 <define-column fixed label="警号" field="policeSign" width="180"></define-column>
                 <define-column fixed label="姓名" field="name" width="100"></define-column>
                 <define-column label="性别" field="gender" width="100"></define-column>
-                <define-column label="机构单位" field="organUnit.name" width="180"></define-column>
+                <define-column label="机构单位" field="organUnitName" width="180"></define-column>
                 <define-column label="角色" field="role" width="180"></define-column>
                 <define-column label="职位" field="position" width="180"></define-column>
                 <define-column label="联系方式" field="phone" width="180"></define-column>
@@ -31,7 +31,8 @@
 <script>
     import myHeader from 'components/base/header/header'
     import textInput from '@/componentized/textBox/textInput'
-    import { getUser } from 'api/user'
+    import Vue from 'Vue'
+    import { getUser  ,deleteUser} from 'api/user'
     export default {
         name: "personnelManagement",
         components: {
@@ -68,7 +69,16 @@
                     params: {type: 'addPersonal', info: {data:data,edit:true}}
                     })
             },
-            deleteperson(data){console.log(data);},
+            deleteperson(data){
+                console.log(data);
+                deleteUser(data.id).then(res=>{
+                    Vue.prototype.$message({
+                        message:"删除成功",
+                        type:'sucess'
+                    })
+                    this.getUserList()
+                })
+            },
             getUserList() {
                 getUser(this.paginator).then(res => {
                     this.list = res.content;
