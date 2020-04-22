@@ -6,7 +6,7 @@
                 <define-input label="入库人员" :disabled="true"  class="odd-number"></define-input>
             </div>
         <div class="data-list">
-            <bos-tabs>
+            <bos-tabs >
                         <template slot="slotHeader">
                             <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96" @click="readData"></base-button>
                             <base-select label="硬件选择" v-model="select.selected" align="right" :selectList="select.handWareList"></base-select>
@@ -86,6 +86,7 @@ export default {
                     }],
                     selected: ""
                 },
+               
             }
         },
         methods:{
