@@ -119,7 +119,6 @@
         font-size: 16px;
         .my-process-info {
             padding: 16px 7px;
-            overflow: hidden;
         }
         .my-process-body {
             padding: 0 17px;
