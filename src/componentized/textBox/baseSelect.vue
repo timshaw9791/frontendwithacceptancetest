@@ -1,15 +1,15 @@
 <template>
     <div class="base-select-container" :style="'width:'+fixWidth+';float:'+align">
-        <!-- <el-select v-model="selectValue" placeholder="请选择" id="select" ref="select" :multiple="multiple" collapse-tags @change="change">
+        <el-select v-model="selectValue" placeholder="请选择" id="select" :multiple="multiple" collapse-tags @change="change">
             <el-option
                 v-for="(item, i) in selectList"
                 :key="item.value+i"
                 :label="item.label"
                 :value="item.value">
+<!--                <span><el-checkbox v-model="item.sel">{{ item.label }}</el-checkbox></span>-->
             </el-option>
             <div class="title-name" slot="prefix">{{ label }}</div>
-        </el-select> -->
-        <div class="select"></div>
+        </el-select>
     </div>
 </template>
 
@@ -55,8 +55,8 @@
         },
         methods: {
             init() {
-                // let sel = document.querySelector('#select');
-                // sel.style.paddingLeft = this.label.length?30+this.label.length*15 + 'px':"15px";
+                let sel = document.querySelector('#select');
+                sel.style.paddingLeft = this.label.length?30+this.label.length*15 + 'px':"15px";
             },
             change(value) {
                 this.$emit('input', value)
@@ -82,10 +82,5 @@
         font-size:16px;
         color:rgba(112,112,112,1);
         margin-left: 6px;
-    }
-    .select {
-        width: 80%;
-        height: 40px;
-        border: 1px solid black;
     }
 </style>
