@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "14226837",
+      "name": "下  拉 ",
+      "font_class": "xiala1",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
+      "icon_id": "13984351",
+      "name": "位置",
+      "font_class": "weizhi",
+      "unicode": "e60e",
+      "unicode_decimal": 58894
+    },
+    {
       "icon_id": "13860957",
       "name": "添加（亮）",
       "font_class": "tianjialiang",

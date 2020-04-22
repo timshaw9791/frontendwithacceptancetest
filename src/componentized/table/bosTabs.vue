@@ -1,5 +1,5 @@
 <template>
-  <div class="bos-card-container">
+  <div class="bos-card-container" :style="'width:'+width">
     <div class="top-tabs" v-if="tabs">
       <div v-for="(item, i) in label" :key="i" 
         :class="{'tabs':true,'selected':selectedIndex==i}"
@@ -42,6 +42,10 @@ export default {
           key: 'detail'
         }]
       }
+    },
+    width: {
+      type: String,
+      default: '100%'
     },
     option: {
       type: Array,
@@ -106,7 +110,7 @@ export default {
 }
 .top-tabs {
   width: 50%;
-  min-width: 400px;
+  // min-width: 400px;
   min-height: 50px;
   max-height: 50px;
   float: left;
