@@ -10,7 +10,7 @@
         <define-column label="部署时间" :filter="(row)=>$filterTime(row.deploymentTime)"></define-column>
       </define-table>
     </div>
-    
+    <base-button size="mini" type="success"></base-button>
   </div>
 </template>
 
@@ -19,6 +19,7 @@ import myHeader from 'components/base/header/header'
 import textInput from '@/componentized/textBox/textInput.vue'
 import { processDefinitions } from 'api/process'
 import bosTabs from '@/componentized/table/bosTabs'
+import baseButton from '@/componentized/buttonBox/baseButtons'
 export default {
   name: 'newProcess',
   data() {
@@ -61,7 +62,8 @@ export default {
   components: {
     myHeader,
     textInput,
-    bosTabs
+    bosTabs,
+    baseButton
   }
 }
 </script>
