@@ -110,7 +110,7 @@ export default {
 }
 .top-tabs {
   width: 50%;
-  min-width: 400px;
+  // min-width: 400px;
   min-height: 50px;
   max-height: 50px;
   float: left;
