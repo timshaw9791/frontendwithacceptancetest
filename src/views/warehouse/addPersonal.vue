@@ -32,7 +32,7 @@
         </div>
         <div class="buttom">
             <base-button label="提交" align="right" :width="128" :height="72" :fontSize="20" @click="submit"></base-button>
-            <base-button label="清空" align="right" :width="128" :height="72" :fontSize="20" type="danger"></base-button>
+            <!-- <base-button label="清空" align="right" :width="128" :height="72" :fontSize="20" type="danger"></base-button> -->
         </div>
     </div>
 </template>
@@ -43,7 +43,6 @@
     import entityInput from '@/componentized/entity/entityInput'
     import { editUser ,addUser } from 'api/user'
     import upFile from '@/componentized/upFile'
-    import Vue from 'Vue'
     export default {
         name:"addPersonal",
         components:{
@@ -70,27 +69,13 @@
             }else if(this.order.enterHouse){
                 this.order.enterHouse = "允许"
             }
-            console.log("this.order",this.order);
         },
         data(){
             return{
                 genderList:[{label:"男",value:"男"},{label:"女",value:"女"}],
                 roleList:[{label:"管理员",value:"管理员"},{label:"警员",value:"警员"},{label:"领导",value:"领导"}],
                 enterhouseList:[{label:"不允许",value:"不允许"},{label:"允许",value:"允许"}],
-                order:{
-                    name: "",
-                    policeSign: "",
-                    role: "",
-                    gender: "",
-                    organUnitName: "",
-                    phone: "",
-                    fingerprintInformation: "",
-                    faceInformation: "",
-                    position: "",
-                    idNumber: "",
-                    id: "",
-                    number: "",
-                },
+                order:{},
                 title:"",
                 organUnit: {}
             }
@@ -105,7 +90,6 @@
         },
         methods:{
             submit(){
-                console.log("提交");
                 switch(this.order.role){
                     case '管理员':
                         this.order.role = "ADMIN"
@@ -127,33 +111,19 @@
                 _.forIn(this.order,function(val,key){
                     if(key=="name"||key=="policeSign"||key=="role"||key=="phone"||key=="organUnitName"||key=="position"||key=="idNumber"){
                         if(val==""||val==null){
-                            console.log("++++++");
-                            Vue.prototype.$message({
-                                message:"请填写完整",
-                                type:'error'
-                            })
+                            this.$message.success("请填写完整")
                             return false
-                        }else{
-                            console.log(key,val);
                         }
                     }
                 })
                 if(this.$route.params.info.edit){
-                    console.log("编辑");
                     editUser(this.order.id,this.order).then(res=>{
-                        Vue.prototype.$message({
-                                message:"编辑成功",
-                                type:'sucess'
-                            })
+                        this.$message.sucess("编辑成功")
                         this.$router.push({name: 'warehouse/personnelManagement'});
                     })
                 }else{
-                    console.log("新增");
                     addUser(this.order).then(res=>{
-                        Vue.prototype.$message({
-                                message:"新增成功",
-                                type:'sucess'
-                            })
+                        this.$message.sucess("新增成功")
                         this.$router.push({name: 'warehouse/personnelManagement'});
                     })
                 }

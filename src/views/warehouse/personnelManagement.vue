@@ -2,16 +2,14 @@
     <div class="personnelManagement">
         <my-header :title="'人员管理'"  :searchFlag="false" :haveBlack="false" ></my-header>
         <div class="personnel-action-bar">
-            <div style="float:right">
-                <base-button :width="100" label="新增人员" @click="addperson"></base-button>
-            </div>
+            <base-button :width="100" align="right" label="新增人员" @click="addperson"></base-button>
         </div>
         <div v-show="!addpersonflag">
             <define-table :data="list" height="550.0032px" :pageInfo="paginator" 
                 :highLightCurrent="true" @changePage="changePage" :haveIndex="true">
-                <define-column label="操作" width="100" fixed v-slot="{ data }">
-                    <base-button label="编辑" @click="editperson(data.row)"></base-button>
-                    <base-button label="删除" type="danger" @click="deleteperson(data.row)"></base-button>
+                <define-column label="操作" width="180" fixed v-slot="{ data }">
+                    <base-button label="编辑" @click="editperson(data.row)" type="text"></base-button>
+                    <base-button label="删除" type="text" @click="deleteperson(data.row)"></base-button>
                 </define-column>
                 <define-column label="图片" v-slot="{ data }" fixed>
                     <img :src="data.row.faceInformation" alt="暂无图片">
@@ -31,7 +29,6 @@
 <script>
     import myHeader from 'components/base/header/header'
     import textInput from '@/componentized/textBox/textInput'
-    import Vue from 'Vue'
     import { getUser  ,deleteUser} from 'api/user'
     export default {
         name: "personnelManagement",
@@ -52,7 +49,6 @@
         },
         methods: {
             addperson(){
-                console.log("this.$router",this.$router);
                 this.$router.push({
                     name: 'addPersonal',
                     params: {type: 'addPersonal', info: {data:"",edit:false}}
@@ -63,19 +59,14 @@
                 this.getUserList();
             },
             editperson(data){
-                console.log("data",data);
                 this.$router.push({
                     name: 'addPersonal',
                     params: {type: 'addPersonal', info: {data:data,edit:true}}
                     })
             },
             deleteperson(data){
-                console.log(data);
                 deleteUser(data.id).then(res=>{
-                    Vue.prototype.$message({
-                        message:"删除成功",
-                        type:'sucess'
-                    })
+                    this.$message.success("删除成功")
                     this.getUserList()
                 })
             },
