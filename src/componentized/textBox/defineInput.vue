@@ -1,10 +1,10 @@
 <template>
-  <div class="text-input-container" ref="defineInput" :style="`width:${fixWidth}`"
+  <div class="text-input-container" ref="defineInput" :style="`width:${fixWidth};float:${align}`"
       :class="[styleObj,{'disabled':disabled&&inTableStateContrl,'border':(tableEdit&&edit)}]" @click="changeEditState(true)">
     <div class="label" v-if="!inTable">{{ label }}
       <span class="required" v-if="required">*</span>
     </div>
-    <input type="text" class="input" :disabled="disabled" v-model="insideValue" 
+    <input :type="pattern" class="input" :disabled="disabled" v-model="insideValue" 
       :maxlength="maxlength" @change="reg" :readonly="!(tableEdit&&edit)" :placeholder="placeholder"
       @blur="changeEditState(false)" @keydown.13="changeEditState(false)"/>
     <div class="icon" v-show="insideValue!=''&&clearable&&!disabled&&tableEdit&&edit">
@@ -42,9 +42,20 @@ export default {
       type: Number,
       default: 3
     },
+    align: {
+      type: String,
+      default: 'none'
+    },
     disabled: {
       type: Boolean,
       default: false
+    },
+    pattern: {
+      type: String,
+      default: 'text',
+      validator: function(value) {
+        return ['text', 'password'].includes(value);
+      }
     },
     type: {
       type: String,
