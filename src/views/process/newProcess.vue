@@ -10,6 +10,9 @@
         <define-column label="部署时间" :filter="(row)=>$filterTime(row.deploymentTime)"></define-column>
       </define-table>
     </div>
+    
+    <base-select v-model="test" :selectList="test2"></base-select>
+    <!-- <base-select v-model="test" :selectList="test2"></base-select> -->
   </div>
 </template>
 
@@ -23,6 +26,8 @@ export default {
   data() {
     return {
       list: [],
+      test: '',
+      test2: [{label: '选项1', value: 'item1'}, {label:'选项2',value:'item2'}],
       paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0}
     }
   },
