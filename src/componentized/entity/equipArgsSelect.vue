@@ -34,7 +34,7 @@
         },
         methods: {
             getList() {
-                equipArgsByNameModel(this.pageInfo).then(res => {
+                getEquipArgs(this.pageInfo).then(res => {
                     this.list = res.content;
                     this.pageInfo.totalPages = res.totalPages;
                     this.pageInfo.totalElements = res.totalElements;
