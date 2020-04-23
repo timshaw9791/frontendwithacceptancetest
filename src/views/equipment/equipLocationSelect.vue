@@ -2,7 +2,7 @@
     <div class="opening-box">
         <div class="data-list">
             <bos-tabs :label="label">
-                        <define-table :data="surfaceList" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
+                        <define-table :data="surfaceList" height="1.8rem" @changeCurrent="selRow" :havePage="false"
                             :highLightCurrent="true"  slot="total">
                             <define-column label="仓位名称" v-slot="{ data }">
                                  <define-input v-model="data.row.name"  :tableEdit="false"></define-input>
@@ -11,7 +11,7 @@
                                 <define-input v-model="data.row.number" type="Number" :tableEdit="false"></define-input>
                             </define-column>
                         </define-table>
-                        <define-table :data="policeList" height="2.8646rem" :havePage="false" slot="detail">
+                        <define-table :data="policeList" height="1.8rem" :havePage="false" slot="detail">
                            
                             <define-column label="警柜类型" v-slot="{ data }">
                                 <define-input v-model="data.row.category" type="String" :tableEdit="false"></define-input>
@@ -65,6 +65,7 @@ export default {
             selRow(current){
                 if(!current) return; // 避免切换数据时报错
                 console.log(current);
+                this.$emit('current',current)
                 // this.detailTable.list = [];
                 // this.rowData = current;
                 // if(current.rfid == undefined) return;

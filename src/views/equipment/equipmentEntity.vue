@@ -16,16 +16,10 @@
                             <define-column label="RFID" fixed width="200" v-slot="{ data }">
                                 <define-input v-model="data.row.rfid" type="Number" :tableEdit="false"></define-input>
                             </define-column>
-                            <define-column label="装备序号" width="100" fixed  v-slot="{ data }">
-                                <define-input v-model="data.row.serial" type="Number" :tableEdit="false"></define-input>
-                            </define-column>
-                            <define-column label="装备名称" width="200" fixed v-slot="{ data }">
-                                <define-input v-model="data.row.name"  :tableEdit="false"></define-input>
-                            </define-column>
-                            <define-column label="装备型号" fixed v-slot="{ data }">
-                                <define-input v-model="data.row.model" :tableEdit="false"></define-input>
-                            </define-column>
-                            <define-column label="质保期(天)" >
+                            <define-column label="装备序号" field="serial" width="100" fixed/>
+                            <define-column label="装备名称" width="200" field="name" fixed />
+                            <define-column label="装备型号" field="model" fixed />
+                            <define-column label="质保期(天)">
                                 <!-- <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input> -->
                             </define-column>
                             <define-column label="充电周期(天)" v-slot="{ data }">
@@ -34,51 +28,49 @@
                             <define-column label="保养周期(天)" v-slot="{ data }">
                                 <!-- <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input> -->
                             </define-column>
-                            <define-column label="供应商" width="200" v-slot="{ data }">
-                                <define-input v-model="data.row.supplier.name"  :tableEdit="false"></define-input>
-                            </define-column>
-                            <define-column label="联系人" width="100" v-slot="{ data }">
-                                <define-input v-model="data.row.supplier.person"  :tableEdit="false"></define-input>
-                            </define-column>
-                            <define-column label="联系方式" width="150" v-slot="{ data }">
-                                <define-input v-model="data.row.supplier.phone"  :tableEdit="false"></define-input>
-                            </define-column>
-                            <define-column label="生产日期" width="200" :filter="(row)=>$filterTime(row.supplier.createTime)">
-                                
-                            </define-column>
+                            <define-column label="供应商" field="supplier.name" width="200" />
+                            <define-column label="联系人" width="100" field="supplier.person" />
+                               
+                            <define-column label="联系方式" width="150" field="supplier.phone"/>
+                               
+                            <define-column label="生产日期" width="200" :filter="(row)=>$filterTime(row.supplier.createTime)"/>
                             <define-column label="单价" v-slot="{ data }">
-                                <!-- <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input> -->
                             </define-column>
                             
-
                         </define-table>
             <equip-allocation v-if="inAllocation"></equip-allocation>
-            <service-dialog title="编辑装备信息" ref="historyDialog" :button="false" :secondary="false">
-            <div class="edit-equip">
+            <service-dialog :title="isEdit?'编辑装备信息':'选择位置信息'" ref="historyDialog" :button="false" :secondary="false">
+            <div class="edit-equip" v-if="isEdit">
                 <div class="equip-params">
-                    <text-input label="装备名称" v-model="editList.name" :disabled="false" column="6" class="left-param"></text-input>
-                    <text-input label="装备型号" v-model="editList.model" :disabled="false" column="6" class="left-param"></text-input>
-                    <text-input label="质保期(天)" v-model='editList.shelfLife' :disabled="false" column="6" class="left-param" ></text-input>
-                    <text-input label="充电周期(天)" :disabled="false" column="6" class="left-param"></text-input>
-                    <text-input label="保养周期(天)" :disabled="false" column="6" class="left-param"></text-input>
-                    <text-input label="供应商" v-model="editList.supplier.name" :disabled="false" column="6" class="left-param"></text-input>
-                    <text-input label="RFID"  v-model="editList.rfid"  :disabled="true" column="6" class="left-param"></text-input>
-                    <text-input label="装备序号" v-model="editList.serial" :disabled="false" column="6" class="left-param"></text-input>
-                    <text-input label="装备位置" v-model="editList.location" :disabled="false" column="6" class="left-param"></text-input>
-                    <text-input label="装备单价" v-model="editList.money" :disabled="false" column="6" class="left-param"></text-input>
-                    <text-input label="生产日期" :disabled="false" column="6" class="left-param"></text-input>
+                    <define-input label="装备名称" v-model="editList.name" :disabled="false" column="6" align="left"/>
+                    <define-input label="装备型号" v-model="editList.model" :disabled="false" column="6" align="right"></define-input>
+                    <define-input label="质保期(天)" v-model='editList.shelfLife' :disabled="false" column="6" align="left" ></define-input>
+                    <define-input label="充电周期(天)" v-model='editList.chargeCycle' :disabled="false" column="6" align="right"></define-input>
+                    <define-input label="保养周期(天)" v-model='editList.upkeepCycle' :disabled="false" column="6" align="left"></define-input>
+                    <define-input label="供应商" v-model="editList.supplier.name" :disabled="false" column="6" align="right"></define-input>
+                    <define-input label="RFID"  v-model="editList.rfid"  :disabled="true" column="6" align="left"></define-input>
+                    <define-input label="装备序号" v-model="editList.serial" :disabled="false" column="6" align="right"></define-input>
+                    <define-input label="装备位置" v-model="editList.location" :disabled="false" column="6" align="left" @click.native="selectLocation"></define-input>
+                    <define-input label="装备单价" v-model="editList.money" :disabled="false" column="6" align="right"></define-input>
+                    <date-select label="生产日期" v-model="editList.createTime" column="6" align="left"></date-select>
                 </div>
               <div class="img-box">
                    <imgUp @success="successUp" :disabled="edit"
                                     upload="true" noimg></imgUp>
               </div>
-              <div class="btn-box">
-                  <base-button label="取消" align="right" :width="128" :height="25" :fontSize="20" ></base-button>
-                  <base-button label="提交" align="right" :width="128" :height="25" :fontSize="20" ></base-button>
-               
-              </div>
+            
             </div>
+            <div class="location-select" v-if="!isEdit">
+                <div class="select-location">
+                   <equip-locationSelect @current="current"></equip-locationSelect>
+                </div>
+            </div>
+              <div class="btn-box">
+                  <base-button label="取消" align="right" :width="128" :height="25" :fontSize="20" @click="cancel"></base-button>
+                  <base-button label="提交" align="right" :width="128" :height="25" :fontSize="20" @click="confirm"></base-button>
+              </div>
         </service-dialog>
+        
         </div>
     </div>
 </template>
@@ -89,28 +81,26 @@
     import defineInput from '@/componentized/textBox/defineInput.vue'
     import bosTabs from '@/componentized/table/bosTabs.vue'
     import baseButton from "@/componentized/buttonBox/baseButton.vue"
-    import baseSelect from '@/componentized/textBox/baseSelect.vue'
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
-    import divTmp from '@/componentized/divTmp'
     import imgUp from 'components/base/axiosImgUp';
     import equipAllocation from './equipAllocation'
     import serviceDialog from 'components/base/serviceDialog/index'
-    import { equipArgsByNameModel,equipById } from 'api/storage'
+    import equipLocationSelect from '../equipment/equipLocationSelect'
+    import { equipArgsByNameModel,equipById} from 'api/storage'
 export default {
     components:{
             myHeader,
             textInput,
             defineInput,
             baseButton,
-            baseSelect,
             dateSelect,
             entityInput,
-            divTmp,
             bosTabs,
             serviceDialog,
             imgUp,
-            equipAllocation
+            equipAllocation,
+            equipLocationSelect
         },
         data(){
             return{
@@ -141,89 +131,9 @@ export default {
                 pdf: null,
                 video: null,
                 categoryId: "3"
-                },
-                {
-                id: "3",
-                rfid:'12565789',
-                updateTime: 1586480773257,
-                createTime: 1586480772441,
-                name: "test_金属手铐",
-                model: "gssk",
-                money:100,
-                location:'',
-                serial:'123456',
-                shelfLife: 31104000000,
-                upkeepCycle: 0,
-                chargeCycle: 0,
-                supplier: {
-                id: "1",
-                updateTime: 1586480773227,
-                createTime: 1586480772422,
-                name: "test_华安",
-                person: "test_xxx",
-                phone: "13922223333"
-                },
-                alphabetic: "JSSK",
-                image: "",
-                pdf: null,
-                video: null,
-                categoryId: "1"
-                },
-                {
-                id: "4",
-                rfid:'12565789',
-                updateTime: 1586480773257,
-                createTime: 1586480772441,
-                name: "test_塑料手铐",
-                model: "slsk",
-                money:100,
-                location:'',
-                serial:'123456',
-                shelfLife: 31104000000,
-                upkeepCycle: 0,
-                chargeCycle: 0,
-                supplier: {
-                id: "1",
-                updateTime: 1586480773227,
-                createTime: 1586480772422,
-                name: "test_华安",
-                person: "test_xxx",
-                phone: "13922223333"
-                },
-                alphabetic: "SLSK",
-                image: "",
-                pdf: null,
-                video: null,
-                categoryId: "2"
-                },
-                {
-                id: "2",
-                updateTime: 1586480773257,
-                createTime: 1586480772440,
-                name: "test_T型警棍",
-                rfid:'12565789',
-                model: "txjg",
-                money:100,
-                location:'',
-                serial:'123456',
-                shelfLife: 31104000000,
-                upkeepCycle: 0,
-                chargeCycle: 0,
-                supplier: {
-                id: "1",
-                updateTime: 1586480773227,
-                createTime: 1586480772422,
-                name: "test_华安",
-                person: "test_xxx",
-                phone: "13922223333"
-                },
-                alphabetic: "XJG",
-                image: "",
-                pdf: null,
-                video: null,
-                categoryId: "1"
-                },
+                }
                ],
+               newLocation:'',
                editList:{
                 updateTime: 1586480773257,
                 createTime: 1586480772441,
@@ -251,7 +161,9 @@ export default {
                 categoryId: "3"
                 },
                search:'',
-               inAllocation:false
+               inAllocation:false,
+               copyList:'',
+               isEdit:true,
             }
         },
         methods:{
@@ -261,8 +173,12 @@ export default {
             // })
              },
             edit(data){
+                this.copyList=JSON.parse(JSON.stringify(data))
+                data.shelfLife=this.milliToDay(data.shelfLife)
+                // data.createTime=this.getTime(data.createTime)
                 this.editList=JSON.parse(JSON.stringify(data))
-                console.log(this.editList);
+                // this.eqidList.shelfLife=this.milliToDay(this.eqidList.shelfLife)
+                // console.log(this.eqidList.shelfLife);
                 this.$refs.historyDialog.show()
             },
             selRow(){
@@ -270,6 +186,25 @@ export default {
             },
             sumFunc(){
 
+            },
+            cancel(){
+                if(this.isEdit)
+                {
+                    this.$refs.historyDialog.hide()
+                }else{
+                    this.isEdit=!this.isEdit
+                }
+            },
+            confirm(){
+                if(this.isEdit){
+                    this.$refs.historyDialog.hide()
+                }else{
+                    this.editList.location=this.newLocation
+                    this.isEdit=!this.isEdit
+                }
+            },
+            current(data){
+                this.newLocation=data.name
             },
             toAllocation(){
                 this.inAllocation=true
@@ -281,11 +216,25 @@ export default {
             let date = JSON.parse(JSON.stringify(data));
             let day = Math.round(date / 24 / 60 / 60 / 1000);
             if(day<1){
-                return day=1+'天';
+                return day=1;
             }else {
-                return day+'天'
+                return day
             }
             },
+            getTime(nS) {
+            var date=new Date(parseInt(nS));
+            var year=date.getFullYear();
+            var mon = date.getMonth()+1;
+            var day = date.getDate();
+            // var hours = date.getHours();
+            // var minu = date.getMinutes();
+            // var sec = date.getSeconds();
+            return year+'/'+mon+'/'+day;
+            },
+            selectLocation(){
+                this.isEdit=false
+            }
+
         },
          created() {
             this.getList();
@@ -322,7 +271,6 @@ export default {
         width:3.5rem;
         height: 400px;
         float: left;
-        border: 1px solid black;
         .left-param{
             margin-top: 15px;
         }
@@ -333,12 +281,9 @@ export default {
     }
     .img-box{
         width: 200px;
-        // height: 150px;
         float: left;
         margin-left: 30px;
-        border: 1px solid black;
     }
-    
 }
 .btn-box{
         width: 4rem;
@@ -348,7 +293,17 @@ export default {
         display: flex;
         justify-content: flex-end;
         align-items : center; 
-        border: 1px solid black;
-        // float: left;
     }
+.location-select{
+    height: 500px;
+    width: 4.625rem;
+    z-index: 1200;
+    .select-location{
+        width:3.5rem;
+        height: 440px;
+        float: left;
+        margin-left: auto;
+}
+}
+
 </style>

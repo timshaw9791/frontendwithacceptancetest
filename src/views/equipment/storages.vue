@@ -45,7 +45,7 @@
     import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
     import equipInhouse from './equipInhouse'
-    import { getInhouseNumber} from "api/storage"
+    import { getInhouseNumber,inOutHouseOrder} from "api/storage"
 export default {
     components:{
             myHeader,
@@ -74,10 +74,9 @@ export default {
 
             },
             getList(){
-                getInhouseNumber(this.paginator).then(res=>{
+                inOutHouseOrder().then(res=>{
                     this.list=res.content
-                    this.paginator.totalElements=res.totalElements
-                    this.paginator.totalPages=res.totalPages
+                   
                 })
             },
             changePage(page) {
