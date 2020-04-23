@@ -63,7 +63,7 @@ export default {
                selectLocation:'',
                currentSel:'',
                label:[{label: '仓位',key: 'total'}, {label: '警柜',key: 'detail'}],
-               surfaceList:[{name:'10架/A面/10层/10节',number:'10-A-10-10'}],
+               surfaceList:[{name:'10架/A面/10层/10节',number:'0k0C1S5uQFu5plYVbI69VwLOC'}],
                policeList:[{category:'单警柜',number:'1-01',people:'张三'},{category:'备用柜',number:'2-01',people:'李四'},{category:'公共柜',number:'3-01',people:'王五'}]
             }
         },
