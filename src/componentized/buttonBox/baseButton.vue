@@ -1,5 +1,5 @@
 <template>
-  <div class="base-button-container" :style="'width:'+width+'px;height:'+height+'px;float:'+align">
+  <div class="base-button-container" :style="'width:'+width+'px;height:'+height+'px;float:'+align+';marin:'+margin">
     <el-button :type="type" :disabled="disabled" @click="emitOut" :style="'width:'+width+'px;padding:0;height:'+height+'px;font-size:'+fontSize+'px'">{{ label }}</el-button>
   </div>
 </template>
@@ -39,6 +39,10 @@ export default {
     align: {
       type: String,
       default: "none"
+    },
+    margin: {
+      type: String,
+      default: '0 0.0521rem'
     }
   },
   methods: {
