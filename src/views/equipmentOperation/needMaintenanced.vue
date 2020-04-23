@@ -1,15 +1,10 @@
 <template>
   <div class="maintenance-form-container">
     <my-header :title="$route.meta.title" :haveBlack="false"></my-header>
-    <div class="maintenance-form-top" v-if="show">
-      <base-button size="default" align="right" label="开始保养" @click="show=false"></base-button>
+    <div class="maintenance-form-top">
+      <base-button :width="100" size="default" align="right" label="结束保养" ></base-button>
     </div>
-    <div class="process-info" v-else>
-      <define-input label="单号" v-model="order.number" :disabled="true" class="odd-number"></define-input>
-      <date-select label="申请时间" v-model="order.createTime" :disabled="true"></date-select>
-      <entity-input label="申请人员" v-model="order.applicant" :required="true" placeholder="请选择"></entity-input>
-    </div>
-    <div class="maintenance-form-body" v-if="show">
+    <div class="maintenance-form-body">
         <bos-tabs :option="['tabs', 'contrast']" :layoutRatio="[2, 1]">
           <define-table :havePage="false" :data="order" height="2.6042rem"
             @changeCurrent="selRow" :summaryFunc="sumFunc" :showSummary="true" :highLightCurrent="true" slot="total" >
@@ -19,44 +14,14 @@
             <define-column label="装备位置" v-slot="{ data }">
               <div>{{data.row.location.floor+'/'+data.row.location.frameNumber+'/'+data.row.location.surface+'/'+data.row.location.section}}</div>
             </define-column>
-            <define-column label="可保养数量" field="count"></define-column>
+            <define-column label="正在保养数量" field="count"></define-column>
+            <define-column label="保养时长" field="count"></define-column>
           </define-table>
           <define-table :havePage="false" :data="detailTable.list" height="2.6042rem" slot="detail" >
             <define-column label="RFID" field="rfid"></define-column>
             <define-column label="装备序号" field="serial"></define-column>
           </define-table>
         </bos-tabs>
-    </div>
-    <div v-else class="maintenance-form-body">
-      <bos-tabs :option="['tabs', 'contrast']" :layoutRatio="[2, 1]">
-        <template slot="slotHeader">
-            <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96" @click="readData"></base-button>
-          <base-select label="硬件选择" v-model="select.selected" align="right" :selectList="select.handWareList"></base-select>
-        </template>
-        <define-table :havePage="false" :data="order" height="2.6042rem"
-          @changeCurrent="selRow" :summaryFunc="sumFunc" :showSummary="true" :highLightCurrent="true" slot="total" >
-          <define-column label="操作" width="100" v-slot="{ data }">
-              <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
-              <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
-          </define-column>
-          <define-column label="装备参数" v-slot="{ data }">
-            <entity-input v-model="data.row.equips" :options="{ detail: 'equipArgsSelect' }" format="{name}({model})" :disabled="true" ></entity-input>
-          </define-column>
-          <define-column label="装备位置" v-slot="{ data }">
-            <div>{{data.row.location.floor+'/'+data.row.location.frameNumber+'/'+data.row.location.surface+'/'+data.row.location.section}}</div>
-          </define-column>
-          <define-column label="可保养数量" field="count"></define-column>
-          <define-column label="本次保养数量" field="canCount"></define-column>
-        </define-table>
-        <define-table :havePage="false" :data="detailTable.list" height="2.6042rem" slot="detail" >
-          <define-column label="RFID" field="rfid"></define-column>
-          <define-column label="装备序号" field="serial"></define-column>
-        </define-table>
-      </bos-tabs>
-      <div class="buttom">
-          <base-button label="提交" align="right" size="large" @click="submit"></base-button>
-          <base-button label="取消" align="right" size="large" type="danger" @click="cansle"></base-button>
-      </div>
     </div>
   </div>
 </template>
@@ -65,8 +30,6 @@
 import myHeader from "components/base/header/header";
 import baseButton from "@/componentized/buttonBox/baseButton";
 import entityInput from "@/componentized/entity/entityInput";
-import defineInput from '@/componentized/textBox/defineInput'
-import dateSelect from '@/componentized/textBox/dateSelect.vue'
 import bosTabs from "@/componentized/table/bosTabs";
 import request from "common/js/request";
 var _ = require("lodash");
@@ -78,16 +41,6 @@ export default {
       rowData: "", // 选中的单选行数据
       detailTable: {
         list: [],
-      },
-      select: {
-        handWareList: [{
-            label: "手持机",
-            value: 'handheld'
-        }, {
-            label: "读卡器",
-            value: "reader"
-        }],
-        selected: ""
       },
       order: [
         {
@@ -239,7 +192,7 @@ export default {
         columns.forEach((colum, index) => {
             if(index == 0) {
                 sums[index] =  '合计';
-            } else if(index == columns.length-1) {
+            } else if(index == columns.length-2) {
                 const values = data.map(item => item.count?Number(item.count):0);
                 if(!values.every(value => isNaN(value))) {
                     sums[index] = values.reduce((pre, cur) => !isNaN(cur)?pre+cur:pre);
@@ -250,17 +203,6 @@ export default {
         })
         return sums;
       },
-      changeRow(state, data) { // 总清单删除
-        let temp = JSON.parse(JSON.stringify(this.order.equips));
-        if(state) {
-          temp.splice(data.$index+1, 0, {count: '', equips: {}, location:{}});
-        } else if(this.order.equips.length>1) {
-          temp.splice(data.$index, 1); 
-        } else {
-          temp = [{count: '', rfid: [], equipId: [], equipArg: {}}]
-          }
-        this.order.equips = temp;
-      },
     },
   created() {
     
@@ -270,8 +212,6 @@ export default {
     baseButton,
     entityInput,
     bosTabs,
-    defineInput,
-    dateSelect,
   },
 };
 </script>
@@ -287,17 +227,8 @@ export default {
   }
   .maintenance-form-body {
     padding: 0 7px;
-  }
-  .process-info {
-      padding: 18px 0;
-      display: flex;
-      justify-content: space-between;
-      overflow: hidden;
-  }
-  .buttom {
-      height: 72px;
-      width:100%;
-      margin-top: 25px;
-      // box-shadow:0px 0px 12px rgba(235,238,245,1);
+    .table-box {
+      border: 1px;
+    }
   }
 </style>
