@@ -34,6 +34,7 @@ import defineColumn from '@/componentized/table/defineColumn.vue'
 import defineInput from '@/componentized/textBox/defineInput.vue'
 import baseButton from '@/componentized/buttonBox/baseButton.vue'
 import baseSelect from '@/componentized/textBox/baseSelect.vue'
+import divTmp from '@/componentized/divTmp'
 
 
 let componentsList = {
@@ -59,7 +60,8 @@ let componentsList = {
     defineColumn,
     defineInput,
     baseButton,
-    baseSelect
+    baseSelect,
+    divTmp
 };
 
 

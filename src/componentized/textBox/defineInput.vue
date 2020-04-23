@@ -1,5 +1,5 @@
 <template>
-  <div class="text-input-container" ref="defineInput" :style="`width:${fixWidth};float:${align}`"
+  <div class="text-input-container" ref="defineInput" :style="`width:${fixWidth};float:${align};margin:${margin}`"
       :class="[styleObj,{'disabled':disabled&&inTableStateContrl,'border':(tableEdit&&edit)}]" @click="changeEditState(true)">
     <div class="label" v-if="!inTable">{{ label }}
       <span class="required" v-if="required">*</span>
@@ -45,6 +45,10 @@ export default {
     align: {
       type: String,
       default: 'none'
+    },
+    margin: {
+      type: String,
+      default: '0 0.0521rem'
     },
     disabled: {
       type: Boolean,

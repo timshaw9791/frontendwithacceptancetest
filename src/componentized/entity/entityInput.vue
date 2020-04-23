@@ -1,5 +1,5 @@
 <template>
-  <div class="entity-input-container" ref="entityInput" :style="'width:'+fixWidth"
+  <div class="entity-input-container" ref="entityInput" :style="'width:'+fixWidth+';margin:'+margin" 
               :class="{'disabled':disabled&&inTableStateContrl,'border':(tableEdit&&edit)}" 
               @click="changeEditState(true)" @mouseleave="changeEditState(false)">
      <div class="label" v-if="!inTable">{{ label }}
@@ -91,6 +91,10 @@ export default {
         format: {
           type: String,
           default: '[{policeSign}]{name}'
+        },
+        margin: {
+          type: String,
+          default: '0 0.0521rem'
         }
     },
     methods: {
