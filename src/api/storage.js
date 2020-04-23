@@ -64,6 +64,8 @@ export function addEquipInfo(params,data) {
     })
 }
 
+
+
 export function getEquipById(id) {
     return request({
         url: `/equips/${id}`,
@@ -98,7 +100,13 @@ export function inHouse(params,data) {
         data
     })
 }
-
+//出入库单
+export function inOutHouseOrder() {
+    return request({
+        url: "/in-out-house-orders",
+        method: "get",
+    })
+}
 /* 入库单删除 */
 export function inHouseOrder(id) {
     return request({
