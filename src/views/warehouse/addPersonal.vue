@@ -21,8 +21,8 @@
             </div>
         </div>
         <div class="buttom">
-            <base-button label="提交" align="right" :width="128" :height="72" :fontSize="20" @click="submit"></base-button>
-            <base-button label="取消" align="right" :width="128" :height="72" :fontSize="20" @click="cansle"></base-button>
+            <base-button label="提交" align="right" size="large" @click="submit"></base-button>
+            <base-button label="取消" align="right" size="large" type="danger" @click="cansle"></base-button>
         </div>
         <service-dialog title="提示" ref="tip" :button="true" :secondary="false" @confirm="confirm">
             <div>确定放弃{{this.$route.params.info.edit?"编辑":"新增"}}人员？</div>
