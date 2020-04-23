@@ -1,60 +1,115 @@
 <template>
-  <div class="base-button-container" :style="'width:'+width+'px;height:'+height+'px;float:'+align">
-    <el-button :type="type" :disabled="disabled" @click="emitOut" :style="'width:'+width+'px;padding:0;height:'+height+'px;font-size:'+fontSize+'px'">{{ label }}</el-button>
-  </div>
+    <div class="base-button-container" :style="`float:${align}`">
+        <button class="button" :class="[type,size,{disabled: disabled||throttleState}]" @click="clickBtn">{{ label }}</button>
+    </div>
 </template>
 
 <script>
 export default {
-  name: "baseButton",
-  data() {
-    return {
-
+    name: 'baseButton',
+    data() {
+        return {
+            throttleState: false, // 按钮响应节流状态
+        }
+    },
+    props: {
+        label: {
+          type: String,
+          default: "按钮"  
+        },
+        type: {
+            type: String,
+            default: 'primary'
+        },
+        size: {
+            type: String,
+            default: 'default'
+        },
+        disabled: {
+            type: Boolean,
+            default: false
+        },
+        throttle: { // 是否启用按钮响应节流
+            type: Boolean,
+            default: true
+        },
+        align: {
+            type: String,
+            default: 'none'
+        }
+    },
+    methods: {
+        clickBtn() {
+            if(this.throttle) {
+                if(this.throttleState||this.disabled) return;
+                this.throttleState = true;
+                setTimeout(() => {this.throttleState = false}, 1000);
+            }
+            this.$emit('click');
+        }
     }
-  },
-  props: {
-    type: {
-      type: String,
-      default: 'primary'
-    },
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-    width: {
-      type: Number,
-      default: 64
-    },
-    height: {
-      type: Number,
-      default: 40
-    },
-    fontSize: {
-      type: Number,
-      default: 16
-    },
-    label: {
-      type: [String, Number],
-      default: "按钮"
-    },
-    align: {
-      type: String,
-      default: "none"
-    }
-  },
-  methods: {
-    emitOut() {
-      this.$emit('click');
-    }
-  }
 }
 </script>
 
 <style lang="scss" scoped>
-  .base-button-container {
+.base-button-container {
     display: inline-block;
-		box-sizing: border-box;
-    margin: 0 3px;
-    font-size:16px;
-  }
+    font-size: 16px;
+    .button {
+        border-width: 0;
+        border-radius: 5px;
+        outline: none;
+        cursor: pointer;
+        text-align: center;
+        background-color: white;
+        border: 1px solid #dcdfe6;
+    }
+    .mini {
+        height: 25px;
+        font-size: 13px;
+    }
+    .small {
+        height: 30px;
+        font-size: 14px;
+        padding: 0 10px;
+    }
+    .default {
+        height: 40px;
+        padding: 0 12px;
+    }
+    .medium {
+        height: 50px;
+        font-size: 18px;
+        padding: 0 12px;
+    }
+    .large {
+        height: 70px;
+        font-size: 20px;
+        padding: 0 20px;
+    }
+    .primary {
+        background-color: #2f2f76;
+        color: white;
+    }
+    .simple {
+        background-color: #409EFF;
+        color: white;
+    }
+    .success {
+        background-color: #67C23A;
+        color: white;
+    }
+    .warning {
+        background-color: #E6A23C;
+        color: white;
+    }
+    .danger {
+        background-color: #F56C6C;
+        color: white;
+    }
+    .disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+}
 </style>

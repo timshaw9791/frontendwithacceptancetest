@@ -1,12 +1,17 @@
 <template>
-    <div class="base-button-container">
-        <button class="button" :class="[type,size]">{{ label }}</button>
+    <div class="base-button-container" :style="`float:${align}`">
+        <button class="button" :class="[type,size,{disabled: disabled||throttleState}]" @click="clickBtn">{{ label }}</button>
     </div>
 </template>
 
 <script>
 export default {
     name: 'baseButton',
+    data() {
+        return {
+            throttleState: false, // 按钮响应节流状态
+        }
+    },
     props: {
         label: {
           type: String,
@@ -19,6 +24,28 @@ export default {
         size: {
             type: String,
             default: 'default'
+        },
+        disabled: {
+            type: Boolean,
+            default: false
+        },
+        throttle: { // 是否启用按钮响应节流
+            type: Boolean,
+            default: true
+        },
+        align: {
+            type: String,
+            default: 'none'
+        }
+    },
+    methods: {
+        clickBtn() {
+            if(this.throttle) {
+                if(this.throttleState||this.disabled) return;
+                this.throttleState = true;
+                setTimeout(() => {this.throttleState = false}, 1000);
+            }
+            this.$emit('click');
         }
     }
 }
@@ -26,6 +53,7 @@ export default {
 
 <style lang="scss" scoped>
 .base-button-container {
+    display: inline-block;
     font-size: 16px;
     .button {
         border-width: 0;
@@ -78,6 +106,10 @@ export default {
     .danger {
         background-color: #F56C6C;
         color: white;
+    }
+    .disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
     }
 }
 </style>
