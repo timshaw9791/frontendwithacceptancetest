@@ -18,16 +18,16 @@
                                 <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
-                                <!-- <entity-input v-model="data.row.equipArg" :options="{}" :disabled="true" format="{name}({model})"></entity-input> -->
+                                <entity-input v-model="data.row.equip"  :options="{search:'equipArgsSelect'}" format="{name}({model})" :toEdit="false" ></entity-input>
                             </define-column>
-                            <define-column label="装备位置" v-slot="{ data }">
-                                <!-- <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input> -->
+                            <define-column label="装备位置"  v-slot="{ data }" >
+                                 <entity-input v-model="data.row.location"  :options="{search:'locationSelect'}" format="{name}" :toEdit="false" ></entity-input>
                             </define-column>
                             <define-column label="单价" v-slot="{ data }">
                                 <!-- <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input> -->
                             </define-column>
                             <define-column label="生产日期" v-slot="{ data }">
-                                <!-- <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input> -->
+                                <date-select label="生产日期" v-model="data.row.time" column="12" ></date-select>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
                                 <!-- <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input> -->
@@ -44,6 +44,21 @@
                             </define-column>
                         </define-table>
                     </bos-tabs>
+        <div class="btn-box">
+                  <base-button label="取消" align="right" :width="128" :height="25" :fontSize="20" @click="cancel"></base-button>
+                  <base-button label="提交" align="right" :width="128" :height="25" :fontSize="20" @click="confirm"></base-button>
+              </div>
+        <service-dialog title="选择位置信息'" ref="historyDialog" :button="false" :secondary="false">
+            <div class="location-select" >
+                <div class="select-location">
+                   <equip-locationSelect @current="current"></equip-locationSelect>
+                </div>
+            </div>
+              <div class="btn-box">
+                  <base-button label="取消" align="right" :width="128" :height="25" :fontSize="20" @click="cancel"></base-button>
+                  <base-button label="提交" align="right" :width="128" :height="25" :fontSize="20" @click="confirm"></base-button>
+              </div>
+        </service-dialog>
         </div>
     </div>
 </template>
@@ -57,6 +72,8 @@
     import baseSelect from '@/componentized/textBox/baseSelect.vue'
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
+    import serviceDialog from 'components/base/serviceDialog/index'
+    import equipLocationSelect from '../equipment/equipLocationSelect'
     import divTmp from '@/componentized/divTmp'
     import { getInhouseNumber} from "api/storage"
 export default {
@@ -69,11 +86,13 @@ export default {
             dateSelect,
             entityInput,
             divTmp,
-            bosTabs
+            bosTabs,
+            equipLocationSelect,
+            serviceDialog
         },
         data(){
             return{
-               list:[],
+               list:[{}],
                orderNumber:'————',
                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
                select: {
@@ -101,6 +120,9 @@ export default {
             },
             changePage(page) {
             this.paginator.page = page;
+            },
+            changelocation(){
+                this.$refs.historyDialog.show()
             }
         },
         created(){
@@ -130,5 +152,24 @@ export default {
         justify-content: space-between;
     }
 }
-
+.location-select{
+    height: 500px;
+    width: 4.625rem;
+    z-index: 1200;
+    .select-location{
+        width:3.5rem;
+        height: 440px;
+        float: left;
+        margin-left: auto;
+}
+}
+.btn-box{
+        width: 4rem;
+        height: 50px;
+        margin-left:20px;
+        margin-top: 15px;
+        display: flex;
+        justify-content: flex-end;
+        align-items : center; 
+    }
 </style>

@@ -15,6 +15,9 @@
     <service-dialog title="申请人员选择" ref="applicant" :button="false" :secondary="false">
       <applicant-select @select="selected" @cancel="$refs.applicant.hide()"></applicant-select>
     </service-dialog>
+    <service-dialog title="位置信息选择" ref="locationSelect" :button="false" :secondary="false">
+      <equip-location-select @select="selected" @cancel="$refs.locationSelect.hide()"></equip-location-select>
+    </service-dialog>
     <service-dialog title="装备参数选择" ref="equipArgsSelect" width="1300px" :button="false" :secondary="false">
       <equip-args-select @select="selected" @cancel="$refs.equipArgsSelect.hide()"></equip-args-select>
     </service-dialog>
@@ -32,6 +35,7 @@
 import serviceDialog from "components/base/serviceDialog"
 import applicantSelect from "./applicantSelect"
 import equipArgsSelect from './equipArgsSelect'
+import equipLocationSelect from './equipLocationSelect'
 import organUnits from './organUnits'
 import supplierSelect from "./supplierSelect";
 export default {
@@ -157,6 +161,7 @@ export default {
       applicantSelect,
       equipArgsSelect,
       organUnits,
+      equipLocationSelect,
       supplierSelect
     },
     created() {
