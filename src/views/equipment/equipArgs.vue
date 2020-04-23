@@ -1,43 +1,28 @@
 <template>
     <div>
-        <el-card shadow="never" v-if="!storageInfoShow">
-
-            <!--element card 的头部-->
-
-            <div slot="header">
-                <span class="_card-title">{{$route.meta.title}}</span>
-            </div>
-
-
-            <!--操作拦-->
-            <div>
-                <tabs>
-                    <el-button type="text" class="_textBt" @click="goInfo('add')">
-                        <svg-icon icon-class="加号" class="textBt"/>
-                        新增装备参数
-                    </el-button>
-                    <div class="_buttons">
-                        <BosInput
-                                placeholder="名称/型号"
-                                suffix="el-icon-search"
-                                v-model="table.search"
-                                :wrapforlike="true"
-                                style="width:285px;">
-                        </BosInput>
+        <div class="equipArgs-container">
+                <div class="equipArgs-body" v-if="!storageInfoShow">
+                    <my-header :title="title"></my-header>
+                    <div class="equipArgs-info" >
+                        <text-input label="装备名称" placeholder="请输入装备名称"></text-input>
+                        <base-button label="查询"></base-button>
+                        <base-button label="新增装备参数" @click="goInfo('add')"></base-button>
+                        <base-button label="测试" @click="test()"></base-button>
                     </div>
-                </tabs>
-            </div>
-
-            <!--list列表-->
-            <r_label :table="table" ref="lable" @clickTable="clickTable"
-                     ></r_label>
-        </el-card>
-
-        <storageInfo :equipId="equipId" v-if="storageInfoShow" :equipList="equipList" :getPropEquip="propEquip" :title="title" @black="black"></storageInfo>
-
-        <service-dialog title="提示" :secondary="false" @confirm="toInHouse" ref="tipDialog">
-            <center>您确定要立即入库此装备</center>
-        </service-dialog>
+                    <define-table :data="equipArgsList">
+                        <define-column label="操作" v-slot="{data}">
+                            <span @click="goInfo('look',data.row)">详情</span>
+                        </define-column>
+                        <define-column label="装备名称" field="name"></define-column>
+                        <define-column label="装备型号" field="model"></define-column>
+                        <define-column label="供应商" field="supplier.name"></define-column>
+                        <define-column label="质保期" field="shelfLife"></define-column>
+                        <define-column label="充电周期" field="chargeCycle"></define-column>
+                        <define-column label="保养周期" field="upkeepCycle"></define-column>
+                    </define-table>
+                </div>
+                <storage-info :equipId="equipId" v-if="storageInfoShow" :equipList="equipList" :getPropEquip="propEquip"  :title="title" @black="black"></storage-info>
+        </div>
     </div>
 </template>
 
@@ -46,16 +31,15 @@
     import serviceDialog from 'components/base/serviceDialog/index'
     import storageInfo from 'views/equipment/storageInfos'
     import r_label from 'common/vue/ajaxLabel'
-    // nodejs调用子进程的方法
-
-    // const cmdPath = 'C:\\Users\\Administrator';   //cmd命令的位置
-    //const exec = window.require('child_process').exec;
-    //const spawn = window.require('child_process').spawn;
-    // import {killProcess} from "common/js/kill";
+    import myHeader from "../../components/base/header/header"
+    import textInput from "../../componentized/textBox/textInput";
+    import {getEquipArgs} from "../../api/equipArgs";
 
     export default {
         data() {
             return {
+                title: '装备参数',
+                haveBack:false,
                 inquire: '%%',
                 options: [],
                 commonHouseId: '',
@@ -63,9 +47,9 @@
                 propEquip: {}, // 跳转到入库装备，自动选择的装备数据
                 equipList: {}, // 装备数据
                 equipData: {}, // 用以暂存新增成功的装备参数
-                title: '',
                 storageInfoShow: false,
                 list: [],
+                equipArgsList:[],
                 table: {
                     labelList: [
                         {lable: '装备名称', field: 'name'},
@@ -94,19 +78,19 @@
                 index: false, // 进程回调判断
             }
         },
-        components: {
-            tabs,
-            r_label,
-            storageInfo,
-            serviceDialog
-        },
         methods: {
+            equipArgsInfo(data){
+               console.log(data)
+            },
+            supplierInfo(supplier){
+                console.log(supplier)
+            },
             clickTable(table) {
-              if(table.name == '详情') {
-                  this.goInfo('look', table.row)
-              } else {
-                  this.goInfo('in', table.row)
-              }
+                if(table.name === '详情') {
+                    this.goInfo('look', table.row)
+                } else {
+                    this.goInfo('in', table.row)
+                }
             },
             goInfo(data, row) {
                 switch (data) {
@@ -114,6 +98,7 @@
                         this.storageInfoShow = true;
                         this.title = '新增装备参数';
                         this.equipId = '';
+                        this.haveBack = true
                         break;
                     case 'look':
                         this.storageInfoShow = true;
@@ -133,32 +118,61 @@
                 this.goInfo('in', this.equipData)
             },
             black(state=null) {
-                // this.refetch()
                 this.storageInfoShow = false;
                 if(state) {
                     this.equipData = state
                     this.$refs.tipDialog.show()
                 }
             },
-        }
-}
+            test(){
+                getEquipArgs().then(res => {
+                    this.equipArgsList = res.content
+                })
+            }
+        },
+        updated() {
+            getEquipArgs().then(res => {
+              this.equipArgsList = res.content
+            })
+        },
+        components: {
+            tabs,
+            r_label,
+            storageInfo,
+            serviceDialog,
+            textInput,
+            myHeader
+        },
+    }
 </script>
-
 <style lang="scss" scoped>
+    .equipArgs-container {
+        color: #707070FF;
+        font-size: 16px;
+    }
+
+    .equipArgs-info {
+        padding: 16px 7px;
+        overflow: hidden;
+    }
+
+    .equipArgs-body {
+        padding: 0 17px;
+    }
     .el-card {
         border: none !important;
         font-size: 0.0833rem;
     }
-    
+
     // 可调整
     // ._card-title {
     //     font-size: 0.0938rem;
-    // } 
+    // }
     // 可调整
     // ._textBt {
     //     font-size: 0.0833rem !important;
     // }
-    
+
     .pattern-box {
         display: flex;
         align-items: center;
@@ -206,6 +220,11 @@
             .rfid-left {
                 width: 81%;
             }
+        }
+    }
+    .define-column{
+        .span{
+            margin-left: 10px;
         }
     }
 

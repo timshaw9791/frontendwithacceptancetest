@@ -1,5 +1,5 @@
 <template>
-    <div :class="{'date-select-continer':true,disabled}" :style="'width:'+fixWidth+';height:'+height+'px'">
+    <div :class="{'date-select-continer':true,disabled}" :style="'width:'+fixWidth+';height:'+height+'px;margin:'+margin+';align:'+align">
         <div class="label">{{ label }}</div>
         <el-date-picker
                 v-model="selectValue"
@@ -12,7 +12,7 @@
                 :disabled="disabled"
                 :editable="editable"
                 :default-time="defaultTime"
-                prefix-icon="el-icon-date"
+                prefix-icon= "el-icon-date"
                 @change="change">
         </el-date-picker>
     </div>
@@ -73,6 +73,14 @@
             editable: { // 文本框可输入
               type: Boolean,
               default: true
+            },
+            align: {
+              type: String,
+              default: 'none'
+            },
+            margin: {
+              type: String,
+              default: '0 0.0521rem'
             }
         },
         computed: {

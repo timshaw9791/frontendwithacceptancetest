@@ -1,5 +1,5 @@
 <template>
-    <div class="base-select-container" :style="'width:'+fixWidth+';float:'+align">
+    <div class="base-select-container" :style="'width:'+fixWidth+';float:'+align+';margin:'+margin">
         <div class="slot-label">{{ label }}</div>
         <div class="select" @click="clickSel">
             <span class="context" v-if="selectValue">{{ selectValue }}</span>
@@ -44,6 +44,10 @@
             align: {
                 type: String,
                 default: 'none'
+            },
+            margin: {
+                type: String,
+                default: '0 0.0521rem'
             },
             placeholder: {
                 type: String,

@@ -1,6 +1,6 @@
 <template>
     <div :class="{'text-input-container':true, 'bg-disabled':disabled}" ref="textInput" 
-        :style="'width:'+fixWidth+';height:'+height+'px'">
+        :style="'width:'+fixWidth+';height:'+height+'px;align:'+align+';margin:'+margin">
         <el-autocomplete style="width: 100%"
             v-model="insideValue"
             :fetch-suggestions="querySearch"
@@ -74,6 +74,14 @@
             placeholder: {
                 type: [Number, String],
                 default: ""
+            },
+            align: {
+              type: String,
+              default: 'none'
+            },
+            margin: {
+              type: String,
+              default: '0 0.0521rem'
             }
         },
         methods: {

@@ -1,5 +1,5 @@
 <template>
-  <div class="entity-input-container" ref="entityInput" :style="'width:'+fixWidth"
+  <div class="entity-input-container" ref="entityInput" :style="'width:'+fixWidth+';margin:'+margin" 
               :class="{'disabled':disabled&&inTableStateContrl,'border':(tableEdit&&edit)}" 
               @click="changeEditState(true)" @mouseleave="changeEditState(false)">
      <div class="label" v-if="!inTable">{{ label }}
@@ -15,20 +15,25 @@
     <service-dialog title="申请人员选择" ref="applicant" :button="false" :secondary="false">
       <applicant-select @select="selected" @cancel="$refs.applicant.hide()"></applicant-select>
     </service-dialog>
-    <service-dialog title="装备参数选择" ref="equipParam" width="1300px" :button="false" :secondary="false">
-      <equip-params @select="selected" @cancel="$refs.equipParam.hide()"></equip-params>
+    <service-dialog title="装备参数选择" ref="equipArgsSelect" width="1300px" :button="false" :secondary="false">
+      <equip-args @select="selected" @cancel="$refs.equipArgsSelect.hide()"></equip-args>
     </service-dialog>
     <service-dialog title="机构选择" ref="organUnits" width="500px" :button="false" :secondary="false">
       <organ-units @select="selected" @cancel="$refs.organUnits.hide()"></organ-units>
     </service-dialog>
+    <service-dialog title="供应商选择" ref="supplierSelect" width="500px" :button="false" :secondary="false">
+      <supplier-select @select="selected" @cancel="$refs.supplierSelect.hide()"></supplier-select>
+    </service-dialog>
+
   </div>
 </template>
 
 <script>
 import serviceDialog from "components/base/serviceDialog"
 import applicantSelect from "./applicantSelect"
-import equipParams from './equipParams'
+import equipArgsSelect from '../../components/equipment/equipArgsSelect'
 import organUnits from './organUnits'
+import supplierSelect from "../../components/supplier/supplierSelect";
 export default {
     name: 'textInput',
     data() {
@@ -86,6 +91,10 @@ export default {
         format: {
           type: String,
           default: '[{policeSign}]{name}'
+        },
+        margin: {
+          type: String,
+          default: '0 0.0521rem'
         }
     },
     methods: {
@@ -146,8 +155,9 @@ export default {
     components: {
       serviceDialog,
       applicantSelect,
-      equipParams,
-      organUnits
+      equipArgsSelect,
+      organUnits,
+      supplierSelect
     },
     created() {
       if(typeof this.value == 'object') {

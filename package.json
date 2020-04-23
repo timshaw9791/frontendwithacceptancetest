@@ -10,7 +10,7 @@
     "apollo": "vue-cli-service apollo:watch",
     "apollo:run": "vue-cli-service apollo:run",
     "test:unit": "vue-cli-service test:unit --watch"
-   },
+  },
   "dependencies": {
     "apollo-link-error": "^1.1.10",
     "apollo-link-http": "^1.5.14",
@@ -25,10 +25,11 @@
     "mkdirp": "^0.5.1",
     "nprogress": "^0.2.0",
     "pdfjs-dist": "^2.0.943",
+    "qs": "^6.9.3",
     "regenerator-runtime": "^0.13.2",
     "shortid": "^2.2.8",
     "video.js": "^7.6.6",
-    "vue": "^2.6.6",
+    "vue": "^2.6.11",
     "vue-apollo": "^3.0.0-beta.11",
     "vue-quill-editor": "^3.0.6",
     "vue-router": "^3.0.1",

@@ -84,9 +84,9 @@ export const asyncRouterMap = [
                 meta: {title: '装备出库'},
             },
             {
-                path: 'paramstorage',
-                name: 'equipment/parameter',
-                component: _import('equipment/paramStorageInfo'),
+                path: 'equipArgs',
+                name: 'equipment/equipArgs',
+                component: _import('equipment/equipArgs'),
                 meta: {title: '装备参数'},
             },
             {
