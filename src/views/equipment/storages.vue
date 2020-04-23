@@ -81,6 +81,7 @@ export default {
             },
             black(){
                 this.inhouse=!this.inhouse
+                this.getList()
             },
             getList(){
                 inOutHouseOrder(this.params).then(res=>{
