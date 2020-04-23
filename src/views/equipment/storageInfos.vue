@@ -153,7 +153,7 @@
             
                             <span>硬件选择： </span>
                   <el-select v-model="hardware.selected" @change="selectHardware" size="small" style="width: 220px">
-                    <el-option v-for="item in hardware.selectArr" 
+                    <el-option v-for="item in hardware.selectArr"
                       :label="item.key" :key="item.val" :value="item.val">
                     </el-option>
                   </el-select>
@@ -1192,7 +1192,6 @@
 <style lang="scss" scoped>
     @import "common/css/mixin.scss";
     @import "common/css/variables.scss";
-
     .storage-info {
         /* 可调整 */
         font-size: 16px;
