@@ -11,9 +11,17 @@ export function getCategoryAndGenre() {
 
 export function getInhouseNumber(params) {
     return request({
-        url: "/inouthouse/findInHouseNumberLike",
+        url: "/in-out-house-orders",
         method: 'get',
         params:params
+    })
+}
+
+
+export function deleteInhouseNumber(id) {
+    return request({
+        url: `/in-out-house-orders/${id}`,
+        method: 'delete',
     })
 }
 
@@ -93,9 +101,9 @@ export function equipArgsByNameModel(params) {
 }
 
 /* 入库装备 */
-export function inHouse(params,data) {
+export function inHouse(data) {
     return request({
-        url: "/equip/batch-in-house",
+        url: "/equips/in-house",
         method: "POST",
         data
     })
