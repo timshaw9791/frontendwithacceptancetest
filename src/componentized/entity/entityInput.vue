@@ -15,8 +15,8 @@
     <service-dialog title="申请人员选择" ref="applicant" :button="false" :secondary="false">
       <applicant-select @select="selected" @cancel="$refs.applicant.hide()"></applicant-select>
     </service-dialog>
-    <service-dialog title="装备参数选择" ref="equipParam" width="1300px" :button="false" :secondary="false">
-      <equip-params @select="selected" @cancel="$refs.equipParam.hide()"></equip-params>
+    <service-dialog title="装备参数选择" ref="equipArgsSelect" width="1300px" :button="false" :secondary="false">
+      <equip-args @select="selected" @cancel="$refs.equipArgsSelect.hide()"></equip-args>
     </service-dialog>
     <service-dialog title="机构选择" ref="organUnits" width="500px" :button="false" :secondary="false">
       <organ-units @select="selected" @cancel="$refs.organUnits.hide()"></organ-units>
@@ -31,7 +31,7 @@
 <script>
 import serviceDialog from "components/base/serviceDialog"
 import applicantSelect from "./applicantSelect"
-import equipParams from './equipParams'
+import equipArgsSelect from '../../components/equipment/equipArgsSelect'
 import organUnits from './organUnits'
 import supplierSelect from "../../components/supplier/supplierSelect";
 export default {
@@ -151,7 +151,7 @@ export default {
     components: {
       serviceDialog,
       applicantSelect,
-      equipParams,
+      equipArgsSelect,
       organUnits,
       supplierSelect
     },

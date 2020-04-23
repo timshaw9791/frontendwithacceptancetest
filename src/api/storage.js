@@ -134,7 +134,7 @@ export function findByRfids(params) {
 /* 新增装备信息 */
 export function saveEquipArg(data) {
     return request({
-        url: "/equip/saveEquipArg",
+        url: "/equip-args",
         method: "POST",
         data
     })

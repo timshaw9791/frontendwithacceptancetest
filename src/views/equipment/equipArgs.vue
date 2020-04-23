@@ -1,16 +1,18 @@
 <template>
     <div>
-        <div class="equipParams-container">
-            <div class="equipParams">
-                <div class="equipParams-body" v-if="!storageInfoShow">
+        <div class="equipArgs-container">
+                <div class="equipArgs-body" v-if="!storageInfoShow">
                     <my-header :title="title"></my-header>
-                    <div class="equipParams-info" >
+                    <div class="equipArgs-info" >
                         <text-input label="装备名称" placeholder="请输入装备名称"></text-input>
                         <base-button label="查询"></base-button>
                         <base-button label="新增装备参数" @click="goInfo('add')"></base-button>
+                        <base-button label="测试" @click="test()"></base-button>
                     </div>
-                    <define-table :data="equipParams">
-                        <define-column label="操作" ></define-column>
+                    <define-table :data="equipArgsList">
+                        <define-column label="操作" v-slot="{data}">
+                            <span @click="goInfo('look',data.row)">详情</span>
+                        </define-column>
                         <define-column label="装备名称" field="name"></define-column>
                         <define-column label="装备型号" field="model"></define-column>
                         <define-column label="供应商" field="supplier.name"></define-column>
@@ -20,7 +22,6 @@
                     </define-table>
                 </div>
                 <storage-info :equipId="equipId" v-if="storageInfoShow" :equipList="equipList" :getPropEquip="propEquip"  :title="title" @black="black"></storage-info>
-            </div>
         </div>
     </div>
 </template>
@@ -32,6 +33,7 @@
     import r_label from 'common/vue/ajaxLabel'
     import myHeader from "../../components/base/header/header"
     import textInput from "../../componentized/textBox/textInput";
+    import {getEquipArgs} from "../../api/equipArgs";
 
     export default {
         data() {
@@ -47,20 +49,7 @@
                 equipData: {}, // 用以暂存新增成功的装备参数
                 storageInfoShow: false,
                 list: [],
-                equipParams:[{
-                    id:"1",
-                    name:"手电筒",
-                    model:"model1",
-                    supplier:{
-                        id:"a",
-                        name:"a",
-                        person:"a",
-                        phone:"a",
-                    },
-                    shelfLife:"2",
-                    chargeCycle:"2",
-                    upkeepCycle:"1"
-                }],
+                equipArgsList:[],
                 table: {
                     labelList: [
                         {lable: '装备名称', field: 'name'},
@@ -89,8 +78,10 @@
                 index: false, // 进程回调判断
             }
         },
-
         methods: {
+            equipArgsInfo(data){
+               console.log(data)
+            },
             supplierInfo(supplier){
                 console.log(supplier)
             },
@@ -133,6 +124,16 @@
                     this.$refs.tipDialog.show()
                 }
             },
+            test(){
+                getEquipArgs().then(res => {
+                    this.equipArgsList = res.content
+                })
+            }
+        },
+        updated() {
+            getEquipArgs().then(res => {
+              this.equipArgsList = res.content
+            })
         },
         components: {
             tabs,
@@ -145,17 +146,17 @@
     }
 </script>
 <style lang="scss" scoped>
-    .equipParams-container {
+    .equipArgs-container {
         color: #707070FF;
         font-size: 16px;
     }
 
-    .equipParams-info {
+    .equipArgs-info {
         padding: 16px 7px;
         overflow: hidden;
     }
 
-    .equipParams-body {
+    .equipArgs-body {
         padding: 0 17px;
     }
     .el-card {
@@ -219,6 +220,11 @@
             .rfid-left {
                 width: 81%;
             }
+        }
+    }
+    .define-column{
+        .span{
+            margin-left: 10px;
         }
     }
 

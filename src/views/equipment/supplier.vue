@@ -2,17 +2,20 @@
     <div class="supplier">
         <div class="supplier-container">
             <my-header title="供应商" :haveBlack="false"></my-header>
-            <div class="supplier">
+<!--            <div class="supplier">-->
                 <div class="supplier-body">
                     <div class="supplier-info">
                         <base-button label="新增供应商" @click="addChanger('新增供应商')"></base-button>
                     </div>
                     <define-table :data="list" height="3.6458rem" :pageInfo="paginator">
+                        <define-column label="操作" v-slot="{data}">
+                            <span @click="editSupplier(data)">编辑</span>
+                        </define-column>
                         <define-column label="供应商名称" field="name"></define-column>
                         <define-column label="联系人" field="person"></define-column>
                         <define-column label="联系方式" field="phone"></define-column>
                     </define-table>
-                </div>
+<!--                </div>-->
             </div>
         </div>
         <service-dialog :title="title" ref="dialog" @firstCancel="cancel" @cancel="cancel" @confirm="dialogConfirm" :secondary="scondary">
@@ -34,8 +37,8 @@
 </template>
 
 <script>
-    import {formRulesMixin} from 'field/common/mixinTableRest';
-    import serviceDialog from 'components/base/serviceDialog/index'
+    import {formRulesMixin} from '../../field/common/mixinTableRest';
+    import serviceDialog from '../../components/base/serviceDialog/index'
     import { supplierFindByName, saveSupplier, updateSupplier } from "api/equip"
     import myHeader from "../../components/base/header/header"
     import textInput from "../../componentized/textBox/textInput";
@@ -61,16 +64,24 @@
         methods: {
             getSupplierList() {
                 let params = {page: this.paginator.page, size: this.paginator.size, name: this.inquire, direction: "DESC",properties: "updateTime"};
-                this.loading = true
+
                 supplierFindByName(params).then(res => {
                     let result = JSON.parse(JSON.stringify(res))
-                    this.loading = false
+
                     this.list = result.content
                     this.paginator.totalPages = res.totalPages
                     this.paginator.totalElements = res.totalElements
                 }).catch(e => {
-                    this.loading = false
+
                 })
+            },
+            editSupplier(data){
+                if (data){
+                    console.log(JSON.stringify(data))
+                }
+               else {
+                    console.log('data is null')
+                }
             },
             changePage(page) {
                 this.paginator.page = page
@@ -89,6 +100,9 @@
             },
             addChanger(title, row) {
                 this.title = title;
+
+                this.inlineForm=this.isEdit?JSON.parse(JSON.stringify(row)):{};
+
                 if (title.includes('编辑')) {
                     this.inlineForm = JSON.parse(JSON.stringify(row));
                 } else {

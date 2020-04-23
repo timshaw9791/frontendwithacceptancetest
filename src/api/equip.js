@@ -3,7 +3,7 @@ import request from 'common/js/request'
 /* 供应商管理 */
 export function supplierFindByName(params) {
   return request({
-    url: "/supplier/findByName",
+    url: "/suppliers",
     method: "GET",
     params
   })
@@ -11,7 +11,7 @@ export function supplierFindByName(params) {
 
 export function saveSupplier(data) {
   return request({
-    url: "/supplier/saveSupplier",
+    url: "/suppliers",
     method: "POST",
     data
   })
