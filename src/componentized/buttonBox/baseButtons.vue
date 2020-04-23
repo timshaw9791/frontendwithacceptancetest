@@ -1,8 +1,9 @@
 <template>
-    <div class="base-button-container" :style="`float:${align};margin:${margin}`">
+    <div class="base-button-container" :style="`float:${align}`">
         <button class="button" :class="[type,size,{disabled: disabled||throttleState}]" @click="clickBtn">{{ label }}</button>
     </div>
 </template>
+
 <script>
 export default {
     name: 'baseButton',
@@ -35,21 +36,17 @@ export default {
         align: {
             type: String,
             default: 'none'
-        },
-        margin: {
-          type: String,
-          default: '0 3px'
         }
     },
     methods: {
-      clickBtn() {
-        if(this.throttle) {
-            if(this.throttleState||this.disabled) return;
-            this.throttleState = true;
-            setTimeout(() => {this.throttleState = false}, 1000);
+        clickBtn() {
+            if(this.throttle) {
+                if(this.throttleState||this.disabled) return;
+                this.throttleState = true;
+                setTimeout(() => {this.throttleState = false}, 1000);
+            }
+            this.$emit('click');
         }
-        this.$emit('click');
-      }
     }
 }
 </script>
