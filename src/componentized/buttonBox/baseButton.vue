@@ -1,5 +1,5 @@
 <template>
-    <div class="base-button-container" :style="`float:${align}`">
+    <div class="base-button-container" :style="`float:${align};margin:${margin}`">
         <button class="button" :class="[type,size,{disabled: disabled||throttleState}]" @click="clickBtn">{{ label }}</button>
     </div>
 </template>
@@ -36,6 +36,10 @@ export default {
         align: {
             type: String,
             default: 'none'
+        },
+        margin: {
+          type: String,
+          default: '0 3px'
         }
     },
     methods: {
