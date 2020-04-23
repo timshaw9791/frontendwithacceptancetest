@@ -12,45 +12,41 @@
                 <base-select label="开门库房权限" v-model="order.enterHouse" :selectList="enterhouseList" :column="12"></base-select>
                 <define-input label="联系方式" :required="true" type="Phone" v-model="order.phone" :column="12"></define-input>
                 <define-input label="身份证号" :required="true" type="CardId" v-model="order.idNumber" :column="12"></define-input>
-                <define-input label="密码" :required="true" v-model="order.password" :column="12"></define-input>
+                <define-input label="密码" pattern="password" :required="true" v-model="order.password" :column="12"></define-input>
                 <define-input label="指纹信息" v-model="order.fingerprintInformation" :column="12"></define-input>
             </div>
             <div  class="addpersonnelist">
-                <div class="add-personneo-upload-img">
-                    <div class="img-box"  v-if="!this.$route.params.info.edit" >
-                        <!-- <img src="./加号.png" v-if="viewStatus.flag" class="img_icon"> -->
-                    </div>
-                    <img  class="img" v-if="this.$route.params.info.edit">
-                    <form method="post" class="img-form"  enctype="multipart/form-data">
-                        <input type="file" name="file" class="input-file" id="personnelImg" data-test="upImg"/>
-                    </form>
-                    <div style="color:red;font-size:16px;width:200px;margin-top:10px；margin-left:10px">
-                        <span>提示：请上传规范证件照，照片大小不超过2M</span>
-                    </div>
-                </div>
+                    <img class="img" :src="imagesrc" alt="暂无图片" v-if="this.$route.params.info.edit">
+                    <imgUp @success="successUp" upload="true" noimg v-else></imgUp>
             </div>
         </div>
         <div class="buttom">
             <base-button label="提交" align="right" :width="128" :height="72" :fontSize="20" @click="submit"></base-button>
-            <!-- <base-button label="清空" align="right" :width="128" :height="72" :fontSize="20" type="danger"></base-button> -->
+            <base-button label="取消" align="right" :width="128" :height="72" :fontSize="20" @click="cansle"></base-button>
         </div>
+        <service-dialog title="提示" ref="tip" :button="true" :secondary="false" @confirm="confirm">
+            <div>确定放弃{{this.$route.params.info.edit?"编辑":"新增"}}人员？</div>
+        </service-dialog>
     </div>
 </template>
 <script>
     import defineInput from '@/componentized/textBox/defineInput.vue'
     import myHeader from 'components/base/header/header'
+    import imgUp from 'components/base/axiosImgUp';
     import baseSelect from '@/componentized/textBox/baseSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
     import { editUser ,addUser } from 'api/user'
-    import upFile from '@/componentized/upFile'
+    import serviceDialog from "components/base/serviceDialog"
+    import { baseURL } from 'api/config'
     export default {
         name:"addPersonal",
         components:{
             defineInput,
             myHeader,
-            upFile,
+            imgUp,
             baseSelect,
-            entityInput
+            entityInput,
+            serviceDialog
         },
         created(){
             if(this.$route.params.info == undefined) {
@@ -61,6 +57,11 @@
             if(this.$route.params.info.edit){
                 this.title = "人员编辑"
                 this.order = this.$route.params.info.data
+                this.imagesrc = baseURL+'/images/'+this.order.faceInformation
+                this.organUnit = {
+                    name:this.order.organUnitName,
+                    id:this.order.organUnitId
+                }
             }else{
                 this.title = "新增人员"
             }
@@ -77,7 +78,8 @@
                 enterhouseList:[{label:"不允许",value:"不允许"},{label:"允许",value:"允许"}],
                 order:{},
                 title:"",
-                organUnit: {}
+                organUnit: {},
+                imagesrc:""
             }
         },
         watch:{
@@ -111,22 +113,31 @@
                 _.forIn(this.order,function(val,key){
                     if(key=="name"||key=="policeSign"||key=="role"||key=="phone"||key=="organUnitName"||key=="position"||key=="idNumber"){
                         if(val==""||val==null){
-                            this.$message.success("请填写完整")
+                            this.$message.error("请填写完整")
                             return false
                         }
                     }
                 })
                 if(this.$route.params.info.edit){
                     editUser(this.order.id,this.order).then(res=>{
-                        this.$message.sucess("编辑成功")
+                        this.$message.success("编辑成功")
                         this.$router.push({name: 'warehouse/personnelManagement'});
                     })
                 }else{
                     addUser(this.order).then(res=>{
-                        this.$message.sucess("新增成功")
+                        this.$message.success("新增成功")
                         this.$router.push({name: 'warehouse/personnelManagement'});
                     })
                 }
+            },
+            successUp(data){
+                this.order.faceInformation = data
+            },
+            confirm(){
+                this.$router.push({name: 'warehouse/personnelManagement'});
+            },
+            cansle(){
+                this.$refs.tip.show()
             }
         }
     }
@@ -142,44 +153,10 @@
         float: left;
         margin-top:10px;
         margin-left:100px;
-    }
-    
-    .add-personneo-upload-img{
-        margin-left: 164.0064px;
-        margin-top: 35.0016px;
-        width: 0.7135rem;
-        display: flex;
-       align-items: center;
-        flex-direction: column;
-    }
-    .add-personneo-upload-img .img{
-        width:180px;
-        height:251px;
-    }
-    .add-personneo-upload-img:hover .img_icon{
-        opacity: 1;
-    }
-    .img_icon{
-        opacity: 0;
-        margin-left: 60px;
-        margin-top: 95px;
-    }
-    .add-personneo-upload-img .img-box{
-        width:180px;
-        height:251px;
-        background:rgba(112,112,112,1);
-        opacity:0.5;
-    }
-    .add-personneo-upload-img .disabled{
-        background:#C0C4CC;
-    }
-    .add-personneo-upload-img .img-form{
-        display: none;
-        z-index: -9999;
-    }
-    .img-form .input-file{
-        display: none;
-        z-index: -9999;
+        .img{
+            width:180px;
+            height:251px;
+        }
     }
     .buttom {
         height: 72px;

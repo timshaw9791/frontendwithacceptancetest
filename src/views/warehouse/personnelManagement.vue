@@ -12,7 +12,7 @@
                     <base-button label="删除" type="text" @click="deleteperson(data.row)"></base-button>
                 </define-column>
                 <define-column label="图片" v-slot="{ data }" fixed>
-                    <img :src="data.row.faceInformation" alt="暂无图片">
+                    <img :src="imgsrc(data.row)" style="height:100px;width:100px" alt="暂无图片">
                 </define-column>
                 <define-column fixed label="警号" field="policeSign" width="180"></define-column>
                 <define-column fixed label="姓名" field="name" width="100"></define-column>
@@ -29,6 +29,7 @@
 <script>
     import myHeader from 'components/base/header/header'
     import textInput from '@/componentized/textBox/textInput'
+    import { baseURL } from 'api/config'
     import { getUser  ,deleteUser} from 'api/user'
     export default {
         name: "personnelManagement",
@@ -92,6 +93,9 @@
                     }
                 })
             },
+            imgsrc(data){
+                return baseURL+'/images/'+data.faceInformation
+            }
         }
     }
 </script>

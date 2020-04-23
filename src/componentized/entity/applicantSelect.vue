@@ -5,12 +5,12 @@
       <define-table :data="list" height="550.0032px" :pageInfo="paginator" 
         :highLightCurrent="true" @changeCurrent="changeCurrent" @changePage="changePage">
         <define-column label="图片" v-slot="{ data }">
-          <img :src="data.row.faceInformation" alt="暂无图片">
+          <img :src="imgsrc(data.row)" style="height:90px;width:125px" alt="暂无图片">
         </define-column>
         <define-column label="警号" field="policeSign" width="180"></define-column>
         <define-column label="姓名" field="name" width="100"></define-column>
         <define-column label="性别" field="gender" width="100"></define-column>
-        <define-column label="机构单位" field="organUnit.name" width="180"></define-column>
+        <define-column label="机构单位" field="organUnitName" width="180"></define-column>
         <define-column label="角色" field="position" width="180"></define-column>
         <define-column label="职位" field="role" width="180"></define-column>
         <define-column label="联系方式" field="phone" width="180"></define-column>
@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import { baseURL } from 'api/config'
 import { getUser } from 'api/user'
 export default {
   name: 'applicantSelect',
@@ -80,6 +81,9 @@ export default {
           }
         }
       })
+    },
+    imgsrc(data){
+        return baseURL+'/images/'+data.faceInformation
     },
     changePage(page) {
       this.paginator.page = page;
