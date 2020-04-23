@@ -1,6 +1,9 @@
 <template>
     <div class="base-button-container" :style="`float:${align};margin:${margin}`">
-        <button class="button" :class="[type,size,{disabled: disabled||throttleState}]" @click="clickBtn">{{ label }}</button>
+        <button class="button" :class="[type,size,{disabled: disabled||throttleState}]" @click="clickBtn">
+            <i class="iconfont" :class="[icon, iconAlign]"></i>
+            {{ label }}
+        </button>
     </div>
 </template>
 <script>
@@ -39,6 +42,14 @@ export default {
         margin: {
           type: String,
           default: '0 3px'
+        },
+        icon: {
+            type: String,
+            default: ''
+        },
+        iconAlign: {
+            type: String,
+            default: 'left'
         }
     },
     methods: {
@@ -113,6 +124,14 @@ export default {
     .disabled {
         opacity: 0.6;
         cursor: not-allowed;
+    }
+    .left {
+        margin-left: 0;
+        float: left;
+    }
+    .right {
+        margin-right: 0;
+        float: right;
     }
 }
 </style>
