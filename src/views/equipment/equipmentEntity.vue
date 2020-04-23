@@ -62,7 +62,7 @@
             </div>
             <div class="location-select" v-if="!isEdit">
                 <div class="select-location">
-                   <equip-locationSelect @current="current"></equip-locationSelect>
+                   <equip-location-select @current="current"></equip-location-select>
                 </div>
             </div>
               <div class="btn-box">
