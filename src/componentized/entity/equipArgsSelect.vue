@@ -24,7 +24,7 @@
 <script>
     import { equipArgsByNameModel } from 'api/storage'
     export default {
-        name: "equipArgs",
+        name: "equipArgsSelect",
         data() {
             return {
                 currentSel: '', // 当前选中行数据
@@ -50,7 +50,7 @@
                 if(!this.currentSel) {
                     this.$message.warning("请选择装备参数");
                 } else {
-                    this.$emit('select', {data: this.currentSel, ref: 'equipArgs'});
+                    this.$emit('select', {data: this.currentSel, ref: 'equipArgsSelect'});
                 }
             },
             changePage(page) {

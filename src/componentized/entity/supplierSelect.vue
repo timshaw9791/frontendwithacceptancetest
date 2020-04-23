@@ -17,9 +17,6 @@
 </template>
 
 <script>
-    import serviceDialog from "../base/serviceDialog/index"
-    import defineTable from '@/componentized/entity/defineTable'
-    import defineColumn from '@/componentized/entity/defineColumn'
     import textInput from '@/componentized/textBox/textInput.vue'
 
     export default {
@@ -50,9 +47,6 @@
             },
         },
         components: {
-            serviceDialog,
-            defineTable,
-            defineColumn,
             textInput
         }
     }

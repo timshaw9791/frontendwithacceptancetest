@@ -16,7 +16,7 @@
       <applicant-select @select="selected" @cancel="$refs.applicant.hide()"></applicant-select>
     </service-dialog>
     <service-dialog title="装备参数选择" ref="equipArgsSelect" width="1300px" :button="false" :secondary="false">
-      <equip-args @select="selected" @cancel="$refs.equipArgsSelect.hide()"></equip-args>
+      <equip-args-select @select="selected" @cancel="$refs.equipArgsSelect.hide()"></equip-args-select>
     </service-dialog>
     <service-dialog title="机构选择" ref="organUnits" width="500px" :button="false" :secondary="false">
       <organ-units @select="selected" @cancel="$refs.organUnits.hide()"></organ-units>
@@ -31,9 +31,9 @@
 <script>
 import serviceDialog from "components/base/serviceDialog"
 import applicantSelect from "./applicantSelect"
-import equipArgsSelect from '../../components/equipment/equipArgsSelect'
+import equipArgsSelect from './equipArgsSelect'
 import organUnits from './organUnits'
-import supplierSelect from "../../components/supplier/supplierSelect";
+import supplierSelect from "./supplierSelect";
 export default {
     name: 'textInput',
     data() {
