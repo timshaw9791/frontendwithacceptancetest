@@ -7,6 +7,7 @@
                         <text-input label="装备名称" placeholder="请输入装备名称"></text-input>
                         <base-button label="查询"></base-button>
                         <base-button label="新增装备参数" @click="goInfo('add')"></base-button>
+                        <entityInput :options="{search:'equipArgsSelect'}"></entityInput>
                         <base-button label="测试" @click="test()"></base-button>
                     </div>
                     <define-table :data="equipArgsList">
@@ -22,6 +23,7 @@
                     </define-table>
                 </div>
                 <storage-info :equipId="equipId" v-if="storageInfoShow" :equipList="equipList" :getPropEquip="propEquip"  :title="title" @black="black"></storage-info>
+
         </div>
     </div>
 </template>
@@ -34,7 +36,7 @@
     import myHeader from "../../components/base/header/header"
     import textInput from "../../componentized/textBox/textInput";
     import {getEquipArgs} from "../../api/equipArgs";
-
+    import entityInput from "../../componentized/entity/entityInput";
     export default {
         data() {
             return {
@@ -125,9 +127,7 @@
                 }
             },
             test(){
-                getEquipArgs().then(res => {
-                    this.equipArgsList = res.content
-                })
+
             }
         },
         updated() {
@@ -141,7 +141,8 @@
             storageInfo,
             serviceDialog,
             textInput,
-            myHeader
+            myHeader,
+            entityInput
         },
     }
 </script>

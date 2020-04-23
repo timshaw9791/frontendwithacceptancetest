@@ -22,7 +22,7 @@
 </template>
 
 <script>
-    import { equipArgsByNameModel } from 'api/storage'
+    import {getEquipArgs} from "../../api/equipArgs";
     export default {
         name: "equipArgsSelect",
         data() {
@@ -34,7 +34,7 @@
         },
         methods: {
             getList() {
-                equipArgsByNameModel(this.pageInfo).then(res => {
+                getEquipArgs(this.pageInfo).then(res => {
                     this.list = res.content;
                     this.pageInfo.totalPages = res.totalPages;
                     this.pageInfo.totalElements = res.totalElements;
