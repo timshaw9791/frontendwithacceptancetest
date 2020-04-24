@@ -27,6 +27,7 @@
                             <define-column label="入库时间" :filter="(row)=>$filterTime(row.createTime)"/>
                         </define-table>
             <equip-inhouse v-if='inhouse'  @cancel="black"></equip-inhouse>
+            <!-- <equip-inhouse-order :equipData="equipData" v-if='inhouse'></equip-inhouse-order> -->
         </div>
     </div>
 </template>
@@ -42,6 +43,7 @@
     import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
     import equipInhouse from './equipInhouse'
+    import equipInhouseOrder from './equipInhouseOrder'
     import { getInhouseNumber,inOutHouseOrder,deleteInhouseNumber} from "api/storage"
 export default {
     components:{
@@ -54,7 +56,8 @@ export default {
             entityInput,
             divTmp,
             bosTabs,
-            equipInhouse
+            equipInhouse,
+            equipInhouseOrder
         },
         data(){
             return{
