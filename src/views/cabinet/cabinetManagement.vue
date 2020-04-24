@@ -24,12 +24,13 @@
                         </define-table>
             <service-dialog title="警柜分配" ref="historyDialog" :button="false" :secondary="false">
             <div class="edit-equip">
-                <base-select label="警柜类型" :column="4" v-model="select.selected" align="left" :selectList="select.selectList"></base-select>
-                <entity-input v-model="people"  :options="{search:'applicant'}" format="{name}" :tableEdit="true" ></entity-input>
-                <div class="btn-box">
+                <base-select label="警柜类型" :column="6" v-model="select.selected" align="left" :selectList="select.selectList"></base-select>
+                <entity-input label="装备位置" v-model="location" :column="6"  :options="{search:'locationSelect'}" format="{name}" :tableEdit="true" align="left"></entity-input>
+                <entity-input v-model="people"  :options="{search:'applicant'}" :column="6" format="{name}" :tableEdit="true" ></entity-input>
+                <!-- <div class="btn-box">
                   <base-button label="取消" align="right" :width="128" :height="25" :fontSize="20" @click="cancel"></base-button>
                   <base-button label="提交" align="right" :width="128" :height="25" :fontSize="20" @click="confirm"></base-button>
-              </div>
+              </div> -->
             </div>
         </service-dialog>
         </div>
@@ -48,7 +49,7 @@
     import equipLocationSelect from '../equipment/equipLocationSelect'
     import serviceDialog from 'components/base/serviceDialog/index'
     import divTmp from '@/componentized/divTmp'
-    import {getPoliceCabinets} from 'api/warehouse'
+    import {getPoliceCabinets,assignPeople} from 'api/warehouse'
 export default {
     components:{
             myHeader,
@@ -81,7 +82,8 @@ export default {
                     }
                     ]
                },
-               people:''
+               people:'',
+               location:''
             }
         },
         methods:{
@@ -91,6 +93,9 @@ export default {
             },
             openCabniet(){
 
+            },
+            confirm(){
+            // assignPeople({category:select.selected,policeCabinetId:people.})
             },
             getList()
             {
@@ -155,7 +160,7 @@ export default {
 }
 .edit-equip{
     height: 400px;
-    width:600px;
+    width:400px;
     border: 1px solid rgba(112, 112, 112, 0.13);
     margin-left:100px;
     
