@@ -18,8 +18,8 @@
                             <define-column label="装备参数" v-slot="{ data }">
                                 <define-input v-model="data.row.equipArgs" type="Number" :tableEdit="false"></define-input>
                             </define-column>
-                            <define-column label="装备数量" v-slot="{ data }">
-                                <define-input v-model="data.row.number"  :tableEdit="false"></define-input>
+                            <define-column label="装备数量" :filter="(row)=>filterNumber(row)">
+                                
                             </define-column>
                             <define-column label="入库人员" v-slot="{ data }">
                                 <define-input v-model="data.row.operator.operator" type="String" :tableEdit="false"></define-input>
@@ -27,6 +27,7 @@
                             <define-column label="入库时间" :filter="(row)=>$filterTime(row.createTime)"/>
                         </define-table>
             <equip-inhouse v-if='inhouse'  @cancel="black"></equip-inhouse>
+            <!-- <equip-inhouse-order :equipData="equipData" v-if='inhouse'></equip-inhouse-order> -->
         </div>
     </div>
 </template>
@@ -42,6 +43,7 @@
     import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
     import equipInhouse from './equipInhouse'
+    import equipInhouseOrder from './equipInhouseOrder'
     import { getInhouseNumber,inOutHouseOrder,deleteInhouseNumber} from "api/storage"
 export default {
     components:{
@@ -54,7 +56,8 @@ export default {
             entityInput,
             divTmp,
             bosTabs,
-            equipInhouse
+            equipInhouse,
+            equipInhouseOrder
         },
         data(){
             return{
@@ -103,6 +106,9 @@ export default {
                 }).catch(err => {
                         this.$message.error(err.response.data.message);
                     })
+            },
+            filterNumber(data){
+                return data.inOutHouseItems.length
             },
             changePage(page) {
             this.paginator.page = page;ss
