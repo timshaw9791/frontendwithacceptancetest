@@ -150,7 +150,7 @@ export default {
                 this.requestBody=JSON.parse(JSON.stringify(this.list))
                 this.requestBody.forEach(item=>{
                     item.equipArgId=item.equipArgId.id
-                    item.locationId=item.locationId.number
+                    item.locationId=item.locationId.id
                     item.copyList.forEach(r=>{
                         item.rfids.push(r.rfid)
                         item.serial.push(r.serial)
