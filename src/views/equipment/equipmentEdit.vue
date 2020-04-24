@@ -5,19 +5,19 @@
                 <div class="equip-params">
                     <define-input label="装备名称" v-model="editList.equipArg.name" :disabled="true" margin="0 0"  column="6" align="left"/>
                     <define-input label="装备型号" v-model="editList.equipArg.model" :disabled="true" margin="0 0" column="6" align="right"></define-input>
-                    <define-input label="质保期(天)" v-model='editList.equipArg.shelfLife' margin="15px 0" :toEdit="false" column="6" align="left" ></define-input>
-                    <define-input label="充电周期(天)" v-model='editList.equipArg.chargeCycle' margin="15px 0" :disabled="false" column="6" align="right"></define-input>
-                    <define-input label="保养周期(天)" v-model='editList.equipArg.upkeepCycle' margin="15px 0" :disabled="false" column="6" align="left"></define-input>
+                    <define-input label="质保期(天)" v-model='editList.equipArg.shelfLife' margin="15px 0" :disabled="true" column="6" align="left" ></define-input>
+                    <define-input label="充电周期(天)" v-model='editList.equipArg.chargeCycle' margin="15px 0" :disabled="true" column="6" align="right"></define-input>
+                    <define-input label="保养周期(天)" v-model='editList.equipArg.upkeepCycle' margin="15px 0" :disabled="true" column="6" align="left"></define-input>
                     <define-input label="供应商" v-model="editList.equipArg.supplier.name" margin="15px 0" :disabled="true" column="6" align="right"></define-input>
                     <define-input label="RFID"  v-model="editList.rfid"  :disabled="true" margin="15px 0" column="6" align="left"></define-input>
-                    <define-input label="装备序号" v-model="editList.serial" :disabled="false" margin="15px 0" column="6" align="right"></define-input>
+                    <define-input label="装备序号" v-model="editList.serial" :disabled="true" margin="15px 0" column="6" align="right"></define-input>
                     <entity-input label="装备位置" v-model="editList.location.id" column="6" margin="0 0" :options="{search:'locationSelect'}" format="{name}" :tableEdit="true" align="left"></entity-input>
                     <define-input label="装备单价" v-model="editList.price" :disabled="false" margin="15px 0" column="6" align="right"></define-input>
-                    <date-select  label="生产日期" v-model="editList.createTime" column="6" margin="15px 0" align="left"></date-select>
+                    <date-select  label="生产日期" v-model="editList.productDate" column="6" margin="15px 0" align="left"></date-select>
                 </div>
               <div class="img-box">
                    <imgUp @success="successUp" :disabled="edit" :image="editList.equipArg.image"
-                                    upload="true" ></imgUp>
+                                    :upload="true" ></imgUp>
               </div>
               
         </div>
@@ -72,11 +72,18 @@ export default {
             cancel(){
                 this.$emit('cancel')
             },
+            successUp(data) {
+                console.log(data);
+                this.editList.equipArg.image=data
+            },
             confirm(){
                 console.log(this.editList);
                 equipsToNew(this.editList.id,this.editList).then(res=>{
+                    this.$message.success('编辑装备信息成功')
                     this.cancel()
                 })
+
+
                 // this.requestBody=JSON.parse(JSON.stringify(this.list))
                 // this.requestBody.forEach(item=>{
                 //     item.equipArgId=item.equipArgId.id
