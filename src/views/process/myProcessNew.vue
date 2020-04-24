@@ -108,12 +108,12 @@
 </script>
 
 <style lang="scss" scoped>
-    /deep/ .el-table {
-        .el-table--enable-row-hover,
-        .el-table__body tr:hover > td {
-            background-color: white;
-        }
-    }
+    // /deep/ .el-table {
+    //     .el-table--enable-row-hover,
+    //     .el-table__body tr:hover > td {
+    //         background-color: white;
+    //     }
+    // }
     .my-process-container{
         color:#707070FF;
         font-size: 16px;

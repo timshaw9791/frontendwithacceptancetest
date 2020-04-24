@@ -1,5 +1,5 @@
 <template>
-    <div :class="[styleObj,{'date-select-continer':true,disabled}]" :style="'width:'+fixWidth+';height:'+height+'px;margin:'+margin+';align:'+align">
+    <div :class="[styleObj,{'date-select-continer':true,disabled}]" :style="'width:'+fixWidth+';margin:'+margin+';align:'+align">
         <div class="label">{{ label }}
           <span class="required" v-if="required">*</span>
         </div>
@@ -11,7 +11,7 @@
                 placeholder="选择日期"
                 :start-placeholder="startPlaceholder" 
                 :end-placeholder="endPlaceholder"
-                :disabled="disabled"
+                :readonly="disabled"
                 :editable="editable"
                 :default-time="defaultTime"
                 prefix-icon= "el-icon-date"
@@ -51,10 +51,6 @@ import { judgeRules } from "../rules"
             column: {
               type: Number,
               default: 3
-            },
-            height: {
-              type: Number,
-              default: 40
             },
             valueFormat: {
               type: String,
@@ -119,11 +115,12 @@ import { judgeRules } from "../rules"
 
 <style lang="scss" scoped>
   /deep/ .el-date-editor {
-    // width: 203px !important;
     .el-input__inner {
+      height: 40px;
+      line-height: 40px;
+      background-color: transparent;
       padding: 0 10px !important;
       border: none;
-      border-bottom: 1px solid #E4E7ED;
     }
     .el-input__prefix {
       right: 20px;
@@ -144,7 +141,6 @@ import { judgeRules } from "../rules"
     padding: 10px;
   }
   .disabled {
-    background-color: #F5F7FA;
     color: #C0C4CC;
   }
   .required {
