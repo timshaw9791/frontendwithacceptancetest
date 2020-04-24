@@ -187,7 +187,7 @@ export default {
             readData(){
                 killProcess(this.pid)
                 start("java -jar scan.jar", (data) => {
-                    if(this.list[this.findIndex].copyList.length==1)
+                    if(this.list[this.findIndex].copyList.length==1&&this.list[this.findIndex].copyList[0].rfid=='')
                     {
                         this.list[this.findIndex].copyList.rfid=data
                     }else{
