@@ -1,14 +1,14 @@
-// if (process.env.NODE_ENV == "production") {
-//     var exec = window.require('child_process').exec;
-//     var spawn = window.require('child_process').spawn;
-//     var cwd = "C:\\Users\\Administrator"; // 执行目录
-//     //var com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM']; // 端口 串口号
-//     var com = 9;
-//     var fs = window.require('fs');
-//     var newFile_path = 'C:/Users/Administrator/inventory.json'; // 手持机路径
-//     var inventoryFile = `inventory.json`;
-//     var testDevelopment = false
-// }
+if (process.env.NODE_ENV == "production") {
+    var exec = window.require('child_process').exec;
+    var spawn = window.require('child_process').spawn;
+    var cwd = "C:\\Users\\Administrator"; // 执行目录
+    //var com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM']; // 端口 串口号
+    var com = 9;
+    var fs = window.require('fs');
+    var newFile_path = 'C:/Users/Administrator/inventory.json'; // 手持机路径
+    var inventoryFile = `inventory.json`;
+    var testDevelopment = false
+}
 
 var cmdPath = 'C:\\Users\\Administrator'; // 读卡器路径
 var cmdStr = 'chcp 65001 && adb pull sdcard/inventoryData/inventory.json .';
