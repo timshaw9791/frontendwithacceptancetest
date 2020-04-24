@@ -68,7 +68,10 @@ export function killProcess(pid) {
 export function start(cmd, success, failure, callBack) {
     //killProcessSync().then(() => {
     var index = 0; // 是否扫描过rfid
-
+    // 最终需删除
+    console.log("cmd",cmd);
+    console.log("com", com);
+    console.log("cwd", cwd);
     let process = exec(`${cmd} ${com}`, {
         cwd: cwd
     });
@@ -85,6 +88,8 @@ export function start(cmd, success, failure, callBack) {
     });
 
     process.stdout.on("data", data => {
+        // 最终需删除
+        console.log("数据：", data);
         if (index == 1) {
             success(data.replace(/[\r\n]/g, ""))
         } else if (index == 0 && JSON.parse(data).status == "succeed") {
