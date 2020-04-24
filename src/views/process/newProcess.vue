@@ -23,7 +23,6 @@ import myHeader from 'components/base/header/header'
 import textInput from '@/componentized/textBox/textInput.vue'
 import { processDefinitions } from 'api/process'
 import bosTabs from '@/componentized/table/bosTabs'
-import defineForm from '@/componentized/form/defineForm'
 export default {
   name: 'newProcess',
   data() {
@@ -76,8 +75,7 @@ export default {
   components: {
     myHeader,
     textInput,
-    bosTabs,
-    defineForm
+    bosTabs
   }
 }
 </script>
