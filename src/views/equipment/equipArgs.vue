@@ -130,6 +130,11 @@
 
             }
         },
+        mounted() {
+            getEquipArgs().then(res => {
+                this.equipArgsList = res.content
+            })
+        },
         updated() {
             getEquipArgs().then(res => {
               this.equipArgsList = res.content
