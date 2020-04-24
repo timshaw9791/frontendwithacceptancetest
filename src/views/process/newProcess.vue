@@ -13,6 +13,7 @@
     <define-form ref="form">
       <define-input v-model="test" :required="true" slot="form"></define-input>
       <define-input v-model="test" type="Number" slot="form"></define-input>
+      <base-select v-model="test" :required="true" slot="form"></base-select>
     </define-form>
     <base-button label="验证" type="simple" @click="testFunc()"></base-button>
   </div>

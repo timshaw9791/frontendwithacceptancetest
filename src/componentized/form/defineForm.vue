@@ -10,7 +10,7 @@ export default {
     props: {
         column: {
             type: Number,
-            default: 3
+            default: 12
         },
         align: {
             type: String,
