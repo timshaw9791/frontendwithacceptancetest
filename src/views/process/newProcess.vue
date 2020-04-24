@@ -10,6 +10,11 @@
         <define-column label="部署时间" :filter="(row)=>$filterTime(row.deploymentTime)"></define-column>
       </define-table>
     </div>
+    <define-form ref="form">
+      <define-input v-model="test" :required="true" slot="form"></define-input>
+      <define-input v-model="test" type="Number" slot="form"></define-input>
+    </define-form>
+    <base-button label="验证" type="simple" @click="testFunc()"></base-button>
   </div>
 </template>
 
@@ -18,6 +23,7 @@ import myHeader from 'components/base/header/header'
 import textInput from '@/componentized/textBox/textInput.vue'
 import { processDefinitions } from 'api/process'
 import bosTabs from '@/componentized/table/bosTabs'
+import defineForm from '@/componentized/form/defineForm'
 export default {
   name: 'newProcess',
   data() {
@@ -28,6 +34,15 @@ export default {
     }
   },
   methods: {
+    testFunc() {
+      this.$refs.form.validate(valid => {
+        if(valid) {
+          console.log("验证通过");
+        } else {
+          console.log("验证失败");
+        }
+      })
+    },
     getList() {
       processDefinitions().then(res => {
         this.list = res
@@ -61,7 +76,8 @@ export default {
   components: {
     myHeader,
     textInput,
-    bosTabs
+    bosTabs,
+    defineForm
   }
 }
 </script>

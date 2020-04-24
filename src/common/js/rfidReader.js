@@ -97,7 +97,6 @@ export function start(cmd, success, failure, callBack) {
 
         console.log(`子进程退出，退出码 ${code}`);
     });
-    //})
 }
 
 /* 读卡器-单次 */

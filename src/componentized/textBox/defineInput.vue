@@ -152,9 +152,11 @@ export default {
       }
       if(judge) {
         this.inTable?this.styleObj['table-error']=false:this.styleObj.error=false;
-      } else {
-        this.inTable?this.styleObj['table-error']=true:this.styleObj.error=true;
-      }
+        return true;
+      } 
+      this.inTable?this.styleObj['table-error']=true:this.styleObj.error=true;
+      return false;
+      
     },
     changeEditState(state) {
       if(!this.inTable || this.disabled) return;
