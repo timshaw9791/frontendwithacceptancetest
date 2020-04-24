@@ -253,24 +253,24 @@ export default {
         created(){
             
             // this.time= Date.parse(new Date());
-            if(this.equipData)
-            {
-                this.list={
-                    equipArgId: this.equipData.equipArgs,
-                    locationId: '',
-                    price: 0,
-                    productTime: 0,
-                    rfids: [],
-                    serial: [],
-                    copyList:[{rfid:'',serial:''}]
-                }
-                this.orderNumber=this.equipData.id
-                this.getTime(this.updateTime)
-                this.people=this.equipData.operator.operator
-            }else{
+            // if(this.equipData)
+            // {
+            //     this.list={
+            //         equipArgId: this.equipData.equipArgs,
+            //         locationId: '',
+            //         price: 0,
+            //         productTime: 0,
+            //         rfids: [],
+            //         serial: [],
+            //         copyList:[{rfid:'',serial:''}]
+            //     }
+            //     this.orderNumber=this.equipData.id
+            //     this.getTime(this.updateTime)
+            //     this.people=this.equipData.operator.operator
+            // }else{
                 this.getTime()
                 this.people=JSON.parse(localStorage.getItem('user')).name
-            }
+            // }
             
         }
 }

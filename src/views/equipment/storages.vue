@@ -26,7 +26,7 @@
                             </define-column>
                             <define-column label="入库时间" :filter="(row)=>$filterTime(row.createTime)"/>
                         </define-table>
-            <equip-inhouse v-if='inhouse' :equipData="equipData" @cancel="black"></equip-inhouse>
+            <equip-inhouse v-if='inhouse'  @cancel="black"></equip-inhouse>
         </div>
     </div>
 </template>
