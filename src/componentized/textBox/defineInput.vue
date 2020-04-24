@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import { judgeRules } from "../rules"
 export default {
   name: "defineInput",
   data() {
@@ -24,7 +25,6 @@ export default {
       inTableStateContrl: true,
       styleObj: {
         error: false,
-        'table-error': false,
         'table-error': false
       }
     };
@@ -117,44 +117,12 @@ export default {
       this.reg(); // 这里貌似没有触发change事件。暂且手动触发
     },
     reg() {
-      let judge = true;
-      switch (this.type) {
-        case "Number":
-            judge = /^-?\d+(\.\d+)?$/.test(this.value);
-            break;
-        case "Email":
-            judge = /^[A-Za-z0-9._%-]+@([A-Za-z0-9-]+\.)+[A-Za-z]{2,4}$/.test(this.value);
-            break;
-        case 'Phone':
-            judge = /^1[3456789]\d{9}$/.test(this.value);
-            break;
-        case 'CardId':
-            judge = /(^\d{15}$)|(^\d{17}(\d|x|X)$)/i.test(this.value);
-            break;
-        case 'Integer':
-            judge = /^-?[0-9]\d*$/.test(this.value);
-            break;
-        case 'Decimal':
-            judge = /^-?([0-9]+\.[0-9]+)$/.test(this.value);
-            break;
-        case 'Require':
-            judge = Boolean(this.value);
-            break;
-        case 'URL':
-            judge = /^(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?$/.test(this.value);
-            break;
-        default:
-            judge = this.validate(this.value);
-            break;
-      }
-      if(this.required&&this.insideValue=='') {
-        judge = false;
-      }
-      if(judge) {
+      if(judgeRules(this.required, this.type, this.value, this.validate)) {
         this.inTable?this.styleObj['table-error']=false:this.styleObj.error=false;
-      } else {
-        this.inTable?this.styleObj['table-error']=true:this.styleObj.error=true;
-      }
+        return true;
+      } 
+      this.inTable?this.styleObj['table-error']=true:this.styleObj.error=true;
+      return false;   
     },
     changeEditState(state) {
       if(!this.inTable || this.disabled) return;
