@@ -124,7 +124,7 @@ export default {
         methods:{
             selRow(current){
                 console.log(current);
-               this.findIndex=_.indexOf(this.list,current)
+               this.findIndex=this._.indexOf(this.list,current)
                console.log(this.findIndex);
             },
             sumFunc(param) { // 表格合并行计算方法

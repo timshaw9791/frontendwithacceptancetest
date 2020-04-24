@@ -87,7 +87,6 @@ export default {
                 getLocation().then(res=>{
                     this.surfaceList=res.content
                     this.surfaceList.forEach(item=>{
-                    console.log(item);
                    item.name=item.frameNumber+'架/'+item.section+'节'
                   
                 })
