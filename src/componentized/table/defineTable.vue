@@ -103,9 +103,9 @@ import defineColumn from './defineColumn'
             background:rgba(178,178,204,1);
             border-radius: 20px;
         }
-        .el-table--enable-row-hover,
-        .el-table__body tr:hover > td {
-            background-color: white;
-        }
+        // .el-table--enable-row-hover,
+        // .el-table__body tr:hover > td {
+        //     background-color: white;
+        // }
     }
 </style>

@@ -1,6 +1,8 @@
 <template>
-    <div class="base-select-container" :style="'width:'+fixWidth+';float:'+align+';margin:'+margin">
-        <div class="slot-label">{{ label }}</div>
+    <div class="base-select-container" :class="[styleObj]" :style="'width:'+fixWidth+';float:'+align+';margin:'+margin">
+        <div class="slot-label">{{ label }}
+            <span class="required" v-if="required">*</span>
+        </div>
         <div class="select" @click="clickSel">
             <span class="context" v-if="selectValue">{{ selectValue }}</span>
             <span class="placeholder" v-else>{{ placeholder }}</span>
@@ -15,12 +17,16 @@
 </template>
 
 <script>
+import { judgeRules } from "../rules"
     export default {
         name: 'baseSelect',
         data() {
             return {
                 selectValue: "", // 内部绑定值/选中值
                 showOptions: false, // 是否显示option的值
+                styleObj: {
+                    error: false
+                }
             }
         },
         props: {
@@ -56,7 +62,22 @@
             disabled: {
                 type: Boolean,
                 default: false
-            }
+            },
+            required: {
+                type: Boolean,
+                default: false
+            },
+            type: {
+                type: String,
+                default: "String"
+            },
+            validate: {
+                // 验证函数
+                type: Function,
+                default() {
+                    return () => true;
+                }
+            },
         },
         computed: {
             fixWidth() {
@@ -64,6 +85,14 @@
           }  
         },
         methods: {
+            reg() {
+                if(judgeRules(this.required, this.type, this.value, this.validate)) {
+                    this.styleObj.error=false;
+                    return true;
+                } 
+                this.styleObj.error=true;
+                return false;   
+            },
             clickSel() {
                 if(this.disabled) {
                     this.showOptions = false;
@@ -124,6 +153,9 @@
     .context {
         margin-left: 10px;
     }
+    .required {
+        color: red;
+    }
     .placeholder {
         color: #c0c4cc;
         margin-left: 10px;
@@ -162,4 +194,7 @@
             background:rgba(178,178,204,1);
             border-radius: 20px;
         }
+    .error {
+        border: 1px solid red;
+    }
 </style>

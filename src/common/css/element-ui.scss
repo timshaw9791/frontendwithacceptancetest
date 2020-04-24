@@ -32,6 +32,9 @@
 .el-date-editor.el-input, .el-date-editor.el-input__inner {
   width: 100% !important;
 }
+.el-picker-panel { // 解决日期选择界面，年月span下降问题
+  font-size: 16px;
+}
 
 .el-table {
   font-size: 12px;
