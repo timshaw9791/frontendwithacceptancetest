@@ -16,8 +16,8 @@
                     <date-select  label="生产日期" v-model="editList.productDate" column="6" margin="15px 0" align="left"></date-select>
                 </div>
               <div class="img-box">
-                   <imgUp @success="successUp" :disabled="edit" :image="editList.equipArg.image"
-                                    :upload="true" ></imgUp>
+                   <imgUp @success="successUp" :disabled="edit" :image="imageUrl"
+                                  :noImg="noImg" :upload="true" ></imgUp>
               </div>
               
         </div>
@@ -40,6 +40,7 @@
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
+    import {imgUpUrl, pdfUpUrl, videoUpUrl, imgBaseUrl, pdfBaseUrl, videoBaseUrl} from "api/config";
     import imgUp from 'components/base/axiosImgUp';
     import { getInhouseNumber,equipsToNew} from "api/storage"
 export default {
@@ -57,7 +58,9 @@ export default {
         },
         data(){
             return{
-              requestBody:''
+              requestBody:'',
+              noImg:false,
+              imageUrl:''
             }
         },
         props:{
@@ -103,6 +106,13 @@ export default {
         },
         created(){
             this.requestBody=JSON.parse(JSON.stringify(this.editList))
+            if(this.editList.equipArg.image)
+            {
+                this.imageUrl = `${imgBaseUrl}${this.editList.equipArg.image}`;
+            }else {
+                        this.imageUrl = '';
+                        this.noimg=true;
+                    }
         }
 }
 </script>
@@ -149,7 +159,7 @@ export default {
         height: 50px;
         margin-left:1.25rem;
         margin-top:30px;
-        border: 1px solid black;
+        // border: 1px solid black;
         display: flex;
         justify-content: flex-end;
         align-items : center; 

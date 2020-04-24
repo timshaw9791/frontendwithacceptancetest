@@ -5,30 +5,30 @@
              <base-button label="一键开柜" align="right" :width="128" :height="25" :fontSize="20" @click="show"></base-button>
         </div>
         <div class="data-list">
-            <define-table  height="4rem" @changeCurrent="selRow">
-                            <define-column label="操作" width="100" >
-                                
+            <define-table :data="list" height="4rem" @changeCurrent="selRow">
+                            <define-column label="操作" width="100" v-slot="{ data }">
+                                <div class="span-box">
+                                     <span @click="toAssign(data.row)">分配</span>
+                                     <span @click="opCabniet(data.row)">开柜</span>
+                                </div>
                             </define-column>
                             <define-column label="警柜类型" v-slot="{ data }">
-                                <!-- <entity-input v-model="data.row.equipArg" :options="{}" :disabled="true" format="{name}({model})"></entity-input> -->
+                                <define-input v-model="data.row.category" type="Number" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="警柜编号" v-slot="{ data }">
-                                <!-- <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input> -->
+                                <define-input v-model="data.row.cabinetNumber" type="Number" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="所属人员" v-slot="{ data }">
-                                <!-- <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input> -->
+                                <define-input v-model="data.row.policeCabinetUserItems.user" type="Number" :tableEdit="false"></define-input>
                             </define-column>
                         </define-table>
-            <service-dialog title="选择装备位置" ref="historyDialog" :button="false" :secondary="false">
+            <service-dialog title="警柜分配" ref="historyDialog" :button="false" :secondary="false">
             <div class="edit-equip">
-                <div class="equip-params">
-                   <equip-locationSelect></equip-locationSelect>
-                </div>
-              
-              <div class="btn-box">
-                  <base-button label="取消" align="right" :width="128" :height="25" :fontSize="20" ></base-button>
-                  <base-button label="提交" align="right" :width="128" :height="25" :fontSize="20" ></base-button>
-               
+                <base-select label="警柜类型" :column="4" v-model="select.selected" align="left" :selectList="select.selectList"></base-select>
+                <entity-input v-model="people"  :options="{search:'applicant'}" format="{name}" :tableEdit="true" ></entity-input>
+                <div class="btn-box">
+                  <base-button label="取消" align="right" :width="128" :height="25" :fontSize="20" @click="cancel"></base-button>
+                  <base-button label="提交" align="right" :width="128" :height="25" :fontSize="20" @click="confirm"></base-button>
               </div>
             </div>
         </service-dialog>
@@ -48,6 +48,7 @@
     import equipLocationSelect from '../equipment/equipLocationSelect'
     import serviceDialog from 'components/base/serviceDialog/index'
     import divTmp from '@/componentized/divTmp'
+    import {getPoliceCabinets} from 'api/warehouse'
 export default {
     components:{
             myHeader,
@@ -64,23 +65,55 @@ export default {
         },
         data(){
             return{
-               order:{
-                   equips:{
-
-                   }
-               } 
+               list:[],
+               select:{
+                   selected:'',
+                   selectList:[{
+                        label: "单警柜",
+                        value: 'POLICE_CABINET'
+                    }, {
+                        label: "公共柜",
+                        value: "COMMON"
+                    },
+                     {
+                        label: "备用柜",
+                        value: "SPARE"
+                    }
+                    ]
+               },
+               people:''
             }
         },
         methods:{
-            selRow(){
+            toAssign(){
+                console.log("触发");
+                this.$refs.historyDialog.show()
+            },
+            openCabniet(){
 
             },
-            sumFunc(){
-
+            getList()
+            {
+                getPoliceCabinets().then(res=>{
+                    this.list=res
+                    this.list.forEach(item=>{
+                        if(item.category=='SPARE')
+                        {item.category='备用柜'}
+                        else if(item.category=='POLICE_CABINET')
+                        {
+                            item.category='单警柜'
+                        }
+                        else if(item.category=='COMMON'){
+                            item.category='公共柜'}
+                    })
+                })
             },
             show(){
                 this.$refs.historyDialog.show()
             }
+        },
+        created(){
+            this.getList()
         }
 }
 </script>
@@ -115,6 +148,16 @@ export default {
         // border: 1px solid black;
         // float: left;
     }
+    .span-box{
+        display:flex;
+        justify-content: space-between;
+    }
 }
-
+.edit-equip{
+    height: 400px;
+    width:600px;
+    border: 1px solid rgba(112, 112, 112, 0.13);
+    margin-left:100px;
+    
+}
 </style>
