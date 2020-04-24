@@ -10,15 +10,13 @@
       <entity-input label="申请人员" v-model="order.applicant" :required="true" placeholder="请选择"></entity-input>
     </div>
     <div class="maintenance-form-body" v-if="show">
-        <bos-tabs :option="['tabs', 'contrast']" :layoutRatio="[2, 1]">
+        <bos-tabs :option="['tabs']" :layoutRatio="[2, 1]">
           <define-table :havePage="false" :data="order" height="2.6042rem"
             @changeCurrent="selRow" :summaryFunc="sumFunc" :showSummary="true" :highLightCurrent="true" slot="total" >
             <define-column label="装备参数" v-slot="{ data }">
               <entity-input v-model="data.row.equips" :options="{ detail: 'equipArgsSelect' }" format="{name}({model})" :disabled="true" ></entity-input>
             </define-column>
-            <define-column label="装备位置" v-slot="{ data }">
-              <div>{{data.row.location.floor+'/'+data.row.location.frameNumber+'/'+data.row.location.surface+'/'+data.row.location.section}}</div>
-            </define-column>
+            <define-column label="装备位置" field="location" :filter="(row)=>locations(row.location)"></define-column>
             <define-column label="可保养数量" field="count"></define-column>
           </define-table>
           <define-table :havePage="false" :data="detailTable.list" height="2.6042rem" slot="detail" >
@@ -28,23 +26,21 @@
         </bos-tabs>
     </div>
     <div v-else class="maintenance-form-body">
-      <bos-tabs :option="['tabs', 'contrast']" :layoutRatio="[2, 1]">
+      <bos-tabs :option="['tabs']" :layoutRatio="[2, 1]">
         <template slot="slotHeader">
-            <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96" @click="readData"></base-button>
+          <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96"></base-button>
           <base-select label="硬件选择" v-model="select.selected" align="right" :selectList="select.handWareList"></base-select>
         </template>
         <define-table :havePage="false" :data="order" height="2.6042rem"
           @changeCurrent="selRow" :summaryFunc="sumFunc" :showSummary="true" :highLightCurrent="true" slot="total" >
-          <define-column label="操作" width="100" v-slot="{ data }">
-              <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
-              <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
+          <define-column label="操作" width="100">
+              <i class="iconfont icontianjialiang"></i>
+              <i class="iconfont iconyichuliang"></i>
           </define-column>
           <define-column label="装备参数" v-slot="{ data }">
             <entity-input v-model="data.row.equips" :options="{ detail: 'equipArgsSelect' }" format="{name}({model})" :disabled="true" ></entity-input>
           </define-column>
-          <define-column label="装备位置" v-slot="{ data }">
-            <div>{{data.row.location.floor+'/'+data.row.location.frameNumber+'/'+data.row.location.surface+'/'+data.row.location.section}}</div>
-          </define-column>
+          <define-column label="装备位置" field="location" :filter="(row)=>locations(row.location)"></define-column>
           <define-column label="可保养数量" field="count"></define-column>
           <define-column label="本次保养数量" field="canCount"></define-column>
         </define-table>
@@ -54,8 +50,8 @@
         </define-table>
       </bos-tabs>
       <div class="buttom">
-          <base-button label="提交" align="right" size="large" @click="submit"></base-button>
-          <base-button label="取消" align="right" size="large" type="danger" @click="cansle"></base-button>
+          <base-button label="提交" align="right" size="large" ></base-button>
+          <base-button label="取消" align="right" size="large" type="danger" @click="cancel"></base-button>
       </div>
     </div>
   </div>
@@ -234,6 +230,11 @@ export default {
             })
         }
       },
+      locations(data){
+        // console.log(data);
+        return data.floor+'/'+data.frameNumber+'/'+data.surface+'/'+data.section
+      },
+      cancel(){this.show = true},
       sumFunc(param) { // 表格合并行计算方法
         let { columns, data } = param, sums = [];
         columns.forEach((colum, index) => {
@@ -249,17 +250,6 @@ export default {
             }
         })
         return sums;
-      },
-      changeRow(state, data) { // 总清单删除
-        let temp = JSON.parse(JSON.stringify(this.order.equips));
-        if(state) {
-          temp.splice(data.$index+1, 0, {count: '', equips: {}, location:{}});
-        } else if(this.order.equips.length>1) {
-          temp.splice(data.$index, 1); 
-        } else {
-          temp = [{count: '', rfid: [], equipId: [], equipArg: {}}]
-          }
-        this.order.equips = temp;
       },
     },
   created() {
@@ -287,6 +277,7 @@ export default {
   }
   .maintenance-form-body {
     padding: 0 7px;
+    widows: 100%;
   }
   .process-info {
       padding: 18px 0;
