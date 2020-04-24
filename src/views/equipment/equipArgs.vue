@@ -7,8 +7,6 @@
                         <text-input label="装备名称" placeholder="请输入装备名称"></text-input>
                         <base-button label="查询"></base-button>
                         <base-button label="新增装备参数" @click="goInfo('add')"></base-button>
-                        <entityInput :options="{search:'equipArgsSelect'}"></entityInput>
-                        <base-button label="测试" @click="test()"></base-button>
                     </div>
                     <define-table :data="equipArgsList">
                         <define-column label="操作" v-slot="{data}">
@@ -125,14 +123,14 @@
                     this.equipData = state
                     this.$refs.tipDialog.show()
                 }
+                getEquipArgs().then(res => {
+                    this.equipArgsList = res.content
+                })
             },
-            test(){
-
-            }
         },
-        updated() {
+        mounted() {
             getEquipArgs().then(res => {
-              this.equipArgsList = res.content
+                this.equipArgsList = res.content
             })
         },
         components: {
