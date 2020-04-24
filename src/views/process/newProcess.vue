@@ -13,7 +13,6 @@
         </define-column> 
       </define-table>
     </div>
-     <date-select v-model="testTime" :required="true"></date-select>
   </div>
 </template>
 
@@ -22,7 +21,6 @@ import myHeader from 'components/base/header/header'
 import textInput from '@/componentized/textBox/textInput.vue'
 import { processDefinitions } from 'api/process'
 import bosTabs from '@/componentized/table/bosTabs'
-import upFile from '@/componentized/upFile'
 export default {
   name: 'newProcess',
   data() {
