@@ -36,7 +36,7 @@ import baseButton from '@/componentized/buttonBox/baseButton.vue'
 import baseSelect from '@/componentized/textBox/baseSelect.vue'
 import divTmp from '@/componentized/divTmp'
 import defineForm from '@/componentized/form/defineForm'
-
+import textInput from '@/componentized/textBox/textInput'
 
 let componentsList = {
     'FormContainer': FormContainer,
@@ -63,7 +63,8 @@ let componentsList = {
     baseButton,
     baseSelect,
     divTmp,
-    defineForm
+    defineForm,
+    textInput
 };
 
 

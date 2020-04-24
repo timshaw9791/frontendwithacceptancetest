@@ -1,6 +1,8 @@
 <template>
-    <div :class="{'date-select-continer':true,disabled}" :style="'width:'+fixWidth+';height:'+height+'px;margin:'+margin+';align:'+align">
-        <div class="label">{{ label }}</div>
+    <div :class="[styleObj,{'date-select-continer':true,disabled}]" :style="'width:'+fixWidth+';height:'+height+'px;margin:'+margin+';align:'+align">
+        <div class="label">{{ label }}
+          <span class="required" v-if="required">*</span>
+        </div>
         <el-date-picker
                 v-model="selectValue"
                 :type="type"
@@ -19,11 +21,15 @@
 </template>
 
 <script>
+import { judgeRules } from "../rules"
     export default {
         name: 'dataSelect',
         data() {
             return {
                 selectValue: "",
+                styleObj: {
+                  error: false
+                }
             }
         },
         props: {
@@ -81,6 +87,10 @@
             margin: {
               type: String,
               default: '0 0.0521rem'
+            },
+            required: {
+              type: Boolean,
+              default: false
             }
         },
         computed: {
@@ -89,6 +99,14 @@
           }  
         },
         methods: {
+          reg() {
+            if(judgeRules(this.required, null, this.value)) {
+                this.styleObj.error=false;
+                return true;
+            } 
+            this.styleObj.error=true;
+            return false;  
+          },
           change(value) {
             this.$emit('input', value)
           }
@@ -128,5 +146,11 @@
   .disabled {
     background-color: #F5F7FA;
     color: #C0C4CC;
+  }
+  .required {
+    color: red;
+  }
+  .error {
+    border: 1px solid red;
   }
 </style>

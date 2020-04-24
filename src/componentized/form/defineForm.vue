@@ -32,7 +32,7 @@ export default {
     },
     computed: {
         fixWidth() {
-            return this.inTable?`calc(100% - 0.1042rem)`:`calc(${8.33*this.column}% - 0.1042rem)`;
+            return `calc(${8.33*this.column}%)`;
         }
     },
 }
