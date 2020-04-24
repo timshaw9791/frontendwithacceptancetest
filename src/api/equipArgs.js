@@ -9,3 +9,11 @@ export function getEquipArgs(params) {
         params
     })
 }
+
+export function saveEquipArg(data) {
+    return request({
+        url: "/equip-args",
+        method: "POST",
+        data
+    })
+}

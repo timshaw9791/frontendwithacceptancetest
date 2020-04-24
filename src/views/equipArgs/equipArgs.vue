@@ -33,6 +33,7 @@
             }
         },
         methods: {
+            //通过监听showFun对List还是Edit界面进行切换
             showFun(data) {
                 this.showData=data
             },

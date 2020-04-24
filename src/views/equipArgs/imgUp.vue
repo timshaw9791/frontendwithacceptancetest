@@ -1,11 +1,13 @@
 <template>
-    <div :class="imageUrl?'haveImg':'img'">
+    <!--使用imageUrl和noImg区分样式-->
+    <div :class="imageUrl||noImg?'haveImg':'img'">
         <el-upload
                 class="avatar-uploader"
                 accept=".jpg,.jpeg,.png,.JPG,.JPEG"
                 :action=url
                 :show-file-list="false"
                 :on-success="handleAvatarSuccess"
+                :disabled=disabled
                 :before-upload="beforeAvatarUpload">
             <img v-if="imageUrl" :src="imageUrl" class="haveImg" alt="">
             <img v-else-if="noImg" src="@/assets/noThumbnails.png" class="haveImg" alt="">
@@ -27,16 +29,24 @@
             };
         },
         props:{
+            //noImg是否显示暂无缩略图
             noImg:{
                 type:Boolean,
-                default:true
+                default:false
             },
+            //是否可以点击
+            disabled:{
+                type:Boolean,
+                default:false
+            }
         },
         methods: {
+            //上传图片成功后的调用方法
             handleAvatarSuccess(res) {
                 this.imageUrl = `${imgBaseUrl}${res}`;
                 this.$emit('success', res);
             },
+            //上传图片前调用，该方法限制上传内容
             beforeAvatarUpload(file) {
                 const isLt2M = file.size / 1024 / 1024 < 2;
                 // const isJPG = file.type === 'image/jpeg/png/JPG/JPEG';
@@ -77,6 +87,7 @@
     .img:hover  {
         border-color: #409EFF;
     }
+
     .haveImg{
         border-radius: 6px;
         overflow: hidden;
