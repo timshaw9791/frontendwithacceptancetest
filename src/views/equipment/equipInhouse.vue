@@ -12,7 +12,7 @@
                             <base-select label="硬件选择" v-model="select.selected" align="right" :selectList="select.handWareList"></base-select>
                         </template>
                         <define-table :data="list" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
-                            :highLightCurrent="true"  slot="total">
+                            :highLightCurrent="true"  slot="total" :showSummary="true" :summaryFunc="sumFunc">
                             <define-column label="操作" width="100" v-slot="{ data }">
                                 <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
                                 <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
@@ -27,10 +27,10 @@
                                 <define-input v-model="data.row.price" type="Number" ></define-input>
                             </define-column>
                             <define-column label="生产日期" v-slot="{ data }">
-                                <date-select label="生产日期" v-model="data.row.productTime" column="12" ></date-select>
+                                <date-select label="生产日期" v-model="data.row.productTime" :column="12" ></date-select>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
-                                <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input>
+                                <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
                             </define-column>
                         </define-table>
                         <define-table :data="list[findIndex].copyList" height="2.8646rem" :havePage="false" slot="detail">
@@ -56,7 +56,7 @@
 </template>
 
 <script>
-    import myHeader from 'components/base/header/header';
+    import myHeader from 'components/base/header/header'
     import textInput from '@/componentized/textBox/textInput.vue'
     import defineInput from '@/componentized/textBox/defineInput.vue'
     import bosTabs from '@/componentized/table/bosTabs.vue'
@@ -83,13 +83,21 @@ export default {
             equipLocationSelect,
             serviceDialog
         },
+        props:{
+            equipData: {
+              type: Object,
+              default() {
+                return {}
+              }
+            }
+        },
         data(){
             return{
                list:[{
                     equipArgId: '',
                     locationId: '',
                     price: 0,
-                    productTime: 0,
+                    productTime:Date.parse(new Date()),
                     rfids: [],
                     serial: [],
                     copyList:[{rfid:'',serial:''}],
@@ -97,7 +105,7 @@ export default {
                time:"",
                people:'',
                requestBody:'',
-               orderNumber:'————',
+               orderNumber:'',
                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
                select: {
                     handWareList: [{
@@ -116,13 +124,25 @@ export default {
         methods:{
             selRow(current){
                 console.log(current);
-            //    this.findIndex=_.indexOf(this.list,current)
+               this.findIndex=_.indexOf(this.list,current)
                console.log(this.findIndex);
             },
-            sumFunc(){
-
+            sumFunc(param) { // 表格合并行计算方法
+                let { columns, data } = param, sums = [];
+                columns.forEach((colum, index) => {
+                    if(index == 0) {
+                        sums[index] =  '合计';
+                    } else if(index == columns.length-1) {
+                        const values = data.map(item => item.count?Number(item.count):0);
+                        if(!values.every(value => isNaN(value))) {
+                            sums[index] = values.reduce((pre, cur) => !isNaN(cur)?pre+cur:pre);
+                        }
+                    } else {
+                        sums[index] = '';
+                    }
+                })
+                return sums;
             },
-        
             cancel(){
                 this.$emit('cancel')
             },
@@ -140,6 +160,7 @@ export default {
                 inHouse(this.requestBody).then(res=>{
                     this.$message.success('装备入库成功')
                     this.init()
+                    this.cancel()
                 })
             },
             changePage(page) {
@@ -148,8 +169,13 @@ export default {
             changelocation(){
                 this.$refs.historyDialog.show()
             },
-            getTime() {
-            var date=new Date();
+            getTime(ns) {
+                if(ns)
+                {
+                    var date=new Date(parseInt(nS));
+                }else{
+                    var date=new Date();
+                }
             var year=date.getFullYear();
             var mon = date.getMonth()+1;
             var day = date.getDate();
@@ -206,10 +232,46 @@ export default {
                 }]
             }
         },
+        watch:{
+            'list':{
+                deep:true,
+                handler(newval){
+                    newval.forEach(item=>{
+                        let len=0
+                        item.copyList.forEach(i=>{
+                            if(i.rfid!='')
+                            {
+                                len++
+                            }
+                        })
+                        item.count=len
+                    })
+                    
+                }
+            }
+        },
         created(){
             
-            this.getTime()
-            this.people=JSON.parse(localStorage.getItem('user')).name
+            // this.time= Date.parse(new Date());
+            // if(this.equipData)
+            // {
+            //     this.list={
+            //         equipArgId: this.equipData.equipArgs,
+            //         locationId: '',
+            //         price: 0,
+            //         productTime: 0,
+            //         rfids: [],
+            //         serial: [],
+            //         copyList:[{rfid:'',serial:''}]
+            //     }
+            //     this.orderNumber=this.equipData.id
+            //     this.getTime(this.updateTime)
+            //     this.people=this.equipData.operator.operator
+            // }else{
+                this.getTime()
+                this.people=JSON.parse(localStorage.getItem('user')).name
+            // }
+            
         }
 }
 </script>
