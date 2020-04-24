@@ -1,5 +1,5 @@
 <template>
-    <div class="define-form-container">
+    <div class="define-form-container" :style="`width:${fixWidth};float:${align};margin:${margin}`">
         <slot name="form"></slot>
         <slot></slot>
     </div>
@@ -7,6 +7,20 @@
 
 <script>
 export default {
+    props: {
+        column: {
+            type: Number,
+            default: 3
+        },
+        align: {
+            type: String,
+            default: 'none'
+        },
+        margin: {
+            type: String,
+            default: '0'
+        },
+    },
     methods: {
         validate(callBack) {
             if(typeof callBack != 'function') {
@@ -16,12 +30,11 @@ export default {
             this.$slots.form instanceof Array&&this.$slots.form.map(cmp => cmp.componentInstance.reg()).every(s => s)?callBack(true):callBack(false);
         }
     },
-    mounted() {
-        // console.log(this.$scopedSlots.default()[0].componentInstance.reg());
-        // console.log('--------');
-        // console.log(this.$slots.default);
-        // console.log(this.$slots.default[0]);
-    }
+    computed: {
+        fixWidth() {
+            return this.inTable?`calc(100% - 0.1042rem)`:`calc(${8.33*this.column}% - 0.1042rem)`;
+        }
+    },
 }
 </script>
 
