@@ -24,6 +24,13 @@ export function deleteInhouseNumber(id) {
         method: 'delete',
     })
 }
+//获取位置列表信息
+export function getLocation() {
+    return request({
+        url:"locations",
+        method: 'get',
+    })
+}
 
 export function saveEquipInfo(categoryId,data) {
     return request({

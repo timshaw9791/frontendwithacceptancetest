@@ -5,10 +5,10 @@
                         <define-table :data="surfaceList" height="1.8rem" @changeCurrent="selRow" :havePage="false"
                             :highLightCurrent="true"  slot="total">
                             <define-column label="仓位名称" v-slot="{ data }">
-                                 <define-input v-model="data.row.name"  :tableEdit="false"></define-input>
+                                <define-input  v-model="data.row.name" type="Number" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="仓位代码" v-slot="{ data }">
-                                <define-input v-model="data.row.number" type="Number" :tableEdit="false"></define-input>
+                                <define-input v-model="data.row.id" type="Number" :tableEdit="false"></define-input>
                             </define-column>
                         </define-table>
                         <define-table :data="policeList" height="1.8rem" :havePage="false" slot="detail" @changeCurrent="selRow">
@@ -42,7 +42,7 @@
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
-    import { getInhouseNumber} from "api/storage"
+    import {getLocation} from "api/storage"
 export default {
     components:{
             myHeader,
@@ -63,8 +63,8 @@ export default {
                selectLocation:'',
                currentSel:'',
                label:[{label: '仓位',key: 'total'}, {label: '警柜',key: 'detail'}],
-               surfaceList:[{name:'10架/A面/10层/10节',number:'0k0C1S5uQFu5plYVbI69VwLOC'}],
-               policeList:[{category:'单警柜',number:'1-01',people:'张三'},{category:'备用柜',number:'2-01',people:'李四'},{category:'公共柜',number:'3-01',people:'王五'}]
+               surfaceList:[],
+               policeList:[]
             }
         },
         methods:{
@@ -83,8 +83,25 @@ export default {
                     this.$emit('select', {data: this.currentSel, ref: 'locationSelect'});
                 }
             },
+            getList(){
+                getLocation().then(res=>{
+                    this.surfaceList=res.content
+                    this.surfaceList.forEach(item=>{
+                    console.log(item);
+                   item.name=item.frameNumber+'架/'+item.section+'节'
+                  
+                })
+                })
+                
+             
+
+            },
             changePage(page) {
             this.paginator.page = page;
+            },
+            milliLocation(data)
+            {
+                return data.frameNumber+'架/'+data.section
             }
         },
         created(){
@@ -113,7 +130,10 @@ export default {
         display:flex;
         justify-content: space-between;
     }
-    
+    .footer {
+    margin-top:15px;
+    text-align: center;
+    }
 }
 
 </style>
