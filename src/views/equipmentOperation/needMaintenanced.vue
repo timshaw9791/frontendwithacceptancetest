@@ -5,7 +5,7 @@
       <base-button :width="100" size="default" align="right" label="结束保养" ></base-button>
     </div>
     <div class="maintenance-form-body">
-        <bos-tabs :option="['tabs', 'contrast']" :layoutRatio="[2, 1]">
+        <bos-tabs :option="['tabs']" :layoutRatio="[2, 1]">
           <define-table :havePage="false" :data="order" height="2.6042rem"
             @changeCurrent="selRow" :summaryFunc="sumFunc" :showSummary="true" :highLightCurrent="true" slot="total" >
             <define-column label="装备参数" v-slot="{ data }">
@@ -227,8 +227,5 @@ export default {
   }
   .maintenance-form-body {
     padding: 0 7px;
-    .table-box {
-      border: 1px;
-    }
   }
 </style>
