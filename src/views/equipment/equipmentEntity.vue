@@ -11,7 +11,7 @@
                                 <span @click="edit(data.row)">编辑</span>
                             </define-column>
                             <define-column label="图片" v-slot="{ data }" fixed>
-                            <img :src="imgsrc(data.row.image)"  alt="暂无图片">
+                            <img :src="imgsrc(data.row.equipArg.image)" style="height:100px;width:100px"  alt="暂无图片">
                             </define-column>
                             <define-column label="RFID" fixed width="200" v-slot="{ data }">
                                 <define-input v-model="data.row.rfid" type="Number" :tableEdit="false"></define-input>
@@ -109,6 +109,7 @@ export default {
             this.isEdit=this.isEdit?!this.isEdit:this.isEdit
             this.inAllocation=this.inAllocation?!this.inAllocation:this.inAllocation
             this.inList=this.inList?this.inList:!this.inList
+            this.getList()
             },
             confirm(){
                 if(this.isEdit){

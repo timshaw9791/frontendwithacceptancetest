@@ -26,6 +26,13 @@ export function relateCategory(data) {
         params:data
     })
 }
+//获得柜子列表
+export function getPoliceCabinets() {
+    return request({
+        url: "/police-cabinets",
+        method: "get",
+    })
+}
 export function relateCategories(categoryId,equipArgs ) {
     return request({
         url: `/category/relateCategories?categoryId=${categoryId}&equipArgs=${equipArgs}`,
