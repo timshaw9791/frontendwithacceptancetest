@@ -3,8 +3,8 @@
         <div class="data-list">
             <div class="edit-equip" >
                 <div class="equip-params">
-                    <define-input label="装备名称" v-model="editList.equipArg.name" :disabled="false" margin="0 0"  column="6" align="left"/>
-                    <define-input label="装备型号" v-model="editList.equipArg.model" :disabled="false" margin="0 0" column="6" align="right"></define-input>
+                    <define-input label="装备名称" v-model="editList.equipArg.name" :disabled="true" margin="0 0"  column="6" align="left"/>
+                    <define-input label="装备型号" v-model="editList.equipArg.model" :disabled="true" margin="0 0" column="6" align="right"></define-input>
                     <define-input label="质保期(天)" v-model='editList.equipArg.shelfLife' margin="15px 0" :toEdit="false" column="6" align="left" ></define-input>
                     <define-input label="充电周期(天)" v-model='editList.equipArg.chargeCycle' margin="15px 0" :disabled="false" column="6" align="right"></define-input>
                     <define-input label="保养周期(天)" v-model='editList.equipArg.upkeepCycle' margin="15px 0" :disabled="false" column="6" align="left"></define-input>
