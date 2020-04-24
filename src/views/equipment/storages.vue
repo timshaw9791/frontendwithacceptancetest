@@ -13,7 +13,7 @@
                                 </div>
                             </define-column>
                             <define-column label="单号" v-slot="{ data }">
-                                <define-input v-model="data.row.id" type="Number" :tableEdit="false"></define-input>
+                                <define-input v-model="data.row.number" type="Number" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
                                 <define-input v-model="data.row.equipArgs" type="Number" :tableEdit="false"></define-input>

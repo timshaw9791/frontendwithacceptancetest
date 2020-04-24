@@ -10,16 +10,16 @@
                             <define-column label="操作" width="100" v-slot="{ data }" fixed>
                                 <span @click="edit(data.row)">编辑</span>
                             </define-column>
-                            <!-- <define-column label="图片" fixed v-slot="{ data }">
-                               <img :src="data.row.image" alt="暂无图片">
-                            </define-column> -->
+                            <define-column label="图片" v-slot="{ data }" fixed>
+                            <img :src="imgsrc(data.row.image)"  alt="暂无图片">
+                            </define-column>
                             <define-column label="RFID" fixed width="200" v-slot="{ data }">
                                 <define-input v-model="data.row.rfid" type="Number" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="装备序号" field="serial" width="100" fixed/>
                             <define-column label="装备名称" width="200" field="equipArg.name" fixed />
                             <define-column label="装备型号" field="equipArg.model" fixed />
-                            <define-column label="质保期(天)" :filter="(row)=>milliToDay(row.productDate)"/>
+                            <define-column label="质保期(天)" :filter="(row)=>milliToDay(row.equipArg.shelfLife)"/>
                             <define-column label="充电周期(天)"  :filter="(row)=>milliToDay(row.equipArg.chargeCycle)"/>
                             <define-column label="保养周期(天)" :filter="(row)=>milliToDay(row.equipArg.upkeepCycle)"/>
                             <define-column label="供应商" field="equipArg.supplier.name" width="200" />
@@ -45,6 +45,7 @@
     import entityInput from '@/componentized/entity/entityInput'
     import imgUp from 'components/base/axiosImgUp';
     import equipAllocation from './equipAllocation'
+    import { baseURL } from 'api/config'
     import equipmentEdit from './equipmentEdit'
     import serviceDialog from 'components/base/serviceDialog/index'
     import equipLocationSelect from '../equipment/equipLocationSelect'
@@ -88,6 +89,9 @@ export default {
                 this.editList=JSON.parse(JSON.stringify(data))
                 this.isEdit=true
                 this.inList=false
+            },
+            imgsrc(data){
+                return baseURL+'/images/'+data
             },
             selRow(){
 

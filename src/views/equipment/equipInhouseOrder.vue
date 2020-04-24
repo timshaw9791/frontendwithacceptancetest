@@ -8,19 +8,19 @@
         <div class="data-list">
             <bos-tabs >
                        
-                        <!-- <define-table :data="list" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
+                        <!-- <define-table :data="equipData.inOutHouseItems" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
                             :highLightCurrent="true"  slot="total" :showSummary="true" :summaryFunc="sumFunc">
                             <define-column label="操作" width="100" v-slot="{ data }">
                                 <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
                                 <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
-                                <entity-input v-model="data.row.equipArgId"  :options="{search:'equipArgsSelect'}" format="{name}({model})" :tableEdit="true" ></entity-input>
-                            </define-column>
-                            <define-column label="装备位置"  v-slot="{ data }" >
-                                 <entity-input v-model="data.row.locationId"  :options="{search:'locationSelect'}" format="{name}" :tableEdit="true" ></entity-input>
-                            </define-column>
-                            <define-column label="单价" v-slot="{ data }">
+                                <entity-input v-model="data.row.equipName"  :options="{search:'equipArgsSelect'}" format="{name}({model})" :tableEdit="false" ></entity-input>
+                            </define-column> -->
+                            <!-- <define-column label="装备位置"  v-slot="{ data }" >
+                                 <entity-input v-model="data.row.locationId"  :options="{search:'locationSelect'}" format="{name}" :tableEdit="false" ></entity-input>
+                            </define-column> -->
+                            <!-- <define-column label="单价" v-slot="{ data }">
                                 <define-input v-model="data.row.price" type="Number" ></define-input>
                             </define-column>
                             <define-column label="生产日期" v-slot="{ data }">
@@ -29,8 +29,8 @@
                             <define-column label="装备数量" v-slot="{ data }">
                                 <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
                             </define-column>
-                        </define-table>
-                        <define-table :data="list.inOutHouseItems" height="2.8646rem" :havePage="false" slot="detail">
+                        </define-table> -->
+                        <!-- <define-table :data="equipData.inOutHouseItems" height="2.8646rem" :havePage="false" slot="detail">
                             <define-column label="操作" width="100" v-slot="{ data }">
                                <i class="iconfont icontianjialiang" @click="changeDetailRow(true,data)"></i>
                                <i class="iconfont iconyichuliang" @click="changeDetailRow(false,data)"></i>
@@ -43,11 +43,6 @@
                             </define-column>
                         </define-table> -->
                     </bos-tabs>
-        <div class="btn-box">
-                  <base-button label="取消" align="right" :width="128" :height="25" :fontSize="20" @click="cancel"></base-button>
-                  <base-button label="提交" align="right" :width="128" :height="25" :fontSize="20" @click="confirm"></base-button>
-              </div>
-        
         </div>
     </div>
 </template>
@@ -90,31 +85,10 @@ export default {
         },
         data(){
             return{
-               list:[{
-                    equipArgId: '',
-                    locationId: '',
-                    price: 0,
-                    productTime:Date.parse(new Date()),
-                    rfids: [],
-                    serial: [],
-                    copyList:[{rfid:'',serial:''}],
-                }],
                time:"",
                people:'',
                requestBody:'',
                orderNumber:'',
-               paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
-               select: {
-                    handWareList: [{
-                        label: "手持机",
-                        value: 'handheld'
-                    }, {
-                        label: "读卡器",
-                        value: "reader"
-                    }],
-                    selected: ""
-                },
-               pid:'',
                findIndex:0
             }
         },
@@ -165,19 +139,45 @@ export default {
             var sec = date.getSeconds();
             this.time= year+'/'+mon+'/'+day+'/'+hours+'时';
             },
-
-
-
-
+            changeDataFormat(data){
+            let newData=[]
+            data.inOutHouseItems.forEach(item=>
+             {
+                newData.push(item)
+                let flag=true;
+                let dataIndex=0,rfidList=[];
+                if(newData.length!=0)
+                {
+                    newData.forEach((i,index)=>{
+                        if((item.equipName==i.equipName)&&(item.equipModel==i.equipModel))
+                        {
+                            flag=false
+                            dataIndex=index
+                        }
+                    })
+                    if(flag){
+                        newData.push(item)
+                    }else{
+                        if(index!=0)
+                        rfidList.push(newData[dataIndex].rfid)
+                        rfidList.push(item.rfid)
+                        newData[dataIndex].rfid=rfidList
+                    }
+                }else{
+                    newData.push(item)
+                }
+            })
+           
+            console.log(newData);
+            
         },
-        watch:{
-
         },
+        
         created(){
             this.time= Date.parse(new Date());
-                this.list=this.equipData
                 this.orderNumber=this.equipData.id
                 this.getTime(this.updateTime)
+                this.changeDataFormat(this.equipData)
                 this.people=this.equipData.operator.operator
 
             
