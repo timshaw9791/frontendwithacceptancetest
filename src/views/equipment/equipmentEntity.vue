@@ -1,76 +1,36 @@
 <template>
     <div class="opening-box">
-        <my-header title="装备实体" :haveBlack="false"></my-header>
-        <div class="btn_box">
+        <my-header title="装备实体" :haveBlack="inAllocation||isEdit" @h_black="black"></my-header>
+        <div class="btn_box" v-if="!inAllocation&&!isEdit">
              <base-button label="装备分配" align="right" :width="128" :height="25" :fontSize="20" @click="toAllocation"></base-button>
         </div>
         <div class="data-list">
-            <define-table :data="list" height="3.64rem" @changeCurrent="selRow"  :haveIndex="false" v-if="!inAllocation">
+            <define-table :data="list" height="3.64rem" @changeCurrent="selRow"  :haveIndex="false" v-if="inList">
                             <define-column label="序号" fixed columnType="index" width="65"></define-column>
                             <define-column label="操作" width="100" v-slot="{ data }" fixed>
                                 <span @click="edit(data.row)">编辑</span>
                             </define-column>
-                            <define-column label="图片" fixed v-slot="{ data }">
+                            <!-- <define-column label="图片" fixed v-slot="{ data }">
                                <img :src="data.row.image" alt="暂无图片">
-                            </define-column>
+                            </define-column> -->
                             <define-column label="RFID" fixed width="200" v-slot="{ data }">
                                 <define-input v-model="data.row.rfid" type="Number" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="装备序号" field="serial" width="100" fixed/>
-                            <define-column label="装备名称" width="200" field="name" fixed />
-                            <define-column label="装备型号" field="model" fixed />
-                            <define-column label="质保期(天)">
-                                <!-- <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input> -->
-                            </define-column>
-                            <define-column label="充电周期(天)" v-slot="{ data }">
-                                <!-- <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input> -->
-                            </define-column>
-                            <define-column label="保养周期(天)" v-slot="{ data }">
-                                <!-- <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input> -->
-                            </define-column>
-                            <define-column label="供应商" field="supplier.name" width="200" />
-                            <define-column label="联系人" width="100" field="supplier.person" />
-                               
-                            <define-column label="联系方式" width="150" field="supplier.phone"/>
-                               
-                            <define-column label="生产日期" width="200" :filter="(row)=>$filterTime(row.supplier.createTime)"/>
-                            <define-column label="单价" v-slot="{ data }">
-                            </define-column>
+                            <define-column label="装备名称" width="200" field="equipArg.name" fixed />
+                            <define-column label="装备型号" field="equipArg.model" fixed />
+                            <define-column label="质保期(天)" :filter="(row)=>milliToDay(row.productDate)"/>
+                            <define-column label="充电周期(天)"  :filter="(row)=>milliToDay(row.equipArg.chargeCycle)"/>
+                            <define-column label="保养周期(天)" :filter="(row)=>milliToDay(row.equipArg.upkeepCycle)"/>
+                            <define-column label="供应商" field="equipArg.supplier.name" width="200" />
+                            <define-column label="联系人" width="100" field="equipArg.supplier.person" />
+                            <define-column label="联系方式" width="150" field="equipArg.supplier.phone"/>
+                            <define-column label="生产日期" width="200" :filter="(row)=>$filterTime(row.createTime)"/>
+                            <define-column label="单价" field="price"/>
                             
                         </define-table>
             <equip-allocation v-if="inAllocation"></equip-allocation>
-            <service-dialog :title="isEdit?'编辑装备信息':'选择位置信息'" ref="historyDialog" :button="false" :secondary="false">
-            <div class="edit-equip" v-if="isEdit">
-                <div class="equip-params">
-                    <define-input label="装备名称" v-model="editList.name" :disabled="false" column="6" align="left"/>
-                    <define-input label="装备型号" v-model="editList.model" :disabled="false" column="6" align="right"></define-input>
-                    <define-input label="质保期(天)" v-model='editList.shelfLife' :disabled="false" column="6" align="left" ></define-input>
-                    <define-input label="充电周期(天)" v-model='editList.chargeCycle' :disabled="false" column="6" align="right"></define-input>
-                    <define-input label="保养周期(天)" v-model='editList.upkeepCycle' :disabled="false" column="6" align="left"></define-input>
-                    <define-input label="供应商" v-model="editList.supplier.name" :disabled="false" column="6" align="right"></define-input>
-                    <define-input label="RFID"  v-model="editList.rfid"  :disabled="true" column="6" align="left"></define-input>
-                    <define-input label="装备序号" v-model="editList.serial" :disabled="false" column="6" align="right"></define-input>
-                    <define-input label="装备位置" v-model="editList.location" :disabled="false" column="6" align="left" @click.native="selectLocation"></define-input>
-                    <define-input label="装备单价" v-model="editList.money" :disabled="false" column="6" align="right"></define-input>
-                    <date-select label="生产日期" v-model="editList.createTime" column="6" align="left"></date-select>
-                </div>
-              <div class="img-box">
-                   <imgUp @success="successUp" :disabled="edit"
-                                    upload="true" noimg></imgUp>
-              </div>
-            
-            </div>
-            <div class="location-select" v-if="!isEdit">
-                <div class="select-location">
-                   <equip-location-select @current="current"></equip-location-select>
-                </div>
-            </div>
-              <div class="btn-box">
-                  <base-button label="取消" align="right" :width="128" :height="25" :fontSize="20" @click="cancel"></base-button>
-                  <base-button label="提交" align="right" :width="128" :height="25" :fontSize="20" @click="confirm"></base-button>
-              </div>
-        </service-dialog>
-        
+            <equipment-edit v-if="isEdit" @cancel="cancel" :editList="editList" ></equipment-edit>
         </div>
     </div>
 </template>
@@ -85,9 +45,10 @@
     import entityInput from '@/componentized/entity/entityInput'
     import imgUp from 'components/base/axiosImgUp';
     import equipAllocation from './equipAllocation'
+    import equipmentEdit from './equipmentEdit'
     import serviceDialog from 'components/base/serviceDialog/index'
     import equipLocationSelect from '../equipment/equipLocationSelect'
-    import { equipArgsByNameModel,equipById} from 'api/storage'
+    import { equipsAll,equipById} from 'api/storage'
 export default {
     components:{
             myHeader,
@@ -100,86 +61,33 @@ export default {
             serviceDialog,
             imgUp,
             equipAllocation,
-            equipLocationSelect
+            equipLocationSelect,
+            equipmentEdit
         },
         data(){
             return{
-               list:[
-                   {
-                id: "5",
-                rfid:'12565789',
-                updateTime: 1586480773257,
-                createTime: 1586480772441,
-                name: "test_防爆盾牌",
-                model: "fbdp",
-                shelfLife: 31104000000,
-                upkeepCycle: 0,
-                chargeCycle: 0,
-                money:100,
-                location:'',
-                serial:'123456',
-                supplier: {
-                id: "1",
-                updateTime: 1586480773227,
-                createTime: 1586480772422,
-                name: "test_华安",
-                person: "test_xxx",
-                phone: "13922223333"
-                },
-                alphabetic: "FBDP",
-                image: "",
-                pdf: null,
-                video: null,
-                categoryId: "3"
-                }
-               ],
+               list:[],
                newLocation:'',
-               editList:{
-                updateTime: 1586480773257,
-                createTime: 1586480772441,
-                name: "test_防爆盾牌",
-                rfid:'12565789',
-                model: "fbdp",
-                money:100,
-                location:'',
-                serial:'123456',
-                shelfLife: 31104000000,
-                upkeepCycle: 0,
-                chargeCycle: 0,
-                supplier: {
-                id: "1",
-                updateTime: 1586480773227,
-                createTime: 1586480772422,
-                name: "test_华安",
-                person: "test_xxx",
-                phone: "13922223333"
-                },
-                alphabetic: "FBDP",
-                image: "",
-                pdf: null,
-                video: null,
-                categoryId: "3"
-                },
+               editList:{},
                search:'',
                inAllocation:false,
                copyList:'',
-               isEdit:true,
+               isEdit:false,
+               inList:true
             }
         },
         methods:{
             getList() {
-            // equipArgsByNameModel().then(res => {
-            //     this.list = res.content;
-            // })
+            equipsAll().then(res => {
+                this.list = res.content;
+            })
              },
             edit(data){
-                this.copyList=JSON.parse(JSON.stringify(data))
-                data.shelfLife=this.milliToDay(data.shelfLife)
-                // data.createTime=this.getTime(data.createTime)
+                this.copyList=data
+                data.equipArg.shelfLife=this.milliToDay( data.equipArg.shelfLife)
                 this.editList=JSON.parse(JSON.stringify(data))
-                // this.eqidList.shelfLife=this.milliToDay(this.eqidList.shelfLife)
-                // console.log(this.eqidList.shelfLife);
-                this.$refs.historyDialog.show()
+                this.isEdit=true
+                this.inList=false
             },
             selRow(){
 
@@ -187,13 +95,16 @@ export default {
             sumFunc(){
 
             },
+            black(){
+                // console.log(触发);
+            this.isEdit=this.isEdit?!this.isEdit:this.isEdit
+            this.inAllocation=this.inAllocation?!this.inAllocation:this.inAllocation
+            this.inList=this.inList?this.inList:!this.inList
+            },
             cancel(){
-                if(this.isEdit)
-                {
-                    this.$refs.historyDialog.hide()
-                }else{
-                    this.isEdit=!this.isEdit
-                }
+            this.isEdit=this.isEdit?!this.isEdit:this.isEdit
+            this.inAllocation=this.inAllocation?!this.inAllocation:this.inAllocation
+            this.inList=this.inList?this.inList:!this.inList
             },
             confirm(){
                 if(this.isEdit){
@@ -208,6 +119,7 @@ export default {
             },
             toAllocation(){
                 this.inAllocation=true
+                this.inList=false
             },
             successUp(data) {
                 // this.form.imageAddress = data;

@@ -15,21 +15,22 @@ var localTitle = "龙湾区公安局应急装备物资管理系统";
 
 // export let baseURL = 'http://192.168.50.14:8010/warehouse';
 // export let baseBURL = 'http://115.159.154.194/warehouse_server';
-// if (process.env.NODE_ENV == "production") {
-//     let fs = window.require('fs'), result, path = 'C:\\config.json';
-//     result = fs.readFileSync(path).toString();
-//     result = eval(`(${result})`);
-//     baseURL = `http://${result.HOUSE_SERVER}`;
-//     baseBURL = `http://${result.B_SERVER}`;
-//     localTitle = `${result.A_CLIENT_TITLE}`;
-//     setCom(result.UHF_READ_COM);
-//     getHandheldPath(result.INVENTORY_PATH);
-//     getDevelopment(result.TEST_DEVELOPMENT)
-// }
 
-setCom(4)
+
+
 getHandheldPath('/adm')
 getDevelopment('/adm')
+if (process.env.NODE_ENV == "production") {
+    let fs = window.require('fs'), result, path = 'C:\\config.json';
+    result = fs.readFileSync(path).toString();
+    result = eval(`(${result})`);
+    baseURL = `http://${result.HOUSE_SERVER}`;
+    baseBURL = `http://${result.B_SERVER}`;
+    localTitle = `${result.A_CLIENT_TITLE}`;
+    setCom(result.UHF_READ_COM);
+    getHandheldPath(result.INVENTORY_PATH);
+    getDevelopment(result.TEST_DEVELOPMENT)
+}
 
 export const imgBaseUrl = `${baseURL}/images/`;
 export const pdfBaseUrl = `${baseURL}/pdfs/`;

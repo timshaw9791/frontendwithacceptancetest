@@ -11,9 +11,24 @@ export function getCategoryAndGenre() {
 
 export function getInhouseNumber(params) {
     return request({
-        url: "/inouthouse/findInHouseNumberLike",
+        url: "/in-house-orders",
         method: 'get',
         params:params
+    })
+}
+
+
+export function deleteInhouseNumber(id) {
+    return request({
+        url: `/in-house-orders/${id}`,
+        method: 'delete',
+    })
+}
+//获取位置列表信息
+export function getLocation() {
+    return request({
+        url:"locations",
+        method: 'get',
     })
 }
 
@@ -82,7 +97,22 @@ export function equipArgsByName(params) {
         params
     })
 }
-
+/* 装备实体信息 */
+export function equipsAll(params) {
+    return request({
+        url: '/equips',
+        method: 'GET',
+        params
+    })
+}
+// 更新装备实体信息
+export function equipsToNew(id,data) {
+    return request({
+        url: `/equips/${id}`,
+        method: 'put',
+        data
+    })
+}
 /* 查询装备参数 通过名称和型号 */
 export function equipArgsByNameModel(params) {
     return request({
@@ -93,9 +123,9 @@ export function equipArgsByNameModel(params) {
 }
 
 /* 入库装备 */
-export function inHouse(params,data) {
+export function inHouse(data) {
     return request({
-        url: "/equip/batch-in-house",
+        url: "/equips/in-house",
         method: "POST",
         data
     })
@@ -103,7 +133,7 @@ export function inHouse(params,data) {
 //出入库单
 export function inOutHouseOrder() {
     return request({
-        url: "/in-out-house-orders",
+        url: "/in-house-orders",
         method: "get",
     })
 }
