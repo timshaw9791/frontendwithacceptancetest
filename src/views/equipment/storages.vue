@@ -8,8 +8,8 @@
             <define-table :data="list" height="3.64rem" @changeCurrent="selRow" @changePage="changePage" :pageInfo="paginator" v-if="!inhouse">
                             <define-column label="操作" width="100" v-slot="{ data }">
                                 <div class="span-box">
-                                     <span>详情</span>
-                                     <span @click="deleteNumber(data)">删除</span>
+                                     <span @click="toDetail(data.row)">详情</span>
+                                     <span @click="deleteNumber(data.row)">删除</span>
                                 </div>
                             </define-column>
                             <define-column label="单号" v-slot="{ data }">
@@ -26,7 +26,7 @@
                             </define-column>
                             <define-column label="入库时间" :filter="(row)=>$filterTime(row.createTime)"/>
                         </define-table>
-            <equip-inhouse v-if='inhouse' @cancel="black"></equip-inhouse>
+            <equip-inhouse v-if='inhouse' :equipData="equipData" @cancel="black"></equip-inhouse>
         </div>
     </div>
 </template>
@@ -61,7 +61,8 @@ export default {
                list:[],
                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0,abnormal:false},
                inhouse:false,
-               params:{size:10,page:1}
+               params:{size:10,page:1},
+               equipData:''
             }
         },
         methods:{
@@ -70,6 +71,10 @@ export default {
             },
             sumFunc(){
 
+            },
+            toDetail(data){
+                this.equipData=data
+                this.inhouse=true
             },
             deleteNumber(data)
             {
