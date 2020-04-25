@@ -36,7 +36,7 @@ export function getPoliceCabinets() {
 
 export function assignPeople(params) {
     return request({
-        url: "/police-cabinets",
+        url: "/police-cabinets/assign",
         method: "put",
         params:params
     })
