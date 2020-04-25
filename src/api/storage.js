@@ -137,10 +137,17 @@ export function inHouse(data) {
         data
     })
 }
-//出入库单
+//入库单outHouseOrder
 export function inOutHouseOrder() {
     return request({
         url: "/in-house-orders",
+        method: "get",
+    })
+}
+//出库单
+export function getOutHouseOrder() {
+    return request({
+        url: "/out-house-orders",
         method: "get",
     })
 }
