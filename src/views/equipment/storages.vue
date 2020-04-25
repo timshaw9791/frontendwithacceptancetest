@@ -1,11 +1,11 @@
 <template>
     <div class="opening-box">
-        <my-header :title="inhouse?'入库装备':'入库单列表'" :haveBlack="inhouse" @h_black="black"></my-header>
-        <div class="btn_box" v-if="!inhouse">
+        <my-header :title="inhouse?'入库装备':'入库单列表'" :haveBlack="inhouse||inorder" @h_black="black"></my-header>
+        <div class="btn_box" v-if="!inhouse&&!inorder">
              <base-button label="入库装备 " align="right" :width="128" :height="25" :fontSize="20" @click="toInHouse"></base-button>
         </div>
         <div class="data-list">
-            <define-table :data="list" height="3.64rem" @changeCurrent="selRow" @changePage="changePage" :pageInfo="paginator" v-if="!inhouse">
+            <define-table :data="list" height="3.64rem" @changeCurrent="selRow" @changePage="changePage" :pageInfo="paginator" v-if="!inhouse&&!inorder">
                             <define-column label="操作" width="100" v-slot="{ data }">
                                 <div class="span-box">
                                      <span @click="toDetail(data.row)">详情</span>
@@ -27,7 +27,7 @@
                             <define-column label="入库时间" :filter="(row)=>$filterTime(row.createTime)"/>
                         </define-table>
             <equip-inhouse v-if='inhouse'  @cancel="black"></equip-inhouse>
-            <!-- <equip-inhouse-order :equipData="equipData" v-if='inhouse'></equip-inhouse-order> -->
+            <equip-inhouse-order v-if="inorder" :equipData="equipData" @cancel="black"></equip-inhouse-order>
         </div>
     </div>
 </template>
@@ -64,6 +64,7 @@ export default {
                list:[],
                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0,abnormal:false},
                inhouse:false,
+               inorder:false,
                params:{size:10,page:1},
                equipData:''
             }
@@ -77,7 +78,7 @@ export default {
             },
             toDetail(data){
                 this.equipData=data
-                this.inhouse=true
+                this.inorder=true
             },
             deleteNumber(data)
             {
@@ -88,7 +89,8 @@ export default {
                     })
             },
             black(){
-                this.inhouse=!this.inhouse
+                this.inhouse=false
+                this.inorder=false
                 this.getList()
             },
             getList(){
