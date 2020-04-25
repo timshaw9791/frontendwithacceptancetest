@@ -32,27 +32,23 @@
 
 <script>
     import myHeader from 'components/base/header/header';
-    import textInput from '@/componentized/textBox/textInput.vue'
     import defineInput from '@/componentized/textBox/defineInput.vue'
     import bosTabs from '@/componentized/table/bosTabs.vue'
     import baseButton from "@/componentized/buttonBox/baseButton.vue"
     import baseSelect from '@/componentized/textBox/baseSelect.vue'
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
-    import divTmp from '@/componentized/divTmp'
     import {imgUpUrl, pdfUpUrl, videoUpUrl, imgBaseUrl, pdfBaseUrl, videoBaseUrl} from "api/config";
     import imgUp from 'components/base/axiosImgUp';
     import { getInhouseNumber,equipsToNew} from "api/storage"
 export default {
     components:{
             myHeader,
-            textInput,
             defineInput,
             baseButton,
             baseSelect,
             dateSelect,
             entityInput,
-            divTmp,
             bosTabs,
             imgUp
         },
@@ -76,21 +72,24 @@ export default {
                 this.$emit('cancel')
             },
             successUp(data) {
-                console.log(data);
                 this.editList.equipArg.image=data
             },
-            confirm(){
-                console.log(this.editList);
+            confirm(){//提交装备信息
                 equipsToNew(this.editList.id,this.editList).then(res=>{
                     this.$message.success('编辑装备信息成功')
                     this.cancel()
+                }).catch(err => {
+                    this.$message.error(err.response.data.message)
                 })
-
-
+            },
+            milliLocation(data)//对现实的装备位置信息进行处理
+            {
+                return data.frameNumber+'架/'+data.surface+'面/'+data.section+'节/'+data.surface+'层'
             },
         },
         created(){
             this.requestBody=JSON.parse(JSON.stringify(this.editList))
+            this.editList.location=this.milliLocation(this.editList.location)
             if(this.editList.equipArg.image)
             {
                 this.imageUrl = `${imgBaseUrl}${this.editList.equipArg.image}`;
