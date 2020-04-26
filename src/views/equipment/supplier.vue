@@ -5,11 +5,11 @@
 <!--            <div class="supplier">-->
                 <div class="supplier-body">
                     <div class="supplier-info">
-                        <base-button label="新增供应商" @click="addChanger('新增供应商')"></base-button>
+                        <base-button label="新增供应商" with="20px" @click="addChanger('新增供应商')"></base-button>
                     </div>
                     <define-table :data="list" height="3.6458rem" :pageInfo="paginator">
                         <define-column label="操作" v-slot="{data}">
-                            <span @click="editSupplier(data)">编辑</span>
+                            <span @click="addChanger('编辑',data.row)">编辑</span>
                         </define-column>
                         <define-column label="供应商名称" field="name"></define-column>
                         <define-column label="联系人" field="person"></define-column>
@@ -52,7 +52,7 @@
                 list: [],
                 inquire: '',
                 paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
-                loading: true
+                isEdit:false
             }
         },
         mixins: [formRulesMixin],

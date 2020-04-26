@@ -80,13 +80,13 @@ export const asyncRouterMap = [
             {
                 path: 'outstorage',
                 name: 'equipment/outstorage',
-                component: _import('equipment/outStorageInfo'),
-                meta: {title: '装备出库'},
+                component: _import('equipment/outHouseOrder'),
+                meta: {title: '出库单列表'},
             },
             {
                 path: 'equipArgs',
                 name: 'equipment/equipArgs',
-                component: _import('equipment/equipArgs'),
+                component: _import('equipArgs/equipArgs'),
                 meta: {title: '装备参数'},
             },
             {

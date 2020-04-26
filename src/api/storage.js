@@ -24,7 +24,8 @@ export function deleteInhouseNumber(id) {
         method: 'delete',
     })
 }
-//获取位置列表信息
+
+//获取货架列表信息
 export function getLocation() {
     return request({
         url:"locations",
@@ -32,6 +33,12 @@ export function getLocation() {
     })
 }
 
+export function getPoliceCabniet() {
+    return request({
+        url:"/police-cabinets",
+        method: 'get',
+    })
+}
 export function saveEquipInfo(categoryId,data) {
     return request({
         url: `/equip-args/${categoryId}`,
@@ -130,10 +137,17 @@ export function inHouse(data) {
         data
     })
 }
-//出入库单
+//入库单outHouseOrder
 export function inOutHouseOrder() {
     return request({
         url: "/in-house-orders",
+        method: "get",
+    })
+}
+//出库单
+export function getOutHouseOrder() {
+    return request({
+        url: "/out-house-orders",
         method: "get",
     })
 }
