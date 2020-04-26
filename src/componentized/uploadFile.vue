@@ -1,5 +1,5 @@
 <template>
-    <div class="upload-file-container" :class="[size]">
+    <div class="upload-file-container" :class="[size]" :style="`margin:${margin}`">
         <input type="file" class="file" :accept="acceptType" @change="changeFile" ref="file">
         <div class="icon-box" @click="showFileSelect">
             <i class="iconfont iconjiahao" v-show="!disabled&&!fileName"></i>
@@ -46,6 +46,10 @@ export default {
         disabled: {
             type: Boolean,
             default: false
+        },
+        margin: {
+            type: String,
+            default: '0'
         }
     },
     computed: {
