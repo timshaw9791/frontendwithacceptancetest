@@ -3,17 +3,17 @@
         <div class="data-list">
             <div class="edit-equip" >
                 <div class="equip-params">
-                    <define-input label="装备名称" v-model="editList.equipArg.name" :disabled="true" margin="0 0"  column="6" align="left"/>
-                    <define-input label="装备型号" v-model="editList.equipArg.model" :disabled="true" margin="0 0" column="6" align="right"></define-input>
-                    <define-input label="质保期(天)" v-model='editList.equipArg.shelfLife' margin="15px 0" :disabled="true" column="6" align="left" ></define-input>
-                    <define-input label="充电周期(天)" v-model='editList.equipArg.chargeCycle' margin="15px 0" :disabled="true" column="6" align="right"></define-input>
-                    <define-input label="保养周期(天)" v-model='editList.equipArg.upkeepCycle' margin="15px 0" :disabled="true" column="6" align="left"></define-input>
-                    <define-input label="供应商" v-model="editList.equipArg.supplier.name" margin="15px 0" :disabled="true" column="6" align="right"></define-input>
-                    <define-input label="RFID"  v-model="editList.rfid"  :disabled="true" margin="15px 0" column="6" align="left"></define-input>
-                    <define-input label="装备序号" v-model="editList.serial" :disabled="true" margin="15px 0" column="6" align="right"></define-input>
-                    <entity-input label="装备位置" v-model="editList.location.id" column="6" margin="0 0" :options="{search:'locationSelect'}" format="{name}" :tableEdit="true" align="left"></entity-input>
-                    <define-input label="装备单价" v-model="editList.price" :disabled="false" margin="15px 0" column="6" align="right"></define-input>
-                    <date-select  label="生产日期" v-model="editList.productDate" column="6" margin="15px 0" align="left"></date-select>
+                    <define-input label="装备名称" v-model="editList.equipArg.name" :disabled="true" margin="0 0"  :column="6" align="left"/>
+                    <define-input label="装备型号" v-model="editList.equipArg.model" :disabled="true" margin="0 0" :column="6" align="right"></define-input>
+                    <define-input label="质保期(天)" v-model='editList.equipArg.shelfLife' margin="15px 0" :disabled="true" :column="6" align="left" ></define-input>
+                    <define-input label="充电周期(天)" v-model='editList.equipArg.chargeCycle' margin="15px 0" :disabled="true" :column="6" align="right"></define-input>
+                    <define-input label="保养周期(天)" v-model='editList.equipArg.upkeepCycle' margin="15px 0" :disabled="true" :column="6" align="left"></define-input>
+                    <define-input label="供应商" v-model="editList.equipArg.supplier.name" margin="15px 0" :disabled="true" :column="6" align="right"></define-input>
+                    <define-input label="RFID"  v-model="editList.rfid"  :disabled="true" margin="15px 0" :column="6" align="left"></define-input>
+                    <define-input label="装备序号" v-model="editList.serial" :disabled="true" margin="15px 0" :column="6" align="right"></define-input>
+                    <entity-input label="装备位置" v-model="editList.location" :column="6" margin="0 0" :options="{search:'locationSelect'}" format="{name}" :tableEdit="true" align="left"></entity-input>
+                    <define-input label="装备单价" v-model="editList.price" :disabled="false" margin="15px 0" :column="6" align="right"></define-input>
+                    <date-select  label="生产日期" v-model="editList.productDate" :column="6" margin="15px 0" align="left"></date-select>
                 </div>
               <div class="img-box">
                    <imgUp @success="successUp" :disabled="edit" :image="imageUrl"
@@ -32,27 +32,23 @@
 
 <script>
     import myHeader from 'components/base/header/header';
-    import textInput from '@/componentized/textBox/textInput.vue'
     import defineInput from '@/componentized/textBox/defineInput.vue'
     import bosTabs from '@/componentized/table/bosTabs.vue'
     import baseButton from "@/componentized/buttonBox/baseButton.vue"
     import baseSelect from '@/componentized/textBox/baseSelect.vue'
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
-    import divTmp from '@/componentized/divTmp'
     import {imgUpUrl, pdfUpUrl, videoUpUrl, imgBaseUrl, pdfBaseUrl, videoBaseUrl} from "api/config";
     import imgUp from 'components/base/axiosImgUp';
     import { getInhouseNumber,equipsToNew} from "api/storage"
 export default {
     components:{
             myHeader,
-            textInput,
             defineInput,
             baseButton,
             baseSelect,
             dateSelect,
             entityInput,
-            divTmp,
             bosTabs,
             imgUp
         },
@@ -76,36 +72,24 @@ export default {
                 this.$emit('cancel')
             },
             successUp(data) {
-                console.log(data);
                 this.editList.equipArg.image=data
             },
-            confirm(){
-                console.log(this.editList);
+            confirm(){//提交装备信息
                 equipsToNew(this.editList.id,this.editList).then(res=>{
                     this.$message.success('编辑装备信息成功')
                     this.cancel()
+                }).catch(err => {
+                    this.$message.error(err.response.data.message)
                 })
-
-
-                // this.requestBody=JSON.parse(JSON.stringify(this.list))
-                // this.requestBody.forEach(item=>{
-                //     item.equipArgId=item.equipArgId.id
-                //     item.locationId=item.locationId.number
-                //     item.copyList.forEach(r=>{
-                //         item.rfids.push(r.rfid)
-                //         item.serial.push(r.serial)
-                //     })
-                // })
-                // delete this.requestBody.copyList
-                // inHouse(this.requestBody).then(res=>{
-                //     this.$message.success('装备入库成功')
-                //     this.init()
-                //     this.cancel()
-                // })
+            },
+            milliLocation(data)//对现实的装备位置信息进行处理
+            {
+                return data.frameNumber+'架/'+data.surface+'面/'+data.section+'节/'+data.surface+'层'
             },
         },
         created(){
             this.requestBody=JSON.parse(JSON.stringify(this.editList))
+            this.editList.location=this.milliLocation(this.editList.location)
             if(this.editList.equipArg.image)
             {
                 this.imageUrl = `${imgBaseUrl}${this.editList.equipArg.image}`;

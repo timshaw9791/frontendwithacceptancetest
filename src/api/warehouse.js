@@ -33,6 +33,15 @@ export function getPoliceCabinets() {
         method: "get",
     })
 }
+
+export function assignPeople(params) {
+    return request({
+        url: "/police-cabinets/assign",
+        method: "put",
+        params:params
+    })
+}
+
 export function relateCategories(categoryId,equipArgs ) {
     return request({
         url: `/category/relateCategories?categoryId=${categoryId}&equipArgs=${equipArgs}`,

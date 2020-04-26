@@ -11,16 +11,16 @@
                                 <define-input v-model="data.row.id" type="Number" :tableEdit="false"></define-input>
                             </define-column>
                         </define-table>
-                        <define-table :data="policeList" height="1.8rem" :havePage="false" slot="detail" @changeCurrent="selRow">
+                        <define-table :data="list" height="1.8rem" :havePage="false" slot="detail" @changeCurrent="selRow">
                            
                             <define-column label="警柜类型" v-slot="{ data }">
                                 <define-input v-model="data.row.category" type="String" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="警柜编号" v-slot="{ data }">
-                                <define-input v-model="data.row.number" type="Number" :tableEdit="false"></define-input>
+                                <define-input v-model="data.row.cabinetNumber" type="Number" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="所属人员" v-slot="{ data }">
-                                <define-input v-model="data.row.people" type="String" :tableEdit="false"></define-input>
+                                <define-input v-model="data.row.name" type="String" :tableEdit="false"></define-input>
                             </define-column>
                         </define-table>
                     </bos-tabs>
@@ -42,6 +42,7 @@
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
+    import {getPoliceCabinets} from "api/warehouse"
     import {getLocation} from "api/storage"
 export default {
     components:{
@@ -88,10 +89,30 @@ export default {
                     this.surfaceList=res.content
                     this.surfaceList.forEach(item=>{
                    item.name=item.frameNumber+'架/'+item.section+'节'
-                  
+                  })
+                }).catch(err => {
+                    this.$message.error(err.response.data.message)
                 })
+                getPoliceCabinets().then(res=>{
+                    console.log(res);
+                    this.list=res
+                    this.list.forEach(item=>{
+                        if(item.policeCabinetUserItems.length!=0)
+                        {
+                            item.name=item.policeCabinetUserItems[0].user.name
+                        }
+                        if(item.category=='SPARE')
+                        {item.category='备用柜'}
+                        else if(item.category=='SINGLE_POLICE')
+                        {
+                            item.category='单警柜'
+                        }
+                        else if(item.category=='COMMON'){
+                            item.category='公共柜'}
+                    })
+                }).catch(err => {
+                    this.$message.error(err.response.data.message)
                 })
-                
              
 
             },
