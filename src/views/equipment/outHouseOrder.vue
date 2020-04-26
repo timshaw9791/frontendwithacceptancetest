@@ -26,8 +26,8 @@
                             </define-column>
                             <define-column label="出库时间" :filter="(row)=>$filterTime(row.createTime)"/>
                         </define-table>
-            <equip-out-house v-if='inhouse'  @cancel="black"></equip-out-house>
-            <equip-inhouse-order v-if="inorder" :equipData="equipData" @cancel="black"></equip-inhouse-order>
+            <equip-out-house v-if='inhouse' :showDetail="showDetail" :equipData="equipData"  @cancel="black"></equip-out-house>
+            <!-- <equip-out-house-order v-if="inorder" :equipData="equipData" @cancel="black"></equip-out-house-order> -->
         </div>
     </div>
 </template>
@@ -43,7 +43,7 @@
     import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
     import equipOutHouse from './equipOutHouse'
-    import equipInhouseOrder from './equipInhouseOrder'
+    // import equipOutHouseOrder from './equipOutHouseOrder'
     import { getInhouseNumber,outHouseOrder,deleteInhouseNumber,getOutHouseOrder} from "api/storage"
 export default {
     components:{
@@ -57,7 +57,7 @@ export default {
             divTmp,
             bosTabs,
             equipOutHouse,
-            equipInhouseOrder
+            // equipOuthouseOrder
         },
         data(){
             return{
@@ -66,7 +66,8 @@ export default {
                inhouse:false,
                inorder:false,
                params:{size:10,page:1},
-               equipData:''
+               equipData:{},
+               showDetail:true
             }
         },
         methods:{
@@ -78,7 +79,8 @@ export default {
             },
             toDetail(data){
                 this.equipData=data
-                this.inorder=true
+                this.inhouse=true
+                this.showDetail=false
             },
             deleteNumber(data)
             {
@@ -117,6 +119,7 @@ export default {
             },
             toInHouse(){
                 this.inhouse=true
+                this.showDetail=true
             }
         },
         created(){
