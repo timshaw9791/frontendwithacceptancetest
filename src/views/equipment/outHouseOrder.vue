@@ -27,7 +27,7 @@
                             <define-column label="出库时间" :filter="(row)=>$filterTime(row.createTime)"/>
                         </define-table>
             <equip-out-house v-if='inhouse'  @cancel="black"></equip-out-house>
-            <!-- <equip-outhouse-order v-if="inorder" :equipData="equipData" @cancel="black"></equip-outhouse-order> -->
+            <equip-inhouse-order v-if="inorder" :equipData="equipData" @cancel="black"></equip-inhouse-order>
         </div>
     </div>
 </template>

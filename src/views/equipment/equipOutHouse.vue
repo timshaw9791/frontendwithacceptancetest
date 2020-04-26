@@ -18,16 +18,7 @@
                                 <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
-                                <entity-input v-model="data.row.name"  :options="{search:'equipArgsSelect'}" format="{name}({model})" :tableEdit="false" ></entity-input>
-                            </define-column>
-                            <!-- <define-column label="装备位置"  v-slot="{ data }" >
-                                 <entity-input v-model="data.row.locationId"  :options="{search:'locationSelect'}" format="{name}" :tableEdit="true" ></entity-input>
-                            </define-column> -->
-                            <define-column label="单价" v-slot="{ data }">
-                                <define-input v-model="data.row.price" type="Number" :tableEdit="false" ></define-input>
-                            </define-column>
-                            <define-column label="生产日期" v-slot="{ data }">
-                                <date-select label="生产日期" v-model="data.row.productTime" :column="12" :disabled="true" ></date-select>
+                                <entity-input v-model="data.row.name"  :options="{detail:'equipArgsSelect'}" format="{name}({model})" :tableEdit="false" ></entity-input>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
                                 <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
@@ -67,7 +58,7 @@
     import serviceDialog from 'components/base/serviceDialog/index'
     import { start, startOne, killProcess,handheld, modifyFileName } from 'common/js/rfidReader'
     import divTmp from '@/componentized/divTmp'
-    import { getInhouseNumber,inHouse,findByRfids} from "api/storage"
+    import { getInhouseNumber,inHouse,findByRfids,outHouse} from "api/storage"
 export default {
     components:{
             myHeader,
@@ -139,16 +130,14 @@ export default {
             },
             confirm(){
                 this.requestBody=JSON.parse(JSON.stringify(this.newData))
+                let rfidList=[]
                 this.requestBody.forEach(item=>{
-                    item.equipArgId=item.equipArgId.id
-                    item.locationId=item.locationId.id
-                    item.copyList.forEach(r=>{
-                        item.rfids.push(r.rfid)
-                        item.serial.push(r.serial)
+                    item.copyList.forEach(rf=>{
+                        rfidList.push(rf.rfid)
                     })
                 })
-                delete this.requestBody.copyList
-                inHouse(this.requestBody).then(res=>{
+                
+                outHouse(rfidList).then(res=>{
                     this.$message.success('装备出库成功')
                     this.init()
                     this.cancel()
