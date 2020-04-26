@@ -13,6 +13,8 @@
         </define-column> 
       </define-table>
     </div>
+
+    <upload-file></upload-file>
   </div>
 </template>
 
@@ -21,6 +23,8 @@ import myHeader from 'components/base/header/header'
 import textInput from '@/componentized/textBox/textInput.vue'
 import { processDefinitions } from 'api/process'
 import bosTabs from '@/componentized/table/bosTabs'
+
+import uploadFile from '@/componentized/uploadFile'
 export default {
   name: 'newProcess',
   data() {
@@ -65,7 +69,8 @@ export default {
   components: {
     myHeader,
     textInput,
-    bosTabs
+    bosTabs,
+    uploadFile
   }
 }
 </script>
