@@ -21,7 +21,7 @@ export function addConsumable(data) {
 export function editConsumable(id,data) {
     return request({
         url: `/consumables/${id}`,
-        method: 'post',
+        method: 'put',
         data:data
     })
 }
@@ -29,17 +29,17 @@ export function editConsumable(id,data) {
 // 领取耗材
 export function receiveConsumable(id,params) {
     return request({
-        url: `/consumables/${id}`,
-        method: 'patch',
+        url: `/consumables/${id}/receive`,
+        method: 'post',
         params:params
     })
 }
 
 // 补充耗材列表
-export function supplementConsumable(data) {
+export function supplementConsumable(id,params) {
     return request({
-        url: '/consumables/updateNameAndDescribes',
+        url: `/consumables/${id}/replenish`,
         method: 'post',
-        data:data
+        params:params
     })
 }

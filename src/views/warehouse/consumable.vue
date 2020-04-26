@@ -12,8 +12,8 @@
                 <base-button label="补充" size="mini" @click="operating('supplement',data)" type="primary"></base-button>
             </define-column>
             <define-column label="耗材名称" field="name"></define-column>
-            <define-column label="耗材数量" field="describes"></define-column>
-            <define-column label="耗材用途" field="count"></define-column>
+            <define-column label="耗材数量" field="count"></define-column>
+            <define-column label="耗材用途" field="describes"></define-column>
         </define-table>
         <service-dialog :title="title+'耗材'" ref="operating" :button="true" :secondary="false" @confirm="confirm">
             <define-input label="耗材名称" v-if="name" margin="15px 0 0 0" v-model="consumableName" :column="12"></define-input>
@@ -123,8 +123,23 @@
                     })
                 }else if(this.title == "编辑"){
                     console.log("编辑");
+                    let param={
+                        name:this.consumableName,
+                        describes:this.consumableDescribes,
+                        id:this.consumableId
+                    }
+                    editConsumable(this.consumableId,param).then(res=>{
+                        this.$message.success("编辑成功")
+                        this.getData()
+                    }).catch(err=>{
+                        this.$message.error(err.message)
+                    })
                 }else if(this.title == "补充"){
                     console.log("补充");
+                    supplementConsumable(this.consumableId,{count:this.consumableCount}).then(res=>{
+                        this.$message.success("补充成功")
+                        this.getData()
+                    })
                 }else if(this.title == "领取"){
                     console.log("领取");
                     let param={
