@@ -107,6 +107,11 @@ import { judgeRules } from "../rules"
             this.$emit('input', value)
           }
         },
+        watch: {
+          value(val) {
+            this.selectValue = this.value;
+          }
+        },
         created() {
           this.selectValue = this.value
         }
