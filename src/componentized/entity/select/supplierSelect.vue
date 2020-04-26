@@ -18,7 +18,7 @@
 
 <script>
     import textInput from '@/componentized/textBox/textInput.vue'
-    import {getSupplier} from "../../api/supplier";
+    import {getSupplier} from "api/supplier";
 
     export default {
         name: "supplierSelect",
