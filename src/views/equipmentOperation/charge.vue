@@ -9,8 +9,8 @@
                 <entity-input :column="2" v-model="data.row.equipArg" :options="{ detail: 'equipArgsSelect' }" format="{name}({model})" :disabled="true" ></entity-input>
             </define-column>
             <define-column label="装备位置" field="location" :filter="(row)=>locations(row.location)"></define-column>
-            <define-column label="充电台位置" field="count"></define-column>
-            <define-column label="已充时间" field="count"></define-column>
+            <define-column label="充电台位置" field="chargeLocation"></define-column>
+            <define-column label="已充时间" field="chargeingTime"></define-column>
         </define-table>
     </div>
   </div>
@@ -24,6 +24,7 @@ import defineInput from '@/componentized/textBox/defineInput'
 import dateSelect from '@/componentized/textBox/dateSelect.vue'
 import bosTabs from "@/componentized/table/bosTabs";
 import request from "common/js/request";
+import { getChargeList} from "api/charge";
 var _ = require("lodash");
 export default {
   name: "charge",
@@ -37,11 +38,13 @@ export default {
         return data.floor+'/'+data.frameNumber+'/'+data.surface+'/'+data.section
       },
       getData(){
-
+        getChargeList().then(res=>{
+          this.order = res
+        })
       },
     },
   created() {
-    // this.getData()
+    this.getData()
   },
   components: {
     myHeader,
