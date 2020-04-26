@@ -2,8 +2,8 @@
     <div class="opening-box">
          <div class="apply-process-top" data-test="action_box">
                 <define-input label="单号" v-model="orderNumber" :disabled="true" class="odd-number"></define-input>
-                <define-input label="出库时间" v-model="time" :disabled="true" class="odd-number"></define-input>
-                <define-input label="出库人员" v-model="people" :disabled="true"  class="odd-number"></define-input>
+                <define-input label="入库时间" v-model="time" :disabled="true" class="odd-number"></define-input>
+                <define-input label="入库人员" v-model="people" :disabled="true"  class="odd-number"></define-input>
             </div>
         <div class="data-list">
             <bos-tabs >
@@ -156,7 +156,7 @@ export default {
                 })
                 delete this.requestBody.copyList
                 inHouse(this.requestBody).then(res=>{
-                    this.$message.success('装备出库成功')
+                    this.$message.success('装备入库成功')
                     this.init()
                     this.cancel()
                 })
@@ -183,19 +183,18 @@ export default {
             this.time= year+'/'+mon+'/'+day+'/'+hours+'时';
             },
             readData(){
-                // killProcess(this.pid)
-                // start("java -jar scan.jar", (data) => {
-                //     if(this.list[this.findIndex].copyList.length==1&&this.list[this.findIndex].copyList[0].rfid=='')
-                //     {
-                //         this.list[this.findIndex].copyList[0].rfid=data
-                //     }else{
-                //         this.list[this.findIndex].copyList.push({rfid:data,serial:''})
-                //     }
-                //     }, (fail) => {
-                //         this.index = 1;
-                //         this.$message.error(fail);
-                //     }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
-                let rfids=['110000070000000000000000','110000050000000000000000']
+                killProcess(this.pid)
+                start("java -jar scan.jar", (data) => {
+                    if(this.list[this.findIndex].copyList.length==1&&this.list[this.findIndex].copyList[0].rfid=='')
+                    {
+                        this.list[this.findIndex].copyList[0].rfid=data
+                    }else{
+                        this.list[this.findIndex].copyList.push({rfid:data,serial:''})
+                    }
+                    }, (fail) => {
+                        this.index = 1;
+                        this.$message.error(fail);
+                    }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
             },
             changeDetailRow(state,data)
             {
@@ -248,6 +247,9 @@ export default {
                     
                 }
             }
+        },
+        beforeDestroy(){
+            killProcess(this.pid)
         },
         created(){
             
