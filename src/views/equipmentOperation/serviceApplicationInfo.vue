@@ -1,33 +1,36 @@
 <template>
     <div class="opening-box">
-        <my-header :title="inhouse?'出库装备':'出库单列表'" :haveBlack="inhouse||inorder" @h_black="black"></my-header>
+        <my-header :title="inhouse?'维修申请':'开始维修'" :haveBlack="inhouse||inorder" @h_black="black"></my-header>
         <div class="btn_box" v-if="!inhouse&&!inorder">
-             <base-button label="出库装备 " align="right" :width="128" :height="25" :fontSize="20" @click="toInHouse"></base-button>
+             <base-button label="开始维修" align="right" :width="128" :height="25" :fontSize="20" @click="toInHouse"></base-button>
         </div>
         <div class="data-list">
             <define-table :data="list" height="3.64rem" @changeCurrent="selRow" @changePage="changePage" :pageInfo="paginator" v-if="!inhouse&&!inorder">
                             <define-column label="操作" width="100" v-slot="{ data }">
                                 <div class="span-box">
-                                     <span @click="toDetail(data.row)">详情</span>
-                                     <span @click="deleteNumber(data.row)">删除</span>
+                                     <span >开柜</span>
                                 </div>
                             </define-column>
-                            <define-column label="单号" v-slot="{ data }">
-                                <define-input v-model="data.row.number" type="Number" :tableEdit="false"></define-input>
+                            <define-column label="RFID" v-slot="{ data }">
+                                <define-input v-model="data.row.rfid" type="Number" :tableEdit="false"></define-input>
+                            </define-column>
+                            <define-column label="RFID" v-slot="{ data }">
+                                <define-input v-model="data.row.serial" type="Number" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
                                 <define-input v-model="data.row.equipArgs" type="Number" :tableEdit="false"></define-input>
                             </define-column>
-                            <define-column label="装备数量" :filter="(row)=>filterNumber(row)">
+                            <define-column label="装备位置">
                                 
                             </define-column>
-                            <define-column label="出库人员" v-slot="{ data }">
+                           
+                            <define-column label="申请时间" :filter="(row)=>$filterTime(row.createTime)"/>
+                            <define-column label="申请原因" v-slot="{ data }">
                                 <define-input v-model="data.row.operator.operator" type="String" :tableEdit="false"></define-input>
                             </define-column>
-                            <define-column label="出库时间" :filter="(row)=>$filterTime(row.createTime)"/>
                         </define-table>
-            <equip-out-house v-if='inhouse'  @cancel="black"></equip-out-house>
-            <equip-inhouse-order v-if="inorder" :equipData="equipData" @cancel="black"></equip-inhouse-order>
+            <start-service v-if='inhouse'  @cancel="black"></start-service>
+            <!-- <equip-inhouse-order v-if="inorder" :equipData="equipData" @cancel="black"></equip-inhouse-order> -->
         </div>
     </div>
 </template>
@@ -42,9 +45,9 @@
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
-    import equipOutHouse from './equipOutHouse'
-    import equipInhouseOrder from './equipInhouseOrder'
-    import { getInhouseNumber,outHouseOrder,deleteInhouseNumber,getOutHouseOrder} from "api/storage"
+    import startService from './startService'
+    // import equipInhouseOrder from './equipInhouseOrder'
+    import { getInhouseNumber,inOutHouseOrder,deleteInhouseNumber} from "api/storage"
 export default {
     components:{
             myHeader,
@@ -54,10 +57,9 @@ export default {
             baseSelect,
             dateSelect,
             entityInput,
+            startService,
             divTmp,
             bosTabs,
-            equipOutHouse,
-            equipInhouseOrder
         },
         data(){
             return{
@@ -83,7 +85,7 @@ export default {
             deleteNumber(data)
             {
                 deleteInhouseNumber(data.id).then(res=>{
-                    this.$message.success('删除出库单成功')
+                    this.$message.success('删除入库单成功')
                 }).catch(err => {
                         this.$message.error(err.response.data.message);
                     })
@@ -94,7 +96,7 @@ export default {
                 this.getList()
             },
             getList(){
-                getOutHouseOrder(this.params).then(res=>{
+                inOutHouseOrder(this.params).then(res=>{
                     this.list=res.content
                     this.list.forEach(item=>{
                         if(item.inOutHouseItems.length==1)

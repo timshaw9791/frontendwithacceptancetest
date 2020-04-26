@@ -160,9 +160,9 @@ export function inHouseOrder(id) {
 }
 
 /* 出库装备 */
-export function outHouse(params) {
+export function outHouse(list) {
     return request({
-        url: `/equip/outHouse?${qs.stringify(params, { indices: false })}`,
+        url: `/equips/out-house?${qs.stringify({rfids:list},{indices:false})}`,
         method: "POST"
     })
 }

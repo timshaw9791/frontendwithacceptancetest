@@ -2,8 +2,8 @@
     <div class="opening-box">
          <div class="apply-process-top" data-test="action_box">
                 <define-input label="单号" v-model="orderNumber" :disabled="true" class="odd-number"></define-input>
-                <define-input label="出库时间" v-model="time" :disabled="true" class="odd-number"></define-input>
-                <define-input label="出库人员" v-model="people" :disabled="true"  class="odd-number"></define-input>
+                <define-input label="维修时间" v-model="time" :disabled="true" class="odd-number"></define-input>
+                <define-input label="操作人员" v-model="people" :disabled="true"  class="odd-number"></define-input>
             </div>
         <div class="data-list">
             <bos-tabs >
@@ -19,6 +19,9 @@
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
                                 <entity-input v-model="data.row.name"  :options="{detail:'equipArgsSelect'}" format="{name}({model})" :tableEdit="false" ></entity-input>
+                            </define-column>
+                            <define-column label="装备位置" v-slot="{ data }">
+                                <define-input v-model="data.row.locationId"  type="Number" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
                                 <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
@@ -80,6 +83,7 @@ export default {
               }
             }
         },
+        name:'startService',
         data(){
             return{
                copyData:{},
