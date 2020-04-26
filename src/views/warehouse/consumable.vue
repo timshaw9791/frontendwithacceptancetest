@@ -1,269 +1,172 @@
 <template>
-    <div class="safety">
-        <el-card shadow="never">
-            <div slot="header" data-test="title_box">
-                <span class="_card-title">{{$route.meta.title}}</span>
-            </div>
-            <div>
-                <div class="secondaryTitle">
-                    <el-button type="text" class="in_button" @click="dialogShow('add')" data-test="button">
-                        <svg-icon icon-class="加号"/>
-                        新增耗材
-                    </el-button>
-                    <el-button type="text" class="in_button" @click="dialogShow('supplement')" data-test="button">
-                        <svg-icon icon-class="补充"/>
-                        补充耗材
-                    </el-button>
-                    <el-button type="text" class="in_button" @click="dialogShow('receive')" data-test="button">
-                        <svg-icon icon-class="领取"/>
-                        领取耗材
-                    </el-button>
-                    <div class="_buttons">
-                        <BosInput
-                                placeholder="名称"
-                                suffix="el-icon-search"
-                                v-model="inquire"
-                                :wrapforlike="true"
-                                style="width:285px;">
-                        </BosInput>
-                    </div>
-                </div>
-
-                <el-table :data="list" v-loading.body="false" element-loading-text="Loading"
-                        fit height="3.52rem" data-test="main_tabel">
-                    <bos-table-column lable="耗材名称" field="name"></bos-table-column>
-                    <bos-table-column lable="耗材数量" field="count"></bos-table-column>
-                    <bos-table-column lable="耗材用途" field="describes"></bos-table-column>
-                    <el-table-column label="操作" align="left">
-                        <template slot-scope="scope">
-                            <el-button type="primary" size="mini" class="actionButton" @click="edit(scope.row)" data-test="button">编辑</el-button>
-                        </template>
-                    </el-table-column>
-                </el-table>
-                <bos-paginator v-if="this.list!=''" :pageInfo="paginator" @bosCurrentPageChanged="changePage"/>
-            </div>
-        </el-card>
-
-        <serviceDialog :title="title" ref="dialog" @confirm="submit" :secondary="false" :data-test="title">
-            <form-container ref="form" :list="list">
-                <field-select :list="ConsumableList" v-if="disabled" label="耗材名称" v-model="name" width="10"></field-select>
-                <field-input v-else label="耗材名称" v-model="name" width="10"></field-input>
-                <field-input label="耗材数量" v-model="count" width="10"></field-input>
-                <field-input label="耗材用途" v-model="describes" :disabled="disabled" :type="'textarea'" width="10"></field-input>
-                <field-input label="备注" v-model="remark" v-show="show" :type="'textarea'" width="10"></field-input>
-            </form-container>
-            
-        </serviceDialog>
-        <serviceDialog title="编辑耗材" ref="dialog1" @confirm="submitEdit" :data-test="title">
-            <form-container ref="form">
-                <field-input label="耗材名称" v-model="name" width="10"></field-input>
-                <field-input label="耗材数量" :disabled="true" v-model="count" width="10"></field-input>
-                <field-input label="耗材用途" v-model="remark" :disabled="disabled" :type="'textarea'" width="10"></field-input>
-            </form-container>
-            
-        </serviceDialog>
+  <div class="consumable-form-container">
+    <my-header :title="$route.meta.title" :haveBlack="false"></my-header>
+    <div class="consumable-form-top">
+        <base-button size="default" align="right" label="新增耗材" @click="operating('add')"></base-button>
     </div>
+    <div class="consumable-form-body" >
+        <define-table :pageInfo="paginator" @changePage="changePage" :data="order" height="2.6042rem" >
+            <define-column label="操作" field="rfid"  v-slot="{ data }">
+                <base-button label="领取" size="mini" @click="operating('receive',data)" type="primary"></base-button>
+                <base-button label="编辑" size="mini" @click="operating('edit',data)" type="primary"></base-button>
+                <base-button label="补充" size="mini" @click="operating('supplement',data)" type="primary"></base-button>
+            </define-column>
+            <define-column label="耗材名称" field="name"></define-column>
+            <define-column label="耗材数量" field="describes"></define-column>
+            <define-column label="耗材用途" field="count"></define-column>
+        </define-table>
+        <service-dialog :title="title+'耗材'" ref="operating" :button="true" :secondary="false" @confirm="confirm">
+            <define-input label="耗材名称" v-if="name" margin="15px 0 0 0" v-model="consumableName" :column="12"></define-input>
+            <define-input label="耗材数量" :disabled="disable" margin="15px 0 0 0" v-model="consumableCount" :column="12"></define-input>
+            <define-input label="耗材用途" v-if="describes" margin="15px 0 0 0" v-model="consumableDescribes" :column="12"></define-input>
+            <define-input label="备注" v-if="remark" margin="15px 0 0 0" v-model="consumableMark" :column="12"></define-input>
+        </service-dialog>
+    </div>
+  </div>
 </template>
 
 <script>
-    import {formRulesMixin} from 'field/common/mixinTableRest';
-    import serviceDialog from 'components/base/serviceDialog'
-    import {getConsumableList,addConsumable,updateConsumable,receiveConsumable,updateConsumableName } from 'api/consumable'
-
-
+    import myHeader from "components/base/header/header";
+    import baseButton from "@/componentized/buttonBox/baseButton";
+    import entityInput from "@/componentized/entity/entityInput";
+    import defineInput from '@/componentized/textBox/defineInput'
+    import dateSelect from '@/componentized/textBox/dateSelect.vue'
+    import bosTabs from "@/componentized/table/bosTabs";
+    import request from "common/js/request";
+    import serviceDialog from "components/base/serviceDialog"
+    import { getConsumableList ,addConsumable ,receiveConsumable ,supplementConsumable ,editConsumable} from "api/consumable";
+    var _ = require("lodash");
     export default {
+        name: "consumable",
         data() {
             return {
-                title: '',
-                inquire: '',
-                list: [],
-                alllist: [],
-                name:'',
-                count:'',
-                describes:'',
-                name:'',
-                remark:'',
-                ConsumableList:[],
-                paginator: {size: 9, page: 1, totalPages: 5, totalElements: 5},
-                disabled:false,
-                show:false,
-                from:{},
+                paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
+                order: [],
+                title:"",
+                consumableName:"",
+                consumableCount:"",
+                consumableDescribes:"",
+                consumableMark:"",
+                consumableId:"",
+                remark:false,//备注显示
+                name:true,//耗材名称显示
+                describes:true,//耗材描述显示
+                disable:true//耗材数量是否可编辑
+            };
+        },
+        methods: {
+            getData(){
+                getConsumableList(this.paginator).then(res=>{
+                    this.order = res.content
+                    this.paginator.totalElements = res.totalElements;
+                    this.paginator.totalPages = res.totalPages;
+                }).catch(err=>{
+                    this.$message.error(err.message)
+                })
+            },
+            changePage(page) {
+                this.paginator.page = page
+                this.getData()
+            },
+            operating(data,count){
+                this.consumableName=""
+                this.consumableCount=""
+                this.consumableDescribes=""
+                this.consumableMark=""
+                this.consumableId=""
+                if(data == 'add'){
+                    this.title = "新增"
+                    this.remark=false
+                    this.name=true
+                    this.describes=true
+                    this.disable=false
+                } else if(data == 'receive'){
+                    this.title = "领取"
+                    this.remark=true
+                    this.name=false
+                    this.describes=false
+                    this.consumableId=count.row.id
+                    this.disable=false
+                } else if(data == 'edit'){
+                    this.remark=false
+                    this.name=true
+                    this.describes=true
+                    this.disable=true
+                    this.title = "编辑"
+                    this.consumableId=count.row.id
+                    this.consumableName=count.row.name
+                    this.consumableCount=count.row.count
+                    this.consumableDescribes=count.row.describes
+                } else if(data == 'supplement'){
+                    this.title = "补充"
+                    this.consumableId=count.row.id
+                    this.remark=false
+                    this.name=false
+                    this.describes=false
+                    this.disable=false
+                }
+                this.$refs.operating.show()
+            },
+            confirm(){
+                if(this.title == "新增"){
+                    console.log("新增");
+                    let param={
+                        name:this.consumableName,
+                        describes:this.consumableDescribes,
+                        count:this.consumableCount
+                    }
+                    addConsumable(param).then(res=>{
+                        this.$message.success("新增成功")
+                        this.getData()
+                    }).catch(err=>{
+                        this.$message.error(err.message)
+                    })
+                }else if(this.title == "编辑"){
+                    console.log("编辑");
+                }else if(this.title == "补充"){
+                    console.log("补充");
+                }else if(this.title == "领取"){
+                    console.log("领取");
+                    let param={
+                        mark:this.consumableMark,
+                        count:this.consumableCount
+                    }
+                    receiveConsumable(this.consumableId,param).then(res=>{
+                        this.$message.success("领取成功")
+                        this.getData()
+                    }).catch(err=>{
+                        this.$message.error(err.message)
+                    })
+                }
+                this.$refs.operating.hide()
             }
+        },
+        created() {
+            this.getData()
         },
         components: {
-            serviceDialog
+            myHeader,
+            baseButton,
+            entityInput,
+            bosTabs,
+            defineInput,
+            dateSelect,
+            serviceDialog,
         },
-        mixins: [formRulesMixin],
-        methods: {
-            getConsumableList() {
-                console.log("111")
-                let params = {page: this.paginator.page, size: this.paginator.size, search: this.inquire};
-                getConsumableList(params).then(res => {
-                    let result = JSON.parse(JSON.stringify(res));
-                    this.paginator.totalPages = res.totalPages
-                    this.paginator.totalElements = res.totalElements
-                    this.list = res.content
-                })
-            },
-            changePage(data) {
-                this.paginator.page = data;
-                this.getConsumableList()
-            },
-            edit(data){
-                console.log("edit-data",data);
-                this.from = JSON.parse(JSON.stringify(data))
-                this.name = data.name;
-                this.remark = data.describes;
-                this.count = data.count
-                this.$refs.dialog1.show();
-            },
-            submit() {
-                if(this.title == "新增耗材"){
-                    if(this.name == '' || this.describes==''||this.count==''){
-                        this.$message.error("请填写完整！")
-                    }else{
-                        this.from.name = this.name
-                        this.from.describes = this.describes
-                        this.from.count = this.count
-                        let param = JSON.parse(JSON.stringify(this.from))
-                        addConsumable(param).then((res)=>{
-                            this.$message.success('操作成功')
-                            this.$refs.dialog.hide();
-                            this.getConsumableList()
-                        }).catch(err=>{
-                            this.$message.error(err.response.data.message)
-                        });
-                    }
-                    
-                }else if(this.title == "补充耗材"){
-                    if(this.name == '' || this.count==''){
-                        this.$message.error("请填写完整！")
-                    }else{
-                        this.from.name = this.name
-                        this.from.describes = this.describes
-                        this.from.count = this.count
-                        let param = JSON.parse(JSON.stringify(this.from))
-                        updateConsumable(param).then((res)=>{
-                            this.$message.success('操作成功')
-                            this.$refs.dialog.hide();
-                            this.getConsumableList()
-                        }).catch(err=>{
-                            this.$message.error(err.response.data.message)
-                        });
-                    }
-                }else if(this.title == "领取耗材"){
-                    if(this.name == '' || this.count==''){
-                        this.$message.error("请填写完整！")
-                    }else{
-                        this.from.name = this.name
-                        this.from.describes = this.remark
-                        this.from.count = this.count
-                        let data = JSON.parse(JSON.stringify(this.from))
-                        receiveConsumable(data).then((res)=>{
-                            this.$message.success('操作成功')
-                            this.$refs.dialog.hide();
-                            this.getConsumableList()
-                        }).catch(err=>{
-                            this.$message.error(err.response.data.message)
-                        });
-                    }
-                }
-            },
-            submitEdit(){
-                this.from.name = this.name
-                this.from.describes = this.remark
-                console.log(this.remark)
-                this.from.count = this.count
-                let data = JSON.parse(JSON.stringify(this.from))
-                console.log("submitEdit-data",data)
-                updateConsumableName(data).then((res)=>{
-                    this.$message.success('操作成功')
-                    this.$refs.dialog1.hide();
-                    this.getConsumableList()
-                }).catch(err=>{
-                    this.$message.error(err.response.data.message)
-                });
-            },
-            getallList(){
-                getConsumableList().then(res => {
-                    this.alllist = res.content
-                    this.ConsumableList = []
-                    for(let i in this.alllist){
-                        this.ConsumableList.push(this.alllist[i].name)
-                    }
-                    console.log(this.ConsumableList)
-                })
-            },
-            dialogShow(data) {
-                console.log(data);
-                if(data=="add"){
-                    this.disabled = false
-                    this.show = false
-                    this.title = "新增耗材"
-                }else if(data=="supplement"){
-                    this.title = "补充耗材"
-                    this.show = false
-                    this.disabled = true
-                    this.getallList()
-                }else if(data=="receive"){
-                    this.title = "领取耗材"
-                    this.disabled = true
-                    this.show = true
-                    this.getallList()
-                }
-                // 显示弹框时清空数据
-                this.name = ''
-                this.count = ''
-                this.describes = ''
-                this.remark = ''
-                this.$refs.dialog.show();
-            }
-        },
-        mounted() {
-            this.getConsumableList()
-        },
-        watch: {
-            inquire(newVal, oldVal) {
-                this.getConsumableList()
-            },
-            name(){
-                if(this.disabled){
-                    for(let i in this.alllist){
-                        if(this.name == this.alllist[i].name){
-                            this.describes = this.alllist[i].describes
-                            this.from.id = this.alllist[i].id
-                        }
-                    }
-                }
-
-            }
-        }
-
-    }
+    };
 </script>
 
 <style lang="scss" scoped>
-    .safety {
-        font-size: 0.0833rem;
-    }
-    .secondaryTitle {
-        position: relative;
-        border-bottom: 1px solid #EBEEF5;
-        display: flex;
-        align-items: center;
-        padding-bottom: 16px;
-        height: 0.2292rem;
-    }
-
-    .el-card {
-        border: none !important;
-    }
-    
-    .actionButton{
-        width:70px;
-        height:32px;
-        opacity:1;
-        color: white;
-        border-radius:4px;
-    }
+  .consumable-form-container {
+    font-size: 16px;
+  }
+  .consumable-form-top {
+    padding: 18px 7px;
+    border-bottom: 1px solid #ebeef5;
+    overflow: hidden;
+  }
+  .consumable-form-body {
+    padding: 0 7px;
+    widows: 100%;
+  }
 </style>
