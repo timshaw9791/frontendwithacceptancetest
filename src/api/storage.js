@@ -178,7 +178,8 @@ export function findEquip(id) {
 /* 通过rfid找实体装备 */
 export function findByRfids(params) {
     return request({
-        url: `/equip/findByRfids?${qs.stringify(params, { indices: false })}`,
+        // url: `/equips/findByRfids?${qs.stringify(params, { indices: false })}`,
+        url:`/equips/findByRfids?rfids=${params}`,
         method: "GET"
     })
 }
