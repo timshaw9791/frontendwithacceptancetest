@@ -46,7 +46,6 @@
     import baseSelect from '@/componentized/textBox/baseSelect.vue'
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
-    import equipLocationSelect from '../equipment/equipLocationSelect'
     import serviceDialog from 'components/base/serviceDialog/index'
     import divTmp from '@/componentized/divTmp'
     import {getPoliceCabinets,assignPeople} from 'api/warehouse'
@@ -61,7 +60,6 @@ export default {
             entityInput,
             divTmp,
             bosTabs,
-            equipLocationSelect,
             serviceDialog
         },
         data(){

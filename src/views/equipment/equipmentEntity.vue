@@ -49,7 +49,7 @@
     import { baseURL } from 'api/config'
     import equipmentEdit from './equipmentEdit'
     import serviceDialog from 'components/base/serviceDialog/index'
-    import equipLocationSelect from '../equipment/equipLocationSelect'
+  
     import { equipsAll,equipById} from 'api/storage'
 export default {
     components:{
@@ -63,7 +63,6 @@ export default {
             serviceDialog,
             imgUp,
             equipAllocation,
-            equipLocationSelect,
             equipmentEdit
         },
         data(){
