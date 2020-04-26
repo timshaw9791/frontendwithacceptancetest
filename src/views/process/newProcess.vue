@@ -8,13 +8,10 @@
         </define-column>
         <define-column label="工作流名称" field="name"></define-column>
         <define-column label="部署时间" :filter="(row)=>$filterTime(row.deploymentTime)"></define-column>
-        <define-column label="日期">
-          <date-select v-model="testTime" :required="true" :column="12" :disabled="true"></date-select>
-        </define-column> 
       </define-table>
     </div>
 
-    <upload-file></upload-file>
+
   </div>
 </template>
 
@@ -23,15 +20,11 @@ import myHeader from 'components/base/header/header'
 import textInput from '@/componentized/textBox/textInput.vue'
 import { processDefinitions } from 'api/process'
 import bosTabs from '@/componentized/table/bosTabs'
-
-import uploadFile from '@/componentized/uploadFile'
 export default {
   name: 'newProcess',
   data() {
     return {
       list: [],
-      test: '',
-      testTime: new Date().getTime(),
       paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0}
     }
   },
@@ -69,8 +62,7 @@ export default {
   components: {
     myHeader,
     textInput,
-    bosTabs,
-    uploadFile
+    bosTabs
   }
 }
 </script>
