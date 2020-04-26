@@ -1,41 +1,44 @@
 import request from 'common/js/request'
 
-
+// 获取耗材列表
 export function getConsumableList(data) {
     return request({
-        url: '/consumable/findConsumableByName',
+        url: '/consumables',
         method: 'get',
         params: data
     })
 }
-
+// 新增耗材
 export function addConsumable(data) {
     return request({
-        url: '/consumable/saveConsumable',
+        url: '/consumables',
         method: 'post',
         data:data
     })
 }
 
-export function updateConsumable(data) {
+// 编辑耗材列表
+export function editConsumable(id,data) {
     return request({
-        url: '/consumable/updateConsumable',
+        url: `/consumables/${id}`,
         method: 'post',
         data:data
     })
 }
 
-export function receiveConsumable(data) {
+// 领取耗材
+export function receiveConsumable(id,params) {
     return request({
-        url: '/consumable/receiveConsumable',
-        method: 'post',
-        data:data
+        url: `/consumables/${id}`,
+        method: 'patch',
+        params:params
     })
 }
 
-export function updateConsumableName(data) {
+// 补充耗材列表
+export function supplementConsumable(data) {
     return request({
-        url: '/consumable/updateNameAndDescribes',
+        url: '/consumables/updateNameAndDescribes',
         method: 'post',
         data:data
     })
