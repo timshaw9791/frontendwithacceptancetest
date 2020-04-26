@@ -14,7 +14,7 @@
                             <define-column label="RFID" v-slot="{ data }">
                                 <define-input v-model="data.row.rfid" type="Number" :tableEdit="false"></define-input>
                             </define-column>
-                            <define-column label="RFID" v-slot="{ data }">
+                            <define-column label="装备序号" v-slot="{ data }">
                                 <define-input v-model="data.row.serial" type="Number" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
