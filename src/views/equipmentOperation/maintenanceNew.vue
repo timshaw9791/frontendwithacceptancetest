@@ -60,9 +60,8 @@
 <script>
 import myHeader from "components/base/header/header";
 import baseButton from "@/componentized/buttonBox/baseButton";
-import entityInput from "@/componentized/entity/entityInput";
+import serviceDialog from "components/base/serviceDialog";
 import defineInput from '@/componentized/textBox/defineInput'
-import dateSelect from '@/componentized/textBox/dateSelect.vue'
 import bosTabs from "@/componentized/table/bosTabs";
 import request from "common/js/request";
 var _ = require("lodash");
@@ -258,10 +257,7 @@ export default {
   components: {
     myHeader,
     baseButton,
-    entityInput,
     bosTabs,
-    defineInput,
-    dateSelect,
   },
 };
 </script>

@@ -18,20 +18,16 @@
 
 <script>
     import textInput from '@/componentized/textBox/textInput.vue'
+    import {getSupplier} from "api/supplier";
 
     export default {
         name: "supplierSelect",
+        components: {
+            textInput
+        },
         data() {
             return {
-                supplierList: [{
-                    name: "华安",
-                    person: "陈晓红",
-                    phone: "18122332222"
-                }, {
-                    name: "华安",
-                    person: "陈晓红",
-                    phone: "18122332222"
-                }],
+                supplierList: [],
                 selected:""
             }
         },
@@ -46,9 +42,12 @@
                 this.$emit('select', {data: this.selected, ref: 'supplierSelect'});
             },
         },
-        components: {
-            textInput
+        mounted() {
+            getSupplier().then((res)=>{
+               this.supplierList = res.content
+            })
         }
+
     }
 </script>
 
