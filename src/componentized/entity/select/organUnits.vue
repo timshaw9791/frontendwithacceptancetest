@@ -12,7 +12,7 @@
 
 <script>
 import { getAllUnit } from 'api/process'
-import defineTree from '../defineTree'
+import defineTree from '../../defineTree'
 export default {
   name: 'organUnits',
   components: {defineTree},
