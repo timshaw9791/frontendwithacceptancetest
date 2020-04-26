@@ -250,6 +250,12 @@ export const asyncRouterMap = [
                 name: 'serviceapplication',
                 component: _import('equipmentOperation/serviceApplicationInfo'),
                 meta: {title: '维修申请'},
+            },
+            {
+                path: 'rightservice',
+                name: 'rightservice',
+                component: _import('equipmentOperation/rightService'),
+                meta: {title: '正在维修'},
             }
         ]
     },
