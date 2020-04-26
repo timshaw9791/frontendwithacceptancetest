@@ -1,49 +1,46 @@
 <template>
-    <!--使用imageUrl和noImg区分样式-->
-    <div :class="imageUrl||noImg?'haveImg':'img'">
-        <el-upload
-                class="avatar-uploader"
-                accept=".jpg,.jpeg,.png,.JPG,.JPEG"
-                :action=url
-                :show-file-list="false"
-                :on-success="handleAvatarSuccess"
-                :disabled=disabled
-                :before-upload="beforeAvatarUpload">
-            <img v-if="imageUrl" :src="imageUrl" class="haveImg" alt="">
-            <img v-else-if="noImg" src="@/assets/noThumbnails.png" class="haveImg" alt="">
-            <i class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
-    </div>
+    <el-upload
+            :class="haveImg?'img':'upImg'"
+            accept=".jpg,.jpeg,.png,.JPG,.JPEG"
+            :action=url
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :disabled=disabled
+            :before-upload="beforeAvatarUpload">
+        <img v-if="haveImg" :src="imageUrl" class="img" alt="" onerror="this.src='@/assets/noThumbnails.png'">
+        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+    </el-upload>
 </template>
 
 
 <script>
-    import {imgUpUrl, imgBaseUrl} from "api/config";
+    import {imgUpUrl, imgBaseUrl} from "../../api/config";
     import {delFile} from "api/basic";
+
     export default {
         name: "imgUp",
         data() {
             return {
-                url:'',
-                imageUrl:'',
+                url: imgUpUrl,
+                imageUrl: '',
+                haveImg: false
             };
         },
-        props:{
-            //noImg是否显示暂无缩略图
-            noImg:{
-                type:Boolean,
-                default:false
+        props: {
+            src: {
+                type: String,
+                default: ""
             },
-            //是否可以点击
-            disabled:{
-                type:Boolean,
-                default:false
+            disabled: {
+                type: Boolean,
+                default: false
             }
         },
         methods: {
             //上传图片成功后的调用方法
             handleAvatarSuccess(res) {
                 this.imageUrl = `${imgBaseUrl}${res}`;
+                this.haveImg=true
                 this.$emit('success', res);
             },
             //上传图片前调用，该方法限制上传内容
@@ -56,25 +53,32 @@
                 if (!isLt2M) {
                     this.$message.error('上传头像图片大小不能超过 2MB!');
                 }
-                delFile({
-                    filename: this.imageUrl.split('/')[this.imageUrl.split('/').length - 1],
-                    category: 'image'
-                }).then(res => {
-                    console.log(res);
-                }).catch(err => {
-                    console.log(err);
-                });
+                // delFile({
+                //     filename: this.imageUrl.split('/')[this.imageUrl.split('/').length - 1],
+                //     category: 'image'
+                // }).then(res => {
+                //     console.log(res);
+                // }).catch(err => {
+                //     console.log(err);
+                // });
                 return isLt2M;
+            },
+
+        },
+        watch:{
+            src:function () {
+                if (this.src) {
+                    this.imageUrl = imgBaseUrl+this.src
+                    this.haveImg = true
+                }
+                this.disabled = this.$props.disabled
             }
-        },
-        mounted() {
-            this.url = imgUpUrl
-        },
+        }
     }
 </script>
 
 <style lang="scss" scoped>
-    .img{
+    .upImg {
         border: 1px dashed #d9d9d9;
         border-radius: 6px;
         overflow: hidden;
@@ -82,17 +86,18 @@
         height: 178px;
         line-height: 178px;
         text-align: center;
-
     }
-    .img:hover  {
+
+    .upImg:hover {
         border-color: #409EFF;
     }
 
-    .haveImg{
+    .img {
         border-radius: 6px;
         overflow: hidden;
         width: 178px;
         height: 178px;
+        display: block;
     }
 
     .avatar-uploader-icon {
