@@ -33,11 +33,11 @@
 
 <script>
 import serviceDialog from "components/base/serviceDialog"
-import applicantSelect from "./applicantSelect"
-import equipArgsSelect from './equipArgsSelect'
-import equipLocationSelect from './equipLocationSelect'
-import organUnits from './organUnits'
-import supplierSelect from "./supplierSelect";
+import applicantSelect from "./select/applicantSelect"
+import equipArgsSelect from './select/equipArgsSelect'
+import equipLocationSelect from './select/equipLocationSelect'
+import organUnits from './select/organUnits'
+import supplierSelect from "./select/supplierSelect";
 export default {
     name: 'textInput',
     data() {
