@@ -22,7 +22,7 @@
 </template>
 
 <script>
-    import {getEquipArgs} from "../../api/equipArgs";
+    import {getEquipArgs} from "api/equipArgs";
     export default {
         name: "equipArgsSelect",
         data() {

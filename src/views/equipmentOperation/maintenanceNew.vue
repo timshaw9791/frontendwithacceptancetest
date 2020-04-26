@@ -39,7 +39,6 @@ import defineInput from "@/componentized/textBox/defineInput";
 import baseButton from "@/componentized/buttonBox/baseButton";
 import dateSelect from "@/componentized/textBox/dateSelect";
 import serviceDialog from "components/base/serviceDialog";
-import equipArgsSelect from "@/componentized/entity/equipArgsSelect";
 import entityInput from "@/componentized/entity/entityInput";
 import bosTabs from "@/componentized/table/bosTabs";
 import request from "common/js/request";
@@ -232,7 +231,6 @@ export default {
     serviceDialog,
     entityInput,
     bosTabs,
-    equipArgsSelect,
   },
 };
 </script>
