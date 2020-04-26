@@ -5,12 +5,12 @@
              <base-button label="装备分配" align="right" :width="128" :height="25" :fontSize="20" @click="toAllocation"></base-button>
         </div>
         <div class="data-list">
-            <define-table :data="list" height="3.64rem" @changeCurrent="selRow"  :haveIndex="false" v-if="inList">
+            <define-table :data="list" height="3.64rem" @changeCurrent="selRow" :pageInfo="this.paginator" @changePage="changePage" :haveIndex="false" v-if="inList">
                             <define-column label="序号" fixed columnType="index" width="65"></define-column>
                             <define-column label="操作" width="100" v-slot="{ data }" fixed>
                                 <span @click="edit(data.row)">编辑</span>
                             </define-column>
-                            <define-column label="图片" v-slot="{ data }" fixed>
+                            <define-column label="图片" width="120" v-slot="{ data }" fixed>
                             <img :src="imgsrc(data.row.equipArg.image)" style="height:100px;width:100px"  alt="暂无图片">
                             </define-column>
                             <define-column label="RFID" fixed width="200" v-slot="{ data }">
@@ -26,6 +26,7 @@
                             <define-column label="联系人" width="100" field="equipArg.supplier.person" />
                             <define-column label="联系方式" width="150" field="equipArg.supplier.phone"/>
                             <define-column label="生产日期" width="200" :filter="(row)=>$filterTime(row.createTime)"/>
+                            <define-column label="装备位置" width="200" :filter="(row)=>milliLocation(row.location)"/>
                             <define-column label="单价" field="price"/>
                             
                         </define-table>
@@ -74,15 +75,27 @@ export default {
                inAllocation:false,
                copyList:'',
                isEdit:false,
-               inList:true
+               inList:true,
+               params:{size: 10, page: 1},
+               paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
             }
         },
         methods:{
             getList() {
-            equipsAll().then(res => {
-                this.list = res.content;
-            })
+                this.params.page=this.paginator.page
+                this.params.size=this.paginator.size
+                equipsAll(this.params).then(res => {
+                    this.list = res.content;
+                    this.paginator.totalPages = res.totalPages
+                    this.paginator.totalElements = res.totalElements
+                }).catch(err => {
+                        this.$message.error(err.response.data.message)
+                    })
              },
+             changePage(page) {
+                this.paginator.page = page
+                this.getList()
+            },
             edit(data){
                 this.copyList=data
                 data.equipArg.shelfLife=this.milliToDay( data.equipArg.shelfLife)
@@ -100,7 +113,6 @@ export default {
 
             },
             black(){
-                // console.log(触发);
             this.isEdit=this.isEdit?!this.isEdit:this.isEdit
             this.inAllocation=this.inAllocation?!this.inAllocation:this.inAllocation
             this.inList=this.inList?this.inList:!this.inList
@@ -126,9 +138,6 @@ export default {
                 this.inAllocation=true
                 this.inList=false
             },
-            successUp(data) {
-                // this.form.imageAddress = data;
-            },
             milliToDay(data) {
             let date = JSON.parse(JSON.stringify(data));
             let day = Math.round(date / 24 / 60 / 60 / 1000);
@@ -137,6 +146,10 @@ export default {
             }else {
                 return day
             }
+            },
+            milliLocation(data)
+            {
+                return data.frameNumber+'架/'+data.surface+'面/'+data.section+'节/'+data.surface+'层'
             },
             getTime(nS) {
             var date=new Date(parseInt(nS));

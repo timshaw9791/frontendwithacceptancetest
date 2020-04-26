@@ -1,6 +1,8 @@
 <template>
-    <div :class="{'date-select-continer':true,disabled}" :style="'width:'+fixWidth+';height:'+height+'px;margin:'+margin+';align:'+align">
-        <div class="label">{{ label }}</div>
+    <div :class="[styleObj,{'date-select-continer':true,disabled}]" :style="'width:'+fixWidth+';margin:'+margin+';align:'+align">
+        <div class="label">{{ label }}
+          <span class="required" v-if="required">*</span>
+        </div>
         <el-date-picker
                 v-model="selectValue"
                 :type="type"
@@ -9,7 +11,7 @@
                 placeholder="选择日期"
                 :start-placeholder="startPlaceholder" 
                 :end-placeholder="endPlaceholder"
-                :disabled="disabled"
+                :readonly="disabled"
                 :editable="editable"
                 :default-time="defaultTime"
                 prefix-icon= "el-icon-date"
@@ -19,11 +21,15 @@
 </template>
 
 <script>
+import { judgeRules } from "../rules"
     export default {
         name: 'dataSelect',
         data() {
             return {
                 selectValue: "",
+                styleObj: {
+                  error: false
+                }
             }
         },
         props: {
@@ -45,10 +51,6 @@
             column: {
               type: Number,
               default: 3
-            },
-            height: {
-              type: Number,
-              default: 40
             },
             valueFormat: {
               type: String,
@@ -81,6 +83,10 @@
             margin: {
               type: String,
               default: '0 0.0521rem'
+            },
+            required: {
+              type: Boolean,
+              default: false
             }
         },
         computed: {
@@ -89,6 +95,14 @@
           }  
         },
         methods: {
+          reg() {
+            if(judgeRules(this.required, null, this.value)) {
+                this.styleObj.error=false;
+                return true;
+            } 
+            this.styleObj.error=true;
+            return false;  
+          },
           change(value) {
             this.$emit('input', value)
           }
@@ -101,11 +115,12 @@
 
 <style lang="scss" scoped>
   /deep/ .el-date-editor {
-    // width: 203px !important;
     .el-input__inner {
+      height: 40px;
+      line-height: 40px;
+      background-color: transparent;
       padding: 0 10px !important;
       border: none;
-      border-bottom: 1px solid #E4E7ED;
     }
     .el-input__prefix {
       right: 20px;
@@ -126,7 +141,12 @@
     padding: 10px;
   }
   .disabled {
-    background-color: #F5F7FA;
     color: #C0C4CC;
+  }
+  .required {
+    color: red;
+  }
+  .error {
+    border: 1px solid red;
   }
 </style>

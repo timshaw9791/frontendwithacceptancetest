@@ -1,11 +1,11 @@
 <template>
     <div class="opening-box">
-        <my-header title="警柜管理" :haveBlack="false"></my-header>
-        <div class="btn_box">
-             <base-button label="一键开柜" align="right" :width="128" :height="25" :fontSize="20" @click="show"></base-button>
+        <my-header :title="edit?'警柜分配':'警柜管理'" :haveBlack="edit" @h_black='black'></my-header>
+        <div class="btn_box" v-if="!edit">
+             <base-button label="一键开柜" align="right" :width="128" :height="25" :fontSize="20" ></base-button>
         </div>
         <div class="data-list">
-            <define-table :data="list" height="4rem" @changeCurrent="selRow">
+            <define-table :data="list" height="4rem"  v-if="!edit">
                             <define-column label="操作" width="100" v-slot="{ data }">
                                 <div class="span-box">
                                      <span @click="toAssign(data.row)">分配</span>
@@ -19,19 +19,20 @@
                                 <define-input v-model="data.row.cabinetNumber" type="Number" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="所属人员" v-slot="{ data }">
-                                <define-input v-model="data.row.policeCabinetUserItems.user" type="Number" :tableEdit="false"></define-input>
+                                <define-input v-model="data.row.name" type="Number" :tableEdit="false"></define-input>
                             </define-column>
                         </define-table>
-            <service-dialog title="警柜分配" ref="historyDialog" :button="false" :secondary="false">
-            <div class="edit-equip">
-                <base-select label="警柜类型" :column="4" v-model="select.selected" align="left" :selectList="select.selectList"></base-select>
-                <entity-input v-model="people"  :options="{search:'applicant'}" format="{name}" :tableEdit="true" ></entity-input>
+           
+            <div class="edit-equip" v-if='edit'>
+                <base-select label="警柜类型" :column="10" v-model="select.selected" margin="0 0" align="left" :selectList="select.selectList"></base-select>
+                <!-- <entity-input label="装备位置" v-model="location" :column="6"  :options="{search:'locationSelect'}" margin="15px 0" format="{cabinetNumber}" :tableEdit="true" align="left"></entity-input> -->
+                <entity-input label="所属人员" v-model="people"  :options="{search:'applicant'}"  margin="15px 0" :column="6" format="{name}" :tableEdit="true" v-if="select.selected=='SINGLE_POLICE'"></entity-input>
                 <div class="btn-box">
-                  <base-button label="取消" align="right" :width="128" :height="25" :fontSize="20" @click="cancel"></base-button>
+                  <base-button label="取消" align="right" :width="128" :height="25" :fontSize="20" @click="black"></base-button>
                   <base-button label="提交" align="right" :width="128" :height="25" :fontSize="20" @click="confirm"></base-button>
               </div>
             </div>
-        </service-dialog>
+
         </div>
     </div>
 </template>
@@ -48,7 +49,7 @@
     import equipLocationSelect from '../equipment/equipLocationSelect'
     import serviceDialog from 'components/base/serviceDialog/index'
     import divTmp from '@/componentized/divTmp'
-    import {getPoliceCabinets} from 'api/warehouse'
+    import {getPoliceCabinets,assignPeople} from 'api/warehouse'
 export default {
     components:{
             myHeader,
@@ -70,7 +71,7 @@ export default {
                    selected:'',
                    selectList:[{
                         label: "单警柜",
-                        value: 'POLICE_CABINET'
+                        value: 'SINGLE_POLICE'
                     }, {
                         label: "公共柜",
                         value: "COMMON"
@@ -81,35 +82,59 @@ export default {
                     }
                     ]
                },
-               people:''
+               edit:false,
+               people:'',
+               policeCabnietId:''
+               
             }
         },
         methods:{
-            toAssign(){
-                console.log("触发");
-                this.$refs.historyDialog.show()
+            toAssign(data){
+                console.log(data);
+                this.select.selected=''
+                this.policeCabnietId=data.id
+                this.edit=!this.edit
             },
             openCabniet(){
 
+            },
+            confirm(){
+                // console.log("111");
+                let params={
+                    category:this.select.selected
+                }
+            assignPeople({category:this.select.selected,policeCabinetId:this.policeCabnietId,userId:this.people.id}).then(res=>{
+                this.$message.success('警柜分配成功')
+                this.black()
+            }).catch(err => {
+                    this.$message.error(err.response.data.message)
+                })
             },
             getList()
             {
                 getPoliceCabinets().then(res=>{
                     this.list=res
                     this.list.forEach(item=>{
+                        if(item.policeCabinetUserItems.length!=0)
+                        {
+                            item.name=item.policeCabinetUserItems[0].user.name
+                        }
                         if(item.category=='SPARE')
                         {item.category='备用柜'}
-                        else if(item.category=='POLICE_CABINET')
+                        else if(item.category=='SINGLE_POLICE')
                         {
                             item.category='单警柜'
                         }
                         else if(item.category=='COMMON'){
                             item.category='公共柜'}
                     })
+                }).catch(err => {
+                    this.$message.error(err.response.data.message)
                 })
             },
-            show(){
-                this.$refs.historyDialog.show()
+            black(){
+                this.edit=!this.edit
+                this.getList()
             }
         },
         created(){
@@ -138,10 +163,10 @@ export default {
         // border:1px solid rgba(112, 112, 112, 0.13)
     }
     .btn-box{
-        // width: 800px;
+        width: 400px;
         height: 50px;
         margin-left:20px;
-        margin-top: 15px;
+        margin-bottom: 15px;
         display: flex;
         justify-content: center;
         align-items : center; 
@@ -152,12 +177,14 @@ export default {
         display:flex;
         justify-content: space-between;
     }
-}
-.edit-equip{
+    .edit-equip{
     height: 400px;
-    width:600px;
+    width:400px;
     border: 1px solid rgba(112, 112, 112, 0.13);
-    margin-left:100px;
-    
+    margin:0 auto;
+    margin-top: 100px;
+    // text-align:center
 }
+}
+
 </style>

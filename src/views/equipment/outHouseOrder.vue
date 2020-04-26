@@ -1,8 +1,8 @@
 <template>
     <div class="opening-box">
-        <my-header :title="inhouse?'入库装备':'入库单列表'" :haveBlack="inhouse||inorder" @h_black="black"></my-header>
+        <my-header :title="inhouse?'出库装备':'出库单列表'" :haveBlack="inhouse||inorder" @h_black="black"></my-header>
         <div class="btn_box" v-if="!inhouse&&!inorder">
-             <base-button label="入库装备 " align="right" :width="128" :height="25" :fontSize="20" @click="toInHouse"></base-button>
+             <base-button label="出库装备 " align="right" :width="128" :height="25" :fontSize="20" @click="toInHouse"></base-button>
         </div>
         <div class="data-list">
             <define-table :data="list" height="3.64rem" @changeCurrent="selRow" @changePage="changePage" :pageInfo="paginator" v-if="!inhouse&&!inorder">
@@ -21,12 +21,12 @@
                             <define-column label="装备数量" :filter="(row)=>filterNumber(row)">
                                 
                             </define-column>
-                            <define-column label="入库人员" v-slot="{ data }">
+                            <define-column label="出库人员" v-slot="{ data }">
                                 <define-input v-model="data.row.operator.operator" type="String" :tableEdit="false"></define-input>
                             </define-column>
-                            <define-column label="入库时间" :filter="(row)=>$filterTime(row.createTime)"/>
+                            <define-column label="出库时间" :filter="(row)=>$filterTime(row.createTime)"/>
                         </define-table>
-            <equip-inhouse v-if='inhouse'  @cancel="black"></equip-inhouse>
+            <equip-out-house v-if='inhouse'  @cancel="black"></equip-out-house>
             <equip-inhouse-order v-if="inorder" :equipData="equipData" @cancel="black"></equip-inhouse-order>
         </div>
     </div>
@@ -42,9 +42,9 @@
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
-    import equipInhouse from './equipInhouse'
+    import equipOutHouse from './equipOutHouse'
     import equipInhouseOrder from './equipInhouseOrder'
-    import { getInhouseNumber,inOutHouseOrder,deleteInhouseNumber} from "api/storage"
+    import { getInhouseNumber,outHouseOrder,deleteInhouseNumber,getOutHouseOrder} from "api/storage"
 export default {
     components:{
             myHeader,
@@ -56,7 +56,7 @@ export default {
             entityInput,
             divTmp,
             bosTabs,
-            equipInhouse,
+            equipOutHouse,
             equipInhouseOrder
         },
         data(){
@@ -83,7 +83,7 @@ export default {
             deleteNumber(data)
             {
                 deleteInhouseNumber(data.id).then(res=>{
-                    this.$message.success('删除入库单成功')
+                    this.$message.success('删除出库单成功')
                 }).catch(err => {
                         this.$message.error(err.response.data.message);
                     })
@@ -94,7 +94,7 @@ export default {
                 this.getList()
             },
             getList(){
-                inOutHouseOrder(this.params).then(res=>{
+                getOutHouseOrder(this.params).then(res=>{
                     this.list=res.content
                     this.list.forEach(item=>{
                         if(item.inOutHouseItems.length==1)

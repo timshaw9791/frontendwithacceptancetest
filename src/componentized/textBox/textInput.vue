@@ -1,5 +1,5 @@
 <template>
-    <div :class="{'text-input-container':true, 'bg-disabled':disabled}" ref="textInput" 
+    <div :class="[styleObj,{'text-input-container':true, 'bg-disabled':disabled}]" ref="textInput" 
         :style="'width:'+fixWidth+';height:'+height+'px;align:'+align+';margin:'+margin">
         <el-autocomplete style="width: 100%"
             v-model="insideValue"
@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import { judgeRules } from "../rules"
     export default {
         name: 'textInput',
         data() {
@@ -24,6 +25,9 @@
               inputPt: null,
               inputPrePt: null,
               insideValue: "",
+              styleObj: {
+                  error: false
+              }
           }
         },
         props: {
@@ -59,6 +63,10 @@
                 type: Boolean,
                 default: false
             },
+            type: {
+                type: String,
+                default: "String"
+            },
             validate: { // 验证函数
                 type: Function,
                 default() {
@@ -85,6 +93,14 @@
             }
         },
         methods: {
+            reg() {
+                if(judgeRules(this.required, this.type, this.value, this.validate)) {
+                    this.styleObj.error=false;
+                    return true;
+                } 
+                this.styleObj.error=true;
+                return false;   
+            },
             changePreStyle(state=true) {
                 this.inputPrePt.style.background = state?'#f5f7fa':'white';
                 this.inputPrePt.style.cursor = state?'not-allowed':'auto';
@@ -190,5 +206,8 @@
     }
     .disabled {
         background-color: #f5f7fa !important;
+    }
+    .error {
+        border: 1px solid red;
     }
 </style>
