@@ -51,12 +51,10 @@ export default {
         submit() {
             if(this.isAdd) {
                 saveEquipArg(this.equipArgs).then(res => {
-                    this.$message.success('新增成功');
                     this.$emit('back');
                 })
             } else {
                 editEquipArg(this.equipArgs.id, this.equipArgs).then(res => {
-                    this.$message.success('修改成功');
                     this.$emit('back');
                 })
             }
