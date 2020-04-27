@@ -8,10 +8,13 @@
         </define-column>
         <define-column label="工作流名称" field="name"></define-column>
         <define-column label="部署时间" :filter="(row)=>$filterTime(row.deploymentTime)"></define-column>
+        <define-column label="数值类型">
+          <number-input label="aavvxc" v-model="test"></number-input>
+        </define-column>
       </define-table>
     </div>
 
-
+  <number-input label="数值组件" v-model="test" :column="12" :maxlength="5" :max="100" :min="10"></number-input>
   </div>
 </template>
 
@@ -20,11 +23,13 @@ import myHeader from 'components/base/header/header'
 import textInput from '@/componentized/textBox/textInput.vue'
 import { processDefinitions } from 'api/process'
 import bosTabs from '@/componentized/table/bosTabs'
+import numberInput from '@/componentized/textBox/numberInput'
 export default {
   name: 'newProcess',
   data() {
     return {
       list: [],
+      test: '',
       paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0}
     }
   },
@@ -62,7 +67,8 @@ export default {
   components: {
     myHeader,
     textInput,
-    bosTabs
+    bosTabs,
+    numberInput
   }
 }
 </script>
