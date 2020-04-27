@@ -2,8 +2,8 @@
     <div>
         <form-container ref="form">
             <div class="equip-args-edit"  disabled="isEdit">
-                <define-input label="装备名称" v-model="equipArgs.name" :disabled="isInfo||isEdit" margin="10px 10px 10px 10px"></define-input>
-                <define-input label="装备型号" v-model="equipArgs.model" :disabled="isInfo||isEdit" margin="10px 10px 10px 10px"></define-input>
+                <define-input label="装备名称" v-model="equipArgs.name" :disabled="isInfo" margin="10px 10px 10px 10px"></define-input>
+                <define-input label="装备型号" v-model="equipArgs.model" :disabled="isInfo" margin="10px 10px 10px 10px"></define-input>
                 <entity-input label="供应商" v-model="equipArgs.supplier"
                               :options="{search:'supplierSelect'}"
                               format="{name}" :disabled="isInfo"
@@ -14,8 +14,8 @@
             </div>
             <img-up @success="setImg" :disabled="isInfo" :src="equipArgs.image"></img-up>
             <div class="_box-bottom">
-                <base-button label="取消"  @click="clear()"></base-button>
-                <base-button label="提交" @click="submit()"></base-button>
+                <base-button label="取消" :class="isInfo?'button':''"  @click="clear()" ></base-button>
+                <base-button label="提交" :class="isInfo?'button':''" @click="submit()" ></base-button>
             </div>
         </form-container>
     </div>
@@ -97,5 +97,8 @@
 <style lang="scss" scoped>
     .equip-args-edit {
         wdith: 60px,
+    }
+    .button{
+        display: none;
     }
 </style>

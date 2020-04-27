@@ -56,8 +56,13 @@
         },
         //监听数据、自动刷新
         watch:{
-            showData:function () {
-                this.equipArgsList = this.$props.showData.data
+            showData:{
+                deep:true,
+                function () {
+                    console.log("我是data")
+                    console.log(this.$props.showData.data)
+                    this.equipArgsList = this.$props.showData.data
+                }
             }
         },
         mounted() {

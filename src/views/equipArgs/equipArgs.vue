@@ -3,7 +3,8 @@
         <div class="equipArgs-container">
             <my-header :title=title :have-black="title!=='装备参数列表'" @h_black="back"></my-header>
             <div class="equipArgs-body">
-                <equip-args-list v-if="showData.operation==='list'" :showData="showData" @showFun="showFun"></equip-args-list>
+                <equip-args-list v-if="showData.operation==='list'" :showData="showData"
+                                 @showFun="showFun"></equip-args-list>
                 <equip-args-edit v-else :showData=showData @showFun="showFun"></equip-args-edit>
             </div>
         </div>
@@ -26,48 +27,46 @@
         data() {
             return {
                 showData: {
-                    operation:"list"
+                    operation: "list",
+                    data: {}
                 },
-                title:"装备参数列表"
+                title: "装备参数列表"
             }
         },
         methods: {
             //通过监听showFun对List还是Edit界面进行切换
             showFun(data) {
                 this.showData = data
+                if (this.showData.title === "list") {
+                    getEquipArgs().then(res => {
+                        this.showData.data = res.content
+                    })
+                }
                 switch (data.operation) {
                     case "add":
-                        this.title="新增装备参数"
+                        this.title = "新增装备参数"
                         break
-                    case "edit":{
-                        this.title="编辑装备参数"
-                        break
-                    }
-                    case "list":{
-                        this.title="装备参数列表"
-                        getEquipArgs().then(res => {
-                            console.log(this)
-                            this.showData.data = res.content
-                        })
+                    case "edit": {
+                        this.title = "编辑装备参数"
                         break
                     }
-                    case "info":{
-                        this.title='装备参数详情'
+                    case "list": {
+                        this.title = "装备参数列表"
+                        break
+                    }
+                    case "info": {
+                        this.title = '装备参数详情'
                         break
                     }
                 }
 
             },
-            back(){
+            back() {
                 this.title = "装备参数列表"
-                this.showData.operation="list"
-                getEquipArgs().then(res => {
-                    console.log(this)
-                    this.showData.data = res.content
-                })
-            }
-        },
+                this.showData.operation = "list"
+            },
 
+        }
     }
 </script>
 <style lang="scss" scoped>
