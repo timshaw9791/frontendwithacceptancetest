@@ -1,9 +1,9 @@
 <template>
     <div class="opening-box">
-         <div class="apply-process-top" data-test="action_box">
+         <div class="action_box" data-test="action_box">
                 <define-input label="单号" v-model="orderNumber" :disabled="true" class="odd-number"></define-input>
-                <define-input label="入库时间" v-model="time" :disabled="true" class="odd-number"></define-input>
-                <define-input label="入库人员" v-model="people" :disabled="true"  class="odd-number"></define-input>
+                <date-select label="入库时间" v-model="time" :disabled="true"></date-select>
+                <entity-input label="入库人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :tableEdit="false" ></entity-input>
             </div>
         <div class="data-list">
             <bos-tabs >
@@ -85,9 +85,7 @@ export default {
         },
         methods:{
             selRow(current){
-                console.log(current);
                this.findIndex=this._.indexOf(this.newData,current)
-               console.log(this.findIndex);
             },
             sumFunc(param) { // 表格合并行计算方法
                 let { columns, data } = param, sums = [];
@@ -111,21 +109,6 @@ export default {
             changePage(page) {
             this.paginator.page = page;
             },
-            getTime(ns) {
-                if(ns)
-                {
-                    var date=new Date(parseInt(nS));
-                }else{
-                    var date=new Date();
-                }
-            var year=date.getFullYear();
-            var mon = date.getMonth()+1;
-            var day = date.getDate();
-            var hours = date.getHours();
-            var minu = date.getMinutes();
-            var sec = date.getSeconds();
-            this.time= year+'/'+mon+'/'+day+'/'+hours+'时';
-            },
             changeDataFormat(data){
             data.inOutHouseItems.forEach(item=>
              {
@@ -145,7 +128,6 @@ export default {
                     this.newData.forEach((qe,index)=>{
                         if(!flag&&(qe.name==newList.name))
                         {
-                            console.log("1111");
                             flag=true;
                             dIndex=index
                         }
@@ -166,10 +148,9 @@ export default {
         },
         
         created(){
-            console.log(this.equipData);
             this.time= Date.parse(new Date());
                 this.orderNumber=this.equipData.id
-                this.getTime(this.updateTime)
+                this.time=this.$filterTime(this.equipData.updateTime)
                 this.changeDataFormat(this.equipData)
                 this.people=this.equipData.operator.operator
 
@@ -182,6 +163,11 @@ export default {
     font-size: 16px;
     width: 100%;
     min-height: 4.4323rem;
+    .action_box{
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
     .btn_box{
     height:30px;
     border-top:1px solid rgba(112, 112, 112, 0.13);

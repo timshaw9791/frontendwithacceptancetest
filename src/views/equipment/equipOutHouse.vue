@@ -1,13 +1,13 @@
 <template>
     <div class="opening-box">
-         <div class="apply-process-top" data-test="action_box">
+          <div class="action_box" data-test="action_box">
                 <define-input label="单号" v-model="orderNumber" :disabled="true" class="odd-number"></define-input>
-                <define-input label="出库时间" v-model="time" :disabled="true" class="odd-number"></define-input>
-                <define-input label="出库人员" v-model="people" :disabled="true"  class="odd-number"></define-input>
+                <date-select label="出库时间" v-model="time" :disabled="true"></date-select>
+                <entity-input label="出库人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :tableEdit="false" ></entity-input>
             </div>
         <div class="data-list">
             <bos-tabs >
-                        <template slot="slotHeader">
+                        <template slot="slotHeader" v-if="showDetail">
                             <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96" @click="readData"></base-button>
                             <base-select label="硬件选择" v-model="select.selected" align="right" :selectList="select.handWareList"></base-select>
                         </template>
@@ -17,8 +17,11 @@
                                 <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
                                 <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
                             </define-column>
-                            <define-column label="装备参数" v-slot="{ data }">
-                                <entity-input v-model="data.row.name"  :options="{detail:'equipArgsSelect'}" format="{name}({model})" :tableEdit="false" ></entity-input>
+                            <define-column label="装备参数" v-slot="{ data }" v-if="showDetail">
+                                <entity-input v-model="data.row.equipArg"  :options="{detail:'equipArgsSelect'}" format="{name}({model})" :tableEdit="false" ></entity-input>
+                            </define-column>
+                            <define-column label="装备参数" v-slot="{ data }" v-if="!showDetail">
+                                <entity-input v-model="data.row.equipArg"  :options="{detail:'equipArgsSelect'}" format="{equipName}({equipModel})" :tableEdit="false" ></entity-input>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
                                 <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
@@ -29,17 +32,13 @@
                                <i class="iconfont icontianjialiang" @click="changeDetailRow(true,data)"></i>
                                <i class="iconfont iconyichuliang" @click="changeDetailRow(false,data)"></i>
                             </define-column>
-                            <define-column label="RFID" v-slot="{ data }">
-                                <define-input v-model="data.row.rfid" type="String" :tableEdit="false"></define-input>
-                            </define-column>
-                            <define-column label="装备序号" v-slot="{ data }">
-                                <define-input v-model="data.row.serial" type="Number" :tableEdit="false"></define-input>
-                            </define-column>
+                            <define-column label="RFID" field="rfid" :tableEdit="false"/>
+                            <define-column label="装备序号" field="serial" :tableEdit="false"/>
                         </define-table>
                     </bos-tabs>
-        <div class="btn-box">
-                  <base-button label="取消" align="right" :width="128" :height="25" :fontSize="20" @click="cancel"></base-button>
-                  <base-button label="提交" align="right" :width="128" :height="25" :fontSize="20" @click="confirm"></base-button>
+        <div class="btn-box" v-if="showDetail">
+                  <base-button label="取消" align="right"   @click="cancel"></base-button>
+                  <base-button label="提交" align="right"   @click="confirm"></base-button>
               </div>
         
         </div>
@@ -78,11 +77,14 @@ export default {
               default() {
                 return {}
               }
-            }
+            },
+            showDetail: {
+              type: Boolean,
+              default:true
+            },
         },
         data(){
             return{
-               copyData:{},
                time:"",
                people:'',
                requestBody:'',
@@ -101,7 +103,7 @@ export default {
                pid:'',
                findIndex:0,
                newData:[],
-               list:[]
+               list:[],
             }
         },
         methods:{
@@ -143,86 +145,46 @@ export default {
                     this.cancel()
                 })
             },
-            changeDataFormat(data){
-
-            data.forEach(item=>
-             {
-                 let newList={
-                     name:item.equipArg.name+'('+item.equipArg.model+')',
-                     price:item.price,
-                     productTime:item.productDate,
-                     count:0,
-                     copyList:[]
-                 }
-                 console.log("oneByone");
-                 console.log(newList);
-                 newList.copyList.push({rfid:item.rfid,serial:item.serial?item.serial:''})
-                if(this.list.length==0)
-                {
-                    this.list.push(newList)
-                }else{
-                    let flag=false,dIndex=0
-                    this.list.forEach((qe,index)=>{
-                        if(!flag&&(qe.name==newList.name))
-                        {
-                            flag=true;
-                            dIndex=index
-                        }
-                    })
-                    if(flag)
-                    {
-                        this.list[dIndex].copyList.push({rfid:item.rfid,serial:item.serial?item.serial:''})
-                        flag=true
-                    }else{
-                        this.list.push(newList)
-                    }
-                }
-            })
-            this.list.forEach(item=>{
-                item.count=item.copyList.length
-            })
-            this.newData=JSON.parse(JSON.stringify(this.list))
-        },
             changePage(page) {
             this.paginator.page = page;
             },
             changelocation(){
                 this.$refs.historyDialog.show()
             },
-            getTime(ns) {
-                if(ns)
-                {
-                    var date=new Date(parseInt(nS));
-                }else{
-                    var date=new Date();
-                }
-            var year=date.getFullYear();
-            var mon = date.getMonth()+1;
-            var day = date.getDate();
-            var hours = date.getHours();
-            var minu = date.getMinutes();
-            var sec = date.getSeconds();
-            this.time= year+'/'+mon+'/'+day+'/'+hours+'时';
+            classDataify(data)//读写器数据处理的方法
+            {
+                data.forEach(item=>{this.list.push(item)})
+                /*详情单过来时 数据的属性不同处理方法不同*/
+                let cList=this.showDetail?this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}`):this._.groupBy(this.list, item => `${item.equipName}${item.equipModel}`)
+                this.newData=this.showDetail?this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length}}):this._.map(cList,(v,k)=>{return {equipArg:v[0],copyList:v,count:v.length}})
+                //this.list=this._.map(this._.groupBy(this.list, item => `${item.equipArg.model}`),(v,k)=>{return {equipArg:v[0].equipArg,copyList:v}})
+                // return this._.map(this._.groupBy(this.list, item => `${item.equipArg.model}${item.location.surface}`),(v,k)=>{return {equipArg:v[0].equipArg,copyList:v}})
             },
             readData(){
-                // killProcess(this.pid)
-                // start("java -jar scan.jar", (data) => {
-                //     if(this.list[this.findIndex].copyList.length==1&&this.list[this.findIndex].copyList[0].rfid=='')
-                //     {
-                //         this.list[this.findIndex].copyList[0].rfid=data
-                //     }else{
-                //         this.list[this.findIndex].copyList.push({rfid:data,serial:''})
-                //     }
-                //     }, (fail) => {
-                //         this.index = 1;
-                //         this.$message.error(fail);
-                //     }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
-                let rfids=['110000070000000000000000','110000050000000000000000','110200001122334455667788']
+                if(this.select.selected=='reader')
+                {
+                    // killProcess(this.pid)
+                    // start("java -jar scan.jar", (data) => {
+                    //     if(this.list[this.findIndex].copyList.length==1&&this.list[this.findIndex].copyList[0].rfid=='')
+                    //     {
+                    //         this.list[this.findIndex].copyList[0].rfid=data
+                    //     }else{
+                    //         this.list[this.findIndex].copyList.push({rfid:data,serial:''})
+                    //     }
+                    //     }, (fail) => {
+                    //         this.index = 1;
+                    //         this.$message.error(fail);
+                    //     }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
+                }
+
+                let rfids=['00001545']
                 rfids.forEach(item=>{
                     findByRfids(item).then(res=>{
-                        this.changeDataFormat(res)
+                        this.classDataify(res)
                     })
+                
                 })
+              
             },
             changeDetailRow(state,data)
             {
@@ -258,28 +220,17 @@ export default {
                 }]
             }
         },
-        watch:{
-            'list':{
-                deep:true,
-                handler(newval){
-                    newval.forEach(item=>{
-                        let len=0
-                        item.copyList.forEach(i=>{
-                            if(i.rfid!='')
-                            {
-                                len++
-                            }
-                        })
-                        item.count=len
-                    })
-                    
-                }
-            }
-        },
         created(){
-                this.getTime()
+               if(this.showDetail){
                 this.init()
                 this.people=JSON.parse(localStorage.getItem('user')).name
+               }else{
+                   this.time=this.equipData.createTime
+                   this.people=this.equipData.operator.operator
+                   this.orderNumber=this.equipData.number
+                   this.classDataify(this.equipData.inOutHouseItems)
+               }
+                
         }
 }
 </script>
@@ -292,6 +243,11 @@ export default {
     height:30px;
     border-top:1px solid rgba(112, 112, 112, 0.13);
     border-bottom:1px solid rgba(112, 112, 112, 0.13);
+    }
+    .action_box{
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
     }
     .data-list
     {
