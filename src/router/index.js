@@ -313,6 +313,13 @@ export const asyncRouterMap = [
                 meta: {title: '应急预案'},
             },
             {
+                path: 'editplan',
+                name: 'editplan',
+                component: _import('warehouse/editPlan'),
+                hidden: true,
+
+            },
+            {
                 path: 'consumables',
                 name: 'warehouse/consumable',
                 component: _import('warehouse/consumable'),
