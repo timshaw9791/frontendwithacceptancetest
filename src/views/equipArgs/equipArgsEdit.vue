@@ -10,12 +10,12 @@
                               :options="{search:'supplierSelect'}"
                               format="{name}" :disabled="isInfo"
                               margin="10px 10px 10px 10px"></entity-input>
-                <define-input label="质保期" v-model="equipArgs.shelfLife" :disabled="isInfo"
-                              margin="10px 10px 10px 10px"></define-input>
-                <define-input label="充电周期" v-model="equipArgs.chargeCycle" :disabled="isInfo"
-                              margin="10px 10px 10px 10px"></define-input>
-                <define-input label="保养周期" v-model="equipArgs.upkeepCycle" :disabled="isInfo"
-                              margin="10px 10px 10px 10px"></define-input>
+                <define-input label="质保期（天）" v-model="equipArgs.shelfLife" :disabled="isInfo"
+                              margin="10px 10px 10px 10px" type="Number"></define-input>
+                <define-input label="充电周期（天）" v-model="equipArgs.chargeCycle" :disabled="isInfo"
+                              margin="10px 10px 10px 10px" type="Number"></define-input>
+                <define-input label="保养周期（天）" v-model="equipArgs.upkeepCycle" :disabled="isInfo"
+                              margin="10px 10px 10px 10px" type="Number"></define-input>
             </div>
             <img-up @success="setImg" :disabled="isInfo" :src="equipArgs.image"></img-up>
             <div class="_box-bottom">
@@ -68,11 +68,11 @@
                 this.$emit('showFun', {operation: "list"})
             },
             submit() {
-                //TODO 以后要使用统一处理请求表单方法
-                /*  this.$refs.form.restValidate(equipArgsFun, tempForm, (res) => {
-                this.$message.success("操作成功")
-                })*/
                 let tempForm = JSON.parse(JSON.stringify(this.equipArgs))
+                tempForm.shelfLife = this.dayToMilli(tempForm.shelfLife)
+                tempForm.chargeCycle = this.dayToMilli(tempForm.chargeCycle)
+                tempForm.upkeepCycle = this.dayToMilli(tempForm.upkeepCycle)
+                //时间转换
                 if (this.isEdit) {
                     editEquipArg(tempForm).then((res) => {
                         this.$emit('showFun', {operation: "list"})
@@ -83,6 +83,11 @@
                     })
                 }
             },
+            dayToMilli(data) {
+            let day = JSON.parse(JSON.stringify(data));
+            let milli = Math.round(day * 24 * 60 * 60 * 1000)
+            return milli
+        }
         },
         mounted() {
             if (this.$props.showData.data !== undefined) {

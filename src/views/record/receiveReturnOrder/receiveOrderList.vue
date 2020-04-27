@@ -8,12 +8,11 @@
             <define-column label="操作" v-slot="{data}">
                 <span @click="showFun('info',data.row)">详情</span>
             </define-column>
-            <define-column label="装备名称" field="name"></define-column>
-            <define-column label="装备型号" field="model"></define-column>
-            <define-column label="供应商" field="supplier.name"></define-column>
-            <define-column label="质保期" field="shelfLife"></define-column>
-            <define-column label="充电周期" field="chargeCycle"></define-column>
-            <define-column label="保养周期" field="upkeepCycle"></define-column>
+            <define-column label="单号" field="name"></define-column>
+            <define-column label="装备参数" field="supplier.name"></define-column>
+            <define-column label="装备数量" field="shelfLife"></define-column>
+            <define-column label="领取人员" field="chargeCycle"></define-column>
+            <define-column label="领取时间" field="upkeepCycle"></define-column>
         </define-table>
     </div>
 </template>
@@ -37,7 +36,13 @@
                 this.$emit('showFun', {
                     operation: operation, data: data
                 })
+            },
+            getList(){
+
             }
+        },
+        created() {
+
         }
     }
 </script>
