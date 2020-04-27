@@ -2,8 +2,8 @@
     <div class="opening-box">
          <div class="apply-process-top" data-test="action_box">
                 <define-input label="单号" v-model="orderNumber" :disabled="true" class="odd-number"></define-input>
-                <define-input label="入库时间" v-model="time" :disabled="true" class="odd-number"></define-input>
-                <define-input label="入库人员" v-model="people" :disabled="true"  class="odd-number"></define-input>
+                <define-input label="维修时间" v-model="time" :disabled="true" class="odd-number"></define-input>
+                <define-input label="操作人员" v-model="people" :disabled="true"  class="odd-number"></define-input>
             </div>
         <div class="data-list">
             <bos-tabs >
@@ -11,29 +11,23 @@
                             <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96" @click="readData"></base-button>
                             <base-select label="硬件选择" v-model="select.selected" align="right" :selectList="select.handWareList"></base-select>
                         </template>
-                        <define-table :data="list" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
+                        <define-table :data="newData" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
                             :highLightCurrent="true"  slot="total" :showSummary="true" :summaryFunc="sumFunc">
                             <define-column label="操作" width="100" v-slot="{ data }">
                                 <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
                                 <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
-                                <entity-input v-model="data.row.equipArgId"  :options="{search:'equipArgsSelect'}" format="{name}({model})" :tableEdit="true" ></entity-input>
+                                <entity-input v-model="data.row.name"  :options="{detail:'equipArgsSelect'}" format="{name}({model})" :tableEdit="false" ></entity-input>
                             </define-column>
-                            <define-column label="装备位置"  v-slot="{ data }" >
-                                 <entity-input v-model="data.row.locationId"  :options="{search:'locationSelect'}" format="{name}" :tableEdit="true" ></entity-input>
-                            </define-column>
-                            <define-column label="单价" v-slot="{ data }">
-                                <define-input v-model="data.row.price" type="Number" ></define-input>
-                            </define-column>
-                            <define-column label="生产日期" v-slot="{ data }">
-                                <date-select label="生产日期" v-model="data.row.productTime" :column="12" ></date-select>
+                            <define-column label="装备位置" v-slot="{ data }">
+                                <define-input v-model="data.row.locationId"  type="Number" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
                                 <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
                             </define-column>
                         </define-table>
-                        <define-table :data="list[findIndex].copyList" height="2.8646rem" :havePage="false" slot="detail">
+                        <define-table :data="newData[findIndex].copyList" height="2.8646rem" :havePage="false" slot="detail">
                             <define-column label="操作" width="100" v-slot="{ data }">
                                <i class="iconfont icontianjialiang" @click="changeDetailRow(true,data)"></i>
                                <i class="iconfont iconyichuliang" @click="changeDetailRow(false,data)"></i>
@@ -42,7 +36,7 @@
                                 <define-input v-model="data.row.rfid" type="String" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="装备序号" v-slot="{ data }">
-                                <define-input v-model="data.row.serial" type="Number" ></define-input>
+                                <define-input v-model="data.row.serial" type="Number" :tableEdit="false"></define-input>
                             </define-column>
                         </define-table>
                     </bos-tabs>
@@ -67,7 +61,7 @@
     import serviceDialog from 'components/base/serviceDialog/index'
     import { start, startOne, killProcess,handheld, modifyFileName } from 'common/js/rfidReader'
     import divTmp from '@/componentized/divTmp'
-    import { getInhouseNumber,inHouse} from "api/storage"
+    import { getInhouseNumber,inHouse,findByRfids,outHouse} from "api/storage"
 export default {
     components:{
             myHeader,
@@ -89,17 +83,10 @@ export default {
               }
             }
         },
+        name:'startService',
         data(){
             return{
-               list:[{
-                    equipArgId: '',
-                    locationId: '',
-                    price: 0,
-                    productTime:Date.parse(new Date()),
-                    rfids: [],
-                    serial: [],
-                    copyList:[{rfid:'',serial:''}],
-                }],
+               copyData:{},
                time:"",
                people:'',
                requestBody:'',
@@ -116,14 +103,15 @@ export default {
                     selected: ""
                 },
                pid:'',
-               findIndex:0
+               findIndex:0,
+               newData:[],
+               list:[]
             }
         },
         methods:{
             selRow(current){
                 console.log(current);
-               this.findIndex=this._.indexOf(this.list,current)
-               console.log(this.findIndex);
+               this.findIndex=this._.indexOf(this.newData,current)
             },
             sumFunc(param) { // 表格合并行计算方法
                 let { columns, data } = param, sums = [];
@@ -145,22 +133,60 @@ export default {
                 this.$emit('cancel')
             },
             confirm(){
-                this.requestBody=JSON.parse(JSON.stringify(this.list))
+                this.requestBody=JSON.parse(JSON.stringify(this.newData))
+                let rfidList=[]
                 this.requestBody.forEach(item=>{
-                    item.equipArgId=item.equipArgId.id
-                    item.locationId=item.locationId.id
-                    item.copyList.forEach(r=>{
-                        item.rfids.push(r.rfid)
-                        item.serial.push(r.serial)
+                    item.copyList.forEach(rf=>{
+                        rfidList.push(rf.rfid)
                     })
                 })
-                delete this.requestBody.copyList
-                inHouse(this.requestBody).then(res=>{
-                    this.$message.success('装备入库成功')
+                
+                outHouse(rfidList).then(res=>{
+                    this.$message.success('装备出库成功')
                     this.init()
                     this.cancel()
                 })
             },
+            changeDataFormat(data){
+
+            data.forEach(item=>
+             {
+                 let newList={
+                     name:item.equipArg.name+'('+item.equipArg.model+')',
+                     price:item.price,
+                     productTime:item.productDate,
+                     count:0,
+                     copyList:[]
+                 }
+                 console.log("oneByone");
+                 console.log(newList);
+                 newList.copyList.push({rfid:item.rfid,serial:item.serial?item.serial:''})
+                if(this.list.length==0)
+                {
+                    this.list.push(newList)
+                }else{
+                    let flag=false,dIndex=0
+                    this.list.forEach((qe,index)=>{
+                        if(!flag&&(qe.name==newList.name))
+                        {
+                            flag=true;
+                            dIndex=index
+                        }
+                    })
+                    if(flag)
+                    {
+                        this.list[dIndex].copyList.push({rfid:item.rfid,serial:item.serial?item.serial:''})
+                        flag=true
+                    }else{
+                        this.list.push(newList)
+                    }
+                }
+            })
+            this.list.forEach(item=>{
+                item.count=item.copyList.length
+            })
+            this.newData=JSON.parse(JSON.stringify(this.list))
+        },
             changePage(page) {
             this.paginator.page = page;
             },
@@ -183,44 +209,50 @@ export default {
             this.time= year+'/'+mon+'/'+day+'/'+hours+'时';
             },
             readData(){
-                killProcess(this.pid)
-                start("java -jar scan.jar", (data) => {
-                    if(this.list[this.findIndex].copyList.length==1&&this.list[this.findIndex].copyList[0].rfid=='')
-                    {
-                        this.list[this.findIndex].copyList[0].rfid=data
-                    }else{
-                        this.list[this.findIndex].copyList.push({rfid:data,serial:''})
-                    }
-                    }, (fail) => {
-                        this.index = 1;
-                        this.$message.error(fail);
-                    }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
+                // killProcess(this.pid)
+                // start("java -jar scan.jar", (data) => {
+                //     if(this.list[this.findIndex].copyList.length==1&&this.list[this.findIndex].copyList[0].rfid=='')
+                //     {
+                //         this.list[this.findIndex].copyList[0].rfid=data
+                //     }else{
+                //         this.list[this.findIndex].copyList.push({rfid:data,serial:''})
+                //     }
+                //     }, (fail) => {
+                //         this.index = 1;
+                //         this.$message.error(fail);
+                //     }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
+                let rfids=['110000070000000000000000','110000050000000000000000','110200001122334455667788']
+                rfids.forEach(item=>{
+                    findByRfids(item).then(res=>{
+                        this.changeDataFormat(res)
+                    })
+                })
             },
             changeDetailRow(state,data)
             {
                 if(state)
                 {
-                    this.list[this.findIndex].copyList.push({rfid:'',serial:''})
-                }else if(this.list[this.findIndex].copyList.length>1){
-                    this.list[this.findIndex].copyList.splice(data.$index, 1)
+                    this.newData[this.findIndex].copyList.push({rfid:'',serial:''})
+                }else if(this.newData[this.findIndex].copyList.length>1){
+                    this.newData[this.findIndex].copyList.splice(data.$index, 1)
                 }else{
-                    this.list[this.findIndex].copyList=[{rfid:'',serial:''}]
+                    this.newData[this.findIndex].copyList=[{rfid:'',serial:''}]
                 }
             },
             changeRow(state,data)
             {
                 if(state)
                 {
-                    this.list.push({equipArgId: '',locationId: '',price: 0,productTime: 0,rfids: [],serial: [],copyList:[{rfid:'',serial:''}],})
-                }else if(this.list.length>1){
-                    this.list.splice(data.$index, 1)
+                    this.newData.push({name: '',locationId: '',price: 0,productTime: 0,rfids: [],serial: [],copyList:[{rfid:'',serial:''}],})
+                }else if(this.newData.length>1){
+                    this.newData.splice(data.$index, 1)
                 }else{
-                    this.list=[{equipArgId: '',locationId: '',price: 0,productTime: 0,rfids: [],serial: [],copyList:[{rfid:'',serial:''}],}]
+                    this.newData=[{name: '',locationId: '',price: 0,productTime: 0,rfids: [],serial: [],copyList:[{rfid:'',serial:''}],}]
                 }
             },
             init(){
-                this.list=[{
-                    equipArgId: '',
+                this.newData=[{
+                    name: '',
                     locationId: '',
                     price: 0,
                     productTime: 0,
@@ -248,31 +280,10 @@ export default {
                 }
             }
         },
-        beforeDestroy(){
-            killProcess(this.pid)
-        },
         created(){
-            
-            // this.time= Date.parse(new Date());
-            // if(this.equipData)
-            // {
-            //     this.list={
-            //         equipArgId: this.equipData.equipArgs,
-            //         locationId: '',
-            //         price: 0,
-            //         productTime: 0,
-            //         rfids: [],
-            //         serial: [],
-            //         copyList:[{rfid:'',serial:''}]
-            //     }
-            //     this.orderNumber=this.equipData.id
-            //     this.getTime(this.updateTime)
-            //     this.people=this.equipData.operator.operator
-            // }else{
                 this.getTime()
+                this.init()
                 this.people=JSON.parse(localStorage.getItem('user')).name
-            // }
-            
         }
 }
 </script>

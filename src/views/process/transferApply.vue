@@ -39,8 +39,8 @@
                     </bos-tabs>
                 </div>
                 <div class="buttom">
-                    <base-button label="提交" align="right" :width="128" :height="72" :fontSize="20" @click="submit"></base-button>
-                    <base-button label="清空" align="right" :width="128" :height="72" :fontSize="20" type="danger" @click="clean"></base-button>
+                    <base-button label="提交" align="right" size="large" @click="submit"></base-button>
+                    <base-button label="清空" align="right" size="large" type="danger" @click="clean"></base-button>
                 </div>
             </div>
         </div>

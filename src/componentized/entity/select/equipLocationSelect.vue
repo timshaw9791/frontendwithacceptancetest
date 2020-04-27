@@ -5,25 +5,29 @@
                         <define-table :data="surfaceList" height="1.8rem" @changeCurrent="selRow" :havePage="false"
                             :highLightCurrent="true"  slot="total">
                             <define-column label="仓位名称" v-slot="{ data }">
-                                 <define-input v-model="data.row.name"  :tableEdit="false"></define-input>
+                                <define-input  v-model="data.row.name" type="Number" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="仓位代码" v-slot="{ data }">
-                                <define-input v-model="data.row.number" type="Number" :tableEdit="false"></define-input>
+                                <define-input v-model="data.row.id" type="Number" :tableEdit="false"></define-input>
                             </define-column>
                         </define-table>
-                        <define-table :data="policeList" height="1.8rem" :havePage="false" slot="detail">
+                        <define-table :data="list" height="1.8rem" :havePage="false" slot="detail" @changeCurrent="selRow">
                            
                             <define-column label="警柜类型" v-slot="{ data }">
                                 <define-input v-model="data.row.category" type="String" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="警柜编号" v-slot="{ data }">
-                                <define-input v-model="data.row.number" type="Number" :tableEdit="false"></define-input>
+                                <define-input v-model="data.row.cabinetNumber" type="Number" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="所属人员" v-slot="{ data }">
-                                <define-input v-model="data.row.people" type="String" :tableEdit="false"></define-input>
+                                <define-input v-model="data.row.name" type="String" :tableEdit="false"></define-input>
                             </define-column>
                         </define-table>
                     </bos-tabs>
+        </div>
+        <div class="footer">
+            <base-button label="取消" type="none" @click="cancel"></base-button>
+            <base-button label="确定" @click="selected"></base-button>
         </div>
     </div>
 </template>
@@ -38,7 +42,8 @@
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
-    import { getInhouseNumber} from "api/storage"
+    import {getPoliceCabinets} from "api/warehouse"
+    import {getLocation} from "api/storage"
 export default {
     components:{
             myHeader,
@@ -51,38 +56,72 @@ export default {
             divTmp,
             bosTabs
         },
+        name: "equipLocationSelect",
         data(){
             return{
                list:[],
                orderNumber:'————',
                selectLocation:'',
+               currentSel:'',
                label:[{label: '仓位',key: 'total'}, {label: '警柜',key: 'detail'}],
-               surfaceList:[{name:'10架/A面/10层/10节',number:'10-A-10-10'}],
-               policeList:[{category:'单警柜',number:'1-01',people:'张三'},{category:'备用柜',number:'2-01',people:'李四'},{category:'公共柜',number:'3-01',people:'王五'}]
+               surfaceList:[],
+               policeList:[]
             }
         },
         methods:{
             selRow(current){
                 if(!current) return; // 避免切换数据时报错
                 console.log(current);
-                this.$emit('current',current)
-                // this.detailTable.list = [];
-                // this.rowData = current;
-                // if(current.rfid == undefined) return;
-                // for(let rfid of current.rfid) {
-                //     this.detailTable.list.push({
-                //         rfid: rfid
-                //     })
-                
+                 this.currentSel = current;
             },
-            sumFunc(){
-
+            cancel() {
+                this.$emit('cancel');
+            },
+            selected() {
+                if(!this.currentSel) {
+                    this.$message.warning("请选择装备位置");
+                } else {
+                    this.$emit('select', {data: this.currentSel, ref: 'locationSelect'});
+                }
             },
             getList(){
-                
+                getLocation().then(res=>{
+                    this.surfaceList=res.content
+                    this.surfaceList.forEach(item=>{
+                   item.name=item.frameNumber+'架/'+item.section+'节'
+                  })
+                }).catch(err => {
+                    this.$message.error(err.response.data.message)
+                })
+                getPoliceCabinets().then(res=>{
+                    console.log(res);
+                    this.list=res
+                    this.list.forEach(item=>{
+                        if(item.policeCabinetUserItems.length!=0)
+                        {
+                            item.name=item.policeCabinetUserItems[0].user.name
+                        }
+                        if(item.category=='SPARE')
+                        {item.category='备用柜'}
+                        else if(item.category=='SINGLE_POLICE')
+                        {
+                            item.category='单警柜'
+                        }
+                        else if(item.category=='COMMON'){
+                            item.category='公共柜'}
+                    })
+                }).catch(err => {
+                    this.$message.error(err.response.data.message)
+                })
+             
+
             },
             changePage(page) {
             this.paginator.page = page;
+            },
+            milliLocation(data)
+            {
+                return data.frameNumber+'架/'+data.section
             }
         },
         created(){
@@ -111,7 +150,10 @@ export default {
         display:flex;
         justify-content: space-between;
     }
-    
+    .footer {
+    margin-top:15px;
+    text-align: center;
+    }
 }
 
 </style>

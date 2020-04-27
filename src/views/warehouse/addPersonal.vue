@@ -3,21 +3,23 @@
         <my-header :title="title"  :searchFlag="false" :haveBlack="false" ></my-header>
         <div style="display:block;width:100%;height:500px">
             <div  class="addpersonnelist">
-                <entity-input label="机构单位" v-model="organUnit" format="{name}" :options="{search:'organUnits'}" placeholder="请选择"></entity-input>
-                <define-input label="警号" :required="true" v-model="order.policeSign" :column="12"></define-input>
-                <define-input label="姓名" :required="true" v-model="order.name" :column="12"></define-input>
-                <base-select label="性别" :required="true" v-model="order.gender" :column="12" :selectList="genderList"></base-select>
-                <base-select label="角色" :required="true" v-model="order.role" :selectList="roleList" :column="12"></base-select>
-                <define-input label="职位" :required="true" v-model="order.position" :column="12"></define-input>
-                <base-select label="开门库房权限" v-model="order.enterHouse" :selectList="enterhouseList" :column="12"></base-select>
-                <define-input label="联系方式" :required="true" type="Phone" v-model="order.phone" :column="12"></define-input>
-                <define-input label="身份证号" :required="true" type="CardId" v-model="order.idNumber" :column="12"></define-input>
-                <define-input label="密码" pattern="password" :required="true" v-model="order.password" :column="12"></define-input>
-                <define-input label="指纹信息" v-model="order.fingerprintInformation" :column="12"></define-input>
+                <entity-input label="机构单位" margin="15px 0 0 0" v-model="organUnit" format="{name}" :options="{search:'organUnits'}" placeholder="请选择"></entity-input>
+                <define-input label="警号" margin="15px 0 0 0" :required="true" v-model="order.policeSign" :column="12"></define-input>
+                <define-input label="姓名" margin="15px 0 0 0" :required="true" v-model="order.name" :column="12"></define-input>
+                <base-select label="性别" margin="15px 0 0 0" :required="true" v-model="order.gender" :column="12" :selectList="genderList"></base-select>
+                <base-select label="角色" margin="15px 0 0 0" :required="true" v-model="order.role" :selectList="roleList" :column="12"></base-select>
+                <define-input label="职位" margin="15px 0 0 0" :required="true" v-model="order.position" :column="12"></define-input>
+                <base-select label="开门库房权限"  margin="15px 0 0 0" v-model="order.enterHouse" :selectList="enterhouseList" :column="12"></base-select>
+                <define-input label="联系方式" margin="15px 0 0 0" :required="true" type="Phone" v-model="order.phone" :column="12"></define-input>
+                <define-input label="身份证号" margin="15px 0 0 0" :required="true" type="CardId" v-model="order.idNumber" :column="12"></define-input>
+                <define-input label="密码" margin="15px 0 0 0" pattern="password" :required="true" v-model="order.password" :column="12"></define-input>
+                <define-input label="指纹信息" margin="15px 0 0 0" v-model="order.fingerprintInformation" :column="12"></define-input>
             </div>
             <div  class="addpersonnelist">
-                    <img class="img" :src="imagesrc" alt="暂无图片" v-if="this.$route.params.info.edit">
-                    <imgUp @success="successUp" upload="true" noimg v-else></imgUp>
+                    <div class="img">
+                        <img class="img" :src="imagesrc" alt="暂无图片" v-if="this.$route.params.info.edit">
+                    </div>
+                    <imgUp style="margin-top:-251px" @success="successUp" :upload="true" ></imgUp>
             </div>
         </div>
         <div class="buttom">
@@ -162,6 +164,6 @@
         height: 72px;
         width:100%;
         margin-top: 25px;
-        box-shadow:0px 0px 12px rgba(235,238,245,1);
+        // box-shadow:0px 0px 12px rgba(235,238,245,1);
     }
 </style>

@@ -296,7 +296,7 @@
     import serviceDialog from 'components/base/serviceDialog/index'
     import {transformMixin} from "common/js/transformMixin";
     import { start, startOne, killProcess,handheld, modifyFileName } from 'common/js/rfidReader'
-    import {getSupplier} from "../../api/supplier";
+    import {getSupplier} from "api/supplier";
     import request from 'common/js/request'
     // const cmdPath = 'C:\\Users\\Administrator';
     // const exec = window.require('child_process').exec;

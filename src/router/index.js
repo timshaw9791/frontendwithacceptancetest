@@ -80,8 +80,8 @@ export const asyncRouterMap = [
             {
                 path: 'outstorage',
                 name: 'equipment/outstorage',
-                component: _import('equipment/outStorageInfo'),
-                meta: {title: '装备出库'},
+                component: _import('equipment/outHouseOrder'),
+                meta: {title: '出库单列表'},
             },
             {
                 path: 'equipArgs',
@@ -222,22 +222,40 @@ export const asyncRouterMap = [
         meta: {title: '维保充电', icon: '维保充电', roles: ['ADMINISTRATOR']},
         children: [
             {
-                path: 'charging',
-                name: 'charging',
-                component: _import('equipmentOperation/charging'),
-                meta: {title: '充电'},
+                path: 'needCharge',
+                name: 'needCharge',
+                component: _import('equipmentOperation/needCharge'),
+                meta: {title: '需要充电'},
+            },
+            {
+                path: 'charge',
+                name: 'charge',
+                component: _import('equipmentOperation/charge'),
+                meta: {title: '正在充电'},
             },
             {
                 path: 'maintenance',
                 name: 'maintenance',
-                component: _import('equipmentOperation/maintenance'),
-                meta: {title: '保养'},
+                component: _import('equipmentOperation/maintenanceNew'),
+                meta: {title: '需要保养'},
+            },
+            {
+                path: 'needMaintenanced',
+                name: 'needMaintenanced',
+                component: _import('equipmentOperation/needMaintenanced'),
+                meta: {title: '正在保养'},
             },
             {
                 path: 'service',
                 name: 'service',
                 component: _import('equipmentOperation/service'),
                 meta: {title: '维修'},
+            },
+            {
+                path: 'serviceapplication',
+                name: 'serviceapplication',
+                component: _import('equipmentOperation/serviceApplicationInfo'),
+                meta: {title: '维修申请'},
             }
         ]
     },
