@@ -7,8 +7,8 @@
     <input type="Number" class="input" :disabled="disabled" v-model="insideValue" 
         @change="reg" :readonly="!(tableEdit&&edit)" :placeholder="placeholder"
         @blur="changeEditState(false)" @keydown.13="changeEditState(false)"/>
-    <div class="icon" v-show="insideValue!=''&&clearable&&!disabled&&tableEdit&&edit">
-        <i class="iconfont iconwenbenkuangshanchu" @click="clear"></i>
+    <div class="icon">
+        <i class="iconfont iconwenbenkuangshanchu" @click="clear" v-show="insideValue!=''&&clearable&&!disabled&&tableEdit&&edit"></i>
      </div>
     </div>
 </template>
@@ -17,10 +17,10 @@ export default {
   name: "numberInput",
   data() {
         return {
-            insideValue: "",
-            inTable: false,
-            edit: true, // 内部判断是否只读
-            inTableStateContrl: true,
+          insideValue: "",
+          inTable: false,
+          edit: true, // 内部判断是否只读
+          inTableStateContrl: true,
           styleObj: {
             error: false,
             'table-error': false
@@ -28,6 +28,10 @@ export default {
       }
   },
   props: {
+    filter: {
+      type: String,
+      default: 'none'
+    },
     label: {
       type: String,
       default: "标题"
@@ -99,6 +103,17 @@ export default {
     changeEditState(state) {
       if(!this.inTable || this.disabled) return;
       this.edit = state;
+    },
+    fixValue(value) {
+      switch (this.filter) {
+        case 'toDay':
+          this.insideValue = value/1000/3600/24
+          break;
+      
+        default:
+          this.insideValue = value
+          break;
+      }
     }
   },
   computed: {
@@ -108,16 +123,27 @@ export default {
   },
   watch: {
     insideValue(val) {
-      this.$emit("input", val);
+      // this.$emit("input", val);
+      switch (this.filter) {
+        case 'toDay':
+          this.$emit('input', val*1000*24*3600);
+          break;
+      
+        default:
+          this.$emit('input', val);
+          break;
+      }
     },
     value: {
       handler() {
-        this.insideValue = this.value.slice(0, this.maxlength);
+        // this.insideValue = this.value.slice(0, this.maxlength);
+        this.fixValue(this.value.toString().slice(0, this.maxlength));
       }
     }
   },
   created() {
-    this.insideValue = this.value;
+    // this.insideValue = this.value;
+    this.fixValue(this.value);
   },
   mounted() {
     try {
@@ -162,9 +188,9 @@ input[type=Number]::-webkit-inner-spin-button { display: none; }
     color: red;
   }
   .input {
-    width: auto;
+    width: 100%;
     padding: 0 5px 1px 0;
-    flex-grow: 1;
+    // flex-grow: 1;
     height: 100%;
     font-size: 16px;
     outline-style: none;
@@ -176,7 +202,8 @@ input[type=Number]::-webkit-inner-spin-button { display: none; }
     color: #C0C4CC;
   }
   .icon {
-    padding: 0 10px;
+    width:35px;
+    padding: 0 10px 0 0;
   }
 }
 .border {
