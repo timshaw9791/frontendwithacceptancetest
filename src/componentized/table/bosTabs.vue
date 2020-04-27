@@ -9,7 +9,7 @@
       <slot name="slotHeader"></slot>
     </div>
     <div class="bos-card-body" :style="'grid-template-columns:'+gridColumn">
-      <div v-for="(item, i) in label" :key="'slot'+i"  v-show="label[selectedIndex].key == item.key" class="slot">
+      <div v-for="(item, i) in label" :key="'slot'+i"  v-show="label[selectedIndex].key == item.key&&tabs" class="slot">
         <slot :name="item.key"></slot>
       </div>
       <div class="contrast-component" v-for="(slotName, j) in contrastKey" :key="j" v-show="contrast">
