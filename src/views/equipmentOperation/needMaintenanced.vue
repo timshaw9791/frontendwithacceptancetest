@@ -1,11 +1,11 @@
 <template>
   <div class="maintenance-form-container">
-    <my-header :title="$route.meta.title" :haveBlack="false"></my-header>
-    <div class="maintenance-form-top">
-      <base-button :width="100" size="default" align="right" label="结束保养" ></base-button>
+    <my-header :title="$route.meta.title" :haveBlack="isEnd" @h_black="endMain()"></my-header>
+    <div class="maintenance-form-top" v-if="!isEnd">
+      <base-button :width="100" size="default" align="right" @click="endMain()" label="结束保养" ></base-button>
     </div>
     <div class="maintenance-form-body">
-        <bos-tabs >
+        <bos-tabs v-if="!isEnd">
                         <define-table :data="newData" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
                             :highLightCurrent="true"  slot="total" :showSummary="true" :summaryFunc="sumFunc">
                             <define-column label="装备参数" v-slot="{ data }">
@@ -34,7 +34,9 @@
                             </define-column>
                         </define-table>
                     </bos-tabs>
+        
     </div>
+    <end-maintenance v-if="isEnd" @cancel="cancel"></end-maintenance>
   </div>
 </template>
 
@@ -47,10 +49,12 @@ import myHeader from 'components/base/header/header'
     import baseSelect from '@/componentized/textBox/baseSelect.vue'
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
+    import endMaintenance from './endMaintenance'
     import serviceDialog from 'components/base/serviceDialog/index'
     import { start, startOne, killProcess,handheld, modifyFileName } from 'common/js/rfidReader'
+    import { getInhouseNumber,inHouse,findByRfids,outHouse} from "api/storage"
     import divTmp from '@/componentized/divTmp'
-    import { findrepairingequips} from "api/operation"
+    import { inKeepEquips} from "api/operation"
 var _ = require("lodash");
 export default {
   name: "maintenance",
@@ -75,13 +79,17 @@ export default {
                pid:'',
                findIndex:0,
                newData:[],
-               list:[]
+               list:[],
+               isEnd:false
     }
   },
   methods: {
     selRow(current){
                 console.log(current);
                this.findIndex=this._.indexOf(this.newData,current)
+            },
+            endMain(){
+                this.isEnd=!this.isEnd
             },
             sumFunc(param) { // 表格合并行计算方法
                 let { columns, data } = param, sums = [];
@@ -115,35 +123,21 @@ export default {
                 // return this._.map(this._.groupBy(this.list, item => `${item.equipArg.model}${item.location.surface}`),(v,k)=>{return {equipArg:v[0].equipArg,copyList:v}})
             },
             cancel(){
-                this.$emit('cancel')
+                this.isEnd=!this.isEnd
             },
             getList(){
-                findrepairingequips().then(res=>{
+                inKeepEquips().then(res=>{
                     this.newData=this._.map(res,(v,k)=>{return {equipArg:v.equipArg,copyList:[],count:v.rfids.length,location:v.location,rfids:v.rfids,serials:v.serials}})
                     this.newData.forEach(item=>{
                         let len=item.rfids.length
                         console.log(len);
+                        item.location=this.milliLocation(item.location)
                         for(let i=0;i<len;i++)
                         {
                             item.copyList.push({rfid:item.rfids[i],serial:item.serials[i]})
                         }
                     })
                     console.log(this.newData);
-                })
-            },
-            confirm(){
-                this.requestBody=JSON.parse(JSON.stringify(this.newData))
-                let rfidList=[]
-                this.requestBody.forEach(item=>{
-                    item.copyList.forEach(rf=>{
-                        rfidList.push(rf.rfid)
-                    })
-                })
-                
-                outHouse(rfidList).then(res=>{
-                    this.$message.success('装备出库成功')
-                    this.init()
-                    this.cancel()
                 })
             },
             changePage(page) {
@@ -223,6 +217,9 @@ export default {
     },
   created() {
       this.getList()
+      if(this.newData.length==0){
+          this.init()
+      }
   },
   components: {
     myHeader,
@@ -234,6 +231,7 @@ export default {
             entityInput,
             divTmp,
             bosTabs,
+            endMaintenance,
             serviceDialog
   },
 };

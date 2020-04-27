@@ -1,27 +1,24 @@
 <template>
-    <div class="opening-box">
-          <div class="action_box" data-test="action_box">
+  <div class="maintenance-form-container">
+       <div class="action_box" data-test="action_box">
                 <define-input label="单号" v-model="orderNumber" :disabled="true" class="odd-number"></define-input>
-                <date-select label="出库时间" v-model="time" :disabled="true"></date-select>
-                <entity-input label="出库人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :disabled="false" ></entity-input>
+                <date-select label="保养结束时间" v-model="time" :disabled="true"></date-select>
+                <entity-input label="操作人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :disabled="true" ></entity-input>
             </div>
-        <div class="data-list">
-            <bos-tabs >
-                        <template slot="slotHeader" v-if="showDetail">
+    
+    <div class="maintenance-form-body">
+        <bos-tabs >
+            <template slot="slotHeader">
                             <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96" @click="readData"></base-button>
                             <base-select label="硬件选择" v-model="select.selected" align="right" :selectList="select.handWareList"></base-select>
                         </template>
                         <define-table :data="newData" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
                             :highLightCurrent="true"  slot="total" :showSummary="true" :summaryFunc="sumFunc">
-                            <define-column label="操作" width="100" v-slot="{ data }">
-                                <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
-                                <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
-                            </define-column>
-                            <define-column label="装备参数" v-slot="{ data }" v-if="showDetail">
+                            <define-column label="装备参数" v-slot="{ data }">
                                 <entity-input v-model="data.row.equipArg"  :options="{detail:'equipArgsSelect'}" format="{name}({model})" :tableEdit="false" ></entity-input>
                             </define-column>
-                            <define-column label="装备参数" v-slot="{ data }" v-if="!showDetail">
-                                <entity-input v-model="data.row.equipArg"  :options="{detail:'equipArgsSelect'}" format="{equipName}({equipModel})" :tableEdit="false" ></entity-input>
+                            <define-column label="装备位置" v-slot="{ data }">
+                                <define-input v-model="data.row.location"  :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
                                 <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
@@ -32,21 +29,24 @@
                                <i class="iconfont icontianjialiang" @click="changeDetailRow(true,data)"></i>
                                <i class="iconfont iconyichuliang" @click="changeDetailRow(false,data)"></i>
                             </define-column>
-                            <define-column label="RFID" field="rfid" :tableEdit="false"/>
-                            <define-column label="装备序号" field="serial" :tableEdit="false"/>
+                            <define-column label="RFID" v-slot="{ data }">
+                                <define-input v-model="data.row.rfid" type="String" :tableEdit="false"></define-input>
+                            </define-column>
+                            <define-column label="装备序号" v-slot="{ data }">
+                                <define-input v-model="data.row.serial" type="Number" :tableEdit="false"></define-input>
+                            </define-column>
                         </define-table>
                     </bos-tabs>
-        <div class="btn-box" v-if="showDetail">
+         <div class="btn-box">
                   <base-button label="取消" align="right"   @click="cancel"></base-button>
                   <base-button label="提交" align="right"   @click="confirm"></base-button>
               </div>
-        
-        </div>
     </div>
+  </div>
 </template>
 
 <script>
-    import myHeader from 'components/base/header/header'
+import myHeader from 'components/base/header/header'
     import textInput from '@/componentized/textBox/textInput.vue'
     import defineInput from '@/componentized/textBox/defineInput.vue'
     import bosTabs from '@/componentized/table/bosTabs.vue'
@@ -56,35 +56,15 @@
     import entityInput from '@/componentized/entity/entityInput'
     import serviceDialog from 'components/base/serviceDialog/index'
     import { start, startOne, killProcess,handheld, modifyFileName } from 'common/js/rfidReader'
-    import divTmp from '@/componentized/divTmp'
     import { getInhouseNumber,inHouse,findByRfids,outHouse} from "api/storage"
+    import divTmp from '@/componentized/divTmp'
+    import { findrepairingequips,endKeepEquips} from "api/operation"
+var _ = require("lodash");
 export default {
-    components:{
-            myHeader,
-            textInput,
-            defineInput,
-            baseButton,
-            baseSelect,
-            dateSelect,
-            entityInput,
-            divTmp,
-            bosTabs,
-            serviceDialog
-        },
-        props:{
-            equipData: {
-              type: Object,
-              default() {
-                return {}
-              }
-            },
-            showDetail: {
-              type: Boolean,
-              default:true
-            },
-        },
-        data(){
-            return{
+  name: "maintenance",
+  data() {
+    return {
+       copyData:{},
                time:"",
                people:'',
                requestBody:'',
@@ -103,11 +83,11 @@ export default {
                pid:'',
                findIndex:0,
                newData:[],
-               list:[],
-            }
-        },
-        methods:{
-            selRow(current){
+               list:[]
+    }
+  },
+  methods: {
+    selRow(current){
                 console.log(current);
                this.findIndex=this._.indexOf(this.newData,current)
             },
@@ -127,6 +107,21 @@ export default {
                 })
                 return sums;
             },
+            milliLocation(data)//对现实的装备位置信息进行处理
+            {
+                return data.frameNumber+'架/'+data.surface+'面/'+data.section+'节/'+data.surface+'层'
+            },
+             classDataify(data)//读写器数据处理的方法
+            {
+                data.forEach(item=>{this.list.push(item)})
+                let cList=this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}`)
+                this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length}})
+                /*详情单过来时 数据的属性不同处理方法不同*/
+                // let cList=this.showDetail?this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}`):this._.groupBy(this.list, item => `${item.equipName}${item.equipModel}`)
+                // this.newData=this.showDetail?this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length}}):this._.map(cList,(v,k)=>{return {equipArg:v[0],copyList:v,count:v.length}})
+                //this.list=this._.map(this._.groupBy(this.list, item => `${item.equipArg.model}`),(v,k)=>{return {equipArg:v[0].equipArg,copyList:v}})
+                // return this._.map(this._.groupBy(this.list, item => `${item.equipArg.model}${item.location.surface}`),(v,k)=>{return {equipArg:v[0].equipArg,copyList:v}})
+            },
             cancel(){
                 this.$emit('cancel')
             },
@@ -139,8 +134,8 @@ export default {
                     })
                 })
                 
-                outHouse(rfidList).then(res=>{
-                    this.$message.success('装备出库成功')
+                endKeepEquips(false,rfidList).then(res=>{
+                    this.$message.success('装备结束保养成功')
                     this.init()
                     this.cancel()
                 })
@@ -151,28 +146,32 @@ export default {
             changelocation(){
                 this.$refs.historyDialog.show()
             },
-            classDataify(data)//读写器数据处理的方法
+           classDataify(data)//读写器数据处理的方法
             {
                 data.forEach(item=>{this.list.push(item)})
-                /*详情单过来时 数据的属性不同处理方法不同*/
-                let cList=this.showDetail?this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}`):this._.groupBy(this.list, item => `${item.equipName}${item.equipModel}`)
-                this.newData=this.showDetail?this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length}}):this._.map(cList,(v,k)=>{return {equipArg:v[0],copyList:v,count:v.length}})
-                //this.list=this._.map(this._.groupBy(this.list, item => `${item.equipArg.model}`),(v,k)=>{return {equipArg:v[0].equipArg,copyList:v}})
-                // return this._.map(this._.groupBy(this.list, item => `${item.equipArg.model}${item.location.surface}`),(v,k)=>{return {equipArg:v[0].equipArg,copyList:v}})
+                let cList=this._.groupBy(this.list, item => `${item.equipArg.model}${item.location.id}`)
+                this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length,location:v[0].location}})
+                this.newData.forEach(item=>{item.location=this.milliLocation(item.location)})
             },
             readData(){
-                if(this.select.selected=='reader')
-                {
-                    killProcess(this.pid)
-                    start("java -jar scan.jar", (data) => {
-                        findByRfids(data).then(res=>{
-                        this.classDataify(res)
-                    })
-                        }, (fail) => {
-                            this.index = 1;
-                            this.$message.error(fail);
-                        }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
-                }
+                // killProcess(this.pid)
+                // start("java -jar scan.jar", (data) => {
+                //     if(this.list[this.findIndex].copyList.length==1&&this.list[this.findIndex].copyList[0].rfid=='')
+                //     {
+                //         this.list[this.findIndex].copyList[0].rfid=data
+                //     }else{
+                //         this.list[this.findIndex].copyList.push({rfid:data,serial:''})
+                //     }
+                //     }, (fail) => {
+                //         this.index = 1;
+                //         this.$message.error(fail);
+                //     }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
+                let rfids=['00001545']
+                rfids.forEach(item=>{
+                    findByRfids(item).then(res=>{
+                     this.classDataify(res)
+                   })
+                })
             },
             changeDetailRow(state,data)
             {
@@ -207,60 +206,43 @@ export default {
                     copyList:[{rfid:'',serial:''}]
                 }]
             }
-        },
-        created(){
-               if(this.showDetail){
-                this.init()
-                this.people=JSON.parse(localStorage.getItem('user')).name
-               }else{
-                   this.time=this.equipData.createTime
-                   this.people=this.equipData.operator.operator
-                   this.orderNumber=this.equipData.number
-                   this.classDataify(this.equipData.inOutHouseItems)
-               }
-                
-        }
-}
+    },
+  created() {
+     this.init()
+  },
+  components: {
+    myHeader,
+            textInput,
+            defineInput,
+            baseButton,
+            baseSelect,
+            dateSelect,
+            entityInput,
+            divTmp,
+            bosTabs,
+            serviceDialog
+  },
+};
 </script>
+
 <style lang="scss" scoped>
-.opening-box{
+  .maintenance-form-container {
     font-size: 16px;
-    width: 100%;
-    min-height: 4.4323rem;
-    .btn_box{
-    height:30px;
-    border-top:1px solid rgba(112, 112, 112, 0.13);
-    border-bottom:1px solid rgba(112, 112, 112, 0.13);
-    }
     .action_box{
         display: flex;
         justify-content: flex-start;
         align-items: center;
     }
-    .data-list
-    {
-        padding: 0 10px;
-        margin-top:15px;
-        height:"2.8648rem";
-        // border:1px solid rgba(112, 112, 112, 0.13)
-    }
-    .span-box{
-        display:flex;
-        justify-content: space-between;
-    }
-}
-.location-select{
-    height: 500px;
-    width: 4.625rem;
-    z-index: 1200;
-    .select-location{
-        width:3.5rem;
-        height: 440px;
-        float: left;
-        margin-left: auto;
-}
-}
-.btn-box{
+  }
+  .maintenance-form-top {
+    padding: 18px 7px;
+    border-bottom: 1px solid #ebeef5;
+    overflow: hidden;
+  }
+  .maintenance-form-body {
+    padding: 0 7px;
+  }
+  .btn-box{
         width: 4rem;
         height: 50px;
         margin-left:20px;

@@ -1,5 +1,5 @@
 import request from 'common/js/request'
-
+var qs = require('qs')
 export function retirementApplication(data) {
     return request({
         url: '/equip-scrap/equip-scrap-start',
@@ -8,12 +8,20 @@ export function retirementApplication(data) {
     })
 }
 //正在保养
-export function findrepairingequips() {
+export function inKeepEquips() {
     return request({
         url: '/equips/in-upkeep',
         method: 'get',
     })
 }
+//结束保养
+export function endKeepEquips(state,list) {
+    return request({
+        url: `/equip-maintain/upkeep?${qs.stringify({rfids:list},{indices:false})}&state=${state}`,
+        method: 'post',
+    })
+}
+
 export function findkeepingequips() {
     return request({
         url: '/equip/findkeepingequips',
