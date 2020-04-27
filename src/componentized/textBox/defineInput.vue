@@ -173,9 +173,9 @@ export default {
     color: red;
   }
   .input {
-    width: auto;
+    width: 100%;
     padding: 0 5px 1px 0;
-    flex-grow: 1;
+    // flex-grow: 1;
     height: 100%;
     font-size: 16px;
     outline-style: none;
@@ -187,6 +187,7 @@ export default {
     color: #C0C4CC;
   }
   .icon {
+    width: 35px;
     padding: 0 10px;
   }
 }
