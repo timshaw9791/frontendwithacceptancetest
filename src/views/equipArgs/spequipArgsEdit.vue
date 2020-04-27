@@ -11,7 +11,6 @@
             <br><br><br>
             <date-input label="保养周期(天)" filter="toDay" v-model="equipArgs.upkeepCycle" :disabled="disabled"></date-input>
             <entity-input label="供应商" :disabled="disabled" v-model="equipArgs.supplier" format="{name}" :options="{search:'supplierSelect'}"></entity-input>
-            <number-input v-model="test"></number-input>
         </div>
         <div class="footer">
             <base-button label="确定" v-show="!disabled||isAdd" @click="submit()"></base-button>
@@ -29,7 +28,6 @@ export default {
     data() {
         return {
             disabled: true,
-            test: '11223',
             equipArgs: {
                 name: '',
                 model: '',
