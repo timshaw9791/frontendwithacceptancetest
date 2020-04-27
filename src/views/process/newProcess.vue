@@ -8,11 +8,10 @@
         </define-column>
         <define-column label="工作流名称" field="name"></define-column>
         <define-column label="部署时间" :filter="(row)=>$filterTime(row.deploymentTime)"></define-column>
-        <define-column label="日期">
-          <date-select v-model="testTime" :required="true" :column="12" :disabled="true"></date-select>
-        </define-column> 
       </define-table>
     </div>
+
+
   </div>
 </template>
 
@@ -26,8 +25,6 @@ export default {
   data() {
     return {
       list: [],
-      test: '',
-      testTime: new Date().getTime(),
       paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0}
     }
   },
