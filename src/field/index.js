@@ -39,6 +39,7 @@ import defineForm from '@/componentized/form/defineForm'
 import textInput from '@/componentized/textBox/textInput'
 import dateSelect from '@/componentized/textBox/dateSelect'
 import numberInput from '@/componentized/textBox/numberInput'
+import entityInput from '@/componentized/entity/entityInput'
 
 let componentsList = {
     'FormContainer': FormContainer,
@@ -68,7 +69,8 @@ let componentsList = {
     defineForm,
     textInput,
     dateSelect,
-    numberInput
+    numberInput,
+    entityInput
 };
 
 

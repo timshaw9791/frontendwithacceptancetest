@@ -103,8 +103,8 @@ export default {
     },
     methods: {
         changePreStyle(state=true) {
-            this.inputPrePt.style.background = state?'#f5f7fa':'white';
-            this.inputPrePt.style.cursor = state?'not-allowed':'auto';
+            // this.inputPrePt.style.background = state?'#f5f7fa':'white';
+            // this.inputPrePt.style.cursor = state?'not-allowed':'auto';
         },
         showSearch() {
           this.$refs[this.options.search].show();
@@ -231,8 +231,10 @@ export default {
     color: #C0C4CC;
   }
   .icon {
+    text-align: right;
+    flex-grow: 1;
     min-width: 32px;
-    padding: 0 10px;
+    padding: 0 3px 0 0;
   }
 }
 .border {
