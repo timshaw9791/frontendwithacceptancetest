@@ -7,8 +7,8 @@
         </div>
         <define-table :data="equipArgsList" >
             <define-column label="操作" v-slot="{data}">
-                <span @click="showFun('info',data.row)">详情</span>
-                <span @click="showFun('edit',data.row)">编辑</span>
+                <span @click="showFun('info',data.row)" >详情</span>
+                <span @click="showFun('edit',data.row)" style="margin:8px">编辑</span>
             </define-column>
             <define-column label="图片" v-slot="{ data }" style="width: 30px">
                 <img class="img" :src="imgBaseUrl+data.row.image"/>
