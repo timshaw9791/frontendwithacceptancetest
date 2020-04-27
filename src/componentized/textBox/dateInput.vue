@@ -1,5 +1,5 @@
 <template>
-  <div class="number-input-container" ref="numberInput" :style="`width:${fixWidth};float:${align};margin:${margin}`"
+  <div class="date-input-container" ref="dateInput" :style="`width:${fixWidth};float:${align};margin:${margin}`"
   :class="[styleObj,{'disabled':disabled&&inTableStateContrl,'border':(tableEdit&&edit)}]" @click="changeEditState(true)">
     <div class="label" v-if="!inTable">{{ label }}
         <span class="required" v-if="required">*</span>
@@ -14,7 +14,7 @@
 </template>
 <script>
 export default {
-  name: "numberInput",
+  name: "dateInput",
   data() {
         return {
           insideValue: "",
@@ -30,7 +30,7 @@ export default {
   props: {
     filter: {
       type: String,
-      default: 'none'
+      default: 'toDay'
     },
     label: {
       type: String,
@@ -65,18 +65,6 @@ export default {
       type: Boolean,
       default: true
     },
-    maxlength: {
-      type: Number,
-      default: 100
-    },
-    max: {
-        type: Number,
-        default: Number.POSITIVE_INFINITY
-    },
-    min: {
-        type: Number,
-        default: -Number.POSITIVE_INFINITY
-    },
     required: {
       // 是否必填
       type: Boolean,
@@ -93,7 +81,7 @@ export default {
       this.reg(); // 这里貌似没有触发change事件。暂且手动触发
     },
     reg() {
-      if(this.required&&!this.value || this.value<this.min || this.value>this.max) {
+      if(this.required&&!this.value) {
           this.inTable?this.styleObj['table-error'] = true:this.styleObj['error'] = true;
           return false;
       }
@@ -103,6 +91,17 @@ export default {
     changeEditState(state) {
       if(!this.inTable || this.disabled) return;
       this.edit = state;
+    },
+    fixValue(value) {
+      switch (this.filter) {
+        case 'toDay':
+          this.insideValue = value/1000/3600/24
+          break;
+      
+        default:
+          this.insideValue = value
+          break;
+      }
     }
   },
   computed: {
@@ -112,20 +111,29 @@ export default {
   },
   watch: {
     insideValue(val) {
-      this.$emit("input", val);
+      // this.$emit("input", val);
+      switch (this.filter) {
+        case 'toDay':
+          this.$emit('input', val*1000*24*3600);
+          break;
+      
+        default:
+          this.$emit('input', val);
+          break;
+      }
     },
     value: {
       handler() {
-        this.insideValue = this.value.slice(0, this.maxlength);
+        this.fixValue(this.value);
       }
     }
   },
   created() {
-    this.insideValue = this.value;
+    this.fixValue(this.value);
   },
   mounted() {
     try {
-      if(this.$refs.numberInput.parentNode.parentNode.nodeName == 'TD') {
+      if(this.$refs.dateInput.parentNode.parentNode.nodeName == 'TD') {
         this.inTable = true;
         this.edit = false;
         if(this.disabled) {
@@ -141,7 +149,7 @@ export default {
 
 <style lang="scss" scoped>
 input[type=Number]::-webkit-inner-spin-button { display: none; } 
-.number-input-container {
+.date-input-container {
   display: inline-flex;
   justify-content: flex-start;
   align-items: center;
@@ -202,7 +210,7 @@ input[type=Number]::-webkit-inner-spin-button { display: none; }
     color:rgba(192,196,204,1);
   }
 }
-.number-input-container:hover {
+.date-input-container:hover {
   .iconwenbenkuangshanchu {
     display: inline-block;
   }
