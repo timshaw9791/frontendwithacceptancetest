@@ -37,11 +37,6 @@
             //通过监听showFun对List还是Edit界面进行切换
             showFun(data) {
                 this.showData = data
-                if (this.showData.title === "list") {
-                    getEquipArgs().then(res => {
-                        this.showData.data = res.content
-                    })
-                }
                 switch (data.operation) {
                     case "add":
                         this.title = "新增装备参数"
@@ -52,6 +47,9 @@
                     }
                     case "list": {
                         this.title = "装备参数列表"
+                        getEquipArgs().then(res => {
+                            this.showData.data = res.content
+                        })
                         break
                     }
                     case "info": {
@@ -59,7 +57,6 @@
                         break
                     }
                 }
-
             },
             back() {
                 this.title = "装备参数列表"

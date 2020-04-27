@@ -7,8 +7,8 @@
     <input type="Number" class="input" :disabled="disabled" v-model="insideValue" 
         @change="reg" :readonly="!(tableEdit&&edit)" :placeholder="placeholder"
         @blur="changeEditState(false)" @keydown.13="changeEditState(false)"/>
-    <div class="icon" v-show="insideValue!=''&&clearable&&!disabled&&tableEdit&&edit">
-        <i class="iconfont iconwenbenkuangshanchu" @click="clear"></i>
+    <div class="icon">
+        <i class="iconfont iconwenbenkuangshanchu" @click="clear" v-show="insideValue!=''&&clearable&&!disabled&&tableEdit&&edit"></i>
      </div>
     </div>
 </template>
@@ -17,10 +17,10 @@ export default {
   name: "numberInput",
   data() {
         return {
-            insideValue: "",
-            inTable: false,
-            edit: true, // 内部判断是否只读
-            inTableStateContrl: true,
+          insideValue: "",
+          inTable: false,
+          edit: true, // 内部判断是否只读
+          inTableStateContrl: true,
           styleObj: {
             error: false,
             'table-error': false
@@ -28,6 +28,10 @@ export default {
       }
   },
   props: {
+    filter: {
+      type: String,
+      default: 'none'
+    },
     label: {
       type: String,
       default: "标题"
@@ -162,9 +166,9 @@ input[type=Number]::-webkit-inner-spin-button { display: none; }
     color: red;
   }
   .input {
-    width: auto;
+    width: 100%;
     padding: 0 5px 1px 0;
-    flex-grow: 1;
+    // flex-grow: 1;
     height: 100%;
     font-size: 16px;
     outline-style: none;
@@ -176,7 +180,8 @@ input[type=Number]::-webkit-inner-spin-button { display: none; }
     color: #C0C4CC;
   }
   .icon {
-    padding: 0 10px;
+    width:35px;
+    padding: 0 10px 0 0;
   }
 }
 .border {

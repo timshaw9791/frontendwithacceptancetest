@@ -1,35 +1,37 @@
 <template>
-  <div class="text-input-container" ref="defineInput" :style="`width:${fixWidth};float:${align};margin:${margin}`"
-      :class="[styleObj,{'disabled':disabled&&inTableStateContrl,'border':(tableEdit&&edit)}]" @click="changeEditState(true)">
+  <div class="date-input-container" ref="dateInput" :style="`width:${fixWidth};float:${align};margin:${margin}`"
+  :class="[styleObj,{'disabled':disabled&&inTableStateContrl,'border':(tableEdit&&edit)}]" @click="changeEditState(true)">
     <div class="label" v-if="!inTable">{{ label }}
-      <span class="required" v-if="required">*</span>
+        <span class="required" v-if="required">*</span>
     </div>
-    <input :type="pattern" class="input" :disabled="disabled" v-model="insideValue" 
-      :maxlength="maxlength" @change="reg" :readonly="!(tableEdit&&edit)" :placeholder="placeholder"
-      @blur="changeEditState(false)" @keydown.13="changeEditState(false)"/>
-    <div class="icon" v-show="insideValue!=''&&clearable&&!disabled&&tableEdit&&edit">
-      <i class="iconfont iconwenbenkuangshanchu" @click="clear"></i>
+    <input type="Number" class="input" :disabled="disabled" v-model="insideValue" 
+        @change="reg" :readonly="!(tableEdit&&edit)" :placeholder="placeholder"
+        @blur="changeEditState(false)" @keydown.13="changeEditState(false)"/>
+    <div class="icon">
+        <i class="iconfont iconwenbenkuangshanchu" @click="clear" v-show="insideValue!=''&&clearable&&!disabled&&tableEdit&&edit"></i>
+     </div>
     </div>
-  </div>
 </template>
-
 <script>
-import { judgeRules } from "../rules"
 export default {
-  name: "defineInput",
+  name: "dateInput",
   data() {
-    return {
-      insideValue: "",
-      inTable: false,
-      edit: true, // 内部判断是否只读
-      inTableStateContrl: true,
-      styleObj: {
-        error: false,
-        'table-error': false
+        return {
+          insideValue: "",
+          inTable: false,
+          edit: true, // 内部判断是否只读
+          inTableStateContrl: true,
+          styleObj: {
+            error: false,
+            'table-error': false
+        }
       }
-    };
   },
   props: {
+    filter: {
+      type: String,
+      default: 'toDay'
+    },
     label: {
       type: String,
       default: "标题"
@@ -44,26 +46,15 @@ export default {
     },
     align: {
       type: String,
-      default: 'none'
+      default: "none"
     },
     margin: {
       type: String,
-      default: '0 0.0521rem'
+      default: "0 0.0521rem"
     },
     disabled: {
       type: Boolean,
       default: false
-    },
-    pattern: {
-      type: String,
-      default: 'text',
-      validator: function(value) {
-        return ['text', 'password'].includes(value);
-      }
-    },
-    type: {
-      type: String,
-      default: "String"
     },
     tableEdit: {
       type: Boolean,
@@ -74,30 +65,14 @@ export default {
       type: Boolean,
       default: true
     },
-    maxlength: {
-      type: Number,
-      default: -1
-    },
     required: {
       // 是否必填
       type: Boolean,
       default: false
     },
-    validate: {
-      // 验证函数
-      type: Function,
-      default() {
-        return () => true;
-      }
-    },
     placeholder: {
       type: [Number, String],
       default: ""
-    }
-  },
-  computed: {
-    fixWidth() {
-      return this.inTable?`calc(100% - 0.1042rem)`:`calc(${8.33*this.column}% - 0.1042rem)`;
     }
   },
   methods: {
@@ -106,34 +81,59 @@ export default {
       this.reg(); // 这里貌似没有触发change事件。暂且手动触发
     },
     reg() {
-      if(judgeRules(this.required, this.type, this.value, this.validate)) {
-        this.inTable?this.styleObj['table-error']=false:this.styleObj.error=false;
-        return true;
-      } 
-      this.inTable?this.styleObj['table-error']=true:this.styleObj.error=true;
-      return false;   
+      if(this.required&&!this.value) {
+          this.inTable?this.styleObj['table-error'] = true:this.styleObj['error'] = true;
+          return false;
+      }
+      this.inTable?this.styleObj['table-error']=false:this.styleObj['error']=false;
+      return true;
     },
     changeEditState(state) {
       if(!this.inTable || this.disabled) return;
       this.edit = state;
+    },
+    fixValue(value) {
+      switch (this.filter) {
+        case 'toDay':
+          this.insideValue = value/1000/3600/24 || ''
+          break;
+      
+        default:
+          this.insideValue = value
+          break;
+      }
+    }
+  },
+  computed: {
+    fixWidth() {
+      return this.inTable?`calc(100% - 0.1042rem)`:`calc(${8.33*this.column}% - 0.1042rem)`;
     }
   },
   watch: {
     insideValue(val) {
-      this.$emit("input", val);
+      // this.$emit("input", val);
+      switch (this.filter) {
+        case 'toDay':
+          this.$emit('input', val*1000*24*3600);
+          break;
+      
+        default:
+          this.$emit('input', val);
+          break;
+      }
     },
     value: {
       handler() {
-        this.insideValue = this.value;
+        this.fixValue(this.value);
       }
     }
   },
   created() {
-    this.insideValue = this.value;
+    this.fixValue(this.value);
   },
   mounted() {
     try {
-      if(this.$refs.defineInput.parentNode.parentNode.nodeName == 'TD') {
+      if(this.$refs.dateInput.parentNode.parentNode.nodeName == 'TD') {
         this.inTable = true;
         this.edit = false;
         if(this.disabled) {
@@ -148,7 +148,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.text-input-container {
+input[type=Number]::-webkit-inner-spin-button { display: none; } 
+.date-input-container {
   display: inline-flex;
   justify-content: flex-start;
   align-items: center;
@@ -187,8 +188,8 @@ export default {
     color: #C0C4CC;
   }
   .icon {
-    width: 35px;
-    padding: 0 10px;
+    width:35px;
+    padding: 0 10px 0 0;
   }
 }
 .border {
@@ -209,7 +210,7 @@ export default {
     color:rgba(192,196,204,1);
   }
 }
-.text-input-container:hover {
+.date-input-container:hover {
   .iconwenbenkuangshanchu {
     display: inline-block;
   }

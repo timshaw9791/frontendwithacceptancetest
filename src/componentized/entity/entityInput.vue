@@ -10,7 +10,7 @@
     <div class="icon">
       <i class="iconfont iconwenbenkuangshanchu" @click="clear" v-show="insideValue&&!disabled&&tableEdit&&edit"></i>
       <i class="iconfont iconsousuo" @click="showSearch" v-show="search&&!disabled&&tableEdit&&edit"></i>
-      <i class="iconfont iconxiang" @click="showDetail" v-show="detail&&!disabled&&tableEdit&&edit"></i>
+      <i class="iconfont iconxiang" @click="showDetail" v-show="detail&&!tableEdit&&edit"></i>
     </div>
     <service-dialog title="申请人员选择" ref="applicant" :button="false" :secondary="false">
       <applicant-select @select="selected" @cancel="$refs.applicant.hide()"></applicant-select>
@@ -27,7 +27,10 @@
     <service-dialog title="供应商选择" ref="supplierSelect" width="500px" :button="false" :secondary="false">
       <supplier-select @select="selected" @cancel="$refs.supplierSelect.hide()"></supplier-select>
     </service-dialog>
-
+    <!-- 只读区 -->
+    <service-dialog title="装备参数详情" ref="equipArgsDetail" width="600px" :button="false" :secondary="false">
+      <equip-args-detail :detailParam="detailParam"></equip-args-detail>
+    </service-dialog>
   </div>
 </template>
 
@@ -38,6 +41,7 @@ import equipArgsSelect from './select/equipArgsSelect'
 import equipLocationSelect from './select/equipLocationSelect'
 import organUnits from './select/organUnits'
 import supplierSelect from "./select/supplierSelect";
+import equipArgsDetail from './read/equipArgsDetail'
 export default {
     name: 'textInput',
     data() {
@@ -99,12 +103,13 @@ export default {
         margin: {
           type: String,
           default: '0 0.0521rem'
-        }
+        },
+        detailParam: {}
     },
     methods: {
         changePreStyle(state=true) {
-            this.inputPrePt.style.background = state?'#f5f7fa':'white';
-            this.inputPrePt.style.cursor = state?'not-allowed':'auto';
+            // this.inputPrePt.style.background = state?'#f5f7fa':'white';
+            // this.inputPrePt.style.cursor = state?'not-allowed':'auto';
         },
         showSearch() {
           this.$refs[this.options.search].show();
@@ -162,7 +167,8 @@ export default {
       equipArgsSelect,
       organUnits,
       equipLocationSelect,
-      supplierSelect
+      supplierSelect,
+      equipArgsDetail
     },
     created() {
       if(typeof this.value == 'object') {
@@ -231,8 +237,10 @@ export default {
     color: #C0C4CC;
   }
   .icon {
+    text-align: right;
+    flex-grow: 1;
     min-width: 32px;
-    padding: 0 10px;
+    padding: 0 3px 0 0;
   }
 }
 .border {

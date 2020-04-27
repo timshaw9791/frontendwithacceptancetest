@@ -58,7 +58,9 @@ import defineColumn from './defineColumn'
                         page: 1,
                         size: 10,
                         totalElements: 0,
-                        totalPages: 0
+                        totalPages: 0,
+                        selectData: '',
+                        selectIndex: ''
                     }
                 }
             },
@@ -80,6 +82,8 @@ import defineColumn from './defineColumn'
                 this.$emit('changePage', page);
             },
             changeCurrent(current, pre) { // 当前选中行改变
+                this.selectData = current;
+                this.selectIndex = this._.findIndex(data, current);
                 this.$emit('changeCurrent', current);
             }
         }
