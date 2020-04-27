@@ -179,7 +179,7 @@ export function findEquip(id) {
 export function findByRfids(params) {
     return request({
         // url: `/equips/findByRfids?${qs.stringify(params, { indices: false })}`,
-        url:`/equips/findByRfids?rfids=${params}`,
+        url:`/equips/by-rfids?rfids=${params}`,
         method: "GET"
     })
 }

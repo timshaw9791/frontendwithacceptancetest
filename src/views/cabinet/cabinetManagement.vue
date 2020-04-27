@@ -6,10 +6,10 @@
         </div>
         <div class="data-list">
             <define-table :data="list" height="4rem"  v-if="!edit">
-                            <define-column label="操作" width="100" v-slot="{ data }">
+                            <define-column label="操作" width="150" v-slot="{ data }">
                                 <div class="span-box">
-                                     <span @click="toAssign(data.row)">分配</span>
-                                     <span @click="opCabniet(data.row)">开柜</span>
+                                    <base-button label="分配" @click="toAssign(data.row)" size="small" ></base-button>
+                                    <base-button label="开柜" type="danger" @click="opCabniet(data.row)" size="small" ></base-button>
                                 </div>
                             </define-column>
                             <define-column label="警柜类型" v-slot="{ data }">
