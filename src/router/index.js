@@ -370,10 +370,10 @@ export const asyncRouterMap = [
                 meta: {title: '开门记录', roles: ['ADMINISTRATOR']},
             },
             {
-                path: 'borrow',
-                name: 'borrow',
-                component: _import('record/borrow'),
-                meta: {title: '领还记录', roles: ['POLICE_OFFICER', 'ADMINISTRATOR']},
+                path: 'receiveOrder',
+                name: 'receiveOrder',
+                component: _import('record/receiveReturnOrder/receiveOrder'),
+                meta: {title: '领取单列表', roles: ['POLICE_OFFICER', 'ADMINISTRATOR']},
             },
             {
                 path: 'inventory',
