@@ -11,8 +11,9 @@
                             <define-column label="装备参数" v-slot="{ data }">
                                 <entity-input v-model="data.row.equipArg"  :options="{detail:'equipArgsSelect'}" format="{name}({model})" :tableEdit="false" ></entity-input>
                             </define-column>
-                            <define-column label="装备位置" v-model="data.row.location" :filter="(row)=>milliLocation(row.location)"/>
-                              
+                            <define-column label="装备位置" v-slot="{ data }">
+                                <define-input v-model="data.row.location"  type="Number" :tableEdit="false"></define-input>
+                            </define-column>
                             <define-column label="正在保养数量" v-slot="{ data }">
                                 <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
                             </define-column>
