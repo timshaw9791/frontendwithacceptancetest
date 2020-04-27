@@ -160,9 +160,9 @@ export function inHouseOrder(id) {
 }
 
 /* 出库装备 */
-export function outHouse(params) {
+export function outHouse(list) {
     return request({
-        url: `/equip/outHouse?${qs.stringify(params, { indices: false })}`,
+        url: `/equips/out-house?${qs.stringify({rfids:list},{indices:false})}`,
         method: "POST"
     })
 }
@@ -178,7 +178,8 @@ export function findEquip(id) {
 /* 通过rfid找实体装备 */
 export function findByRfids(params) {
     return request({
-        url: `/equip/findByRfids?${qs.stringify(params, { indices: false })}`,
+        // url: `/equips/findByRfids?${qs.stringify(params, { indices: false })}`,
+        url:`/equips/findByRfids?rfids=${params}`,
         method: "GET"
     })
 }

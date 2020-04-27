@@ -222,10 +222,16 @@ export const asyncRouterMap = [
         meta: {title: '维保充电', icon: '维保充电', roles: ['ADMINISTRATOR']},
         children: [
             {
-                path: 'charging',
-                name: 'charging',
-                component: _import('equipmentOperation/charging'),
-                meta: {title: '充电'},
+                path: 'needCharge',
+                name: 'needCharge',
+                component: _import('equipmentOperation/needCharge'),
+                meta: {title: '需要充电'},
+            },
+            {
+                path: 'charge',
+                name: 'charge',
+                component: _import('equipmentOperation/charge'),
+                meta: {title: '正在充电'},
             },
             {
                 path: 'maintenance',
@@ -244,6 +250,12 @@ export const asyncRouterMap = [
                 name: 'service',
                 component: _import('equipmentOperation/service'),
                 meta: {title: '维修'},
+            },
+            {
+                path: 'serviceapplication',
+                name: 'serviceapplication',
+                component: _import('equipmentOperation/serviceApplicationInfo'),
+                meta: {title: '维修申请'},
             }
         ]
     },

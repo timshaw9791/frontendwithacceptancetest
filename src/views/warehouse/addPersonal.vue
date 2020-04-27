@@ -16,8 +16,10 @@
                 <define-input label="指纹信息" margin="15px 0 0 0" v-model="order.fingerprintInformation" :column="12"></define-input>
             </div>
             <div  class="addpersonnelist">
-                    <img class="img" :src="imagesrc" alt="暂无图片" v-if="this.$route.params.info.edit">
-                    <imgUp @success="successUp" upload="true" noimg v-else></imgUp>
+                    <div class="img">
+                        <img class="img" :src="imagesrc" alt="暂无图片" v-if="this.$route.params.info.edit">
+                    </div>
+                    <imgUp style="margin-top:-251px" @success="successUp" :upload="true" ></imgUp>
             </div>
         </div>
         <div class="buttom">

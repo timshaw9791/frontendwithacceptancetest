@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "14324250",
+      "name": "电视-视频缩略",
+      "font_class": "dianshi-shipinsuolve",
+      "unicode": "e610",
+      "unicode_decimal": 58896
+    },
+    {
+      "icon_id": "14324251",
+      "name": "PDF",
+      "font_class": "PDF",
+      "unicode": "e611",
+      "unicode_decimal": 58897
+    },
+    {
       "icon_id": "14226837",
       "name": "下  拉 ",
       "font_class": "xiala1",

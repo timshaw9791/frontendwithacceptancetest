@@ -49,7 +49,6 @@
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
     import serviceDialog from 'components/base/serviceDialog/index'
-    import equipLocationSelect from '../equipment/equipLocationSelect'
     import { start, startOne, killProcess,handheld, modifyFileName } from 'common/js/rfidReader'
     import divTmp from '@/componentized/divTmp'
     import { getInhouseNumber,inHouse} from "api/storage"
@@ -64,7 +63,6 @@ export default {
             entityInput,
             divTmp,
             bosTabs,
-            equipLocationSelect,
             serviceDialog
         },
         props:{
