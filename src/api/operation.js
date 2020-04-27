@@ -7,9 +7,10 @@ export function retirementApplication(data) {
         params: data
     })
 }
+//正在保养
 export function findrepairingequips() {
     return request({
-        url: '/equip/findrepairingequips',
+        url: '/equips/in-upkeep',
         method: 'get',
     })
 }
