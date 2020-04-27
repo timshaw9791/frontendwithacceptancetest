@@ -14,6 +14,13 @@ export function inKeepEquips() {
         method: 'get',
     })
 }
+//正在保养
+export function needKeepEquips() {
+    return request({
+        url: '/equips/need-upkeep',
+        method: 'get',
+    })
+}
 //结束保养
 export function endKeepEquips(state,list) {
     return request({
@@ -21,6 +28,7 @@ export function endKeepEquips(state,list) {
         method: 'post',
     })
 }
+
 
 export function findkeepingequips() {
     return request({

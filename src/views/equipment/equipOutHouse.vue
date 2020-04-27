@@ -199,7 +199,7 @@ export default {
             init(){
                 this.newData=[{
                     name: '',
-                    locationId: '',
+                    location: '',
                     price: 0,
                     productTime: 0,
                     rfids: [],

@@ -1,5 +1,6 @@
 <template>
   <div class="maintenance-form-container">
+       <my-header :title="$route.meta.title" ></my-header>
        <div class="action_box" data-test="action_box">
                 <define-input label="单号" v-model="orderNumber" :disabled="true" class="odd-number"></define-input>
                 <date-select label="保养结束时间" v-model="time" :disabled="true"></date-select>
@@ -123,7 +124,7 @@ export default {
                 // return this._.map(this._.groupBy(this.list, item => `${item.equipArg.model}${item.location.surface}`),(v,k)=>{return {equipArg:v[0].equipArg,copyList:v}})
             },
             cancel(){
-                this.$emit('cancel')
+                this.$router.back()
             },
             confirm(){
                 this.requestBody=JSON.parse(JSON.stringify(this.newData))
@@ -229,6 +230,7 @@ export default {
   .maintenance-form-container {
     font-size: 16px;
     .action_box{
+        margin-top:15px;
         display: flex;
         justify-content: flex-start;
         align-items: center;
@@ -240,6 +242,7 @@ export default {
     overflow: hidden;
   }
   .maintenance-form-body {
+      margin-top:15px;
     padding: 0 7px;
   }
   .btn-box{
