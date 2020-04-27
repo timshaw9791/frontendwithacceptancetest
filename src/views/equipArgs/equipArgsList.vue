@@ -58,10 +58,8 @@
         watch:{
             showData:{
                 deep:true,
-                function () {
-                    console.log("我是data")
-                    console.log(this.$props.showData.data)
-                    this.equipArgsList = this.$props.showData.data
+                handler (newVal) {
+                    this.equipArgsList = newVal.data
                 }
             }
         },

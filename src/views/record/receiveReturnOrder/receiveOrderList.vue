@@ -3,7 +3,6 @@
         <div class="receiveOrderList-info">
             <text-input label="装备名称" placeholder="请输入装备名称"></text-input>
             <base-button label="查询"></base-button>
-            <base-button label="新增装备参数" @click="showFun('add')"></base-button>
         </div>
         <define-table :data="receiveOrderList" >
             <define-column label="操作" v-slot="{data}">
