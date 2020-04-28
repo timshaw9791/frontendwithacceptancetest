@@ -17,9 +17,9 @@ export function saveEquipArg(data) {
         data
     })
 }
-export function editEquipArg(data) {
+export function editEquipArg(id,data) {
     return request({
-        url: '/equip-args/'+data.id,
+        url: `/equip-args/${id}`,
         method: "PUT",
         data
     })

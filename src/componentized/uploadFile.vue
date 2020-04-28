@@ -1,5 +1,5 @@
 <template>
-    <div class="upload-file-container" :class="[size]" :style="`margin:${margin}`">
+    <div class="upload-file-container" :class="[size]" :style="`margin:${margin};float:${align}`">
         <input type="file" class="file" :accept="acceptType" @change="changeFile" ref="file">
         <div class="icon-box" @click="showFileSelect">
             <i class="iconfont iconjiahao" v-show="!disabled&&!fileName"></i>
@@ -50,6 +50,10 @@ export default {
         margin: {
             type: String,
             default: '0'
+        },
+        align: {
+            type: String,
+            default: 'none'
         }
     },
     computed: {
@@ -121,6 +125,10 @@ export default {
         width: 100%;
         height: 100%;
     }
+}
+.mini {
+    width: 60px;
+    height: 60px;
 }
 .small {
     width: 100px;

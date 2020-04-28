@@ -1,50 +1,36 @@
 import request from 'common/js/request'
 
-
-export function getPlanList(data) {
+//获取预案列表
+export function getPlan(data) {
     return request({
-        url: '/planManage/planList',
+        url: '/plan-manages',
         method: 'get',
         params: data
     })
 }
 
-
-export function savePlan(data) {
+// 新增预案
+export function addPlan(data) {
     return request({
-        url: '/planManage/savePlanMange',
-        method: 'post',
-        data
-    })
-}
-export function updatePlan(data) {
-    return request({
-        url: '/planManage/updatePlanMange',
+        url: '/plan-manages',
         method: 'post',
         data
     })
 }
 
-
-export function delectPlan(data) {
+// 更新预案
+export function updatePlan(id,data) {
     return request({
-        url: `/planManage/deleteBy/${data}`,
-        method: 'POST',
+        url: `/plan-manages/${id}`,
+        method: 'put',
+        data
     })
 }
 
-export function searchPlan(data) {
+// 删除预案
+export function delectPlan(id) {
     return request({
-        url: '/planManage/findByNameLike',
-        method: 'get',
-        params:data
-    })
-}
-
-//equipList
-export function getEquipList() {
-    return request({
-        url: "/equip/equipArgsByName",
-        method: "GET",
+        url: `/plan-manages/${id}`,
+        method: 'delete',
     })
 }
