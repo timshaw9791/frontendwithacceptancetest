@@ -4,13 +4,19 @@
         <div class="table">
             <define-table :data="list" height="560px" @changeCurrent="select" :pageInfo="pageInfo" @changePage="changePage" :highLightCurrent="true">
                 <define-column label="装备图片" v-slot="{ data }">
-                    <img :src="imgBaseUrl+data.row.image" alt="暂无图片">
+                    <img class="img" :src="imgBaseUrl+data.row.image" alt="暂无图片">
                 </define-column>
                 <define-column label="装备名称" field="name"></define-column>
                 <define-column label="装备型号" field="model"></define-column>
-                <define-column label="保质期(天)" :filter="(row)=>milliToDay(row.shelfLife)"></define-column>
-                <define-column label="充电周期(天)" :filter="(row)=>milliToDay(row.chargeCycle)"></define-column>
-                <define-column label="保养周期(天)" :filter="(row)=>milliToDay(row.upkeepCycle)"></define-column>
+                <define-column label="保质期(天)" v-slot="{data}">
+                    <date-input v-model="data.row.shelfLife"></date-input>
+                </define-column>
+                <define-column label="充电周期(天)" v-slot="{data}">
+                    <date-input v-model="data.row.chargeCycle"> </date-input>
+                </define-column>
+                <define-column label="保养周期(天) " v-slot="{data}">
+                    <date-input v-model="data.row.upkeepCycle"></date-input>
+                </define-column>
                 <define-column label="供应商" field="supplier.name"></define-column>
             </define-table>
         </div>
@@ -22,7 +28,7 @@
 </template>
 
 <script>
-    import {getEquipArgs} from "api/equipArgs";
+    import {getEpArgsList} from "api/equipArgs";
     import {imgBaseUrl} from "api/config"
     export default {
         name: "equipArgsSelect",
@@ -36,7 +42,7 @@
         },
         methods: {
             getList() {
-                getEquipArgs(this.pageInfo).then(res => {
+                getEpArgsList(this.pageInfo).then(res => {
                     this.list = res.content;
                     this.pageInfo.totalPages = res.totalPages;
                     this.pageInfo.totalElements = res.totalElements;
@@ -59,15 +65,6 @@
                 this.pageInfo.page = page;
                 this.getList();
             },
-            milliToDay(data) {
-                let date = JSON.parse(JSON.stringify(data));
-                let day = Math.round(date / 24 / 60 / 60 / 1000);
-                if(day<1){
-                    return day=1+'天';
-                }else {
-                    return day+'天'
-                }
-            },
         },
         watch: {
             search: {
@@ -88,5 +85,9 @@
     }
     .footer {
         text-align: center;
+    }
+    .img{
+        width: 30px;
+        height: 30px;
     }
 </style>
