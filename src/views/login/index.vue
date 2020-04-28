@@ -21,7 +21,7 @@
             </el-form-item>
 
             <el-form-item>
-                <base-button label="登 录" size="medium" @click="handleLogin"></base-button>
+                <base-button label="登 录" size="medium" @click.native.prevent="handleLogin"></base-button>
             </el-form-item>
         </el-form>
 
