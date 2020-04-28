@@ -11,13 +11,13 @@
                     <define-input label="供应商" v-model="editList.equipArg.supplier.name" margin="15px 0" :disabled="true" :column="6" align="right"></define-input>
                     <define-input label="RFID"  v-model="editList.rfid"  :disabled="true" margin="15px 0" :column="6" align="left"></define-input>
                     <define-input label="装备序号" v-model="editList.serial" :disabled="true" margin="15px 0" :column="6" align="right"></define-input>
-                    <entity-input label="装备位置" v-model="editList.location" :column="6" margin="0 0" :options="{search:'locationSelect'}" format="{name}" :tableEdit="true" align="left"></entity-input>
+                    <entity-input label="装备位置" v-model="editList.location" :column="6" margin="0 0" :options="{search:'locationSelect'}" format="{frameNumber}架/{surface}面/{section}节/{surface}层/" :tableEdit="true" align="left"></entity-input>
                     <define-input label="装备单价" v-model="editList.price" type="Number" :disabled="false" margin="15px 0" :column="6" align="right"></define-input>
                     <date-select  label="生产日期" v-model="editList.productDate" :column="6" margin="15px 0" align="left"></date-select>
                 </div>
               <div class="img-box">
-                   <imgUp @success="successUp" :disabled="edit" :image="imageUrl"
-                                  :noImg="noImg" :upload="true" ></imgUp>
+                   <imgUp @success="successUp" :disabled="true" :image="imageUrl"
+                                  :noImg="noImg"  ></imgUp>
               </div>
               
         </div>
@@ -89,7 +89,7 @@ export default {
         },
         created(){
             this.requestBody=JSON.parse(JSON.stringify(this.editList))
-            this.editList.location=this.milliLocation(this.editList.location)
+            // this.editList.location=this.milliLocation(this.editList.location)
             if(this.editList.equipArg.image)
             {
                 this.imageUrl = `${imgBaseUrl}${this.editList.equipArg.image}`;

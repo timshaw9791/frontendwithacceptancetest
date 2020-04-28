@@ -3,7 +3,7 @@
          <div class="action_box" data-test="action_box">
                 <define-input label="单号" v-model="orderNumber" :disabled="true" class="odd-number"></define-input>
                 <date-select label="入库时间" v-model="time" :disabled="true"></date-select>
-                <entity-input label="入库人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :tableEdit="false" ></entity-input>
+                <entity-input label="入库人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :disabled="false" ></entity-input>
             </div>
         <div class="data-list">
             <bos-tabs >
@@ -11,16 +11,16 @@
                         <define-table :data="newData" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
                             :highLightCurrent="true"  slot="total" :showSummary="true" :summaryFunc="sumFunc">
                             <define-column label="装备参数" v-slot="{ data }">
-                                <entity-input v-model="data.row.name"  :options="{search:'equipArgsSelect'}" format="{name}({model})" :tableEdit="false" ></entity-input>
+                                <entity-input v-model="data.row.equipArg"  :options="{search:'equipArgsSelect'}" format="{equipName}({equipModel})" :tableEdit="false" ></entity-input>
                             </define-column>
                             <!-- <define-column label="装备位置"  v-slot="{ data }" >
                                  <entity-input v-model="data.row.locationId"  :options="{search:'locationSelect'}" format="{name}" :tableEdit="false" ></entity-input>
                             </define-column> -->
                             <define-column label="单价" v-slot="{ data }">
-                                <define-input v-model="data.row.price" :tableEdit="false" type="Number" ></define-input>
+                                <define-input v-model="data.row.equipArg.price" :tableEdit="false" type="Number" ></define-input>
                             </define-column>
                             <define-column label="生产日期" v-slot="{ data }">
-                                <date-select label="生产日期" v-model="data.row.productTime" :disabled="true" :column="12" ></date-select>
+                                <date-select label="生产日期" v-model="data.row.equipArg.productTime" :disabled="true" :column="12" ></date-select>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
                                 <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
@@ -80,7 +80,8 @@ export default {
                requestBody:'',
                orderNumber:'',
                findIndex:0,
-               newData:[]
+               newData:[],
+               list:[]
             }
         },
         methods:{
@@ -110,48 +111,20 @@ export default {
             this.paginator.page = page;
             },
             changeDataFormat(data){
-            data.inOutHouseItems.forEach(item=>
-             {
-                 let newList={
-                     name:item.equipName+'('+item.equipModel+')',
-                     price:item.price,
-                     productTime:item.productTime,
-                     count:0,
-                     copyList:[]
-                 }
-                 newList.copyList.push({rfid:item.rfid,serial:item.serial?item.serial:''})
-                if(this.newData.length==0)
-                {
-                    this.newData.push(newList)
-                }else{
-                    let flag=false,dIndex=0
-                    this.newData.forEach((qe,index)=>{
-                        if(!flag&&(qe.name==newList.name))
-                        {
-                            flag=true;
-                            dIndex=index
-                        }
-                    })
-                    if(flag)
-                    {
-                        this.newData[dIndex].copyList.push({rfid:item.rfid,serial:item.serial?item.serial:''})
-                        flag=true
-                    }else{
-                        this.newData.push(newList)
-                    }
-                }
-            })
-            this.newData.forEach(item=>{
-                item.count=item.copyList.length
-            })
+            data.forEach(item=>{this.list.push(item)})
+                /*详情单过来时 数据的属性不同处理方法不同*/
+                let cList=this._.groupBy(this.list, item => `${item.equipName}${item.equipModel}`)
+                this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0],copyList:v,count:v.length}})
+                //this.list=this._.map(this._.groupBy(this.list, item => `${item.equipArg.model}`),(v,k)=>{return {equipArg:v[0].equipArg,copyList:v}})
+                // return this._.map(this._.groupBy(this.list, item => `${item.equipArg.model}${item.location.surface}`),(v,k)=>{return {equipArg:v[0].equipArg,copyList:v}})
         },
         },
         
         created(){
             this.time= Date.parse(new Date());
-                this.orderNumber=this.equipData.id
+                this.orderNumber=this.equipData.number
                 this.time=this.$filterTime(this.equipData.updateTime)
-                this.changeDataFormat(this.equipData)
+                this.changeDataFormat(this.equipData.inOutHouseItems)
                 this.people=this.equipData.operator.operator
 
             
