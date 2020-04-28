@@ -2,24 +2,25 @@
   <div class="maintenance-form-container">
     <my-header :title="$route.meta.title" :haveBlack="false"></my-header>
     <div class="maintenance-form-top" v-if="show">
-      <base-button size="default" align="right" label="开始保养" @click="show=false"></base-button>
+      <base-button size="default" align="right" label="开始保养" @click="startMain"></base-button>
     </div>
     <div class="process-info" v-else>
-      <define-input label="单号" v-model="order.number" :disabled="true" class="odd-number"></define-input>
+      <!-- <define-input label="单号" v-model="order.number" :disabled="true" class="odd-number"></define-input>
       <date-select label="申请时间" v-model="order.createTime" :disabled="true"></date-select>
-      <entity-input label="申请人员" v-model="order.applicant" :required="true" placeholder="请选择"></entity-input>
+      <entity-input label="申请人员" v-model="order.applicant" :required="true" placeholder="请选择"></entity-input> -->
     </div>
     <div class="maintenance-form-body" v-if="show">
         <bos-tabs :option="['tabs']" :layoutRatio="[2, 1]">
-          <define-table :havePage="false" :data="order" height="2.6042rem"
+          <define-table :havePage="false" :data="listData" height="2.6042rem"
             @changeCurrent="selRow" :summaryFunc="sumFunc" :showSummary="true" :highLightCurrent="true" slot="total" >
             <define-column label="装备参数" v-slot="{ data }">
-              <entity-input v-model="data.row.equips" :options="{ detail: 'equipArgsSelect' }" format="{name}({model})" :disabled="true" ></entity-input>
+              <entity-input v-model="data.row.equipArg" :options="{ detail: 'equipArgsSelect' }" format="{name}({model})" :disabled="true" ></entity-input>
             </define-column>
-            <define-column label="装备位置" field="location" :filter="(row)=>locations(row.location)"></define-column>
+            <define-column label="装备位置" field="location" :filter="(row)=>milliLocation(row.location)"></define-column>
+            
             <define-column label="可保养数量" field="count"></define-column>
           </define-table>
-          <define-table :havePage="false" :data="detailTable.list" height="2.6042rem" slot="detail" >
+          <define-table :havePage="false" :data="listData[findIndex].copyList" height="2.6042rem" slot="detail" >
             <define-column label="RFID" field="rfid"></define-column>
             <define-column label="装备序号" field="serial"></define-column>
           </define-table>
@@ -28,31 +29,37 @@
     <div v-else class="maintenance-form-body">
       <bos-tabs :option="['tabs']" :layoutRatio="[2, 1]">
         <template slot="slotHeader">
-          <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96"></base-button>
+          <base-button label="读取数据" align="right" :disabled="!select.selected" @click="readData()" :width="96"></base-button>
           <base-select label="硬件选择" v-model="select.selected" align="right" :selectList="select.handWareList"></base-select>
         </template>
-        <define-table :havePage="false" :data="order" height="2.6042rem"
-          @changeCurrent="selRow" :summaryFunc="sumFunc" :showSummary="true" :highLightCurrent="true" slot="total" >
-          <define-column label="操作" width="100">
+        <define-table :havePage="false" :data="copyData" class="left_box" height="2.6042rem"
+           slot="total" >
+          <define-column label="操作">
               <i class="iconfont icontianjialiang"></i>
               <i class="iconfont iconyichuliang"></i>
           </define-column>
+        </define-table>
+        <define-table :havePage="false" class="center_box" :data="listData" height="2.6042rem"
+          @changeCurrent="selRow" :summaryFunc="sumFunc" :haveIndex="false" :showSummary="true" :highLightCurrent="true" slot="total" >
           <define-column label="装备参数" v-slot="{ data }">
-            <entity-input v-model="data.row.equips" :options="{ detail: 'equipArgsSelect' }" format="{name}({model})" :disabled="true" ></entity-input>
+            <entity-input v-model="data.row.equipArg" :options="{ detail: 'equipArgsSelect' }" format="{name}({model})" :disabled="true" ></entity-input>
           </define-column>
           <define-column label="装备位置" field="location" :filter="(row)=>locations(row.location)"></define-column>
           <define-column label="可保养数量" field="count"></define-column>
-          <define-column label="本次保养数量" field="canCount"></define-column>
         </define-table>
-        <define-table :havePage="false" :data="detailTable.list" height="2.6042rem" slot="detail" >
+        <define-table :havePage="false" class="right_box" :data="copyData" height="2.6042rem"
+          @changeCurrent="selRow" :summaryFunc="sumFunc" :haveIndex="false" :showSummary="true" :highLightCurrent="true" slot="total" >
+          <define-column label="本次保养数量" field="keepcount"></define-column>
+        </define-table>
+        <define-table :havePage="false"  :data="copyData[findIndex].copyList" height="2.6042rem" slot="detail" >
           <define-column label="RFID" field="rfid"></define-column>
           <define-column label="装备序号" field="serial"></define-column>
         </define-table>
       </bos-tabs>
-      <div class="buttom">
+      <!-- <div class="buttom">
           <base-button label="提交" align="right" size="large" ></base-button>
           <base-button label="取消" align="right" size="large" type="danger" @click="cancel"></base-button>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -64,6 +71,9 @@ import serviceDialog from "components/base/serviceDialog";
 import defineInput from '@/componentized/textBox/defineInput'
 import bosTabs from "@/componentized/table/bosTabs";
 import request from "common/js/request";
+import entityInput from '@/componentized/entity/entityInput'
+import {needKeepEquips} from "api/operation"
+import { getInhouseNumber,inHouse,findByRfids,outHouse} from "api/storage"
 var _ = require("lodash");
 export default {
   name: "maintenance",
@@ -71,9 +81,6 @@ export default {
     return {
       show: true,
       rowData: "", // 选中的单选行数据
-      detailTable: {
-        list: [],
-      },
       select: {
         handWareList: [{
             label: "手持机",
@@ -84,180 +91,114 @@ export default {
         }],
         selected: ""
       },
-      order: [
-        {
-          equips: {
-            id: "dhvungiddfhdcscgh",
-            name: "警棍",
-            model: "JG",
-            rfid: "12345",
-            serial: "154",
-            supper: {
-              id: "dsvghnfbdcsax",
-              name: "A",
-              person: "林",
-              phone: "15963247896"
-            }
-          },
-          location: {
-            floor: "1",
-            frameNumber: "5",
-            surface: "A",
-            section: "9"
-          },
-          count:10
-        },{
-          equips: {
-            id: "dhvungiddfhdcscgh",
-            name: "警棍",
-            model: "JG",
-            rfid: "12345",
-            serial: "154",
-            supper: {
-              id: "dsvghnfbdcsax",
-              name: "A",
-              person: "林",
-              phone: "15963247896"
-            }
-          },
-          location: {
-            floor: "1",
-            frameNumber: "5",
-            surface: "A",
-            section: "9"
-          },
-          count:10
-        },{
-          equips: {
-            id: "dhvungiddfhdcscgh",
-            name: "警棍",
-            model: "JG",
-            rfid: "12345",
-            serial: "154",
-            supper: {
-              id: "dsvghnfbdcsax",
-              name: "A",
-              person: "林",
-              phone: "15963247896"
-            }
-          },
-          location: {
-            floor: "1",
-            frameNumber: "5",
-            surface: "A",
-            section: "9"
-          },
-          count:10
-        },{
-          equips: {
-            id: "dhvungiddfhdcscgh",
-            name: "警棍",
-            model: "JG",
-            rfid: "12345",
-            serial: "154",
-            supper: {
-              id: "dsvghnfbdcsax",
-              name: "A",
-              person: "林",
-              phone: "15963247896"
-            }
-          },
-          location: {
-            floor: "1",
-            frameNumber: "5",
-            surface: "A",
-            section: "9"
-          },
-          count:10
-        },{
-          equips: {
-            id: "dhvungiddfhdcscgh",
-            name: "警棍",
-            model: "JG",
-            rfid: "12345",
-            serial: "154",
-            supper: {
-              id: "dsvghnfbdcsax",
-              name: "A",
-              person: "林",
-              phone: "15963247896"
-            }
-          },
-          location: {
-            floor: "1",
-            frameNumber: "5",
-            surface: "A",
-            section: "9"
-          },
-          count:10
-        },{
-          equips: {
-            id: "dhvungiddfhdcscgh",
-            name: "警棍",
-            model: "JG",
-            rfid: "12345",
-            serial: "154",
-            supper: {
-              id: "dsvghnfbdcsax",
-              name: "A",
-              person: "林",
-              phone: "15963247896"
-            }
-          },
-          location: {
-            floor: "1",
-            frameNumber: "5",
-            surface: "A",
-            section: "9"
-          },
-          count:10
-        },
-      ],
-    };
+      findIndex:0,
+      listData:[],
+      copyData:[{
+        equipArg:'',
+        location:'',
+        keepcount:0,
+        copyList:[{rfid:'',serial:''}]
+      }],
+      list:[],
+    }
   },
   methods: {
     selRow(current) { // 单选表格行
-        if(!current) return; // 避免切换数据时报错
-        this.detailTable.list = [];
-        this.rowData = current;
-        console.log(current);
-        if(current.equips.rfid == undefined) return;
-        for(let i in current.equips.rfid) {
-            this.detailTable.list.push({
-                serial: current.equips.serial[i],
-                rfid: current.equips.rfid[i]
-            })
-        }
+           console.log(current);
+           this.findIndex=this._.indexOf(this.listData,current)
       },
+    startMain(){
+       this.$router.push({path: '/equipmentOperation/startMaintenance'});
+    },
       locations(data){
-        // console.log(data);
         return data.floor+'/'+data.frameNumber+'/'+data.surface+'/'+data.section
+      },
+      classDataify(data)//读写器数据处理的方法
+            {
+                data.forEach(item=>{this.list.push(item)})
+                let cList=this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}${item.location.id}`)
+                this.listData=this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length,location:v[0].location}})
+            },
+      classDataifyRfid(data)
+      {
+        debugger
+          let newList=[]
+          data.forEach(item=>{newList.push(item)})
+          let cList=this._.groupBy(newList, item => `${item.equipArg.model}${item.equipArg.name}${item.location.id}`)
+          console.log(cList);
+          this.copyData=this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,clist:v,count:v.length,location:v[0].location,keepcount:0}})
+          this.copyData.forEach(item=>{item.keepcount=item.copyList=length})
+
       },
       cancel(){this.show = true},
       sumFunc(param) { // 表格合并行计算方法
-        let { columns, data } = param, sums = [];
-        columns.forEach((colum, index) => {
-            if(index == 0) {
-                sums[index] =  '合计';
-            } else if(index == columns.length-1) {
-                const values = data.map(item => item.count?Number(item.count):0);
-                if(!values.every(value => isNaN(value))) {
-                    sums[index] = values.reduce((pre, cur) => !isNaN(cur)?pre+cur:pre);
-                }
-            }else {
-                sums[index] = '/';
-            }
-        })
-        return sums;
+        // let { columns, data } = param, sums = [];
+        // columns.forEach((colum, index) => {
+        //     if(index == 0) {
+        //         sums[index] =  '合计';
+        //     } else if(index == columns.length-1) {
+        //         const values = data.map(item => item.count?Number(item.count):0);
+        //         if(!values.every(value => isNaN(value))) {
+        //             sums[index] = values.reduce((pre, cur) => !isNaN(cur)?pre+cur:pre);
+        //         }
+        //     }else {
+        //         sums[index] = '/';
+        //     }
+        // })
+        // return sums;
       },
+      milliLocation(data)//对现实的装备位置信息进行处理
+            {
+                return data.frameNumber+'架/'+data.surface+'面/'+data.section+'节/'+data.surface+'层'
+            },
+      getList(){
+        needKeepEquips().then(res=>{
+          this.classDataify(res.content)
+        })
+      },
+      readData(){
+                // killProcess(this.pid)
+                // start("java -jar scan.jar", (data) => {
+                //     if(this.list[this.findIndex].copyList.length==1&&this.list[this.findIndex].copyList[0].rfid=='')
+                //     {
+                //         this.list[this.findIndex].copyList[0].rfid=data
+                //     }else{
+                //         this.list[this.findIndex].copyList.push({rfid:data,serial:''})
+                //     }
+                //     }, (fail) => {
+                //         this.index = 1;
+                //         this.$message.error(fail);
+                //     }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
+                let rfids=['00001545']
+                rfids.forEach(item=>{
+                    findByRfids(item).then(res=>{
+                     this.classDataifyRfid(res)
+                   })
+                })
+            },
+      init(){
+                this.listData=[{
+                    equipArg: '',
+                    location: '',
+                    count: 0,
+                    rfids: [],
+                    serial: [],
+                    copyList:[{rfid:'',serial:''}],
+                    clist:[{rfid:'',serial:''}]
+                }]
+            }
     },
   created() {
-    
+    this.getList()
+    if(this.listData.length==0){
+          this.init()
+      }
   },
   components: {
     myHeader,
     baseButton,
     bosTabs,
+    entityInput
   },
 };
 </script>
@@ -273,12 +214,28 @@ export default {
   }
   .maintenance-form-body {
     padding: 0 7px;
+    border:1px solid black;
     widows: 100%;
+    .left_box{
+    border:1px solid black;
+    width:300px;
+    float:left;
+   }
+   .center_box{
+    border:1px solid black;
+    width:800px;
+    float:left;
+    }
+    .right_box{
+    border:1px solid black;
+    width:200px;
+    float:left;
+    }
   }
   .process-info {
       padding: 18px 0;
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start;
       overflow: hidden;
   }
   .buttom {
@@ -287,4 +244,5 @@ export default {
       margin-top: 25px;
       // box-shadow:0px 0px 12px rgba(235,238,245,1);
   }
+
 </style>

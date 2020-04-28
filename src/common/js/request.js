@@ -44,21 +44,18 @@ service.interceptors.request.use(config => {
 
 // respone拦截器
 service.interceptors.response.use(response => {
-        /**
-         * code为非20000是抛错 可结合自己业务进行修改
-         */
-            // console.log(response);
+        if(!['get','GET'].includes(response.config.method)) {
+            Message.success({
+                message: '操作成功'
+            })
+        }
         let token = response.headers[tokenName];
-
         if (token) {
             setToken(token);
             store.commit('SET_TOKEN', token)
         }
         const res = response.data;
-
         return res;
-
-
         /* if (res.code !== 20000) {
            Message({
              message: res.message,
@@ -99,21 +96,25 @@ service.interceptors.response.use(response => {
                 console.log(config.loginUrl);
                 removeToken();
                 location.href = config.loginUrl;
-                //setLimited('true');
-                // setLimitedUrl(location.href);
             }
         }
-        if (errcode.includes('500')) {
+        else if (errcode.includes('500')) {
             Message.error({
                 message: `${error.response.data.message}`
             });
         }
-        if (errcode.includes('Network')) {
+        else if (errcode.includes('Network')) {
             Message.error({
                 message: `请求超时请重试!`
             });
+        } else {
+            if(error.response) {
+                Message.error({
+                    message: error.response.data.message
+                })
+            }
+            console.log(error);
         }
-
         return Promise.reject(error)
     }
 )
