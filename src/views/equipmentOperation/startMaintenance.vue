@@ -12,29 +12,43 @@
             <base-button label="读取数据" align="right" :disabled="!select.selected" @click="readData()" :width="96"></base-button>
             <base-select label="硬件选择" v-model="select.selected" align="right" :selectList="select.handWareList"></base-select>
             </template>
-            <define-table :havePage="false" :data="copyData" class="left_box" height="2.6042rem"
-            slot="total" >
-            <define-column label="操作">
-                <i class="iconfont icontianjialiang"></i>
-                <i class="iconfont iconyichuliang"></i>
-            </define-column>
-            </define-table>
-            <define-table :havePage="false" class="center_box" :data="listData" height="2.6042rem"
-            @changeCurrent="selRow" :summaryFunc="sumFunc" :haveIndex="false" :showSummary="true" :highLightCurrent="true" slot="total" >
-            <define-column label="装备参数" v-slot="{ data }">
-                <entity-input v-model="data.row.equipArg" :options="{ detail: 'equipArgsSelect' }" format="{name}({model})" :disabled="true" ></entity-input>
-            </define-column>
-            <define-column label="装备位置" field="location" :filter="(row)=>locations(row.location)"></define-column>
-            <define-column label="可保养数量" field="count"></define-column>
-            </define-table>
-            <define-table :havePage="false" class="right_box" :data="copyData" height="2.6042rem"
-            @changeCurrent="selRow" :summaryFunc="sumFunc" :haveIndex="false" :showSummary="true" :highLightCurrent="true" slot="total" >
-            <define-column label="本次保养数量" field="keepcount"></define-column>
-            </define-table>
-            <define-table :havePage="false"  :data="copyData[findIndex].clist" height="2.6042rem" slot="detail" >
-            <define-column label="RFID" field="rfid"></define-column>
-            <define-column label="装备序号" field="serial"></define-column>
-            </define-table>
+            <define-table :data="copyData" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
+                            :highLightCurrent="true"  slot="total" class="left_box" :showSummary="true" :summaryFunc="sumFunc">
+                            <define-column label="操作"  v-slot="{ data }">
+                                <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
+                                <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
+                            </define-column>
+                        </define-table>
+                        <define-table :data="listData" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
+                            :highLightCurrent="true"  slot="total" class="center_box" :haveIndex="false" :showSummary="true" :summaryFunc="sumFunc">
+                            <define-column label="装备参数" v-slot="{ data }">
+                                <entity-input v-model="data.row.equipArg"  :options="{detail:'equipArgsSelect'}" format="{name}({model})" :tableEdit="false" ></entity-input>
+                            </define-column>
+                            <define-column label="装备位置" v-slot="{ data }">
+                                <define-input v-model="data.row.location"  type="Number" :tableEdit="false"></define-input>
+                            </define-column>
+                            <define-column label="可保养数量" v-slot="{ data }">
+                                <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
+                            </define-column>
+                        </define-table>
+                        <define-table :data="copyData" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
+                            :highLightCurrent="true"  slot="total" class="right_box" :showSummary="true" :haveIndex="false" :summaryFunc="sumFunc">
+                            <define-column label="可保养数量" v-slot="{ data }">
+                                <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
+                            </define-column>
+                        </define-table>
+                        <define-table :data="copyData[findIndex].copyList" height="2.8646rem" :havePage="false" slot="detail">
+                            <define-column label="操作" width="100" v-slot="{ data }">
+                               <i class="iconfont icontianjialiang" @click="changeDetailRow(true,data)"></i>
+                               <i class="iconfont iconyichuliang" @click="changeDetailRow(false,data)"></i>
+                            </define-column>
+                            <define-column label="RFID" v-slot="{ data }">
+                                <define-input v-model="data.row.rfid" type="String" :tableEdit="false"></define-input>
+                            </define-column>
+                            <define-column label="装备序号" v-slot="{ data }">
+                                <define-input v-model="data.row.serial" type="Number" :tableEdit="false"></define-input>
+                            </define-column>
+                        </define-table>
         </bos-tabs>
         <div class="btn-box">
                   <base-button label="取消" align="right" :width="128" :height="25" :fontSize="20" @click="cancel"></base-button>
