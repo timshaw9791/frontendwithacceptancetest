@@ -71,8 +71,6 @@
                 })
             },
             goto(id){
-                console.log("传值前")
-                console.log(id)
                 this.$router.push({
                     path:"equipArgsEdit",
                     query:{

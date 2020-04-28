@@ -12,12 +12,12 @@
                                   :options="{search:'supplierSelect'}"
                                   format="{name}"
                                   margin="10px 10px 10px 10px"></entity-input>
-                    <define-input label="质保期（天）" v-model="formData.shelfLife"
-                                  margin="10px 10px 10px 10px" type="Number"></define-input>
-                    <define-input label="充电周期（天）" v-model="formData.chargeCycle"
-                                  margin="10px 10px 10px 10px" type="Number"></define-input>
-                    <define-input label="保养周期（天）" v-model="formData.upkeepCycle"
-                                  margin="10px 10px 10px 10px" type="Number"></define-input>
+                    <date-input label="质保期（天）" v-model="formData.shelfLife"
+                                  margin="10px 10px 10px 10px" ></date-input>
+                    <date-input label="充电周期（天）" v-model="formData.chargeCycle"
+                                  margin="10px 10px 10px 10px" ></date-input>
+                    <date-input label="保养周期（天）" v-model="formData.upkeepCycle"
+                                  margin="10px 10px 10px 10px" ></date-input>
                 </div>
                 <div class="img">
                     <img-up @success="setImg" :src="formData.image"></img-up>
@@ -72,29 +72,18 @@
                 this.$router.push({path: "equipArgsList"})
             },
             submit() {
-                let tempForm = JSON.parse(JSON.stringify(this.formData))
-                tempForm.shelfLife = this.dayToMilli(tempForm.shelfLife)
-                tempForm.chargeCycle = this.dayToMilli(tempForm.chargeCycle)
-                tempForm.upkeepCycle = this.dayToMilli(tempForm.upkeepCycle)
-                //时间转换
                 if (this.isEdit) {
-                    editEquipArgs(tempForm).then((res) => {
+                    editEquipArgs(this.formData).then((res) => {
                         this.$router.push({path: "equipArgsList"})
                     })
                 } else {
-                    saveEquipArgs(tempForm).then((res) => {
+                    saveEquipArgs(this.formData).then((res) => {
                         this.$router.push({path: "equipArgsList"})
                     })
                 }
             },
-            dayToMilli(data) {
-                let day = JSON.parse(JSON.stringify(data));
-                let milli = Math.round(day * 24 * 60 * 60 * 1000)
-                return milli
-            },
             fetchData() {
                 if (this.equipArgsID !== "") {
-                    console.log(this.equipArgsID)
                     getBosEntity(this.equipArgsID).then(res => {
                         this.formData = res
                     });
