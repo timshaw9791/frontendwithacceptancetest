@@ -44,7 +44,7 @@ service.interceptors.request.use(config => {
 
 // respone拦截器
 service.interceptors.response.use(response => {
-        if(['get','GET'].includes(response.config.method)) {
+        if(!['get','GET'].includes(response.config.method)) {
             Message.success({
                 message: '操作成功'
             })
