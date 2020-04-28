@@ -3,7 +3,6 @@ import Vuex from 'vuex'
 import createLogger from 'vuex/dist/logger';
 import app from './modules/app'
 import user from './modules/user'
-import socket from './modules/webSocket'
 import customer from './modules/customer'
 import getters from './getters'
 import permission from './modules/permission'
@@ -19,7 +18,6 @@ const store = new Vuex.Store({
         user,
         customer,
         permission,
-        socket
     },
     getters,
     // strict:debug,

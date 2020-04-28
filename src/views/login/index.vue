@@ -41,7 +41,6 @@
 </template>
 
 <script>
-    import {startSocket} from "common/js/webSocket";
     import { localTitle } from 'api/config';
 
     // const cmdPath = 'C:\\Users\\Administrator';
