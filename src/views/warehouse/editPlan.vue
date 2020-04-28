@@ -10,7 +10,7 @@
                 <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
             </define-column>
             <define-column label="装备参数" field="equipArg" v-slot="{data}">
-                <entity-input v-model="data.row.equipArg" format="{name}({model})"  :options="{detail:'equipArgsSelect'}"></entity-input>
+                <entity-input v-model="data.row.equipArg" format="{name}({model})" :tableEdit="false" :options="{detail:'equipArgsSelect'}"></entity-input>
             </define-column>
         </define-table>
         <div class="buttom">
@@ -59,7 +59,6 @@
                     }
                 })
                 if(this.$route.params.info.edit){
-                    console.log("temp",temp);
                     updatePlan(temp.id,temp).then(res=>{
                         this.$message.success("编辑成功")
                         this.$router.go(-1)
@@ -95,7 +94,7 @@
                 this.title = "新增预案"
             }
             this.order = this.$route.params.info.data
-            if(this.order.equipArgItems=[]){
+            if(this.order.equipArgItems.length==0){
                 this.order.equipArgItems.push(
                     {name:"",id:"",model:""},
                     {name:"",id:"",model:""},
