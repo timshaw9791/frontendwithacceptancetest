@@ -1,30 +1,34 @@
 <template>
-    <div>
-        <form-container ref="form">
-            <div class="equip-args-edit" disabled="isEdit">
-                <define-input label="装备名称" v-model="equipArgs.name" :disabled="isInfo"
-                              margin="10px 10px 10px 10px"></define-input>
-                <define-input label="装备型号" v-model="equipArgs.model" :disabled="isInfo"
-                              margin="10px 10px 10px 10px"></define-input>
-                <entity-input label="供应商" v-model="equipArgs.supplier"
-                              :options="{search:'supplierSelect'}"
-                              format="{name}" :disabled="isInfo"
-                              margin="10px 10px 10px 10px"></entity-input>
-                <define-input label="质保期（天）" v-model="equipArgs.shelfLife" :disabled="isInfo"
-                              margin="10px 10px 10px 10px" type="Number"></define-input>
-                <define-input label="充电周期（天）" v-model="equipArgs.chargeCycle" :disabled="isInfo"
-                              margin="10px 10px 10px 10px" type="Number"></define-input>
-                <define-input label="保养周期（天）" v-model="equipArgs.upkeepCycle" :disabled="isInfo"
-                              margin="10px 10px 10px 10px" type="Number"></define-input>
-            </div>
-            <div class="img">
-                <img-up @success="setImg" :disabled="isInfo" :src="equipArgs.image"></img-up>
-            </div>
-            <div class="_box-bottom">
-                <base-button label="取消" :class="isInfo?'button':''" @click="showFun()"></base-button>
-                <base-button label="提交" :class="isInfo?'button':''" @click="submit()"></base-button>
-            </div>
-        </form-container>
+    <div class="equip-args-edit-container">
+        <my-header title="装备参数编辑" :have-black="true" @h_black=back></my-header>
+        <div class="body">
+            <form-container ref="form">
+                <div class="equip-args-edit" disabled="isEdit">
+                    <define-input label="装备名称" v-model="formData.name"
+                                  margin="10px 10px 10px 10px"></define-input>
+                    <define-input label="装备型号" v-model="formData.model"
+                                  margin="10px 10px 10px 10px"></define-input>
+                    <entity-input label="供应商" v-model="formData.supplier"
+                                  :options="{search:'supplierSelect'}"
+                                  format="{name}"
+                                  margin="10px 10px 10px 10px"></entity-input>
+                    <date-input label="质保期（天）" v-model="formData.shelfLife"
+                                  margin="10px 10px 10px 10px" ></date-input>
+                    <date-input label="充电周期（天）" v-model="formData.chargeCycle"
+                                  margin="10px 10px 10px 10px" ></date-input>
+                    <date-input label="保养周期（天）" v-model="formData.upkeepCycle"
+                                  margin="10px 10px 10px 10px" ></date-input>
+                </div>
+                <div class="img">
+                    <img-up @success="setImg" :src="formData.image"></img-up>
+                </div>
+                <div class="_box-bottom">
+                    <base-button label="取消" @click="clear()"></base-button>
+                    <base-button label="提交" @click="submit()"></base-button>
+                </div>
+            </form-container>
+
+        </div>
     </div>
 </template>
 
@@ -35,82 +39,71 @@
     import textInput from "../../componentized/textBox/textInput";
     import imgUp from './imgUp';
     import defineInput from "../../componentized/textBox/defineInput";
-    import {saveEquipArg, editEquipArg} from "../../api/equipArgs"
+    import {editEquipArgs, saveEquipArgs} from "@/api/equipArgs"
+    import {getBosEntity} from "@/api/basic";
+    import myHeader from "../../components/base/header/header"
+    import colorSelector from "../../components/base/colorSelector";
 
     export default {
         name: "editEquipArgs",
         data() {
             return {
-                equipArgs: {},
-                isEdit: false,
-                isInfo: false
+                formData: {},
+                equipArgsID: ""
             }
         },
-        props: {
-            showData: {
-                type: Object,
-                default: {
-                    operation: "add",
-                    data: null
-                }
-            }
-        },
+
         components: {
             textInput,
             serviceDialog,
             entityInput,
             imgUp,
-            defineInput
+            defineInput,
+            myHeader
         },
         methods: {
-            setImg(data) {
-                this.equipArgs.image = data
+            back() {
+                this.$router.back()
             },
-            showFun() {
-                this.$emit('showFun', {operation: "list"})
+            setImg(data) {
+                this.formData.image = data
+            },
+            clear() {
+                this.$router.push({path: "equipArgsList"})
             },
             submit() {
-                let tempForm = JSON.parse(JSON.stringify(this.equipArgs))
-                tempForm.shelfLife = this.dayToMilli(tempForm.shelfLife)
-                tempForm.chargeCycle = this.dayToMilli(tempForm.chargeCycle)
-                tempForm.upkeepCycle = this.dayToMilli(tempForm.upkeepCycle)
-                //时间转换
                 if (this.isEdit) {
-                    editEquipArg(tempForm).then((res) => {
-                        this.$emit('showFun', {operation: "list"})
+                    editEquipArgs(this.formData).then((res) => {
+                        this.$router.push({path: "equipArgsList"})
                     })
                 } else {
-                    saveEquipArg(tempForm).then((res) => {
-                        this.$emit('showFun', {operation: "list"})
+                    saveEquipArgs(this.formData).then((res) => {
+                        this.$router.push({path: "equipArgsList"})
                     })
                 }
             },
-            dayToMilli(data) {
-                let day = JSON.parse(JSON.stringify(data));
-                let milli = Math.round(day * 24 * 60 * 60 * 1000)
-                return milli
+            fetchData() {
+                if (this.equipArgsID !== "") {
+                    getBosEntity(this.equipArgsID).then(res => {
+                        this.formData = res
+                    });
+                }
+            },
+            initData() {
+                this.equipArgsID = this.$route.query.id
             }
         },
-        mounted() {
-            if (this.$props.showData.data !== undefined) {
-                this.equipArgs = this.$props.showData.data
-            }
-            switch (this.$props.showData.operation) {
-                case "info":
-                    this.isInfo = true;
-                    this.isEdit = false;
-                    break
-                case "edit": {
-                    this.isEdit = true;
-                }
-            }
+        created() {
+            this.initData();
+            this.fetchData()
         }
     }
 </script>
 
 <style lang="scss" scoped>
     .equip-args-edit {
-        width: 1200px
+        width: 80%;
+        float: left;
     }
 
     .button {
@@ -119,6 +112,12 @@
 
     .img {
         float: left;
+
     }
+
+    .equip-args-edit-container {
+        font-size: 16px;
+    }
+
 
 </style>

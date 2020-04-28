@@ -17,7 +17,7 @@
              </define-table>
              <define-table :haveIndex="false"  slot="slot2" :havePage="false" :data="equipArg" height="2.6042rem" >
                 <define-column label="装备参数" field="describes" v-slot="{data}">
-                    <entity-input v-model="data.row.equipArg" format="{name}({model})" :tableEdit="false" :options="{}"></entity-input>
+                    <entity-input v-model="data.row.equipArg" format="{name}({model})" :options="{}"></entity-input>
                 </define-column>
              </define-table>
          </bos-tabs>
@@ -55,6 +55,7 @@
                     this.order = res.content
                     this.paginator.totalPages = res.totalPages;
                     this.paginator.totalElements = res.totalElements;
+                    this.equipArg = this.order[0].equipArgItems
                 })
             },
             deleteplan(data){
@@ -70,7 +71,6 @@
                 this.getData()
             },
             changeCurrent(current){
-                console.log("current",current);
                 this.equipArg = current.equipArgItems
             },
             dialogShow(data,item){
@@ -80,11 +80,9 @@
                     this.plan.equipArgItems=[]
                     this.editflag=false
                 }else if(data == "edit"){
-                    console.log("item",item);
                     this.editflag=true
                     this.plan = item
                 }
-                console.log("this.plan",this.plan);
                 this.$router.push({
                     name: 'editplan',
                     params: {type: 'editplan', info: {data:this.plan,edit:this.editflag}}
