@@ -16,8 +16,9 @@
                     <date-select  label="生产日期" v-model="editList.productDate" :column="6" margin="15px 0" align="left"></date-select>
                 </div>
               <div class="img-box">
-                   <imgUp @success="successUp" :disabled="true" :image="imageUrl"
-                                  :noImg="noImg"  ></imgUp>
+                  <img :src="imageUrl" style="width:200px;height:200px">
+                   <!-- <imgUp @success="successUp" :disabled="true" :image="imageUrl"
+                                  :noImg="noImg"  ></imgUp> -->
               </div>
               
         </div>

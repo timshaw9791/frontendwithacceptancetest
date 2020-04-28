@@ -1,5 +1,6 @@
 <template>
     <div class="opening-box">
+         <my-header :title="$route.meta.title" :haveBlack="false"></my-header>
          <div class="apply-process-top" data-test="action_box">
                 <define-input label="单号" v-model="orderNumber" :disabled="true" class="odd-number"></define-input>
                 <define-input label="维修时间" v-model="time" :disabled="true" class="odd-number"></define-input>
@@ -90,7 +91,7 @@ export default {
                time:"",
                people:'',
                requestBody:'',
-               orderNumber:'——',
+               orderNumber:'',
                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
                select: {
                     handWareList: [{
@@ -241,6 +242,9 @@ export default {
     border-top:1px solid rgba(112, 112, 112, 0.13);
     border-bottom:1px solid rgba(112, 112, 112, 0.13);
     }
+    .apply-process-top{
+        margin-top:15px;
+    }
     .data-list
     {
         padding: 0 10px;
@@ -252,17 +256,6 @@ export default {
         display:flex;
         justify-content: space-between;
     }
-}
-.location-select{
-    height: 500px;
-    width: 4.625rem;
-    z-index: 1200;
-    .select-location{
-        width:3.5rem;
-        height: 440px;
-        float: left;
-        margin-left: auto;
-}
 }
 .btn-box{
         width: 4rem;
