@@ -1,52 +1,63 @@
 <template>
-    <div class="receiveOrderList-body">
-        <div class="receiveOrderList-info">
-            <text-input label="装备名称" placeholder="请输入装备名称"></text-input>
-            <base-button label="查询"></base-button>
+    <div class="receive-order-list-container">
+        <my-header title="领取归还单列表"></my-header>
+        <div class="body">
+            <div>
+                <text-input label="领取单号" placeholder="请输入单号"></text-input>
+                <base-button label="查询"></base-button>
+                <base-button label="新增装备参数" @click="goto()"></base-button>
+            </div>
+            <define-table :data="list" @changePage="changePage" :pageInfo="pageInfo">
+                <define-column label="操作" v-slot="{data}">
+                    <span @click="goto('edit',data.row.id)" style="margin:8px">编辑</span>
+                </define-column>
+                <define-column label="装备名称" field="name"></define-column>
+                <define-column label="装备型号" field="model"></define-column>
+                <define-column label="供应商" field="supplier.name"></define-column>
+            </define-table>
         </div>
-        <define-table :data="receiveOrderList" >
-            <define-column label="操作" v-slot="{data}">
-                <span @click="showFun('info',data.row)">详情</span>
-            </define-column>
-            <define-column label="单号" field="name"></define-column>
-            <define-column label="装备参数" field="supplier.name"></define-column>
-            <define-column label="装备数量" field="shelfLife"></define-column>
-            <define-column label="领取人员" field="chargeCycle"></define-column>
-            <define-column label="领取时间" field="upkeepCycle"></define-column>
-        </define-table>
     </div>
 </template>
 
 <script>
-    import myHeader from "../../../components/base/header/header";
-    import receiveOrderInfo from "./receiveOrderInfo";
-    import receiveOrderList from "./receiveOrderList";
+    import myHeader from '@/components/base/header/header'
+    import {listMixin} from "../../../field/mixins/listMixin"
+    import {getEpArgsList} from "../../../api/equipArgs";
 
     export default {
-        name: "RROrderList",
-        components: {receiveOrderInfo, receiveOrderList, myHeader,},
+        name: "receiveOrderInfo",
+        components: {
+            myHeader,
+            listMixin
+        },
+        mixins: [listMixin],
         data() {
             return {
-                title: "装备领取记录列表",
-                receiveOrderList:[]
+                list: [],
+                pageInfo: {}
             }
         },
-        methods:{
-            showFun(operation, data) {
-                this.$emit('showFun', {
-                    operation: operation, data: data
-                })
+        methods: {
+            changePage(page) {
+                this.pageInfo.page = page;
+                this.getList();
             },
-            getList(){
+            fetchData() {
 
+            },
+            goto(id) {
+                this.$router.push({
+                    path: "equipArgsEdit",
+                    query: id
+                })
             }
-        },
-        created() {
-
         }
     }
 </script>
 
 <style scoped>
-
+    .receive-order-list-container {
+        color: #707070FF;
+        font-size: 16px;
+    }
 </style>

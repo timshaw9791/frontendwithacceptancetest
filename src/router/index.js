@@ -84,10 +84,17 @@ export const asyncRouterMap = [
                 meta: {title: '出库单列表'},
             },
             {
-                path: 'equipArgs',
-                name: 'equipment/equipArgs',
-                component: _import('equipArgs/equipArgs'),
+                path: 'equipArgsList',
+                name: 'equipArgsList',
+                component: _import('equipArgs/equipArgsList'),
                 meta: {title: '装备参数'},
+            },
+            {
+                path: 'equipArgsEdit',
+                name: 'equipArgsEdit',
+                component: _import('equipArgs/equipArgsEdit'),
+                meta: {title: '装备参数编辑'},
+                hidden: true
             },
             {
                 path: 'equipmententity',
@@ -415,9 +422,9 @@ export const asyncRouterMap = [
                 meta: {title: '开门记录', roles: ['ADMINISTRATOR']},
             },
             {
-                path: 'receiveOrder',
-                name: 'receiveOrder',
-                component: _import('record/receiveReturnOrder/receiveOrder'),
+                path: 'receiveOrderList',
+                name: 'receiveOrderList',
+                component: _import('record/receiveReturnOrder/receiveOrderList'),
                 meta: {title: '领取单列表', roles: ['POLICE_OFFICER', 'ADMINISTRATOR']},
             },
             {
