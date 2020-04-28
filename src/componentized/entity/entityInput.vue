@@ -10,7 +10,7 @@
     <div class="icon">
       <i class="iconfont iconwenbenkuangshanchu" @click="clear" v-show="insideValue&&!disabled&&tableEdit&&edit"></i>
       <i class="iconfont iconsousuo" @click="showSearch" v-show="search&&!disabled&&tableEdit&&edit"></i>
-      <i class="iconfont iconxiang" @click="showDetail" v-show="detail&&!tableEdit&&edit"></i>
+      <i class="iconfont iconxiang" @click="showDetail" v-show="detail&&(disabled||!tableEdit)&&edit"></i>
     </div>
     <service-dialog title="申请人员选择" ref="applicant" :button="false" :secondary="false">
       <applicant-select @select="selected" @cancel="$refs.applicant.hide()"></applicant-select>
