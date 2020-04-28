@@ -155,24 +155,15 @@ export default {
                 this.newData.forEach(item=>{item.location=this.milliLocation(item.location)})
             },
             readData(){
-                // killProcess(this.pid)
-                // start("java -jar scan.jar", (data) => {
-                //     if(this.list[this.findIndex].copyList.length==1&&this.list[this.findIndex].copyList[0].rfid=='')
-                //     {
-                //         this.list[this.findIndex].copyList[0].rfid=data
-                //     }else{
-                //         this.list[this.findIndex].copyList.push({rfid:data,serial:''})
-                //     }
-                //     }, (fail) => {
-                //         this.index = 1;
-                //         this.$message.error(fail);
-                //     }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
-                let rfids=['00001545']
-                rfids.forEach(item=>{
-                    findByRfids(item).then(res=>{
+                killProcess(this.pid)
+                start("java -jar scan.jar", (data) => {
+                     findByRfids(data).then(res=>{
                      this.classDataify(res)
                    })
-                })
+                    }, (fail) => {
+                        this.index = 1;
+                        this.$message.error(fail);
+                    }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
             },
             changeDetailRow(state,data)
             {
@@ -211,6 +202,9 @@ export default {
   created() {
      this.init()
   },
+  beforeDestroy(){
+    killProcess(this.pid)
+    },
   components: {
     myHeader,
             textInput,
