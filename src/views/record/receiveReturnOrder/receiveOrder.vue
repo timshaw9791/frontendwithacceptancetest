@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div class="equipArgs-container">
-            <my-header :title=title :have-black="title!=='装备参数列表'" @h_black="back"></my-header>
+
+
             <div class="equipArgs-body">
                 <receive-order-list v-if="showData.operation==='list'" :showData="showData"
                                     @showFun="showFun"></receive-order-list>

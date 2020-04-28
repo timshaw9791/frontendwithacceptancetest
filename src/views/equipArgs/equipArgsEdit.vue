@@ -35,7 +35,9 @@
     import textInput from "../../componentized/textBox/textInput";
     import imgUp from './imgUp';
     import defineInput from "../../componentized/textBox/defineInput";
-    import {saveEquipArg, editEquipArg} from "../../api/equipArgs"
+    import {editEquipArgs, saveEquipArgs} from "@/api/equipArgs"
+    import {getBosEntity} from "@/api/basic"
+
 
     export default {
         name: "editEquipArgs",
@@ -76,11 +78,11 @@
                 tempForm.upkeepCycle = this.dayToMilli(tempForm.upkeepCycle)
                 //时间转换
                 if (this.isEdit) {
-                    editEquipArg(tempForm).then((res) => {
+                    editEquipArgs(tempForm).then((res) => {
                         this.$emit('showFun', {operation: "list"})
                     })
                 } else {
-                    saveEquipArg(tempForm).then((res) => {
+                    saveEquipArgs(tempForm).then((res) => {
                         this.$emit('showFun', {operation: "list"})
                     })
                 }
@@ -103,6 +105,11 @@
                 case "edit": {
                     this.isEdit = true;
                 }
+            }
+        },
+        created() {
+            fetchData(){
+
             }
         }
     }

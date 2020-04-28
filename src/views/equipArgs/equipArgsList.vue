@@ -24,7 +24,7 @@
 </template>
 
 <script>
-    import {getEquipArgs} from "../../api/equipArgs";
+    import {getEpArgsList} from "../../api/equipArgs";
     import textInput from "../../componentized/textBox/textInput";
     import myHeader from "../../components/base/header/header"
     import {imgBaseUrl} from "../../api/config"
@@ -67,7 +67,7 @@
                 this.getList();
             },
             getList() {
-                getEquipArgs(this.pageInfo).then( res => {
+                getEpArgsList(this.pageInfo).then( res => {
                     this.equipArgsList = res.content;
                     this.pageInfo.totalPages = res.totalPages;
                     this.pageInfo.totalElements = res.totalElements;

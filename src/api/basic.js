@@ -9,5 +9,10 @@ export function delFile(data) {
 }
 
 
-
+export function getBosEntity(data) {
+    return request({
+        url: `/bos/bos-entities/${data}`,
+        method: 'GET',
+    })
+}
 
