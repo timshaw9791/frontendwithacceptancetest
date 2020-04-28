@@ -17,7 +17,10 @@ import defineColumn from './defineColumn'
     export default {
         name: "definTable",
         data() {
-            return {}
+            return {
+                selectData: '',
+                selectIndex: ''
+            }
         },
         /*mixins: [formRulesMixin],*/
         props: {
@@ -59,8 +62,6 @@ import defineColumn from './defineColumn'
                         size: 10,
                         totalElements: 0,
                         totalPages: 0,
-                        selectData: '',
-                        selectIndex: ''
                     }
                 }
             },
@@ -83,7 +84,7 @@ import defineColumn from './defineColumn'
             },
             changeCurrent(current, pre) { // 当前选中行改变
                 this.selectData = current;
-                this.selectIndex = this._.findIndex(data, current);
+                this.selectIndex = this._.findIndex(this.data, current);
                 this.$emit('changeCurrent', current);
             }
         }
