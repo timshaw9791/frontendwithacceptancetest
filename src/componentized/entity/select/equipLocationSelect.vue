@@ -8,7 +8,7 @@
                                 <define-input  v-model="data.row.name" type="Number" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="仓位代码" v-slot="{ data }">
-                                <define-input v-model="data.row.id" type="Number" :tableEdit="false"></define-input>
+                                <define-input v-model="data.row.number" type="Number" :tableEdit="false"></define-input>
                             </define-column>
                         </define-table>
                         <define-table :data="list" height="1.8rem" :havePage="false" slot="detail" @changeCurrent="selRow">
@@ -87,8 +87,10 @@ export default {
             getList(){
                 getLocation().then(res=>{
                     this.surfaceList=res.content
+                    console.log(this.surfaceList);
                     this.surfaceList.forEach(item=>{
-                   item.name=item.frameNumber+'架/'+item.section+'节'
+                   item.name=item.frameNumber+'架/'+item.surface+'面/'+item.section+'节/'+item.floor+'层'
+                   item.number=item.frameNumber+'-'+item.surface+'-'+item.section+'-'+item.floor
                   })
                 }).catch(err => {
                     this.$message.error(err.response.data.message)
@@ -101,13 +103,13 @@ export default {
                         {
                             item.name=item.policeCabinetUserItems[0].user.name
                         }
-                        if(item.category=='SPARE')
+                        if(item.category=='SPARE_CABINET')
                         {item.category='备用柜'}
                         else if(item.category=='SINGLE_POLICE')
                         {
                             item.category='单警柜'
                         }
-                        else if(item.category=='COMMON'){
+                        else if(item.category=='COMMON_CABINET'){
                             item.category='公共柜'}
                     })
                 }).catch(err => {
