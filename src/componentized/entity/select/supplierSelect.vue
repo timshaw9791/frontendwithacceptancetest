@@ -1,7 +1,7 @@
 <template>
     <div class="supplier-select-container">
         <div class="table">
-            <define-table height="3.6458rem" :havePage="false" :highLightCurrent="true"
+            <define-table height="400px" :havePage="false" :highLightCurrent="true"
                           :data="supplierList" @changeCurrent="changeCurrent">
                 <define-column label="供应商名称" field="name"></define-column>
                 <define-column label="联系人" field="person"></define-column>
@@ -56,6 +56,7 @@
         margin-top: 10px;
     }
     .footer {
+        margin-top: 20px;
         text-align: center;
     }
 </style>
