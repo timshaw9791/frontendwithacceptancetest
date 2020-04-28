@@ -1,25 +1,27 @@
 <template>
     <div class="equip-args-list-container">
         <my-header title="装备参数列表"></my-header>
-        <div class="equipArgs-info">
+        <div class="header">
             <text-input label="装备名称" placeholder="请输入装备名称"></text-input>
             <base-button label="查询"></base-button>
             <base-button label="新增装备参数" @click="goto()"></base-button>
         </div>
-        <define-table :data="list" @changePage="changePage" :pageInfo="pageInfo">
-            <define-column label="操作" v-slot="{data}">
-                <span @click="goto(data.row.id)" style="margin:8px">编辑</span>
-            </define-column>
-            <define-column label="图片" v-slot="{ data }" style="width: 30px">
-                <img class="img" :src="imgBaseUrl+data.row.image"/>
-            </define-column>
-            <define-column label="装备名称" field="name"></define-column>
-            <define-column label="装备型号" field="model"></define-column>
-            <define-column label="供应商" field="supplier.name"></define-column>
-            <define-column label="保质期(天)" :filter="(row)=>milliToDay(row.shelfLife)"></define-column>
-            <define-column label="充电周期(天)" :filter="(row)=>milliToDay(row.chargeCycle)"></define-column>
-            <define-column label="保养周期(天)" :filter="(row)=>milliToDay(row.upkeepCycle)"></define-column>
-        </define-table>
+        <div class="body">
+            <define-table :data="list" @changePage="changePage" :pageInfo="pageInfo">
+                <define-column label="操作" v-slot="{data}">
+                    <span @click="goto(data.row.id)" style="margin:8px">编辑</span>
+                </define-column>
+                <define-column label="图片" v-slot="{ data }" style="width: 30px">
+                    <img class="img" :src="imgBaseUrl+data.row.image"/>
+                </define-column>
+                <define-column label="装备名称" field="name"></define-column>
+                <define-column label="装备型号" field="model"></define-column>
+                <define-column label="供应商" field="supplier.name"></define-column>
+                <define-column label="保质期(天)" :filter="(row)=>milliToDay(row.shelfLife)"></define-column>
+                <define-column label="充电周期(天)" :filter="(row)=>milliToDay(row.chargeCycle)"></define-column>
+                <define-column label="保养周期(天)" :filter="(row)=>milliToDay(row.upkeepCycle)"></define-column>
+            </define-table>
+        </div>
     </div>
 </template>
 
