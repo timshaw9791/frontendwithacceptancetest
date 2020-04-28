@@ -52,31 +52,11 @@ const user = {
             const username = userInfo.username.trim()
             return new Promise((resolve, reject) => {
                 login(username, userInfo.password).then(response => {
-                    // let newVal = JSON.stringify(response.role);
-                    // if (newVal.includes('SUPER_ADMINISTRATOR') || newVal.includes('LEADER') || newVal.includes('ADMINISTRATOR')) {
-                    //     response.role = ['ADMINISTRATOR'];
-                    // }
                     let newVal = response.role;
                     if (newVal == 'SUPER_ADMINISTRATOR'|| newVal=='LEADER' || newVal=='ADMIN') {
                         response.role = ['ADMINISTRATOR'];
                     }
                     localStorage.setItem('user', JSON.stringify(response));
-                    // 打包应用去注释
-                    // setDeploy();
-                    // getdeploy().then((res) => {
-                    //     console.log(res);
-                    //     // localStorage.setItem('deploy', JSON.stringify(res.data));
-                    //     if (process.env.NODE_ENV == "production") {
-
-                    //     }else {
-                    //         localStorage.setItem('deploy', JSON.stringify(res.data));
-                    //     }
-                    //     commit('SET_DEPLOY', res);
-                    // });
-                    // commit('SET_USERID', response.id);
-                    /*  const data = response.data
-                      setToken(data.token)
-                      commit('SET_TOKEN', data.token)*/
                     resolve()
                 }).catch(error => {
                     reject(error)
@@ -84,43 +64,19 @@ const user = {
             })
         },
 
-
-
-        // 获取用户信息
-        // GetInfo({commit, state}) {
-        //   return new Promise((resolve, reject) => {
-        //     getInfo(state.token).then(response => {
-        //       const data = response.data
-        //       if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
-        //         commit('SET_ROLES', data.roles)
-        //       } else {
-        //         reject('getInfo: roles must be a non-null array !')
-        //       }
-        //       commit('SET_NAME', data.name)
-        //       commit('SET_AVATAR', data.avatar)
-        //       resolve(response)
-        //     }).catch(error => {
-        //       reject(error)
-        //     })
-        //   })
-        // },
-
         GetInfo({commit}) {
             return new Promise((resolve, reject) => {
                 if (localStorage.getItem('user')) {
                     let data = JSON.parse(localStorage.getItem('user'));
                     let roleData = [];
                     if (data.role && data.role.length > 0) { // 验证返回的roles是否是一个非空数组
-                        data.role.forEach((value) => {
-                            roleData.push(value);
-                        });
+                        roleData=[...data.role];
                         commit('SET_ROLES', roleData);
                     } else {
                         roleData.push('look');
                         commit('SET_ROLES', roleData);
                         // reject('getInfo: roles must be a non-null array!')
                     }
-                    console.log(roleData);
                     resolve(roleData)
                 } else {
                     reject(error)
@@ -132,7 +88,6 @@ const user = {
         // 登出
         LogOut({commit, state}) {
             return new Promise((resolve, reject) => {
-                // logout(state.token).then(() => {
                     commit('SET_TOKEN', '');
                     commit('SET_ROLES', []);
                     removeToken();
@@ -141,9 +96,6 @@ const user = {
                         message: '退出成功!'
                     });
                     resolve();
-                // }).catch(error => {
-                //     reject(error)
-                // })
             })
         },
 
