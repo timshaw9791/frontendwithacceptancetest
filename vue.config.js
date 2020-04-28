@@ -44,7 +44,6 @@ module.exports = {
                 'base': '@/base',
                 'api': '@/api',
                 'store': '@/store',
-                'gql': '@/graphql',
             }
         }
     },
