@@ -72,11 +72,11 @@ export default {
                         value: 'SINGLE_POLICE'
                     }, {
                         label: "公共柜",
-                        value: "COMMON"
+                        value: "COMMON_CABINET"
                     },
                      {
                         label: "备用柜",
-                        value: "SPARE"
+                        value: "SPARE_CABINET"
                     }
                     ]
                },
@@ -117,13 +117,13 @@ export default {
                         {
                             item.name=item.policeCabinetUserItems[0].user.name
                         }
-                        if(item.category=='SPARE')
+                        if(item.category=='SPARE_CABINET')
                         {item.category='备用柜'}
                         else if(item.category=='SINGLE_POLICE')
                         {
                             item.category='单警柜'
                         }
-                        else if(item.category=='COMMON'){
+                        else if(item.category=='COMMON_CABINET'){
                             item.category='公共柜'}
                     })
                 }).catch(err => {

@@ -103,9 +103,9 @@ export default {
     }
   },
   methods: {
-    selRow(current) { // 单选表格行
-           console.log(current);
-           this.findIndex=this._.indexOf(this.listData,current)
+    selRow(data,index) { // 单选表格行
+           console.log(data);
+           this.findIndex=index
       },
     startMain(){
        this.$router.push({path: '/equipmentOperation/startMaintenance'});
