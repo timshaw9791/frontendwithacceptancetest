@@ -3,7 +3,7 @@
         <my-header :title="title"  :searchFlag="false" :haveBlack="false" ></my-header>
         <div style="display:block;width:100%;height:500px">
             <div  class="addpersonnelist">
-                <entity-input label="机构单位" margin="15px 0 0 0" v-model="organUnit" format="{name}" :options="{search:'organUnits'}" placeholder="请选择"></entity-input>
+                <entity-input label="机构单位" margin="15px 0 0 0" :disabled="true" v-model="organUnit" format="{name}" :options="{search:'organUnits'}" placeholder="请选择"></entity-input>
                 <define-input label="警号" margin="15px 0 0 0" :required="true" v-model="order.policeSign" :column="12"></define-input>
                 <define-input label="姓名" margin="15px 0 0 0" :required="true" v-model="order.name" :column="12"></define-input>
                 <base-select label="性别" margin="15px 0 0 0" :required="true" v-model="order.gender" :column="12" :selectList="genderList"></base-select>
@@ -66,6 +66,12 @@
                 }
             }else{
                 this.title = "新增人员"
+                let user = JSON.parse(localStorage.getItem('user'))
+                console.log("user",user);
+                this.organUnit = {
+                    name:user.organUnitName,
+                    id:user.organUnitId
+                }
             }
             if(this.order.enterHouse==undefined||!this.order.enterHouse){
                 this.order.enterHouse="不允许"
