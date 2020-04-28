@@ -14,7 +14,7 @@
           <define-table :havePage="false" :data="listData" height="2.6042rem"
             @changeCurrent="selRow" :summaryFunc="sumFunc" :showSummary="true" :highLightCurrent="true" slot="total" >
             <define-column label="装备参数" v-slot="{ data }">
-              <entity-input v-model="data.row.equipArg" :options="{ detail: 'equipArgsSelect' }" format="{name}({model})" :disabled="true" ></entity-input>
+              <entity-input v-model="data.row.equipArg" :detailParam="data.row.equipArg" :options="{ detail: 'equipArgsDetail' }" format="{name}({model})" :disabled="true" ></entity-input>
             </define-column>
             <define-column label="装备位置" field="location" :filter="(row)=>milliLocation(row.location)"></define-column>
             
@@ -105,7 +105,7 @@ export default {
   methods: {
     selRow(data,index) { // 单选表格行
            console.log(data);
-           this.findIndex=index
+            this.findIndex=this._.indexOf(this.listData,data)
       },
     startMain(){
        this.$router.push({path: '/equipmentOperation/startMaintenance'});
@@ -132,20 +132,11 @@ export default {
       },
       cancel(){this.show = true},
       sumFunc(param) { // 表格合并行计算方法
-        // let { columns, data } = param, sums = [];
-        // columns.forEach((colum, index) => {
-        //     if(index == 0) {
-        //         sums[index] =  '合计';
-        //     } else if(index == columns.length-1) {
-        //         const values = data.map(item => item.count?Number(item.count):0);
-        //         if(!values.every(value => isNaN(value))) {
-        //             sums[index] = values.reduce((pre, cur) => !isNaN(cur)?pre+cur:pre);
-        //         }
-        //     }else {
-        //         sums[index] = '/';
-        //     }
-        // })
-        // return sums;
+      let { columns, data } = param, sums = [];
+                sums=new Array(columns.length).fill('')
+                sums[0]='合计'
+                sums[columns.length-1]=param.data.reduce((v,k)=>v+k.count,0)
+                return sums;      
       },
       milliLocation(data)//对现实的装备位置信息进行处理
             {
