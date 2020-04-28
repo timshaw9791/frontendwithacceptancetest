@@ -120,10 +120,8 @@ export default {
             }
         },
         methods:{
-            selRow(current){
-                console.log(current);
-               this.findIndex=this._.indexOf(this.list,current)
-               console.log(this.findIndex);
+            selRow(data,index){
+               this.findIndex=index
             },
             sumFunc(param) { // 表格合并行计算方法
                 let { columns, data } = param, sums = [];

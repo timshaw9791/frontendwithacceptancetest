@@ -31,13 +31,13 @@
                                 <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
                             </define-column>
                         </define-table>
-                        <define-table :data="copyData" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
+                        <define-table :data="listData" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
                             :highLightCurrent="true"  slot="total" class="right_box" :showSummary="true" :haveIndex="false" :summaryFunc="sumFunc">
                             <define-column label="可保养数量" v-slot="{ data }">
                                 <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
                             </define-column>
                         </define-table>
-                        <define-table :data="copyData[findIndex].copyList" height="2.8646rem" :havePage="false" slot="detail">
+                        <define-table :data="listData[findIndex].clist" height="2.8646rem" :havePage="false" slot="detail">
                             <define-column label="操作" width="100" v-slot="{ data }">
                                <i class="iconfont icontianjialiang" @click="changeDetailRow(true,data)"></i>
                                <i class="iconfont iconyichuliang" @click="changeDetailRow(false,data)"></i>
@@ -124,9 +124,9 @@ export default {
             }
         },
         methods:{
-          selRow(current) { // 单选表格行
-           console.log(current);
-           this.findIndex=this._.indexOf(this.listData,current)
+          selRow(data,index) { // 单选表格行
+           console.log(data,index);
+           this.findIndex=this._.indexOf(this.listData,data)
       },
       locations(data){
         return data.floor+'/'+data.frameNumber+'/'+data.surface+'/'+data.section
@@ -134,18 +134,38 @@ export default {
       confirm(){
 
       },
+      checkData(data){
+          this.listData.forEach(item=>{
+              
+          })
+      },
       classDataify(data)//读写器数据处理的方法
             {
                 data.forEach(item=>{this.list.push(item)})
                 let cList=this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}${item.location.id}`)
-                this.listData=this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length,location:v[0].location}})
+                this.listData=this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length,location:v[0].location,keepcount:0,clist:[{rfid:'',serial:''}]}})
             },
       classDataifyRfid(data)
       {
-          data.forEach(item=>this.list.push(item))
-          let cList=this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}${item.location.id}`)
-          console.log(cList);
-          this.copyData=this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,clist:v,count:v.length,location:v[0].location,keepcount:0}})
+          let c=data[0]
+          this.listData.forEach(item=>{
+              console.log(item.equipArg);
+              console.log(c);
+              if(item.equipArg.name==c.equipArg.name&&item.location.id==c.location.id&&item.equipArg.model==c.equipArg.model)
+              {
+                  console.log("触发");
+                  if(item.clist.length==1){
+                      item.clist[0].rfid=c.rfid
+                      item.clist[0].serial=c.serial
+                  }else{ item.clist.push({rfid:c.rfid,serial:c.serial})}
+                 
+              }
+              item.keepcount=item.clist.length
+          })
+        //   data.forEach(item=>this.list.push(item))
+        //   let cList=this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}${item.location.id}`)
+        //   console.log(cList);
+        //   this.copyData=this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,clist:v,count:v.length,location:v[0].location,keepcount:0}})
       },
       cancel(){this.show = true},
       sumFunc(param) { // 表格合并行计算方法
@@ -170,7 +190,7 @@ export default {
                 //         this.index = 1;
                 //         this.$message.error(fail);
                 //     }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
-                let rfids=['00001545','5555']
+                let rfids=['5789624','5555','00001545']
                 rfids.forEach(item=>{
                     findByRfids(item).then(res=>{
                      this.classDataifyRfid(res)

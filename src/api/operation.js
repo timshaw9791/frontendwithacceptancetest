@@ -39,7 +39,7 @@ export function findkeepingequips() {
 
 export function repairEquipMaintain(rfids,state) {
     return request({
-        url: `/equipMaintain/repair?rfids=${rfids}&&state=${state}`,
+        url: `/equip-maintain/repair?${qs.stringify({rfids:rfids},{indices:false})}&state=${state}`,
         method: 'post',
     })
 }

@@ -1,11 +1,11 @@
 <template>
     <div class="opening-box">
-        <my-header :title="inhouse?'正在维修':'结束维修'" :haveBlack="inhouse||inorder" @h_black="black"></my-header>
-        <div class="btn_box" v-if="!inhouse&&!inorder">
+        <my-header title="正在维修" ></my-header>
+        <div class="btn_box">
              <base-button label="结束维修" align="right" :width="128" :height="25" :fontSize="20" @click="toInHouse"></base-button>
         </div>
         <div class="data-list">
-            <define-table :data="list" height="3.64rem" @changeCurrent="selRow" @changePage="changePage" :pageInfo="paginator" v-if="!inhouse&&!inorder">
+            <define-table :data="list" height="3.64rem" @changeCurrent="selRow" @changePage="changePage" :pageInfo="paginator">
                             <define-column label="操作" width="100" v-slot="{ data }">
                                 <div class="span-box">
                                      <span >开柜</span>
@@ -29,8 +29,7 @@
                                 <define-input v-model="data.row.operator.operator" type="String" :tableEdit="false"></define-input>
                             </define-column>
                         </define-table>
-            <end-service v-if='inhouse'  @cancel="black"></end-service>
-            <!-- <equip-inhouse-order v-if="inorder" :equipData="equipData" @cancel="black"></equip-inhouse-order> -->
+        
         </div>
     </div>
 </template>
@@ -118,7 +117,7 @@ export default {
             this.paginator.page = page;ss
             },
             toInHouse(){
-                this.inhouse=true
+                this.$router.push({path:"/equipmentOperation/endService"})
             }
         },
         created(){

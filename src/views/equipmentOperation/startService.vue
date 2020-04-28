@@ -1,5 +1,6 @@
 <template>
     <div class="opening-box">
+         <my-header :title="$route.meta.title" :haveBlack="false"></my-header>
          <div class="apply-process-top" data-test="action_box">
                 <define-input label="单号" v-model="orderNumber" :disabled="true" class="odd-number"></define-input>
                 <define-input label="维修时间" v-model="time" :disabled="true" class="odd-number"></define-input>
@@ -18,10 +19,10 @@
                                 <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
-                                <entity-input v-model="data.row.name"  :options="{detail:'equipArgsSelect'}" format="{name}({model})" :tableEdit="false" ></entity-input>
+                                <entity-input v-model="data.row.equipArg"  :options="{detail:'equipArgsSelect'}" format="{name}({model})" :tableEdit="false" ></entity-input>
                             </define-column>
                             <define-column label="装备位置" v-slot="{ data }">
-                                <define-input v-model="data.row.locationId"  type="Number" :tableEdit="false"></define-input>
+                                <entity-input v-model="data.row.location"  format="{frameNumber}架/{surface}面/{section}节/{surface}层" :tableEdit="false" ></entity-input>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
                                 <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
@@ -61,6 +62,7 @@
     import serviceDialog from 'components/base/serviceDialog/index'
     import { start, startOne, killProcess,handheld, modifyFileName } from 'common/js/rfidReader'
     import divTmp from '@/componentized/divTmp'
+    import {repairEquipMaintain} from "api/operation"
     import { getInhouseNumber,inHouse,findByRfids,outHouse} from "api/storage"
 export default {
     components:{
@@ -128,8 +130,14 @@ export default {
                 })
                 return sums;
             },
+             classDataify(data)//读写器数据处理的方法
+            {
+                data.forEach(item=>{this.list.push(item)})
+                let cList=this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}${item.location.id}`)
+                this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length,location:v[0].location}})
+            },
             cancel(){
-                this.$emit('cancel')
+                this.$router.back()
             },
             confirm(){
                 this.requestBody=JSON.parse(JSON.stringify(this.newData))
@@ -140,72 +148,20 @@ export default {
                     })
                 })
                 
-                outHouse(rfidList).then(res=>{
-                    this.$message.success('装备出库成功')
+                repairEquipMaintain(rfidList,true).then(res=>{
                     this.init()
                     this.cancel()
                 })
             },
-            changeDataFormat(data){
-
-            data.forEach(item=>
-             {
-                 let newList={
-                     name:item.equipArg.name+'('+item.equipArg.model+')',
-                     price:item.price,
-                     productTime:item.productDate,
-                     count:0,
-                     copyList:[]
-                 }
-                 console.log("oneByone");
-                 console.log(newList);
-                 newList.copyList.push({rfid:item.rfid,serial:item.serial?item.serial:''})
-                if(this.list.length==0)
-                {
-                    this.list.push(newList)
-                }else{
-                    let flag=false,dIndex=0
-                    this.list.forEach((qe,index)=>{
-                        if(!flag&&(qe.name==newList.name))
-                        {
-                            flag=true;
-                            dIndex=index
-                        }
-                    })
-                    if(flag)
-                    {
-                        this.list[dIndex].copyList.push({rfid:item.rfid,serial:item.serial?item.serial:''})
-                        flag=true
-                    }else{
-                        this.list.push(newList)
-                    }
-                }
-            })
-            this.list.forEach(item=>{
-                item.count=item.copyList.length
-            })
-            this.newData=JSON.parse(JSON.stringify(this.list))
-        },
+            sumFunc(param) { // 表格合并行计算方法
+                let { columns, data } = param, sums = [];
+                sums=new Array(columns.length).fill('')
+                sums[0]='合计'
+                sums[columns.length-1]=param.data.reduce((v,k)=>v+k.copyList.length,0)
+                return sums;
+            },
             changePage(page) {
             this.paginator.page = page;
-            },
-            changelocation(){
-                this.$refs.historyDialog.show()
-            },
-            getTime(ns) {
-                if(ns)
-                {
-                    var date=new Date(parseInt(nS));
-                }else{
-                    var date=new Date();
-                }
-            var year=date.getFullYear();
-            var mon = date.getMonth()+1;
-            var day = date.getDate();
-            var hours = date.getHours();
-            var minu = date.getMinutes();
-            var sec = date.getSeconds();
-            this.time= year+'/'+mon+'/'+day+'/'+hours+'时';
             },
             readData(){
                 // killProcess(this.pid)
@@ -220,10 +176,10 @@ export default {
                 //         this.index = 1;
                 //         this.$message.error(fail);
                 //     }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
-                let rfids=['555888999','5566688899','555888666','12344455566']
+                let rfids=['5789624']
                 rfids.forEach(item=>{
                     findByRfids(item).then(res=>{
-                        this.changeDataFormat(res)
+                        this.classDataify(res)
                     })
                 })
             },
@@ -252,7 +208,7 @@ export default {
             init(){
                 this.newData=[{
                     name: '',
-                    locationId: '',
+                    location: '',
                     price: 0,
                     productTime: 0,
                     rfids: [],
@@ -261,26 +217,7 @@ export default {
                 }]
             }
         },
-        watch:{
-            'list':{
-                deep:true,
-                handler(newval){
-                    newval.forEach(item=>{
-                        let len=0
-                        item.copyList.forEach(i=>{
-                            if(i.rfid!='')
-                            {
-                                len++
-                            }
-                        })
-                        item.count=len
-                    })
-                    
-                }
-            }
-        },
         created(){
-                this.getTime()
                 this.init()
                 this.people=JSON.parse(localStorage.getItem('user')).name
         }
