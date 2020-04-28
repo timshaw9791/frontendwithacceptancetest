@@ -17,7 +17,9 @@
                 <define-input label="保养周期（天）" v-model="equipArgs.upkeepCycle" :disabled="isInfo"
                               margin="10px 10px 10px 10px" type="Number"></define-input>
             </div>
-            <img-up @success="setImg" :disabled="isInfo" :src="equipArgs.image"></img-up>
+            <div class="img">
+                <img-up @success="setImg" :disabled="isInfo" :src="equipArgs.image"></img-up>
+            </div>
             <div class="_box-bottom">
                 <base-button label="取消" :class="isInfo?'button':''" @click="showFun()"></base-button>
                 <base-button label="提交" :class="isInfo?'button':''" @click="submit()"></base-button>
@@ -84,10 +86,10 @@
                 }
             },
             dayToMilli(data) {
-            let day = JSON.parse(JSON.stringify(data));
-            let milli = Math.round(day * 24 * 60 * 60 * 1000)
-            return milli
-        }
+                let day = JSON.parse(JSON.stringify(data));
+                let milli = Math.round(day * 24 * 60 * 60 * 1000)
+                return milli
+            }
         },
         mounted() {
             if (this.$props.showData.data !== undefined) {
@@ -108,10 +110,15 @@
 
 <style lang="scss" scoped>
     .equip-args-edit {
-        wdith: 60px,
+        width: 1200px
     }
 
     .button {
         display: none;
     }
+
+    .img {
+        float: left;
+    }
+
 </style>
