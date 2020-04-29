@@ -37,11 +37,11 @@
                 default:100
             }
         },
-        apollo:{
-            list() {
-                return this.getEntityListWithPagintor(this.table.graphqlTable.graphqlApi);
-            },
-        },
+        // apollo:{
+        //     list() {
+        //         return this.getEntityListWithPagintor(this.table.graphqlTable.graphqlApi);
+        //     },
+        // },
         created(){
           this.getTreeData();
         },

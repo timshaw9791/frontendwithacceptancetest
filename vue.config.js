@@ -70,11 +70,4 @@ module.exports = {
 
         // before: app => {}
     }, // 第三方插件配置
-
-    pluginOptions: {
-        apollo: {
-            enableMocks: true,
-            enableEngine: true
-        }
-    }
 };

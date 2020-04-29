@@ -348,12 +348,6 @@
                 this.getEquipServiceList()
             }
         },
-
-        // apollo: {
-        //     list() {
-        //         return this.getEntityListWithPagintor(api.getEquipList);
-        //     },
-        // },
         mixins: [formRulesMixin, transformMixin],
 
         components: {
