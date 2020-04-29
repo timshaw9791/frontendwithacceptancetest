@@ -22,21 +22,10 @@ Vue.use(Router);
 export const constantRouterMap = [
     {path: '/login', component: _import('login/index'), hidden: true},
     {path: '/404', component: _import('errorPage/404'), hidden: true},
-
-
     {
         path: '/',
         redirect: '/login',
-        // component: Layout,
-        // name: 'dashboard',
-        // redirect: '/overview/index',
-        // hidden: true,
-        // children: [{
-        //     path: 'dashboard',
-        //     component: _import('dashboard/index')
-        // }]
     },
-
 ];
 
 export default new Router({
@@ -45,554 +34,354 @@ export default new Router({
     routes: constantRouterMap
 })
 
-export const asyncRouterMap = [
-    {
+export const asyncRouterMap = [{
         path: '/overview',
         component: Layout,
         name: 'overview',
-        children: [
-            {
-                path: 'index',
-                name: 'overview/index',
-                component: _import('overview/index'),
-                meta: {title: '工作概览', icon: 'home'},
-            }
-        ]
-    },
-    {
+        children: [{
+            path: 'index',
+            name: 'overview/index',
+            component: _import('overview/index'),
+            meta: {title: '工作概览', icon: 'home'}
+        }]
+    }, {
         path: '/equipment',
         component: Layout,
         name: 'equipment',
-        meta: {title: '装备出入库', icon: '装备出入库', roles: ['ADMINISTRATOR']},
-        children: [
-            {
-                path: 'storages',
-                name: 'equipment/storages',
-                component: _import('equipment/storages'),
-                meta: {title: '入库单列表'},
-            },
-            {
-                path: 'storage',
-                name: 'equipment/storage',
-                component: _import('equipment/storage'),
-                meta: {title: '装备入库'},
-            },
-            {
-                path: 'outstorage',
-                name: 'equipment/outstorage',
-                component: _import('equipment/outHouseOrder'),
-                meta: {title: '出库单列表'},
-            },
-            {
-                path: 'equipArgsList',
-                name: 'equipArgsList',
-                component: _import('equipArgs/equipArgsList'),
-                meta: {title: '装备参数'},
-            },
-            {
-                path: 'equipArgsEdit',
-                name: 'equipArgsEdit',
-                component: _import('equipArgs/equipArgsEdit'),
-                meta: {title: '装备参数编辑'},
-                hidden: true
-            },
-            {
-                path: 'equipmententity',
-                name: 'equipment/equipmententity',
-                component: _import('equipment/equipmentEntity'),
-                meta: {title: '装备实体'},
-            },
-            {
-                path: 'searchstorage',
-                name: 'equipment/search',
-                component: _import('equipment/searchStorageInfo'),
-                meta: {title: '装备搜索'},
-            },
-            {
-                path: 'supplier',
-                name: 'equipment/supplier',
-                component: _import('equipment/supplier'),
-                meta: {title: '供应商管理'},
-            },
-
-        ]
-    },
-    {
+        meta: {title: '装备出入库', icon: '装备出入库'},
+        children: [{
+            path: 'storages',
+            name: 'equipment/storages',
+            component: _import('equipment/storages'),
+            meta: {title: '入库单列表'},
+        }, {
+            path: 'storage',
+            name: 'equipment/storage',
+            component: _import('equipment/storage'),
+            meta: {title: '装备入库'},
+        }, {
+            path: 'outstorage',
+            name: 'equipment/outstorage',
+            component: _import('equipment/outHouseOrder'),
+            meta: {title: '出库单列表'},
+        }, {
+            path: 'equipArgs',
+            name: 'equipment/equipArgs',
+            component: _import('equipArgs/equipArgs'),
+            meta: {title: '装备参数'},
+        }, {
+            path: 'equipArgsEdit',
+            name: 'equipArgsEdit',
+            component: _import('equipArgs/equipArgsEdit'),
+            meta: {title: '装备参数编辑'},
+            hidden: true
+        }, {
+            path: 'equipmententity',
+            name: 'equipment/equipmententity',
+            component: _import('equipment/equipmentEntity'),
+            meta: {title: '装备实体'},
+        }, {
+            path: 'searchstorage',
+            name: 'equipment/search',
+            component: _import('equipment/searchStorageInfo'),
+            meta: {title: '装备搜索'},
+        }, {
+            path: 'supplier',
+            name: 'equipment/supplier',
+            component: _import('equipment/supplier'),
+            meta: {title: '供应商管理'},
+        }]
+    }, {
         path: '/process',
         component: Layout,
         name: 'process',
         meta: {title: '流程管理', icon: '流程管理'},
-        children: [
-            {
-                path: 'myProcess',
-                name: 'myProcess',
-                component: _import('process/myProcessNew'),
-                meta: {title: '我的流程'},
-            },{
-                path: 'newProcess',
-                name: 'newProcess',
-                component: _import('process/newProcess'),
-                meta: {title: '新启流程'}
-            },
-            {
-                path: 'scrapApply', // 工作流申请
-                name: 'scrapApply',
-                component: _import('process/scrapApply'),
-                hidden: true,
-            },{
-                path: 'transferApply', // 调拨申请
-                name: 'transferApply',
-                component: _import('process/transferApply'),
-                hidden: true,
-            },{
-                path: 'transfer/order', // 调拨详情页
-                name: 'transferDetail',
-                component: _import('process/transferDetail'),
-                hidden: true,
-            },{
-                path: 'transfer/:type', // 调拨出入库
-                name: 'transferStorehouse',
-                component: _import('process/transferStorehouse'),
-                hidden: true,
-            },{
-                path: 'myProcess/:type/:audit', // 流程申请单
-                name: 'applyAudit',
-                component: _import('process/processForm'),
-                hidden: true,
-            },{
-                path: 'agencyMatters',
-                name: 'agencyMatters',
-                component: _import('process/agencyMatters'),
-                meta: {title: '待办事宜'},
-            },
-            {
-                path: 'completedMatters',
-                name: 'completedMatters',
-                component: _import('process/completedMatters'),
-                meta: {title: '已办事宜'},
-            },
-            {
-                path: 'handlingMatters',
-                name: 'handlingMatters',
-                component: _import('process/handlingMatters'),
-                meta: {title: '办结事宜'},
-            },
-            {
-                path: 'listOfApplication',
-                name: 'listOfApplication',
-                component: _import('process/listOfApplication'),
-                meta: {title: '申请单列表'},
-            }
-            // {
-            //     path: 'scrapped',
-            //     name: 'scrapped',
-            //     component: _import('process/scrapped'),
-            //     meta: {title: '报废流程'},
-            // },
-            // {
-            //     path: 'secondment',
-            //     name: 'secondment',
-            //     component: _import('process/secondment'),
-            //     meta: {title: '借调流程'},
-            // },
-            // {
-            //     path: 'transfer',
-            //     name: 'transfer',
-            //     component: _import('process/transfer'),
-            //     meta: {title: '调拨流程'},
-            // },
-            // {
-            //     path: 'directAdjustment',
-            //     name: 'directAdjustment',
-            //     component: _import('process/directAdjustment'),
-            //     meta: {title: '直调流程'},
-            // },
-            // {
-            //     path: 'secondment',
-            //     name: 'secondment',
-            //     component: _import('process/secondment'),
-            //     meta: {title: '借调流程'},
-            // },
-            // {
-            //     path: 'bill',
-            //     name: 'bill',
-            //     component: _import('process/bill'),
-            //     meta: {title: '报废申请单'},
-            //     hidden: true,
-            // },
-        ]
-    },
-    {
+        children: [ {
+            path: 'myProcess',
+            name: 'myProcess',
+            component: _import('process/myProcessNew'),
+            meta: {title: '我的流程'},
+        }, {
+            path: 'newProcess',
+            name: 'newProcess',
+            component: _import('process/newProcess'),
+            meta: {title: '新启流程'}
+        }, {
+            path: 'scrapApply', // 工作流申请
+            name: 'scrapApply',
+            component: _import('process/scrapApply'),
+            hidden: true,
+        }, {
+            path: 'transferApply', // 调拨申请
+            name: 'transferApply',
+            component: _import('process/transferApply'),
+            hidden: true,
+        }, {
+            path: 'transfer/order', // 调拨详情页
+            name: 'transferDetail',
+            component: _import('process/transferDetail'),
+            hidden: true,
+        }, {
+            path: 'transfer/:type', // 调拨出入库
+            name: 'transferStorehouse',
+            component: _import('process/transferStorehouse'),
+            hidden: true,
+        }, {
+            path: 'myProcess/:type/:audit', // 流程申请单
+            name: 'applyAudit',
+            component: _import('process/processForm'),
+            hidden: true,
+        }, {
+            path: 'agencyMatters',
+            name: 'agencyMatters',
+            component: _import('process/agencyMatters'),
+            meta: {title: '待办事宜'},
+        }, {
+            path: 'completedMatters',
+            name: 'completedMatters',
+            component: _import('process/completedMatters'),
+            meta: {title: '已办事宜'},
+        }, {
+            path: 'handlingMatters',
+            name: 'handlingMatters',
+            component: _import('process/handlingMatters'),
+            meta: {title: '办结事宜'},
+        }, {
+            path: 'listOfApplication',
+            name: 'listOfApplication',
+            component: _import('process/listOfApplication'),
+            meta: {title: '申请单列表'},
+        }]
+    }, {
         path: '/equipmentOperation',
         component: Layout,
         name: 'equipmentOperation',
-        meta: {title: '维保充电', icon: '维保充电', roles: ['ADMINISTRATOR']},
-        children: [
-            {
-                path: 'textCharge',
-                name: 'textCharge',
-                component: _import('equipmentOperation/textCharge'),
-                meta: {title: '充电'},
-            },
-            {
-                path: 'maintenance',
-                name: 'maintenance',
-                component: _import('equipmentOperation/maintenanceNew'),
-                meta: {title: '需要保养'},
-            },
-            {
-                path: 'endMaintenance',
-                name: 'endMaintenance',
-                component: _import('equipmentOperation/endMaintenance'),
-                meta: {title: '正在保养/结束保养'},
-                hidden: true,
-            },
-            {
-                path: 'startMaintenance',
-                name: 'startMaintenance',
-                component: _import('equipmentOperation/startMaintenance'),
-                meta: {title: '开始保养'},
-                hidden: true,
-            },
-            {
-                path: 'needMaintenanced',
-                name: 'needMaintenanced',
-                component: _import('equipmentOperation/needMaintenanced'),
-                meta: {title: '正在保养'},
-            },
-            {
-                path: 'service',
-                name: 'service',
-                component: _import('equipmentOperation/service'),
-                meta: {title: '维修'},
-            },
-            {
-                path: 'serviceapplication',
-                name: 'serviceapplication',
-                component: _import('equipmentOperation/serviceApplicationInfo'),
-                meta: {title: '维修申请'},
-            },
-            {
-                path: 'startservice',
-                name: 'startservice',
-                component: _import('equipmentOperation/startService'),
-                meta: {title: '维修申请/开始维修'},
-                hidden:true
-            },
-            {
-                path: 'rightservice',
-                name: 'rightservice',
-                component: _import('equipmentOperation/rightService'),
-                meta: {title: '正在维修'},
-            },
-            {
-                path: 'endservice',
-                name: 'endservice',
-                component: _import('equipmentOperation/endService'),
-                meta: {title: '正在维修/结束维修'},
-                hidden:true
-            }
-        ]
-    },
-    {
+        meta: {title: '维保充电', icon: '维保充电'},
+        children: [{
+            path: 'textCharge',
+            name: 'textCharge',
+            component: _import('equipmentOperation/textCharge'),
+            meta: {title: '充电'},
+        }, {
+            path: 'maintenance',
+            name: 'maintenance',
+            component: _import('equipmentOperation/maintenanceNew'),
+            meta: {title: '需要保养'},
+        }, {
+            path: 'endMaintenance',
+            name: 'endMaintenance',
+            component: _import('equipmentOperation/endMaintenance'),
+            meta: {title: '正在保养/结束保养'},
+            hidden: true,
+        }, {
+            path: 'startMaintenance',
+            name: 'startMaintenance',
+            component: _import('equipmentOperation/startMaintenance'),
+            meta: {title: '开始保养'},
+            hidden: true,
+        }, {
+            path: 'needMaintenanced',
+            name: 'needMaintenanced',
+            component: _import('equipmentOperation/needMaintenanced'),
+            meta: {title: '正在保养'},
+        }, {
+            path: 'service',
+            name: 'service',
+            component: _import('equipmentOperation/service'),
+            meta: {title: '维修'},
+        }, {
+            path: 'serviceapplication',
+            name: 'serviceapplication',
+            component: _import('equipmentOperation/serviceApplicationInfo'),
+            meta: {title: '维修申请'},
+        }, {
+            path: 'startservice',
+            name: 'startservice',
+            component: _import('equipmentOperation/startService'),
+            meta: {title: '维修申请/开始维修'},
+            hidden:true
+        }, {
+            path: 'rightservice',
+            name: 'rightservice',
+            component: _import('equipmentOperation/rightService'),
+            meta: {title: '正在维修'},
+        }, {
+            path: 'endservice',
+            name: 'endservice',
+            component: _import('equipmentOperation/endService'),
+            meta: {title: '正在维修/结束维修'},
+            hidden:true
+        }]
+    }, {
         path: '/warehouse',
         component: Layout,
         name: 'warehouse',
-        meta: {title: '库房管理', icon: '库房管理', roles: ['ADMINISTRATOR']},
-        children: [
-            {
-                path: 'safety',
-                name: 'warehouse/safety',
-                component: _import('warehouse/safety'),
-                meta: {title: '安全库存'},
-            },
-            {
-                path: 'surroundings',
-                name: 'warehouse/surroundings',
-                component: _import('surroundings/index'),
-                meta: {title: '环境管理'},
-            },
-            {
-                path: 'inventory',
-                name: 'warehouse/inventory',
-                component: _import('warehouse/inventory'),
-                meta: {title: '盘点'},
-            },
-            {
-                path: 'addPersonal',
-                name: 'addPersonal',
-                component: _import('warehouse/addPersonal'),
-                hidden: true,
-            },
-            {
-                path: 'personnelManagement',
-                name: 'warehouse/personnelManagement',
-                component: _import('warehouse/personnelManagement'),
-                meta: {title: '人员管理'},
-            },
-            {   path: 'cabinetManagement',
+        meta: {title: '库房管理', icon: '库房管理'},
+        children: [ {
+            path: 'safety',
+            name: 'warehouse/safety',
+            component: _import('warehouse/safety'),
+            meta: {title: '安全库存'},
+        }, {
+            path: 'surroundings',
+            name: 'warehouse/surroundings',
+            component: _import('surroundings/index'),
+            meta: {title: '环境管理'},
+        }, {
+            path: 'inventory',
+            name: 'warehouse/inventory',
+            component: _import('warehouse/inventory'),
+            meta: {title: '盘点'},
+        }, {
+            path: 'addPersonal',
+            name: 'addPersonal',
+            component: _import('warehouse/addPersonal'),
+            hidden: true,
+        }, {
+            path: 'personnelManagement',
+            name: 'warehouse/personnelManagement',
+            component: _import('warehouse/personnelManagement'),
+            meta: {title: '人员管理'},
+        }, {   path: 'cabinetManagement',
             name: 'cabinet/cabinetManagement',
             component: _import('cabinet/cabinetManagement'),
             meta: {title: '警柜管理'}
-            },
-            {
-                path: 'plan',
-                name: 'warehouse/plan',
-                component: _import('warehouse/plan'),
-                meta: {title: '应急预案'},
-            },
-            {
-                path: 'editplan',
-                name: 'editplan',
-                component: _import('warehouse/editPlan'),
-                hidden: true,
-
-            },
-            {
-                path: 'consumables',
-                name: 'warehouse/consumable',
-                component: _import('warehouse/consumable'),
-                meta: {title: '耗材管理'},
-            },
-            {
-                path: 'expired',
-                name: 'warehouse/expired',
-                component: _import('warehouse/expired'),
-                meta: {title: '到期报废'},
-            },
-            {
-                path: 'training',
-                name: 'warehouse/training',
-                component: _import('training/index'),
-                meta: {title: '教学培训'},
-            },
-            {
-                path: 'noreturn',
-                name: 'warehouse/noreturn',
-                component: _import('warehouse/noReturn'),
-                meta: {title: '未归还'},
-            },
-            // {
-            //     path: 'info',
-            //     name: 'warehouse/info',
-            //     component: _import('warehouse/info'),
-            //     meta: {title: '库房信息'},
-            // },
-        ]
-    },
-    {
+        }, {
+            path: 'plan',
+            name: 'warehouse/plan',
+            component: _import('warehouse/plan'),
+            meta: {title: '应急预案'},
+        }, {
+            path: 'editplan',
+            name: 'editplan',
+            component: _import('warehouse/editPlan'),
+            hidden: true,
+        }, {
+            path: 'consumables',
+            name: 'warehouse/consumable',
+            component: _import('warehouse/consumable'),
+            meta: {title: '耗材管理'},
+        }, {
+            path: 'expired',
+            name: 'warehouse/expired',
+            component: _import('warehouse/expired'),
+            meta: {title: '到期报废'},
+        }, {
+            path: 'training',
+            name: 'warehouse/training',
+            component: _import('training/index'),
+            meta: {title: '教学培训'},
+        }, {
+            path: 'noreturn',
+            name: 'warehouse/noreturn',
+            component: _import('warehouse/noReturn'),
+            meta: {title: '未归还'},
+        }]
+    }, {
         path: '/report',
         component: Layout,
         name: 'report',
-        meta: {title: '统计报表', icon: '统计报表', roles: ['ADMINISTRATOR']},
-        children: [
-            {
-                path: 'amount',
-                name: 'amount',
-                component: _import('report/amount'),
-                meta: {title: '装备金额统计', roles: ['ADMINISTRATOR']},
-            }, {
-                path: 'lossStatistics',
-                name: 'lossStatistics',
-                component: _import('report/lossStatistics'),
-                meta: {title: '装备损耗率', roles: ['ADMINISTRATOR']},
-            },
-            {
-                path: 'repair',
-                name: 'repair',
-                component: _import('report/repair'),
-                meta: {title: '装备维修率', roles: ['ADMINISTRATOR']},
-            },
-            {
-                path: 'frequency',
-                name: 'frequency',
-                component: _import('report/frequency'),
-                meta: {title: '装备使用频次', roles: ['ADMINISTRATOR']},
-            },
-            {
-                path: 'scrap',
-                name: 'scrap',
-                component: _import('report/scrap'),
-                meta: {title: '装备报废件数', roles: ['ADMINISTRATOR']},
-            }
-        ]
-    },
-    {
+        meta: {title: '统计报表', icon: '统计报表'},
+        children: [ {
+            path: 'amount',
+            name: 'amount',
+            component: _import('report/amount'),
+            meta: {title: '装备金额统计'},
+        }, {
+            path: 'lossStatistics',
+            name: 'lossStatistics',
+            component: _import('report/lossStatistics'),
+            meta: {title: '装备损耗率'},
+        }, {
+            path: 'repair',
+            name: 'repair',
+            component: _import('report/repair'),
+            meta: {title: '装备维修率'},
+        }, {
+            path: 'frequency',
+            name: 'frequency',
+            component: _import('report/frequency'),
+            meta: {title: '装备使用频次'},
+        }, {
+            path: 'scrap',
+            name: 'scrap',
+            component: _import('report/scrap'),
+            meta: {title: '装备报废件数'},
+        }]
+    }, {
         path: '/record',
         component: Layout,
         name: 'record',
-        meta: {title: '记录管理', icon: '记录管理', roles: ['POLICE_OFFICER', 'ADMINISTRATOR']},
-        children: [
-            {
-                path: 'opening',
-                name: 'opening',
-                component: _import('record/opening'),
-                meta: {title: '开门记录', roles: ['ADMINISTRATOR']},
-            },
-            {
-                path: 'receiveOrderList',
-                name: 'receiveOrderList',
-                component: _import('record/receiveReturnOrder/receiveOrderList'),
-                meta: {title: '领取单列表', roles: ['POLICE_OFFICER', 'ADMINISTRATOR']},
-            },
-            {
-                path: 'receiveOrderInfo',
-                name: 'receiveOrderInfo',
-                component: _import('record/receiveReturnOrder/receiveOrderInfo'),
-                meta: {title: '领取单列表', roles: ['POLICE_OFFICER', 'ADMINISTRATOR']},
-                hidden: true
-            },
-            {
-                path: 'inventory',
-                name: 'inventory',
-                component: _import('record/inventory'),
-                meta: {title: '盘点记录', roles: ['ADMINISTRATOR']},
-            },
-            {
-                path: 'chargingRecord',
-                name: 'chargingRecord',
-                component: _import('record/chargingRecord'),
-                meta: {title: '充电记录', roles: ['ADMINISTRATOR']},
-            },
-            {
-                path: 'maintenanceRecord',
-                name: 'maintenanceRecord',
-                component: _import('record/maintenanceRecord'),
-                meta: {title: '保养记录', roles: ['ADMINISTRATOR']},
-            },
-            {
-                path: 'serviceRecord',
-                name: 'serviceRecord',
-                component: _import('record/serviceRecord'),
-                meta: {title: '维修记录', roles: ['ADMINISTRATOR']},
-            },
-            {
-                path: 'scraded',
-                name: 'scraded',
-                component: _import('record/scraded'),
-                meta: {title: '报废记录', roles: ['POLICE_OFFICER', 'ADMINISTRATOR']},
-            },
-            {
-                path: 'consumablerecord',
-                name: 'consumablerecord',
-                component: _import('record/consumablerecord'),
-                meta: {title: '耗材记录', roles: ['ADMINISTRATOR']},
-            }
-            // {
-            //     path: 'maintenanceRecord',
-            //     name: 'maintenanceRecord',
-            //     component: _import('record/maintenanceRecord'),
-            //     meta: {title: '维保记录', roles: ['ADMINISTRATOR']},
-            // },
-        ]
-    },
-
-    // {
-    //     path: '/report',
-    //     component: Layout,
-    //     name: 'report',
-    //     meta: {roles: ['ADMINISTRATOR']},
-    //     children: [
-    //         {
-    //             path: 'index',
-    //             name: 'report/index',
-    //             component: _import('report/index'),
-    //             meta: {title: '统计报表', icon: '统计报表'},
-    //         },
-    //     ]
-    // },
-    // {
-    //     path: '/personnel',
-    //     component: Layout,
-    //     name: 'personnel',
-    //     meta: {title: '人员管理', icon: '人员管理', roles: ['ADMINISTRATOR']},
-    //     children: [
-    //         {
-    //             path: 'info',
-    //             name: 'info',
-    //             component: _import('personnelManagement/personnelManagement'),
-    //             meta: {title: '人员信息', icon: '人员管理'},
-    //         },
-    //         {
-    //             path: 'permission',
-    //             name: 'permission',
-    //             component: _import('personnel/permission'),
-    //             hidden: true,
-    //             meta: {title: '权限'},
-    //         },
-    //     ]
-    // },
-    // {
-    //     path: '/surroundings',
-    //     component: Layout,
-    //     name: 'surroundings',
-    //     meta: {roles: ['ADMINISTRATOR']},
-    //     children: [
-    //         {
-    //             path: 'index',
-    //             name: 'surroundings/index',
-    //             component: _import('surroundings/index'),
-    //             meta: {title: '环境管理', icon: '环境控制'},
-    //         },
-    //     ]
-    // },
-    // {
-    //     path: '/training',
-    //     component: Layout,
-    //     name: 'training',
-    //     meta: {roles: ['ADMINISTRATOR']},
-    //     children: [
-    //         {
-    //             path: 'index',
-    //             name: 'training/index',
-    //             component: _import('training/index'),
-    //             meta: {title: '教学培训', icon: '教学培训'},
-    //         },
-    //     ]
-    // },
-    // {
-    //     path: '/category',
-    //     component: Layout,
-    //     name: 'category',
-    //     meta: {roles: ['ADMINISTRATOR']},
-    //     children: [
-    //         {
-    //             path: 'index',
-    //             name: 'category/index',
-    //             component: _import('category/index'),
-    //             meta: {title: '装备小类', icon: '装备小类'},
-    //         },
-    //     ]
-    // },
-    {
+        meta: {title: '记录管理', icon: '记录管理'},
+        children: [{
+            path: 'opening',
+            name: 'opening',
+            component: _import('record/opening'),
+            meta: {title: '开门记录'},
+        }, {
+            path: 'receiveOrderList',
+            name: 'receiveOrderList',
+            component: _import('record/receiveReturnOrder/receiveOrderList'),
+            meta: {title: '领取单列表'},
+        }, {
+            path: 'receiveOrderInfo',
+            name: 'receiveOrderInfo',
+            component: _import('record/receiveReturnOrder/receiveOrderInfo'),
+            meta: {title: '领取单列表'},
+            hidden: true
+        }, {
+            path: 'inventory',
+            name: 'inventory',
+            component: _import('record/inventory'),
+            meta: {title: '盘点记录'},
+        }, {
+            path: 'chargingRecord',
+            name: 'chargingRecord',
+            component: _import('record/chargingRecord'),
+            meta: {title: '充电记录'},
+        }, {
+            path: 'maintenanceRecord',
+            name: 'maintenanceRecord',
+            component: _import('record/maintenanceRecord'),
+            meta: {title: '保养记录'},
+        }, {
+            path: 'serviceRecord',
+            name: 'serviceRecord',
+            component: _import('record/serviceRecord'),
+            meta: {title: '维修记录'},
+        }, {
+            path: 'scraded',
+            name: 'scraded',
+            component: _import('record/scraded'),
+            meta: {title: '报废记录'},
+        }, {
+            path: 'consumablerecord',
+            name: 'consumablerecord',
+            component: _import('record/consumablerecord'),
+            meta: {title: '耗材记录'}
+        }]
+    }, {
         path: '/message',
         component: Layout,
         name: 'message',
         hidden: true,
-        children: [
-            {
-                path: 'index',
-                name: 'message/index',
-                component: _import('message/index'),
-                meta: {title: '消息中心', icon: '消息中心'},
-            }
-        ]
-    },
-    {
+        children: [{
+            path: 'index',
+            name: 'message/index',
+            component: _import('message/index'),
+            meta: {title: '消息中心', icon: '消息中心'},
+        }]
+    }, {
         path: '/private',
         component: Layout,
-        meta: {roles: ['ADMINISTRATOR', 'POLICE_OFFICER']},
-        children: [
-            {
-                path: 'index',
-                name: 'private/index',
-                component: _import('private/index'),
-                meta: {title: '个人中心'},
-            }
-        ],
+        meta: {},
+        children: [{
+            path: 'index',
+            name: 'private/index',
+            component: _import('private/index'),
+            meta: {title: '个人中心'},
+        }],
         hidden: true
     },
-
-
     {path: '*', redirect: '/404', hidden: true}
 ]

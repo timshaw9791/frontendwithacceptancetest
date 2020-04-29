@@ -97,7 +97,7 @@ export default {
 
   computed: {
     isOpened() {
-      return this.$store.state.socket.message;
+      
     }
   },
 //   filters: {
