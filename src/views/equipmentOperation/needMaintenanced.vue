@@ -1,6 +1,6 @@
 <template>
   <div class="maintenance-form-container">
-    <my-header :title="$route.meta.title" :haveBlack="isEnd" @h_black="endMain()"></my-header>
+    <my-header :title="$route.meta.title" ></my-header>
     <div class="maintenance-form-top" >
       <base-button :width="100" size="default" align="right" @click="endMain()" label="结束保养" ></base-button>
     </div>
@@ -18,7 +18,7 @@
                                 <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="保养时长" v-slot="{ data }">
-                                <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
+                                <define-input v-model="data.row.keepTime"  type="Number" :tableEdit="false"></define-input>
                             </define-column>
                         </define-table>
                         <define-table :data="findIndex.copyList" height="2.8646rem" :havePage="false" slot="detail">
@@ -61,7 +61,7 @@ export default {
             },
             endMain(){
                 this.$router.push({path: '/equipmentOperation/endMaintenance'});
-            },
+            },  
             sumFunc(param) { // 表格合并行计算方法
                 let { columns, data } = param, sums = [];
                 sums=new Array(columns.length).fill('')
@@ -73,9 +73,13 @@ export default {
             {
                 if(data.length!=0){
                     let cList=this._.groupBy(data, item => `${item.equipArg.name}${item.equipArg.model}${item.location.id}`)
-                    this.listData=this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length,location:v[0].location}})
+                    this.listData=this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length,location:v[0].location,keepTime:this.milliTime(v[0].equipArg.updateTime)}})
                 }
                 
+            },
+            milliTime(data){
+              let time=(new Date()-data)/(1000 * 60 * 60 * 24)>1?(new Date()-data)/(1000 * 60 * 60 * 24):1
+              return time;
             },
             fetchData(){
                 inKeepEquips().then(res=>{

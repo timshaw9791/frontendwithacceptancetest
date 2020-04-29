@@ -55,11 +55,18 @@ export const asyncRouterMap = [{
             component: _import('equipment/storages'),
             meta: {title: '入库单列表'},
         }, {
-            path: 'storage',
-            name: 'equipment/storage',
-            component: _import('equipment/storage'),
+            path: 'equipinhouse',
+            name: 'equipinhouse',
+            component: _import('equipment/equipInhouse'),
             meta: {title: '装备入库'},
-        }, {
+            hidden:true
+        },{
+            path: 'equipinhouseorder',
+            name: 'equipinhouseorder',
+            component: _import('equipment/equipInhouseOrder'),
+            meta: {title: '入库单列表/入库单详情'},
+            hidden:true
+        },{
             path: 'outstorage',
             name: 'equipment/outstorage',
             component: _import('equipment/outHouseOrder'),

@@ -1,5 +1,5 @@
 <template>
-    <div class="opening-box">
+    <div class="right-service-container">
         <my-header title="正在维修" ></my-header>
         <div class="btn_box">
              <base-button label="结束维修" align="right" :width="128" :height="25" :fontSize="20" @click="toInHouse"></base-button>
@@ -126,7 +126,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.opening-box{
+.right-service-container{
     font-size: 16px;
     width: 100%;
     min-height: 4.4323rem;

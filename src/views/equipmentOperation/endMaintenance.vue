@@ -3,7 +3,7 @@
        <my-header :title="$route.meta.title" ></my-header>
        <div class="action_box" data-test="action_box">
                 <define-input label="单号" v-model="orderNumber" :disabled="true" class="odd-number"></define-input>
-                <date-select label="保养结束时间" v-model="time" :disabled="true"></date-select>
+                <date-select label="保养结束时间" placeholder="" v-model="time" :disabled="true"></date-select>
                 <entity-input label="操作人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :disabled="true" ></entity-input>
             </div>
     

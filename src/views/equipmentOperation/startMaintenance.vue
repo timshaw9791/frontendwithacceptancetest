@@ -3,7 +3,7 @@
         <my-header :title="$route.meta.title" :haveBlack="false"></my-header>
          <div class="apply-process-top" data-test="action_box">
                 <define-input label="单号" v-model="orderNumber" :disabled="true" ></define-input>
-                <define-input label="维修时间" v-model="time" :disabled="true" ></define-input>
+                <define-input label="维修时间"  v-model="time" :disabled="true" ></define-input>
                 <define-input label="操作人员" v-model="people" :disabled="true"  ></define-input>
             </div>
         <div class="data-list">
@@ -107,7 +107,15 @@ export default {
                 selected: ""
             },
             findIndex:0,
-            listData:[],
+            listData:[{
+                    equipArg: '',
+                    location: '',
+                    count: 0,
+                    rfids: [],
+                    serial: [],
+                    copyList:[{rfid:'',serial:''}],
+                    clist:[{rfid:'',serial:''}]
+                }],
             list:[],
             }
         },
@@ -128,7 +136,6 @@ export default {
                 })
                 endKeepEquips(true,rfidList).then(res=>{
                     this.$message.success('装备开始保养成功')
-                    this.init()
                     this.cancel()
                 })
       },
@@ -197,24 +204,13 @@ export default {
                 //         this.index = 1;
                 //         this.$message.error(fail);
                 //     }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
-                let rfids=['5789624']
+                let rfids=['59996668']
                 rfids.forEach(item=>{
                     findByRfids(item).then(res=>{
                      this.classDataifyRfid(res)
                    })
                 })
             },
-      init(){
-                this.listData=[{
-                    equipArg: '',
-                    location: '',
-                    count: 0,
-                    rfids: [],
-                    serial: [],
-                    copyList:[{rfid:'',serial:''}],
-                    clist:[{rfid:'',serial:''}]
-                }]
-            }
         },
         created(){
             this.getList()
