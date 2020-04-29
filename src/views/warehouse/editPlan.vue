@@ -10,7 +10,7 @@
                 <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
             </define-column>
             <define-column label="装备参数" field="equipArg" v-slot="{data}">
-                <entity-input v-model="data.row.equipArg" format="{name}({model})" :tableEdit="false" :options="{detail:'equipArgsSelect'}"></entity-input>
+                <entity-input v-model="data.row.equipArg" format="{name}({model})" :options="{detail:'equipArgsSelect'}"></entity-input>
             </define-column>
         </define-table>
         <div class="buttom">
