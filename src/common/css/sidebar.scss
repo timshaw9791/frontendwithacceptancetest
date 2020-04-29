@@ -107,7 +107,7 @@
 
       .info {
         display: grid;
-
+        grid-template-rows: 1fr 1fr 1fr;
         span {
           margin-bottom: 0.026rem;
         }
