@@ -15,7 +15,7 @@
             </div>
             <div @click="$router.push('/message/index')">
                 <el-tooltip class="item" effect="dark" content="消息中心" placement="bottom">
-                    <el-badge  :value="$store.state.socket.message" >
+                    <el-badge  :value="0" >
                         <svg-icon icon-class="通知" class="svg"/>
                     </el-badge>
                 </el-tooltip>
@@ -57,7 +57,6 @@
     import {mapGetters} from 'vuex'
     import Breadcrumb from 'components/base/Breadcrumb'
     import Hamburger from 'components/base/Hamburger'
-    import {startSocket} from "common/js/webSocket";
     import { localTitle } from 'api/config'
     import { readMsg, getMsgList, getMsgListWithType } from "api/message";
 
@@ -136,11 +135,8 @@
     },
         },
         created(){
-        this.getList()
+            this.getList()
         },
-        mounted() {
-            startSocket(JSON.parse(localStorage.getItem('user')).id);
-        }
     }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>

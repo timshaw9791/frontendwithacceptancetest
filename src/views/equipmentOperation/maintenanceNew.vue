@@ -121,7 +121,6 @@ export default {
             },
       classDataifyRfid(data)
       {
-        debugger
           let newList=[]
           data.forEach(item=>{newList.push(item)})
           let cList=this._.groupBy(newList, item => `${item.equipArg.model}${item.equipArg.name}${item.location.id}`)

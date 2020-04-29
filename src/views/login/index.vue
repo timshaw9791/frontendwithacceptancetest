@@ -1,7 +1,5 @@
 <template>
     <div class="login-container">
-        <!--<video src="../../assets/黑贞.mp4" loop="loop" autoplay="autoplay" class="video"></video>-->
-        <div class="video-cover"></div>
         <div class="topTitle">
             <img src="../../common/images/警徽.png" height="89" width="225" style="cursor: pointer;"
                  @click="windowClose"/>
@@ -12,28 +10,18 @@
         <el-form class="login-form" autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm"
                  label-position="right">
             <div class="content-title">用户登录</div>
-
             <el-form-item label="账号 :" prop="username">
-                <!--<span class="svg-container svg-container_login">-->
-                <!--<svg-icon icon-class="user"/>-->
-                <!--</span>-->
                 <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" class="input"/>
             </el-form-item>
 
-
             <el-form-item label="密码 :" prop="password">
-                <!--<span class="svg-container">-->
-                <!--<svg-icon icon-class="password"></svg-icon>-->
-                <!--</span>-->
                 <el-input name="password" :type="pwdType" @keyup.enter.native="handleLogin" v-model="loginForm.password"
                           autoComplete="on" class="input"></el-input>
                 <span class="show-pwd" @click="showPwd"><svg-icon icon-class="eye"/></span>
             </el-form-item>
 
             <el-form-item>
-                <el-button type="primary" style="width:1rem;font-size: 0.1042rem" :loading="loading" @click.native.prevent="handleLogin">
-                    <span>登 录</span>
-                </el-button>
+                <base-button label="登 录" size="medium" @click.native.prevent="handleLogin"></base-button>
             </el-form-item>
         </el-form>
 
@@ -41,12 +29,8 @@
 </template>
 
 <script>
-    import {startSocket} from "common/js/webSocket";
     import { localTitle } from 'api/config';
 
-    // const cmdPath = 'C:\\Users\\Administrator';
-    // const exec = window.require('child_process').exec;
-    // const spawn = window.require('child_process').spawn;todo
     export default {
         name: 'login',
         data() {
@@ -60,51 +44,29 @@
                     username: [{required: true, trigger: 'blur'}],
                     password: [{required: true, trigger: 'blur'}]
                 },
-                loading: false,
                 pwdType: 'password',
             }
         },
         methods: {
             windowClose() {
-                // const process = exec(`java -jar SendCamSignal.jar ${-1}`, {cwd: cmdPath});
-                // process.stderr.on('data', (err) => {
-                //
-                // });
-                // process.on('exit', (code) => {
-                //     // if (this.index === 0) {
-                //     //       this.$message.error('设备未插入或串口号错误,插入后请重新选择装备!');
-                //     //   }
-                //     console.log(`子进程退出 ${code}`);
-                // });
-                // setTimeout(()=>{
-                //
-                // },500)
                 window.close();
             },
             showPwd() {
-                if (this.pwdType === 'password') {
-                    this.pwdType = ''
-                } else {
-                    this.pwdType = 'password'
-                }
+                this.pwdType = this.pwdType?'':'password';
             },
             handleLogin() {
                 this.$refs.loginForm.validate(valid => {
                     if (valid) {
-                        this.loading = true
                         this.$store.dispatch('Login', this.loginForm).then(() => {
-                            this.loading = false;
                             this.$router.push({path: 'overview/index'});
                             this.$message.success('登陆成功');
-                        }).catch(() => {
-                            this.loading = false
                         })
                     } else {
-                        console.log('error submit!!')
+                        console.log('填写错误');
                         return false
                     }
                 })
-            },
+            }
         }
     }
 </script>
@@ -115,7 +77,7 @@
     $light_gray: #eee;
 
     .el-message {
-        font-size: 0.0833rem;
+        font-size: 16px;
     }
 
     /* reset element-ui css */
@@ -134,8 +96,6 @@
 
                 &:-webkit-autofill {
                     -webkit-box-shadow: 0 0 0 1000px white inset !important;
-                    /*-webkit-animation: autofill-fix 1s infinite;*/
-                    /*-webkit-text-fill-color: #fff !important;*/
                 }
 
                 @-webkit-keyframes autofill-fix {
@@ -187,19 +147,6 @@
             z-index: -100; //z轴定位，小于0即可
             -webkit-filter: grayscale(20%); //添加灰度蒙版，如果设定为100%则视频显示为黑白
         }
-
-        .video-cover {
-            position: fixed; //视频定位方式设为固定
-            right: 0;
-            bottom: 0; //视频位置
-            min-width: 100%;
-            min-height: 100%; //不会因视频尺寸造成页面需要滚动
-            width: auto;
-            height: auto; //尺寸保持原视频大小
-            z-index: -99; //z轴定位，小于0即可
-            background: transparent;
-        }
-
         .login-form {
             position: absolute;
             left: 0;
