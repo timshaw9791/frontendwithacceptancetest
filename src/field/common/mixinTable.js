@@ -105,16 +105,16 @@ export let formRulesMixin = {
             return ruler.r(required);
         },
         mutate(mutation, variables) {//声明手动修改的方法
-            return this.$apollo.mutate({
-                mutation: mutation,
-                variables: variables,
-            });
+            // return this.$apollo.mutate({
+            //     mutation: mutation,
+            //     variables: variables,
+            // });
         },
         query(query, variables) {
-            return this.$apollo.query({//声明手动查询的方法
-                query: query,
-                variables: variables,
-            });
+            // return this.$apollo.query({//声明手动查询的方法
+            //     query: query,
+            //     variables: variables,
+            // });
         },
         _initPage() {
             //监听param变化，如果发生变化,刷新
@@ -145,7 +145,7 @@ export let formRulesMixin = {
             sessionStorage.setItem(this.historyPage, 1);
         },
         refetch() {
-            if (this.$apollo.queries['list']) this.$apollo.queries['list'].refetch();//重新刷新apollo
+            // if (this.$apollo.queries['list']) this.$apollo.queries['list'].refetch();//重新刷新apollo
 
         },
         //便利方法，供在apollo:配置块中使用。设置好默认值，只要给一个query对象或者gql字符串即可
