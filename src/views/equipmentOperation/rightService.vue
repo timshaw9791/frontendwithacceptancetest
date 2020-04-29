@@ -12,22 +12,18 @@
                                 </div>
                             </define-column>
                             <define-column label="RFID" v-slot="{ data }">
-                                <define-input v-model="data.row.rfid" type="Number" :tableEdit="false"></define-input>
+                                <define-input v-model="data.row.rfid"  :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="装备序号" v-slot="{ data }">
                                 <define-input v-model="data.row.serial" type="Number" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
-                                <define-input v-model="data.row.equipArgs" type="Number" :tableEdit="false"></define-input>
+                                <entity-input v-model="data.row.equipArg" :detailParam="data.row.equipArg" :options="{ detail: 'equipArgsDetail' }" format="{name}({model})" :disabled="true" ></entity-input>
                             </define-column>
-                            <define-column label="装备位置">
-                                
+                            <define-column label="装备位置" v-slot="{data}">
+                                <entity-input v-model="data.row.location" format="{frameNumber}架/{surface}面/{section}节/{surface}层" :tableEdit="false"></entity-input>
                             </define-column>
-                           
-                            <define-column label="申请时间" :filter="(row)=>$filterTime(row.createTime)"/>
-                            <define-column label="申请原因" v-slot="{ data }">
-                                <define-input v-model="data.row.operator.operator" type="String" :tableEdit="false"></define-input>
-                            </define-column>
+                            <define-column label="维修时长" :filter="(row)=>milliTime(row.createTime)"/>
                         </define-table>
         
         </div>
@@ -46,6 +42,7 @@
     import divTmp from '@/componentized/divTmp'
     import endService from './startService'
     // import equipInhouseOrder from './equipInhouseOrder'
+    import {rightRepairOrder} from "api/operation"
     import { getInhouseNumber,inOutHouseOrder,deleteInhouseNumber} from "api/storage"
 export default {
     components:{
@@ -89,22 +86,18 @@ export default {
                         this.$message.error(err.response.data.message);
                     })
             },
+            milliTime(data){
+              let time=(new Date()-data)/(1000 * 60 * 60 * 24)>1?(new Date()-data)/(1000 * 60 * 60 * 24):1
+              return time;
+            },
             black(){
                 this.inhouse=false
                 this.inorder=false
                 this.getList()
             },
             getList(){
-                inOutHouseOrder(this.params).then(res=>{
+                rightRepairOrder(this.params).then(res=>{
                     this.list=res.content
-                    this.list.forEach(item=>{
-                        if(item.inOutHouseItems.length==1)
-                        {
-                            item.equipArgs=item.inOutHouseItems[0].equipName+'('+item.inOutHouseItems[0].equipModel+')'
-                        }else{
-                            item.equipArgs=item.inOutHouseItems[0].equipName+'('+item.inOutHouseItems[0].equipModel+')'+'...'
-                        }
-                    })
                     
                 }).catch(err => {
                         this.$message.error(err.response.data.message);
