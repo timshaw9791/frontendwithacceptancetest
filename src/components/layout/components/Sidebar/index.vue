@@ -2,8 +2,7 @@
     <div>
         <div v-if="!isCollapse">
             <div class="topTitle">
-                <img src="@/common/images/警徽.png"@click="windowClose()" />
-                <!-- <svg-icon icon-class="警徽" @click="windowClose()"></svg-icon> -->
+                <img src="@/common/images/警徽.png" @click="windowClose()" />
             </div>
             <topInfo class="topInfo"></topInfo>
         </div>
@@ -33,33 +32,13 @@
     import SidebarItem from './SidebarItem'
     import topInfo from './personal'
     import { killProcessSync } from "common/js/rfidReader"
-
-    // const cmdPath = 'C:\\Users\\Administrator';
-    // const exec = window.require('child_process').exec;
-    // const spawn = window.require('child_process').spawn;todo
     export default {
         components: {SidebarItem, topInfo},
         methods: {
             windowClose() {
-                killProcessSync()
-                // const process = exec(`java -jar SendCamSignal.jar ${-1}`, {cwd: cmdPath});
-                // process.stderr.on('data', (err) => {
-                //
-                // });
-                // process.on('exit', (code) => {
-                //     // if (this.index === 0) {
-                //     //       this.$message.error('设备未插入或串口号错误,插入后请重新选择装备!');
-                //     //   }
-                //     console.log(`子进程退出 ${code}`);
-                // });
-                // setTimeout(()=>{
-                //
-                // },500)
+                killProcessSync();
                 window.close();
             },
-        },
-        created(){
-          console.log('permission_routers',this.permission_routers)
         },
         computed: {
             ...mapGetters([

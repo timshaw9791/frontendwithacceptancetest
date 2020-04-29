@@ -232,6 +232,9 @@ export default {
     border-radius: 4px;
     border: 0px;
     background-color: transparent;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
   }
   input::-webkit-input-placeholder {
     color: #C0C4CC;

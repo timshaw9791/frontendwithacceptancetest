@@ -7,20 +7,24 @@
                 <define-column label="RFID" field="rfid"></define-column>
                 <define-column label="装备序号" field="serial"></define-column>
                 <define-column label="装备参数" v-slot="{ data }">
-                    <entity-input :column="2" v-model="data.row.equipArg" :options="{ detail: 'equipArgsSelect' }" format="{name}({model})" :disabled="true" ></entity-input>
+                    <entity-input :column="2" v-model="data.row.equipArg" :options="{ detail: 'equipArgsSelect' }" format="{name}({model})" :tableEdit="false" ></entity-input>
                 </define-column>
                 <define-column label="装备位置" field="location" :filter="(row)=>locations(row.location)"></define-column>
                 <define-column label="充电台位置" field="chargeLocation"></define-column>
-                <define-column label="已充时间" field="chargeingTime"></define-column>
+                <define-column label="已充时间" v-slot="{ data }">
+                    <date-input v-model="data.row.chargeingTime" :tableEdit="false" filter="toDay"></date-input>
+                </define-column>
             </define-table>
             <define-table :havePage="false" :data="order" height="2.6042rem"  slot="total">
                 <define-column label="RFID" field="rfid"></define-column>
                 <define-column label="装备序号" field="serial"></define-column>
                 <define-column label="装备参数" v-slot="{ data }">
-                    <entity-input :column="2" v-model="data.row.equipArg" :options="{ detail: 'equipArgsSelect' }" format="{name}({model})" :disabled="true" ></entity-input>
+                    <entity-input :column="2" v-model="data.row.equipArg" :options="{ detail: 'equipArgsSelect' }" format="{name}({model})" :tableEdit="false" ></entity-input>
                 </define-column>
                 <define-column label="装备位置" field="location" :filter="(row)=>locations(row.location)"></define-column>
-                <define-column label="充电倒计时" field="chargeCountdown"></define-column>
+                <define-column label="充电倒计时/天" v-slot="{ data }">
+                    <date-input v-model="data.row.chargeCountdown" :tableEdit="false" filter="toDay"></date-input>
+                </define-column>
             </define-table>
         </bos-tabs>
 
@@ -46,7 +50,7 @@ export default {
   },
   methods: {
 		locations(data){
-			return data.floor+'/'+data.frameNumber+'/'+data.surface+'/'+data.section
+			return data.frameNumber+'架/'+data.surface+'面/'+data.floor+'层/'+data.section+'节'
 		},
 		change(data){
 			if(data.key == "total"){

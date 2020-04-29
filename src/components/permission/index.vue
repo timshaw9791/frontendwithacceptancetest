@@ -7,7 +7,7 @@
     </form-container>
 
     <el-table :data="list" class="_list"
-              v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
+              element-loading-text="Loading"
               fit highlight-current-row
     >
       <bos-table-column lable="编号" field="number" width="180"></bos-table-column>
@@ -74,12 +74,12 @@
       }
     },
     mixins: [historyPageMixin],
-    apollo: {
-      list() {//loadingKey
-        //created的时候会执行一次，context代表的是vm对象，调试时可以查阅代码：vue-apollo.esm.js:  options = options.call(context)
-        return this.getEntityListWithPagintor(api.RoleList);
-      }
-    },
+    // apollo: {
+    //   list() {//loadingKey
+    //     //created的时候会执行一次，context代表的是vm对象，调试时可以查阅代码：vue-apollo.esm.js:  options = options.call(context)
+    //     return this.getEntityListWithPagintor(api.RoleList);
+    //   }
+    // },
     computed: {
       isDialogAdd() {
         return this.dialogType === 'add' ? true : false;

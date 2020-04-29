@@ -10,7 +10,7 @@
       </form-container>
     </div>
 
-    <el-table :data="list" class="_list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
+    <el-table :data="list" class="_list" element-loading-text="Loading"
               fit highlight-current-row>
       <bos-table-column lable="账号" field="username" width="180"></bos-table-column>
       <bos-table-column lable="拥有角色" field="roleItems" :filter="(row)=>getRole(row.roleItems)"></bos-table-column>
@@ -96,19 +96,19 @@
       }
     },
     mixins: [historyPageMixin],
-    apollo: {
+    // apollo: {
       // rList() {//loadingKey
       //   //created的时候会执行一次，context代表的是vm对象，调试时可以查阅代码：vue-apollo.esm.js:  options = options.call(context)
       //   return this.getEntityQuery(apiAd.RoleList);
       // },
-      list() {//loadingKey
+      // list() {//loadingKey
         //created的时候会执行一次，context代表的是vm对象，调试时可以查阅代码：vue-apollo.esm.js:  options = options.call(context)
-        return this.getEntityListWithPagintor(apiAd.AdministList);
-      },
+        // return this.getEntityListWithPagintor(apiAd.AdministList);
+      // },
       // storeList() {
       //   return this.getEntityQuery(apiAd.getStoreList);
       // }
-    },
+    // },
     computed: {
       isDialogAdd() {
         return this.dialogType === 'add' ? true : false;

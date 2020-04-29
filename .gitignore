@@ -34,3 +34,4 @@ electron/yarn-error.log*
 *.sw*
 
 /live/
+electron/qcwarehouse_a-v0.1.0.tgz

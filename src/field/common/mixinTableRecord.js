@@ -101,16 +101,16 @@ export let formRulesMixin = {
             return ruler.r(required);
         },*/
         mutate(mutation, variables) {//声明手动修改的方法
-            return this.$apollo.mutate({
-                mutation: mutation,
-                variables: variables,
-            });
+            // return this.$apollo.mutate({
+            //     mutation: mutation,
+            //     variables: variables,
+            // });
         },
         query(query, variables) {
-            return this.$apollo.query({//声明手动查询的方法
-                query: query,
-                variables: variables,
-            });
+            // return this.$apollo.query({//声明手动查询的方法
+            //     query: query,
+            //     variables: variables,
+            // });
         },
         _initPage() {
             //监听param变化，如果发生变化,刷新

@@ -4,47 +4,34 @@
         <div class="info">
             <span>{{form.name}}</span>
             <span>{{form.position}}</span>
-            <span>{{form.unitName}}</span>
+            <span>{{form.organUnitName}}</span>
         </div>
     </div>
 </template>
 
 <script>
     import {imgBaseUrl} from "api/config";
-    import {formRulesMixin} from 'field/common/mixinComponent';
-    import {getUserInfo} from 'api/layout'
     import {getOrganUnitById} from 'api/process'
-
+    import { userInfoById } from 'api/user'
     export default {
         data() {
             return {
-                form: {unitName:'',name:'',position:"啊啊啊"},
-                disabled: true,
+                form: {organUnitName:'',name:'',position:"啊啊啊"},
                 imageUrl: '',
             }
         },
-        mixins: [formRulesMixin],
         methods: {
-            getList() {
+            fetchData() {
                 let data = JSON.parse(localStorage.getItem('user'));
-                getUserInfo(data.id).then(res=>{
-                    this.$set(this.form,'name',res.name);
-                    this.$set(this.form,'position',res.position);
+                userInfoById(data.id).then(res=>{
+                    this.form.position = res.position;
                     this.imageUrl = `${imgBaseUrl}${res.faceInformation}`;
                 });
-                this.$set(this.form, 'unitName', data.organUnitName)
-                // getOrganUnitById({id:data.unitId}).then(res=>{
-                //     this.$set(this.form,'unitName',`${res.location}${res.name}`)
-                // });
+                this.form = Object.assign(this.form, data);
             },
         },
         mounted() {
-            this.getList();
+            this.fetchData();
         }
     }
 </script>
-
-<style lang="scss" scoped>
-
-
-</style>
