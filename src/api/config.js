@@ -40,8 +40,6 @@ export const imgUpUrl = `${baseURL}/upload/image`;
 export const pdfUpUrl = `${baseURL}/upload/pdf`;
 export const videoUpUrl = `${baseURL}/upload/video`;
 
-export const websocketUrl = `${baseURL}/websocket`;
-
 export const tokenName = 'x-auth-token';
 
 export { baseURL, baseBURL, localTitle }

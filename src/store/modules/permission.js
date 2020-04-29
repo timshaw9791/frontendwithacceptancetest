@@ -6,43 +6,11 @@ import {asyncRouterMap, constantRouterMap} from '@/router'
  * @param route//路由
  */
 function hasPermission(roles, route) {
-
-    if (roles.includes('POLICE_OFFICER')) {
-        if (route.meta && route.meta.roles) {
-            return roles.some(role => route.meta.roles.includes(role))
-        } else {
-            return true
-        }
+    if (route.meta && route.meta.roles) {
+        return roles.some(role => route.meta.roles.includes(role)); // 是否匹配路由权限
     } else {
-        if (route.meta && route.meta.roles) {
-            return roles.some(role => route.meta.roles.includes(role))
-        } else {
-            return true
-        }
+        return true;
     }
-
-
-    // if (route.meta && route.meta.roles) {
-    //     return roles.some(role => route.meta.roles.includes(role))
-    //
-    //     // return roles.some(role => {
-    //     //     if (role === 'POLICE_OFFICER') {
-    //     //         if (route.meta.roles) {
-    //     //             return route.meta.roles.includes(role)
-    //     //         } else {
-    //     //             console.log(1);
-    //     //         }
-    //     //
-    //     //
-    //     //     } else {
-    //     //         return route.meta.roles.includes(role)
-    //     //     }
-    //     // })
-    // } else {
-    //     return true
-    // }
-
-
 }
 
 /**
@@ -51,28 +19,23 @@ function hasPermission(roles, route) {
  * @param roles
  */
 function filterAsyncRouter(routes, roles) {
-
-    let res = [];
+    let res = []; // 存放权限匹配的路由
     routes.forEach(route => {
-        const tmp = {...route}
+        const tmp = {...route}; // 深拷贝
         if (hasPermission(roles, tmp)) {
-            if (tmp.children) {
-
-                tmp.children = filterAsyncRouter(tmp.children, roles)
+            if (tmp.children) { // 子路由递归判断
+                tmp.children = filterAsyncRouter(tmp.children, roles);
             }
-            res.push(tmp)
+            res.push(tmp);
         }
     })
-
-    return res
-
+    return res;
 }
 
 function deepCopy(obj, cache = []) {
     function find(list, f) {
         return list.filter(f)[0]
     }
-
     // just return if obj is immutable value
     if (obj === null || typeof obj !== 'object') {
         return obj
@@ -104,47 +67,18 @@ const permission = {
     },
     mutations: {
         SET_ROUTERS: (state, routers) => {
-            state.addRouters = routers
-            state.routers = constantRouterMap.concat(routers)
+            state.addRouters = routers;
+            state.routers = constantRouterMap.concat(routers);
         }
     },
     actions: {
         GenerateRoutes({commit}, data) {
             return new Promise(resolve => {
-
-                // if (data === 'POLICE_OFFICER') {
-                //     commit('SET_ROUTERS', newData);
-                // } else {
-                //     let accessedRouters = filterAsyncRouter(deepCopy(asyncRouterMap), data);
-                //     commit('SET_ROUTERS', accessedRouters);
-                // }
-
                 let accessedRouters = filterAsyncRouter(deepCopy(asyncRouterMap), data);
-
                 commit('SET_ROUTERS', accessedRouters);
-
-
-                // let accessedRouters;
-                //
-                // if (data.length === 0) {
-                //   accessedRouters = asyncRouterMap
-                // } else {
-                //   accessedRouters = filterAsyncRouter((asyncRouterMap), data);
-                // }
-                //
-                // commit('SET_ROUTERS', accessedRouters);
-
-                // let accessedRouters
-                // if (roles.includes('admin')) {
-                //   accessedRouters = asyncRouterMap
-                // } else {
-                //   accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
-                // }
-                // commit('SET_ROUTERS', accessedRouters)
                 resolve(accessedRouters)
             })
-        },
-
+        }
     }
 }
 
