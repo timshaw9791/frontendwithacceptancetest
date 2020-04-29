@@ -1,10 +1,6 @@
 <template>
     <div class="receive-order-info-container">
         <my-header title="领取归还单详情"></my-header>
-        <div class="header">
-            <text-input label="领取单号" placeholder="请输入单号"></text-input>
-            <base-button label="查询"></base-button>
-        </div>
         <div class="body">
             <define-table :data="list" @changePage="changePage" :pageInfo="pageInfo">
                 <define-column label="操作" v-slot="{data}">

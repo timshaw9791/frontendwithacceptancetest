@@ -1,16 +1,16 @@
 <template>
-    <div>
-        <div class="receive-order-list-container">
+    <div class="receive-order-list-container">
+        <my-header title="领取归还单详情"></my-header>
+        <div class="header">
             <text-input label="领取单号" placeholder="请输入单号"></text-input>
             <base-button label="查询"></base-button>
-            <base-button label="新增装备参数" @click="goto()"></base-button>
         </div>
         <define-table :data="list" @changePage="changePage" :pageInfo="pageInfo">
             <define-column label="操作" v-slot="{data}">
                 <span @click="goto('edit',data.row.id)" style="margin:8px">编辑</span>
             </define-column>
-            <define-column label="装备名称" field="name"></define-column>
-            <define-column label="装备型号" field="model"></define-column>
+            <define-column label="单号" field="number"></define-column>
+            <define-column label="装备参数" field="allArgs"></define-column>
             <define-column label="供应商" field="supplier.name"></define-column>
         </define-table>
     </div>
@@ -31,6 +31,7 @@
             return {
                 list: [],
                 pageInfo: {page: 1, size: 10, totalPages: 1, totalElements: 0, search: ''},
+                allEquipArgs:""
             }
         },
         methods: {
@@ -41,6 +42,17 @@
             fetchData() {
                 getReceiveOrderList(this.pageInfo).then(res=>{
                     this.list = res.content
+                    this.fixData()
+                    console.log(this.list)
+                })
+            },
+            fixData(){
+                //累加装备参数
+                this.list.forEach(item => {
+                    item.allArgs = item.receiveReturnItems.reduce((accumulator, currentValue)=>
+                        accumulator+currentValue.equipName+"("+currentValue.equipModel+")"+" "
+                    ,"")
+                    // TODO 长度过长变成...
                 })
             },
             goto(id) {
