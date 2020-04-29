@@ -142,7 +142,7 @@ export default {
                     item.locationId=item.locationId.id
                     item.copyList.forEach(r=>{
                         item.rfids.push(r.rfid)
-                        item.serial.push(r.serial)
+                        item.serial.push(r.equipSerial)
                     })
                 })
                 delete this.requestBody.copyList

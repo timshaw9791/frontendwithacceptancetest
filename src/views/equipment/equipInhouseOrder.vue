@@ -32,7 +32,7 @@
                                 <define-input v-model="data.row.rfid" type="String" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="装备序号" :tableEdit="false" v-slot="{ data }">
-                                <define-input v-model="data.row.serial" type="Number" ></define-input>
+                                <define-input v-model="data.row.equipSerial" type="Number" ></define-input>
                             </define-column>
                         </define-table>
                     </bos-tabs>
