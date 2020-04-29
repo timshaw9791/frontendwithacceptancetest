@@ -3,7 +3,7 @@
           <div class="action_box" data-test="action_box">
                 <define-input label="单号" v-model="orderNumber" :disabled="true" class="odd-number"></define-input>
                 <date-select label="出库时间" v-model="time" :disabled="true"></date-select>
-                <entity-input label="出库人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :disabled="false" ></entity-input>
+                <entity-input label="出库人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :disabled="true" ></entity-input>
             </div>
         <div class="data-list">
             <bos-tabs >
@@ -33,7 +33,7 @@
                                <i class="iconfont iconyichuliang" @click="changeDetailRow(false,data)"></i>
                             </define-column>
                             <define-column label="RFID" field="rfid" :tableEdit="false"/>
-                            <define-column label="装备序号" field="serial" :tableEdit="false"/>
+                            <define-column label="装备序号" field="equipSerial" :tableEdit="false"/>
                         </define-table>
                     </bos-tabs>
         <div class="btn-box" v-if="showDetail">

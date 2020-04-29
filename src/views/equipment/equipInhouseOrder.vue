@@ -122,9 +122,8 @@ export default {
         },
         
         created(){
-            this.time= Date.parse(new Date());
                 this.orderNumber=this.$route.params.info.number
-                this.time=this.$filterTime(this.$route.params.info.updateTime)
+                this.time=this.$route.params.info.updateTime
                 this.changeDataFormat(this.$route.params.info.inOutHouseItems)
                 this.people=this.$route.params.info.operator.operator
 
