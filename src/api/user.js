@@ -31,3 +31,10 @@ export function deleteUser(param) {//删除user
     method: 'DELETE',
   })
 }
+
+export function userInfoById(id) { // 通过id获取人员信息
+  return request({
+    url: `/identity/user/${id}`,
+    method: 'GET'
+  })
+}

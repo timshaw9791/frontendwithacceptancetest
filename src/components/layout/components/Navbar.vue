@@ -2,7 +2,6 @@
     <el-menu class="navbar" mode="horizontal">
         <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
 
-        <!--<breadcrumb></breadcrumb>-->
         <div class="logo">{{ title }}</div>
 
         <div class="icons">
@@ -23,9 +22,7 @@
         </div>
         <el-dropdown class="avatar-container" trigger="click">
             <div class="avatar-wrapper">
-                <!--<img class="user-avatar" src="./hqq.gif">-->
                 <svg-icon icon-class="设置" class="svg" style="font-size: 0.1146rem;"/>
-                <!--<i class="el-icon-caret-bottom"></i>-->
             </div>
             <el-dropdown-menu class="user-dropdown" slot="dropdown">
                 <router-link class="inlineBlock" to="/private/index">
@@ -55,30 +52,21 @@
 
 <script>
     import {mapGetters} from 'vuex'
-    import Breadcrumb from 'components/base/Breadcrumb'
     import Hamburger from 'components/base/Hamburger'
     import { localTitle } from 'api/config'
-    import { readMsg, getMsgList, getMsgListWithType } from "api/message";
-
-    // const cmdPath = 'C:\\Users\\Administrator';
-    // const exec = window.require('child_process').exec;
-    // const spawn = window.require('child_process').spawn;todo
+    import { getMsgList } from "api/message";
     export default {
         data() {
             return {
                 title: localTitle,
-                haveMessage:false,
-                messageNum:0
             }
         },
         components: {
-            Breadcrumb,
             Hamburger
         },
         computed: {
             ...mapGetters([
-                'sidebar',
-                'avatar'
+                'sidebar'
             ])
         },
         methods: {
@@ -87,55 +75,20 @@
             },
             logout() {
                 this.$store.dispatch('LogOut').then(() => {
-                    location.reload() // 为了重新实例化vue-router对象 避免bug
-                    // this.$message.success('退出成功');
-                    // const process = exec(`java -jar SendCamSignal.jar ${0}`, {cwd: cmdPath});
-                    // process.stderr.on('data', (err) => {
-                    //
-                    // });
-                    // process.on('exit', (code) => {
-                    //     // if (this.index === 0) {
-                    //     //       this.$message.error('设备未插入或串口号错误,插入后请重新选择装备!');
-                    //     //   }
-                    //     console.log(`子进程退出 ${code}`);
-                    // });
-
+                    location.reload() 
                 })
-
             },
             windowClose() {
                 window.close();
-                // const process = exec(`java -jar SendCamSignal.jar ${-1}`, {cwd: cmdPath});
-                // process.stderr.on('data', (err) => {
-                // });
-                // process.on('exit', (code) => {
-                //     // if (this.index === 0) {
-                //     //       this.$message.error('设备未插入或串口号错误,插入后请重新选择装备!');
-                //     //   }
-                //     console.log(`子进程退出 ${code}`);
-                // });
-                // setTimeout(() => {
-                //
-                // }, 500)
             },
-            getList() {
-            let data = {
-                id: JSON.parse(localStorage.getItem("user")).id,
-            };
-            getMsgList(data).then(res => {
-              this.messageNum=0
-              res.content.forEach(item=>{
-                  if(item.status==false)
-                  {
-                      this.messageNum++
-                  }
-              })
-              this.$store.commit('SET_MESSAGE', this.messageNum);    
-      });
-    },
+            fetchData() {
+                getMsgList({id: JSON.parse(localStorage.getItem("user")).id}).then(res => {
+                    this.$store.commit('SET_MESSAGE', res.content.filter(item => !item.status).length);    
+                });
+            }
         },
         created(){
-            this.getList()
+            this.fetchData()
         },
     }
 </script>
