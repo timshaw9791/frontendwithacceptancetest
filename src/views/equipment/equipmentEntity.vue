@@ -31,6 +31,9 @@
                             
                         </define-table>
             <equip-allocation v-if="inAllocation"></equip-allocation>
+            <!-- <serviceDialog title="提示" ref="dialogButton" :secondary="false" @confirm="dialogConfim">
+                        <div class="_dialogDiv">您确定要取消保养该装备吗？</div>
+                    </serviceDialog> -->
             <equipment-edit v-if="isEdit" @cancel="cancel" :editList="editList" ></equipment-edit>
         </div>
     </div>

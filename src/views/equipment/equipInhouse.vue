@@ -1,5 +1,6 @@
 <template>
     <div class="opening-box">
+        <my-header title="入库单列表/装备入库"></my-header>
          <div class="action_box" data-test="action_box">
                 <define-input label="单号" v-model="orderNumber" :disabled="true" class="odd-number"></define-input>
                 <date-select label="入库时间" v-model="time" :disabled="true"></date-select>
@@ -98,6 +99,7 @@ export default {
                     productTime:Date.parse(new Date()),
                     rfids: [],
                     serial: [],
+                    count:0,
                     copyList:[{rfid:'',serial:''}],
                 }],
                time:"",
@@ -121,26 +123,17 @@ export default {
         },
         methods:{
             selRow(data,index){
-               this.findIndex=index
+               this.findIndex=this._.indexOf(this.list,data)
             },
             sumFunc(param) { // 表格合并行计算方法
-                let { columns, data } = param, sums = [];
-                columns.forEach((colum, index) => {
-                    if(index == 0) {
-                        sums[index] =  '合计';
-                    } else if(index == columns.length-1) {
-                        const values = data.map(item => item.count?Number(item.count):0);
-                        if(!values.every(value => isNaN(value))) {
-                            sums[index] = values.reduce((pre, cur) => !isNaN(cur)?pre+cur:pre);
-                        }
-                    } else {
-                        sums[index] = '';
-                    }
-                })
+                 let { columns, data } = param, sums = [];
+                sums=new Array(columns.length).fill('')
+                sums[0]='合计'
+                sums[columns.length-1]=param.data.reduce((v,k)=>v+k.count,0)
                 return sums;
             },
             cancel(){
-                this.$emit('cancel')
+                this.$router.back()
             },
             confirm(){
                 this.requestBody=JSON.parse(JSON.stringify(this.list))
@@ -194,11 +187,11 @@ export default {
             {
                 if(state)
                 {
-                    this.list.push({equipArgId: '',locationId: '',price: 0,productTime: 0,rfids: [],serial: [],copyList:[{rfid:'',serial:''}],})
+                    this.list.push({equipArgId: '',locationId: '',price: 0,productTime: Date.parse(new Date()),rfids: [],serial: [],copyList:[{rfid:'',serial:''}],})
                 }else if(this.list.length>1){
                     this.list.splice(data.$index, 1)
                 }else{
-                    this.list=[{equipArgId: '',locationId: '',price: 0,productTime: 0,rfids: [],serial: [],copyList:[{rfid:'',serial:''}],}]
+                    this.list=[{equipArgId: '',locationId: '',price: 0,productTime: Date.parse(new Date()),rfids: [],serial: [],copyList:[{rfid:'',serial:''}],}]
                 }
             },
             init(){
@@ -251,6 +244,7 @@ export default {
     border-bottom:1px solid rgba(112, 112, 112, 0.13);
     }
     .action_box{
+        margin-top:15px;
         display: flex;
         justify-content: flex-start;
         align-items: center;
@@ -267,17 +261,7 @@ export default {
         justify-content: space-between;
     }
 }
-.location-select{
-    height: 500px;
-    width: 4.625rem;
-    z-index: 1200;
-    .select-location{
-        width:3.5rem;
-        height: 440px;
-        float: left;
-        margin-left: auto;
-}
-}
+
 .btn-box{
         width: 4rem;
         height: 50px;

@@ -71,11 +71,20 @@ export const asyncRouterMap = [
                 component: _import('equipment/storages'),
                 meta: {title: '入库单列表'},
             },
+
             {
-                path: 'storage',
-                name: 'equipment/storage',
-                component: _import('equipment/storage'),
+                path: 'equipinhouse',
+                name: 'equipinhouse',
+                component: _import('equipment/equipInhouse'),
                 meta: {title: '装备入库'},
+                hidden:true
+            },
+            {
+                path: 'equipinhouseorder',
+                name: 'equipinhouseorder',
+                component: _import('equipment/equipInhouseOrder'),
+                meta: {title: '入库单列表/入库单详情'},
+                hidden:true
             },
             {
                 path: 'outstorage',
@@ -102,12 +111,12 @@ export const asyncRouterMap = [
                 component: _import('equipment/equipmentEntity'),
                 meta: {title: '装备实体'},
             },
-            {
-                path: 'searchstorage',
-                name: 'equipment/search',
-                component: _import('equipment/searchStorageInfo'),
-                meta: {title: '装备搜索'},
-            },
+            // {
+            //     path: 'searchstorage',
+            //     name: 'equipment/search',
+            //     component: _import('equipment/searchStorageInfo'),
+            //     meta: {title: '装备搜索'},
+            // },
             {
                 path: 'supplier',
                 name: 'equipment/supplier',
@@ -260,12 +269,12 @@ export const asyncRouterMap = [
                 component: _import('equipmentOperation/needMaintenanced'),
                 meta: {title: '正在保养'},
             },
-            {
-                path: 'service',
-                name: 'service',
-                component: _import('equipmentOperation/service'),
-                meta: {title: '维修'},
-            },
+            // {
+            //     path: 'service',
+            //     name: 'service',
+            //     component: _import('equipmentOperation/service'),
+            //     meta: {title: '维修'},
+            // },
             {
                 path: 'serviceapplication',
                 name: 'serviceapplication',

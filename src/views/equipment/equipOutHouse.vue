@@ -112,18 +112,9 @@ export default {
             },
             sumFunc(param) { // 表格合并行计算方法
                 let { columns, data } = param, sums = [];
-                columns.forEach((colum, index) => {
-                    if(index == 0) {
-                        sums[index] =  '合计';
-                    } else if(index == columns.length-1) {
-                        const values = data.map(item => item.count?Number(item.count):0);
-                        if(!values.every(value => isNaN(value))) {
-                            sums[index] = values.reduce((pre, cur) => !isNaN(cur)?pre+cur:pre);
-                        }
-                    } else {
-                        sums[index] = '';
-                    }
-                })
+                sums=new Array(columns.length).fill('')
+                sums[0]='合计'
+                sums[columns.length-1]=param.data.reduce((v,k)=>v+k.copyList.length,0)
                 return sums;
             },
             cancel(){

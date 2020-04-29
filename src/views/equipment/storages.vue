@@ -1,7 +1,7 @@
 <template>
     <div class="opening-box">
-        <my-header :title="inhouse?'入库装备':'入库单列表'" :haveBlack="inhouse||inorder" @h_black="black"></my-header>
-        <div class="btn_box" v-if="!inhouse&&!inorder">
+        <my-header title="入库单列表"></my-header>
+        <div class="btn_box">
              <base-button label="入库装备 " align="right" :width="128" :height="25" :fontSize="20" @click="toInHouse"></base-button>
         </div>
         <div class="data-list">
@@ -26,7 +26,7 @@
                             </define-column>
                             <define-column label="入库时间" :filter="(row)=>$filterTime(row.createTime)"/>
                         </define-table>
-            <equip-inhouse v-if='inhouse'  @cancel="black"></equip-inhouse>
+            <!-- <equip-inhouse v-if='inhouse'  @cancel="black"></equip-inhouse> -->
             <equip-inhouse-order v-if="inorder" :equipData="equipData" @cancel="black"></equip-inhouse-order>
         </div>
     </div>
@@ -77,6 +77,7 @@ export default {
 
             },
             toDetail(data){
+                this.$router.push({name:'equipinhouseorder',params:{info:data}})
                 this.equipData=data
                 this.inorder=true
             },
@@ -116,7 +117,7 @@ export default {
             this.paginator.page = page;ss
             },
             toInHouse(){
-                this.inhouse=true
+                this.$router.push({path:"/equipment/equipinhouse"})
             }
         },
         created(){

@@ -1,9 +1,10 @@
 <template>
     <div class="opening-box">
+          <my-header :title="$route.meta.title" :haveBlack="true" @h_black="cancel"></my-header>
          <div class="action_box" data-test="action_box">
                 <define-input label="单号" v-model="orderNumber" :disabled="true" class="odd-number"></define-input>
                 <date-select label="入库时间" v-model="time" :disabled="true"></date-select>
-                <entity-input label="入库人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :disabled="false" ></entity-input>
+                <entity-input label="入库人员" v-model="people" format="{name}" :disabled="true" ></entity-input>
             </div>
         <div class="data-list">
             <bos-tabs >
@@ -86,7 +87,7 @@ export default {
         },
         methods:{
             selRow(data,index){
-               this.findIndex=index
+                this.findIndex=this._.indexOf(this.newData,current)
             },
             sumFunc(param) { // 表格合并行计算方法
                 let { columns, data } = param, sums = [];
@@ -105,7 +106,7 @@ export default {
                 return sums;
             },
             cancel(){
-                this.$emit('cancel')
+                this.$router.back()
             },
             changePage(page) {
             this.paginator.page = page;
@@ -122,10 +123,10 @@ export default {
         
         created(){
             this.time= Date.parse(new Date());
-                this.orderNumber=this.equipData.number
-                this.time=this.$filterTime(this.equipData.updateTime)
-                this.changeDataFormat(this.equipData.inOutHouseItems)
-                this.people=this.equipData.operator.operator
+                this.orderNumber=this.$route.params.info.number
+                this.time=this.$filterTime(this.$route.params.info.updateTime)
+                this.changeDataFormat(this.$route.params.info.inOutHouseItems)
+                this.people=this.$route.params.info.operator.operator
 
             
         }
@@ -137,6 +138,7 @@ export default {
     width: 100%;
     min-height: 4.4323rem;
     .action_box{
+        margin-top:15px;
         display: flex;
         justify-content: flex-start;
         align-items: center;
