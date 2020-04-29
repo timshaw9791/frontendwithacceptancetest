@@ -22,13 +22,11 @@
 
 <script>
     import myHeader from 'components/base/header/header'
-    import defineInput from '@/componentized/textBox/defineInput.vue'
-    import baseButton from "@/componentized/buttonBox/baseButton.vue"
     import {doneProcess} from 'api/process'
     export default {
         name: "handlingMatters",
         components:{
-            myHeader,defineInput,baseButton
+            myHeader
         },
         data(){
             return{

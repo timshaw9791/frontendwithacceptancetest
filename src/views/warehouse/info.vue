@@ -46,7 +46,6 @@
 
     import tabs from 'components/base/tabs/index'
     import {formRulesMixin} from 'field/common/mixinTableRest';
-    import api from 'gql/warehouse.gql'
     import { getHouse } from "api/warehouse"
     import {transformMixin} from 'common/js/transformMixin'
     import {retirementApplication} from "api/operation";

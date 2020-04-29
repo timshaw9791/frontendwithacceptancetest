@@ -43,11 +43,7 @@
 <script>
 import myHeader from 'components/base/header/header';
 import processInfos from 'components/process/processInfos'
-import textInput from '@/componentized/textBox/textInput'
-import baseButton from '@/componentized/buttonBox/baseButton'
-import dateSelect from '@/componentized/textBox/dateSelect'
 import serviceDialog from "components/base/serviceDialog"
-import entityInput from '@/componentized/entity/entityInput'
 import bosTabs from '@/componentized/table/bosTabs.vue'
 import { processDetail, getHistoryTasks, processDelete } from 'api/process'
 var _ = require('lodash');
@@ -179,11 +175,7 @@ export default {
   components: {
     myHeader,
     processInfos,
-    textInput,
-    baseButton,
-    dateSelect,
     serviceDialog,
-    entityInput,
     bosTabs
   }
 }
