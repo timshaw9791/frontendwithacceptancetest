@@ -36,6 +36,10 @@ export default {
         }
       }
     },
+    search: {
+      type: String,
+      default: ''
+    },
     expandAll: { // 是否默认展开所有节点
       type: Boolean,
       default: true
@@ -68,12 +72,17 @@ export default {
       }
     },
     nodeClick(data, node, self) {
-      
+      this.$emit('nodeClick', {data, node, self});
     },
     filterNode(value, data, node) {
-      if(!value) return true;
+      return !value||data[this.options.label].includes(value);
     }
   },
+  watch: {
+    search(val) {
+      this.$refs.tree.filter(val);
+    }
+  }
 }
 </script>
 
