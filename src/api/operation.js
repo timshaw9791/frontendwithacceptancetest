@@ -43,6 +43,30 @@ export function repairEquipMaintain(rfids,state) {
         method: 'post',
     })
 }
+//维修单
+export function getRepairOrder(params) {
+    return request({
+        url: "/repair-orders",
+        method: 'get',
+        params:params
+    })
+}
+export function rightRepairOrder(params) {
+    return request({
+        url: "/equips/in-repair",
+        method: 'get',
+        params:params
+    })
+}
+
+//维修申请列表
+export function RepairOrder(params) {
+    return request({
+        url: "/repair-applies",
+        method: 'get',
+        params:params
+    })
+}
 export function findByRfids(rfids) {
     return request({
         url: `/equip/findByRfids?rfids=${rfids}`,
