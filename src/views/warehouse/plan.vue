@@ -50,25 +50,29 @@
             };
         },
         methods: {
-            getData(){
+            fetchData(){
                 getPlan(this.paginator).then(res=>{
                     this.order = res.content
                     this.paginator.totalPages = res.totalPages;
                     this.paginator.totalElements = res.totalElements;
-                    this.equipArg = this.order[0].equipArgItems
+                    if(this.order!=[]){
+                        this.equipArg = this.order[0].equipArgItems
+                    }else{
+                        this.equipArg=[]
+                    }
                 })
             },
             deleteplan(data){
                 delectPlan(data.id).then(res=>{
                     this.$message.success("删除成功")
-                    this.getData()
+                    this.fetchData()
                 }).catch(err=>{
                     this.$message.errow(err.message)
                 })
             },
             changePage(page) {
                 this.paginator.page = page
-                this.getData()
+                this.fetchData()
             },
             changeCurrent(current){
                 this.equipArg = current.equipArgItems
@@ -90,7 +94,7 @@
             },
         },
         created() {
-            this.getData()
+            this.fetchData()
         },
         components: {
             myHeader,
