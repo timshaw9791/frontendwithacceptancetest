@@ -94,14 +94,15 @@ export default {
                 default:
                     break;
             }
-            this.fileName = file.name;
-            this.$emit('input', this.fileName);
+            // this.fileName = file.name;
+            // this.$emit('input', this.fileName);
         },
         upFile(url, file) {
             let param = new FormData();
             param.append('file', file, file.name);
             this.fetch.post(url, param, this.config).then(res => {
-                console.log("上传成功");
+                this.fileName = res.data;
+                this.$emit('input', this.fileName);
             })
         }
     },
