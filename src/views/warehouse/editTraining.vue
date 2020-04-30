@@ -2,18 +2,18 @@
   <div class="editTraining-container">
     <my-header :title="this.$route.params.info.edit?'编辑':'新增'+'视频与文档'" :haveBlack="false"></my-header>
     <div class="editTraining-body" >
-        <div>
-            <entity-input v-model="order.equipArg" format="{name}({model})" :options="{detail:'equipArgsSelect'}"></entity-input>
+        <div style="margin:15px auto">
+            <entity-input v-model="order.equipArg" format="{name}({model})" :options="{search:'equipArgsSelect'}"></entity-input>
         </div>
         <div>
-            <upload-file label="文档" type="pdf" v-model="order.pdf[0]"></upload-file>
-            <upload-file label="文档" type="pdf" v-model="order.pdf[1]"></upload-file>
-            <upload-file label="文档" type="pdf" v-model="order.pdf[2]"></upload-file>
+            <upload-file label="文档" type="pdf" v-model="order.pdf.fileName[0]" margin="15px"></upload-file>
+            <upload-file label="文档" type="pdf" v-model="order.pdf.fileName[1]" margin="15px"></upload-file>
+            <upload-file label="文档" type="pdf" v-model="order.pdf.fileName[2]" margin="15px"></upload-file>
         </div>
         <div>
-            <upload-file label="视频" type="video" v-model="order.video[0]"></upload-file>
-            <upload-file label="视频" type="video" v-model="order.video[1]"></upload-file>
-            <upload-file label="视频" type="video" v-model="order.video[2]"></upload-file>
+            <upload-file label="视频" type="video" v-model="order.video.fileName[0]" margin="15px"></upload-file>
+            <upload-file label="视频" type="video" v-model="order.video.fileName[1]" margin="15px"></upload-file>
+            <upload-file label="视频" type="video" v-model="order.video.fileName[2]" margin="15px"></upload-file>
         </div>
         <div class="buttom">
             <base-button label="提交" align="right" size="large" @click="submit"></base-button>
@@ -50,7 +50,6 @@
                 this.$router.go(-1)
             },
             submit(){
-                console.log("提交");
                 if(JSON.stringify(this.order.equipArg)=="{}"){
                     this.$message.error("请选择装备参数")
                     return
@@ -60,42 +59,56 @@
                     fileName:"",
                     type:""
                 }
-                console.log("未进入for");
-                for( let i in this.order.video){
-                    console.log("进入for");
-                    if(this.order.video[i]!=""){
-                        params.fileName = this.order.video[i]
+                Promise.all([this.video(),this.pdf()]).then(res=>{
+                    console.log(res);
+                    this.$router.go(-1)
+                })
+
+            },
+            async video(){
+                let params = {
+                    equipArg:this.order.equipArg,
+                    fileName:"",
+                    type:""
+                }
+                for( let i in this.order.video.fileName){
+                    if(this.order.video.fileName[i]!=""){
+                        params.fileName = this.order.video.fileName[i]
                         params.type = "MP4"
-                        if(this.editflag){
-                            editTraining(id,params).then(res=>{
-                                console.log("res",res);
-                            })
+                        if(this.$route.params.info.edit){
+                            if(i < this.order.video.id.length && this.order.pdf.id!=[]){
+                                await editTraining(this.order.video.id[i],params)
+                            }else {
+                                await addTraining(params)
+                            }
                         }else {
-                            addTraining(params).then(res=>{
-                                console.log("res",res);
-                            })
+                            await addTraining(params)
                         }
                     }
                 }
-                for( let i in this.order.pdf){
-                    if(this.order.pdf[i]!=""){
-                        params.fileName = this.order.pdf[i]
+            },
+            async pdf(){
+                let params = {
+                    equipArg:this.order.equipArg,
+                    fileName:"",
+                    type:""
+                }
+                for( let i in this.order.pdf.fileName){
+                    if(this.order.pdf.fileName[i]!=""){
+                        params.fileName = this.order.pdf.fileName[i]
                         params.type = "pdf"
-                        if(this.editflag){
-                            editTraining(id,params).then(res=>{
-                                console.log("res",res);
-                            })
+                        if(this.$route.params.info.edit){
+                            if(i < this.order.pdf.id.length && this.order.pdf.id!=[]){
+                                await editTraining(this.order.pdf.id[i],params)
+                            }else{
+                                await addTraining(params)
+                            }
                         }else {
-                            console.log("params",params);
-                            addTraining(params).then(res=>{
-                                console.log("res",res);
-                            })
+                            await addTraining(params)
                         }
                     }
-                } 
-                this.$router.go(-1)
-
-            },
+                }
+            }
         },
         created() {
             if(this.$route.params.info == undefined) {
