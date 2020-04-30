@@ -15,7 +15,6 @@
 
 <script>
 import myHeader from 'components/base/header/header'
-import textInput from '@/componentized/textBox/textInput.vue'
 import { processDefinitions } from 'api/process'
 import bosTabs from '@/componentized/table/bosTabs'
 export default {
@@ -59,7 +58,6 @@ export default {
   },
   components: {
     myHeader,
-    textInput,
     bosTabs
   }
 }
