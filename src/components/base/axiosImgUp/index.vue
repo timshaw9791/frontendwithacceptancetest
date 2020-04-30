@@ -8,10 +8,9 @@
                 :on-success="handleAvatarSuccess"
                 accept=".jpg,.jpeg,.png,.JPG,.JPEG"
                 :before-upload="beforeAvatarUpload">
-                
             <img v-if="imageUrl" :src="imageUrl" class="avatar">
             <img v-else-if="noimg" src='@/assets/noThumbnails.png' class="avatar">
-            <i v-else :class='[upload?"avatar-uploader-icon":"avatar",upload ? "el-icon-plus" : ""]'></i> 
+            <i v-else :class='[upload?"avatar-uploader-icon":"avatar",upload ? "el-icon-plus" : ""]'></i>
             <!-- el-icon-plus avatar-uploader-icon -->
         </el-upload>
     </div>
@@ -24,7 +23,7 @@
     export default {
         data() {
             return {
-                imageUrl: '',    
+                imageUrl: '',
                 url: '',
                 isupload:false,
             };

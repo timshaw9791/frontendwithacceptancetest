@@ -1,16 +1,16 @@
 export let fetchMixin = {
     methods: {
         query(query, variables) {
-            return this.$apollo.query({//声明手动查询的方法
-                query: query,
-                variables: variables,
-            });
+            // return this.$apollo.query({//声明手动查询的方法
+            //     query: query,
+            //     variables: variables,
+            // });
         },
         mutate(mutation, variables) {//声明手动修改的方法
-            return this.$apollo.mutate({
-                mutation: mutation,
-                variables: variables,
-            });
+            // return this.$apollo.mutate({
+            //     mutation: mutation,
+            //     variables: variables,
+            // });
         },
         //便利方法，供在apollo:配置块中使用。设置好默认值，只要给一个query对象或者gql字符串即可
         //只限于list列表等需要分页的模块使用，且同一组件只能用一个

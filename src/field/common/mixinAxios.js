@@ -194,10 +194,10 @@ export let formRulesMixin = {
             })
         },
         mutate(mutation, variables) {//声明手动修改的方法
-            return this.$apollo.mutate({
-                mutation: mutation,
-                variables: variables,
-            });
+            // return this.$apollo.mutate({
+            //     mutation: mutation,
+            //     variables: variables,
+            // });
         },
     },
     destroyed() {

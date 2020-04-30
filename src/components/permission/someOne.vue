@@ -8,7 +8,7 @@
                 <span>{{tableTitle}}</span>
             </div>
 
-            <el-table :data="list" class="_list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"
+            <el-table :data="list" class="_list" element-loading-text="Loading"
                       fit highlight-current-row>
                 <bos-table-column lable="id" field="id"></bos-table-column>
                 <bos-table-column lable="姓名" field="username"></bos-table-column>
@@ -45,11 +45,6 @@
             id: {
                 type: String,
                 default: null,
-            },
-        },
-        apollo: {
-            list() {
-                return this.getEntityQuery(api.getUserList);
             },
         },
         mixins: [historyPageMixin],

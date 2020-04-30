@@ -139,25 +139,96 @@
 
                 <!--绑定序号-->
 
-                <el-card class="box-card" shadow="never" v-if="title.includes('入库')">
+                 <el-card class="box-card" shadow="never" v-if="title.includes('入库')">
                     <div slot="header">
-                        <span>绑定序号</span>
+                        <span>扫描装备</span>
                     </div>
                     <div>
+                        <div >
                         <div class="header_tab">
-                        <div class="hardware">
+                        <div :class="isFlag?'header_tab_box':'header_tab_box_now'" @click="changeTab" style="cursor:pointer">绑定箱码</div><div :class="isFlag?'header_tab_box_now':'header_tab_box'">明细</div>
+                        <!-- <div @click="getRfid">假装扫描</div> -->
+                        <div style="display: flex;
+            justify-content: flex-start;margin-left:300px; algin-item:center;line-height:38px;">
             
                             <span>硬件选择： </span>
                   <el-select v-model="hardware.selected" @change="selectHardware" size="small" style="width: 220px">
-                    <el-option v-for="item in hardware.selectArr" 
+                    <el-option v-for="item in hardware.selectArr"
                       :label="item.key" :key="item.val" :value="item.val">
                     </el-option>
                   </el-select>
-                  <el-button :class="{'read': true, 'throttle':throttle}" @click="readerHandheld" :disabled="throttle" v-show="hardware.selected == 'Handheld'">{{readText}}</el-button>
-                  <el-button :class="{'read': true, 'throttle':throttle}" @click="getGateAntenna" :disabled="throttle" v-show="hardware.selected == 'gateAntenna'">开启门感</el-button>
+                  <el-button :class="{'read': true, 'throttle':throttle}" @click="readerHandheld" :disabled="throttle" v-show="hardware.selected == 'Handheld'">读取</el-button>
+                            
                         </div>
                         </div>
-                        <el-table :data="list" fit height="330" class="list" :row-class-name="tableRowClassName">
+                        <el-table :data="bindRfidList" fit height="330" class="list" :header-cell-style="{background:'Gainsboro'}" border  show-summary v-if="!isFlag" :summary-method="getSummaries" highlight-current-row>
+                            <el-table-column  label="类别" width="100px">
+                             <template scope="scope">
+                              <div v-if="scope.$index==0" @click="toMore(scope.row,scope.$index)" style="cursor:pointer">散件</div>
+                              <div v-if="scope.$index!=0" style="cursor:pointer">整箱</div>
+                             </template>
+                            </el-table-column>
+                            <el-table-column  label="操作" width="100px">
+                             <template scope="scope">
+                                 <div style="width:20px;float:left;margin-left:'19px'" @click="addqrr"> <svg-icon icon-class="加号" class="icon-search" ></svg-icon></div>
+                                 <div style="margin-left:'20px';width:20px;float:right" @click="sliceArr(scope.row,scope.$index)">
+                             <svg-icon icon-class="移除" class="icon-search" ></svg-icon>
+                                 </div>
+                            
+                             </template>
+                            </el-table-column>
+                            <el-table-column  label="RFID" >
+                             <template scope="scope">
+                             <div @dblclick="toMore(scope.row,scope.$index)" @click="fetchRfid(scope.row,scope.$index)" style="cursor:pointer">
+                                 <span v-text="scope.row.rfid" ></span>
+                                 <span v-text="'单击扫描'" v-if="(scope.row.rfid==''||scope.row.rfid==null)&&scope.$index!=0" ></span>
+                             </div>
+                             </template>
+                            </el-table-column>
+                            <el-table-column  label="装备数量" >
+                             <template scope="scope">
+                                 
+                              <!-- <span v-text="scope.row.details.length"></span> -->
+                              <span >{{rfidListNum(scope.row,scope.$index)}}</span>
+                             </template>
+                            </el-table-column>
+                        </el-table>
+                        <el-table :data="bindRfidList[findIndex].details" fit height="330" class="list" :header-cell-style="{background:'Gainsboro'}" show-summary border highlight-current-row  v-if="isFlag" :summary-method="getSummaries">
+                            <el-table-column  label="序号" width="100px">
+                             <template scope="scope">
+                              <span>{{scope.$index+1}}</span>
+                             </template>
+                            </el-table-column>
+                            <el-table-column  label="操作" width="100px">
+                             <template scope="scope">
+                                <div style="width:20px;float:left;margin-left:'19px'" @click="addqrr2()"> <svg-icon icon-class="加号" class="icon-search" ></svg-icon></div>
+                                 <div style="margin-left:'20px';width:20px;float:right" @click="sliceArr2(scope.row,scope.$index)">
+                             <svg-icon icon-class="移除" class="icon-search" ></svg-icon>
+                                 </div>
+                             </template>
+                            </el-table-column>
+                            <el-table-column  label="RFID">
+                             <template scope="scope">
+                              <div  @click="fetchRfid2(scope.row,scope.$index)" style="cursor:pointer">
+                                 <span v-text="scope.row.rfid" ></span>
+                                 <span v-text="'单击扫描'" v-if="scope.row.rfid==''||scope.row.rfid==null" ></span>
+                             </div>
+                             </template>
+                            </el-table-column>
+                            <el-table-column  label="装备序号">
+                             <template scope="scope">
+                              <el-input v-model="scope.row.serial">
+
+                              </el-input>
+                             </template>
+                            </el-table-column>
+                            <!-- <el-table-column  label="装备数量">
+                             <template scope="scope">
+                              <span v-text="scope.row.rfid!=null?'1':'0'"></span>
+                             </template>
+                            </el-table-column> -->
+                        </el-table>
+                        <!-- <el-table :data="list" fit height="330" class="list" :row-class-name="tableRowClassName">
                             <el-table-column label="序号" align="center">
                                 <template scope="scope">
                                     {{scope.$index+1}}
@@ -183,7 +254,8 @@
                                 </template>
                             </el-table-column>
 
-                        </el-table>
+                        </el-table> -->
+                        </div>
                     </div>
                 </el-card>
 
@@ -220,10 +292,11 @@
     import axios from 'axios';
     import {imgUpUrl, pdfUpUrl, videoUpUrl, imgBaseUrl, pdfBaseUrl, videoBaseUrl} from "api/config";
     import {delFile} from "api/basic";
-    import { equipArgsByName, inHouse, findEquip, updateEquipArg, getAllSupplier, saveEquipArg, updateEquip,changeRecognizeModel,getRfidFromGate} from "api/storage"
+    import { equipArgsByName, inHouse, findEquip, updateEquipArg, getAllSupplier, saveEquipArg, updateEquip} from "api/storage"
     import serviceDialog from 'components/base/serviceDialog/index'
     import {transformMixin} from "common/js/transformMixin";
-    import { start, startOne, killProcess,handheld, modifyFileName} from 'common/js/rfidReader'
+    import { start, startOne, killProcess,handheld, modifyFileName } from 'common/js/rfidReader'
+    import {getSupplier} from "api/supplier";
     import request from 'common/js/request'
     // const cmdPath = 'C:\\Users\\Administrator';
     // const exec = window.require('child_process').exec;
@@ -259,8 +332,14 @@
                     price: '', // 装备单价
                 },
                 list: [{rfid: null, serial: ''}],
+                bindRfidList:[{rfid:null,count:'',details:[{rfid:null,serial:''}]},{rfid:null,count:'',details:[{rfid:null,serial:''}]}],
                 tempImage: '', // 用以保存图片的名字
+                findIndex:'',
+                findRfid:'',//找到箱子绑定的rfid
+                categoryList: [], // 位置分配列表
                 formRes: '',
+                throttle: false,
+                isFlag:false,
                 inlineForm: {},
                 leadershipList: [],
                 unitId: JSON.parse(localStorage.getItem('user')).unitId,
@@ -272,12 +351,22 @@
                 isEditDialog: false, // 是否由 取消编辑 触发的弹窗
                 submitShow: false, // 提交按钮是否显示
                 hardwareOpen: false, // 硬件是否启动
+                hardware: {//选择硬件
+                  selectArr: [{
+                    val: 'Handheld', 
+                    key: '手持机'
+                  }, {
+                    val: 'cardReader', 
+                    key: '读写器'
+                  }],
+                  selected: '', // 所选用的硬件
+                  operator: ""
+                },
                 useProp: false, // 装备入库是否自动选择
                 imageUrl: '',
                 rfids: [],
                 serialList: [],
                 pid: '',
-                readText:'读取',
                 index: 0, // 标识当前扫入是否是第一件装备
                 com: 0,
                 copyRfidList: {},
@@ -286,23 +375,6 @@
                     zbForm: {}
                 },// 判断是否对数据进行修改
                 isClick: false, // 避免提交按钮快速点击
-                throttle: false,
-                hardware: {//选择硬件
-                  selectArr: [{
-                    val: 'Handheld', 
-                    key: '手持机'
-                  }, {
-                    val: 'cardReader', 
-                    key: '读写器'
-                  },{
-                    val: 'gateAntenna', 
-                    key: '门感天线'
-                  }],
-                  selected: '', // 所选用的硬件
-                  operator: ""
-                },
-                closeGate:false,
-                timeId:''
             }
         },
         mixins: [formRulesMixin, transformMixin],
@@ -368,34 +440,28 @@
             },
             //离开页面
             black() {
-                let gateModel="RECEIVE_RETURN"
-                changeRecognizeModel(gateModel).then(res=>{
-              })
-                this.closeGate=true
                 if(!this.isEqual()) {
                     this.$refs.dialog.show()
-                    
                 } else {
                     this.$emit('black');
                 }
             },
+            selectHardware(val){
+
+            },
             // 扩展信息 编辑后未提交应初始
             extendEditJudge() {
-                if(!this.extendEdit && !this.isEqual()) {
-                    this.isEditDialog = true
-                    this.$refs.dialog.show()
-                } else {
-                    this.extendEdit = !this.extendEdit
+                 if(!this.extendEdit) {
+                    this.zbForm = JSON.parse(JSON.stringify(this.judgeEdit.zbForm))
                 }
+                this.extendEdit = !this.extendEdit
             },
             // 装备参数 编辑后未提交应初始
             editJuadge() {
-              if(!this.edit && !this.isEqual()) {
-                  this.isEditDialog = true
-                  this.$refs.dialog.show()
-              } else {
-                  this.edit = !this.edit
+             if(!this.edit) {
+                  this.form = JSON.parse(JSON.stringify(this.judgeEdit.form))
               }  
+              this.edit = !this.edit
             },
             /* 判断两次数据是否相等 */
             isEqual() {
@@ -405,9 +471,9 @@
             },
             // 弹窗点击确认后退出
             dialogConfirm() {
-                if(this.title.includes('入库装备') && this.hardwareOpen) {
-                    killProcess(this.pid)
-                }
+                // if(this.title.includes('入库装备') && this.hardwareOpen) {
+                //     killProcess(this.pid)
+                // }
                 if(this.isEditDialog) {
                     this.isEditDialog = false
                     if(this.title.includes("装备参数详情")) {
@@ -423,127 +489,294 @@
                     this.$emit('black');
                 }
             },
-            selectHardware(val){//选择完硬件
-            this.readText="读取"
-            if(val=="cardReader")
+            toMore(row,index){
+            if(row.rfid!==null)
             {
-                start("java -jar scan.jar", (data) => {
-                        if(this.index == 0) {
-                            this.list[0].rfid = data;
-                        } else {
-                            this.list.push({ rfid: data });
-                        }
-                        this.index = this.index + 1
-                        this.hardwareOpen = true
-                    }, (fail) => {
-                        this.index = 1;
-                        this.$message.error(fail);
-                    }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
+            this.isFlag=true
+            this.findRfid=row.rfid;
             }
+            if(index==0)
+            {
+                
+                this.isFlag=true;
+                this.findRfid=-1;
+            }
+            this.findIndex=index;
             },
-            getRfidFromGateAntenna(){//获取门感读取到的rfid
+            addqrr()
+            {
+            let newLine={rfid: null,details:[{rfid:null,count:'',serial:''}]}
+            this.bindRfidList.push(newLine)
+            },
+            addqrr2(){
+            let newLine={rfid:null,serial:''}
+            this.bindRfidList.forEach(item=>{
+                if(item.rfid==this.findRfid)
+                {
+                    
+                    item.details.push(newLine)
+                }
                
-                getRfidFromGate().then(r=>{
-                      r.forEach(item=>{
-                          this.list.push({rfid:item})
-                      })
-                       this.list=_.uniqBy(this.list,'rfid')//去除多余的rfid
-                       console.log(this.list);
-                  })
+            })
+             if(this.findRfid==-1)
+                {
+                    this.bindRfidList[0].details.push(newLine)
+                }
             },
-            getGateAntenna(){//开启门感获得数据
-             if(this.throttle) return
-              this.throttle = true
-              this.list = []
-              this.index=0
-              let gateModel="IN_HOUSE"//入库的时候
-              setTimeout(() => this.throttle = false, 2000)
-              changeRecognizeModel(gateModel).then(res=>{
-                  this.$message.success('门感开始识别')
-                  this.timeId = setInterval(() => {
-                    if (this.closeGate) {
-                    console.log("清除定时器");
-                    clearInterval(this.timeId)
-                    };
-                    this.getRfidFromGateAntenna();
-                    },3000)
-              })
+            rfidListNum(arr,index){//计算数组个数
+            
+            let len=0;
+           
+            this.bindRfidList[index].details.forEach(item=>{
+                if(item.rfid!=null)
+                len++
+            })
+            this.bindRfidList[index].count=len
+                return len;
+
+            
+            
+            },
+            
+            sliceArr(row,index)
+            {
+                if(index!==0)
+                {
+             this.bindRfidList.splice(index, 1);
+                }
+                else {
+                    this.$message.error("无法删除当前行")
+                }
+            },
+            addNum(){
+                let len=0;
+            this.bindRfidList.forEach(item=>{
+                console.log(item);
+                if(item.details.length!=0)
+                {
+                    item.details.forEach(it=>{
+                        if(it.rfid!=null&&it.rfid!='')
+                         {
+                             console.log(it.rfid);
+                             len++
+                         }
+                    })
+                }
+            })
+            return len
+            },
+            addNum2(){
+                let len=0;
+            this.bindRfidList.forEach((item,index)=>{
+               if(item.rfid==this.findRfid)
+               {
+                   this.bindRfidList[index].details.forEach(it=>{
+                       if(it.rfid!=null&&it.rfid!='')
+                       {
+                           len++
+                       }
+                   })
+               }
+            })
+            return len
+            },
+            getSummaries(param) {
+        const { columns, data } = param;
+        const sums = [];
+        let boxLen=0;
+        this.bindRfidList.forEach(item=>{
+            if(item.rfid!=null&&item.rfid!='')
+            {
+                boxLen++
+            }
+        })
+        columns.forEach((column, index) => {
+          if (index === 0&&!this.isFlag) {
+            let len=this.addNum();
+            sums[index] = '总计'+boxLen+'箱'+len+'件';
+            return;
+          }
+           if (index === 0&&this.isFlag) {
+            let len=this.addNum2();
+            sums[index] = '总计'+len+'件';
+            return;
+          }
+        });
+
+        return sums;
+      },
+      
+            sliceArr2(row,index)
+            {
+
+                this.bindRfidList.forEach(item=>{
+                    if(item.rfid==this.findRfid){ 
+                        if(item.details.length!==1)
+                        {
+                            item.details.splice(index, 1);
+                        }
+                        
+                    }
+                })
+                if(this.findRfid==-1)
+                {
+                    this.bindRfidList[0].details.splice(index,1)
+                }
+                
+                
+            },
+
+            changeTab(){
+            this.isFlag=false;
+            killProcess(this.pid);//推出详细界面时杀掉进程
             },
             readerHandheld() {//手持机读取数据
               if(this.throttle) return
-              this.readText='重新读取'
               this.throttle = true
-              
+              this.list = []
+              this.rfidList = []
               setTimeout(() => this.throttle = false, 2000)
               handheld((err) => this.$message.error(err)).then(data => {//["123456","456789"]
                   console.log("手持机扫描到的数据");
                   console.log(data);
                   console.log(JSON.parse(data));
                   console.log(JSON.parse(data).rfid)
-                  JSON.parse(data).rfid.forEach(item=>{
-                      if(this.index == 0) {
-                            this.list[0].rfid = item;
-                        } else {
-                            this.list.push({ rfid: item });
-                        }
-                        this.index = this.index + 1
+                  if(!this.isFlag)//在绑定箱码界面时
+                  {
+                      JSON.parse(data).rfid.forEach(item=>{
+                      this.bindRfidList.push({rfid:item,details:[]})
                 })
+                
+                  }
+                else {
+                   
+                    this.bindRfidList.forEach(item=>{//在明细界面时
+                        if(item.rfid==this.findRfid)
+                        {
+                            console.log("手持机明细读取数据");
+                            JSON.parse(data).rfid.forEach(it=>{
+                            item.details.push({rfid:it,serial:''})
+                })
+                        }
+                        
+                    })
+                    if(this.findRfid==-1)
+                        {
+                             JSON.parse(data).rfid.forEach(it=>{
+                            this.bindRfidList[0].details.push({rfid:it,serial:''})
+                })
+                        }
+                    
+                }
+                this.bindRfidList.forEach((item,index)=>{
+                    if((item.rfid==''||item.rfid==null)&&index!=0)
+                    {
+                        console.log(index);
+                        this.bindRfidList.splice(index,1)
+                    }
+                })
+                this.bindRfidList.forEach((item,Tindex)=>{
+                    item.details.forEach((it,index)=>{
+                      if((it.rfid==''||it.rfid==null))
+                    {
+                        console.log(index);
+                        this.bindRfidList[Tindex].details.splice(index,1)
+                    }  
+                    })
+                })
+                console.log("扫描后");
+                console.log(this.bindRfidList);
               })
             },
             //点击提交后 根据从什么入口进入的执行对应的  新增  入库  装备基础信息修改 装备入库信息修改
             addEquipArg() {
-                 let gateModel="RECEIVE_RETURN"
-                            changeRecognizeModel(gateModel).then(res=>{
-                            })
-                 this.closeGate=true;
                 this.isClick = true;
                 setTimeout(() => {this.isClick = false}, 1600);
                 if(this.title.includes('入库装备')) {
-                    if(this.list.length == 0 || this.list[0].rfid == null || this.list[0].rfid == undefined) {
-                        this.$message.error("未扫入装备")
-                        return
+                    console.log("入库时的对象");
+                   console.log(this.bindRfidList);
+                    let boxMore=[]
+                    let singleBox=[]
+                    this.bindRfidList.forEach((item,index)=>{
+                        console.log(item);
+                        let boxObject={
+                        boxRfid:'',
+                        count:'',
+                        rfids:[],
+                        serials:[]
+                    }
+                        if(index!=0)//整箱的数据
+                        {
+                            console.log("整箱");
+                           boxObject.boxRfid=item.rfid
+                           boxObject.count=item.details.length 
+                           if(item.details.length!=0)
+                           {
+                               item.details.forEach(it=>{
+                                   boxObject.rfids.push(it.rfid)
+                                   boxObject.serials.push(it.serial)
+                               })
+                           }
+                           boxMore.push(boxObject)
+                        }
+                        console.log("整箱的数据");
+                      console.log(boxMore);  
+                    })
+                     let singleObject={
+                        rfids:[],
+                        serials:[]
+                    }
+                    if(this.bindRfidList[0].details.length!=0)
+                    {
+                       
+                        this.bindRfidList[0].details.forEach(item=>{
+                            if(item.rfid!=''&&item.rfid!=null)
+                            {
+                                singleObject.rfids.push(item.rfid)
+                            singleObject.serials.push(item.serial)
+                            }
+                            
+                        })
+                       
                     }
                     let tempForm = JSON.parse(JSON.stringify(this.form)),
                         tempZbForm = JSON.parse(JSON.stringify(this.zbForm)),
+                        
                         requestBody = {
-                            equipArg: {
-                                chargeCycle: tempForm.chargeCycle*1000*3600*24,
-                                upkeepCycle: tempForm.upkeepCycle*1000*3600*24,
-                                id: tempForm.id,
-                                model: tempForm.model,
-                                name: tempForm.name,
-                                shelfLife: tempForm.shelfLifeQ*1000*3600*24,
-                            },
-                            location: {
-                                floor: tempZbForm.floorL,
-                                number: tempZbForm.numberL,
-                                section: tempZbForm.sectionL,
-                                surface: tempZbForm.surfaceL
-                            },
+                            boxInHouses:boxMore,
+                            singleInHouse:singleObject,
+                            equipArgId:tempForm.id,
+                            // equipArg: {
+                            //     chargeCycle: tempForm.chargeCycle*1000*3600*24,
+                            //     upkeepCycle: tempForm.upkeepCycle*1000*3600*24,
+                            //     id: tempForm.id,
+                            //     model: tempForm.model,
+                            //     name: tempForm.name,
+                            //     shelfLife: tempForm.shelfLifeQ*1000*3600*24,
+                            // },
                             price: tempZbForm.price * 100,
                             productDate: tempZbForm.productDateQ
                         },
                         rfidList = [],
                         serialList = [];
-                    this.list.forEach(equip => {
-                        rfidList.push(equip.rfid)
-                        serialList.push(['', undefined, null].includes(equip.serial)?'""':equip.serial)
-                    })
-                    console.log(this.list);
-                    console.log(rfidList);
-                    console.log(serialList);
+                    // this.list.forEach(equip => {
+                    //     rfidList.push(equip.rfid)
+                    //     serialList.push(['', undefined, null].includes(equip.serial)?'""':equip.serial)
+                    // })
+                    requestBody = Object.assign({}, requestBody, {location: {
+                                floor: tempZbForm.floorL,
+                                number: tempZbForm.numberL,
+                                section: tempZbForm.sectionL,
+                                surface: tempZbForm.surfaceL
+                            }})
+                    console.log("请求体");
+                    console.log(requestBody);
                     this.$refs.form.validate.then(() => {
-                            this.$refs.zbForm.postValidate(inHouse, {
-                            rfids: rfidList,
-                            serials: serialList
-                        }, requestBody, (state, res) => {
-
+                            this.$refs.zbForm.postValidate(inHouse,{},requestBody, (state, res) => {
                             // 关闭硬件
-                           
-                            killProcess(this.pid)
+                            // killProcess(this.pid)
                             this.init()
                             this.$message.success("入库成功")
-                            
                             this.$emit('black')  
                         })
                     }).catch(err => {
@@ -671,6 +904,119 @@
                     }
                 }, this.copyRfidList.rfid)
             },
+            getRfid(){
+                // this.bindRfidList=[
+                //     {
+                //         rfid:'',
+                //         details:[{
+                //             rfid:'123',
+                //             serial:''
+                //             },
+                //             {
+                //                 rfid:'568',
+                //                 serial:''
+                //                 }]
+                                
+                                
+                //     },
+                //     {
+                //         rfid:"1256",
+                //         details:[{
+                //             rfid:"999",
+                //             serial:""}]}]
+                let data={rfid:["123456","56879"]}
+                if(!this.isFlag)//在绑定箱码界面时
+                  {
+                      data.rfid.forEach(item=>{
+                      this.bindRfidList.push({rfid:item,details:[]})
+                })
+                
+                  }
+                else {
+                   
+                    this.bindRfidList.forEach(item=>{//在明细界面时
+                        if(item.rfid==this.findRfid)
+                        {
+                            console.log("手持机明细读取数据");
+                            data.rfid.forEach(it=>{
+                            item.details.push({rfid:it,serial:''})
+                })
+                        }
+                        
+                    })
+                    if(this.findRfid==-1)
+                        {
+                             data.rfid.forEach(it=>{
+                            this.bindRfidList[0].details.push({rfid:it,serial:''})
+                })
+                        }
+                    
+                }
+                this.bindRfidList.forEach((item,index)=>{
+                    if((item.rfid==''||item.rfid==null)&&index!=0)
+                    {
+                        console.log(index);
+                        this.bindRfidList.splice(index,1)
+                    }
+                })
+                this.bindRfidList.forEach((item,Tindex)=>{
+                    item.details.forEach((it,index)=>{
+                      if((it.rfid==''||it.rfid==null))
+                    {
+                        console.log(index);
+                        this.bindRfidList[Tindex].details.splice(index,1)
+                    }  
+                    })
+                })
+
+                
+            },
+            fetchRfid(row,index)
+            {
+                if(this.pid)
+                {
+                    killProcess(this.pid)
+                }
+                 if(row.rfid==null)
+                 {
+                     console.log("读卡器开始扫描");
+                 console.log(this.hardware.selected);
+                  if(this.hardware.selected!=''&&this.hardware.selected!=='Handheld')
+                 {
+                     
+                     startOne("java -jar reading.jar", (data) => {
+                         console.log("读到的data",data);
+                    if (data.includes('succeed')) {
+                        this.$message.success('扫描成功!');
+                        this.bindRfidList[index].rfid=data.split('\n')[1]
+                        
+                        
+                    } else {
+                        this.$message.error('扫描失败!');
+                    }
+                }, )
+                 }
+                 }
+            },
+            fetchRfid2(row,index)
+            {
+                killProcess(this.pid)
+                start("java -jar scan.jar", (data) => {
+                       this.bindRfidList.forEach(item=>{
+                                if(item.rfid==this.findRfid)
+                                {
+                                    item.details.push({rfid:data,serial:''})
+                                }
+                                if(this.findRfid==-1){
+                                this.bindRfidList[0].details.push({rfid:data,serial:''})
+                            }
+                            })
+                    }, (fail) => {
+                        this.index = 1;
+                        this.$message.error(fail);
+                    }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
+               
+            },
             // 装备实体扫描列表点击删除
             delqaq(row) {
                 this.list.splice(row.$index, 1);
@@ -723,7 +1069,7 @@
             getEquipInfo() {
                 this.init()
                 // 获取供应商列表
-                getAllSupplier().then(res => {
+                getSupplier().then(res => {
                         let result = JSON.parse(JSON.stringify(res.content)), arr = [];
                         result.forEach(supplier => {
                             arr.push({key: supplier.name, val: supplier.id})
@@ -813,8 +1159,7 @@
 
         created() {
             modifyFileName('search.json');
-            
-            this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];//获取到串口号
+            // this.com = JSON.parse(localStorage.getItem('deploy'))['UHF_READ_COM'];//获取到串口号
         },
         mounted() {
             //不同的入口进入的展示不同页面
@@ -851,7 +1196,6 @@
 <style lang="scss" scoped>
     @import "common/css/mixin.scss";
     @import "common/css/variables.scss";
-
     .storage-info {
         /* 可调整 */
         font-size: 16px;
@@ -865,9 +1209,7 @@
             margin-bottom: 10px;
         }
     }
-    /deep/ .elbutton{
-              color: red;
-          }
+
     .black {
         /* 可调整 */
         font-size: 20px;
@@ -919,11 +1261,7 @@
         .zbFormList {
             width: 6.7708rem;
         }
-    }
-    .occupy-position {
-        margin-right: 2.0833rem;
-    }
-.header_tab{
+        .header_tab{
             width: 80%;
             // border: 1px solid black;
             margin: 0 auto;
@@ -956,6 +1294,31 @@
               background-color: #ddd;
             }
           }
-          
         }
+        .header_tab_box
+        {
+            width:100px;
+            font-size:16px;
+            line-height: 38px;;
+            border: 1px solid lightgray;
+            text-align: center;
+        }
+        .header_tab_box_now
+        {
+            width:100px;
+            font-size:16px;
+            line-height: 38px;;
+            background:lightgray;
+            text-align: center;
+            border: 1px solid lightgray;
+        }
+    }
+    .occupy-position {
+        margin-right: 2.0833rem;
+    }
+    .lineLeight {
+        background:rgba(255,255,255,1);
+        box-shadow:0px 3px 6px rgba(0,0,0,0.16);
+        opacity:1;
+    }
 </style>

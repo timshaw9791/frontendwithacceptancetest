@@ -19,7 +19,6 @@
     <!--</form-container>-->
 
     <!--<el-table :data="list" class="_list"-->
-    <!--v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"-->
     <!--fit highlight-current-row>-->
     <!--<bos-table-column lable="编号" field="id"></bos-table-column>-->
     <!--<bos-table-column lable="角色名" field="name"></bos-table-column>-->
@@ -50,11 +49,6 @@
             equip
         },
         mixins: [formRulesMixin],
-        apollo: {
-            // list() {
-            //     return this.getEntityListWithPagintor(api.getEquipEventStoreList);
-            // },
-        },
         methods: {}
     }
 </script>
