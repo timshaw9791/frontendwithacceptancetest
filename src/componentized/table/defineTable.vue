@@ -84,7 +84,7 @@ import defineColumn from './defineColumn'
             changeCurrent(current, pre) { // 当前选中行改变
                 this.selectData = current;
                 this.selectIndex = this._.findIndex(this.data, current);
-                this.$emit('changeCurrent', current);
+                this.$emit('changeCurrent', {current, index: this.selectIndex});
             }
         }
     }
