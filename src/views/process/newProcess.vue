@@ -10,7 +10,6 @@
         <define-column label="部署时间" :filter="(row)=>$filterTime(row.deploymentTime)"></define-column>
       </define-table>
     </div>
-    <upload-file v-model="test"></upload-file>
   </div>
 </template>
 
@@ -18,12 +17,10 @@
 import myHeader from 'components/base/header/header'
 import { processDefinitions } from 'api/process'
 import bosTabs from '@/componentized/table/bosTabs'
-import uploadFile from '@/componentized/uploadFile'
 export default {
   name: 'newProcess',
   data() {
     return {
-      test: '',
       list: [],
       paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0}
     }
@@ -61,8 +58,7 @@ export default {
   },
   components: {
     myHeader,
-    bosTabs,
-    uploadFile
+    bosTabs
   }
 }
 </script>
