@@ -30,7 +30,7 @@
 
             <!--list列表-->
             <r_label :table="table" ref="lable" @clickTable="clickTable" :buttonState="buttonState"></r_label>
-            <!--<el-table :data="list" v-loading.body="$apollo.queries.list.loading" element-loading-text="Loading"-->
+            <!--<el-table :data="list" element-loading-text="Loading"-->
                       <!--fit>-->
                 <!--<bos-table-column lable="RFID" field="rfid"></bos-table-column>-->
                 <!--<bos-table-column lable="装备类型" field="equipArg.category.genre.name"></bos-table-column>-->
@@ -238,11 +238,6 @@
             //     })
             // }
         },
-        // apollo: {
-        //     list() {
-        //         return this.getEntityListWithPagintor(api.getEquipList); //  graphql结合自定义组件的mixin方法 传入语句即可
-        //     },
-        // },
         // mixins: [formRulesMixin],
         computed: {
             authentication() {

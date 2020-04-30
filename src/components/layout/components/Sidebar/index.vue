@@ -59,7 +59,7 @@
             },
         },
         created(){
-          console.log('permission_routers',this.permission_routers)
+          
         },
         computed: {
             ...mapGetters([

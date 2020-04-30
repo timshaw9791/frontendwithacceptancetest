@@ -77,11 +77,6 @@
         components: {
             serviceDialog
         },
-        // apollo: {
-        //     list() {
-        //         return this.getEntityListWithPagintor(api.getEquipRemindStrategyList);
-        //     },
-        // },
 
         mounted() {
             this.getList();

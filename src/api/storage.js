@@ -9,6 +9,36 @@ export function getCategoryAndGenre() {
     })
 }
 
+export function getInhouseNumber(params) {
+    return request({
+        url: "/in-house-orders",
+        method: 'get',
+        params:params
+    })
+}
+
+
+export function deleteInhouseNumber(id) {
+    return request({
+        url: `/in-house-orders/${id}`,
+        method: 'delete',
+    })
+}
+
+//获取货架列表信息
+export function getLocation() {
+    return request({
+        url:"locations",
+        method: 'get',
+    })
+}
+
+export function getPoliceCabniet() {
+    return request({
+        url:"/police-cabinets",
+        method: 'get',
+    })
+}
 export function saveEquipInfo(categoryId,data) {
     return request({
         url: `/equip-args/${categoryId}`,
@@ -56,6 +86,8 @@ export function addEquipInfo(params,data) {
     })
 }
 
+
+
 export function getEquipById(id) {
     return request({
         url: `/equips/${id}`,
@@ -64,7 +96,7 @@ export function getEquipById(id) {
 }
 
 
-/* 查询装备参数 */
+/* 查询装备参数  通过名称*/
 export function equipArgsByName(params) {
     return request({
         url: "/equip/equipArgsByName",
@@ -72,16 +104,53 @@ export function equipArgsByName(params) {
         params
     })
 }
+/* 装备实体信息 */
+export function equipsAll(params) {
+    return request({
+        url: '/equips',
+        method: 'GET',
+        params
+    })
+}
+// 更新装备实体信息
+export function equipsToNew(id,data) {
+    return request({
+        url: `/equips/${id}`,
+        method: 'put',
+        data
+    })
+}
+/* 查询装备参数 通过名称和型号 */
+export function equipArgsByNameModel(params) {
+    return request({
+        url: '/equip/findByNameOrModelLike',
+        method: 'GET',
+        params
+    })
+}
 
 /* 入库装备 */
-export function inHouse(params ,data) {
+export function inHouse(data) {
     return request({
-        url: `/equip/inHouse?${qs.stringify(params, { indices: false })}`,
+        url: "/equips/in-house",
         method: "POST",
         data
     })
 }
-
+//入库单outHouseOrder
+export function inOutHouseOrder() {
+    return request({
+        url: "/in-house-orders",
+        method: "get",
+    })
+}
+//出库单
+export function getOutHouseOrder() {
+    return request({
+        url: "/out-house-orders",
+        method: "get",
+    })
+}
 /* 入库单删除 */
 export function inHouseOrder(id) {
     return request({
@@ -89,24 +158,11 @@ export function inHouseOrder(id) {
         method: "DELETE"
     })
 }
-//修改门感设备模式
-export function changeRecognizeModel(model) {
-    return request({
-        url: `/entranceGuard/change-recognize-model?model=${model}`,
-        method: "post"
-    })
-}
-//获取门感读取到的数据
-export function getRfidFromGate() {
-    return request({
-        url: "/entranceGuard/rfids",
-        method: "get"
-    })
-}
+
 /* 出库装备 */
-export function outHouse(params) {
+export function outHouse(list) {
     return request({
-        url: `/equip/outHouse?${qs.stringify(params, { indices: false })}`,
+        url: `/equips/out-house?${qs.stringify({rfids:list},{indices:false})}`,
         method: "POST"
     })
 }
@@ -122,7 +178,8 @@ export function findEquip(id) {
 /* 通过rfid找实体装备 */
 export function findByRfids(params) {
     return request({
-        url: `/equip/findByRfids?${qs.stringify(params, { indices: false })}`,
+        // url: `/equips/findByRfids?${qs.stringify(params, { indices: false })}`,
+        url:`/equips/by-rfids?rfids=${params}`,
         method: "GET"
     })
 }
@@ -130,7 +187,7 @@ export function findByRfids(params) {
 /* 新增装备信息 */
 export function saveEquipArg(data) {
     return request({
-        url: "/equip/saveEquipArg",
+        url: "/equip-args",
         method: "POST",
         data
     })

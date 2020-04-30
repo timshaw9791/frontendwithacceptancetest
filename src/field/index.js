@@ -29,6 +29,18 @@ import BosInput from './components/bos-input'
 
 import FieldEntity from './components/field-entity.vue';
 
+import defineTable from '@/componentized/table/defineTable.vue'
+import defineColumn from '@/componentized/table/defineColumn.vue'
+import defineInput from '@/componentized/textBox/defineInput.vue'
+import baseButton from '@/componentized/buttonBox/baseButton.vue'
+import baseSelect from '@/componentized/textBox/baseSelect.vue'
+import divTmp from '@/componentized/divTmp'
+import defineForm from '@/componentized/form/defineForm'
+import textInput from '@/componentized/textBox/textInput'
+import dateSelect from '@/componentized/textBox/dateSelect'
+import numberInput from '@/componentized/textBox/numberInput'
+import entityInput from '@/componentized/entity/entityInput'
+import dateInput from '@/componentized/textBox/dateInput'
 
 let componentsList = {
     'FormContainer': FormContainer,
@@ -49,7 +61,18 @@ let componentsList = {
     'BosInput': BosInput,
     'FieldInputQuery': FieldInputQuery,
     'TeachTableColumn':TeachTableColumn,
-
+    defineTable,
+    defineColumn,
+    defineInput,
+    baseButton,
+    baseSelect,
+    divTmp,
+    defineForm,
+    textInput,
+    dateSelect,
+    numberInput,
+    entityInput,
+    dateInput
 };
 
 
