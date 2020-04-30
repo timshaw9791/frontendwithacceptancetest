@@ -1,5 +1,5 @@
 <template>
-    <div class="upload-file-container" :class="[size]" :style="`margin:${margin};float:${align}`">
+    <div class="upload-file-container" :class="[size,{border}]" :style="`margin:${margin};float:${align}`">
         <input type="file" class="file" :accept="acceptType" @change="changeFile" ref="file">
         <div class="icon-box" @click="showFileSelect">
             <i class="iconfont iconjiahao" v-show="!disabled&&!fileName"></i>
@@ -8,6 +8,7 @@
             <img :src="imgSrc" class="img" v-if="fileName&&type=='img'" alt="图片加载失败">
             <img src="@/assets/noThumbnails.png" class="img" v-if="disabled&&!fileName">
         </div>
+        <span class="label" v-show="['pdf','video'].includes(type)">{{ fileName }}</span>
     </div>
 </template>
 
@@ -62,6 +63,9 @@ export default {
         },
         imgSrc() {
             return `${imgBaseUrl}${this.fileName}`;
+        },
+        border() {
+            return ['video', 'pdf'].includes(this.type)?true:(this.disabled||this.fileName)?false:true
         }
     },
     methods: {
@@ -71,7 +75,7 @@ export default {
             })
         },
         showFileSelect() {
-            if(this.disabled||this.fileName) return;
+            if(this.disabled) return;
             this.$refs.file.click();
         },
         changeFile() {
@@ -101,6 +105,11 @@ export default {
             })
         }
     },
+    watch: {
+        value() {
+            this.fileName = this.value;
+        }
+    },
     created() {
         this.fileName = this.value;
         this.init();
@@ -112,7 +121,7 @@ export default {
 .upload-file-container {
     display: inline-block;
     position: relative;
-    border: 1px dashed #d9d9d9;
+    text-align: center;
     .file {
         width: 0;
         height: 0;
@@ -125,6 +134,18 @@ export default {
         width: 100%;
         height: 100%;
     }
+    .label {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+}
+.border {
+    border: 1px dashed #d9d9d9;
 }
 .mini {
     width: 60px;

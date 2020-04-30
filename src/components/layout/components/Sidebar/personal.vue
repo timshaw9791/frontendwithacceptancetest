@@ -1,50 +1,22 @@
 <template>
     <div>
-        <img :src="imageUrl">
+        <upload-file v-model="form.faceInformation" size="small" :disabled="true" margin="24px 0 15px 0"></upload-file>
         <div class="info">
             <span>{{form.name}}</span>
             <span>{{form.position}}</span>
-            <span>{{form.unitName}}</span>
+            <span>{{form.organUnitName}}</span>
         </div>
     </div>
 </template>
 
 <script>
-    import {imgBaseUrl} from "api/config";
-    import {formRulesMixin} from 'field/common/mixinComponent';
-    import {getUserInfo} from 'api/layout'
-    import {getOrganUnitById} from 'api/process'
-
+    import uploadFile from '@/componentized/uploadFile'
     export default {
+        components:{uploadFile},
         data() {
             return {
-                form: {unitName:'',name:'',position:"啊啊啊"},
-                disabled: true,
-                imageUrl: '',
+                form: JSON.parse(localStorage.getItem('user'))
             }
-        },
-        mixins: [formRulesMixin],
-        methods: {
-            getList() {
-                let data = JSON.parse(localStorage.getItem('user'));
-                getUserInfo(data.id).then(res=>{
-                    this.$set(this.form,'name',res.name);
-                    this.$set(this.form,'position',res.position);
-                    this.imageUrl = `${imgBaseUrl}${res.faceInformation}`;
-                });
-                this.$set(this.form, 'unitName', data.organUnitName)
-                // getOrganUnitById({id:data.unitId}).then(res=>{
-                //     this.$set(this.form,'unitName',`${res.location}${res.name}`)
-                // });
-            },
-        },
-        mounted() {
-            this.getList();
         }
     }
 </script>
-
-<style lang="scss" scoped>
-
-
-</style>

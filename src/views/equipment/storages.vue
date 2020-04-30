@@ -6,10 +6,10 @@
         </div>
         <div class="data-list">
             <define-table :data="list" height="3.64rem" @changeCurrent="selRow" @changePage="changePage" :pageInfo="paginator" v-if="!inhouse&&!inorder">
-                            <define-column label="操作" width="100" v-slot="{ data }">
+                            <define-column label="操作" width="130" v-slot="{ data }">
                                 <div class="span-box">
-                                     <span @click="toDetail(data.row)">详情</span>
-                                     <span @click="deleteNumber(data.row)">删除</span>
+                                     <base-button label="详情" size="mini" @click="toDetail(data.row)" type="primary"></base-button>
+                                     <base-button label="删除" size="mini" type="danger" @click="deleteNumber(data.row)"></base-button>
                                 </div>
                             </define-column>
                             <define-column label="单号" v-slot="{ data }">

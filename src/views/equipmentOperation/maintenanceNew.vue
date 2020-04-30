@@ -4,11 +4,6 @@
     <div class="maintenance-form-top" v-if="show">
       <base-button size="default" align="right" label="开始保养" @click="startMain"></base-button>
     </div>
-    <div class="process-info" v-else>
-      <!-- <define-input label="单号" v-model="order.number" :disabled="true" class="odd-number"></define-input>
-      <date-select label="申请时间" v-model="order.createTime" :disabled="true"></date-select>
-      <entity-input label="申请人员" v-model="order.applicant" :required="true" placeholder="请选择"></entity-input> -->
-    </div>
     <div class="maintenance-form-body" v-if="show">
         <bos-tabs :option="['tabs']" :layoutRatio="[2, 1]">
           <define-table :havePage="false" :data="listData" height="2.6042rem"
@@ -56,10 +51,6 @@
           <define-column label="装备序号" field="serial"></define-column>
         </define-table>
       </bos-tabs>
-      <!-- <div class="buttom">
-          <base-button label="提交" align="right" size="large" ></base-button>
-          <base-button label="取消" align="right" size="large" type="danger" @click="cancel"></base-button>
-      </div> -->
     </div>
   </div>
 </template>
@@ -204,23 +195,7 @@ export default {
   }
   .maintenance-form-body {
     padding: 0 7px;
-    border:1px solid black;
     widows: 100%;
-    .left_box{
-    border:1px solid black;
-    width:300px;
-    float:left;
-   }
-   .center_box{
-    border:1px solid black;
-    width:800px;
-    float:left;
-    }
-    .right_box{
-    border:1px solid black;
-    width:200px;
-    float:left;
-    }
   }
   .process-info {
       padding: 18px 0;
