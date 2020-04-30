@@ -12,22 +12,20 @@
                                 </div>
                             </define-column>
                             <define-column label="RFID" v-slot="{ data }">
-                                <define-input v-model="data.row.rfid" type="Number" :tableEdit="false"></define-input>
+                                <define-input v-model="data.row.rfid" type="String" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="装备序号" v-slot="{ data }">
-                                <define-input v-model="data.row.serial" type="Number" :tableEdit="false"></define-input>
+                                <define-input v-model="data.row.equipSerial" type="Number" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
-                                <define-input v-model="data.row.equipArgs" type="Number" :tableEdit="false"></define-input>
+                                <define-input v-model="data.row.equipName" type="String" :tableEdit="false"></define-input>
                             </define-column>
-                            <define-column label="装备位置">
-                                
+                            <define-column label="装备位置" v-slot="{ data }">
+                                <define-input v-model="data.row.equipLocation" type="String" :tableEdit="false"></define-input>
                             </define-column>
                            
-                            <define-column label="申请时间" :filter="(row)=>$filterTime(row.createTime)"/>
-                            <define-column label="申请原因" v-slot="{ data }">
-                                <define-input v-model="data.row.operator.operator" type="String" :tableEdit="false"></define-input>
-                            </define-column>
+                            <define-column label="申请时间" :filter="(row)=>$filterTime(row.finishTime)"/>
+                            <define-column label="申请原因" filed="reason"/>
                         </define-table>
         </div>
     </div>
@@ -44,7 +42,7 @@
     import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
     import startService from './startService'
-    import { getInhouseNumber,inOutHouseOrder,deleteInhouseNumber} from "api/storage"
+    import { getRepairOrder,RepairOrder} from "api/operation"
 export default {
     components:{
             myHeader,
@@ -64,7 +62,7 @@ export default {
                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0,abnormal:false},
                inhouse:false,
                inorder:false,
-               params:{size:10,page:1},
+               params:{size:10,page:1,state:"REPAIR_RECEIVE"},
                equipData:''
             }
         },
@@ -93,17 +91,9 @@ export default {
                 this.getList()
             },
             getList(){
-                inOutHouseOrder(this.params).then(res=>{
+                RepairOrder(this.params).then(res=>{
                     this.list=res.content
-                    this.list.forEach(item=>{
-                        if(item.inOutHouseItems.length==1)
-                        {
-                            item.equipArgs=item.inOutHouseItems[0].equipName+'('+item.inOutHouseItems[0].equipModel+')'
-                        }else{
-                            item.equipArgs=item.inOutHouseItems[0].equipName+'('+item.inOutHouseItems[0].equipModel+')'+'...'
-                        }
-                    })
-                    
+
                 }).catch(err => {
                         this.$message.error(err.response.data.message);
                     })
