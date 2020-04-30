@@ -12,7 +12,7 @@
                     <base-button label="删除" size="mini" type="danger" @click="deleteperson(data.row)"></base-button>
                 </define-column>
                 <define-column label="图片" v-slot="{ data }" fixed>
-                    <img :src="imgsrc(data.row)" style="height:100px;width:100px" alt="暂无图片">
+                    <upload-file type="img" size="mini" :disabled="true" v-model="data.row.faceInformation" margin="15px"></upload-file>
                 </define-column>
                 <define-column fixed label="警号" field="policeSign" width="180"></define-column>
                 <define-column fixed label="姓名" field="name" width="100"></define-column>
@@ -29,6 +29,7 @@
 <script>
     import myHeader from 'components/base/header/header'
     import textInput from '@/componentized/textBox/textInput'
+    import uploadFile from '@/componentized/uploadFile'
     import { baseURL } from 'api/config'
     import { getUser  ,deleteUser} from 'api/user'
     export default {
@@ -36,6 +37,7 @@
         components: {
             myHeader,
             textInput,
+            uploadFile,
         },
         data() {
             return {

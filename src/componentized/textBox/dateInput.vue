@@ -4,7 +4,7 @@
     <div class="label" v-if="!inTable">{{ label }}
         <span class="required" v-if="required">*</span>
     </div>
-    <input type="Number" class="input" :disabled="disabled" v-model="insideValue" 
+    <input type="text" class="input" :disabled="disabled" v-model="insideValue" 
         @change="reg" :readonly="!(tableEdit&&edit)" :placeholder="placeholder"
         @blur="changeEditState(false)" @keydown.13="changeEditState(false)"/>
     <div class="icon">
@@ -13,6 +13,7 @@
     </div>
 </template>
 <script>
+import { stampToNow } from 'common/js/index'
 export default {
   name: "dateInput",
   data() {
@@ -95,9 +96,11 @@ export default {
     fixValue(value) {
       switch (this.filter) {
         case 'toDay':
-          this.insideValue = value/1000/3600/24 || ''
+          this.insideValue = value/1000/3600/24 || '';
           break;
-      
+        case 'since':
+          this.insideValue = stampToNow(value);
+          break;
         default:
           this.insideValue = value
           break;
@@ -111,12 +114,12 @@ export default {
   },
   watch: {
     insideValue(val) {
-      // this.$emit("input", val);
       switch (this.filter) {
         case 'toDay':
           this.$emit('input', val*1000*24*3600);
           break;
-      
+        case 'since':
+          break;
         default:
           this.$emit('input', val);
           break;

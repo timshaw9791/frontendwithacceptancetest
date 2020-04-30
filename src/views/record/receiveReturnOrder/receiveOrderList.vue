@@ -1,17 +1,19 @@
 <template>
     <div class="receive-order-list-container">
-        <my-header title="领取归还单详情"></my-header>
+        <my-header title="领取归还单详情" ></my-header>
         <div class="header">
             <text-input label="领取单号" placeholder="请输入单号"></text-input>
             <base-button label="查询"></base-button>
         </div>
         <define-table :data="list" @changePage="changePage" :pageInfo="pageInfo">
             <define-column label="操作" v-slot="{data}">
-                <span @click="goto('edit',data.row.id)" style="margin:8px">编辑</span>
+                <span @click="goto(data.row.id)" style="margin:8px">详情</span>
             </define-column>
             <define-column label="单号" field="number"></define-column>
-            <define-column label="装备参数" field="allArgs"></define-column>
-            <define-column label="供应商" field="supplier.name"></define-column>
+            <define-column label="装备参数" field="allEquipArgs"></define-column>
+            <define-column label="装备数量" field="equipCount"></define-column>
+            <define-column label="领取人员" field="operatorInfo.operator"></define-column>
+            <define-column label="领取时间" field="createTime"></define-column>
         </define-table>
     </div>
 </template>
@@ -19,7 +21,8 @@
 <script>
     import myHeader from '@/components/base/header/header'
     import {listMixin} from "../../../field/mixins/listMixin"
-    import {getReceiveOrderList} from "@/api/RROApi";
+    import {getReceiveOrderList} from "@/api/RRO";
+
     export default {
         name: "receiveOrderInfo",
         components: {
@@ -31,7 +34,6 @@
             return {
                 list: [],
                 pageInfo: {page: 1, size: 10, totalPages: 1, totalElements: 0, search: ''},
-                allEquipArgs:""
             }
         },
         methods: {
@@ -40,25 +42,32 @@
                 this.getList();
             },
             fetchData() {
-                getReceiveOrderList(this.pageInfo).then(res=>{
+                getReceiveOrderList(this.pageInfo).then(res => {
                     this.list = res.content
                     this.fixData()
                     console.log(this.list)
                 })
             },
-            fixData(){
+            fixData() {
                 //累加装备参数
+                let equipNameList = []
                 this.list.forEach(item => {
-                    item.allArgs = item.receiveReturnItems.reduce((accumulator, currentValue)=>
-                        accumulator+currentValue.equipName+"("+currentValue.equipModel+")"+" "
-                    ,"")
-                    // TODO 长度过长变成...
+                    item.receiveReturnItems.forEach(item => {
+                        equipNameList.push(item.equipName + "(" + item.equipModel + ")")
+                    })
+                    //除重
+                    equipNameList = this._.union(equipNameList)
+                    item.allEquipArgs = equipNameList.reduce((v, k) => v + k + " ", "")
+                    //计算装备数量
+                    item.equipCount = item.receiveReturnItems.length
                 })
             },
             goto(id) {
                 this.$router.push({
-                    path: "equipArgsEdit",
-                    query: id
+                    path: "receiveOrderInfo",
+                    query: {
+                        id:id
+                    }
                 })
             }
         }
@@ -68,5 +77,9 @@
 <style scoped>
     .receive-order-list-container {
         font-size: 16px;
+    }
+
+    .header {
+        padding: 16px 7px;
     }
 </style>
