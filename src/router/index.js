@@ -276,8 +276,13 @@ export const asyncRouterMap = [{
         }, {
             path: 'training',
             name: 'warehouse/training',
-            component: _import('training/index'),
+            component: _import('warehouse/training'),
             meta: {title: '教学培训'},
+        },  {
+            path: 'editTraining',
+            name: 'editTraining',
+            component: _import('warehouse/editTraining'),
+            hidden:true
         }, {
             path: 'noreturn',
             name: 'warehouse/noreturn',
