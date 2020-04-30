@@ -10,7 +10,7 @@ export const ERR_OK = 0;
 
 
 var baseURL = 'http://115.159.154.194/warehouse';
-var baseBURL = 'http://115.159.154.194/police-support-platform';
+var baseBURL = 'http://115.159.154.194/shang-hai-police-support-platform/';
 var localTitle = "龙湾区公安局应急装备物资管理系统";
 
 // export let baseURL = 'http://192.168.50.14:8010/warehouse';
