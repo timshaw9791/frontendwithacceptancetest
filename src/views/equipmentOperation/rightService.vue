@@ -8,7 +8,7 @@
             <define-table :data="list" height="3.64rem" @changeCurrent="selRow" @changePage="changePage" :pageInfo="paginator">
                             <define-column label="操作" width="100" v-slot="{ data }">
                                 <div class="span-box">
-                                     <span >开柜</span>
+                                        <base-button label="报废" size="mini" @click="toScrap(data.row)" type="primary"></base-button>
                                 </div>
                             </define-column>
                             <define-column label="RFID" v-slot="{ data }">
@@ -25,6 +25,15 @@
                             </define-column>
                             <define-column label="维修时长" :filter="(row)=>milliTime(row.createTime)"/>
                         </define-table>
+            <serviceDialog title="装备报废" ref="scrapDailog" @confirm="submit" width="250px;">
+                <div>
+                    <date-select label="申请时间" v-model="time" :disabled="true"></date-select>
+                    <entity-input label="申请人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :disabled="true" ></entity-input>
+                    <entity-input label="审核人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :disabled="true" ></entity-input>
+                    <define-input label="申请原因" v-model="orderNumber" :disabled="false" class="odd-number"></define-input>
+                </div>
+          </serviceDialog>
+
         
         </div>
     </div>
@@ -41,6 +50,7 @@
     import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
     import endService from './startService'
+    import serviceDialog from 'components/base/serviceDialog'
     // import equipInhouseOrder from './equipInhouseOrder'
     import {rightRepairOrder} from "api/operation"
     import { getInhouseNumber,inOutHouseOrder,deleteInhouseNumber} from "api/storage"
@@ -56,6 +66,7 @@ export default {
             endService,
             divTmp,
             bosTabs,
+            serviceDialog
         },
         data(){
             return{
@@ -64,7 +75,8 @@ export default {
                inhouse:false,
                inorder:false,
                params:{size:10,page:1},
-               equipData:''
+               equipData:'',
+               scrapData:''
             }
         },
         methods:{
@@ -85,6 +97,10 @@ export default {
                 }).catch(err => {
                         this.$message.error(err.response.data.message);
                     })
+            },
+            toScrap(data){
+                this.$refs.scrapDailog.show()
+                this.scrapData=data
             },
             milliTime(data){
               let time=(new Date()-data)/(1000 * 60 * 60 * 24)>1?(new Date()-data)/(1000 * 60 * 60 * 24):1

@@ -13,9 +13,9 @@
             <base-select label="硬件选择" v-model="select.selected" align="right" :selectList="select.handWareList"></base-select>
             </template>
                         <define-table :data="listData" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
-                            :highLightCurrent="true"  slot="total" :haveIndex="false" :showSummary="true" :summaryFunc="sumFunc">
-                             <define-column label="操作"  v-slot="{ data }">
-                                <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
+                            :highLightCurrent="true"  slot="total"  :showSummary="true" :summaryFunc="sumFunc">
+                             <define-column label="操作" width="100"  v-slot="{ data }">
+                                <i class="iconfont icontianjialiang"></i>
                                 <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
@@ -123,9 +123,21 @@ export default {
           selRow(data,index) { // 单选表格行
            this.findIndex=this._.indexOf(this.listData,data)
       },
-      locations(data){
-        return data.floor+'/'+data.frameNumber+'/'+data.surface+'/'+data.section
-      },
+       changeRow(state,data){
+
+           this.listData[this.findIndex].clist=[{rfid:'',serial:''}]
+       },
+       changeDetailRow(state,data)
+            {
+                if(state)
+                {
+                    this.listData[this.findIndex].clist.push({rfid:'',serial:''})
+                }else if(this.listData[this.findIndex].clist.length>1){
+                    this.listData[this.findIndex].clist.splice(data.$index, 1)
+                }else{
+                    this.listData[this.findIndex].clist=[{rfid:'',serial:''}]
+                }
+            },
       confirm(){
           this.requestBody=JSON.parse(JSON.stringify(this.listData))
                 let rfidList=[]
@@ -139,11 +151,6 @@ export default {
                     this.cancel()
                 })
       },
-      checkData(data){
-          this.listData.forEach(item=>{
-              
-          })
-      },
       classDataify(data)//
             {
                 data.forEach(item=>{this.list.push(item)})
@@ -152,16 +159,22 @@ export default {
             },
       classDataifyRfid(data)
       {
-          let c=data[0]
+          console.log(data);
+          let flag=true
           this.listData.forEach(item=>{
-              let flag=true
-              if(item.equipArg.name==c.equipArg.name&&item.location.id==c.location.id&&item.equipArg.model==c.equipArg.model)
+              
+              if(item.equipArg.name==data[0].equipArg.name&&item.location.id==data[0].location.id&&item.equipArg.model==data[0].equipArg.model)
               {
-                  if(item.clist.length==1){ 
+                  if(item.clist.length==1&&item.clist[0].rfid==''){ 
                       flag=false
-                      item.clist[0].rfid=c.rfid
-                      item.clist[0].serial=c.serial
-                  }else{ item.clist.push({rfid:c.rfid,serial:c.serial})}
+                      item.clist[0].rfid=data[0].rfid
+                      item.clist[0].serial=data[0].serial
+                  }else if(item.clist[item.clist.length-1].rfid==''){
+                      flag=false
+                      item.clist[item.clist.length-1].rfid=data[item.clist.length-1].rfid
+                      item.clist[item.clist.length-1].serial=data[item.clist.length-1].serial
+                  }else{
+                       flag=false ;item.clist.push({rfid:data[0].rfid,serial:data[0].serial})}
                  
               }
               item.keepcount=0
@@ -170,10 +183,11 @@ export default {
                       item.keepcount++
                   }
               })
-              if(flag){
+
+          })
+        if(flag){
                   this.$message.error('该装备不在需要保养列表')
               }
-          })
       },
       cancel(){
           this.$router.back()
@@ -191,7 +205,6 @@ export default {
         })
       },
       readData(){
-          this.list=[]
                 killProcess(this.pid)
                 start("java -jar scan.jar", (data) => {
                      findByRfids(data).then(res=>{

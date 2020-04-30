@@ -108,7 +108,7 @@ export default {
         },
         methods:{
             selRow(data,index){
-               this.findIndex=index
+               this.findIndex=this._.indexOf(this.newData,data)
             },
             sumFunc(param) { // 表格合并行计算方法
                 let { columns, data } = param, sums = [];
