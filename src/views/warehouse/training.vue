@@ -15,10 +15,10 @@
                 <entity-input v-model="data.row.equipArg" format="{name}({model})" :options="{}"></entity-input>
             </define-column>
             <define-column label="教学视频" field="describes" v-slot="{data}">
-                <div v-for="(item, i) in data.row.video" :key="i">{{item}}</div>
+                <div v-for="(item, i) in data.row.video.fileName" :key="i">{{item}}</div>
             </define-column>
             <define-column label="教学文档" field="describes" v-slot="{data}">
-                <div v-for="(item ,i) in data.row.pdf" :key="i">{{item}}</div>
+                <div v-for="(item ,i) in data.row.pdf.fileName" :key="i">{{item}}</div>
             </define-column>
         </define-table>
     </div>
@@ -53,17 +53,23 @@
                     temp.forEach(item=>{
                         let a = {
                             equipArg:{},
-                            id:[],
-                            pdf:[],
-                            video:[]
+                            pdf:{
+                                fileName:[],
+                                id:[]
+                            },
+                            video:{
+                                fileName:[],
+                                id:[]
+                            },
                         }
                         item.forEach(i=>{
                             a.equipArg = i.equipArg
-                            a.id.push(i.id)
                             if(i.type == "pdf"){
-                                a.pdf.push(i.fileName)
+                                a.pdf.fileName.push(i.fileName)
+                                a.pdf.id.push(i.id)
                             }else if(i.type == "MP4"){
-                                a.video.push(i.fileName)
+                                a.video.fileName.push(i.fileName)
+                                a.video.id.push(i.id)
                             }
                         })
                         this.order.push(a)
@@ -71,12 +77,18 @@
                 })
             },
             deleteplan(data){
-                data.id.forEach(item=>{
-                    deleteTraining(item).then(res=>{
-                        this.$message.success("删除成功")
-                    })
+                let id =data.pdf.id
+                data.video.id.forEach(item=>{
+                    id.push(item)
                 })
-                this.fetchData()
+                Promise.all(
+                    id.forEach(item=>{
+                        deleteTraining(item)
+                    })
+                ).then(res=>{
+                    this.fetchData()
+                    console.log(res);
+                })
             },
             changePage(page) {
                 this.paginator.page = page
@@ -88,8 +100,14 @@
                 if(data=="add"){
                     dialogData = {
                         equipArg:{},
-                        pdf:[],
-                        video:[]
+                        pdf:{
+                            fileName:[],
+                            id:[]
+                        },
+                        video:{
+                            fileName:[],
+                            id:[]
+                        },
                     }
                     editflag = false
                 }else if(data == "edit"){

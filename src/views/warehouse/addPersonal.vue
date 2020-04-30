@@ -16,10 +16,7 @@
                 <define-input label="指纹信息" margin="15px 0 0 0" v-model="order.fingerprintInformation" :column="12"></define-input>
             </div>
             <div  class="addpersonnelist">
-                    <div class="img">
-                        <img class="img" :src="imagesrc" alt="暂无图片" v-if="this.$route.params.info.edit">
-                    </div>
-                    <imgUp style="margin-top:-251px" @success="successUp" :upload="true" ></imgUp>
+                <upload-file type="img" v-model="order.faceInformation" margin="15px"></upload-file>
             </div>
         </div>
         <div class="buttom">
@@ -34,18 +31,18 @@
 <script>
     import defineInput from '@/componentized/textBox/defineInput.vue'
     import myHeader from 'components/base/header/header'
-    import imgUp from 'components/base/axiosImgUp';
     import baseSelect from '@/componentized/textBox/baseSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
     import { editUser ,addUser } from 'api/user'
     import serviceDialog from "components/base/serviceDialog"
     import { baseURL } from 'api/config'
+    import uploadFile from '@/componentized/uploadFile'
     export default {
         name:"addPersonal",
         components:{
             defineInput,
             myHeader,
-            imgUp,
+            uploadFile,
             baseSelect,
             entityInput,
             serviceDialog
@@ -137,9 +134,6 @@
                         this.$router.push({name: 'warehouse/personnelManagement'});
                     })
                 }
-            },
-            successUp(data){
-                this.order.faceInformation = data
             },
             confirm(){
                 this.$router.push({name: 'warehouse/personnelManagement'});
