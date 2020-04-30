@@ -15,10 +15,14 @@
                 <entity-input v-model="data.row.equipArg" format="{name}({model})" :options="{}"></entity-input>
             </define-column>
             <define-column label="教学视频" field="describes" v-slot="{data}">
-                <div v-for="(item, i) in data.row.video.fileName" :key="i">{{item}}</div>
+                <div v-for="(item, i) in data.row.video.fileName" :key="i">
+                    <span @click="show('MP4',item)">{{item}}</span>
+                </div>
             </define-column>
             <define-column label="教学文档" field="describes" v-slot="{data}">
-                <div v-for="(item ,i) in data.row.pdf.fileName" :key="i">{{item}}</div>
+                <div v-for="(item ,i) in data.row.pdf.fileName" :key="i">
+                    <span @click="show('PDF',item)">{{item}}</span>
+                </div>
             </define-column>
         </define-table>
     </div>
@@ -119,6 +123,12 @@
                     params: {type:'editTraining', info: {data:dialogData,edit:editflag}}
                 })
             },
+            show(data,item){
+                this.$router.push({
+                    name: 'trainingShow',
+                    params: {type:'trainingShow', info: {data:data,item:item}}
+                })
+            }
         },
         created() {
             this.fetchData()
