@@ -25,9 +25,6 @@
 
 <script>
     import myHeader from 'components/base/header/header'
-    import defineInput from '@/componentized/textBox/defineInput.vue'
-    import baseButton from "@/componentized/buttonBox/baseButton.vue"
-
     import { processDefinitions, myProcess } from 'api/process'
     export default {
         name: "myProcessNew",
@@ -100,9 +97,7 @@
             this.getMyProcess();
         },
         components:{
-            myHeader,
-            defineInput,
-            baseButton
+            myHeader
         },
     }
 </script>

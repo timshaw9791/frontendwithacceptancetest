@@ -21,14 +21,12 @@
 </template>
 
 <script>
-    import defineInput from '@/componentized/textBox/defineInput.vue'
-    import baseButton from "@/componentized/buttonBox/baseButton.vue"
     import myHeader from 'components/base/header/header'
     import { todoProcess } from 'api/process'
     export default {
         name: "myProcess",
         components:{
-            myHeader,defineInput,baseButton
+            myHeader
         },
         data(){
             return{

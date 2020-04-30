@@ -49,12 +49,6 @@
 
 <script>
     import myHeader from 'components/base/header/header';
-    import textInput from '@/componentized/textBox/textInput.vue'
-    import defineInput from '@/componentized/textBox/defineInput'
-    import baseButton from "@/componentized/buttonBox/baseButton.vue"
-    import dateSelect from '@/componentized/textBox/dateSelect.vue'
-    import entityInput from '@/componentized/entity/entityInput'
-    import divTmp from '@/componentized/divTmp'
     import bosTabs from '@/componentized/table/bosTabs'
     import { complete, getOrder, processStart, processDetail } from 'api/process'
     var _ = require('lodash');
@@ -62,12 +56,6 @@
         name: "scrapApply",
         components:{
             myHeader,
-            textInput,
-            defineInput,
-            baseButton,
-            dateSelect,
-            entityInput,
-            divTmp,
             bosTabs
         },
         data(){

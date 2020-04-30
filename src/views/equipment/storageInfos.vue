@@ -93,7 +93,7 @@
                         <!--<el-button type="primary" class="button" @click="pushForm" v-if="!equipId">提交</el-button>-->
                         <div class="imgUp">
                             <imgUp @success="successUp" :disabled="edit"
-                                   :image="form.image" :upload="title.includes('入库')?false:true" :noimg="tempImage == null"></imgUp>
+                                   :image="form.image" :upload="title.includes('入库')?false:true" :noimg="tempImage == null||tempImage==''"></imgUp>
                         </div>
                     </div>
 
@@ -1184,6 +1184,10 @@
             if(this.hardwareOpen || this.pid != '') {
                 killProcess(this.pid)
             }
+             let gateModel="RECEIVE_RETURN"
+                changeRecognizeModel(gateModel).then(res=>{
+              })
+            clearInterval(this.timeId)
         }
 
     }
@@ -1259,13 +1263,16 @@
         }
         .header_tab{
             width: 80%;
+            // border: 1px solid black;
             margin: 0 auto;
             display: flex;
             height: 40px;
-            
-            justify-content: flex-start;
+            // float: right;
+            // justify-content: flex-start;
             .hardware,
           .operator {
+              margin-left:auto ;
+            //   border: 1px solid red;
             .label {
               display: block;
               float: left;

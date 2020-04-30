@@ -21,9 +21,6 @@ export function filterAttr(obj,flag){
 
 /* 时间格式化 */
 export function parseTime(time, cFormat) {
-  // if(time == '' || time == 0 || time == null) {
-  //   return ' '
-  // }
   if (arguments.length === 0) {
     return null
   }
@@ -72,26 +69,31 @@ export function filterFrame(data) {
   return `${data.number}架/${data.surface}面/${data.section}节/${data.floor}层`
 }
 
-export function formatTime(time, option) {
-  time = +time * 1000
-  const d = new Date(time)
-  const now = Date.now()
-
-  const diff = (now - d) / 1000
-
-  if (diff < 30) {
-    return '刚刚'
-  } else if (diff < 3600) { // less 1 hour
-    return Math.ceil(diff / 60) + '分钟前'
-  } else if (diff < 3600 * 24) {
-    return Math.ceil(diff / 3600) + '小时前'
-  } else if (diff < 3600 * 24 * 2) {
-    return '1天前'
+// 时间戳转天数
+export function stampToNow(time, cFormat) {
+  if(isNaN(time)) {
+    console.error("时间格式有误");
+    return 'timeError';
   }
-  if (option) {
-    return parseTime(time, option)
+  let timeStamp = (Date.now() - +time)/1000,
+      dateObj = {
+        mounth: Math.floor(timeStamp/(60*60*24*30)),
+        day: Math.floor(timeStamp/(60*60*24)),
+        hour: Math.floor(timeStamp/(60*60)),
+        minute: Math.floor(timeStamp/60)
+      };
+  if(dateObj.mounth >= 12) {
+    return parseTime(+time, cFormat);
+  } else if(dateObj.mounth >= 1){
+    return dateObj.mounth+"个月前";
+  } else if(dateObj.day >= 1) {
+    return dateObj.day+"天前";
+  } else if(dateObj.hour >= 1) {
+    return dateObj.hour+"个小时前";
+  } else if(dateObj.minute >= 1) {
+    return dateObj.minute+"分钟前";
   } else {
-    return d.getMonth() + 1 + '月' + d.getDate() + '日' + d.getHours() + '时' + d.getMinutes() + '分'
+    return "刚刚"
   }
 }
 

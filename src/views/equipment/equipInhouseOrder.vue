@@ -32,7 +32,7 @@
                                 <define-input v-model="data.row.rfid" type="String" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="装备序号" :tableEdit="false" v-slot="{ data }">
-                                <define-input v-model="data.row.serial" type="Number" ></define-input>
+                                <define-input v-model="data.row.equipSerial" type="Number" ></define-input>
                             </define-column>
                         </define-table>
                     </bos-tabs>
@@ -122,9 +122,8 @@ export default {
         },
         
         created(){
-            this.time= Date.parse(new Date());
                 this.orderNumber=this.$route.params.info.number
-                this.time=this.$filterTime(this.$route.params.info.updateTime)
+                this.time=this.$route.params.info.updateTime
                 this.changeDataFormat(this.$route.params.info.inOutHouseItems)
                 this.people=this.$route.params.info.operator.operator
 

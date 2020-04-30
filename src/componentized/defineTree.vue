@@ -1,9 +1,9 @@
 <template>
   <div class="define-tree-container">
-    <el-tree :data="data" :node-key="nodeKey" :empty-text="placeHolder" :props="prop" 
+    <el-tree :data="data" :node-key="nodeKey" :empty-text="placeHolder" :props="options" 
       :default-expand-all="expandAll" :accordion="accordion" :show-checkbox="showCheckBox"
       :check-strictly="checkStrictly" :expand-on-click-node="false" ref="tree"
-      @check-change="checkChange" @node-click="nodeClick"></el-tree>
+      @check-change="checkChange" @node-click="nodeClick" :filter-node-method="filterNode"></el-tree>
   </div>
 </template>
 
@@ -27,7 +27,7 @@ export default {
       type: String,
       default: '暂无内容'
     },
-    prop: { // 节点渲染树形配置
+    options: { // 节点渲染树形配置
       type: Object,
       default() {
         return {
@@ -35,6 +35,10 @@ export default {
           children: 'children'
         }
       }
+    },
+    search: {
+      type: String,
+      default: ''
     },
     expandAll: { // 是否默认展开所有节点
       type: Boolean,
@@ -52,7 +56,7 @@ export default {
       type: Boolean,
       default: false
     },
-    checkStrictly: {
+    checkStrictly: { // 开启选择后，是否父子级不关联
       type: Boolean,
       default: true
     }
@@ -68,9 +72,17 @@ export default {
       }
     },
     nodeClick(data, node, self) {
-      
+      this.$emit('nodeClick', {data, node, self});
+    },
+    filterNode(value, data, node) {
+      return !value||data[this.options.label].includes(value);
     }
   },
+  watch: {
+    search(val) {
+      this.$refs.tree.filter(val);
+    }
+  }
 }
 </script>
 
