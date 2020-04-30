@@ -65,7 +65,9 @@
             goto(id) {
                 this.$router.push({
                     path: "receiveOrderInfo",
-                    query: id
+                    query: {
+                        id:id
+                    }
                 })
             }
         }

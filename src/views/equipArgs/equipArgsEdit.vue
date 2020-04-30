@@ -83,20 +83,14 @@
                 }
             },
             fetchData() {
+                this.equipArgsID = this.$route.query.id
                 if (this.equipArgsID !== "") {
                     getBosEntity(this.equipArgsID).then(res => {
                         this.formData = res
                     });
                 }
             },
-            initData() {
-                this.equipArgsID = this.$route.query.id
-            }
         },
-        created() {
-            this.initData();
-            this.fetchData()
-        }
     }
 </script>
 
@@ -118,6 +112,8 @@
     .equip-args-edit-container {
         font-size: 16px;
     }
-
+    .header {
+        padding: 16px 7px;
+    }
 
 </style>
