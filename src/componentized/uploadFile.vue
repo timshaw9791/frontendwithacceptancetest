@@ -8,6 +8,7 @@
             <img :src="imgSrc" class="img" v-if="fileName&&type=='img'" alt="图片加载失败">
             <img src="@/assets/noThumbnails.png" class="img" v-if="disabled&&!fileName">
         </div>
+        <span class="label" v-show="['pdf','video'].includes(type)">{{ fileName }}</span>
     </div>
 </template>
 
@@ -64,7 +65,7 @@ export default {
             return `${imgBaseUrl}${this.fileName}`;
         },
         border() {
-            return ['video', 'pdf'].includes(this.type)?true:(this.disabled||!this.fileName)?false:true
+            return ['video', 'pdf'].includes(this.type)?true:(this.disabled||this.fileName)?false:true
         }
     },
     methods: {
@@ -74,7 +75,7 @@ export default {
             })
         },
         showFileSelect() {
-            if(this.disabled||this.fileName) return;
+            if(this.disabled) return;
             this.$refs.file.click();
         },
         changeFile() {
@@ -120,6 +121,7 @@ export default {
 .upload-file-container {
     display: inline-block;
     position: relative;
+    text-align: center;
     .file {
         width: 0;
         height: 0;
@@ -131,6 +133,15 @@ export default {
     .img {
         width: 100%;
         height: 100%;
+    }
+    .label {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
     }
 }
 .border {

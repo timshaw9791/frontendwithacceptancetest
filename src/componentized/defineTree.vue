@@ -3,7 +3,7 @@
     <el-tree :data="data" :node-key="nodeKey" :empty-text="placeHolder" :props="prop" 
       :default-expand-all="expandAll" :accordion="accordion" :show-checkbox="showCheckBox"
       :check-strictly="checkStrictly" :expand-on-click-node="false" ref="tree"
-      @check-change="checkChange" @node-click="nodeClick"></el-tree>
+      @check-change="checkChange" @node-click="nodeClick" :filter-node-method="filterNode"></el-tree>
   </div>
 </template>
 
@@ -69,6 +69,9 @@ export default {
     },
     nodeClick(data, node, self) {
       
+    },
+    filterNode(value, data, node) {
+      if(!value) return true;
     }
   },
 }
