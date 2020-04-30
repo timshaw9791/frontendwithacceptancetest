@@ -14,9 +14,9 @@
                             <define-column label="装备参数" v-slot="{ data }">
                                 <entity-input v-model="data.row.equipArg"  :options="{search:'equipArgsSelect'}" format="{equipName}({equipModel})" :tableEdit="false" ></entity-input>
                             </define-column>
-                            <!-- <define-column label="装备位置"  v-slot="{ data }" >
-                                 <entity-input v-model="data.row.locationId"  :options="{search:'locationSelect'}" format="{name}" :tableEdit="false" ></entity-input>
-                            </define-column> -->
+                            <define-column label="装备位置"  v-slot="{ data }" >
+                                 <entity-input v-model="data.row.location"  format="{frameNumber}架/{surface}面/{section}节/{surface}层" :tableEdit="false" ></entity-input>
+                            </define-column>
                             <define-column label="单价" v-slot="{ data }">
                                 <define-input v-model="data.row.equipArg.price" :tableEdit="false" type="Number" ></define-input>
                             </define-column>
@@ -31,8 +31,8 @@
                             <define-column label="RFID" v-slot="{ data }">
                                 <define-input v-model="data.row.rfid" type="String" :tableEdit="false"></define-input>
                             </define-column>
-                            <define-column label="装备序号" :tableEdit="false" v-slot="{ data }">
-                                <define-input v-model="data.row.equipSerial" type="Number" ></define-input>
+                            <define-column label="装备序号" v-slot="{ data }">
+                                <define-input v-model="data.row.equipSerial" type="Number" :tableEdit="false" ></define-input>
                             </define-column>
                         </define-table>
                     </bos-tabs>
@@ -114,8 +114,8 @@ export default {
             changeDataFormat(data){
             data.forEach(item=>{this.list.push(item)})
                 /*详情单过来时 数据的属性不同处理方法不同*/
-                let cList=this._.groupBy(this.list, item => `${item.equipName}${item.equipModel}`)
-                this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0],copyList:v,count:v.length}})
+                let cList=this._.groupBy(this.list, item => `${item.equipName}${item.equipModel}${item.location.id}`)
+                this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0],copyList:v,count:v.length,location:v[0].location}})
                 //this.list=this._.map(this._.groupBy(this.list, item => `${item.equipArg.model}`),(v,k)=>{return {equipArg:v[0].equipArg,copyList:v}})
                 // return this._.map(this._.groupBy(this.list, item => `${item.equipArg.model}${item.location.surface}`),(v,k)=>{return {equipArg:v[0].equipArg,copyList:v}})
         },
@@ -124,6 +124,7 @@ export default {
         created(){
                 this.orderNumber=this.$route.params.info.number
                 this.time=this.$route.params.info.updateTime
+                console.log(this.$route.params.info);
                 this.changeDataFormat(this.$route.params.info.inOutHouseItems)
                 this.people=this.$route.params.info.operator.operator
 

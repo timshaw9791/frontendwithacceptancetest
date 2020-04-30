@@ -58,6 +58,14 @@ export function rightRepairOrder(params) {
         params:params
     })
 }
+//装备报废 
+export function equipScrap(params) {
+    return request({
+        url: "/equip-maintain/scrap",
+        method: 'post',
+        params:params
+    })
+}
 
 //维修申请列表
 export function RepairOrder(params) {

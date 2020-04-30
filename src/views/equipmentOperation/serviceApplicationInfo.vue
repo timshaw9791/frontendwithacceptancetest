@@ -12,13 +12,13 @@
                                 </div>
                             </define-column>
                             <define-column label="RFID" v-slot="{ data }">
-                                <define-input v-model="data.row.rfid" type="String" :tableEdit="false"></define-input>
+                                <define-input v-model="data.row.equipRfid" type="String" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="装备序号" v-slot="{ data }">
                                 <define-input v-model="data.row.equipSerial" type="Number" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
-                                <define-input v-model="data.row.equipName" type="String" :tableEdit="false"></define-input>
+                                 <entity-input v-model="data.row"  :options="{detail:'equipArgsDetail'}" format="{name}({model})" :tableEdit="false" ></entity-input>
                             </define-column>
                             <define-column label="装备位置" v-slot="{ data }">
                                 <define-input v-model="data.row.equipLocation" type="String" :tableEdit="false"></define-input>
@@ -76,14 +76,6 @@ export default {
             toDetail(data){
                 this.equipData=data
                 this.inorder=true
-            },
-            deleteNumber(data)
-            {
-                deleteInhouseNumber(data.id).then(res=>{
-                    this.$message.success('删除入库单成功')
-                }).catch(err => {
-                        this.$message.error(err.response.data.message);
-                    })
             },
             black(){
                 this.inhouse=false

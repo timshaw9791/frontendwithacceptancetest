@@ -2,8 +2,8 @@
     <div class="opening-box">
         <my-header :title="$route.meta.title" :haveBlack="false"></my-header>
          <div class="apply-process-top" data-test="action_box">
-                <define-input label="单号" v-model="orderNumber" :disabled="true" ></define-input>
-                <define-input label="维修时间"  v-model="time" :disabled="true" ></define-input>
+                <define-input label="单号" placeholder="--" :disabled="true" ></define-input>
+                <define-input label="保养时间" placeholder="--"  :disabled="true" ></define-input>
                 <define-input label="操作人员" v-model="people" :disabled="true"  ></define-input>
             </div>
         <div class="data-list">
@@ -19,7 +19,7 @@
                                 <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
-                                <entity-input v-model="data.row.equipArg"  :options="{detail:'equipArgsSelect'}" format="{name}({model})" :tableEdit="false" ></entity-input>
+                                <entity-input v-model="data.row.equipArg"  :options="{detail:'equipArgsDetails'}" format="{name}({model})" :tableEdit="false" ></entity-input>
                             </define-column>
                             <define-column label="装备位置" v-slot="{ data }">
                                 <entity-input v-model="data.row.location" format="{frameNumber}架/{surface}面/{section}节/{surface}层" :tableEdit="false"></entity-input>
@@ -90,10 +90,8 @@ export default {
         },
         data(){
             return{
-            time:"",
             people:'',
             requestBody:'',
-            orderNumber:'',
             show: true,
             rowData: "", // 选中的单选行数据
             select: {
@@ -107,6 +105,7 @@ export default {
                 selected: ""
             },
             findIndex:0,
+            rfidsList:[],
             listData:[{
                     equipArg: '',
                     location: '',
@@ -159,10 +158,9 @@ export default {
             },
       classDataifyRfid(data)
       {
-          console.log(data);
           let flag=true
+          console.log(this._.findIndex(this.rfidsList,data[0].rfid));
           this.listData.forEach(item=>{
-              
               if(item.equipArg.name==data[0].equipArg.name&&item.location.id==data[0].location.id&&item.equipArg.model==data[0].equipArg.model)
               {
                   if(item.clist.length==1&&item.clist[0].rfid==''){ 
@@ -202,22 +200,31 @@ export default {
       getList(){
         needKeepEquips().then(res=>{
           this.classDataify(res.content)
+          res.content.forEach(item=>{
+              this.rfidsList.push(item.rfid)
+          })
         })
       },
       readData(){
-                killProcess(this.pid)
-                start("java -jar scan.jar", (data) => {
-                     findByRfids(data).then(res=>{
+                // killProcess(this.pid)
+                // start("java -jar scan.jar", (data) => {
+                //      findByRfids(data).then(res=>{
+                //      this.classDataifyRfid(res)
+                //    })
+                //     }, (fail) => {
+                //         this.index = 1;
+                //         this.$message.error(fail);
+                //     }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
+                let rfids=['77889']
+            
+                     findByRfids(rfids[0]).then(res=>{
                      this.classDataifyRfid(res)
                    })
-                    }, (fail) => {
-                        this.index = 1;
-                        this.$message.error(fail);
-                    }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
             },
         },
         created(){
             this.getList()
+            this.people=JSON.parse(localStorage.getItem('user')).name
         }
 }
 </script>
