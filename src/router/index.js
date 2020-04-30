@@ -284,9 +284,9 @@ export const asyncRouterMap = [{
             component: _import('warehouse/editTraining'),
             hidden:true
         }, {
-            path: 'noreturn',
-            name: 'warehouse/noreturn',
-            component: _import('warehouse/noReturn'),
+            path: 'unReturn',
+            name: 'warehouse/unReturn',
+            component: _import('warehouse/unReturn'),
             meta: {title: '未归还'},
         }]
     }, {

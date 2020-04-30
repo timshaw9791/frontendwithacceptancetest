@@ -8,13 +8,16 @@ export function delFile(data) {
     })
 }
 
-
-export function getBosEntity(id) {
+export function getBosEntity(id,data) {
+    let details = []
+    if (data){
+        details=data
+    }
     return request({
         url: `/bos/bos-entities/${id}`,
         method: 'GET',
         params:{
-            details:[]
+            details:details
         }
     })
 }
