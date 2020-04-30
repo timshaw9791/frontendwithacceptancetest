@@ -85,7 +85,7 @@
 </script>
 
 <style lang="scss" scoped>
-    .equipArgs-info {
+    .header {
         padding: 16px 7px;
     }
     .img {
