@@ -2,8 +2,8 @@
   <div class="maintenance-form-container">
        <my-header :title="$route.meta.title" ></my-header>
        <div class="action_box" data-test="action_box">
-                <define-input label="单号" v-model="orderNumber" :disabled="true" class="odd-number"></define-input>
-                <date-select label="保养结束时间" placeholder="" v-model="time" :disabled="true"></date-select>
+                <define-input label="单号" placeholder="--" :disabled="true" class="odd-number"></define-input>
+                <date-select label="保养结束时间" placeholder="--" :disabled="true"></date-select>
                 <entity-input label="操作人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :disabled="true" ></entity-input>
             </div>
     
@@ -66,10 +66,8 @@ export default {
   data() {
     return {
        copyData:{},
-               time:"",
                people:'',
                requestBody:'',
-               orderNumber:'——',
                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
                select: {
                     handWareList: [{
@@ -111,17 +109,6 @@ export default {
             milliLocation(data)//对现实的装备位置信息进行处理
             {
                 return data.frameNumber+'架/'+data.surface+'面/'+data.section+'节/'+data.surface+'层'
-            },
-             classDataify(data)//读写器数据处理的方法
-            {
-                data.forEach(item=>{this.list.push(item)})
-                let cList=this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}`)
-                this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length}})
-                /*详情单过来时 数据的属性不同处理方法不同*/
-                // let cList=this.showDetail?this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}`):this._.groupBy(this.list, item => `${item.equipName}${item.equipModel}`)
-                // this.newData=this.showDetail?this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length}}):this._.map(cList,(v,k)=>{return {equipArg:v[0],copyList:v,count:v.length}})
-                //this.list=this._.map(this._.groupBy(this.list, item => `${item.equipArg.model}`),(v,k)=>{return {equipArg:v[0].equipArg,copyList:v}})
-                // return this._.map(this._.groupBy(this.list, item => `${item.equipArg.model}${item.location.surface}`),(v,k)=>{return {equipArg:v[0].equipArg,copyList:v}})
             },
             cancel(){
                 this.$router.back()
@@ -201,6 +188,7 @@ export default {
     },
   created() {
      this.init()
+     this.people=JSON.parse(localStorage.getItem('user')).name
   },
   beforeDestroy(){
     killProcess(this.pid)
