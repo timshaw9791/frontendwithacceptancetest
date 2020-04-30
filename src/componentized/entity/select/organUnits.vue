@@ -1,7 +1,7 @@
 <template>
   <div class="organ-units-container">
     <div class="tree-box">
-      <define-tree :data="list" :prop="options" v-model="selected" :showCheckBox="true"></define-tree>
+      <define-tree :data="list" :options="options" v-model="selected" :showCheckBox="true"></define-tree>
     </div>
     <div class="footer">
       <base-button label="取消" type="none" @click="cancel"></base-button>
