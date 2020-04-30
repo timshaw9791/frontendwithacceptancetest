@@ -1,10 +1,10 @@
 <template>
     <div class="receive-order-info-container">
-        <my-header title="领取归还单详情"></my-header>
+        <my-header title="领取归还单详情":haveblack="true" @h_black="back" ></my-header>
         <div class="body">
             <define-table :data="list" @changePage="changePage" :pageInfo="pageInfo">
                 <define-column label="操作" v-slot="{data}">
-                    <span @click="goto('edit',data.row.id)" style="margin:8px">编辑</span>
+                    <span @click="goto(data.row.number)" style="margin:8px">详情</span>
                 </define-column>
                 <define-column label="装备参数" v-slot="{data}">
                     <entity-input v-model="data.row" form="{equipName}({equipModel})" > </entity-input>
@@ -19,7 +19,7 @@
 <script>
     import myHeader from '@/components/base/header/header'
     import {listMixin} from "../../../field/mixins/listMixin"
-    import {getReceiveOrderList} from "../../../api/RROApi";
+    import {getReceiveOrderList} from "../../../api/RRO";
 
     export default {
         name: "receiveOrderInfo",
@@ -45,11 +45,8 @@
                     this.list = res
                 })
             },
-            goto(id) {
-                this.$router.push({
-                    path: "equipArgsEdit",
-                    query: id
-                })
+            back(){
+                this.$router.back()
             }
         }
     }

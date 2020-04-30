@@ -68,7 +68,7 @@ export const asyncRouterMap = [{
             path: 'equipArgsList',
             name: 'equipArgsList',
             component: _import('equipArgs/equipArgsList'),
-            meta: {title: '装备参数'},
+            meta: {title: '装备参数列表'},
         }, {
             path: 'equipArgsEdit',
             name: 'equipArgsEdit',
