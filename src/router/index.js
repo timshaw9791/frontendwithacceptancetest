@@ -290,6 +290,11 @@ export const asyncRouterMap = [{
             component: _import('warehouse/editTraining'),
             hidden:true
         }, {
+            path: 'trainingShow',
+            name: 'trainingShow',
+            component: _import('warehouse/trainingshow'),
+            hidden:true
+        }, {
             path: 'unReturn',
             name: 'warehouse/unReturn',
             component: _import('warehouse/unReturn'),
