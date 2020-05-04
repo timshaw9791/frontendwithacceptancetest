@@ -206,20 +206,16 @@ export default {
         })
       },
       readData(){
-                // killProcess(this.pid)
-                // start("java -jar scan.jar", (data) => {
-                //      findByRfids(data).then(res=>{
-                //      this.classDataifyRfid(res)
-                //    })
-                //     }, (fail) => {
-                //         this.index = 1;
-                //         this.$message.error(fail);
-                //     }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
-                let rfids=['77889']
-            
-                     findByRfids(rfids[0]).then(res=>{
+                killProcess(this.pid)
+                start("java -jar scan.jar", (data) => {
+                     findByRfids(data).then(res=>{
                      this.classDataifyRfid(res)
                    })
+                    }, (fail) => {
+                        this.index = 1;
+                        this.$message.error(fail);
+                    }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
+        
             },
         },
         created(){

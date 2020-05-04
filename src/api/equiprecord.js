@@ -11,11 +11,18 @@ export function findConsumableByName(data) {
 
 // 领还记录
 
-export function findByStartTimeAndEndTimeBetweenAndArgsLike(data) {
+export function receiveReturnRecords(data) {
     return request({
-        url: '/equipRecord/findByStartTimeAndEndTimeBetweenAndArgsLike',
+        url: '/equipRecord/receiveReturnRecords',
         method: 'get',
         params: data
+    })
+}
+
+export function recorddetail(data) {
+    return request({
+        url: `/equipRecord/receive-return-record-detail/${data}`,
+        method: 'get',
     })
 }
 

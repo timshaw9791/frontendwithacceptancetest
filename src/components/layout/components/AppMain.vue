@@ -22,14 +22,14 @@
             //   return this.$route.name !== undefined ? this.$route.name + +new Date() : this.$route + +new Date()
             // }
         },
-        watch: {
-            $route: {
-                handler(to, from) {
-                    this.className = to.name == "overview/index"?"app-main":"app-main-shadow"
-                },
-                immediate: true
-            }
-        },
+        // watch: {
+        //     $route: {
+        //         handler(to, from) {
+        //             this.className = to.name == "overview/index"?"app-main":"app-main-shadow"
+        //         },
+        //         immediate: true
+        //     }
+        // },
     }
 </script>
 

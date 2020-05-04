@@ -75,7 +75,7 @@ export const asyncRouterMap = [{
             path: 'equipArgsList',
             name: 'equipArgsList',
             component: _import('equipArgs/equipArgsList'),
-            meta: {title: '装备参数'},
+            meta: {title: '装备参数列表'},
         }, {
             path: 'equipArgsEdit',
             name: 'equipArgsEdit',
@@ -273,6 +273,12 @@ export const asyncRouterMap = [{
             name: 'warehouse/expired',
             component: _import('warehouse/expired'),
             meta: {title: '到期报废'},
+        },{
+            path: 'equipexpaired',
+            name: 'equipexpaired',
+            component: _import('warehouse/equipExpaired'),
+            meta:{title:'到期报废/装备报废'},
+            hidden: true,
         }, {
             path: 'training',
             name: 'warehouse/training',
@@ -284,9 +290,14 @@ export const asyncRouterMap = [{
             component: _import('warehouse/editTraining'),
             hidden:true
         }, {
-            path: 'noreturn',
-            name: 'warehouse/noreturn',
-            component: _import('warehouse/noReturn'),
+            path: 'trainingShow',
+            name: 'trainingShow',
+            component: _import('warehouse/trainingshow'),
+            hidden:true
+        }, {
+            path: 'unReturn',
+            name: 'warehouse/unReturn',
+            component: _import('warehouse/unReturn'),
             meta: {title: '未归还'},
         }]
     }, {

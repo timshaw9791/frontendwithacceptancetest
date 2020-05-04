@@ -2,9 +2,9 @@
     <div>
         <el-table
                 :data="list"
-                style="width: 100%;" id="field-table" @sort-change="sortChange" :height="height">
+                style="width: 100%;" id="field-table" @sort-change="sortChange" :height="height" @row-click="rowclick" >
             <bos-table-column :align="align" v-for="item in labelList" :lable="item.lable" :width="item.width" :sort="item.sort" :field="item.field" :filter="item.filter"></bos-table-column>
-            <el-table-column v-if="flag" :label="tableAction.label" align="left">
+            <el-table-column v-if="flag" :label="tableAction.label" align="left" >
                 <template slot-scope="scope">
                     <el-button :type="item.type" v-show="judgeState(item.name, scope.row)" size="mini" class="actionButton" @click="someClick(scope.row,item.name)" v-for="item in tableAction.button" v-text="item.name" data-test="button"></el-button>
                 </template>
@@ -90,6 +90,14 @@
                     name:data.column.label
                 };
                 this.$emit('sortChange',obj)
+            },
+            rowclick(row , event ,column){
+                let data={
+                    row:row,
+                    event:event,
+                    column:column
+                }
+                this.$emit('rowclick',data)
             },
             tableChangePage(newPage){
                 this.$emit('tableCurrentPageChanged',newPage)

@@ -8,7 +8,7 @@
                 </el-table-column>
             <slot></slot>
         </el-table>
-        <bos-paginator :pageInfo="pageInfo" @bosCurrentPageChanged="changePage" v-if="havePage"></bos-paginator>
+        <bos-paginator :pageInfo="pageInfo" @bosCurrentPageChanged="changePage" :border="true" v-if="havePage"></bos-paginator>
     </div>
 </template>
 
