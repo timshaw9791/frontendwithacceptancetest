@@ -59,11 +59,10 @@ export function rightRepairOrder(params) {
     })
 }
 //装备报废 
-export function equipScrap(params) {
+export function equipScrap(category,remark,list) {
     return request({
-        url: "/equip-maintain/scrap",
+        url: `/equip-maintain/scrap?category=${category}&remark=${remark}&${qs.stringify({rfids:list},{indices:false})}`,
         method: 'post',
-        params:params
     })
 }
 

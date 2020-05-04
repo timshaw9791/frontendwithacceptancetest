@@ -118,7 +118,7 @@ export default {
             this.paginator.page = page;ss
             },
             toInHouse(){
-                this.$router.push({path:"/warehouse/equipExpaired"})
+                this.$router.push({path:"/warehouse/equipExpired"})
             }
         },
         created(){
