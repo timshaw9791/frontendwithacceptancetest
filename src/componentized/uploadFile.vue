@@ -1,7 +1,6 @@
 <template>
     <div class="upload-file-container" :class="[size,{border}]" 
-        :style="`margin:${margin};float:${align}`"
-        element-loading-text="文件上传中" v-loading="loading">
+        :style="`margin:${margin};float:${align}`">
         <input type="file" class="file" :accept="acceptType" @change="changeFile" ref="file">
         <div class="icon-box" @click="showFileSelect">
             <i class="iconfont iconjiahao" v-show="!disabled&&!fileName"></i>
@@ -11,22 +10,31 @@
             <img src="@/assets/noThumbnails.png" class="img" v-if="disabled&&!fileName">
         </div>
         <span class="label" v-show="['pdf','video'].includes(type)">{{ fileName }}</span>
+        <div class="progress-box" v-if="loading">
+            <define-progress :percentage="percentage" :textInside="true" class="define-progress"></define-progress>
+        </div>
     </div>
 </template>
 
 <script>
 import { imgBaseUrl, pdfBaseUrl, videoBaseUrl, imgUpUrl, pdfUpUrl, videoUpUrl } from 'api/config'
 import axios from 'axios'
+import defineProgress from './defineProgress'
 export default {
     name: 'uploadFile',
+    components: { defineProgress },
     data() {
         return {
             fileName: '',
             fetch: '',
             loading: false,
+            percentage: 0,
             config: {
                 headers: {
                     'Content-Type': 'multipart/form-data'
+                },
+                onUploadProgress: event => {
+                    this.percentage = Number((event.loaded/event.total*100).toFixed(1));
                 }
             }
         }
@@ -124,11 +132,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-/deep/ .el-loading-mask {
-    .el-loading-text {
-        color: #2f2f76 !important;
-    }
-}
 .upload-file-container {
     display: inline-block;
     position: relative;
@@ -154,6 +157,18 @@ export default {
         bottom: 0;
         left: 0;
         right: 0;
+    }
+    .progress-box {
+        display: grid;
+        align-items: center;
+        background-color: hsla(0,0%,100%,.8);
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: 0 10px;
+        user-select: none;
     }
 }
 .border {
