@@ -6,6 +6,7 @@
             <i class="iconfont iconjiahao" v-show="!disabled&&!fileName"></i>
             <i class="iconfont iconPDF" v-show="type=='pdf'&&fileName"></i>
             <i class="iconfont icondianshi-shipinsuolve" v-show="type=='video'&&fileName"></i>
+            <i class="iconfont iconwenbenkuangshanchu" v-show="fileName" @click.stop="remove"></i>
             <img :src="imgSrc" class="img" v-if="fileName&&type=='img'" alt="图片加载失败">
             <img src="@/assets/noThumbnails.png" class="img" v-if="disabled&&!fileName">
         </div>
@@ -86,7 +87,7 @@ export default {
             })
         },
         showFileSelect() {
-            if(this.disabled||this.loading) return;
+            if(this.disabled||this.loading||this.fileName) return;
             this.$refs.file.click();
         },
         changeFile() {
@@ -117,6 +118,13 @@ export default {
                 this.loading = false;
                 this.$emit('input', this.fileName);
             })
+        },
+        remove() { // 删除
+            this.fileName = '';
+            this.$emit('input', '');
+            // 清空input[type=file]的选择缓存，避免选择同一文件不触发change事件
+            this.$refs.file.value = '';
+            this.percentage = 0;
         }
     },
     watch: {
@@ -171,6 +179,11 @@ export default {
         user-select: none;
     }
 }
+.upload-file-container:hover {
+    .iconwenbenkuangshanchu {
+        display: block;
+    }
+}
 .border {
     border: 1px dashed #d9d9d9;
 }
@@ -201,5 +214,11 @@ export default {
 .iconPDF,
 .icondianshi-shipinsuolve {
     font-size: 60px;
+}
+.iconwenbenkuangshanchu {
+    display: none;
+    position: absolute;
+    top: 2px;
+    right: 0;
 }
 </style>
