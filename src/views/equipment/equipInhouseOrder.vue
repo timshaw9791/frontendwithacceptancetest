@@ -114,8 +114,8 @@ export default {
             changeDataFormat(data){
             data.forEach(item=>{this.list.push(item)})
                 /*详情单过来时 数据的属性不同处理方法不同*/
-                let cList=this._.groupBy(this.list, item => `${item.equipName}${item.equipModel}${item.location.id}`)
-                this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0],copyList:v,count:v.length,location:v[0].location}})
+                let cList=this._.groupBy(this.list, item => `${item.equipName}${item.equipModel}${item.locationInfo.id}`)
+                this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0],copyList:v,count:v.length,location:v[0].locationInfo}})
                 //this.list=this._.map(this._.groupBy(this.list, item => `${item.equipArg.model}`),(v,k)=>{return {equipArg:v[0].equipArg,copyList:v}})
                 // return this._.map(this._.groupBy(this.list, item => `${item.equipArg.model}${item.location.surface}`),(v,k)=>{return {equipArg:v[0].equipArg,copyList:v}})
         },
