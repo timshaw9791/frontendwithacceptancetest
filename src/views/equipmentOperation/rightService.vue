@@ -30,7 +30,7 @@
                     <date-select label="申请时间" v-model="time" :disabled="true"></date-select>
                     <entity-input label="申请人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :disabled="true" ></entity-input>
                     <entity-input label="审核人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :disabled="true" ></entity-input>
-                    <define-input label="申请原因" v-model="orderNumber" :disabled="false" class="odd-number"></define-input>
+                    <define-input label="申请原因" v-model="scrapData.remark" :disabled="false" class="odd-number"></define-input>
                 </div>
           </serviceDialog>
 
@@ -52,7 +52,7 @@
     import endService from './startService'
     import serviceDialog from 'components/base/serviceDialog'
     // import equipInhouseOrder from './equipInhouseOrder'
-    import {rightRepairOrder} from "api/operation"
+    import {rightRepairOrder,equipScrap} from "api/operation"
     import { getInhouseNumber,inOutHouseOrder,deleteInhouseNumber} from "api/storage"
 export default {
     components:{
@@ -85,6 +85,12 @@ export default {
             },
             sumFunc(){
 
+            },
+            submit(){
+                equipScrap({category:'REPAIR',remark:this.scrapData.remark,rfids:this.scrapData.rfid}).then(res=>{
+                    this.$refs.scrapDailog.hide()
+                    this.getList()
+                })
             },
             toDetail(data){
                 this.equipData=data
