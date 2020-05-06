@@ -6,7 +6,7 @@
                     <div class="header-item">
                         <div class="d_select">
                             <div style="width: 150px"><span v-text="'硬件选择：'"></span></div>
-                            <el-select v-model="hardware" placeholder="请选择" size="mini">
+                            <el-select v-model="hardware" placeholder="请选择" @change="change" size="mini">
                                 <el-option
                                         v-for="item in hardwareList"
                                         :key="item.value"
@@ -15,7 +15,7 @@
                                 </el-option>
                             </el-select>
                             <el-button class="resultButton" v-text="actionReset"
-                                       @click="clickResult"></el-button>
+                                       @click="clickResult" v-if="hardware!='门感天线'"></el-button>
                         </div>
                         <div class="d_select" v-if="typeOperational==='入库'">
                             <div><span v-text="'装备位置：'"></span></div>
@@ -198,6 +198,7 @@
     import dialogSvices from 'components/base/gailiangban'
     // import inventoryData from 'views/warehouse/inventoryData'
     import {findByRfids, outHouse, checkUser, inHouses} from 'api/process'
+    import {equipArgsByName, inHouse, findEquip, updateEquipArg, getAllSupplier, saveEquipArg, updateEquip,changeRecognizeModel,getRfidFromGate} from "api/storage"
     import {start, delFile, handheld, killProcess, modifyFileName} from 'common/js/rfidReader'
 
     var _ = require("lodash");
@@ -232,6 +233,7 @@
                 hardwareList: [
                     {value: '手持机', label: '手持机'},
                     {value: 'RFID读写器', label: 'RFID读写器'},
+                    {value: '门感天线', label: '门感天线'}
                 ],
                 rightList: [],
                 equipGroup: {},
@@ -246,7 +248,8 @@
                     userName: '',
                     password: ''
                 },
-                inHouseEquip: []
+                inHouseEquip: [],
+                closeGate:false
             }
         },
         watch: {
@@ -256,16 +259,25 @@
                         killProcess(this.pid)
                     }
                     if (newVal === '手持机') {
+                        // this.closeGate=true
                         this.rightList = [];
                         if (this.typeOperational === '出库') {
                             this.handheldMachine();
                         }
                     } else if (newVal === 'RFID读写器') {
+                        // this.closeGate=true
                         killProcess(this.pid)
                         this.closeUsb = false;
                         this.rightList = [];
                         if (this.typeOperational === '出库') {
                             this.getListUsb();
+                        }
+                    }
+                    else if(newVal==='门感天线')
+                    {
+                        this.rightList=[]
+                        if (this.typeOperational === '出库') {
+                            this.getGateAntenna("OUT_HOUSE")
                         }
                     }
                 }
@@ -287,6 +299,11 @@
         },
         methods: {
             cancelDialog(){
+                this.closeGate=true;
+                let gateModel="RECEIVE_RETURN"
+                            changeRecognizeModel(gateModel).then(res=>{
+                            })
+                
                 killProcess(this.pid)
             },
             getLocation(data) {
@@ -322,17 +339,55 @@
                 }
 
             },
+            
             getInHouseGetEquip() {
                 if (this.hardware === '手持机') {
                     this.handheldMachine();
-                } else {
+                } else if(this.hardware === 'RFID读写器'){
                     this.getListUsb();
+                } else if(this.hardware === '门感天线'){
+                    this.getGateAntenna("IN_HOUSE")
                 }
             },
             stopGetEquip() {
                 if(this.hardware === 'RFID读写器'){
                     killProcess(this.pid)
                 }
+            },
+            change(data)
+            {
+                if(data!='门感天线')
+                {
+                    this.closeGate=true
+                }
+                else
+                {
+                    this.closeGate=false
+                }
+            },       
+            getRfidFromGateAntenna(){//获取门感读取到的rfid
+               
+                getRfidFromGate().then(r=>{
+                      if(r.length!=0&&r!='')
+                      {
+                          this.getOutDataCopy(r)
+                      }
+                  })
+            },
+            getGateAntenna(gateModel){
+               
+                
+              setTimeout(() => this.throttle = false, 2000)
+              changeRecognizeModel(gateModel).then(res=>{
+                  this.$message.success('门感开始识别')
+                  this.timeId = setInterval(() => {
+                    if (this.closeGate) {
+                    console.log("清除定时器");
+                    clearInterval(this.timeId)
+                    };
+                    this.getRfidFromGateAntenna();
+                    },3000)
+              })
             },
             // deleteFile() {
             //     delFile(newFile_path, () => {console.log('删除文件' + newFile_path + '成功')})
@@ -358,8 +413,10 @@
                 this.getTrueOrFalse(this.equipGroup);
             },
             close() {
+                
                 this.hardware = '';
                 this.closeUsb = true;
+                
                 killProcess(this.pid);
                 this.$refs.transFerDialogApply.cancelDb();
             },
@@ -373,6 +430,7 @@
                 this.$refs.transFerDialogApplyConfirm.cancelDb();
             },
             submitTextarea() {
+                
                 if (this.reason === '') {
                     this.$message.info('备注不能为空!');
                 } else {
@@ -478,6 +536,10 @@
                 this.$emit('sucesssInOrOut', true);
             },
             submit() {
+                let gateModel="RECEIVE_RETURN"
+                            changeRecognizeModel(gateModel).then(res=>{
+                            })
+                 this.closeGate=true;
                 if(this.rightList.length!==0){
                     if (this.submitFlag) {
                         if (this.typeOperational === '出库') {
@@ -689,6 +751,10 @@
         },
         beforeDestroy() {
             killProcess(this.pid);
+            let gateModel="RECEIVE_RETURN"
+                changeRecognizeModel(gateModel).then(res=>{
+              })
+            clearInterval(this.timeId)
         }
     }
 </script>

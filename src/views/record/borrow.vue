@@ -1,6 +1,6 @@
 <template>
     <div class="borrow">
-        <my-header :title="'装备领还记录'" :searchFlag="false"></my-header>
+        <my-header :title="'出入记录'" :searchFlag="false"></my-header>
         <div class="action-bar">
             <div style="width:400px" data-test="time_search">
                 <el-date-picker
@@ -14,7 +14,7 @@
             </div>
             <div class="_buttons" style="margin-right: 0.09375rem">
                 <BosInput
-                        placeholder="操作人员"
+                        placeholder="出入人员"
                         suffix="el-icon-search"
                         v-model="params.search"
                         style="width:285px;">
@@ -26,10 +26,40 @@
                       :tableAction="table.tableAction"  @clickTableCloum="clickTableCloum" style="width: 100%">
         </field-table>
         <r_video ref="recordVideo" :src="address"></r_video>
-        <service-dialog title="装备领用/归还记录" ref="dialogLinghuan" width="766px" :button="false">
-            <field-table :list="infolist" :labelList="infotable.labelList" :havePage="false"
+        <service-dialog title="携带装备" ref="dialogLinghuan" width="766px" :button="false">
+            <field-table :list="infolist" :labelList="infotable.labelList" @rowclick="clickTableCloum2" :havePage="false"
                          style="width: 100%">
             </field-table>
+            <service-dialog 
+                :title="moretitle" 
+                ref="more" 
+                width="388px" 
+                top="14vh"
+                :button="false"
+                :modal="false">
+                <div style="height:480px">
+                    <el-table
+                        :data="rfidlist"
+                        border
+                        style="width: 90%;margin:20px auto"
+                        align="center"
+                        height="450px"
+                    >
+                        <el-table-column
+                            label="序号"
+                            type="index"
+                            :index="indexMethod" width="90" align="center">
+                        </el-table-column>
+                        <el-table-column
+                            prop="equipInfo.rfid"
+                            label="rfid"
+                            align="center"
+                        >
+                        </el-table-column>
+                    </el-table>
+                </div>
+                
+            </service-dialog>
         </service-dialog>
     </div>
 </template>
@@ -39,7 +69,7 @@
     import r_video from 'components/record/recordDialog'
     import serviceDialog from 'components/base/gailiangban'
     import {baseURL} from "../../api/config";
-    import {findByStartTimeAndEndTimeBetweenAndArgsLike} from "api/equiprecord";
+    import {receiveReturnRecords , recorddetail } from "api/equiprecord";
     import {startProcessCamVideo} from '@/externalProcess'
 
     export default {
@@ -60,9 +90,9 @@
                 defaultSearch:'',
                 table: {
                     labelList: [
-                        {lable: '操作人员', field: 'operatorInfo.operator', sort: false},
-                        {lable: '领取/归还状态', field: 'state', sort: false},
-                        {lable: '领取/归还时间', field: 'createTime', filter: (ns) => this.$filterTime(ns.createTime), sort: false}
+                        {lable: '出入人员', field: 'operatorInfo.operator', sort: false},
+                        {lable: '出入状态', field: 'state', sort: false},
+                        {lable: '出入时间', field: 'createTime', filter: (ns) => this.$filterTime(ns.createTime), sort: false}
                     ],
                     tableAction:{
                         label:'操作',
@@ -72,16 +102,17 @@
                 },
                 infotable: {
                     labelList: [
-                        {lable: 'RFID', field: 'equipInfo.rfid', sort: false},
-                        {lable: '装备序号', field: 'equipInfo.serial', sort: false},
-                        {lable: '装备名称', field: 'equipInfo.equipName', sort: false},
-                        {lable: '装备型号', field: 'equipInfo.model', sort: false},
+                        {lable: '装备名称', field: 'name', sort: false},
+                        {lable: '装备型号', field: 'model', sort: false},
+                        {lable: '数量', field: 'count', sort: false},
                     ],
                     flag:false
                 },
                 list:[],
                 address:'',
                 infolist:[],
+                rfidlist:[],
+                moretitle:'',
                 params:{
                     endTime:'',
                     startTime:'',
@@ -99,8 +130,12 @@
 
         methods: {
             
+            indexMethod(index) {
+                console.log(index);
+                return index +1;
+            },
             getList(){
-                findByStartTimeAndEndTimeBetweenAndArgsLike(this.params).then(res=>{
+                receiveReturnRecords(this.params).then(res=>{
                     this.list=[];
                     this.list=JSON.parse(JSON.stringify(res.content));
                     this.params.totalPages = res.totalPages
@@ -112,15 +147,20 @@
                 this.getList()
             },
             clickTableCloum(data){
-                console.log("data",data)
                 if(data.name=="详情"){
-                    console.log("111")
-                    this.infolist = data.row.recordDetailSet
-                    console.log("this.infolist",this.infolist)
+                    recorddetail(data.row.id).then(response=>{
+                        this.infolist  = response.detailDtoList
+                    })
                     this.$refs.dialogLinghuan.show()
                 }else if(data.name=="监控"){
                     startProcessCamVideo(data.row.createTime);
                 }
+            },
+            clickTableCloum2(data){
+                this.rfidlist=data.row.recordDetails
+                this.moretitle = data.row.name+data.row.model
+                console.log("data",data);
+                this.$refs.more.show()
             }
         },
         created(){
@@ -160,9 +200,9 @@
                 handler(){
                     for(let i in this.list){
                         if(this.list[i].state == "RECEIVE"){
-                            this.list[i].state = "领取"
+                            this.list[i].state = "出"
                         }else if(this.list[i].state == "RETURN"){
-                            this.list[i].state = "归还"
+                            this.list[i].state = "入"
                         }
                     }
                 }

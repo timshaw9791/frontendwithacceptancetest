@@ -75,7 +75,7 @@ export const asyncRouterMap = [{
             path: 'equipArgsList',
             name: 'equipArgsList',
             component: _import('equipArgs/equipArgsList'),
-            meta: {title: '装备参数'},
+            meta: {title: '装备参数列表'},
         }, {
             path: 'equipArgsEdit',
             name: 'equipArgsEdit',
@@ -192,11 +192,6 @@ export const asyncRouterMap = [{
             component: _import('equipmentOperation/needMaintenanced'),
             meta: {title: '正在保养'},
         }, {
-            path: 'service',
-            name: 'service',
-            component: _import('equipmentOperation/service'),
-            meta: {title: '维修'},
-        }, {
             path: 'serviceapplication',
             name: 'serviceapplication',
             component: _import('equipmentOperation/serviceApplicationInfo'),
@@ -273,6 +268,12 @@ export const asyncRouterMap = [{
             name: 'warehouse/expired',
             component: _import('warehouse/expired'),
             meta: {title: '到期报废'},
+        },{
+            path: 'equipexpired',
+            name: 'equipexpired',
+            component: _import('warehouse/equipExpired'),
+            meta:{title:'到期报废/装备报废'},
+            hidden: true,
         }, {
             path: 'training',
             name: 'warehouse/training',
@@ -289,9 +290,9 @@ export const asyncRouterMap = [{
             component: _import('warehouse/trainingshow'),
             hidden:true
         }, {
-            path: 'noreturn',
-            name: 'warehouse/noreturn',
-            component: _import('warehouse/noReturn'),
+            path: 'unReturn',
+            name: 'warehouse/unReturn',
+            component: _import('warehouse/unReturn'),
             meta: {title: '未归还'},
         }]
     }, {
@@ -336,15 +337,14 @@ export const asyncRouterMap = [{
             component: _import('record/opening'),
             meta: {title: '开门记录'},
         }, {
-            path: 'receiveOrderList',
-            name: 'receiveOrderList',
-            component: _import('record/receiveReturnOrder/receiveOrderList'),
-            meta: {title: '领取单列表'},
+            path: 'RROList',
+            name: 'RROList',
+            component: _import('record/receiveReturnOrder/RROList'),
+            meta: {title: '领取归还记录'},
         }, {
-            path: 'receiveOrderInfo',
-            name: 'receiveOrderInfo',
-            component: _import('record/receiveReturnOrder/receiveOrderInfo'),
-            meta: {title: '领取单列表'},
+            path: 'RROInfo',
+            name: 'RROInfo',
+            component: _import('record/receiveReturnOrder/RROInfo'),
             hidden: true
         }, {
             path: 'inventory',
@@ -359,8 +359,14 @@ export const asyncRouterMap = [{
         }, {
             path: 'maintenanceRecord',
             name: 'maintenanceRecord',
-            component: _import('record/maintenanceRecord'),
-            meta: {title: '保养记录'},
+            component: _import('record/maintenanceOrder'),
+            meta: {title: '保养单'},
+        },{
+            path: 'maintenanceOrderDetails',
+            name: 'maintenanceOrderDetails',
+            component: _import('record/MaintenanceDetails'),
+            hidden:true,
+            meta: {title: '保养单/保养单详情'},
         }, {
             path: 'serviceRecord',
             name: 'serviceRecord',

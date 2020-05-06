@@ -2,8 +2,8 @@
     <div class="opening-box">
         <my-header title="入库单列表/装备入库"></my-header>
          <div class="action_box" data-test="action_box">
-                <define-input label="单号" v-model="orderNumber" :disabled="true" class="odd-number"></define-input>
-                <date-select label="入库时间" v-model="time" :disabled="true"></date-select>
+                <define-input label="单号" placeholder="--" :disabled="true" ></define-input>
+                <date-select label="入库时间" placeholder="--" :disabled="true"></date-select>
                 <entity-input label="入库人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :disabled="true" ></entity-input>
             </div>
         <div class="data-list">
@@ -102,10 +102,8 @@ export default {
                     count:0,
                     copyList:[{rfid:'',serial:''}],
                 }],
-               time:"",
                people:'',
                requestBody:'',
-               orderNumber:'——',
                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
                select: {
                     handWareList: [{
@@ -142,7 +140,7 @@ export default {
                     item.locationId=item.locationId.id
                     item.copyList.forEach(r=>{
                         item.rfids.push(r.rfid)
-                        item.serial.push(r.equipSerial)
+                        item.serial.push(r.serial)
                     })
                 })
                 delete this.requestBody.copyList
@@ -161,11 +159,16 @@ export default {
             readData(){
                 killProcess(this.pid)
                 start("java -jar scan.jar", (data) => {
-                    if(this.list[this.findIndex].copyList.length==1&&this.list[this.findIndex].copyList[0].rfid=='')
+                    var nelist=this.list[this.findIndex].copyList.filter(function(item){
+                        return item.rfid==data
+                    })
+                    if(nelist.length==0){
+                         if(this.list[this.findIndex].copyList.length==1&&this.list[this.findIndex].copyList[0].rfid=='')
                     {
                         this.list[this.findIndex].copyList[0].rfid=data
                     }else{
                         this.list[this.findIndex].copyList.push({rfid:data,serial:''})
+                    }
                     }
                     }, (fail) => {
                         this.index = 1;

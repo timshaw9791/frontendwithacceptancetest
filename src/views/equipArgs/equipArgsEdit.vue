@@ -1,8 +1,8 @@
 <template>
     <div class="equip-args-edit-container">
-        <my-header title="装备参数编辑" :have-black="true" @h_black=back></my-header>
+        <my-header :title="equipArgsID?'装备参数编辑':'装备参数新增'" :have-black="true" @h_black=back></my-header>
         <div class="body">
-            <form-container ref="form">
+            <form-container ref="form" >
                 <div class="equip-args-edit" disabled="isEdit">
                     <define-input label="装备名称" v-model="formData.name"
                                   margin="10px 10px 10px 10px"></define-input>
@@ -20,14 +20,13 @@
                                   margin="10px 10px 10px 10px" ></date-input>
                 </div>
                 <div class="img">
-                    <img-up @success="setImg" :src="formData.image"></img-up>
+                    <upload-file v-model="formData.image" ></upload-file>
                 </div>
                 <div class="_box-bottom">
                     <base-button label="取消" @click="clear()"></base-button>
                     <base-button label="提交" @click="submit()"></base-button>
                 </div>
             </form-container>
-
         </div>
     </div>
 </template>
@@ -37,12 +36,12 @@
     import serviceDialog from "../../components/base/serviceDialog/index"
     import entityInput from "../../componentized/entity/entityInput";
     import textInput from "../../componentized/textBox/textInput";
-    import imgUp from './imgUp';
     import defineInput from "../../componentized/textBox/defineInput";
     import {editEquipArgs, saveEquipArgs} from "@/api/equipArgs"
     import {getBosEntity} from "@/api/basic";
     import myHeader from "../../components/base/header/header"
-    import colorSelector from "../../components/base/colorSelector";
+    import {listMixin} from "../../field/mixins/listMixin";
+    import uploadFile from "../../componentized/uploadFile";
 
     export default {
         name: "editEquipArgs",
@@ -53,14 +52,18 @@
             }
         },
 
+        mixins:[listMixin],
+
         components: {
             textInput,
             serviceDialog,
             entityInput,
-            imgUp,
             defineInput,
-            myHeader
+            myHeader,
+            listMixin,
+            uploadFile
         },
+
         methods: {
             back() {
                 this.$router.back()
@@ -69,34 +72,28 @@
                 this.formData.image = data
             },
             clear() {
-                this.$router.push({path: "equipArgsList"})
+                this.$router.push('equipArgsList')
             },
             submit() {
                 if (this.isEdit) {
-                    editEquipArgs(this.formData).then((res) => {
-                        this.$router.push({path: "equipArgsList"})
+                    editEquipArgs(this.formData).then(() => {
+                        this.$router.push('equipArgsList')
                     })
                 } else {
-                    saveEquipArgs(this.formData).then((res) => {
-                        this.$router.push({path: "equipArgsList"})
+                    saveEquipArgs(this.formData).then(() => {
+                        this.$router.push('equipArgsList')
                     })
                 }
             },
             fetchData() {
-                if (this.equipArgsID !== "") {
+                this.equipArgsID = this.$route.query.id
+                if (this.equipArgsID !== undefined) {
                     getBosEntity(this.equipArgsID).then(res => {
                         this.formData = res
                     });
                 }
             },
-            initData() {
-                this.equipArgsID = this.$route.query.id
-            }
         },
-        created() {
-            this.initData();
-            this.fetchData()
-        }
     }
 </script>
 
@@ -112,12 +109,13 @@
 
     .img {
         float: left;
-
     }
 
     .equip-args-edit-container {
         font-size: 16px;
     }
-
+    .header {
+        padding: 16px 7px;
+    }
 
 </style>

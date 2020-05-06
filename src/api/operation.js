@@ -58,7 +58,21 @@ export function rightRepairOrder(params) {
         params:params
     })
 }
-
+//装备报废 
+export function equipScrap(category,remark,list) {
+    return request({
+        url: `/equip-maintain/scrap?category=${category}&remark=${remark}&${qs.stringify({rfids:list},{indices:false})}`,
+        method: 'post',
+    })
+}
+//保养单列表
+export function keepOrders(params) {
+    return request({
+        url: "/keep-orders",
+        method: 'get',
+        params:params
+    })
+}
 //维修申请列表
 export function RepairOrder(params) {
     return request({

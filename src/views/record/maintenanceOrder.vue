@@ -1,31 +1,26 @@
 <template>
     <div class="opening-box">
-        <my-header title="维修申请"></my-header>
-        <div class="btn_box">
-             <base-button label="开始维修" align="right" :width="128" :height="25" :fontSize="20" @click="toInHouse"></base-button>
-        </div>
+        <my-header title="保养单"></my-header>
         <div class="data-list">
-            <define-table :data="list" height="3.64rem" @changeCurrent="selRow" @changePage="changePage" :pageInfo="paginator">
-                            <define-column label="操作" width="100" v-slot="{ data }">
+            <define-table :data="list" height="3.64rem" @changeCurrent="selRow" @changePage="changePage" :pageInfo="paginator" >
+                            <define-column label="操作" width="130" v-slot="{ data }">
                                 <div class="span-box">
-                                     <span >开柜</span>
+                                     <base-button label="详情" size="mini" @click="toDetail(data.row)" type="primary"></base-button>
                                 </div>
                             </define-column>
-                            <define-column label="RFID" v-slot="{ data }">
-                                <define-input v-model="data.row.equipRfid" type="String" :tableEdit="false"></define-input>
-                            </define-column>
-                            <define-column label="装备序号" v-slot="{ data }">
-                                <define-input v-model="data.row.equipSerial" type="Number" :tableEdit="false"></define-input>
+                            <define-column label="单号" v-slot="{ data }">
+                                <define-input v-model="data.row.number" type="Number" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
-                                 <entity-input v-model="data.row"  :options="{detail:'equipArgsDetail'}" format="{name}({model})" :tableEdit="false" ></entity-input>
+                                <define-input v-model="data.row.equipArgs" type="Number" :tableEdit="false"></define-input>
                             </define-column>
-                            <define-column label="装备位置" v-slot="{ data }">
-                                <define-input v-model="data.row.equipLocation" type="String" :tableEdit="false"></define-input>
+                            <define-column label="装备数量" :filter="(row)=>filterNumber(row)">
+                                
                             </define-column>
-                           
-                            <define-column label="申请时间" :filter="(row)=>$filterTime(row.finishTime)"/>
-                            <define-column label="申请原因" filed="reason"/>
+                            <define-column label="操作人员" v-slot="{ data }">
+                                <define-input v-model="data.row.operatorInfo.operator" type="String" :tableEdit="false"></define-input>
+                            </define-column>
+                            <define-column label="保养开始时间" :filter="(row)=>$filterTime(row.createTime)"/>
                         </define-table>
         </div>
     </div>
@@ -41,8 +36,7 @@
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
-    import startService from './startService'
-    import { getRepairOrder,RepairOrder} from "api/operation"
+    import { keepOrders} from "api/operation"
 export default {
     components:{
             myHeader,
@@ -52,7 +46,6 @@ export default {
             baseSelect,
             dateSelect,
             entityInput,
-            startService,
             divTmp,
             bosTabs,
         },
@@ -60,45 +53,37 @@ export default {
             return{
                list:[],
                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0,abnormal:false},
-               inhouse:false,
-               inorder:false,
-               params:{size:10,page:1,state:"REPAIR_RECEIVE"},
-               equipData:''
+               params:{size:10,page:1},
             }
         },
         methods:{
             selRow(){
 
             },
-            sumFunc(){
-
-            },
             toDetail(data){
-                this.equipData=data
-                this.inorder=true
-            },
-            black(){
-                this.inhouse=false
-                this.inorder=false
-                this.getList()
+                console.log(data);
+                this.$router.push({name:'maintenanceOrderDetails',params:{info:data}})
             },
             getList(){
-                RepairOrder(this.params).then(res=>{
+                keepOrders(this.params).then(res=>{
                     this.list=res.content
-
-                }).catch(err => {
-                        this.$message.error(err.response.data.message);
+                    this.list.forEach(item=>{
+                        if(item.equipKeepItems.length==1)
+                        {
+                            item.equipArgs=item.equipKeepItems[0].equipName+'('+item.equipKeepItems[0].equipModel+')'
+                        }else{
+                            item.equipArgs=item.equipKeepItems[0].equipName+'('+item.equipKeepItems[0].equipModel+')'+'...'
+                        }
                     })
+                    
+                })
             },
             filterNumber(data){
-                return data.inOutHouseItems.length
+                return data.equipKeepItems.length
             },
             changePage(page) {
             this.paginator.page = page;ss
             },
-            toInHouse(){
-                this.$router.push({path: '/equipmentOperation/startService'});
-            }
         },
         created(){
             this.getList()

@@ -3,8 +3,8 @@
           <my-header :title="$route.meta.title" :haveBlack="true" @h_black="cancel"></my-header>
          <div class="action_box" data-test="action_box">
                 <define-input label="单号" v-model="orderNumber" :disabled="true" class="odd-number"></define-input>
-                <date-select label="入库时间" v-model="time" :disabled="true"></date-select>
-                <entity-input label="入库人员" v-model="people" format="{name}" :disabled="true" ></entity-input>
+                <date-select label="保养开始时间" v-model="time" :disabled="true"></date-select>
+                <entity-input label="操作人员" v-model="people" format="{name}" :disabled="true" ></entity-input>
             </div>
         <div class="data-list">
             <bos-tabs >
@@ -66,14 +66,6 @@ export default {
             bosTabs,
             serviceDialog
         },
-        props:{
-            equipData: {
-              type: Object,
-              default() {
-                return {}
-              }
-            }
-        },
         data(){
             return{
                time:"",
@@ -113,20 +105,17 @@ export default {
             },
             changeDataFormat(data){
             data.forEach(item=>{this.list.push(item)})
-                /*详情单过来时 数据的属性不同处理方法不同*/
                 let cList=this._.groupBy(this.list, item => `${item.equipName}${item.equipModel}${item.location.id}`)
                 this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0],copyList:v,count:v.length,location:v[0].location}})
-                //this.list=this._.map(this._.groupBy(this.list, item => `${item.equipArg.model}`),(v,k)=>{return {equipArg:v[0].equipArg,copyList:v}})
-                // return this._.map(this._.groupBy(this.list, item => `${item.equipArg.model}${item.location.surface}`),(v,k)=>{return {equipArg:v[0].equipArg,copyList:v}})
         },
         },
         
         created(){
-                this.orderNumber=this.$route.params.info.number
-                this.time=this.$route.params.info.updateTime
                 console.log(this.$route.params.info);
-                this.changeDataFormat(this.$route.params.info.inOutHouseItems)
-                this.people=this.$route.params.info.operator.operator
+                this.number=this.$route.params.info.number;
+                this.time=this.$route.params.info.createdTime;
+                this.people=this.$route.params.info.operatorInfo;
+                this.changeDataFormat(this.$route.params.info.equipKeepItems)
 
             
         }

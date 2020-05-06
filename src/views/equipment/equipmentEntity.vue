@@ -151,7 +151,7 @@ export default {
             },
             milliLocation(data)
             {
-                return data.frameNumber+'架/'+data.surface+'面/'+data.section+'节/'+data.surface+'层'
+                return data.frameNumber+'架/'+data.surface+'面/'+data.section+'节/'+data.floor+'层'
             },
             getTime(nS) {
             var date=new Date(parseInt(nS));
