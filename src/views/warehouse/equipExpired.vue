@@ -6,7 +6,7 @@
                 <date-select label="保养结束时间" placeholder="--" :disabled="true"></date-select>
                 <entity-input label="操作人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :disabled="true" ></entity-input>
             </div>
-        <define-input label="备注"  :disabled="false" class="odd-number"></define-input>
+        <define-input label="备注" v-model="remark" style="margin-top:15px" :disabled="false" ></define-input>
     
     <div class="maintenance-form-body">
         <bos-tabs >
@@ -16,11 +16,12 @@
                         </template>
                         <define-table :data="newData" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
                             :highLightCurrent="true"  slot="total" :showSummary="true" :summaryFunc="sumFunc">
+                            <define-column label="操作" width="100" v-slot="{ data }">
+                               <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
+                               <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
+                            </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
                                 <entity-input v-model="data.row.equipArg"  :options="{detail:'equipArgsSelect'}" format="{name}({model})" :tableEdit="false" ></entity-input>
-                            </define-column>
-                            <define-column label="装备位置" v-slot="{ data }">
-                                <define-input v-model="data.row.location"  :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
                                 <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
@@ -60,13 +61,14 @@ import myHeader from 'components/base/header/header'
     import { start, startOne, killProcess,handheld, modifyFileName } from 'common/js/rfidReader'
     import { getInhouseNumber,inHouse,findByRfids,outHouse} from "api/storage"
     import divTmp from '@/componentized/divTmp'
-    import { findrepairingequips,endKeepEquips} from "api/operation"
+    import { equipScrap} from "api/operation"
 var _ = require("lodash");
 export default {
   name: "maintenance",
   data() {
     return {
        copyData:{},
+               remark:'',
                people:'',
                requestBody:'',
                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
@@ -82,34 +84,24 @@ export default {
                 },
                pid:'',
                findIndex:0,
-               newData:[],
+               newData:[{
+                   equipArg:'',
+                   count:0,
+                   copyList:[{rfid:'',serial:''}]
+               }],
                list:[]
     }
   },
   methods: {
-    selRow(current){
-                console.log(current);
+           selRow(current,index){
                this.findIndex=this._.indexOf(this.newData,current)
             },
             sumFunc(param) { // 表格合并行计算方法
                 let { columns, data } = param, sums = [];
-                columns.forEach((colum, index) => {
-                    if(index == 0) {
-                        sums[index] =  '合计';
-                    } else if(index == columns.length-1) {
-                        const values = data.map(item => item.count?Number(item.count):0);
-                        if(!values.every(value => isNaN(value))) {
-                            sums[index] = values.reduce((pre, cur) => !isNaN(cur)?pre+cur:pre);
-                        }
-                    } else {
-                        sums[index] = '';
-                    }
-                })
+                sums=new Array(columns.length).fill('')
+                sums[0]='合计'
+                sums[columns.length-1]=param.data.reduce((v,k)=>v+k.count,0)
                 return sums;
-            },
-            milliLocation(data)//对现实的装备位置信息进行处理
-            {
-                return data.frameNumber+'架/'+data.surface+'面/'+data.section+'节/'+data.surface+'层'
             },
             cancel(){
                 this.$router.back()
@@ -123,8 +115,8 @@ export default {
                     })
                 })
                 
-                endKeepEquips(false,rfidList).then(res=>{
-                    this.$message.success('装备结束保养成功')
+                equipScrap('MATURITY',this.remark,rfidList).then(res=>{
+                    this.$message.success('装备报废成功')
                     this.init()
                     this.cancel()
                 })
@@ -132,26 +124,28 @@ export default {
             changePage(page) {
             this.paginator.page = page;
             },
-            changelocation(){
-                this.$refs.historyDialog.show()
-            },
            classDataify(data)//读写器数据处理的方法
             {
                 data.forEach(item=>{this.list.push(item)})
-                let cList=this._.groupBy(this.list, item => `${item.equipArg.model}${item.location.id}`)
+                let cList=this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}`)
                 this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length,location:v[0].location}})
-                this.newData.forEach(item=>{item.location=this.milliLocation(item.location)})
             },
             readData(){
-                killProcess(this.pid)
-                start("java -jar scan.jar", (data) => {
-                     findByRfids(data).then(res=>{
-                     this.classDataify(res)
-                   })
-                    }, (fail) => {
-                        this.index = 1;
-                        this.$message.error(fail);
-                    }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
+                let rfids=['5775','77889','110000030000000000000000','87966']
+                rfids.forEach(item=>{
+                    findByRfids(item).then(res=>{
+                        this.classDataify(res)
+                    })
+                })
+                // killProcess(this.pid)
+                // start("java -jar scan.jar", (data) => {
+                //      findByRfids(data).then(res=>{
+                //      this.classDataify(res)
+                //    })
+                //     }, (fail) => {
+                //         this.index = 1;
+                //         this.$message.error(fail);
+                //     }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
             },
             changeDetailRow(state,data)
             {
@@ -168,24 +162,13 @@ export default {
             {
                 if(state)
                 {
-                    this.newData.push({name: '',locationId: '',price: 0,productTime: 0,rfids: [],serial: [],copyList:[{rfid:'',serial:''}],})
+                    this.newData.push({name: '',location: '',price: 0,productTime: 0,rfids: [],serial: [],copyList:[{rfid:'',serial:''}],})
                 }else if(this.newData.length>1){
                     this.newData.splice(data.$index, 1)
                 }else{
-                    this.newData=[{name: '',locationId: '',price: 0,productTime: 0,rfids: [],serial: [],copyList:[{rfid:'',serial:''}],}]
+                    this.newData=[{name: '',location: '',price: 0,productTime: 0,rfids: [],serial: [],copyList:[{rfid:'',serial:''}],}]
                 }
             },
-            init(){
-                this.newData=[{
-                    name: '',
-                    locationId: '',
-                    price: 0,
-                    productTime: 0,
-                    rfids: [],
-                    serial: [],
-                    copyList:[{rfid:'',serial:''}]
-                }]
-            }
     },
   created() {
      this.init()

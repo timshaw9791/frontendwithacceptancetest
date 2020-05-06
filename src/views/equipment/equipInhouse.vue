@@ -159,11 +159,16 @@ export default {
             readData(){
                 killProcess(this.pid)
                 start("java -jar scan.jar", (data) => {
-                    if(this.list[this.findIndex].copyList.length==1&&this.list[this.findIndex].copyList[0].rfid=='')
+                    var nelist=this.list[this.findIndex].copyList.filter(function(item){
+                        return item.rfid==data
+                    })
+                    if(nelist.length==0){
+                         if(this.list[this.findIndex].copyList.length==1&&this.list[this.findIndex].copyList[0].rfid=='')
                     {
                         this.list[this.findIndex].copyList[0].rfid=data
                     }else{
                         this.list[this.findIndex].copyList.push({rfid:data,serial:''})
+                    }
                     }
                     }, (fail) => {
                         this.index = 1;
