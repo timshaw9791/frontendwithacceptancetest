@@ -383,6 +383,11 @@ export const asyncRouterMap = [{
             component: _import('record/serviceDetails'),
             hidden:true,
             meta: {title: '维修单/维修单详情'},
+        },{
+            path: 'serviceReturn',
+            name: 'serviceReturn',
+            component: _import('record/serviceReturn'),
+            meta: {title: '维修归还单'},
         }, {
             path: 'scraded',
             name: 'scraded',

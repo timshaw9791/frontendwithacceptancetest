@@ -3,7 +3,8 @@
        <my-header :title="$route.meta.title" ></my-header>
        <div class="action_box" data-test="action_box">
                 <define-input label="单号" placeholder="--" :disabled="true" class="odd-number"></define-input>
-                <date-select label="保养结束时间" placeholder="--" :disabled="true"></date-select>
+                <define-input label="报废类型" placeholder="到期报废" :disabled="true" class="odd-number"></define-input>
+                <date-select label="报废时间" placeholder="--" :disabled="true"></date-select>
                 <entity-input label="操作人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :disabled="true" ></entity-input>
             </div>
         <define-input label="备注" v-model="remark" style="margin-top:15px" :disabled="false" ></define-input>
@@ -115,9 +116,8 @@ export default {
                     })
                 })
                 
-                equipScrap('MATURITY',this.remark,rfidList).then(res=>{
+                equipScrap(1,this.remark,rfidList).then(res=>{
                     this.$message.success('装备报废成功')
-                    this.init()
                     this.cancel()
                 })
             },
@@ -131,21 +131,15 @@ export default {
                 this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length,location:v[0].location}})
             },
             readData(){
-                let rfids=['5775','77889','110000030000000000000000','87966']
-                rfids.forEach(item=>{
-                    findByRfids(item).then(res=>{
-                        this.classDataify(res)
-                    })
-                })
-                // killProcess(this.pid)
-                // start("java -jar scan.jar", (data) => {
-                //      findByRfids(data).then(res=>{
-                //      this.classDataify(res)
-                //    })
-                //     }, (fail) => {
-                //         this.index = 1;
-                //         this.$message.error(fail);
-                //     }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
+                killProcess(this.pid)
+                start("java -jar scan.jar", (data) => {
+                     findByRfids(data).then(res=>{
+                     this.classDataify(res)
+                   })
+                    }, (fail) => {
+                        this.index = 1;
+                        this.$message.error(fail);
+                    }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
             },
             changeDetailRow(state,data)
             {
