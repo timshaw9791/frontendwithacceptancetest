@@ -111,8 +111,7 @@ export default {
         },
         methods:{
             selRow(current){
-                console.log(current);
-               this.findIndex=this._.indexOf(this.newData,current)
+               this.findIndex=current.index
             },
             sumFunc(param) { // 表格合并行计算方法
                 let { columns, data } = param, sums = [];

@@ -94,9 +94,8 @@ export default {
     }
   },
   methods: {
-    selRow(data,index) { // 单选表格行
-           console.log(data);
-            this.findIndex=this._.indexOf(this.listData,data)
+    selRow(data) { // 单选表格行
+           this.findIndex=data.index
       },
     startMain(){
        this.$router.push({path: '/equipmentOperation/startMaintenance'});

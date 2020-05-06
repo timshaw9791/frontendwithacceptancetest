@@ -21,7 +21,7 @@
                                 <define-input v-model="data.row.keepTime"  type="Number" :tableEdit="false"></define-input>
                             </define-column>
                         </define-table>
-                        <define-table :data="findIndex.copyList" height="2.8646rem" :havePage="false" slot="detail">
+                        <define-table :data="listData[this.findIndex].copyList" height="2.8646rem" :havePage="false" slot="detail">
                             <define-column label="RFID" v-slot="{ data }">
                                 <define-input v-model="data.row.rfid" type="String" :tableEdit="false"></define-input>
                             </define-column>
@@ -51,13 +51,13 @@ export default {
   name: "maintenance",
   data() {
     return {
-               findIndex:'',
+               findIndex:0,
                listData:[],
     }
   },
   methods: {
     selRow(current){
-            this.findIndex=current
+            this.findIndex=current.index
             },
             endMain(){
                 this.$router.push({path: '/equipmentOperation/endMaintenance'});
