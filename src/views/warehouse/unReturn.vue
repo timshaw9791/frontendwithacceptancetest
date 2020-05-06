@@ -2,26 +2,28 @@
     <div class="un-return-container">
         <my-header title="未归还"></my-header>
         <div class="header">
-            <entity-input label="装备名称" ></entity-input>
+            <entity-input label="装备名称"></entity-input>
         </div>
         <div class="body">
             <define-table :data="list">
-                <define-column label="装备参数" v-slot="{data}">
-                    <entity-input v-model="data.row" format="{equipName}({model})" :disabled="true"></entity-input>
-                </define-column>
+                <define-column label="装备参数" field="equipArgs"></define-column>
                 <define-column label="RFID" field="rfid"></define-column>
                 <define-column label="装备序号" field="serial"></define-column>
                 <define-column label="领取人员" field="operator"></define-column>
-                <define-column label="领取时间" field="createTime"></define-column>
+                <define-column label="领取时间" field="receiveTime"></define-column>
+                <define-column label="逾期" v-slot="{data}">
+                    <date-input v-model="data.row.overDueTime" :disabled="true"></date-input>
+                </define-column>
             </define-table>
         </div>
     </div>
 </template>
 
+
 <script>
     import myHeader from '@/components/base/header/header'
     import {listMixin} from "../../field/mixins/listMixin"
-    import BosTabs from "../../componentized/table/bosTabs";
+    import BosTabs from "../../componentized/table/bosTabs"
     import {unReturn} from "@/api/unReturnEquips"
 
     export default {
@@ -34,25 +36,26 @@
         mixins: [listMixin],
         data() {
             return {
-                list:
-                    [
-                        {
-                            createTime: "1",
-                            equipName: "警棍",
-                            model: "HD-1",
-                            operator: "管理员",
-                            rfid: "111111",
-                            serial: "22234"
-                        }
-                    ]
+                list: []
             }
         },
         methods: {
-            // fetchData() {
-            //     unReturn().then(res => {
-            //         this.list = res.content
-            //     });
-            // },
+            fetchData() {
+                unReturn().then(res => {
+                    this.list = res.content
+                    this.fixData()
+                });
+            },
+            fixData() {
+                this.list.forEach(item => {
+                    item.equipArgs = item.equipName + "(" + item.equipModel + ")"
+                    //计算逾期时间
+                    item.overDueTime =  new Date() - item.receiveTime
+                    console.log(item.overDueTime)
+                    // 时间戳转日期
+                    item.receiveTime = this.$filterTime(parseInt(item.receiveTime))
+                })
+            },
         }
     }
 </script>

@@ -44,6 +44,7 @@
             textInput,
             myHeader
         },
+
         data() {
             return {
                 list: [],
@@ -59,6 +60,7 @@
                 type: Object
             }
         },
+
         methods: {
             changePage(page) {
                 this.pageInfo.page = page;

@@ -13,10 +13,7 @@
             <define-column label="装备参数" field="allEquipArgs"></define-column>
             <define-column label="装备数量" field="equipCount"></define-column>
             <define-column label="操作人员" field="operatorInfo.operator"></define-column>
-            <define-column label="操作时间" :filter="row=>millToTime(row.createTime)"></define-column>
-            <!--<define-column label="领取时间" v-slot="{data}">
-                <date-select  v-model="data.row.createTime" :disabled="true" :column="24"></date-select>
-            </define-column>-->
+            <define-column label="操作时间" field="createTime"></define-column>
             <define-column label="类型" field="category"></define-column>
         </define-table>
     </div>
@@ -66,6 +63,8 @@
                     item.allEquipArgs = equipNameList.reduce((v, k) => v + k + " ", "")
                     //计算装备数量
                     item.equipCount = item.receiveReturnItems.length
+                    //时间戳转日期
+                    item.createTime = this.$filterTime(parseInt(item.createTime))
                 })
             },
             goto(id) {
@@ -76,24 +75,6 @@
                     }
                 })
             },
-            millToTime(mill) {
-                var oDate = new Date(mill),
-                    oYear = oDate.getFullYear(),
-                    oMonth = oDate.getMonth() + 1,
-                    oDay = oDate.getDate(),
-                    oHour = oDate.getHours(),
-                    oMin = oDate.getMinutes(),
-                    oSen = oDate.getSeconds();
-                return oYear + '-' + this.addZero(oMonth) + '-' + this.addZero(oDay) + ' ' + this.addZero(oHour) + ':' +
-                    this.addZero(oMin) + ':' + this.addZero(oSen);
-            },
-            //补零操作
-            addZero(num) {
-                if (parseInt(num) < 10) {
-                    num = '0' + num;
-                }
-                return num;
-            }
         }
     }
 </script>
