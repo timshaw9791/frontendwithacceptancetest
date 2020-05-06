@@ -249,6 +249,17 @@ export const asyncRouterMap = [{
             component: _import('cabinet/cabinetManagement'),
             meta: {title: '警柜管理'}
         }, {
+            path: 'needwear',
+            name: 'warehouse/needWear',
+            component: _import('warehouse/needWear'),
+            meta: {title: '佩戴率设置'},
+        },{
+            path: 'addneedwear',
+            name: 'addneedwear',
+            component: _import('warehouse/addNeedWear'),
+            hidden:true,
+            meta: {title: '佩戴率设置/新增必戴装备'},
+        }, {
             path: 'plan',
             name: 'warehouse/plan',
             component: _import('warehouse/plan'),
