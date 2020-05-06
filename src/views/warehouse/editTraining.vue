@@ -1,9 +1,10 @@
 <template>
   <div class="editTraining-container">
-    <my-header :title="this.$route.params.info.edit?'编辑':'新增'+'视频与文档'" :haveBlack="false"></my-header>
+    <my-header :title="this.$route.params.info.edit?'编辑视频与文档':'新增视频与文档'" :haveBlack="false"></my-header>
     <div class="editTraining-body" >
         <div style="margin:15px auto">
-            <entity-input v-model="order.equipArg" format="{name}({model})" :options="{search:'equipArgsSelect'}"></entity-input>
+            <entity-input v-if="!this.$route.params.info.edit" v-model="order.equipArg" format="{name}({model})" :options="{search:'equipArgsSelect'}"></entity-input>
+            <entity-input v-else v-model="order.equipArg" format="{name}({model})" :disabled="true" :options="{detail:'equipArgsDetail'}"></entity-input>
         </div>
         <div>
             <upload-file label="文档" type="pdf" v-model="order.pdf.fileName[0]" margin="15px"></upload-file>

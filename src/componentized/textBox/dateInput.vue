@@ -74,7 +74,12 @@ export default {
     placeholder: {
       type: [Number, String],
       default: ""
-    }
+    },
+    validate: {
+      // 验证函数
+      type: [Function, Boolean],
+      default: false
+    },
   },
   methods: {
     clear() {
@@ -94,9 +99,13 @@ export default {
       this.edit = state;
     },
     fixValue(value) {
+      if(this.validate) {
+        this.insideValue = this.validate(value);
+        return;
+      }
       switch (this.filter) {
         case 'toDay':
-          this.insideValue = value/1000/3600/24 || '';
+          this.insideValue = Math.floor(value/1000/3600/24) || '';
           break;
         case 'since':
           this.insideValue = stampToNow(value);
@@ -114,6 +123,9 @@ export default {
   },
   watch: {
     insideValue(val) {
+      if(this.validate) {
+        return;
+      }
       switch (this.filter) {
         case 'toDay':
           this.$emit('input', val*1000*24*3600);
@@ -125,8 +137,8 @@ export default {
           break;
       }
     },
-    value: {
-      handler() {
+    value(newVal, oldVal) {
+      if(!oldVal&&newVal) {
         this.fixValue(this.value);
       }
     }
