@@ -65,7 +65,14 @@ export function equipScrap(category,remark,list) {
         method: 'post',
     })
 }
-
+//保养单列表
+export function keepOrders(params) {
+    return request({
+        url: "/keep-orders",
+        method: 'get',
+        params:params
+    })
+}
 //维修申请列表
 export function RepairOrder(params) {
     return request({

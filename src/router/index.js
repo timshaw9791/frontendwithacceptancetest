@@ -365,8 +365,14 @@ export const asyncRouterMap = [{
         }, {
             path: 'maintenanceRecord',
             name: 'maintenanceRecord',
-            component: _import('record/maintenanceRecord'),
-            meta: {title: '保养记录'},
+            component: _import('record/maintenanceOrder'),
+            meta: {title: '保养单'},
+        },{
+            path: 'maintenanceOrderDetails',
+            name: 'maintenanceOrderDetails',
+            component: _import('record/MaintenanceDetails'),
+            hidden:true,
+            meta: {title: '保养单/保养单详情'},
         }, {
             path: 'serviceRecord',
             name: 'serviceRecord',
