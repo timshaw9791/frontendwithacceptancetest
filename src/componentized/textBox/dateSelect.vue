@@ -27,6 +27,7 @@ import { judgeRules } from "../rules"
         data() {
             return {
                 selectValue: "",
+                inTable: false,
                 inTableStateContrl: true,
                 styleObj: {
                   error: false
@@ -92,7 +93,7 @@ import { judgeRules } from "../rules"
         },
         computed: {
           fixWidth() {
-              return `calc(${8.33*this.column}% - 0.1042rem)`;
+              return this.inTable?`calc(100% - 0.1042rem)`:`calc(${8.33*this.column}% - 0.1042rem)`;
           }  
         },
         methods: {
@@ -118,8 +119,9 @@ import { judgeRules } from "../rules"
         },
         mounted() {
           try {
-            if(this.$refs.dateSelect.parentNode.parentNode.nodeName == 'TD'&&this.disabled) {
-                this.inTableStateContrl = false;
+            if(this.$refs.dateSelect.parentNode.parentNode.nodeName == 'TD') {
+                this.inTable = true;
+                this.inTableStateContrl = this.disabled;
             }
           } catch (error) {
             console.log("当前组件不存在上两级节点");
