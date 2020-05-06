@@ -148,9 +148,14 @@ export default {
             },
             classDataify(data)//读写器数据处理的方法
             {
-                data.forEach(item=>{this.list.push(item)})
-                let cList=this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}${item.location.id}`)
-                this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length,location:v[0].location}})
+                if(data[0].state==2)
+                {
+                    data.forEach(item=>{this.list.push(item)})
+                    let cList=this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}${item.location.id}`)
+                    this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length,location:v[0].location}})
+                }else{
+                    this.$message.error('此装备不在维修状态')
+                }
             },
             changePage(page) {
             this.paginator.page = page;
