@@ -17,6 +17,7 @@ export function getEquipArgs() {
         params
     })
 }
+
 export function saveEquipArgs(data) {
     return request({
         url: "/equip-args",
@@ -24,6 +25,7 @@ export function saveEquipArgs(data) {
         data
     })
 }
+
 export function editEquipArgs(data) {
     let id = JSON.stringify(data.id)
     return request({
