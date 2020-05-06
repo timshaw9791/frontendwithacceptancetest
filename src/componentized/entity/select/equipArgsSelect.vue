@@ -52,7 +52,7 @@
                 this.$emit('cancel');
             },
             select(current) {
-                this.currentSel = current;
+                this.currentSel = current.current;
             },
             selected() {
                 if(!this.currentSel) {

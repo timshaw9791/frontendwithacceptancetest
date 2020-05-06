@@ -2,23 +2,22 @@
     <div class="supplier">
         <div class="supplier-container">
             <my-header title="供应商" :haveBlack="false"></my-header>
-<!--            <div class="supplier">-->
-                <div class="supplier-body">
-                    <div class="supplier-info">
-                        <base-button label="新增供应商" with="20px" @click="addChanger('新增供应商')"></base-button>
-                    </div>
-                    <define-table :data="list" height="3.6458rem" :pageInfo="paginator">
-                        <define-column label="操作" v-slot="{data}">
-                            <span @click="addChanger('编辑',data.row)">编辑</span>
-                        </define-column>
-                        <define-column label="供应商名称" field="name"></define-column>
-                        <define-column label="联系人" field="person"></define-column>
-                        <define-column label="联系方式" field="phone"></define-column>
-                    </define-table>
-<!--                </div>-->
+            <div class="supplier-body">
+                <div class="supplier-info">
+                    <base-button label="新增供应商" with="20px" @click="addChanger('新增供应商')"></base-button>
+                </div>
+                <define-table :data="list" height="3.6458rem" :pageInfo="paginator">
+                    <define-column label="操作" v-slot="{data}">
+                        <span @click="addChanger('编辑',data.row)">编辑</span>
+                    </define-column>
+                    <define-column label="供应商名称" field="name"></define-column>
+                    <define-column label="联系人" field="person"></define-column>
+                    <define-column label="联系方式" field="phone"></define-column>
+                </define-table>
             </div>
         </div>
-        <service-dialog :title="title" ref="dialog" @firstCancel="cancel" @cancel="cancel" @confirm="dialogConfirm" :secondary="scondary">
+        <service-dialog :title="title" ref="dialog" @firstCancel="cancel" @cancel="cancel" @confirm="dialogConfirm"
+                        :secondary="scondary">
             <form-container ref="inlineForm" :model="inlineForm">
                 <field-input v-model="inlineForm.name" label="供应商" width="8"
                              :rules="r(true).all(R.require)" prop="name"
@@ -39,9 +38,10 @@
 <script>
     import {formRulesMixin} from '../../field/common/mixinTableRest';
     import serviceDialog from '../../components/base/serviceDialog/index'
-    import { supplierFindByName, saveSupplier, updateSupplier } from "api/equip"
+    import {supplierFindByName, saveSupplier, updateSupplier} from "api/equip"
     import myHeader from "../../components/base/header/header"
     import textInput from "../../componentized/textBox/textInput";
+
     export default {
         data() {
             return {
@@ -52,7 +52,7 @@
                 list: [],
                 inquire: '',
                 paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
-                isEdit:false
+                isEdit: false
             }
         },
         mixins: [formRulesMixin],
@@ -63,7 +63,13 @@
         },
         methods: {
             getSupplierList() {
-                let params = {page: this.paginator.page, size: this.paginator.size, name: this.inquire, direction: "DESC",properties: "updateTime"};
+                let params = {
+                    page: this.paginator.page,
+                    size: this.paginator.size,
+                    name: this.inquire,
+                    direction: "DESC",
+                    properties: "updateTime"
+                };
 
                 supplierFindByName(params).then(res => {
                     let result = JSON.parse(JSON.stringify(res))
@@ -75,11 +81,10 @@
 
                 })
             },
-            editSupplier(data){
-                if (data){
+            editSupplier(data) {
+                if (data) {
                     console.log(JSON.stringify(data))
-                }
-               else {
+                } else {
                     console.log('data is null')
                 }
             },
@@ -89,7 +94,7 @@
             },
             dialogConfirm() {
                 let obj = JSON.parse(JSON.stringify(this.inlineForm))
-                this.$refs.inlineForm.restValidate(this.title.includes('编辑')?updateSupplier:saveSupplier, obj, res => {
+                this.$refs.inlineForm.restValidate(this.title.includes('编辑') ? updateSupplier : saveSupplier, obj, res => {
                     this.$message.success(`${this.title}成功`)
                     this.$refs.dialog.hide()
                     this.paginator.page = 1
@@ -101,7 +106,7 @@
             addChanger(title, row) {
                 this.title = title;
 
-                this.inlineForm=this.isEdit?JSON.parse(JSON.stringify(row)):{};
+                this.inlineForm = this.isEdit ? JSON.parse(JSON.stringify(row)) : {};
 
                 if (title.includes('编辑')) {
                     this.inlineForm = JSON.parse(JSON.stringify(row));
@@ -118,7 +123,7 @@
         watch: {
             inlineForm: {
                 handler(bal) {
-                    if(this.editInlineForm) {
+                    if (this.editInlineForm) {
                         this.scondary = true
                     } else {
                         this.editInlineForm = true
@@ -142,10 +147,12 @@
         color: #707070FF;
         font-size: 16px;
     }
+
     .supplier-info {
         padding: 16px 7px;
         overflow: hidden;
     }
+
     .supplier-body {
         padding: 0 17px;
     }

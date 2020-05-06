@@ -68,20 +68,17 @@
             back() {
                 this.$router.back()
             },
-            setImg(data) {
-                this.formData.image = data
-            },
             clear() {
                 this.$router.push('equipArgsList')
             },
             submit() {
                 if (this.isEdit) {
                     editEquipArgs(this.formData).then(() => {
-                        this.$router.push('equipArgsList')
+                        this.back()
                     })
                 } else {
                     saveEquipArgs(this.formData).then(() => {
-                        this.$router.push('equipArgsList')
+                        this.back()
                     })
                 }
             },

@@ -13,7 +13,9 @@
             <define-column label="装备参数" field="allEquipArgs"></define-column>
             <define-column label="装备数量" field="equipCount"></define-column>
             <define-column label="操作人员" field="operatorInfo.operator"></define-column>
-            <define-column label="操作时间" field="createTime"></define-column>
+            <define-column label="时间选择" v-slot="{data}">
+                <date-select v-model="data.row.createTime" :disabled="true"></date-select>
+            </define-column>
             <define-column label="类型" field="category"></define-column>
         </define-table>
     </div>
