@@ -101,7 +101,7 @@ export const asyncRouterMap = [{
         children: [ {
             path: 'myProcess',
             name: 'myProcess',
-            component: _import('process/myProcessNew'),
+            component: _import('process/myProcess'),
             meta: {title: '我的流程'},
         }, {
             path: 'newProcess',
@@ -131,7 +131,7 @@ export const asyncRouterMap = [{
         }, {
             path: 'myProcess/:type/:audit', // 流程申请单
             name: 'applyAudit',
-            component: _import('process/processForm'),
+            component: _import('process/scrapDetail'),
             hidden: true,
         }, {
             path: 'agencyMatters',
