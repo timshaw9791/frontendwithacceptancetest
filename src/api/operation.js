@@ -73,6 +73,14 @@ export function keepOrders(params) {
         params:params
     })
 }
+//维修单列表
+export function serviceOrders(params) {
+    return request({
+        url:  "/repair-orders",
+        method: 'get',
+        params:params
+    })
+}
 //维修申请列表
 export function RepairOrder(params) {
     return request({

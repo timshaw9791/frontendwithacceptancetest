@@ -3,7 +3,7 @@
           <my-header :title="$route.meta.title" :haveBlack="true" @h_black="cancel"></my-header>
          <div class="action_box" data-test="action_box">
                 <define-input label="单号" v-model="orderNumber" :disabled="true" class="odd-number"></define-input>
-                <date-select label="保养开始时间" v-model="time" :disabled="true"></date-select>
+                <date-select label="维修开始时间" v-model="time" :disabled="true"></date-select>
                 <entity-input label="操作人员" v-model="people" format="{name}" :disabled="true" ></entity-input>
             </div>
         <div class="data-list">
@@ -98,10 +98,9 @@ export default {
             this.paginator.page = page;
             },
             changeDataFormat(data){
-                console.log(data);
-            // data.forEach(item=>{this.list.push(item)})
-            //     let cList=this._.groupBy(this.list, item => `${item.equipName}${item.equipModel}${item.locationInfo.id}`)
-            //     this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0],copyList:v,count:v.length,location:v[0].locationInfo}})
+            data.forEach(item=>{this.list.push(item)})
+                let cList=this._.groupBy(this.list, item => `${item.equipName}${item.equipModel}${item.locationInfo.id}`)
+                this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0],copyList:v,count:v.length,location:v[0].locationInfo}})
         },
         },
         
@@ -110,7 +109,7 @@ export default {
                 this.orderNumber=this.$route.params.info.number;
                 this.time=this.$route.params.info.createTime;
                 this.people=this.$route.params.info.operatorInfo.operator;
-                this.changeDataFormat(this.$route.params.info.equipRepairItems)
+                this.changeDataFormat(this.$route.params.info.equipKeepItems)
 
             
         }
