@@ -22,7 +22,7 @@
                                 <entity-input v-model="data.row.equipArgId"  :options="{search:'equipArgsSelect'}" format="{name}({model})" :tableEdit="true" ></entity-input>
                             </define-column>
                             <define-column label="装备位置"  v-slot="{ data }" >
-                                 <entity-input v-model="data.row.locationId"  :options="{search:'locationSelect'}" format="{frameNumber}架/{surface}面/{section}节/{surface}层" :tableEdit="true" ></entity-input>
+                                 <entity-input v-model="data.row.locationId"  :options="{search:'locationSelect'}" format="{frameNumber}架/{surface}面/{section}节/{floor}层" :tableEdit="true" ></entity-input>
                             </define-column>
                             <define-column label="单价" v-slot="{ data }">
                                 <define-input v-model="data.row.price" type="Number" ></define-input>
@@ -120,8 +120,8 @@ export default {
             }
         },
         methods:{
-            selRow(data,index){
-               this.findIndex=this._.indexOf(this.list,data)
+            selRow(data){
+               this.findIndex=data.index
             },
             sumFunc(param) { // 表格合并行计算方法
                  let { columns, data } = param, sums = [];

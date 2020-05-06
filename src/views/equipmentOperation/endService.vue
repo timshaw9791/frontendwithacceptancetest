@@ -22,7 +22,7 @@
                                 <entity-input v-model="data.row.equipArg" format="{name}({model})" :tableEdit="false" ></entity-input>
                             </define-column>
                             <define-column label="装备位置" v-slot="{ data }">
-                                <entity-input v-model="data.row.location" format="{frameNumber}架/{surface}面/{section}节/{surface}层" :tableEdit="false"></entity-input>
+                                <entity-input v-model="data.row.location" format="{frameNumber}架/{surface}面/{section}节/{floor}层" :tableEdit="false"></entity-input>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
                                 <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
@@ -111,8 +111,7 @@ export default {
         },
         methods:{
             selRow(current){
-                console.log(current);
-               this.findIndex=this._.indexOf(this.newData,current)
+               this.findIndex=current.index
             },
             sumFunc(param) { // 表格合并行计算方法
                 let { columns, data } = param, sums = [];

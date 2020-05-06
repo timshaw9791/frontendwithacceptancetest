@@ -22,7 +22,7 @@
                                 <entity-input v-model="data.row.equipArg"  :options="{detail:'equipArgsDetails'}" format="{name}({model})" :tableEdit="false" ></entity-input>
                             </define-column>
                             <define-column label="装备位置" v-slot="{ data }">
-                                <entity-input v-model="data.row.location" format="{frameNumber}架/{surface}面/{section}节/{surface}层" :tableEdit="false"></entity-input>
+                                <entity-input v-model="data.row.location" format="{frameNumber}架/{surface}面/{section}节/{floor}层" :tableEdit="false"></entity-input>
                             </define-column>
                             <define-column label="可保养数量" v-slot="{ data }">
                                 <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
@@ -119,8 +119,8 @@ export default {
             }
         },
         methods:{
-          selRow(data,index) { // 单选表格行
-           this.findIndex=this._.indexOf(this.listData,data)
+          selRow(data) { // 单选表格行
+           this.findIndex=data.index
       },
        changeRow(state,data){
 
