@@ -19,7 +19,7 @@ export function addSupplier(data) {
 
 export function updateSupplier(data) {
     return request({
-        url: "/suppliers/",
+        url: `/suppliers/${data.id}`,
         method: "PUT",
         data
     })

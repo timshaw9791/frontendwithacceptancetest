@@ -38,7 +38,7 @@
 <script>
     import {formRulesMixin} from '../../field/common/mixinTableRest';
     import serviceDialog from '../../components/base/serviceDialog/index'
-    import {supplierFindByName, saveSupplier, updateSupplier} from "api/equip"
+    import {getSupplier, addSupplier, updateSupplier} from "@/api/supplier"
     import myHeader from "../../components/base/header/header"
     import textInput from "../../componentized/textBox/textInput";
 
@@ -71,22 +71,13 @@
                     properties: "updateTime"
                 };
 
-                supplierFindByName(params).then(res => {
-                    let result = JSON.parse(JSON.stringify(res))
-
-                    this.list = result.content
+                getSupplier(params).then(res => {
+                    this.list = res.content
                     this.paginator.totalPages = res.totalPages
                     this.paginator.totalElements = res.totalElements
                 }).catch(e => {
 
                 })
-            },
-            editSupplier(data) {
-                if (data) {
-                    console.log(JSON.stringify(data))
-                } else {
-                    console.log('data is null')
-                }
             },
             changePage(page) {
                 this.paginator.page = page
@@ -94,8 +85,8 @@
             },
             dialogConfirm() {
                 let obj = JSON.parse(JSON.stringify(this.inlineForm))
-                this.$refs.inlineForm.restValidate(this.title.includes('编辑') ? updateSupplier : saveSupplier, obj, res => {
-                    this.$message.success(`${this.title}成功`)
+                let requestApi = this.title.includes('编辑') ? updateSupplier : addSupplier
+                requestApi(this.inlineForm).then(()=>{
                     this.$refs.dialog.hide()
                     this.paginator.page = 1
                     this.editInlineForm = false
