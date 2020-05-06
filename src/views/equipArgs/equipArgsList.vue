@@ -26,7 +26,7 @@
 </template>
 
 <script>
-    import {getEpArgsList} from "../../api/equipArgs";
+    import {getEpArgsList} from "@/api/equipArgs";
     import textInput from "../../componentized/textBox/textInput";
     import myHeader from "../../components/base/header/header"
     import {imgBaseUrl} from "../../api/config"

@@ -27,7 +27,6 @@
                     <base-button label="提交" @click="submit()"></base-button>
                 </div>
             </form-container>
-
         </div>
     </div>
 </template>
@@ -73,16 +72,16 @@
                 this.formData.image = data
             },
             clear() {
-                this.$router.push({path: "equipArgsList"})
+                this.$router.push('equipArgsList')
             },
             submit() {
                 if (this.isEdit) {
                     editEquipArgs(this.formData).then(() => {
-                        this.$router.push({path: "equipArgsList"})
+                        this.$router.push('equipArgsList')
                     })
                 } else {
                     saveEquipArgs(this.formData).then(() => {
-                        this.$router.push({path: "equipArgsList"})
+                        this.$router.push('equipArgsList')
                     })
                 }
             },
