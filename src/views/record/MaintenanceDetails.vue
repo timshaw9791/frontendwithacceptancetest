@@ -17,12 +17,6 @@
                             <define-column label="装备位置"  v-slot="{ data }" >
                                  <entity-input v-model="data.row.location"  format="{frameNumber}架/{surface}面/{section}节/{surface}层" :tableEdit="false" ></entity-input>
                             </define-column>
-                            <define-column label="单价" v-slot="{ data }">
-                                <define-input v-model="data.row.equipArg.price" :tableEdit="false" type="Number" ></define-input>
-                            </define-column>
-                            <define-column label="生产日期" v-slot="{ data }">
-                                <date-select label="生产日期" v-model="data.row.equipArg.productTime" :disabled="true" :column="12" ></date-select>
-                            </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
                                 <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
                             </define-column>
@@ -105,16 +99,16 @@ export default {
             },
             changeDataFormat(data){
             data.forEach(item=>{this.list.push(item)})
-                let cList=this._.groupBy(this.list, item => `${item.equipName}${item.equipModel}${item.location.id}`)
-                this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0],copyList:v,count:v.length,location:v[0].location}})
+                let cList=this._.groupBy(this.list, item => `${item.equipName}${item.equipModel}${item.locationInfo.id}`)
+                this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0],copyList:v,count:v.length,location:v[0].locationInfo}})
         },
         },
         
         created(){
                 console.log(this.$route.params.info);
-                this.number=this.$route.params.info.number;
-                this.time=this.$route.params.info.createdTime;
-                this.people=this.$route.params.info.operatorInfo;
+                this.orderNumber=this.$route.params.info.number;
+                this.time=this.$route.params.info.createTime;
+                this.people=this.$route.params.info.operatorInfo.operator;
                 this.changeDataFormat(this.$route.params.info.equipKeepItems)
 
             

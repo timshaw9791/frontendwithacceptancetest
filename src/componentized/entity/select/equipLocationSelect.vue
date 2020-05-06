@@ -72,7 +72,7 @@ export default {
             selRow(current){
                 if(!current) return; // 避免切换数据时报错
                 console.log(current);
-                 this.currentSel = current;
+                 this.currentSel = current.current;
             },
             cancel() {
                 this.$emit('cancel');
