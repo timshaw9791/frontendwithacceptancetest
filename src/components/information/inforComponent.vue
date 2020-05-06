@@ -72,7 +72,6 @@
 
 <script>
     import {formRulesMixin} from 'field/common/mixinComponent';
-    import user from 'gql/user.gql'
     import tips from 'components/base/tips'
     import {baseURL} from "../../api/config";
     /* import {scrappedUp} from "api/workflow";*/

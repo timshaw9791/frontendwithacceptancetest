@@ -87,12 +87,7 @@ export const asyncRouterMap = [{
             name: 'equipment/equipmententity',
             component: _import('equipment/equipmentEntity'),
             meta: {title: '装备实体'},
-        }, {
-            path: 'searchstorage',
-            name: 'equipment/search',
-            component: _import('equipment/searchStorageInfo'),
-            meta: {title: '装备搜索'},
-        }, {
+        },{
             path: 'supplier',
             name: 'equipment/supplier',
             component: _import('equipment/supplier'),
