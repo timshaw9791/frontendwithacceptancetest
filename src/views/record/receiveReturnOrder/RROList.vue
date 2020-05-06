@@ -13,9 +13,10 @@
             <define-column label="装备参数" field="allEquipArgs"></define-column>
             <define-column label="装备数量" field="equipCount"></define-column>
             <define-column label="操作人员" field="operatorInfo.operator"></define-column>
-            <define-column label="时间选择" v-slot="{data}">
-                <date-select v-model="data.row.createTime" :disabled="true"></date-select>
-            </define-column>
+            <define-column label="操作时间" :filter="row=>millToTime(row.createTime)"></define-column>
+            <!--<define-column label="领取时间" v-slot="{data}">
+                <date-select  v-model="data.row.createTime" :disabled="true" :column="24"></date-select>
+            </define-column>-->
             <define-column label="类型" field="category"></define-column>
         </define-table>
     </div>
@@ -51,12 +52,12 @@
             },
             fixData(data) {
                 data.forEach(item => {
-                   item.category = item.category === 6 ? '领取' : '归还';
+                    item.category = item.category === 6 ? '领取' : '归还';
                 })
                 this.list = data;
                 //累加装备参数
-                let equipNameList = []
                 this.list.forEach(item => {
+                    let equipNameList = []
                     item.receiveReturnItems.forEach(item => {
                         equipNameList.push(item.equipName + "(" + item.equipModel + ")")
                     })
@@ -74,6 +75,24 @@
                         id: id
                     }
                 })
+            },
+            millToTime(mill) {
+                var oDate = new Date(mill),
+                    oYear = oDate.getFullYear(),
+                    oMonth = oDate.getMonth() + 1,
+                    oDay = oDate.getDate(),
+                    oHour = oDate.getHours(),
+                    oMin = oDate.getMinutes(),
+                    oSen = oDate.getSeconds();
+                return oYear + '-' + this.addZero(oMonth) + '-' + this.addZero(oDay) + ' ' + this.addZero(oHour) + ':' +
+                    this.addZero(oMin) + ':' + this.addZero(oSen);
+            },
+            //补零操作
+            addZero(num) {
+                if (parseInt(num) < 10) {
+                    num = '0' + num;
+                }
+                return num;
             }
         }
     }
