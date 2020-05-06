@@ -109,7 +109,7 @@ export default {
                 this.orderNumber=this.$route.params.info.number;
                 this.time=this.$route.params.info.createTime;
                 this.people=this.$route.params.info.operatorInfo.operator;
-                this.changeDataFormat(this.$route.params.info.equipKeepItems)
+                this.changeDataFormat(this.$route.params.info.equipRepairItems)
 
             
         }

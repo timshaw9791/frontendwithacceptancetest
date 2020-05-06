@@ -98,10 +98,9 @@ export default {
             this.paginator.page = page;
             },
             changeDataFormat(data){
-                console.log(data);
-            // data.forEach(item=>{this.list.push(item)})
-            //     let cList=this._.groupBy(this.list, item => `${item.equipName}${item.equipModel}${item.locationInfo.id}`)
-            //     this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0],copyList:v,count:v.length,location:v[0].locationInfo}})
+            data.forEach(item=>{this.list.push(item)})
+                let cList=this._.groupBy(this.list, item => `${item.equipName}${item.equipModel}${item.locationInfo.id}`)
+                this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0],copyList:v,count:v.length,location:v[0].locationInfo}})
         },
         },
         
@@ -110,7 +109,7 @@ export default {
                 this.orderNumber=this.$route.params.info.number;
                 this.time=this.$route.params.info.createTime;
                 this.people=this.$route.params.info.operatorInfo.operator;
-                this.changeDataFormat(this.$route.params.info.equipRepairItems)
+                this.changeDataFormat(this.$route.params.info.equipKeepItems)
 
             
         }
