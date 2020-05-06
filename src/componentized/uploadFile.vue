@@ -1,5 +1,7 @@
 <template>
-    <div class="upload-file-container" :class="[size,{border}]" :style="`margin:${margin};float:${align}`">
+    <div class="upload-file-container" :class="[size,{border}]" 
+        :style="`margin:${margin};float:${align}`"
+        element-loading-text="文件上传中" v-loading="loading">
         <input type="file" class="file" :accept="acceptType" @change="changeFile" ref="file">
         <div class="icon-box" @click="showFileSelect">
             <i class="iconfont iconjiahao" v-show="!disabled&&!fileName"></i>
@@ -21,6 +23,7 @@ export default {
         return {
             fileName: '',
             fetch: '',
+            loading: false,
             config: {
                 headers: {
                     'Content-Type': 'multipart/form-data'
@@ -75,7 +78,7 @@ export default {
             })
         },
         showFileSelect() {
-            if(this.disabled) return;
+            if(this.disabled||this.loading) return;
             this.$refs.file.click();
         },
         changeFile() {
@@ -100,8 +103,10 @@ export default {
         upFile(url, file) {
             let param = new FormData();
             param.append('file', file, file.name);
+            this.loading = true;
             this.fetch.post(url, param, this.config).then(res => {
                 this.fileName = res.data;
+                this.loading = false;
                 this.$emit('input', this.fileName);
             })
         }
@@ -119,10 +124,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+/deep/ .el-loading-mask {
+    .el-loading-text {
+        color: #2f2f76 !important;
+    }
+}
 .upload-file-container {
     display: inline-block;
     position: relative;
     text-align: center;
+    vertical-align: top; // 解决fontSize导致div下沉问题
     .file {
         width: 0;
         height: 0;
