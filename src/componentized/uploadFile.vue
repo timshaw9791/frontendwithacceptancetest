@@ -13,6 +13,7 @@
         <span class="label" v-show="['pdf','video'].includes(type)">{{ fileName }}</span>
         <div class="progress-box" v-if="loading">
             <define-progress :percentage="percentage" :textInside="true" class="define-progress"></define-progress>
+            <span class="cancel" @click="cancelHandler.cancel('取消上传')">取消上传</span>
         </div>
     </div>
 </template>
@@ -30,6 +31,7 @@ export default {
             fetch: '',
             loading: false,
             percentage: 0,
+            cancelHandler: null, // 取消上传请求的实例
             config: {
                 headers: {
                     'Content-Type': 'multipart/form-data'
@@ -82,9 +84,11 @@ export default {
     },
     methods: {
         init() {
+            this.cancelHandler = axios.CancelToken.source(); // 取消请求的工厂方法
             this.fetch = axios.create({
                 withCrDedentials: true
-            })
+            });
+            this.config.cancelToken = this.cancelHandler.token;
         },
         showFileSelect() {
             if(this.disabled||this.loading||this.fileName) return;
@@ -117,6 +121,11 @@ export default {
                 this.fileName = res.data;
                 this.loading = false;
                 this.$emit('input', this.fileName);
+            }).catch(err => {
+                if(err.message) {
+                    this.$message.info(err.message);
+                }
+                this.loading = false;
             })
         },
         remove() { // 删除
@@ -168,7 +177,7 @@ export default {
     }
     .progress-box {
         display: grid;
-        align-items: center;
+        // align-items: center;
         background-color: hsla(0,0%,100%,.8);
         width: 100%;
         height: 100%;
@@ -178,10 +187,22 @@ export default {
         padding: 0 10px;
         user-select: none;
     }
+    .define-progress {
+        align-self: flex-end;
+    }
+    .cancel {
+        margin-top: 6px;
+        color: #aaa;
+        opacity: 0;
+        cursor: pointer;
+    }
 }
 .upload-file-container:hover {
     .iconwenbenkuangshanchu {
         display: block;
+    }
+    .cancel {
+        opacity: 1;
     }
 }
 .border {
