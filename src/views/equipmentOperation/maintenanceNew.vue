@@ -106,9 +106,12 @@ export default {
       },
       classDataify(data)//读写器数据处理的方法
             {
+                  if(this._.findIndex(this.list,data[0])==-1)//避免重复
+                {
                 data.forEach(item=>{this.list.push(item)})
                 let cList=this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}${item.location.id}`)
                 this.listData=this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length,location:v[0].location}})
+                }
             },
       classDataifyRfid(data)
       {
@@ -138,24 +141,24 @@ export default {
         })
       },
       readData(){
-                // killProcess(this.pid)
-                // start("java -jar scan.jar", (data) => {
-                //     if(this.list[this.findIndex].copyList.length==1&&this.list[this.findIndex].copyList[0].rfid=='')
-                //     {
-                //         this.list[this.findIndex].copyList[0].rfid=data
-                //     }else{
-                //         this.list[this.findIndex].copyList.push({rfid:data,serial:''})
-                //     }
-                //     }, (fail) => {
-                //         this.index = 1;
-                //         this.$message.error(fail);
-                //     }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
-                let rfids=['00001545']
-                rfids.forEach(item=>{
-                    findByRfids(item).then(res=>{
-                     this.classDataifyRfid(res)
-                   })
-                })
+                killProcess(this.pid)
+                start("java -jar scan.jar", (data) => {
+                    if(this.list[this.findIndex].copyList.length==1&&this.list[this.findIndex].copyList[0].rfid=='')
+                    {
+                        this.list[this.findIndex].copyList[0].rfid=data
+                    }else{
+                        this.list[this.findIndex].copyList.push({rfid:data,serial:''})
+                    }
+                    }, (fail) => {
+                        this.index = 1;
+                        this.$message.error(fail);
+                    }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
+                // let rfids=['00001545']
+                // rfids.forEach(item=>{
+                //     findByRfids(item).then(res=>{
+                //      this.classDataifyRfid(res)
+                //    })
+                // })
             },
       init(){
                 this.listData=[{

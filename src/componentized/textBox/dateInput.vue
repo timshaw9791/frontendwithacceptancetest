@@ -124,7 +124,6 @@ export default {
   watch: {
     insideValue(val) {
       if(this.validate) {
-        this.$emit('input', val);
         return;
       }
       switch (this.filter) {

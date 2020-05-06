@@ -192,11 +192,6 @@ export const asyncRouterMap = [{
             component: _import('equipmentOperation/needMaintenanced'),
             meta: {title: '正在保养'},
         }, {
-            path: 'service',
-            name: 'service',
-            component: _import('equipmentOperation/service'),
-            meta: {title: '维修'},
-        }, {
             path: 'serviceapplication',
             name: 'serviceapplication',
             component: _import('equipmentOperation/serviceApplicationInfo'),
@@ -273,6 +268,12 @@ export const asyncRouterMap = [{
             name: 'warehouse/expired',
             component: _import('warehouse/expired'),
             meta: {title: '到期报废'},
+        },{
+            path: 'equipexpired',
+            name: 'equipexpired',
+            component: _import('warehouse/equipExpired'),
+            meta:{title:'到期报废/装备报废'},
+            hidden: true,
         }, {
             path: 'training',
             name: 'warehouse/training',
@@ -358,8 +359,14 @@ export const asyncRouterMap = [{
         }, {
             path: 'maintenanceRecord',
             name: 'maintenanceRecord',
-            component: _import('record/maintenanceRecord'),
-            meta: {title: '保养记录'},
+            component: _import('record/maintenanceOrder'),
+            meta: {title: '保养单'},
+        },{
+            path: 'maintenanceOrderDetails',
+            name: 'maintenanceOrderDetails',
+            component: _import('record/MaintenanceDetails'),
+            hidden:true,
+            meta: {title: '保养单/保养单详情'},
         }, {
             path: 'serviceRecord',
             name: 'serviceRecord',

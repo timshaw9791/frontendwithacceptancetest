@@ -141,14 +141,14 @@ export default {
             changelocation(){
                 this.$refs.historyDialog.show()
             },
-            classDataify(data)//读写器数据处理的方法
+            classDataify(data)
             {
-                data.forEach(item=>{this.list.push(item)})
-                /*详情单过来时 数据的属性不同处理方法不同*/
+                if(this._.findIndex(this.list,data[0])==-1)//避免重复
+                {
+                     data.forEach(item=>{this.list.push(item)})
                 let cList=this.showDetail?this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}`):this._.groupBy(this.list, item => `${item.equipName}${item.equipModel}`)
                 this.newData=this.showDetail?this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length}}):this._.map(cList,(v,k)=>{return {equipArg:v[0],copyList:v,count:v.length}})
-                //this.list=this._.map(this._.groupBy(this.list, item => `${item.equipArg.model}`),(v,k)=>{return {equipArg:v[0].equipArg,copyList:v}})
-                // return this._.map(this._.groupBy(this.list, item => `${item.equipArg.model}${item.location.surface}`),(v,k)=>{return {equipArg:v[0].equipArg,copyList:v}})
+                }
             },
             readData(){
                 if(this.select.selected=='reader')
