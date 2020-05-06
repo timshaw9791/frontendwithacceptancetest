@@ -34,7 +34,7 @@ export default {
                     'Content-Type': 'multipart/form-data'
                 },
                 onUploadProgress: event => {
-                    this.percentage = (event.loaded/event.total*100).toFixed(1);
+                    this.percentage = Number((event.loaded/event.total*100).toFixed(1));
                 }
             }
         }
