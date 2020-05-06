@@ -138,10 +138,13 @@ export default {
             {
                 if(data[0].state==3)
                 {
+                    if(this._.findIndex(this.list,data[0])==-1)//避免重复
+                {
                 data.forEach(item=>{this.list.push(item)})
                 let cList=this._.groupBy(this.list, item => `${item.equipArg.model}${item.location.id}`)
                 this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length,location:v[0].location}})
                 this.newData.forEach(item=>{item.location=this.milliLocation(item.location)})
+                }
                 }else{
                     this.$message.error('此装备不在保养状态')
                 }

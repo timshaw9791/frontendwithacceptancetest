@@ -106,9 +106,12 @@ export default {
       },
       classDataify(data)//读写器数据处理的方法
             {
+                  if(this._.findIndex(this.list,data[0])==-1)//避免重复
+                {
                 data.forEach(item=>{this.list.push(item)})
                 let cList=this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}${item.location.id}`)
                 this.listData=this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length,location:v[0].location}})
+                }
             },
       classDataifyRfid(data)
       {
