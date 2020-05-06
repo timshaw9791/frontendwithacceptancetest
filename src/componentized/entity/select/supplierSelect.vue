@@ -33,7 +33,7 @@
         },
         methods: {
             changeCurrent(data) {
-                this.selected = data
+                this.selected = data.current
             },
             cancel() {
                 this.$emit('cancel');
