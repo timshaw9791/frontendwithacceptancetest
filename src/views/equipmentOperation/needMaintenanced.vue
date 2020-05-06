@@ -12,7 +12,7 @@
                                 <entity-input v-model="data.row.equipArg"  :options="{detail:'equipArgsSelect'}" format="{name}({model})" :tableEdit="false" ></entity-input>
                             </define-column>
                             <define-column label="装备位置" v-slot="{ data }">
-                                <entity-input label="装备位置" v-model="data.row.location"  :options="{search:'locationSelect'}" format="{frameNumber}架/{surface}面/{section}节/{surface}层/" :tableEdit="false"></entity-input>
+                                <entity-input label="装备位置" v-model="data.row.location"  :options="{search:'locationSelect'}" format="{frameNumber}架/{surface}面/{section}节/{floor}层" :tableEdit="false"></entity-input>
                             </define-column>
                             <define-column label="正在保养数量" v-slot="{ data }">
                                 <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>

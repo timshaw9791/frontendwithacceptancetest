@@ -132,7 +132,7 @@ export default {
       },
       milliLocation(data)//对现实的装备位置信息进行处理
             {
-                return data.frameNumber+'架/'+data.surface+'面/'+data.section+'节/'+data.surface+'层'
+                return data.frameNumber+'架/'+data.surface+'面/'+data.section+'节/'+data.floor+'层'
             },
       getList(){
         needKeepEquips().then(res=>{
