@@ -12,7 +12,7 @@
                                 <entity-input v-model="data.row.equipArg"  :options="{detail:'equipArgsSelect'}" format="{name}({model})" :tableEdit="false" ></entity-input>
                             </define-column>
                             <define-column label="装备位置" v-slot="{ data }">
-                                <entity-input label="装备位置" v-model="data.row.location"  :options="{search:'locationSelect'}" format="{frameNumber}架/{surface}面/{section}节/{surface}层/" :tableEdit="false"></entity-input>
+                                <entity-input label="装备位置" v-model="data.row.location"  :options="{search:'locationSelect'}" format="{frameNumber}架/{surface}面/{section}节/{floor}层" :tableEdit="false"></entity-input>
                             </define-column>
                             <define-column label="正在保养数量" v-slot="{ data }">
                                 <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
@@ -21,7 +21,7 @@
                                 <define-input v-model="data.row.keepTime"  type="Number" :tableEdit="false"></define-input>
                             </define-column>
                         </define-table>
-                        <define-table :data="findIndex.copyList" height="2.8646rem" :havePage="false" slot="detail">
+                        <define-table :data="listData[this.findIndex].copyList" height="2.8646rem" :havePage="false" slot="detail">
                             <define-column label="RFID" v-slot="{ data }">
                                 <define-input v-model="data.row.rfid" type="String" :tableEdit="false"></define-input>
                             </define-column>
@@ -51,13 +51,13 @@ export default {
   name: "maintenance",
   data() {
     return {
-               findIndex:'',
+               findIndex:0,
                listData:[],
     }
   },
   methods: {
     selRow(current){
-            this.findIndex=current
+            this.findIndex=current.index
             },
             endMain(){
                 this.$router.push({path: '/equipmentOperation/endMaintenance'});

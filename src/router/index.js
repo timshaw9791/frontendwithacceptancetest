@@ -388,6 +388,11 @@ export const asyncRouterMap = [{
             name: 'serviceReturn',
             component: _import('record/serviceReturn'),
             meta: {title: '维修归还单'},
+        },{
+            path: 'serviceApplicationOrder',
+            name: 'serviceApplicationOrder',
+            component: _import('record/serviceApplicationOrder'),
+            meta: {title: '维修申请记录'},
         }, {
             path: 'scraded',
             name: 'scraded',
