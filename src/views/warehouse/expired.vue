@@ -16,7 +16,7 @@
                                 <entity-input v-model="data.row.equipArg" :detailParam="data.row.equipArg" :options="{ detail: 'equipArgsDetail' }" format="{name}({model})" :disabled="true" ></entity-input>
                             </define-column>
                             <define-column label="装备位置" v-slot="{data}">
-                                <entity-input v-model="data.row.location" format="{frameNumber}架/{surface}面/{section}节/{surface}层" :tableEdit="false"></entity-input>
+                                <entity-input v-model="data.row.location" format="{frameNumber}架/{surface}面/{section}节/{floor}层" :tableEdit="false"></entity-input>
                             </define-column>
                             <define-column label="到期时间" :filter="(row)=>milliTime(row.createTime+row.shelfLife)"/>
                             

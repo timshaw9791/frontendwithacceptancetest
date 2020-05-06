@@ -16,7 +16,14 @@ export function saveSupplier(data) {
     data
   })
 }
-
+//新增必戴装备
+export function addWearRates(data) {
+  return request({
+    url: "/wear-rates",
+    method: "POST",
+    data
+  })
+}
 export function updateSupplier(data) {
   return request({
     url: "/supplier/updateSupplier",
