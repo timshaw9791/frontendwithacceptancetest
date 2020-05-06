@@ -87,12 +87,7 @@ export const asyncRouterMap = [{
             name: 'equipment/equipmententity',
             component: _import('equipment/equipmentEntity'),
             meta: {title: '装备实体'},
-        }, {
-            path: 'searchstorage',
-            name: 'equipment/search',
-            component: _import('equipment/searchStorageInfo'),
-            meta: {title: '装备搜索'},
-        }, {
+        },{
             path: 'supplier',
             name: 'equipment/supplier',
             component: _import('equipment/supplier'),
@@ -106,7 +101,7 @@ export const asyncRouterMap = [{
         children: [ {
             path: 'myProcess',
             name: 'myProcess',
-            component: _import('process/myProcessNew'),
+            component: _import('process/myProcess'),
             meta: {title: '我的流程'},
         }, {
             path: 'newProcess',
@@ -136,7 +131,7 @@ export const asyncRouterMap = [{
         }, {
             path: 'myProcess/:type/:audit', // 流程申请单
             name: 'applyAudit',
-            component: _import('process/processForm'),
+            component: _import('process/scrapDetail'),
             hidden: true,
         }, {
             path: 'agencyMatters',
@@ -220,9 +215,9 @@ export const asyncRouterMap = [{
         name: 'warehouse',
         meta: {title: '库房管理', icon: '库房管理'},
         children: [ {
-            path: 'safety',
-            name: 'warehouse/safety',
-            component: _import('warehouse/safety'),
+            path: 'safetyNew',
+            name: 'warehouse/safetyNew',
+            component: _import('warehouse/safetyNew'),
             meta: {title: '安全库存'},
         }, {
             path: 'surroundings',
@@ -248,6 +243,17 @@ export const asyncRouterMap = [{
             name: 'cabinet/cabinetManagement',
             component: _import('cabinet/cabinetManagement'),
             meta: {title: '警柜管理'}
+        }, {
+            path: 'needwear',
+            name: 'warehouse/needWear',
+            component: _import('warehouse/needWear'),
+            meta: {title: '佩戴率设置'},
+        },{
+            path: 'addneedwear',
+            name: 'addneedwear',
+            component: _import('warehouse/addNeedWear'),
+            hidden:true,
+            meta: {title: '佩戴率设置/新增必戴装备'},
         }, {
             path: 'plan',
             name: 'warehouse/plan',
@@ -388,6 +394,11 @@ export const asyncRouterMap = [{
             name: 'serviceReturn',
             component: _import('record/serviceReturn'),
             meta: {title: '维修归还单'},
+        },{
+            path: 'serviceApplicationOrder',
+            name: 'serviceApplicationOrder',
+            component: _import('record/serviceApplicationOrder'),
+            meta: {title: '维修申请记录'},
         }, {
             path: 'scraded',
             name: 'scraded',

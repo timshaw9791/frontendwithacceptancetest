@@ -15,3 +15,11 @@ export function getNeedchargeList() {
         method: 'get',
     })
 }
+
+// 获取充电记录列表
+export function getchargeRecordList() {
+    return request({
+        url: '/charge-orders',
+        method: 'get',
+    })
+}

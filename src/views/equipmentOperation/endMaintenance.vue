@@ -87,8 +87,7 @@ export default {
   },
   methods: {
     selRow(current){
-                console.log(current);
-               this.findIndex=this._.indexOf(this.newData,current)
+                this.findIndex=current.index
             },
             sumFunc(param) { // 表格合并行计算方法
                 let { columns, data } = param, sums = [];
@@ -108,7 +107,7 @@ export default {
             },
             milliLocation(data)//对现实的装备位置信息进行处理
             {
-                return data.frameNumber+'架/'+data.surface+'面/'+data.section+'节/'+data.surface+'层'
+                return data.frameNumber+'架/'+data.surface+'面/'+data.section+'节/'+data.floor+'层'
             },
             cancel(){
                 this.$router.back()

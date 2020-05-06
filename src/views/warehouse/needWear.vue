@@ -1,10 +1,10 @@
 <template>
-  <div class="consumable-form-container">
+  <div class="need-wear-container">
     <my-header :title="$route.meta.title" :haveBlack="false"></my-header>
-    <div class="consumable-form-top">
-        <base-button size="default" align="right" label="新增预案" @click="dialogShow('add')"></base-button>
+    <div class="need-wear-top">
+        <base-button size="default" align="right" label="新增必戴装备" @click="dialogShow('add')"></base-button>
     </div>
-    <div class="consumable-form-body" >
+    <div class="need-wear-body" >
          <bos-tabs  :option="['contrast']" :layoutRatio="[3,1]" :contrastKey="['slot1', 'slot2']" >
              <define-table  slot="slot1" :pageInfo="paginator" @changePage="changePage" :data="order" height="2.6042rem" 
                             @changeCurrent="changeCurrent">
@@ -12,8 +12,7 @@
                     <base-button label="编辑" size="mini" @click="dialogShow('edit',data.row)" type="primary"></base-button>
                     <base-button label="删除" size="mini" @click="deleteplan(data.row)" type="primary"></base-button>
                 </define-column>
-                <define-column label="预案名称" field="name"></define-column>
-                <define-column label="预案描述" field="remark"></define-column>
+                <define-column label="必戴装备名称" field="name"></define-column>
              </define-table>
              <define-table :haveIndex="false"  slot="slot2" :havePage="false" :data="equipArg" height="2.6042rem" >
                 <define-column label="装备参数" field="describes" v-slot="{data}">
@@ -55,7 +54,7 @@
                     this.order = res.content
                     this.paginator.totalPages = res.totalPages;
                     this.paginator.totalElements = res.totalElements;
-                    if(this.order.length!=0){
+                    if(this.order!=[]){
                         this.equipArg = this.order[0].equipArgItems
                     }else{
                         this.equipArg=[]
@@ -88,8 +87,8 @@
                     this.plan = item
                 }
                 this.$router.push({
-                    name: 'editplan',
-                    params: {type: 'editplan', info: {data:this.plan,edit:this.editflag}}
+                    name: 'addneedwear',
+                    params: {type: 'addneedwear', info: {data:this.plan,edit:this.editflag}}
                 })
             },
         },
@@ -108,15 +107,15 @@
 </script>
 
 <style lang="scss" scoped>
-  .consumable-form-container {
+  .need-wear-container {
     font-size: 16px;
   }
-  .consumable-form-top {
+  .need-wear-top {
     padding: 18px 7px;
     border-bottom: 1px solid #ebeef5;
     overflow: hidden;
   }
-  .consumable-form-body {
+  .need-wear-body {
     padding: 0 7px;
     widows: 100%;
   }
