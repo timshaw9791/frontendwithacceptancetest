@@ -57,7 +57,6 @@
 </template>
 
 <script>
-import api from "gql/msg.gql";
 import servicedialog from 'components/base/serviceDialog'
 import { readMsg, getMsgList, getMsgListWithType } from "api/message";
 import { formRulesMixin } from "field/common/mixinComponent";
