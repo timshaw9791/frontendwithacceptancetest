@@ -87,12 +87,7 @@ export const asyncRouterMap = [{
             name: 'equipment/equipmententity',
             component: _import('equipment/equipmentEntity'),
             meta: {title: '装备实体'},
-        }, {
-            path: 'searchstorage',
-            name: 'equipment/search',
-            component: _import('equipment/searchStorageInfo'),
-            meta: {title: '装备搜索'},
-        }, {
+        },{
             path: 'supplier',
             name: 'equipment/supplier',
             component: _import('equipment/supplier'),
@@ -106,7 +101,7 @@ export const asyncRouterMap = [{
         children: [ {
             path: 'myProcess',
             name: 'myProcess',
-            component: _import('process/myProcessNew'),
+            component: _import('process/myProcess'),
             meta: {title: '我的流程'},
         }, {
             path: 'newProcess',
@@ -136,7 +131,7 @@ export const asyncRouterMap = [{
         }, {
             path: 'myProcess/:type/:audit', // 流程申请单
             name: 'applyAudit',
-            component: _import('process/processForm'),
+            component: _import('process/scrapDetail'),
             hidden: true,
         }, {
             path: 'agencyMatters',
