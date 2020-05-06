@@ -55,7 +55,7 @@
                     this.order = res.content
                     this.paginator.totalPages = res.totalPages;
                     this.paginator.totalElements = res.totalElements;
-                    if(this.order!=[]){
+                    if(this.order.length!=0){
                         this.equipArg = this.order[0].equipArgItems
                     }else{
                         this.equipArg=[]

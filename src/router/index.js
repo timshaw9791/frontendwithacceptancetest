@@ -215,9 +215,9 @@ export const asyncRouterMap = [{
         name: 'warehouse',
         meta: {title: '库房管理', icon: '库房管理'},
         children: [ {
-            path: 'safety',
-            name: 'warehouse/safety',
-            component: _import('warehouse/safety'),
+            path: 'safetyNew',
+            name: 'warehouse/safetyNew',
+            component: _import('warehouse/safetyNew'),
             meta: {title: '安全库存'},
         }, {
             path: 'surroundings',
