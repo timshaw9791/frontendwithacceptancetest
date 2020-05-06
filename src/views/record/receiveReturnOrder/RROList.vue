@@ -1,6 +1,6 @@
 <template>
     <div class="receive-order-list-container">
-        <my-header title="领取归还单详情" ></my-header>
+        <my-header title="领取归还单列表"></my-header>
         <div class="header">
             <text-input label="领取单号" placeholder="请输入单号"></text-input>
             <base-button label="查询"></base-button>
@@ -12,8 +12,9 @@
             <define-column label="单号" field="number"></define-column>
             <define-column label="装备参数" field="allEquipArgs"></define-column>
             <define-column label="装备数量" field="equipCount"></define-column>
-            <define-column label="领取人员" field="operatorInfo.operator"></define-column>
-            <define-column label="领取时间" field="createTime"></define-column>
+            <define-column label="操作人员" field="operatorInfo.operator"></define-column>
+            <define-column label="操作时间" field="createTime"></define-column>
+            <define-column label="类型" field="category"></define-column>
         </define-table>
     </div>
 </template>
@@ -39,16 +40,18 @@
         methods: {
             changePage(page) {
                 this.pageInfo.page = page;
-                this.getList();
+                this.fetchData();
             },
             fetchData() {
                 getReceiveOrderList(this.pageInfo).then(res => {
-                    this.list = res.content
-                    this.fixData()
-                    console.log(this.list)
+                    this.fixData(res.content)
                 })
             },
-            fixData() {
+            fixData(data) {
+                data.forEach(item => {
+                   item.category = item.category === 6 ? '领取' : '归还';
+                })
+                this.list = data;
                 //累加装备参数
                 let equipNameList = []
                 this.list.forEach(item => {
@@ -64,9 +67,9 @@
             },
             goto(id) {
                 this.$router.push({
-                    path: "receiveOrderInfo",
+                    path: "RROInfo",
                     query: {
-                        id:id
+                        id: id
                     }
                 })
             }

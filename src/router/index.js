@@ -337,15 +337,14 @@ export const asyncRouterMap = [{
             component: _import('record/opening'),
             meta: {title: '开门记录'},
         }, {
-            path: 'receiveOrderList',
-            name: 'receiveOrderList',
-            component: _import('record/receiveReturnOrder/receiveOrderList'),
-            meta: {title: '领取单列表'},
+            path: 'RROList',
+            name: 'RROList',
+            component: _import('record/receiveReturnOrder/RROList'),
+            meta: {title: '领取归还记录'},
         }, {
-            path: 'receiveOrderInfo',
-            name: 'receiveOrderInfo',
-            component: _import('record/receiveReturnOrder/receiveOrderInfo'),
-            meta: {title: '领取单列表'},
+            path: 'RROInfo',
+            name: 'RROInfo',
+            component: _import('record/receiveReturnOrder/RROInfo'),
             hidden: true
         }, {
             path: 'inventory',

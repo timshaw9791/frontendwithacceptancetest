@@ -1,6 +1,6 @@
 <template>
     <div class="receive-order-info-container">
-        <my-header title="领取单详情" :have-black="true" @h_black=back></my-header>
+        <my-header title="领取归还单详情" :have-black="true" @h_black=back></my-header>
         <div class="header">
             <entity-input label="单号" v-model="info.number" :disabled="true"></entity-input>
             <entity-input label="领取人员" v-model="info.operatorInfo.operator" :disabled="true"></entity-input>
@@ -21,6 +21,7 @@
                 <template slot="detail">
                     <define-table :data="equipItems">
                         <define-column label="RFID" field="rfid"></define-column>
+                        <define-column label="装备序号" field=""></define-column>
                     </define-table>
                 </template>
             </bos-tabs>
