@@ -12,14 +12,10 @@
 </template>
 
 <script>
-    import {fetchMixin} from 'field/common/mixinFetch';
     export default {
         name: "cascader",
-        mixins: [fetchMixin],
         data(){
-            return{
-
-            }
+            return{ }
         },
         props:{
             cascader:{

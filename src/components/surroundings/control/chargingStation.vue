@@ -18,13 +18,11 @@
     import dialogs from '../surroundingDialog'
     import selectChargingStation from 'components/personnelManagement/personnelSelect'
     import socket from './controlComponents/socket'
-    import {fetchMixin} from 'field/common/mixinFetch'
     import {baseURL} from "../../../api/config";
     import {getEquipChargeRecordList,getChangeStationStatus} from 'api/surroundings'
 
     export default {
         name: "chargingStation",
-        mixins: [fetchMixin],
         components:{
             dialogs,
             selectChargingStation,
@@ -37,17 +35,6 @@
                 },
                 socketList:[],
                 flag:false,
-                qfilter:{
-                    key:"chargeStation",
-                    operator:"EQUEAL",
-                    value:"1",
-                    combinator:"AND",
-                    next:{
-                        value:"0",
-                        key:"duration",
-                        operator:"EQUEAL"
-                    }
-                },
                 changeCount:0
             }
         },
@@ -67,18 +54,6 @@
             },
             getChargingStationtList(){
                 this.select.selectList=[];
-            //   this.ajax(baseURL+'/environment/getChargeCount','',(data)=>{
-            //       for (let i=1;i<=data.data.data;i++){
-            //           this.select.selectList.push({
-            //               label:i+'号智能充电台',
-            //               value:i
-            //           })
-            //       }
-            //       this.$refs.dialog.show();
-            //   })
-            //   getChangeStationStatus({station:1}).then(res=>{
-            //       console.log(res);
-            //   })
               for(let i=1;i<=this.changeCount;i++){
                   this.select.selectList.push({
                           label:i+'号智能充电台',
@@ -105,7 +80,6 @@
             },
             getChargingStationtNumber(number){
                 getChangeStationStatus({station:number}).then(res=>{
-
                     let soList=''
                     soList=res.toString()
                     let socket = soList.split('').reverse();
@@ -181,24 +155,6 @@
                         this.$message.error(err.response.data.message);
                     })
                 }
-               /* this.query(graphql, variables).then((data) => {
-                    if (data.errors) {   //未通过服务端的表单验证
-                        /!*this.$message.error(`${data.errors}`);*!/
-                    }
-                    else {
-                        let defultData = data;
-                        if (defult) {//判断是否使用默认格式数据，否或不输defult则为使用原始数据
-                            //将数据处理为默认格式,即返回content里的数据
-                            var deepclonedata = JSON.parse(JSON.stringify(data.data));
-                            var jqlname = Object.keys(deepclonedata)[0];
-                            var result = deepclonedata[jqlname];
-                            defultData = !result ? null : (result.hasOwnProperty('content') ? result.content : result);
-                        }
-
-                    }
-                }).catch((error) => {//服务器错误或者网络状态问题
-                    this.$message.error(`${error}`);
-                })*/
             },
         }
     }

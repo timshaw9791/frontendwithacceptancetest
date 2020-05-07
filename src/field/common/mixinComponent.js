@@ -120,18 +120,6 @@ export let formRulesMixin = {
                     errorBack.call(this,err)
                 })
         },
-        mutate(mutation, variables) {//声明手动修改的方法
-            // return this.$apollo.mutate({
-            //     mutation: mutation,
-            //     variables: variables,
-            // });
-        },
-        query(query, variables) {
-            // return this.$apollo.query({//声明手动查询的方法
-            //     query: query,
-            //     variables: variables,
-            // });
-        },
         _initPage() {
             //监听param变化，如果发生变化,刷新
             this.$watch("param", () => {
@@ -163,101 +151,16 @@ export let formRulesMixin = {
         refetch() {
             // if (this.$apollo.queries['list']) this.$apollo.queries['list'].refetch();//重新刷新apollo
         },
-        //便利方法，供在apollo:配置块中使用。设置好默认值，只要给一个query对象或者gql字符串即可
-        //只限于list列表等需要分页的模块使用，且同一组件只能用一个
-        getEntityListWithPagintor(queryObject, skipFunction) {
-            queryObject = queryObject.query ? queryObject : {query: queryObject};
-            var target = {
-//      loadingKey: 'loading',
-                update: function (data) {
-                    //深拷贝
-                    var deepclonedata = JSON.parse(JSON.stringify(data));
-                    var jqlname = Object.keys(deepclonedata)[0];
-                    var result = deepclonedata[jqlname];
-                    //处理分页问题
-                    this.copyNameLike = this.param.namelike;
-                    if (result && result.hasOwnProperty('totalPages')) {
-                        this.partialPiginator.totalPages = result.totalPages;
-                    }
-                    if (result && result.hasOwnProperty('totalElements')) {
-                        this.partialPiginator.totalElements = result.totalElements;
-                    }
-                    //判断是否存在返回的content，有则返回content
-                    return !result ? null : (result.hasOwnProperty('content') ? result.content : result);
-                },//如果需要使用this来代表vm，则不能使用=>函数，因为箭头函数的this与所在闭包this相同
-                variables() {
-                    return this.param
-                },
-                skip() {
-                    //判断是否忽略查询
-                    return skipFunction ? skipFunction.call(this) : false;
-                },
-                deep: true
-            };
-
-            Object.assign(target, queryObject);//Object.assign方法用于对象的合并，将源对象（ source ）的所有可枚举属性，复制到目标对象（ target ）。
-            return target;
-        },
-        //便利的手动gql请求
-        gqlMutate(graphql, variables, sCallback) {//便利方法，用于手动修改数据的请求
-            this.mutate(graphql, variables).then((data) => {
-                if (data.errors) {   //未通过服务端的表单验证
-                    console.log(data.errors);
-                } else {//通过后返回数据，使用者可执行自定义处理数据
-                    sCallback.call(this, data);
-                }
-
-            })
-        },
-        gqlQuery(graphql, variables, sCallback, defult) {//便利方法，用于手动修改数据的请求
-            this.query(graphql, variables).then((data) => {
-                if (data.errors) {   //未通过服务端的表单验证
-                    this.$message.error(`${data.errors}`);
-                } else {
-                    let defultData = data;
-                    if (defult) {//判断是否使用默认格式数据，否或不输defult则为使用原始数据
-                        //将数据处理为默认格式,即返回content里的数据
-                        var deepclonedata = JSON.parse(JSON.stringify(data.data));
-                        var jqlname = Object.keys(deepclonedata)[0];
-                        var result = deepclonedata[jqlname];
-                        defultData = !result ? null : (result.hasOwnProperty('content') ? result.content : result);
-                    }
-                    sCallback.call(this, defultData);//返回数据使用者可执行自定义处理数据
-                }
-            })
-        },
-
-        gqlMutateError(graphql, variables, sCallback, errorBack) {//便利方法，用于手动修改数据的请求
-            // this.$apollo.mutate({
-            //     mutation: graphql,
-            //     variables: variables,
-            // }).then(res => {
-            //     if (res.errors) {
-            //         console.log(res.errors);
-            //     } else {
-            //         sCallback.call(this, res);
-            //     }
-            // }).catch(err => {
-            //     errorBack.call(this, err);
-            // });
-        },
-
-
-//路由处理信息
+        //路由处理信息
         routerPush(path, queryObject) {
             this.$router.push({path: path, query: queryObject});
         },
         routerBack() {
             this.$router.back();
         },
-        //
-        // changePage(page) {
-        //     this.param.paginator.page = page;
-        //     this.setHistoryPage(page);
-        // },
         callback(message) {
             this.$message.success(message);
             this.refetch();
-        },
+        }
     },
 };
