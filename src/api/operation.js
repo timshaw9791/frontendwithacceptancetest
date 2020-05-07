@@ -97,6 +97,29 @@ export function addWearRates(data) {
       data
     })
   }
+//获取必戴装备
+export function getWearRates(params) {
+    return request({
+      url: "/wear-rates",
+      method: "get",
+      params:params
+    })
+  }
+  //删除必戴装备
+export function deleteWearRates(id) {
+    return request({
+      url: `/wear-rates/delete/${id}`,
+      method: "delete",
+    })
+  }
+  //更新必戴装备
+  export function updateWearRates(id,data) {
+    return request({
+      url: `/wear-rates/update/${id}`,
+      method: "put",
+      data
+    })
+  }
 export function findByRfids(rfids) {
     return request({
         url: `/equip/findByRfids?rfids=${rfids}`,

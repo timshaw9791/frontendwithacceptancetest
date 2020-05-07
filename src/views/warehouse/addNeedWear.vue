@@ -10,7 +10,7 @@
                                 <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
-                                <entity-input v-model="data.row.equipArg"  :options="{search:'equipArgsSelect'}" format="{equipName}({equipModel})" :column="12" :tableEdit="true" ></entity-input>
+                                <entity-input v-model="data.row.equipArg"  :options="{search:'equipArgsSelect'}" format="{name}({model})" :column="12" :tableEdit="true" ></entity-input>
                             </define-column>
                         </define-table>    
             <div class="btn-box">
@@ -28,7 +28,7 @@
     import defineInput from '@/componentized/textBox/defineInput'
     import bosTabs from "@/componentized/table/bosTabs";
     import serviceDialog from "components/base/serviceDialog"
-    import { addWearRates} from "api/operation";
+    import { addWearRates,updateWearRates} from "api/operation";
     var _ = require("lodash");
     export default {
         name: "consumable",
@@ -50,12 +50,24 @@
                         equipArg.push(item.equipArg)
                     }
                 })
-                addWearRates({name:this.title,equipArgs:equipArg}).then(res=>{
-                    
+                if(this.title==''||equipArg.length==0)
+                {
+                    this.$message.error("请填写完整")
+                }else{
+                    this.$route.params.info.edit?updateWearRates(this.$route.params.info.data.id,{name:this.title,equipArgs:equipArg,id:this.$route.params.info.data.id}).then(res=>{this.cancel()}):
+                    addWearRates({name:this.title,equipArgs:equipArg}).then(res=>{
+                    this.cancel()
                 })
+                }
+                
             },
             cancel(){
                 this.$router.back()
+            },
+            changeRow(state,data)
+            {
+                state?this.listData.push({equipArg:''}):this.listData.splice(data.$index, 1)
+                if(this.listData.length==0){this.listData=[{equipArg:''}]}
             },
             changeCurrent(current){
                 this.equipArg = current.equipArgItems
@@ -69,6 +81,16 @@
             defineInput,
             serviceDialog,
         },
+        created(){
+            if(this.$route.params.info.data.name!='')
+            {
+                this.title=this.$route.params.info.data.name
+                this.$route.params.info.data.equipArgs.forEach(item=>{
+                    this.listData=[]
+                    this.listData.push({equipArg:item})
+                })
+            }
+        }
     };
 </script>
 

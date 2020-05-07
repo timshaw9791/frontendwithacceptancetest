@@ -16,7 +16,7 @@
              </define-table>
              <define-table :haveIndex="false"  slot="slot2" :havePage="false" :data="equipArg" height="2.6042rem" >
                 <define-column label="装备参数" field="describes" v-slot="{data}">
-                    <entity-input v-model="data.row.equipArg" format="{name}({model})" :tableEdit="false" :options="{}"></entity-input>
+                    <entity-input v-model="data.row" format="{name}({model})" :tableEdit="false" :options="{}"></entity-input>
                 </define-column>
              </define-table>
          </bos-tabs>
@@ -31,13 +31,14 @@
     import defineInput from '@/componentized/textBox/defineInput'
     import bosTabs from "@/componentized/table/bosTabs";
     import serviceDialog from "components/base/serviceDialog"
-    import { getPlan ,addPlan ,updatePlan ,delectPlan } from "api/plan";
+    import { getWearRates,deleteWearRates} from "api/operation";
     var _ = require("lodash");
     export default {
         name: "consumable",
         data() {
             return {
                 paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
+                params:{page:1,size:10,search:''},
                 order: [],
                 equipArg:[],
                 plan:{
@@ -50,39 +51,32 @@
         },
         methods: {
             fetchData(){
-                getPlan(this.paginator).then(res=>{
+                getWearRates(this.params).then(res=>{
                     this.order = res.content
                     this.paginator.totalPages = res.totalPages;
                     this.paginator.totalElements = res.totalElements;
                     if(this.order!=[]){
-                        this.equipArg = this.order[0].equipArgItems
+                        this.equipArg = this.order[0].equipArgs
                     }else{
                         this.equipArg=[]
                     }
                 })
             },
             deleteplan(data){
-                delectPlan(data.id).then(res=>{
+                deleteWearRates(data.id).then(res=>{
                     this.$message.success("删除成功")
                     this.fetchData()
-                }).catch(err=>{
-                    this.$message.errow(err.message)
                 })
             },
             changePage(page) {
-                this.paginator.page = page
+                this.params.page = page
                 this.fetchData()
             },
             changeCurrent(current){
-                this.equipArg = current.equipArgItems
+                this.equipArg = current.current.equipArgs
             },
             dialogShow(data,item){
-                if(data=="add"){
-                    this.plan.name="",
-                    this.plan.remark="",
-                    this.plan.equipArgItems=[]
-                    this.editflag=false
-                }else if(data == "edit"){
+                if(data == "edit"){
                     this.editflag=true
                     this.plan = item
                 }
