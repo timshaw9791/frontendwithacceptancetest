@@ -72,30 +72,6 @@
                 list=[{number:1,route:route, status:li[8]},{number:2,route:route, status:li[7]}];
                 this.lightList=list;
             },
-            // getLightInfo(){
-            //     this.$ajax({
-            //         method:'post',
-            //         url:baseURL+'/environment/lightQuery',
-            //     }).then((res)=>{
-            //         console.log("获得灯的信息");
-            //         console.log(res);
-            //        let resC = res.data.data;
-            //        let lightListCopy = [];
-            //        for (let key in resC){
-            //            for (let i=0;i<resC[key];i++){
-            //                lightListCopy.push({
-            //                    route:Number(key),
-            //                    number:i+1,
-            //                    status:0
-            //                })
-            //            }
-            //        };
-            //         console.log(lightListCopy)
-            //        this.getLightQuery(lightListCopy);
-            //     }).catch(err=>{
-            //         this.$message.error(err);
-            //     });
-            // },
             getLightQuery(){
                 this.$ajax({
                     method:'post',

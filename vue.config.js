@@ -43,8 +43,7 @@ module.exports = {
                 'common': '@/common',
                 'base': '@/base',
                 'api': '@/api',
-                'store': '@/store',
-                'gql': '@/graphql'
+                'store': '@/store'
             }
         }
     },

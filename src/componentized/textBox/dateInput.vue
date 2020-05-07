@@ -105,7 +105,7 @@ export default {
       }
       switch (this.filter) {
         case 'toDay':
-          this.insideValue = Math.floor(value/1000/3600/24) || '';
+          this.insideValue = value<0?0:Math.floor(value/1000/3600/24) || '';
           break;
         case 'since':
           this.insideValue = stampToNow(value);
