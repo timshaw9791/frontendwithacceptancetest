@@ -101,23 +101,25 @@
         },
         methods: {
             fetchData(){
-                getequipArg().then(res=>{
-                    this.equipArg = res
-                    this.paginator.totalPages = res.totalPages;
-                    this.paginator.totalElements = res.totalElements;
-                })
-                this.tree.treeData = [{
-                    name:"未分配装备",
-                    show:"unassigned",
-                    children:[]
-                }]
-                console.log("this.tree.treeData",this.tree.treeData);
                 getgenresList().then(res=>{
                     this.tree.genres = res.content
                     Promise.all([this.getTree()]).then(res=>{
                         console.log(res);
                         console.log("this.tree",this.tree);
+                        this.tree.treeData = [{
+                            name:"未分配装备",
+                            show:"unassigned",
+                            children:[]
+                        }]
+                        this.tree.genres.forEach(item=>{
+                            this.tree.treeData.push(item)
+                        })
                     })
+                })
+                getequipArg().then(res=>{
+                    this.equipArg = res
+                    this.paginator.totalPages = res.totalPages;
+                    this.paginator.totalElements = res.totalElements;
                 })
             },
             changePage(page) {
@@ -173,7 +175,6 @@
                             item.show="category"
                             this.tree.genres[i].children.push(item)
                         })
-                        this.tree.treeData.push(this.tree.genres[i])
                     })
                 }
 

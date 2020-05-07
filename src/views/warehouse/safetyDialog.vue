@@ -3,9 +3,9 @@
         <serviceDialog :title="title" ref="safetyDialog" width="3.3021rem"
                        :button="false">
         <div v-if="dialogData.type=='add'">
-            
+
         </div>
-        <base-select></base-select>
+        <base-select label="选择大类"></base-select>
         </serviceDialog>
     </div>
 </template>
