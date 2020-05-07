@@ -54,9 +54,7 @@
     </div>
 </template>
 
-
 <script>
-    import progressCircular from 'components/base/progressCircular'
     import { findAllData, findEquipsNeedChange, findByOneLine } from 'api/overview'
     import { writeFile } from "common/js/rfidReader"
     import { todoProcess } from 'api/process'
@@ -75,8 +73,7 @@
                 inventoryList: [],
                 totalCanUse: 0,
                 totalIsUse: 0,
-                loading: false,
-                showCircular: true, // 个数超过8个则不显示
+                loading: false
             }
         },
         methods: {
@@ -103,8 +100,6 @@
                     this.inventoryList = list
                     this.totalIsUse = isUse
                     this.totalCanUse = canUse
-                }).catch(err => {
-                    this.$message.error("请求超时")
                 })
             },
             getToDoTasks() {
@@ -160,9 +155,6 @@
                 }
             }
         },
-        components: {
-            progressCircular
-        },
         created() {
             this.getAllData()
             this.getToDoTasks()
@@ -181,11 +173,9 @@
     .app-main {
         box-shadow: none !important;
     }
-
     /deep/ .hover-row {
         cursor: pointer;
     }
-
     .overview {
         font-size: 16px;
         font-family:PingFang SC;
@@ -193,7 +183,6 @@
         .el-card {
             border: none !important;
         }
-
         .topRemind {
             width: 100%;
             display: flex;
@@ -222,7 +211,6 @@
                 }
             }
         }
-
         .to-do {
             box-shadow:0px 0px 12px rgba(235,238,245,1);
             border-radius:10px;
@@ -258,7 +246,6 @@
                 }
             }
         }
-
         .inventory-statistics {
             box-shadow:0px 0px 12px rgba(235,238,245,1);
             border-radius: 10px;
@@ -286,7 +273,6 @@
                     }
                 }
             }
-
             // 表格类
             .body {
                 height: 300px;
@@ -354,7 +340,4 @@
             }   
         }
     }
-        
 </style>
-
-
