@@ -13,13 +13,16 @@
                                 <define-input v-model="data.row.serial" type="Number" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
-                                <entity-input v-model="data.row.equipArg" :detailParam="data.row.equipArg" :options="{ detail: 'equipArgsDetail' }" format="{name}({model})" :disabled="true" ></entity-input>
+                                <entity-input v-model="data.row" :detailParam="data.row.equipArg" :options="{ detail: 'equipArgsDetail' }" format="{equipName}({model})" :disabled="true" ></entity-input>
                             </define-column>
                             <define-column label="装备位置" v-slot="{data}">
-                                <entity-input v-model="data.row.location" format="{frameNumber}架/{surface}面/{section}节/{floor}层" :tableEdit="false"></entity-input>
+                                <entity-input v-model="data.row.location" format="{name}({model})" :tableEdit="false"></entity-input>
                             </define-column>
-                            <define-column label="到期时间" :filter="(row)=>milliTime(row.createTime+row.shelfLife)"/>
-                            
+                            <define-column label="到期时间" field="scarTime" />
+                            <define-column label="到期倒计时" field="scarTime" />
+                            <!-- <define-column label="到期时间" v-slot="{data}">
+                                <date-select v-model="data.row.time"  :tableEdit="false"></date-select>
+                            </define-column> -->
                         </define-table>
 
         </div>
@@ -39,7 +42,7 @@
     import serviceDialog from 'components/base/serviceDialog'
     // import equipInhouseOrder from './equipInhouseOrder'
     import {rightRepairOrder,equipScrap} from "api/operation"
-    import { equipsAll,equipById} from 'api/storage'
+    import { maturityScrap,equipById} from 'api/storage'
     import { getInhouseNumber,inOutHouseOrder,deleteInhouseNumber} from "api/storage"
 export default {
     components:{
@@ -82,21 +85,9 @@ export default {
                 this.equipData=data
                 this.inorder=true
             },
-            deleteNumber(data)
-            {
-                deleteInhouseNumber(data.id).then(res=>{
-                    this.$message.success('删除入库单成功')
-                }).catch(err => {
-                        this.$message.error(err.response.data.message);
-                    })
-            },
             toScrap(data){
                 this.$refs.scrapDailog.show()
                 this.scrapData=data
-            },
-            milliTime(data){
-              let time=(new Date()-data)/(1000 * 60 * 60 * 24)>1?(new Date()-data)/(1000 * 60 * 60 * 24):1
-              return time;
             },
             black(){
                 this.inhouse=false
@@ -104,9 +95,8 @@ export default {
                 this.getList()
             },
             getList(){
-                equipsAll().then(res=>{
+                maturityScrap().then(res=>{
                     this.list=res.content
-                    
                 }).catch(err => {
                         this.$message.error(err.response.data.message);
                     })
@@ -115,7 +105,7 @@ export default {
                 return data.inOutHouseItems.length
             },
             changePage(page) {
-            this.paginator.page = page;ss
+            this.paginator.page = page;
             },
             toInHouse(){
                 this.$router.push({path:"/warehouse/equipExpired"})
