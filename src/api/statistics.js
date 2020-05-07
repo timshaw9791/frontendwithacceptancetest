@@ -3,7 +3,7 @@ import {baseBURL} from "./config";
 
 export function equipmentAmount(data) {
     return request({
-        url: '/statistic/genres/total',
+        url: '/statistic/money',
         method: 'get',
         params: data
     })
