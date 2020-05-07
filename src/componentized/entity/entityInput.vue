@@ -100,6 +100,10 @@ export default {
           type: String,
           default: '[{policeSign}]{name}'
         },
+        formatFunc: {
+          type: [Function, Boolean],
+          default: false
+        },
         margin: {
           type: String,
           default: '0 0.0521rem'
@@ -126,7 +130,11 @@ export default {
             this.insideValue = "";
             return;
           }
-          this.insideValue = this.format.replace(/{([a-zA-Z]+)}/g, (r, k) => data[k]);
+          if(this.formatFunc) {
+            this.insideValue = this.formatFunc(data);
+          } else {
+            this.insideValue = this.format.replace(/{([a-zA-Z]+)}/g, (r, k) => data[k]);
+          }
           this.$emit('input', data);
         },
         clear() { // 清空
