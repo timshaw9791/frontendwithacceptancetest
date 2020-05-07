@@ -36,7 +36,6 @@
     import tabs from 'components/base/tabs/index'
     import imgUp from 'components/base/axiosImgUp';
     import {imgBaseUrl} from "api/config";
-    import {fetchMixin} from "field/common/mixinFetch";
     import info from 'components/information/inforComponent'
     import { getRolesList,getOrganUnitById,getIdentityUserById} from 'api/personnel'
     export default {
@@ -56,7 +55,6 @@
                 flag:false
             }
         },
-        mixins: [fetchMixin],
         created(){
             this.getList();
         },
@@ -74,7 +72,6 @@
             getUnit(id){
                 getOrganUnitById(id).then(res=>{
                     this.unit=res.data;
-                    console.log(this.unit)
                 })
             },
             pushButton() {
@@ -88,19 +85,14 @@
             },
             getRoleGql(roleEnum) {
                 getRolesList().then(res=>{
-                    console.log('getRoleGql',roleEnum);
                     res.data.forEach(item=>{
                         if(item.roleEnum==roleEnum){
                             this.role={roleDescribe:item.roleDescribe,id:item.id};
                         }
                     });
-                    console.log('this.role',this.role);
                 })
             },
         },
-        mounted() {
-        }
-
     }
 </script>
 
