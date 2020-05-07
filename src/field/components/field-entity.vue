@@ -169,7 +169,6 @@
             var covertedList = list.map((item) => Object.assign({}, {key: item, value: this.candidateFilter(item)}));
             callback(covertedList);
           });
-          // this.$apollo.addSmartQuery("smartQuery", this.smartQuery);
         }
       },
 

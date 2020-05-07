@@ -89,6 +89,14 @@ export function RepairOrder(params) {
         params:params
     })
 }
+//新增必戴装备
+export function addWearRates(data) {
+    return request({
+      url: "/wear-rates",
+      method: "POST",
+      data
+    })
+  }
 export function findByRfids(rfids) {
     return request({
         url: `/equip/findByRfids?rfids=${rfids}`,

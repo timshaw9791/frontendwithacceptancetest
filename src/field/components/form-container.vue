@@ -39,19 +39,6 @@
             clearValidate(func) {
                 this.$refs.form.clearValidate(func);
             },
-            gqlValidate(graphql, variables, sCallback) {
-                this.validate.then(() => {
-                    try {
-                        this.gqlMutate(graphql, variables, sCallback);
-                    } catch (error) {
-                        console.error(error);   //语法问题检测
-                        this.$message.error(`${error}`);
-                    }
-                }).catch((error) => {
-                    console.log('未通过检验');   //未通过客户端的表单验证
-                    this.$message.error('未通过检验');
-                });
-            },
             // 同时传 params和data
             postValidate(func,params,data, sCallback) {
                  this.validate.then(() => {
@@ -95,19 +82,7 @@
             },
 
 
-            gqlValidateErr(graphql, variables, sCallback, errorBack) {
-                        this.validate.then(() => {
-                    try {
-                        this.gqlMutateError(graphql, variables, sCallback, errorBack);
-                    } catch (error) {
-                        console.error(error);   //语法问题检测
-                        this.$message.error(`${error}`);
-                    }
-                }).catch((error) => {
-                    console.log('未通过检验');   //未通过客户端的表单验证
-                    this.$message.error('未通过检验');
-                });
-            },
+
 
 
             axiosData(a) {
