@@ -52,9 +52,6 @@ export let formRulesMixin = {
             );
         }
     },
-    created() {
-        this._initPage();
-    },
     methods: {
        /* r(required) {//规则组合器
             var context = this;
@@ -100,24 +97,6 @@ export let formRulesMixin = {
             };
             return ruler.r(required);
         },*/
-        _initPage() {
-            //监听param变化，如果发生变化,刷新
-            this.$watch("param",  ()=> {
-                if (this.nameLike != this.copyNameLike && this.nameLike != ''){
-                    if (this.param.paginator.page != 1) {
-                        this.setHistoryPage(this.param.paginator.page);
-                        this.param.paginator.page = 1
-                    }
-                } else if (this.nameLike != this.copyNameLike && this.nameLike == ''){
-                    this.param.paginator.page = Number(this.getHistoryPage());
-                }
-                this.refetch();
-                // console.log('11111',this.param)
-                // if (this.param.namelike != this.copyNameLike && this.param.namelike == '%%') {
-                //     this.param.paginator.page = Number(this.getHistoryPage());
-                // }
-            }, {deep: true});
-        },
         getHistoryPage() {
             return sessionStorage.getItem(this.historyPage);
         },
@@ -142,7 +121,6 @@ export let formRulesMixin = {
         },
         callback(message) {
             this.$message.success(message);
-            this.refetch();
         },
     },
 };
