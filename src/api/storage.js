@@ -27,7 +27,7 @@ export function deleteInhouseNumber(id) {
 //获取需要报废的装备
 export function maturityScrap(params) {
     return request({
-        url:"/equips/maturity-scrap",
+        url:"/equips/need-scrap",
         method: 'get',
         params
     })
