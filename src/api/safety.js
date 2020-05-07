@@ -78,6 +78,21 @@ export function setsafety(data) {
 }
 
 // 通过大类id获取该大类下的所有小类
+export function getcategories(id) {
+    return request({
+        url: `/genres/${id}/categories`,
+        method: 'GET',
+    })
+}
+
+// 通过小类ID查找装备装备信息 （默认为未分配的装备信息）
+export function getequipArg(data) {
+    return request({
+        url: '/equipArgs',
+        method: 'GET',
+        data
+    })
+}
 // 将未分配装备分配到小类下
 // 通过大类id查找所有小类的安全库存和装备数量
 // 通过小类id查找所有装备参数的数量
