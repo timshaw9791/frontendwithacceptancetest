@@ -89,8 +89,13 @@ export default {
                     this.surfaceList=res.content
                     console.log(this.surfaceList);
                     this.surfaceList.forEach(item=>{
-                   item.name=item.frameNumber+'架/'+item.surface+'面/'+item.section+'节/'+item.floor+'层'
-                   item.number=item.frameNumber+'-'+item.surface+'-'+item.section+'-'+item.floor
+                    if(item.frameNumber!=null){
+                       item.name=item.frameNumber+'架/',item.number=item.frameNumber+'-'}
+                    if(item.surface!=null){
+                        item.name+=item.surface+'面/',item.number+=item.surface+'-'}
+                    if(item.section!=null){
+                        item.name+=item.section+'节',item.number+=item.section}
+                    if(item.floor!=null){item.name+='/'+item.floor+'层',item.number+='-'+item.floor}
                   })
                 }).catch(err => {
                     this.$message.error(err.response.data.message)
@@ -103,13 +108,13 @@ export default {
                         {
                             item.name=item.policeCabinetUserItems[0].user.name
                         }
-                        if(item.category=='SPARE_CABINET')
+                        if(item.category=='2')
                         {item.category='备用柜'}
-                        else if(item.category=='SINGLE_POLICE')
+                        else if(item.category=='0')
                         {
                             item.category='单警柜'
                         }
-                        else if(item.category=='COMMON_CABINET'){
+                        else if(item.category=='1'){
                             item.category='公共柜'}
                     })
                 }).catch(err => {

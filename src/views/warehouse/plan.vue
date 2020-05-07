@@ -75,7 +75,7 @@
                 this.fetchData()
             },
             changeCurrent(current){
-                this.equipArg = current.equipArgItems
+                this.equipArg = current.current.equipArgItems
             },
             dialogShow(data,item){
                 if(data=="add"){

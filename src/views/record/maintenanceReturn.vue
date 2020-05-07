@@ -53,7 +53,7 @@ export default {
             return{
                list:[],
                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0,abnormal:false},
-               params:{size:10,page:1},
+               params:{size:10,page:1,category:3},
             }
         },
         methods:{
