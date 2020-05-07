@@ -20,25 +20,16 @@
 
     import {getHouseInfo, getApplyLeader, scrapStarts} from 'api/process'
     import {scrapByProcess} from 'api/expired'
-    // import inventoryData from './inventoryData'
-    import {getToken} from "../../../common/js/auth";
+
     import request from 'common/js/request'
     import {baseURL} from "../../../api/config";
     import { modifyFileName , handheld } from 'common/js/rfidReader'
 
-    // import {handheld} from 'common/js/pda'
-    // const fs = window.require('fs');
-    // const path = window.require('path');
-    // const newFile_path = 'C:\\Users\\Administrator\\inventory.json';
 
-
-    /*Melanie Dunne supernova*/
     export default {
         name: "inventory",
         components: {
             myHeader,
-            i_inventory,
-            i_dialog,
             serviceDialog
         },
         data() {
