@@ -1,8 +1,16 @@
 import request from 'common/js/request'
 
-export function findByOperatorName(data) {
+export function openGateRecord(data) {
     return request({
-        url: '/gateOpenRecord/findByOperatorName',
+        url: '/gate-records/operator',
+        method: 'get',
+        params: data
+    })
+}
+
+export function openCabinetRecord(data) {
+    return request({
+        url: '/open-cabinet-records',
         method: 'get',
         params: data
     })

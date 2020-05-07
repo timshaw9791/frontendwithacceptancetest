@@ -11,33 +11,19 @@
                      :overview="inventoryObj.inventoryData.inventory" :size="size" @handleSubmission="handleSubmission"
                      @newNote="getNote"></i_inventory>
         <i_dialog ref="inventory_dialog" :rfList="inventoryObj.rflist" :size="size" @submit="submit"></i_dialog>
-        <service-dialog title="请选择报废审核人" ref="scrap_dialog" :button="true" :secondary="false" @confirm="toScrap">
-            <div style="margin:0 auto;text-align:center;">
-                    <label> <span>审核人：</span></label>
-                    <el-select v-model="nextAssignee" placeholder="请选择" style="width:200px" >
-                        <el-option 
-                            v-for="item in leaderList" 
-                            :label="item.name" 
-                            :value="item.id" 
-                            :key="item.name">
-                    </el-option>
-                </el-select>
-                </div>
-        </service-dialog>
     </div>
 </template>
 
 <script>
     import myHeader from 'components/base/header/header'
     import serviceDialog from "components/base/serviceDialog"
-    import i_inventory from 'components/inventory/inventoryComponent'
-    import i_dialog from 'components/inventory/inventoryDialog'
+
     import {getHouseInfo, getApplyLeader, scrapStarts} from 'api/process'
     import {scrapByProcess} from 'api/expired'
     // import inventoryData from './inventoryData'
-    import {getToken} from "../../common/js/auth";
+    import {getToken} from "../../../common/js/auth";
     import request from 'common/js/request'
-    import {baseURL} from "../../api/config";
+    import {baseURL} from "../../../api/config";
     import { modifyFileName , handheld } from 'common/js/rfidReader'
 
     // import {handheld} from 'common/js/pda'

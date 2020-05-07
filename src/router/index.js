@@ -338,10 +338,15 @@ export const asyncRouterMap = [{
         name: 'record',
         meta: {title: '记录管理', icon: '记录管理'},
         children: [{
-            path: 'opening',
-            name: 'opening',
-            component: _import('record/opening'),
+            path: 'openGate',
+            name: 'openGate',
+            component: _import('record/openGate'),
             meta: {title: '开门记录'},
+        }, {
+            path: 'openCabinet',
+            name: 'openCabinet',
+            component: _import('record/openCabinet'),
+            meta: {title: '开柜记录'},
         }, {
             path: 'RROList',
             name: 'RROList',

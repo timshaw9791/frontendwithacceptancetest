@@ -1,5 +1,5 @@
 <template>
-    <div class="open-cabinet-record-container">
+    <div class="open-gate-record-container">
         <my-header title="开柜记录"></my-header>
         <div class="header">
             <entity-input label="警柜"></entity-input>
@@ -17,9 +17,9 @@
 
 <script>
     import myHeader from "../../components/base/header/header"
-    import {openCabinetRecord} from "@/api/openrecord"
+    import {openGateRecord} from "@/api/openrecord"
     export default {
-        name: "openCabinet",
+        name: "openGate",
         components:{
             myHeader,
         },
@@ -32,8 +32,8 @@
 
         methods:{
             fetchData(){
-                openCabinetRecord().then((res)=>{
-                   this.list = res.content
+                openGateRecord().then((res)=>{
+                    this.list = res.content
                 })
                 this.fixData()
             },
@@ -48,12 +48,12 @@
         created() {
             this.fetchData()
         }
+
     }
 </script>
 
 <style scoped>
-
-    .open-cabinet-record-container {
+    .open-gate-record-container {
         font-size: 16px;
     }
 
