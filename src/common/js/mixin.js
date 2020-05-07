@@ -42,12 +42,8 @@ export const historyPageMixin = {
     saveHistoryPage(page) {
       setHistoryPage(page);
     },
-    // refetch() {
-    //   // if (this.$apollo.queries['list']) this.$apollo.queries['list'].refetch();
-    // },
     callback(message) {
       this.$message.success(message);
-      this.refetch();
     },
     formatTime(time) {
       if (time == null) return;

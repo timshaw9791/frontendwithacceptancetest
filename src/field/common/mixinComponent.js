@@ -128,9 +128,6 @@ export let formRulesMixin = {
         removeHistoryPage() {
             sessionStorage.setItem(this.historyPage, 1);
         },
-        refetch() {
-            // if (this.$apollo.queries['list']) this.$apollo.queries['list'].refetch();//重新刷新apollo
-        },
         //路由处理信息
         routerPush(path, queryObject) {
             this.$router.push({path: path, query: queryObject});
@@ -140,7 +137,6 @@ export let formRulesMixin = {
         },
         callback(message) {
             this.$message.success(message);
-            this.refetch();
         }
     },
 };
