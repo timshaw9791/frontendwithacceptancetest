@@ -150,7 +150,6 @@ export let formRulesMixin = {
         //
         changePage(page) {
             this.$set(this.param, 'page', page);
-            // this.setHistoryPage(page);
         },
         callback(message) {
             this.$message.success(message);
@@ -158,7 +157,6 @@ export let formRulesMixin = {
         },
         getAxiosList(axios) {
             this.copyNameLike = JSON.parse(JSON.stringify(this.param.keyword));
-
             return axios(JSON.parse(JSON.stringify(this.param))).then(res => {
                 console.log(this.param);
                 this.partialPiginator.totalPages = res.totalPages;
@@ -169,10 +167,8 @@ export let formRulesMixin = {
                 this.$message.error(err);
             })
         },
-
         getAxiosList1(axios) {
             this.copyNameLike = JSON.parse(JSON.stringify(this.param['rfid']));
-
             return axios(JSON.parse(JSON.stringify(this.param))).then(res => {
                 this.partialPiginator.totalPages = res.totalPages;
                 this.partialPiginator.totalElements = res.totalElements;
@@ -181,24 +177,7 @@ export let formRulesMixin = {
                 console.log(err);
                 this.$message.error(err);
             })
-        },
-
-        gqlMutate(graphql, variables, sCallback) {//便利方法，用于手动修改数据的请求
-            this.mutate(graphql, variables).then((data) => {
-                if (data.errors) {   //未通过服务端的表单验证
-                    console.log(data.errors);
-                } else {//通过后返回数据，使用者可执行自定义处理数据
-                    sCallback.call(this, data);
-                }
-
-            })
-        },
-        mutate(mutation, variables) {//声明手动修改的方法
-            // return this.$apollo.mutate({
-            //     mutation: mutation,
-            //     variables: variables,
-            // });
-        },
+        }
     },
     destroyed() {
         this.removeHistoryPage();

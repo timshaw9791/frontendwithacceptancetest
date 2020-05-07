@@ -55,9 +55,7 @@
                 this.$emit('clickTable',data);
             },
             refetch(){
-                this.getEntityListWithPagintorTest(this.table.graphqlTable.graphqlApi,(data)=>{
-                    this.$set(this,'list',data);
-                })
+               
             },
         }
     }

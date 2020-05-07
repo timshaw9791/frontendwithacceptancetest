@@ -12,14 +12,10 @@
 </template>
 
 <script>
-    import {fetchMixin} from 'field/common/mixinFetch';
     export default {
         name: "cascader",
-        mixins: [fetchMixin],
         data(){
-            return{
-
-            }
+            return{ }
         },
         props:{
             cascader:{
@@ -34,9 +30,7 @@
                 console.log(data);
             },
             getCascaderData() {
-                this.gqlQuery(this.cascader.graphqlCascader.graphqlApi,this.cascader.graphqlCascader.graphqlKey,(data)=>{
-                    this.cascader.cascaderData = data;
-                },true)
+                
             },
             handleChange(value) {
                 this.cascader.selectCascader = value[value.length-1];
