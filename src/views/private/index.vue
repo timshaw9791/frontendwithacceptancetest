@@ -38,7 +38,6 @@
     import {imgBaseUrl} from "api/config";
     import {fetchMixin} from "field/common/mixinFetch";
     import info from 'components/information/inforComponent'
-    import user from 'gql/user.gql'
     import { getRolesList,getOrganUnitById,getIdentityUserById} from 'api/personnel'
     export default {
         components: {
@@ -97,16 +96,6 @@
                     });
                     console.log('this.role',this.role);
                 })
-                // this.gqlQuery(user.getRoleList, qfilter, (data) => {
-                //     data.forEach(item => {
-                //         if(item.roleEnum!='SUPER_ADMINISTRATOR'){
-                //             this.select.selectList.push({
-                //                 label: item.roleDescribe,
-                //                 value: item.id
-                //             })
-                //         }
-                //     })
-                // }, true)
             },
         },
         mounted() {

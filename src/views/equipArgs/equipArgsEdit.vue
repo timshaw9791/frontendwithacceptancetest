@@ -2,31 +2,29 @@
     <div class="equip-args-edit-container">
         <my-header :title="equipArgsID?'装备参数编辑':'装备参数新增'" :have-black="true" @h_black=back></my-header>
         <div class="body">
-            <form-container ref="form" >
-                <div class="equip-args-edit" disabled="isEdit">
-                    <define-input label="装备名称" v-model="formData.name"
-                                  margin="10px 10px 10px 10px"></define-input>
-                    <define-input label="装备型号" v-model="formData.model"
-                                  margin="10px 10px 10px 10px"></define-input>
-                    <entity-input label="供应商" v-model="formData.supplier"
-                                  :options="{search:'supplierSelect'}"
-                                  format="{name}"
-                                  margin="10px 10px 10px 10px"></entity-input>
-                    <date-input label="质保期（天）" v-model="formData.shelfLife"
-                                  margin="10px 10px 10px 10px" ></date-input>
-                    <date-input label="充电周期（天）" v-model="formData.chargeCycle"
-                                  margin="10px 10px 10px 10px" ></date-input>
-                    <date-input label="保养周期（天）" v-model="formData.upkeepCycle"
-                                  margin="10px 10px 10px 10px" ></date-input>
-                </div>
-                <div class="img">
-                    <upload-file v-model="formData.image" ></upload-file>
-                </div>
-                <div class="_box-bottom">
-                    <base-button label="取消" @click="clear()"></base-button>
-                    <base-button label="提交" @click="submit()"></base-button>
-                </div>
-            </form-container>
+            <div class="equip-args-edit" disabled="isEdit">
+                <define-input label="装备名称" v-model="formData.name"
+                              margin="10px 10px 10px 10px"></define-input>
+                <define-input label="装备型号" v-model="formData.model"
+                              margin="10px 10px 10px 10px"></define-input>
+                <entity-input label="供应商" v-model="formData.supplier"
+                              :options="{search:'supplierSelect'}"
+                              format="{name}"
+                              margin="10px 10px 10px 10px"></entity-input>
+                <date-input label="质保期（天）" v-model="formData.shelfLife"
+                            margin="10px 10px 10px 10px"></date-input>
+                <date-input label="充电周期（天）" v-model="formData.chargeCycle"
+                            margin="10px 10px 10px 10px"></date-input>
+                <date-input label="保养周期（天）" v-model="formData.upkeepCycle"
+                            margin="10px 10px 10px 10px"></date-input>
+            </div>
+            <div class="img">
+                <upload-file v-model="formData.image"></upload-file>
+            </div>
+            <div class="_box-bottom">
+                <base-button label="取消" @click="back"></base-button>
+                <base-button label="提交" @click="submit"></base-button>
+            </div>
         </div>
     </div>
 </template>
@@ -52,7 +50,7 @@
             }
         },
 
-        mixins:[listMixin],
+        mixins: [listMixin],
 
         components: {
             textInput,
@@ -63,27 +61,17 @@
             listMixin,
             uploadFile
         },
-
         methods: {
             back() {
                 this.$router.back()
             },
-            setImg(data) {
-                this.formData.image = data
-            },
-            clear() {
-                this.$router.push('equipArgsList')
-            },
             submit() {
                 if (this.isEdit) {
-                    editEquipArgs(this.formData).then(() => {
-                        this.$router.push('equipArgsList')
-                    })
+                    editEquipArgs(this.formData)
                 } else {
-                    saveEquipArgs(this.formData).then(() => {
-                        this.$router.push('equipArgsList')
-                    })
+                    saveEquipArgs(this.formData)
                 }
+                this.back()
             },
             fetchData() {
                 this.equipArgsID = this.$route.query.id
@@ -114,6 +102,7 @@
     .equip-args-edit-container {
         font-size: 16px;
     }
+
     .header {
         padding: 16px 7px;
     }

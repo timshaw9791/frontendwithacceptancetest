@@ -17,9 +17,15 @@
                 <define-column label="装备名称" field="name"></define-column>
                 <define-column label="装备型号" field="model"></define-column>
                 <define-column label="供应商" field="supplier.name"></define-column>
-                <define-column label="保质期(天)" :filter="(row)=>milliToDay(row.shelfLife)"></define-column>
-                <define-column label="充电周期(天)" :filter="(row)=>milliToDay(row.chargeCycle)"></define-column>
-                <define-column label="保养周期(天)" :filter="(row)=>milliToDay(row.upkeepCycle)"></define-column>
+                <define-column label="保质期(天)" v-slot="{data}">
+                    <date-input v-model="data.row.shelfLife" :disabled="true"  ></date-input>
+                </define-column>
+                <define-column label="充电周期(天)" v-slot="{data}">
+                    <date-input v-model="data.row.chargeCycle" :disabled="true" ></date-input>
+                </define-column>
+                <define-column label="保养周期(天)" v-slot="{data}">
+                    <date-input v-model="data.row.upkeepCycle" :disabled="true" ></date-input>
+                </define-column>
             </define-table>
         </div>
     </div>
@@ -38,6 +44,7 @@
             textInput,
             myHeader
         },
+
         data() {
             return {
                 list: [],
@@ -53,16 +60,8 @@
                 type: Object
             }
         },
+
         methods: {
-            milliToDay(data) {
-                let date = JSON.parse(JSON.stringify(data));
-                let day = Math.round(date / 24 / 60 / 60 / 1000);
-                if (day < 1) {
-                    return day = 1 + '天';
-                } else {
-                    return day + '天'
-                }
-            },
             changePage(page) {
                 this.pageInfo.page = page;
                 this.fetchData();

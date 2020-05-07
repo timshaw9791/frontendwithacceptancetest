@@ -49,12 +49,12 @@
             },
             fixData(data) {
                 data.forEach(item => {
-                   item.category = item.category === 6 ? '领取' : '归还';
+                    item.category = item.category === 6 ? '领取' : '归还';
                 })
                 this.list = data;
                 //累加装备参数
-                let equipNameList = []
                 this.list.forEach(item => {
+                    let equipNameList = []
                     item.receiveReturnItems.forEach(item => {
                         equipNameList.push(item.equipName + "(" + item.equipModel + ")")
                     })
@@ -63,6 +63,8 @@
                     item.allEquipArgs = equipNameList.reduce((v, k) => v + k + " ", "")
                     //计算装备数量
                     item.equipCount = item.receiveReturnItems.length
+                    //时间戳转日期
+                    item.createTime = this.$filterTime(parseInt(item.createTime))
                 })
             },
             goto(id) {
@@ -72,7 +74,7 @@
                         id: id
                     }
                 })
-            }
+            },
         }
     }
 </script>

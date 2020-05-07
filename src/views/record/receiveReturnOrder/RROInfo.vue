@@ -4,7 +4,7 @@
         <div class="header">
             <entity-input label="单号" v-model="info.number" :disabled="true"></entity-input>
             <entity-input label="领取人员" v-model="info.operatorInfo.operator" :disabled="true"></entity-input>
-            <entity-input label="领取时间" v-model="info.createTime" :disabled="true"></entity-input>
+            <date-select label="领取时间" v-model="info.createTime" :disabled="true" ></date-select>
         </div>
         <div class="body">
             <bos-tabs>
@@ -40,7 +40,7 @@
         components: {
             BosTabs,
             myHeader,
-            listMixin
+            listMixin,
         },
         mixins: [listMixin],
         data() {
