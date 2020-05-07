@@ -341,26 +341,6 @@
                 }else {
                     this.$message.error('没有进行修改')
                 }
-                // if(this.disabled==false){
-                //     this.form.username=this.form.policeSign;
-                //     if(this.addType=='add'){}else {
-                //         this.form.id=this.personenlData.id
-                //     }
-                //     this.$refs.form.validate.then((valid) => {
-                //         if(valid){
-                //             this.$refs.form.gqlValidate(this.addType=='add'?user.identitySaveUser:user.identityUpdateUser, {
-                //                 user:this.form
-                //             }, (res) => {
-                //                 this.$message.success('操作成功');
-                //                 this.$emit('addSucess',true);
-                //             })
-                //         }else {
-                //             this.$message.error('请先填写完整表单')
-                //         }
-                //     });
-                // }else {
-                //     this.$emit('black',true)
-                // }
             },
 
         },

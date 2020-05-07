@@ -34,9 +34,7 @@
                 console.log(data);
             },
             getCascaderData() {
-                this.gqlQuery(this.cascader.graphqlCascader.graphqlApi,this.cascader.graphqlCascader.graphqlKey,(data)=>{
-                    this.cascader.cascaderData = data;
-                },true)
+                
             },
             handleChange(value) {
                 this.cascader.selectCascader = value[value.length-1];

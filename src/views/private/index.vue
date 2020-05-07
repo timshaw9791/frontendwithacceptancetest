@@ -88,7 +88,6 @@
             },
             getRoleGql(roleEnum) {
                 getRolesList().then(res=>{
-                    console.log('getRoleGql',roleEnum);
                     res.data.forEach(item=>{
                         if(item.roleEnum==roleEnum){
                             this.role={roleDescribe:item.roleDescribe,id:item.id};
