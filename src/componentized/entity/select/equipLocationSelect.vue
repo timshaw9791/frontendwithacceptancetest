@@ -103,13 +103,13 @@ export default {
                         {
                             item.name=item.policeCabinetUserItems[0].user.name
                         }
-                        if(item.category=='SPARE_CABINET')
+                        if(item.category=='2')
                         {item.category='备用柜'}
-                        else if(item.category=='SINGLE_POLICE')
+                        else if(item.category=='0')
                         {
                             item.category='单警柜'
                         }
-                        else if(item.category=='COMMON_CABINET'){
+                        else if(item.category=='1'){
                             item.category='公共柜'}
                     })
                 }).catch(err => {
