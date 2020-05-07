@@ -5,7 +5,7 @@
                 <define-input label="单号" placeholder="--" :disabled="true" class="odd-number"></define-input>
                 <define-input label="报废类型" placeholder="到期报废" :disabled="true" class="odd-number"></define-input>
                 <date-select label="报废时间" placeholder="--" :disabled="true"></date-select>
-                <entity-input label="操作人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :disabled="true" ></entity-input>
+                <entity-input label="操作人员" v-model="people"  :disabled="true" ></entity-input>
             </div>
         <define-input label="备注" v-model="remark" style="margin-top:15px" :disabled="false" ></define-input>
     
@@ -63,6 +63,7 @@ import myHeader from 'components/base/header/header'
     import { getInhouseNumber,inHouse,findByRfids,outHouse} from "api/storage"
     import divTmp from '@/componentized/divTmp'
     import { equipScrap} from "api/operation"
+    import { maturityScrap,equipById} from 'api/storage'
 var _ = require("lodash");
 export default {
   name: "maintenance",
@@ -90,7 +91,8 @@ export default {
                    count:0,
                    copyList:[{rfid:'',serial:''}]
                }],
-               list:[]
+               list:[],
+               rfids:[]
     }
   },
   methods: {
@@ -107,6 +109,14 @@ export default {
             cancel(){
                 this.$router.back()
             },
+            fetchData(){
+                maturityScrap().then(res=>{
+                    res.forEach(item=>{
+                      this.rfids.push(item.rfid)
+                    })
+                    
+                })
+            },
             confirm(){
                 this.requestBody=JSON.parse(JSON.stringify(this.newData))
                 let rfidList=[]
@@ -115,7 +125,6 @@ export default {
                         rfidList.push(rf.rfid)
                     })
                 })
-                
                 equipScrap(1,this.remark,rfidList).then(res=>{
                     this.$message.success('装备报废成功')
                     this.cancel()
@@ -126,16 +135,24 @@ export default {
             },
            classDataify(data)//读写器数据处理的方法
             {
-                data.forEach(item=>{this.list.push(item)})
+                if(this._.findIndex(this.list,data[0])==-1)
+                {
+                     data.forEach(item=>{this.list.push(item)})
                 let cList=this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}`)
                 this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length,location:v[0].location}})
+                }
+               
             },
             readData(){
                 killProcess(this.pid)
                 start("java -jar scan.jar", (data) => {
-                     findByRfids(data).then(res=>{
+                    if(this._.findIndex(this.rfids,data)!=-1)
+                    {
+                         findByRfids(data).then(res=>{
                      this.classDataify(res)
-                   })
+                    })
+                    }
+                    
                     }, (fail) => {
                         this.index = 1;
                         this.$message.error(fail);
@@ -165,8 +182,9 @@ export default {
             },
     },
   created() {
-     this.init()
      this.people=JSON.parse(localStorage.getItem('user')).name
+     this.init()
+    
   },
   beforeDestroy(){
     killProcess(this.pid)

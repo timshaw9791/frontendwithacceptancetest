@@ -81,18 +81,19 @@
                 })
             },
             deleteplan(data){
+                Promise.all(this.deleteTrainingOne(data)).then(response=>{
+                    this.fetchData()
+                })
+            },
+            async deleteTrainingOne(data){
                 let id =data.pdf.id
                 data.video.id.forEach(item=>{
                     id.push(item)
                 })
-                Promise.all(
-                    id.forEach(item=>{
-                        deleteTraining(item)
-                    })
-                ).then(res=>{
-                    this.fetchData()
-                    console.log(res);
-                })
+                for(let i in id){
+                    // await deleteTraining(id[i])
+                    console.log(id[i]);
+                }
             },
             changePage(page) {
                 this.paginator.page = page

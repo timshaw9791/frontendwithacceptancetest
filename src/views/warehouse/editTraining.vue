@@ -61,7 +61,6 @@
                     type:""
                 }
                 Promise.all([this.video(),this.pdf()]).then(res=>{
-                    console.log(res);
                     this.$router.go(-1)
                 })
 
