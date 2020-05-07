@@ -89,8 +89,13 @@ export default {
                     this.surfaceList=res.content
                     console.log(this.surfaceList);
                     this.surfaceList.forEach(item=>{
-                   item.name=item.frameNumber+'架/'+item.surface+'面/'+item.section+'节/'+item.floor+'层'
-                   item.number=item.frameNumber+'-'+item.surface+'-'+item.section+'-'+item.floor
+                    if(item.frameNumber!=null){
+                       item.name=item.frameNumber+'架/',item.number=item.frameNumber+'-'}
+                    if(item.surface!=null){
+                        item.name+=item.surface+'面/',item.number+=item.surface+'-'}
+                    if(item.section!=null){
+                        item.name+=item.section+'节',item.number+=item.section}
+                    if(item.floor!=null){item.name+='/'+item.floor+'层',item.number+='-'+item.floor}
                   })
                 }).catch(err => {
                     this.$message.error(err.response.data.message)
