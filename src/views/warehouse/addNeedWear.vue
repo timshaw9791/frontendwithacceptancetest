@@ -28,7 +28,7 @@
     import defineInput from '@/componentized/textBox/defineInput'
     import bosTabs from "@/componentized/table/bosTabs";
     import serviceDialog from "components/base/serviceDialog"
-    import { addWearRates} from "api/equip";
+    // import { addWearRates} from "api/equip";
     var _ = require("lodash");
     export default {
         name: "consumable",
@@ -50,9 +50,9 @@
                         equipArg.push(item.equipArg)
                     }
                 })
-                addWearRates({name:this.title,equipArgs:equipArg}).then(res=>{
-                    
-                })
+                // addWearRates({name:this.title,equipArgs:equipArg}).then(res=>{
+                //
+                // })
             },
             cancel(){
                 this.$router.back()
