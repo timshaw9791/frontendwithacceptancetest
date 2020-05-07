@@ -12,7 +12,7 @@ export function getReceiveList() {
 /* 工作概况 */
 export function findAllData() {
     return request({
-        url: "/equip/findAllData",
+        url: "/equips/equips-situation",
         method: "GET"
     })
 }
@@ -32,12 +32,4 @@ export function findByOneLine() {
     })
 }
 
-/* 待办任务 */
-export function tasks(params) {
-    return request({
-        url: `${baseBURL}/tasks`,
-        method: "GET",
-        params
-    })
-}
 
