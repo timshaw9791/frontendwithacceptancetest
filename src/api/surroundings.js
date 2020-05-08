@@ -65,3 +65,11 @@ export function getDehumidifierStatus() {
     })
 }
 
+export function dehumidifierStatus(params) { // 除湿机状态查询(单个)
+    return request({
+        url: '/environment/dehumidifierStatus',
+        method: 'POST',
+        params
+    })
+}
+

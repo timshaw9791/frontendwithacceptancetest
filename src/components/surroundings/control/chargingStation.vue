@@ -7,7 +7,7 @@
                                              @selectRole="selectSation" :havaDefault="true"></select-charging-station>
                 </div>
                 <div class="charging-sation-controls">
-                    <socket v-for="item in socketList" :socket="item" v-if="flag" @sucess="sucess"></socket>
+                    <socket v-for="(item, i) in socketList" :key="cd+i" :socket="item" v-if="flag" @sucess="sucess"></socket>
                 </div>
             </div>
         </dialogs>
@@ -18,7 +18,7 @@
     import dialogs from '../surroundingDialog'
     import selectChargingStation from 'components/personnelManagement/personnelSelect'
     import socket from './controlComponents/socket'
-    import {baseURL} from "../../../api/config";
+    import { getdeploy } from 'api/login'
     import {getEquipChargeRecordList,getChangeStationStatus} from 'api/surroundings'
 
     export default {
@@ -43,24 +43,19 @@
         },
         methods:{
             getConfigs(){
-                this.$ajax({
-                    method:'post',
-                    url:baseURL+'/environment/deviceConfig',
-                }).then((res)=>{
-                    this.changeCount=res.data.data.ENVIRONMENT_CHARGE_COUNT;
-                }).catch(err=>{
-                    this.$message.error(err.response.data.message);
-                });
+                getdeploy().then(res => {
+                    this.changeCount = res.ENVIRONMENT_CHARGE_COUNT;
+                })
             },
             getChargingStationtList(){
                 this.select.selectList=[];
-              for(let i=1;i<=this.changeCount;i++){
-                  this.select.selectList.push({
-                          label:i+'号智能充电台',
-                          value:i
-                      })
-              }
-              this.$refs.dialog.show();
+                for(let i=1;i<=this.changeCount;i++){
+                    this.select.selectList.push({
+                            label:i+'号智能充电台',
+                            value:i
+                        })
+                }
+                this.$refs.dialog.show();
             },
             selectSation(data){
                 this.getChargingStationtNumber(data)
@@ -75,7 +70,6 @@
                         chargingTime:'',
                         status:1
                     };
-
                 }
             },
             getChargingStationtNumber(number){
