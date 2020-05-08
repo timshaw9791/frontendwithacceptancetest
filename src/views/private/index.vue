@@ -1,155 +1,84 @@
 <template>
-    <div class="info-box">
-        <div slot="header" class="header">
-            <span class="_card-title">{{$route.meta.title}}</span>
-        </div>
-        <div>
-            <info v-if="flag" :personenlData="personenlData" :toBack="toBack" @noBack="noBack" :organUnit="unit" :role="role"></info>
-            <!--<div class="privateInfo">-->
-            <!--&lt;!&ndash;<div class="imgUp">&ndash;&gt;-->
-            <!--&lt;!&ndash;<imgUp :disabled="true" :image="imageUrl"></imgUp>&ndash;&gt;-->
-            <!--&lt;!&ndash;</div>&ndash;&gt;-->
-            <!--&lt;!&ndash;<form-container ref="form" :model="form" class="formList">&ndash;&gt;-->
-            <!--&lt;!&ndash;<field-input v-model="form.name" label="姓名 :" width="3" :disabled="true"></field-input>&ndash;&gt;-->
-            <!--&lt;!&ndash;<br/>&ndash;&gt;-->
-            <!--&lt;!&ndash;<field-input type="password" v-model="form.password" label="密码 :" width="3" :disabled="disabled"&ndash;&gt;-->
-            <!--&lt;!&ndash;:rules="r(true).all(R.require)" prop="password"&ndash;&gt;-->
-            <!--&lt;!&ndash;&gt;</field-input>&ndash;&gt;-->
-            <!--&lt;!&ndash;<br/>&ndash;&gt;-->
-            <!--&lt;!&ndash;<field-input v-model="form.phone" label="联系方式 :" width="3" :disabled="disabled"&ndash;&gt;-->
-            <!--&lt;!&ndash;:rules="r(true).all(R.integer)" prop="phone"&ndash;&gt;-->
-            <!--&lt;!&ndash;&gt;</field-input>&ndash;&gt;-->
-            <!--&lt;!&ndash;</form-container>&ndash;&gt;-->
-            <!--&lt;!&ndash;<info></info>&ndash;&gt;-->
-            <!--</div>-->
-
-            <!--<div class="_box-bottom" v-if="!disabled">-->
-            <!--<el-button @click="disabled=!disabled">取消</el-button>-->
-            <!--<el-button type="primary" @click="pushButton">提交</el-button>-->
-            <!--</div>-->
-
-        </div>
+    <div class="personal-container">
+      <my-header title="个人中心"></my-header>
+      <div class="body">
+          <div class="left-info">
+              <define-input label="姓名" v-model="userInfo.name" :column="6" :disabled="true" margin="10px 5px"></define-input>
+              <checkbox label="权限" :column="6" v-model="userInfo.enterHouse" margin="10px 5px" :disabled="true">开门库房</checkbox>    
+              <radio label="性别" :column="6" v-model="userInfo.gender" :data="genderList" :disabled="true" margin="10px 5px"></radio>
+              <define-input label="职位" :column="6" v-model="userInfo.position" :disabled="true" margin="10px 5px"></define-input><br>
+              <define-input label="身份证号" :column="6" v-model="userInfo.idNumber" :disabled="true" margin="10px 5px"></define-input>
+              <define-input label="警号(账号)" :column="6" v-model="userInfo.policeSign" :disabled="true" margin="10px 5px"></define-input><br>
+              <define-input label="联系电话" :column="6" type="Phone"  v-model="userInfo.phone" :disabled="disabled" margin="10px 5px"></define-input>
+              <define-input label="密码" :column="6" v-model="userInfo.password" :disabled="disabled" margin="10px 5px"></define-input><br>
+              <define-input label="机构单位" :column="6" v-model="userInfo.organUnitName" :disabled="true" margin="10px 5px"></define-input>
+              <define-input label="指纹信息" :column="6" v-model="userInfo.fingerprintInformation" :disabled="true" margin="10px 5px"></define-input><br>
+              <radio label="角色" :column="6" v-model="userInfo.role" :data="roleList" :disabled="true" margin="10px 5px"></radio>
+          </div>
+          <div class="right-image">
+              <upload-file v-model="userInfo.faceInformation" :disabled="disabled" size="large"></upload-file>
+          </div>
+      </div>
+      <div class="footer">
+          <base-button :label="buttonLabel" @click="disabled=!disabled"></base-button>
+          <base-button label="确定" @click="submit"></base-button>
+      </div>
     </div>
 </template>
 
 <script>
-    import tabs from 'components/base/tabs/index'
-    import imgUp from 'components/base/axiosImgUp';
-    import {imgBaseUrl} from "api/config";
-    import info from 'components/information/inforComponent'
-    import { getRolesList,getOrganUnitById,getIdentityUserById} from 'api/personnel'
-    export default {
-        components: {
-            tabs,
-            imgUp,
-            info
+import myHeader from 'components/base/header/header';
+import uploadFile from '@/componentized/uploadFile'
+import { editUser } from 'api/user'
+export default({
+    name: 'personal',
+    components: {myHeader, uploadFile},
+    data() {
+        return {
+            userInfo: JSON.parse(localStorage.getItem('user')),
+            disabled: true,
+            genderList: [
+                {label: '男', key: '男'},
+                {label: '女', key: '女'}
+            ],
+            roleList: [
+                {label: '管理员', key: 'ADMIN'}, 
+                {label: '领导', key: 'LEADER'}, 
+                {label: '警员', key: 'POLICE'
+                }]
+        }
+    },
+    computed: {
+        buttonLabel() {
+            return this.disabled?'编辑':'取消编辑'
         },
-        data() {
-            return {
-                form: {},
-                imageUrl: '',
-                personenlData:{},
-                unit:'',
-                role:{},
-                toBack:false,
-                flag:false
-            }
-        },
-        created(){
-            this.getList();
-        },
-        methods: {
-            getList() {
-                let data = JSON.parse(localStorage.getItem('user'));
-                getIdentityUserById(data.id).then(res=>{
-                    this.$set(this,'personenlData',res.data);
-                    this.getUnit(this.personenlData.unitId);
-                    this.getRoleGql(this.personenlData.role.roleEnum);
-                    this.flag=true
-                });
-                // this.imageUrl = `${imgBaseUrl}${data.faceInformation}`;
-            },
-            getUnit(id){
-                getOrganUnitById(id).then(res=>{
-                    this.unit=res.data;
-                })
-            },
-            pushButton() {
-
-            },
-            black() {
-              this.toBack=true
-            },
-            noBack(data){
-              this.toBack=false
-            },
-            getRoleGql(roleEnum) {
-                getRolesList().then(res=>{
-                    res.data.forEach(item=>{
-                        if(item.roleEnum==roleEnum){
-                            this.role={roleDescribe:item.roleDescribe,id:item.id};
-                        }
-                    });
-                })
-            },
-        },
+    },
+    methods: {
+        submit() {
+            editUser(this.userInfo.id, Object.assign(this.userInfo, {role: 2})).then(res => {
+                
+            })
+        }
     }
+})
+ 
 </script>
 
 <style lang="scss" scoped>
-    .info-box {
-        width: 100%;
-        min-height: 600px;
-        font-size: 16px;
-    }
-
-    .info-box .header {
-        width: 100%;
+.personal-container {
+    font-size: 16px;
+    .body {
         display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding-left: 15px;
-        padding-right: 15px;
-        height: 58px;
-        font-size: 20px;
-        color: #707070;
+        width: 80%;
+        min-width: 1000px;
+        justify-content:space-around;
+        margin: 50px auto;
     }
-
-    .header .black {
-        display: flex;
-        align-items: center;
+    .left-info {
+        width: 700px;
     }
-
-    .black .svg-info {
-        height: 20px;
-        width: 20px;
-        margin-right: 10px;
+    .footer {
+        text-align: center;
     }
-
-    .info-box .actions {
-        border-top: rgba(112, 112, 112, 0.13) solid 1px;
-        border-bottom: rgba(112, 112, 112, 0.13) solid 1px;
-        height: 57px;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        padding-left: 15px;
-        padding-right: 15px;
-        color: #707070;
-
-    }
-
-    .privateInfo {
-        margin-top: 60px;
-        display: flex;
-
-        .imgUp {
-            margin-left: 92px;
-        }
-
-        .formList {
-            width: 80%;
-            margin: 0 auto;
-        }
-    }
+}
 </style>
