@@ -43,3 +43,11 @@ export function supplementConsumable(id,params) {
         params:params
     })
 }
+// 耗材记录列表
+export function consumableRecordList(params) {
+    return request({
+        url: `/consumable-orders`,
+        method: 'GET',
+        params:params
+    })
+}
