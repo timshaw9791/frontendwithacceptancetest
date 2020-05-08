@@ -195,8 +195,9 @@ export default {
             }
     },
   created() {
-     this.init()
      this.people=JSON.parse(localStorage.getItem('user')).name
+     this.init()
+     
   },
   beforeDestroy(){
     killProcess(this.pid)

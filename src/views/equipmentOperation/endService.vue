@@ -2,9 +2,9 @@
     <div class="opening-box">
          <my-header :title="$route.meta.title" :haveBlack="false"></my-header>
          <div class="apply-process-top" data-test="action_box">
-                <define-input label="单号" v-model="orderNumber" :disabled="true" class="odd-number"></define-input>
-                <define-input label="维修时间" v-model="time" :disabled="true" class="odd-number"></define-input>
-                <define-input label="操作人员" v-model="people" :disabled="true"  class="odd-number"></define-input>
+                <define-input label="单号" placeholder="--" :disabled="true" ></define-input>
+                <define-input label="维修时间" placeholder="--" :disabled="true" ></define-input>
+                <define-input label="操作人员" v-model="people" :disabled="true"  ></define-input>
             </div>
         <div class="data-list">
             <bos-tabs >
@@ -226,6 +226,7 @@ export default {
             }
         },
         created(){
+                this.people=JSON.parse(localStorage.getItem('user')).name
                 this.init()
         }
 }
