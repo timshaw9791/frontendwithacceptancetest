@@ -2,16 +2,10 @@
     <div class="dehumidification">
         <dialogs :width="1040" ref="dialog" :title="'除湿器控制'">
             <div class="hum_box">
-            <div class="dehumidification-box">
-               <dehumi
-                v-for="(item,index) in humList" 
-                    :index="index"
-                    :item="item"
-                    :key="index"
-               >
-               </dehumi>
-               </div>
-               </div>
+                <div class="dehumidification-box">
+                    <dehumi v-for="(item,index) in humList" :index="index" :item="item" :key="index"></dehumi>
+                </div>
+            </div>
         </dialogs>
     </div>
 </template>
@@ -98,31 +92,31 @@
             cancel(){
                 this.flag=!this.flag
             },
-            submission(){
-                this.submissionThreshold()
-            },
-            submissionThreshold(){
-                this.$ajax({
-                    method:'post',
-                    url:baseURL+'/environment/humidityThresholdSet',
-                    params:{max:this.threshold}
-                }).then((res)=>{
-                    this.flag=!this.flag;
-                    this.$message.success('提交成功');
-                }).catch(err=>{
-                    this.$message.error(err.response.data.message);
-                });
-            },
-            getThreshold(){
-                this.$ajax({
-                    method:'post',
-                    url:baseURL+'/environment/humidityThreshold',
-                }).then((res)=>{
-                    this.threshold=res.data.data.humidityThreshold
-                }).catch(err=>{
-                    this.$message.error(err.response.data.message);
-                });
-            }
+            // submission(){
+            //     this.submissionThreshold()
+            // },
+            // submissionThreshold(){
+            //     this.$ajax({
+            //         method:'post',
+            //         url:baseURL+'/environment/humidityThresholdSet',
+            //         params:{max:this.threshold}
+            //     }).then((res)=>{
+            //         this.flag=!this.flag;
+            //         this.$message.success('提交成功');
+            //     }).catch(err=>{
+            //         this.$message.error(err.response.data.message);
+            //     });
+            // },
+            // getThreshold(){
+            //     this.$ajax({
+            //         method:'post',
+            //         url:baseURL+'/environment/humidityThreshold',
+            //     }).then((res)=>{
+            //         this.threshold=res.data.data.humidityThreshold
+            //     }).catch(err=>{
+            //         this.$message.error(err.response.data.message);
+            //     });
+            // }
         }
     }
 </script>
