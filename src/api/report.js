@@ -1,8 +1,49 @@
 import request from 'common/js/request'
 
+//金额统计
+export function findEquipMoneyStatistics(params) {
+    return request({
+        url: '/statistic/money',
+        method: 'get',
+        params:params
+    })
+}
 
+//损耗统计
+export function findEquipLossStatistics(params) {
+    return request({
+        url: '/statistic/loss',
+        method: 'get',
+        params:params
+    })
+}
 
+//维修统计
+export function findEquipRepairStatistics(params) {
+    return request({
+        url: '/statistic/repair',
+        method: 'get',
+        params:params
+    })
+}
 
+//报废统计
+export function findEquipScrapStatistics(params) {
+    return request({
+        url: '/statistic/scrapStatistic',
+        method: 'get',
+        params:params
+    })
+}
+
+//使用频次统计
+export function findEquipFrequencyStatistics(params) {
+    return request({
+        url: '/statistic/frequencyStatistic',
+        method: 'get',
+        params:params
+    })
+}
 export function findEquipMoneyStatistic(params) {
     return request({
         url: '/statistic/MoneyStatistic',

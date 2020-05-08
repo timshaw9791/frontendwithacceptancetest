@@ -111,7 +111,7 @@ export default {
             },
             fetchData(){
                 maturityScrap().then(res=>{
-                    res.forEach(item=>{
+                    res.content.forEach(item=>{
                       this.rfids.push(item.rfid)
                     })
                     
@@ -135,23 +135,22 @@ export default {
             },
            classDataify(data)//读写器数据处理的方法
             {
-                if(this._.findIndex(this.list,data[0])==-1)
+                if(_.findIndex(this.list,data[0])==-1)
                 {
                      data.forEach(item=>{this.list.push(item)})
-                let cList=this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}`)
-                this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length,location:v[0].location}})
+                let cList=_.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}`)
+                this.newData=_.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length,location:v[0].location}})
                 }
                
             },
             readData(){
                 killProcess(this.pid)
                 start("java -jar scan.jar", (data) => {
-                    if(this._.findIndex(this.rfids,data)!=-1)
-                    {
+                    if(this.rfids.findIndex((v)=>v==data)!=-1){
                          findByRfids(data).then(res=>{
-                     this.classDataify(res)
+                         this.classDataify(res)
                     })
-                    }
+                    } 
                     
                     }, (fail) => {
                         this.index = 1;
@@ -182,9 +181,8 @@ export default {
             },
     },
   created() {
+     this.fetchData()
      this.people=JSON.parse(localStorage.getItem('user')).name
-     this.init()
-    
   },
   beforeDestroy(){
     killProcess(this.pid)

@@ -24,8 +24,8 @@
                                 <define-input v-model="data.row.equipLocation" type="String" :tableEdit="false"></define-input>
                             </define-column>
                            
-                            <define-column label="申请时间" :filter="(row)=>$filterTime(row.finishTime)"/>
-                            <define-column label="申请原因" filed="reason"/>
+                            <define-column label="申请时间" :filter="(row)=>$filterTime(row.createTime)"/>
+                            <define-column label="申请原因" field="reason" :tableEdit="false"/>
                         </define-table>
         </div>
     </div>
