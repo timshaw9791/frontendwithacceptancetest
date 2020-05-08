@@ -22,7 +22,7 @@
                                 <entity-input v-model="data.row.equipArgId"  :options="{search:'equipArgsSelect'}" format="{name}({model})" :tableEdit="true" ></entity-input>
                             </define-column>
                             <define-column label="装备位置"  v-slot="{ data }" >
-                                 <entity-input v-model="data.row.locationId"  :options="{search:'locationSelect'}" :formatFunc="formatFunc" :tableEdit="true" ></entity-input>
+                                 <entity-input v-model="data.row.locationId"  :options="{search:'locationSelect'}" :formatFunc="$formatFunc" :tableEdit="true" ></entity-input>
                             </define-column>
                             <define-column label="单价" v-slot="{ data }">
                                 <define-input v-model="data.row.price" type="Number" ></define-input>
@@ -120,11 +120,6 @@ export default {
             }
         },
         methods:{
-           formatFunc(data){
-               return data.frameNumber?
-                `${data.frameNumber}架/${data.surface}面/${data.section}节/${data.floor}层`:
-                `${data.category}(${data.cabinetNumber})`
-           },
             selRow(data){
                this.findIndex=data.index
             },
