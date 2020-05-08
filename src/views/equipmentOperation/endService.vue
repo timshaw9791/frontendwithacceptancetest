@@ -2,9 +2,9 @@
     <div class="opening-box">
          <my-header :title="$route.meta.title" :haveBlack="false"></my-header>
          <div class="apply-process-top" data-test="action_box">
-                <define-input label="单号" v-model="orderNumber" :disabled="true" class="odd-number"></define-input>
-                <define-input label="维修时间" v-model="time" :disabled="true" class="odd-number"></define-input>
-                <define-input label="操作人员" v-model="people" :disabled="true"  class="odd-number"></define-input>
+                <define-input label="单号" placeholder="--" :disabled="true" ></define-input>
+                <define-input label="维修时间" placeholder="--" :disabled="true" ></define-input>
+                <define-input label="操作人员" v-model="people" :disabled="true"  ></define-input>
             </div>
         <div class="data-list">
             <bos-tabs >
@@ -22,7 +22,7 @@
                                 <entity-input v-model="data.row.equipArg" format="{name}({model})" :tableEdit="false" ></entity-input>
                             </define-column>
                             <define-column label="装备位置" v-slot="{ data }">
-                                <entity-input v-model="data.row.location" format="{frameNumber}架/{surface}面/{section}节/{floor}层" :tableEdit="false"></entity-input>
+                                <entity-input v-model="data.row.location" :formatFunc="formatFunc" :tableEdit="false"></entity-input>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
                                 <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
@@ -129,6 +129,17 @@ export default {
                 })
                 return sums;
             },
+            formatFunc(data){
+            if(data.surface!=null&&data.floor!=null){
+                 return data.frameNumber?
+                `${data.frameNumber}架/${data.surface}面/${data.section}节/${data.floor}层`:
+                `${data.category}(${data.cabinetNumber})`
+               }else{
+                 return data.frameNumber?
+                `${data.frameNumber}架/${data.section}节`:
+                `${data.category}(${data.cabinetNumber})`   
+               }
+           },
             cancel(){
                 this.$router.back()
             },
@@ -226,6 +237,7 @@ export default {
             }
         },
         created(){
+                this.people=JSON.parse(localStorage.getItem('user')).name
                 this.init()
         }
 }

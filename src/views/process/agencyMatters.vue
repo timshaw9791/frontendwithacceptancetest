@@ -54,7 +54,6 @@
                 this.getList();
             },
             toDetail(data) {
-                console.log("data",data);
                 if(data.processInstanceName.includes("调拨")){
                     if(data.name.includes("出库")){
                         this.$router.push({

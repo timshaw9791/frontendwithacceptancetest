@@ -22,7 +22,7 @@
                                 <entity-input v-model="data.row.equipArgId"  :options="{search:'equipArgsSelect'}" format="{name}({model})" :tableEdit="true" ></entity-input>
                             </define-column>
                             <define-column label="装备位置"  v-slot="{ data }" >
-                                 <entity-input v-model="data.row.locationId"  :options="{search:'locationSelect'}" format="{frameNumber}架/{surface}面/{section}节/{floor}层" :tableEdit="true" ></entity-input>
+                                 <entity-input v-model="data.row.locationId"  :options="{search:'locationSelect'}" :formatFunc="$formatFunc" :tableEdit="true" ></entity-input>
                             </define-column>
                             <define-column label="单价" v-slot="{ data }">
                                 <define-input v-model="data.row.price" type="Number" ></define-input>
@@ -137,7 +137,11 @@ export default {
                 this.requestBody=JSON.parse(JSON.stringify(this.list))
                 this.requestBody.forEach(item=>{
                     item.equipArgId=item.equipArgId.id
+                    if(item.locationId.location){
+                        item.locationId=item.locationId.location.id
+                    }else{
                     item.locationId=item.locationId.id
+                    }
                     item.copyList.forEach(r=>{
                         item.rfids.push(r.rfid)
                         item.serial.push(r.serial)

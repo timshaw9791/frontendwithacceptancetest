@@ -1,6 +1,6 @@
 <template>
     <div class="define-table-container">
-        <el-table :data="data" :height="height" :border="border" fit
+        <el-table :data="data" :height="height" :border="border" ref="table" fit
                 :highlight-current-row="highLightCurrent" @current-change="changeCurrent"
                 :show-summary="showSummary" :summary-method="summaryFunc">
                 <el-table-column label="序号" width="65" align="center" v-if="haveIndex" :fixed="indexFixed">
@@ -19,7 +19,8 @@ import defineColumn from './defineColumn'
         data() {
             return {
                 selectData: '',
-                selectIndex: ''
+                selectIndex: '',
+                multiSelectiton: ''
             }
         },
         props: {
@@ -85,6 +86,10 @@ import defineColumn from './defineColumn'
                 this.selectData = current;
                 this.selectIndex = this._.findIndex(this.data, current);
                 this.$emit('changeCurrent', {current, index: this.selectIndex});
+            },
+            getSelection() {
+                this.multiSelectiton = this.$refs.table.selection;
+                return this.multiSelectiton;
             }
         }
     }

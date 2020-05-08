@@ -11,7 +11,7 @@
                     <define-input label="供应商" v-model="editList.equipArg.supplier.name" margin="15px 0" :disabled="true" :column="6" align="right"></define-input>
                     <define-input label="RFID"  v-model="editList.rfid"  :disabled="true" margin="15px 0" :column="6" align="left"></define-input>
                     <define-input label="装备序号" v-model="editList.serial" :disabled="true" margin="15px 0" :column="6" align="right"></define-input>
-                    <entity-input label="装备位置" v-model="editList.location" :column="6" margin="0 0" :options="{search:'locationSelect'}" format="{frameNumber}架/{surface}面/{section}节/{surface}层/" :tableEdit="true" align="left"></entity-input>
+                    <entity-input label="装备位置" v-model="editList.location" :column="6" margin="0 0" :options="{search:'locationSelect'}" :formatFunc="formatFunc" :tableEdit="true" align="left"></entity-input>
                     <define-input label="装备单价" v-model="editList.price" type="Number" :disabled="false" margin="15px 0" :column="6" align="right"></define-input>
                     <date-select  label="生产日期" v-model="editList.productDate" :column="6" margin="15px 0" align="left"></date-select>
                 </div>
@@ -75,7 +75,20 @@ export default {
             successUp(data) {
                 this.editList.equipArg.image=data
             },
+            formatFunc(data){
+            if(data.surface!=null&&data.floor!=null){
+                 return data.frameNumber?
+                `${data.frameNumber}架/${data.surface}面/${data.section}节/${data.floor}层`:
+                `${data.category}(${data.cabinetNumber})`
+               }else{
+                 return data.frameNumber?
+                `${data.frameNumber}架/${data.section}节`:
+                `${data.category}(${data.cabinetNumber})`   
+               }
+           },
             confirm(){//提交装备信息
+                console.log(this.editList.location);
+                this.editList.location.location!=null?this.editList.location=this.editList.location.location:this.editList.location=this.editList.location
                 equipsToNew(this.editList.id,this.editList).then(res=>{
                     this.$message.success('编辑装备信息成功')
                     this.cancel()
@@ -85,7 +98,7 @@ export default {
             },
             milliLocation(data)//对现实的装备位置信息进行处理
             {
-                return data.frameNumber+'架/'+data.surface+'面/'+data.section+'节/'+data.surface+'层'
+                return data.frameNumber+'架/'+data.surface+'面/'+data.section+'节/'+data.floor+'层'
             },
         },
         created(){

@@ -6,7 +6,7 @@
             <i class="iconfont iconjiahao" v-show="!disabled&&!fileName"></i>
             <i class="iconfont iconPDF" v-show="type=='pdf'&&fileName"></i>
             <i class="iconfont icondianshi-shipinsuolve" v-show="type=='video'&&fileName"></i>
-            <i class="iconfont iconwenbenkuangshanchu" v-show="fileName" @click.stop="remove"></i>
+            <i class="iconfont iconwenbenkuangshanchu" v-show="fileName&&!disabled" @click.stop="remove"></i>
             <img :src="imgSrc" class="img" v-if="fileName&&type=='img'" alt="图片加载失败">
             <img src="@/assets/noThumbnails.png" class="img" v-if="disabled&&!fileName">
         </div>

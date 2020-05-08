@@ -1,6 +1,6 @@
 <template>
-    <div class="opening-box">
-        <my-header title="保养单"></my-header>
+    <div class="scrap-order-container">
+        <my-header title="报废单"></my-header>
         <div class="data-list">
             <define-table :data="list" height="3.64rem" @changeCurrent="selRow" @changePage="changePage" :pageInfo="paginator" >
                             <define-column label="操作" width="130" v-slot="{ data }">
@@ -11,6 +11,9 @@
                             <define-column label="单号" v-slot="{ data }">
                                 <define-input v-model="data.row.number" type="Number" :tableEdit="false"></define-input>
                             </define-column>
+                            <define-column label="报废类型" v-slot="{ data }">
+                                <define-input v-model="data.row.category"  :tableEdit="false"></define-input>
+                            </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
                                 <define-input v-model="data.row.equipArgs" type="Number" :tableEdit="false"></define-input>
                             </define-column>
@@ -20,7 +23,7 @@
                             <define-column label="操作人员" v-slot="{ data }">
                                 <define-input v-model="data.row.operatorInfo.operator" type="String" :tableEdit="false"></define-input>
                             </define-column>
-                            <define-column label="保养开始时间" :filter="(row)=>$filterTime(row.createTime)"/>
+                            <define-column label="报废时间" :filter="(row)=>$filterTime(row.createTime)"/>
                         </define-table>
         </div>
     </div>
@@ -36,7 +39,7 @@
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
-    import { keepOrders} from "api/operation"
+    import { scarpsOrders} from "api/operation"
 export default {
     components:{
             myHeader,
@@ -53,7 +56,7 @@ export default {
             return{
                list:[],
                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0,abnormal:false},
-               params:{size:10,page:1,category:3},
+               params:{size:10,page:1,category:4},
             }
         },
         methods:{
@@ -62,25 +65,30 @@ export default {
             },
             toDetail(data){
                 console.log(data);
-                this.$router.push({name:'maintenanceOrderDetails',params:{info:data}})
-                this.$route.meta.title = '保养归还单/保养归还单详情'
+                this.$router.push({name:'scrapOrderDetails',params:{info:data}})
             },
             getList(){
-                keepOrders(this.params).then(res=>{
+                scarpsOrders(this.params).then(res=>{
                     this.list=res.content
                     this.list.forEach(item=>{
-                        if(item.equipKeepItems.length==1)
-                        {
-                            item.equipArgs=item.equipKeepItems[0].equipName+'('+item.equipKeepItems[0].equipModel+')'
-                        }else{
-                            item.equipArgs=item.equipKeepItems[0].equipName+'('+item.equipKeepItems[0].equipModel+')'+'...'
+                        if(item.category==0){item.category='维修报废'}
+                        if(item.category==1){item.category='到期报废'}
+                        if(item.category==2){item.category='盘点报废'}
+                        if(item.scrapItems.length!=0){
+                             if(item.scrapItems.length==1)
+                            {
+                                item.equipArgs=item.scrapItems[0].equipName+'('+item.scrapItems[0].equipModel+')'
+                            }else{
+                                item.equipArgs=item.scrapItems[0].equipName+'('+item.scrapItems[0].equipModel+')'+'...'
+                            }
                         }
+                       
                     })
                     
                 })
             },
             filterNumber(data){
-                return data.equipKeepItems.length
+                return data.scrapItems.length
             },
             changePage(page) {
             this.paginator.page = page;ss
@@ -98,8 +106,7 @@ export default {
     min-height: 4.4323rem;
     .btn_box{
     padding: 16px 7px;
-    // border-top:1px solid rgba(112, 112, 112, 0.13);
-    // border-bottom:1px solid rgba(112, 112, 112, 0.13);
+
     }
     .data-list
     {
