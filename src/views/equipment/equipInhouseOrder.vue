@@ -15,7 +15,7 @@
                                 <entity-input v-model="data.row.equipArg"  :options="{search:'equipArgsSelect'}" format="{equipName}({equipModel})" :tableEdit="false" ></entity-input>
                             </define-column>
                             <define-column label="装备位置"  v-slot="{ data }" >
-                                 <entity-input v-model="data.row.location"  :formatFunc="formatFunc" :tableEdit="false" ></entity-input>
+                                 <entity-input v-model="data.row.location"  :formatFunc="$formatFuncOrder" :tableEdit="false" ></entity-input>
                             </define-column>
                             <define-column label="单价" v-slot="{ data }">
                                 <define-input v-model="data.row.equipArg.price" :tableEdit="false" type="Number" ></define-input>

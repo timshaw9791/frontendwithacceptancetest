@@ -14,7 +14,7 @@ import Video from 'video.js'
 import _ from 'lodash'
 Vue.prototype.$video = Video;
 
-import { parseTime, filterFrame,formatFunc } from 'common/js/index'
+import { parseTime, filterFrame,formatFunc,formatFuncOrder } from 'common/js/index'
 import VideoPlayer from 'vue-video-player'
 
 Vue.use(VideoPlayer);
@@ -61,6 +61,7 @@ Vue.config.errorHandler = function(err, vm, info) {
 Vue.config.productionTip = false;
 Vue.prototype.$ajax = axios;
 Vue.prototype.$formatFunc = formatFunc
+Vue.prototype.$formatFuncOrder = formatFuncOrder
 Vue.prototype.$filterTime = parseTime
 Vue.prototype.$filterFrame = filterFrame
 Vue.prototype._ = _

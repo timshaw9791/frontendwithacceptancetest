@@ -1,6 +1,13 @@
 import request from 'common/js/request'
 
-
+//金额统计
+export function findEquipMoneyStatistics(params) {
+    return request({
+        url: '/statistic/money',
+        method: 'get',
+        params:params
+    })
+}
 
 
 export function findEquipMoneyStatistic(params) {

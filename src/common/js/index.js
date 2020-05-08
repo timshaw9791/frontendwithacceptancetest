@@ -80,6 +80,9 @@ export function formatFunc(data){
        
      }
  }
+ export function formatFuncOrder(data){
+
+ }
 // 架体格式化
 export function filterFrame(data) {
   return `${data.number}架/${data.surface}面/${data.section}节/${data.floor}层`

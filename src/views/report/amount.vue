@@ -5,51 +5,55 @@
          <bos-tabs  :option="['contrast']" :layoutRatio="[1,3]" :contrastKey="['slot1', 'slot2']" >
             <div slot="slot1"  class="safety-body-top">
                 <define-input label="小类" v-model="search"></define-input>
+                <base-button label="查询"  size="mini"></base-button>
                 <div style="height:80%">
                     <define-tree @clickNode="clickNode" :data="tree.treeData" :options="options" @nodeClick="clickNode"></define-tree>
                 </div>
-                <base-button label="添加大类" size="mini" @click="dialogShow('add','genres')"></base-button>
-                <base-button label="编辑大类" size="mini" @click="dialogShow('edit','genres')"></base-button>
-                <base-button label="删除大类" size="mini"></base-button>
+
             </div>
             <div  slot="slot2" class="safety-body-top">
-                <div class="safety-body-t" v-if="show=='unassigned'">
+                <div class="safety-body-t" v-if="show=='All'">
                     <div style="float:left">{{this.title}}</div>
                     <div style="float:right">
-                        <base-button label="装备分类"  size="mini"></base-button>
-                        <i class="iconfont icontianjialiang"></i>
-                        <i class="iconfont icontianjialiang"></i>
+                        <define-input label="小类" v-model="search"></define-input>
+                        <base-button label="查询"  size="mini"></base-button>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='genres'">
                     <div style="float:left">装备大类：{{this.title}}</div>
+                    <div style="float:right">
+                        <define-input label="小类" v-model="search"></define-input>
+                        <base-button label="查询"  size="mini"></base-button>
+                    </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='category'">
                     <div style="float:left">装备小类：{{this.title}}</div>
-                    <div style="float:left;margin-left:120px">装备总数：{{this.total}}</div>
-                    <div-tmp></div-tmp>
-                    <div style="float:left;margin-left:120px">安全库存：-</div>
+                    <div style="float:right">
+                        <define-input label="小类" v-model="search"></define-input>
+                        <base-button label="查询"  size="mini"></base-button>
+                    </div>
                 </div>
                 <div style="width:95%">
                     <define-table v-if="show=='All'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
-                        <define-column columnType="selection"></define-column>
-                        <define-column label="装备参数" field="describes" v-slot="{data}">
-                            <entity-input v-model="data.row.equipArg" format="{name}({model})" :tableEdit="false" :options="{detail: 'equipArgsDetail'}"></entity-input>
-                        </define-column>
-                        <define-column label="装备数量" field="count"></define-column>
+                        <define-column label="装备大类" field="genre"/>
+                        <define-column label="装备总数" field="totality"></define-column>
+                        <define-column label="可用数量" field="inHouseCount"></define-column>
+                        <define-column label="领用数量" field="receiveUseCount"></define-column>
+                        <define-column label="装备总价" field="totalPrice"></define-column>
                     </define-table>
                     <define-table v-if="show=='genres'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
-                        <define-column label="操作" field="-"></define-column>
-                        <define-column label="装备小类" field="name"></define-column>
-                        <define-column label="装备数量" field="count"></define-column>
-                        <define-column label="安全库存" field="stock"></define-column>
+                        <define-column label="装备小类" field="category"/>
+                        <define-column label="装备总数" field="totality"></define-column>
+                        <define-column label="可用数量" field="inHouseCount"></define-column>
+                        <define-column label="领用数量" field="receiveUseCount"></define-column>
+                        <define-column label="装备总价" field="totalPrice"></define-column>
                     </define-table>
                     <define-table v-if="show=='category'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
-                        <define-column columnType="selection"></define-column>
-                        <define-column label="装备参数" field="describes" v-slot="{data}">
-                            <entity-input v-model="data.row.equipArg" format="{name}({model})" :tableEdit="false" :options="{detail: 'equipArgsDetail'}"></entity-input>
-                        </define-column>
-                        <define-column label="装备数量" field="count"></define-column>
+                        <define-column label="装备参数" field="equipArgs"/>
+                        <define-column label="装备总数" field="totality"></define-column>
+                        <define-column label="可用数量" field="inHouseCount"></define-column>
+                        <define-column label="领用数量" field="receiveUseCount"></define-column>
+                        <define-column label="装备总价" field="totalPrice"></define-column>>
                     </define-table>
                 </div>
             </div>
@@ -68,6 +72,7 @@
     import serviceDialog from "components/base/serviceDialog"
     import defineTree from "@/componentized/defineTree"
     import {equipmentAmount} from "api/statistics";
+    import {findEquipMoneyStatistics} from "api/report"
     import { getgenresList, getcategories, getequipArg, } from "api/safety";
     var _ = require("lodash");
     export default {
@@ -82,15 +87,14 @@
                     label:'name',
                     children:'children'
                 },
-                title:"未分配装备",
+                title:"全部装备",
                 paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
                 order: [],
                 editflag:false,
-                show:"unassigned",
+                show:"All",
                 equipArg:[],
                 search:"",
                 total:0,
-                dialogData:{}
             };
         },
         methods: {
@@ -110,53 +114,44 @@
                         })
                     })
                 })
-                getequipArg().then(res=>{
-                    this.equipArg = res
-                    this.paginator.totalPages = res.totalPages;
-                    this.paginator.totalElements = res.totalElements;
-                })
+                findEquipMoneyStatistics().then(res=>{
+                        this.equipArg = res
+                        this.paginator.totalPages = res.totalPages;
+                        this.paginator.totalElements = res.totalElements;
+                    })
             },
             changePage(page) {
                 this.paginator.page = page
                 this.fetchData()
             },
             clickNode(data) {
+                console.log("-------------------");
                 console.log("data",data);
                 this.show = data.data.show
                 this.title = data.data.name
                 if(this.show=="genres"){
-                    getcategories(data.data.id).then(res=>{
+                    findEquipMoneyStatistics({categorys:3,id:data.data.id,level:'GENRE'}).then(res=>{
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
                     })
                 }else if(this.show=="All"){
-                    getequipArg().then(res=>{
+                    findEquipMoneyStatistics({level:'ALL'}).then(res=>{
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
                     })
                 }else if(this.show=="category"){
-                    console.log("category");
+                    console.log("-------------+");
+                   findEquipMoneyStatistics({categorys:3,id:data.data.id,level:'CATEGORY'}).then(res=>{
+                        this.equipArg = res
+                        this.equipArg.forEach(item=>{
+                            item.equipArgs=`${item.name}(${item.model})`
+                        })
+                        this.paginator.totalPages = res.totalPages;
+                        this.paginator.totalElements = res.totalElements;
+                    })
                 }
-            },
-            dialogShow(type, data){
-                this.dialogData.type = type
-                this.dialogData.data = data
-                if(type == "edit"){
-                    if(data == "genres"){
-                        console.log("edit+genres");
-                    }else if(data == "category"){
-                        console.log("category+genres");
-                    }
-                }else if(type == "add"){
-                    if(data == "genres"){
-                        console.log("add+genres");
-                    }else if(data == "category"){
-                        console.log("add+category");
-                    }
-                }
-                this.$refs.safetyDialogs.titleShow()
             },
             async getTree(){
                 for(let i in this.tree.genres){
