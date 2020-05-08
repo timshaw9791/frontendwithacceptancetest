@@ -63,7 +63,23 @@ export function parseTime(time, cFormat) {
   })
   return time_str
 }
-
+//位置信息转换
+export function formatFunc(data){
+  if(data.surface!=null&&data.floor!=null){
+       return data.frameNumber?
+      `${data.frameNumber}架/${data.surface}面/${data.section}节/${data.floor}层`:
+      `${data.category}(${data.cabinetNumber})`
+     }else{
+         if(data.category=='单警柜'){
+             return `${data.cabinetNumber}(${data.name})`   
+         }else{
+              return data.frameNumber?
+      `${data.frameNumber}架/${data.section}节`:
+      `${data.category}(${data.cabinetNumber})`  
+         }
+       
+     }
+ }
 // 架体格式化
 export function filterFrame(data) {
   return `${data.number}架/${data.surface}面/${data.section}节/${data.floor}层`

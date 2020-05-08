@@ -1,14 +1,14 @@
 <template>
-    <div class="radio-container" :class="{border}" :style="`width:${fixWidth};float:${align};margin:${margin}`">
-        <div class="label">{{ label }}
+    <div class="checkbox-container" :class="{border}" :style="`width:${fixWidth};float:${align};margin:${margin}`">
+        <div class="label" v-if="!isCheckboxGroup">{{ label }}
             <span class="required" v-if="required">*</span>
         </div>
-        <div class="radio-box">
-            <div class="radio" :class="[disabled?'disabled':'edit',{selected:selectIndex==i&&!disabled}]" v-for="(item, i) in data" :key="item.key">
-                <div class="select-box" @click="select(i, item)">
-                    <div class="tick" v-show="selectIndex==i"></div>
+        <div class="checkbox-box">
+            <div class="checkbox" :class="[disabled?'disabled':'edit',{selected:value&&!disabled}]">
+                <div class="select-box" @click="select">
+                    <div class="tick" v-show="value"></div>
                 </div>
-                <span class="radio-label">{{ item.label }}</span>
+                <span class="checkbox-label"><slot></slot></span>
             </div>
         </div>
     </div>
@@ -16,21 +16,16 @@
 
 <script>
 export default {
-    name: 'radio',
+    name: 'checkbox',
     data() {
         return {
-            selectIndex: 0,
-            selectItem: '', // 用以通过实例访问选择项数据
+            isCheckboxGroup: false, // 判断是否为复选框组
+            itemLabel: '', // 选项名
+            insideSel: false, // 内部选择，用以多选组控制
         }
     },
     props: {
         value: {},
-        data: {
-            type: Array,
-            default() {
-                return []
-            }
-        },
         label: {
             type: String
         },
@@ -60,37 +55,43 @@ export default {
         }
     },
     methods: {
-        select(index, item) {
+        select() {
             if(this.disabled) return;
-            this.selectIndex = index;
-            this.selectItem = item;
-            this.$emit('change', item);
-            this.$emit('input', item.key);
+            if(this.isCheckboxGroup) {
+                this.$parent.select(this.itemLabel, !Boolean(this.value))
+            }
+            this.$emit('input', !Boolean(this.value));
         }
     },
     computed: {
         fixWidth() {
-            return this.inTable?`calc(100% - 0.1042rem)`:`calc(${8.33*this.column}% - 0.1042rem)`;
+            return this.isCheckboxGroup?0:`calc(${8.33*this.column}% - 0.1042rem)`;
+        },
+        isSelect() {
+            return this.insideSel || this.value;
         }
     },
-    watch: {
-        value: {
-            handler(newVal, oldVal) {
-                this.selectIndex = this.data.findIndex(item => item.key == newVal);
-            },
-            immediate: true
+    mounted() {
+        try {
+            this.itemLabel = this.$slots.default[0].text;
+            if(this.$parent.key == 'CHECKBOX_GROUP') {
+                this.isCheckboxGroup = true;
+            }
+        } catch (error) {
+            
         }
     }
 }
 </script>
 
 <style lang="scss" scoped>
-.radio-container {
+.checkbox-container {
     display: inline-flex;
     justify-content: flex-start;
+    flex-grow: 1;
     align-items: center;
     font-size: 16px;
-    min-width: 180px;
+    // min-width: 180px;
     height: 40px;
     max-height: 40px;
     border-radius: 4px;
@@ -109,7 +110,7 @@ export default {
     .required {
         color: red;
     }
-    .radio-box {
+    .checkbox-box {
         display: inline-flex;
         width: 100%;
         height: 100%;
@@ -117,7 +118,7 @@ export default {
         align-items: center;
         padding: 0 5px;
     }
-    .radio {
+    .checkbox {
         margin: 0 5px;
     }
     .select-box {
@@ -129,7 +130,7 @@ export default {
         margin: 0 3px;
         cursor: pointer;
     }
-    .radio-label {
+    .checkbox-label {
         vertical-align: middle;
     }
     .tick {
