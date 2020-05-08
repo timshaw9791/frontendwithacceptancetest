@@ -60,8 +60,8 @@ Vue.config.errorHandler = function(err, vm, info) {
 
 Vue.config.productionTip = false;
 Vue.prototype.$ajax = axios;
-Vue.prototype.$formatFunc = formatFunc
-Vue.prototype.$formatFuncOrder = formatFuncOrder
+Vue.prototype.$formatFuncLoc = formatFunc
+Vue.prototype.$formatFuncOrderLoc = formatFuncOrder
 Vue.prototype.$filterTime = parseTime
 Vue.prototype.$filterFrame = filterFrame
 Vue.prototype._ = _

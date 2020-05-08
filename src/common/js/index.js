@@ -80,8 +80,20 @@ export function formatFunc(data){
        
      }
  }
+ //放在数据列表里显示的
  export function formatFuncOrder(data){
-
+      console.log(data);
+      if(data.categoryEnum==0){
+        return `${data.locationInfo.frameNumber}-${data.locationInfo.section}(${data.userName})`
+      }else if(data.categoryEnum==1){
+          return `公共柜(${data.locationInfo.frameNumber}-${data.locationInfo.section})`
+      }else if(data.categoryEnum==2){
+          return `备用柜(${data.locationInfo.frameNumber}-${data.locationInfo.section})`
+      }else{
+        // if(data.surface!=null&&data.floor!=null){
+          return `${data.locationInfo.frameNumber}架/${data.locationInfo.surface}面/${data.locationInfo.section}节/${data.locationInfo.floor}层`
+        // }
+      }
  }
 // 架体格式化
 export function filterFrame(data) {
