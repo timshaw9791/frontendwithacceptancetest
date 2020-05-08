@@ -7,7 +7,7 @@
         </div>
         <define-table :data="list" @changePage="changePage" :pageInfo="paginator">
             <define-column label="操作" v-slot="{data}">
-                <span @click="goto(data.row.openImg)" style="margin:8px">图片</span>
+                <span @click="goto(data.row.id)" style="margin:8px">详情</span>
             </define-column>
             <define-column label="单号" field="number"></define-column>
             <define-column label="装备参数" field="allEquipArgs"></define-column>

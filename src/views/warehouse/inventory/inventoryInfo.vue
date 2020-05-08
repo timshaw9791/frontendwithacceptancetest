@@ -35,7 +35,7 @@
     import BosTabs from "../../../componentized/table/bosTabs";
     import myHeader from "../../../components/base/header/header"
     import {findByRfids} from "../../../api/storage"
-
+    import markData from "./markData"
     export default {
         name: "inventoryInfo",
         components: {
@@ -61,19 +61,15 @@
                 }],
                 hardwareSelect: "handheld",
                 // 假列表
-                noInventoryList:[
-
-
-
-                ]
+                noInventoryList:markData
             }
         },
         methods: {
-            getData(){
-                this.hardwareSelect === "handheld" ?  this.fetchData() : ''
-            },
             fetchData() {
 
+            },
+            fixData(){
+                this.noInventoryList
             }
         },
 
