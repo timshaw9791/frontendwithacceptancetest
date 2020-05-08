@@ -5,7 +5,7 @@
             <entity-input label="警柜"></entity-input>
         </div>
         <div class="body">
-            <define-table :data="list" @changePage="changePage">
+            <define-table :data="list" @changePage="changePage" :pageInfo="pageInfo">
                 <define-column label="图片" v-slot="{ data }" >
                     <img class="img" :src="data.row.openImg" alt="暂无图片"/>
                 </define-column>
@@ -20,7 +20,7 @@
 
 <script>
     import myHeader from "../../components/base/header/header"
-    import {openCabinetRecord} from "@/api/openrecord"
+    import {openCabinetRecord} from "@/api/openRecord"
     import {imgBaseUrl} from "@/api/config"
     import {listTableMixin} from "../../field/mixins/listMixin"
 
@@ -34,13 +34,15 @@
         data() {
             return {
                 list: [],
-                pageInfo: {page: 1, size: 1, totalPages: 1, totalElements: 0, search: ''},
+                paginator: {page: 1, size: 10, totalPages: 0, totalElements: 0, search: ''},
             }
         },
         methods: {
             fetchData() {
                 openCabinetRecord().then((res) => {
                     this.list = res.content
+                    this.paginator.totalPages = res.totalPages
+                    this.paginator.totalElements = res.totalElements
                     this.fixData()
                 })
             },
@@ -64,7 +66,7 @@
                         }
                     }
                 })
-            },
+            }
         },
         created() {
             this.fetchData()

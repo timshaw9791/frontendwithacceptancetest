@@ -5,11 +5,9 @@
             <entity-input label="警柜"></entity-input>
         </div>
         <div class="body">
-            <define-table :data="list" @changePage="changePage" >
-                <define-column label="操作人员" field="operatorInfo"></define-column>
-                <define-column label="开柜时间" field="rfid"></define-column>
-                <define-column label="警柜" field="serial"></define-column>
-                <define-column label="图片" field="operator"></define-column>
+            <define-table :data="list" @changePage="changePage" :pageInfo="paginator">
+                <define-column label="操作人员" field="operatorInfo.operator"></define-column>
+                <define-column label="开柜时间" field="createTime"></define-column>
             </define-table>
         </div>
     </div>
@@ -17,38 +15,36 @@
 
 <script>
     import myHeader from "../../components/base/header/header"
-    import {openGateRecord} from "@/api/openrecord"
+    import {openGateRecord} from "@/api/openRecord"
+    import {listTableMixin} from "../../field/mixins/listMixin";
+
     export default {
         name: "openGate",
-        components:{
+        components: {
             myHeader,
         },
-
-        data(){
-            return{
-                list:[]
+        mixins: [listTableMixin],
+        data() {
+            return {
+                list: [],
+                paginator: {page: 1, size: 10, totalPages: 0, totalElements: 0, search: ''},
             }
         },
-
-        methods:{
-            fetchData(){
-                openGateRecord().then((res)=>{
+        methods: {
+            fetchData() {
+                openGateRecord().then((res) => {
                     this.list = res.content
+                    this.paginator.totalPages = res.totalPages
+                    this.paginator.totalElements = res.totalElements
+                    this.fixData()
                 })
-                this.fixData()
             },
-            fixData(){
-
+            fixData() {
+                this.list.forEach(item => {
+                    item.createTime = this.$filterTime( item.createTime)
+                })
             },
-            changePage(){
-
-            }
         },
-
-        created() {
-            this.fetchData()
-        }
-
     }
 </script>
 
@@ -57,7 +53,7 @@
         font-size: 16px;
     }
 
-    .header{
+    .header {
         padding: 16px 7px;
     }
 </style>
