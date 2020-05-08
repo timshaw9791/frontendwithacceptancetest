@@ -11,8 +11,10 @@
             <define-column label="装备参数" v-slot="{ data }">
               <entity-input v-model="data.row.equipArg" :detailParam="data.row.equipArg" :options="{ detail: 'equipArgsDetail' }" format="{name}({model})" :disabled="true" ></entity-input>
             </define-column>
-            <define-column label="装备位置" field="location" :filter="(row)=>milliLocation(row.location)"></define-column>
-            
+            <!-- <define-column label="装备位置" field="location" :filter="(row)=>milliLocation(row.location)"></define-column> -->
+            <define-column label="装备位置"  v-slot="{ data }" >
+                  <entity-input v-model="data.row.location"  :formatFunc="formatFunc" :tableEdit="false" ></entity-input>
+            </define-column>
             <define-column label="可保养数量" field="count"></define-column>
           </define-table>
           <define-table :havePage="false" :data="listData[findIndex].copyList" height="2.6042rem" slot="detail" >
@@ -97,6 +99,17 @@ export default {
     selRow(data) { // 单选表格行
            this.findIndex=data.index
       },
+      formatFunc(data){
+            if(data.surface!=null&&data.floor!=null){
+                 return data.frameNumber?
+                `${data.frameNumber}架/${data.surface}面/${data.section}节/${data.floor}层`:
+                `${data.category}(${data.cabinetNumber})`
+               }else{
+                 return data.frameNumber?
+                `${data.frameNumber}架/${data.section}节`:
+                `${data.category}(${data.cabinetNumber})`   
+               }
+           },
     startMain(){
        this.$router.push({path: '/equipmentOperation/startMaintenance'});
     },
