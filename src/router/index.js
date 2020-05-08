@@ -227,7 +227,7 @@ export const asyncRouterMap = [{
         }, {
             path: 'inventory',
             name: 'warehouse/inventory',
-            component: _import('warehouse/inventory/inventory'),
+            component: _import('warehouse/inventory/inventoryList'),
             meta: {title: '盘点'},
         }, {
             path: 'addPersonal',

@@ -7,7 +7,7 @@
         </div>
         <define-table :data="list" @changePage="changePage" :pageInfo="pageInfo">
             <define-column label="操作" v-slot="{data}">
-                <span @click="goto(data.row.id)" style="margin:8px">详情</span>
+                <span @click="goto(data.row.openImg)" style="margin:8px">图片</span>
             </define-column>
             <define-column label="单号" field="number"></define-column>
             <define-column label="装备参数" field="allEquipArgs"></define-column>
@@ -60,7 +60,9 @@
                     })
                     //除重
                     equipNameList = this._.union(equipNameList)
-                    item.allEquipArgs = equipNameList.reduce((v, k) => v + k + " ", "")
+                    console.log(equipNameList)
+                    // 显示参数名称
+                    item.allEquipArgs = equipNameList.length > 1 ? equipNameList[0]+"..." : equipNameList[0]
                     //计算装备数量
                     item.equipCount = item.receiveReturnItems.length
                     //时间戳转日期

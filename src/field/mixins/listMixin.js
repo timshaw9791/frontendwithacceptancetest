@@ -24,4 +24,4 @@ const listTableMixin = {
     }
 }
 
-export { listMixin }
+export { listMixin,listTableMixin}
