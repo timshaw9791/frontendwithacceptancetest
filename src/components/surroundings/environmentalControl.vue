@@ -95,9 +95,7 @@
                     this.control[5].flag=config.AIR_CONDITIONER;
                     
                     this.control[6].flag=config.EXHAUST_AIR;
-                }).catch(err=>{
-                    this.$message.error(err);
-                });
+                })
             },
             toConctrol(data){
                if(data.flag){

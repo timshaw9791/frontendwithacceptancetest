@@ -58,4 +58,10 @@ export function Salutatory(data) {
     })
 }
 
+export function getDehumidifierStatus() {
+    return request({
+        url: '/environment/allDehumidifierStatus',
+        method: 'POST'
+    })
+}
 

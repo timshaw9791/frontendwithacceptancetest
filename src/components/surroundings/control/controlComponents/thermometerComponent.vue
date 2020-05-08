@@ -70,8 +70,6 @@
                 multi = (400*rootFontSize/192).toFixed(1)
                 add = (20.5*rootFontSize/192).toFixed(1)
                 height=((this.temperature-(this.scale[this.scale.length-1]-10))/100*multi)+(+add);
-                console.log('multi' + multi);
-                console.log('add' + add);
                 document.getElementById(this.id).style.height=height+'px';
                 document.getElementById(this.id).style.background=this.color
             },

@@ -33,6 +33,7 @@
     import s_humidity from 'components/surroundings/humidity'
     import s_video from 'components/surroundings/s_video'
     import s_line_chart from 'components/surroundings/linChartView'
+    import { temperatureValue } from 'api/surroundings'
     import {baseURL} from "../../api/config";
 
     // const cmdPath = 'C:\\Users\\Administrator';
@@ -78,9 +79,6 @@
             this.getHumiture();
             // this.videoSrc=this.$store.state.user.deploy.data['HIK_CAMERA_ADDRESS'];
             setInterval(this.getHumiture,600000);
-        },
-        beforeDestroy() {
-            // clearTimeout(this.videoTime);
         },
         methods:{
             defaultVideo(){
@@ -153,15 +151,10 @@
 
             },
             getHumiture(){
-                this.$ajax({
-                    method:'post',
-                    url:baseURL+'/environment/humitureQuery',
-                }).then((res)=>{
-                    this.humidity=res.data.data.humidity;
-                    this.temperature=res.data.data.temperature;
-                }).catch(err=>{
-                    this.$message.error(err);
-                });
+                temperatureValue().then(res => {
+                    this.humidity=res.humidity;
+                    this.temperature=res.temperature;
+                })
             }
         }
     }
