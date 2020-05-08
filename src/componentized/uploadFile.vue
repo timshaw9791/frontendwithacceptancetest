@@ -13,7 +13,7 @@
         <span class="label" v-show="['pdf','video'].includes(type)">{{ fileName }}</span>
         <div class="progress-box" v-if="loading">
             <define-progress :percentage="percentage" :textInside="true" class="define-progress"></define-progress>
-            <span class="cancel" @click="cancelHandler.cancel('取消上传')">取消上传</span>
+            <span class="cancel" @click="cancel">取消上传</span>
         </div>
     </div>
 </template>
@@ -84,11 +84,9 @@ export default {
     },
     methods: {
         init() {
-            this.cancelHandler = axios.CancelToken.source(); // 取消请求的工厂方法
             this.fetch = axios.create({
                 withCrDedentials: true
             });
-            this.config.cancelToken = this.cancelHandler.token;
         },
         showFileSelect() {
             if(this.disabled||this.loading||this.fileName) return;
@@ -116,6 +114,8 @@ export default {
         upFile(url, file) {
             let param = new FormData();
             param.append('file', file, file.name);
+            this.cancelHandler = axios.CancelToken.source(); // 取消请求的工厂方法
+            this.config.cancelToken = this.cancelHandler.token;
             this.loading = true;
             this.fetch.post(url, param, this.config).then(res => {
                 this.fileName = res.data;
@@ -127,6 +127,11 @@ export default {
                 }
                 this.loading = false;
             })
+        },
+        cancel() {
+            this.cancelHandler.cancel('取消上传');
+            this.$refs.file.value = '';
+            this.percentage = 0;
         },
         remove() { // 删除
             this.fileName = '';
