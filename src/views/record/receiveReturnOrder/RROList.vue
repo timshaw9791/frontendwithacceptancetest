@@ -5,9 +5,9 @@
             <text-input label="领取单号" placeholder="请输入单号"></text-input>
             <base-button label="查询"></base-button>
         </div>
-        <define-table :data="list" @changePage="changePage" :pageInfo="pageInfo">
+        <define-table :data="list" @changePage="changePage" :pageInfo="paginator">
             <define-column label="操作" v-slot="{data}">
-                <span @click="goto(data.row.id)" style="margin:8px">详情</span>
+                <span @click="goto(data.row.openImg)" style="margin:8px">图片</span>
             </define-column>
             <define-column label="单号" field="number"></define-column>
             <define-column label="装备参数" field="allEquipArgs"></define-column>
@@ -34,16 +34,16 @@
         data() {
             return {
                 list: [],
-                pageInfo: {page: 1, size: 10, totalPages: 1, totalElements: 0, search: ''},
+                paginator: {page: 1, size: 10, totalPages: 1, totalElements: 0, search: ''},
             }
         },
         methods: {
             changePage(page) {
-                this.pageInfo.page = page;
+                this.paginator.page = page;
                 this.fetchData();
             },
             fetchData() {
-                getReceiveOrderList(this.pageInfo).then(res => {
+                getReceiveOrderList(this.paginator).then(res => {
                     this.fixData(res.content)
                 })
             },
@@ -60,7 +60,9 @@
                     })
                     //除重
                     equipNameList = this._.union(equipNameList)
-                    item.allEquipArgs = equipNameList.reduce((v, k) => v + k + " ", "")
+                    console.log(equipNameList)
+                    // 显示参数名称
+                    item.allEquipArgs = equipNameList.length > 1 ? equipNameList[0]+"..." : equipNameList[0]
                     //计算装备数量
                     item.equipCount = item.receiveReturnItems.length
                     //时间戳转日期

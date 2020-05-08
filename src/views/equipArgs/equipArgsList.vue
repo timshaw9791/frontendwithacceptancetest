@@ -7,7 +7,7 @@
             <base-button label="新增装备参数" @click="goto()"></base-button>
         </div>
         <div class="body">
-            <define-table :data="list" @changePage="changePage" :pageInfo="pageInfo">
+            <define-table :data="list" @changePage="changePage" :pageInfo="paginator">
                 <define-column label="操作" v-slot="{data}">
                     <span @click="goto(data.row.id)" style="margin:8px">编辑</span>
                 </define-column>
@@ -49,7 +49,7 @@
             return {
                 list: [],
                 imgBaseUrl: imgBaseUrl,
-                pageInfo: {page: 1, size: 10, totalPages: 1, totalElements: 0, search: ''},
+                paginator: {page: 1, size: 10, totalPages: 1, totalElements: 0, search: ''},
             }
         },
 
@@ -63,14 +63,14 @@
 
         methods: {
             changePage(page) {
-                this.pageInfo.page = page;
+                this.paginator.page = page;
                 this.fetchData();
             },
             fetchData() {
-                getEpArgsList(this.pageInfo).then(res => {
+                getEpArgsList(this.paginator).then(res => {
                     this.list = res.content
-                    this.pageInfo.totalPages = res.totalPages
-                    this.pageInfo.totalElements = res.totalElements
+                    this.paginator.totalPages = res.totalPages
+                    this.paginator.totalElements = res.totalElements
                     this.fixData()
                 })
             },

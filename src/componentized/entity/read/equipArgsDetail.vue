@@ -14,6 +14,7 @@
 
 <script>
 import uploadFile from '@/componentized/uploadFile'
+import getBosEntity from '@/api/basic'
 export default {
     name: 'equipArgsDetail',
     data() {
@@ -30,7 +31,20 @@ export default {
         }
     },
     props: ['detailParam'],
-    components: { uploadFile }
+    components: { uploadFile },
+    methods:{
+        fetchData(){
+            getBosEntity(this.detailParam.id).then((res)=>{
+                    this.equipArgs = res.content
+            })
+        },
+        fixData(){
+
+        }
+    },
+    created() {
+        this.fetchData()
+    }
 }
 </script>
 
