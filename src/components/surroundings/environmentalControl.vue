@@ -2,7 +2,7 @@
     <div class="environmentalControl">
         <s_card :header="'设备状态及控制'" @editt="edit">
            <div class="control-box">
-               <control-template v-for="item in control"  :templateData="item" @handleConctrol="toConctrol"></control-template>
+               <control-template v-for="(item, i) in control"  :templateData="item" :key="i" @handleConctrol="toConctrol"></control-template>
            </div>
         </s_card>
         <editThreshold ref="editThreshold"></editThreshold>
