@@ -14,7 +14,6 @@ export function getEquipArgs() {
     return request({
         url: "/equip-args",
         method: "GET",
-        params
     })
 }
 

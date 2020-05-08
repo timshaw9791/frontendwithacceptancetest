@@ -225,10 +225,15 @@ export const asyncRouterMap = [{
             component: _import('surroundings/index'),
             meta: {title: '环境管理'},
         }, {
-            path: 'inventory',
-            name: 'warehouse/inventory',
+            path: 'inventoryList',
+            name: 'inventoryList',
             component: _import('warehouse/inventory/inventoryList'),
             meta: {title: '盘点'},
+        },  {
+            path: 'inventoryInfo',
+            name: 'inventoryInfo',
+            component: _import('warehouse/inventory/inventoryInfo'),
+            hidden: true,
         }, {
             path: 'addPersonal',
             name: 'addPersonal',
