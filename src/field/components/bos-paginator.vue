@@ -59,6 +59,7 @@
     text-align: center;
   }
   .border {
-    border: 1px solid #ebeef5
+    border: 1px solid #ebeef5;
+    border-top: none;
   }
 </style>
