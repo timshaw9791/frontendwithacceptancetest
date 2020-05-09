@@ -23,16 +23,20 @@
                             <define-column label="装备位置" v-slot="{data}">
                                 <entity-input v-model="data.row.location" format="{frameNumber}架/{surface}面/{section}节/{floor}层" :tableEdit="false"></entity-input>
                             </define-column>
-                            <define-column label="维修时长" :filter="(row)=>milliTime(row.createTime)"/>
+                            <define-column label="维修时长" v-slot="{data}">
+                                 <date-input  v-model="data.row.createTime" :validate="milliTime" :tableEdit="false"></date-input>
+                            </define-column>
+                           
+                        
                         </define-table>
-            <serviceDialog title="装备报废" ref="scrapDailog" @confirm="submit" width="250px;">
+            <!-- <serviceDialog title="装备报废" ref="scrapDailog" @confirm="submit" width="250px;">
                 <div>
                     <date-select label="申请时间" v-model="time" :disabled="true"></date-select>
                     <entity-input label="申请人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :disabled="true" ></entity-input>
                     <entity-input label="审核人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :disabled="true" ></entity-input>
                     <define-input label="申请原因" v-model="scrapData.remark" :disabled="false" class="odd-number"></define-input>
                 </div>
-          </serviceDialog>
+          </serviceDialog> -->
 
         
         </div>
