@@ -53,6 +53,7 @@
             },
             title:{
                 type:String,
+                default: ''
             },
             assignedData:{
                 type:Array,
@@ -74,7 +75,6 @@
         },
         methods: {
             titleShow(){
-                this.$refs.safetyDialogs.show()
                 this.edit=JSON.parse(JSON.stringify(this.editData))
                 if(this.title=="装备分配"){
                     getgenresList().then(res=>{
@@ -85,8 +85,9 @@
                             })
                         })
                     })
-
                 }
+                console.log("this.edit",this.edit);
+                this.$refs.safetyDialogs.show()
             },
             cancel(){
                 this.$refs.safetyDialogs.hide()
