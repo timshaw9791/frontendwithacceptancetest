@@ -6,10 +6,10 @@
       </div>
     <div class="consumableReceive-form-body" >
         <div class="process-info">
-            <define-input label="单号" :disabled="true"  placeholder="-"></define-input>
+            <define-input label="单号" :disabled="true" v-model="order.number"  placeholder="-"></define-input>
             <base-select label="类型" v-model="order.category" :disabled="true" :selectList="selectData"></base-select>
-            <date-select label="操作时间"  :disabled="true"  placeholder="-"></date-select>
-            <entity-input label="操作人员" v-model="operatorInfo" format="{name}" :disabled="true" ></entity-input>
+            <date-select label="操作时间"  :disabled="true"  v-model="order.createTime"  placeholder="-"></date-select>
+            <entity-input label="操作人员" v-model="order.operatorInfo" format="{name}" :disabled="true" ></entity-input>
         </div>
         <div class="process-info" style="z-index:-1">
             <define-input label="备注" v-model="order.remark" :column="12"></define-input>
@@ -73,6 +73,10 @@
             }
             this.title = "耗材记录详情",
             this.order = this.$route.params.info.data
+            this.order.operatorInfo={
+                name:this.order.operatorInfo.operator,
+                id:this.order.operatorInfo.operatorId
+            }
         },
         components: {
             myHeader,
