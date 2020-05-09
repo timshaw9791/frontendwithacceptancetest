@@ -15,7 +15,7 @@
                                 <entity-input v-model="data.row.equipArg"  :options="{search:'equipArgsSelect'}" format="{equipName}({equipModel})" :tableEdit="false" ></entity-input>
                             </define-column>
                             <define-column label="装备位置"  v-slot="{ data }" >
-                                 <entity-input v-model="data.row.location"  format="{frameNumber}架/{surface}面/{section}节/{floor}层" :tableEdit="false" ></entity-input>
+                                 <entity-input v-model="data.row.location"  :formatFunc="$formatFuncLoc" :tableEdit="false" ></entity-input>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
                                 <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>

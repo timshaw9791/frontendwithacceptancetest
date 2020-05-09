@@ -73,3 +73,47 @@ export function dehumidifierStatus(params) { // 除湿机状态查询(单个)
     })
 }
 
+export function smokeQuery() { // 查询烟雾状态
+    return request({
+        url: '/environment/smokeQuery',
+        method: 'POST'
+    })
+}
+
+export function allAirConditionerStatus() { // 查询所有空调状态
+    return request({
+        url: '/environment/allAirConditionerStatus',
+        method: 'POST'
+    })
+}
+
+export function temperatureThreshold() { // 获取温度阈值信息
+    return request({
+        url: '/environment/temperatureThreshold',
+        method: 'POST'
+    })
+}
+
+export function temperatureThresholdSet(params) { // 设置温度阈值
+    return request({
+        url: '/environment/temperatureThresholdSet',
+        method: 'POST',
+        params
+    })
+}
+
+export function airConditionerSwitch(params) { // 空调开关
+    return request({
+        url: '/environment/airConditionerSwitch',
+        method: 'POST',
+        params
+    })
+}
+
+export function airConditionerStatus(params) { // 查询状态查询
+    return request({
+        url: '/environment/airConditionerStatus',
+        method: 'POST',
+        params
+    })
+}

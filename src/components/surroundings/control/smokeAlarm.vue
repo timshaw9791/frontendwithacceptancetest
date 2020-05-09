@@ -20,8 +20,7 @@
     import dialogs from '../surroundingDialog'
     import surroundingCard from '../surroundingCard'
     import switchControl from './controlComponents/switchControl'
-    import { smokeThreshold, setSmokeThreshold } from "api/surroundings"
-    import {baseURL} from "../../../api/config";
+    import { smokeThreshold, setSmokeThreshold, smokeQuery } from "api/surroundings"
 
     export default {
         name: "smokeAlarm",
@@ -56,30 +55,12 @@
                 this.$refs.dialog.close();
             },
             getConcentration(){
-                this.$ajax({
-                    method:'post',
-                    url:baseURL+'/environment/smokeQuery',
-                }).then((res)=>{
-                    this.concentration=res.data.data
-                }).catch(err=>{
-                    this.$message.error(err.response.data.message);
-                });
-                
+                smokeQuery().then(res => {
+                    this.concentration = res;
+                })            
                 smokeThreshold().then(res => {
-                    this.threshold = res.data
+                    this.threshold = res;
                 })
-            },
-            submission() {
-                if(this.threshold < 0) {
-                    this.$message.error("烟雾浓度不可小于0%")
-                } else if(this.threshold > 100) {
-                    this.$message.error("烟雾浓度不可大于100%")
-                } else {
-                    setSmokeThreshold({max: this.threshold}).then(res => {
-                        this.$message.success("设置成功")
-                        this.notModify = true
-                    })
-                }
             }
         }
     }
@@ -124,19 +105,6 @@
         align-items: center;
         justify-content: center;
         color: #707070;
-    }
-    .submission{
-        width:70px;
-        height:30px;
-        background:rgba(47,47,118,1);
-        box-shadow:0px 3px 6px rgba(0,0,0,0.16);
-        opacity:1;
-        border-radius:6px;
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-left: 27px;
     }
 
     .smokeAlarm .smokeAlarm-body {
