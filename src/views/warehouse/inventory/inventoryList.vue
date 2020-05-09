@@ -9,12 +9,12 @@
                 <define-column label="操作" v-slot="{data}">
                     <span @click="goto(data.row.id)">详情</span>
                 </define-column>
-                <define-column label="单号"></define-column>
-                <define-column label="应盘点总数"></define-column>
-                <define-column label="已盘点总数"></define-column>
-                <define-column label="未知装备数"></define-column>
-                <define-column label="盘点人员"></define-column>
-                <define-column label="盘点时间"></define-column>
+                <define-column label="单号" field="number"></define-column>
+                <define-column label="应盘点总数" field="inventoryCount"></define-column>
+                <define-column label="已盘点总数" field="count"></define-column>
+                <define-column label="未知装备数" field="notCount"></define-column>
+                <define-column label="盘点人员" field="operatorInfo.operator"></define-column>
+                <define-column label="盘点时间" field="startTime"></define-column>
             </define-table>
         </div>
     </div>
@@ -46,14 +46,16 @@
                     this.list = res.content
                     this.paginator.totalPages = res.totalPages
                     this.paginator.totalElements = res.totalElements
+                    this.fixData()
                 })
             },
+            fixData(){
+              this.list.forEach(item => {
+                  item.startTime = this.$filterTime(item.startTime)
+              })
+            },
             goto(id){
-                let data = {path:'inventoryInfo'}
-                if (id){
-                    data.id = id
-                }
-                this.$router.push(data)
+                this.$router.push({path:'inventoryInfo',query:{id}})
             }
         }
     }
