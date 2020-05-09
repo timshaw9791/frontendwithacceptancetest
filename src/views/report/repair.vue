@@ -36,24 +36,26 @@
                 <div style="width:95%">
                     <define-table v-if="show=='All'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
                         <define-column label="装备大类" field="genre"/>
-                        <define-column label="装备总数" field="totality"></define-column>
-                        <define-column label="可用数量" field="inHouseCount"></define-column>
-                        <define-column label="领用数量" field="receiveUseCount"></define-column>
+                        <define-column label="装备总数" field="totalCount"></define-column>
                         <define-column label="装备总价" field="totalPrice"></define-column>
+                        <define-column label="维修数"  field="totalLoss"></define-column>
+                        <define-column label="维修率" :filter="(row)=>rate(row)"></define-column>
                     </define-table>
                     <define-table v-if="show=='genres'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
                         <define-column label="装备小类" field="category"/>
-                        <define-column label="装备总数" field="totality"></define-column>
-                        <define-column label="可用数量" field="inHouseCount"></define-column>
-                        <define-column label="领用数量" field="receiveUseCount"></define-column>
+                        <define-column label="装备总数" field="totalCount"></define-column>
                         <define-column label="装备总价" field="totalPrice"></define-column>
+                        <define-column label="维修数"  field="totalLoss"></define-column>
+                        <define-column label="维修率" :filter="(row)=>rate(row)"></define-column>
                     </define-table>
                     <define-table v-if="show=='category'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
-                        <define-column label="装备参数" field="equipArgs"/>
-                        <define-column label="装备总数" field="totality"></define-column>
-                        <define-column label="可用数量" field="inHouseCount"></define-column>
-                        <define-column label="领用数量" field="receiveUseCount"></define-column>
-                        <define-column label="装备总价" field="totalPrice"></define-column>>
+                        <define-column label="装备名称" field="name"/>
+                        <define-column label="装备型号" field="model"></define-column>
+                        <define-column label="总数" field="totalCount"></define-column>
+                        <define-column label="总价" field="totalPrice"></define-column>
+                        <define-column label="维修数" field="totalLoss"></define-column>
+                        <define-column label="维修率" :filter="(row)=>rate(row)"></define-column>
+                        <define-column label="供应商" field="supplier"></define-column>
                     </define-table>
                 </div>
             </div>
@@ -124,6 +126,11 @@
                 this.paginator.page = page
                 this.fetchData()
             },
+            rate(data){
+                if(data.totalCount!=0){
+                return (data.totalLoss/data.totalCount).toFixed(2)
+                }
+            },
             clickNode(data) {
                 console.log("-------------------");
                 console.log("data",data);
@@ -136,7 +143,7 @@
                         this.paginator.totalElements = res.totalElements;
                     })
                 }else if(this.show=="All"){
-                    findEquipRepairStatistics({level:'ALL'}).then(res=>{
+                    findEquipRepairStatistics({categorys:3,level:'ALL'}).then(res=>{
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
@@ -145,9 +152,6 @@
                     console.log("-------------+");
                    findEquipRepairStatistics({categorys:3,id:data.data.id,level:'CATEGORY'}).then(res=>{
                         this.equipArg = res
-                        this.equipArg.forEach(item=>{
-                            item.equipArgs=`${item.name}(${item.model})`
-                        })
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
                     })

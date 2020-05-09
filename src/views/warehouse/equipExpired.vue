@@ -7,7 +7,7 @@
                 <date-select label="报废时间" placeholder="--" :disabled="true"></date-select>
                 <entity-input label="操作人员" v-model="people"  :disabled="true" ></entity-input>
             </div>
-        <define-input label="备注" v-model="remark" style="margin-top:15px" :disabled="false" ></define-input>
+        <define-input label="备注" v-model="remark" margin="15px  0.0521rem" :disabled="false" ></define-input>
     
     <div class="maintenance-form-body">
         <bos-tabs @changeTab="changeTab">
