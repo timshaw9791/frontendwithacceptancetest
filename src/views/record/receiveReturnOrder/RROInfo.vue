@@ -65,13 +65,11 @@
                 }
             },
             fixData() {
-                let equipItems = this._.groupBy(this.info.receiveReturnItems, item => `${item.equipModel}${item.equipModel}`)
+                let equipItems = this._.groupBy(this.info.receiveReturnItems, item => `${item.equipName}${item.equipModel}`)
                 //类型修改
                 this.info.category=this.info.category === 6 ?'领取':'归还'
                 //根据
-                this.equipArgsItems = this._.map(equipItems, (item) => {
-                    console.log("item")
-                    console.log(item)
+                this.equipArgsItems = _.map(equipItems, (item) => {
                     return {
                         equipName: item[0].equipName,
                         equipModel: item[0].equipModel,

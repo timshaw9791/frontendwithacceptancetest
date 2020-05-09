@@ -2,7 +2,7 @@
     <div class="open-gate-record-container">
         <my-header title="开门记录"></my-header>
         <div class="header">
-            <entity-input label="警柜"></entity-input>
+            <entity-input label="姓名"></entity-input>
         </div>
         <div class="body">
             <define-table :data="list" @changePage="changePage" :pageInfo="paginator">
