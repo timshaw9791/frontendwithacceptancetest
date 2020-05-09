@@ -13,7 +13,7 @@
     import surroundingCard from '../surroundingCard'
     import switchControl from './controlComponents/switchControl'
     import {baseURL} from "../../../api/config";
-    import {HunSwitch} from "../../../api/surroundings"
+    import {HunSwitch, dehumidifierStatus} from "api/surroundings"
 
      export default {
         name: "dehumi",
@@ -38,29 +38,23 @@
             }
         },
         created(){
-            this.getThreshold();
+            // this.getThreshold();
             this.getDehumidification()
             },
-             props:{
-        index:{
-                type:Number
-            },
-        item:{
-            type:String,
-            default:''
-        }
+        props:{
+            index:{
+                    type:Number
+                },
+            item:{
+                type:[String, Boolean],
+                default:''
+            }
         },
         methods:{
             getDehumidification(){
-                let ind=this.index+1
-                this.$ajax({
-                    method:'post',
-                    url:baseURL+'/environment/dehumidifierStatus'+'?number='+ind,
-                }).then((res)=>{
-                    this.dehumidificationStatus=res.data.data
-                }).catch(err=>{
-                    this.$message.error(err);
-                });
+                dehumidifierStatus({number: this.index+1}).then(res => {
+                    this.dehumidificationStatus = res
+                })
             },
             dehumidificationControl(data){
                HunSwitch({
@@ -94,31 +88,31 @@
             cancel(){
                 this.flag=!this.flag
             },
-            submission(){
-                this.submissionThreshold()
-            },
-            submissionThreshold(){
-                this.$ajax({
-                    method:'post',
-                    url:baseURL+'/environment/humidityThresholdSet',
-                    params:{max:this.threshold}
-                }).then((res)=>{
-                    this.flag=!this.flag;
-                    this.$message.success('提交成功');
-                }).catch(err=>{
-                    this.$message.error(err);
-                });
-            },
-            getThreshold(){
-                this.$ajax({
-                    method:'post',
-                    url:baseURL+'/environment/humidityThreshold',
-                }).then((res)=>{
-                    this.threshold=res.data.data.humidityThreshold
-                }).catch(err=>{
-                    this.$message.error(err);
-                });
-            }
+            // submission(){
+            //     this.submissionThreshold()
+            // },
+            // submissionThreshold(){
+            //     this.$ajax({
+            //         method:'post',
+            //         url:baseURL+'/environment/humidityThresholdSet',
+            //         params:{max:this.threshold}
+            //     }).then((res)=>{
+            //         this.flag=!this.flag;
+            //         this.$message.success('提交成功');
+            //     }).catch(err=>{
+            //         this.$message.error(err);
+            //     });
+            // },
+            // getThreshold(){
+            //     this.$ajax({
+            //         method:'post',
+            //         url:baseURL+'/environment/humidityThreshold',
+            //     }).then((res)=>{
+            //         this.threshold=res.data.data.humidityThreshold
+            //     }).catch(err=>{
+            //         this.$message.error(err);
+            //     });
+            // }
         }
     }
 </script>

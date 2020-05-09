@@ -26,9 +26,9 @@ export function addgenre(data) {
 }
 
 // 通过大类id编辑大类
-export function editgenre(data) {
+export function editgenre(id,data) {
     return request({
-        url: '/genres',
+        url: `/genres/${id}`,
         method: 'PUT',
         data
     })
@@ -43,18 +43,18 @@ export function deletegenre(id) {
 }
 
 // 新增小类
-export function addcategories(data) {
+export function addcategories(id,data) {
     return request({
-        url: '/categories',
+        url: `/categories?genreId=${id}`,
         method: 'POST',
         data
     })
 }
 
 // 通过小类id编辑小类
-export function editcategories(data) {
+export function editcategories(id,data) {
     return request({
-        url: '/categories',
+        url: `/categories/${id}`,
         method: 'PUT',
         data
     })
@@ -86,14 +86,33 @@ export function getcategories(id) {
 }
 
 // 通过小类ID查找装备装备信息 （默认为未分配的装备信息）
-export function getequipArg(data) {
+export function getequipArg(params) {
     return request({
-        url: '/equipArgs',
+        url: `/equipArgs`,
         method: 'GET',
-        data
+        params
     })
 }
 // 将未分配装备分配到小类下
+export function distribution(id,params) {
+    return request({
+        url: `/relate/categories/${id}`,
+        method: 'POST',
+        params
+    })
+}
+// 将装备参数从小类下删除
+export function noAssigned(id,params) {
+    return request({
+        url: `/relate/category/${id}`,
+        method: 'POST',
+        params
+    })
+}
 // 通过大类id查找所有小类的安全库存和装备数量
-// 通过小类id查找所有装备参数的数量
-// 获取所有未分配装备参数
+export function getcategoriesSafety(id) {
+    return request({
+        url: `/genres/${id}`,
+        method: 'GET',
+    })
+}

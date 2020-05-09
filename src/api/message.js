@@ -1,26 +1,16 @@
 import request from 'common/js/request'
-import { baseURL } from 'api/config'
+var qs = require('qs')
 
 export function readMsg(data) {
     return request({
-        url: '/message/markReads',
+        url: `/messages/mark-reads?${qs.stringify(data,{indices:false})}`,
         method: "post",
-        params:data
     })
 }
-
-export function getMsgList(data) {
+export function getMsgList(params) {
     return request({
-        url: '/message/findByIdAndTitleLike',
+        url: `/messages/title?${qs.stringify(params, {indices:false})}`,
         method: "GET",
-        params: data
-    })
-}
-
-export function getMsgListWithType(data) {
-    return request({
-        url: `${baseURL}/messages/by-user-and-type`,
-        method: "GET",
-        params: data
+        // params
     })
 }
