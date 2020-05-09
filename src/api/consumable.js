@@ -9,10 +9,11 @@ export function getConsumableList(data) {
     })
 }
 // 新增耗材
-export function addConsumable(data) {
+export function addConsumable(params,data) {
     return request({
         url: '/consumables',
         method: 'post',
+        params:params,
         data:data
     })
 }
@@ -26,23 +27,16 @@ export function editConsumable(id,data) {
     })
 }
 
-// 领取耗材
-export function receiveConsumable(id,params) {
+// 领取和补充耗材
+export function receiveConsumable(params,data) {
     return request({
-        url: `/consumables/${id}/receive`,
-        method: 'post',
-        params:params
+        url: `/consumables/consumable-order`,
+        method: 'POST',
+        params:params,
+        data:data
     })
 }
 
-// 补充耗材列表
-export function supplementConsumable(id,params) {
-    return request({
-        url: `/consumables/${id}/replenish`,
-        method: 'post',
-        params:params
-    })
-}
 // 耗材记录列表
 export function consumableRecordList(params) {
     return request({

@@ -1,7 +1,7 @@
 <template>
     <div>
-        <service-dialog :title="title" ref="dialog" width="3.3021rem"
-                       :button="false">
+        <service-dialog :title="title" ref="safetyDialogs" width="3.3021rem"
+                       :button="false" :secondary="false">
             <div v-if="title.indexOf('新增')!=-1" style="text-align: center;">
                 <define-input v-if="title.indexOf('小类')!=-1" v-model="addData.name" margin="15px" label="大类" :column="9" :disabled="true"></define-input>
                 <define-input v-model="newName" margin="15px" label="名称" :column="9"></define-input>
@@ -23,7 +23,7 @@
 
 <script>
     import serviceDialog from 'components/base/serviceDialog'
-    import { addgenre, editgenre, addcategories, editcategories  ,getgenresList, getcategories,} from "api/safety"
+    import { addgenre, editgenre, addcategories, editcategories  ,getgenresList, getcategories, distribution, } from "api/safety"
 
     export default {
         name: "safetyDialog",
@@ -53,6 +53,9 @@
             },
             title:{
                 type:String,
+            },
+            assignedData:{
+                type:Array,
             },
         },
         watch:{
@@ -90,7 +93,6 @@
                 this.newName = ""
             },
             submit(){
-                console.log("提交");
                 if(this.title == "新增大类"){
                     addgenre({name:this.newName}).then(res=>{
                         this.$refs.safetyDialogs.hide()
@@ -113,8 +115,11 @@
                         this.$emit('fetchData');
                     })
                 }else if(this.title == "装备分配"){
-                    console.log("this.selectedData.selectGenre",this.selectedData.selectGenre);
-                    console.log("this.selectedData.selectCategory",this.selectedData.selectCategory);
+                    this.assignedData = this.assignedData.toString()
+                    distribution(this.selectedData.selectCategory,{equipArgs:this.assignedData}).then(res=>{
+                        this.$refs.safetyDialogs.hide()
+                        this.$emit('fetchData');
+                    })
                 }
             }
         }
