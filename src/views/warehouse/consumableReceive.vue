@@ -1,17 +1,20 @@
 <template>
   <div class="consumableReceive-form-container">
-    <my-header :title="title" :haveBlack="false"></my-header>
+      <div class="consumableReceive-header">
+        <span style="font-size: 20px;">{{title}}</span>
+        <base-button label="<-返回" align="right" type="none" @click="returnBack"></base-button>
+      </div>
     <div class="consumableReceive-form-body" >
         <div class="process-info">
             <define-input label="单号" :disabled="true"  placeholder="-"></define-input>
-            <base-select label="类型" v-model="order.outboundOrganUnit" :selectList="selectData"></base-select>
+            <base-select label="类型" v-model="category" :disabled="this.title=='耗材新增'" :selectList="selectData"></base-select>
             <date-select label="操作时间"  :disabled="true"  placeholder="-"></date-select>
-            <define-input label="操作人员" :disabled="true"  placeholder="-"></define-input>
+            <entity-input label="操作人员" v-model="operatorInfo" format="{name}" :disabled="true" ></entity-input>
         </div>
         <div class="process-info" style="z-index:-1">
-            <define-input label="备注" :column="12"></define-input>
+            <define-input label="备注" v-model="order.remark" :column="12"></define-input>
         </div>
-        <define-table v-if="title=='耗材新增'" :havaPage="false" :data="order" height="3.6042rem" >
+        <define-table v-if="title=='耗材新增'" :havaPage="false" :data="order.consumableItems" height="3.6042rem" >
             <define-column label="操作" width="100" v-slot="{ data }">
                 <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
                 <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
@@ -26,7 +29,7 @@
                 <define-input v-model="data.row.describes"></define-input>
             </define-column>
         </define-table>
-        <define-table v-if="title=='耗材领补'" :havaPage="false" :data="order" height="3.6042rem" >
+        <define-table v-if="title=='耗材领补'" :havaPage="false" :data="order.consumableItems" height="3.6042rem" >
             <define-column label="操作" width="100" v-slot="{ data }">
                 <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
                 <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
@@ -34,16 +37,14 @@
             <define-column label="耗材名称" v-slot="{ data }">
                 <entity-input v-model="data.row.consumable" format="{name}" :options="{search:'consumableSelect'}"></entity-input>
             </define-column>
-            <define-column label="库存数量" v-slot="{ data }">
-                <define-input v-model="data.row.consumable.count"></define-input>
-            </define-column>
+            <define-column label="库存数量" field="consumable.count" align="left"></define-column>
             <define-column label="本次领补" v-slot="{ data }">
                 <define-input v-model="data.row.count"></define-input>
             </define-column>
         </define-table>
         <div class="buttom">
-            <base-button label="提交" align="right" size="large" @click="submit"></base-button>
-            <base-button label="返回" align="right" size="large" type="danger" @click="this.$router.go(-1);"></base-button>
+            <base-button label="提交" align="right" @click="submit"></base-button>
+            <base-button label="返回" align="right" @click="returnBack"></base-button>
         </div>
     </div>
   </div>
@@ -53,28 +54,30 @@
     import myHeader from "components/base/header/header";
     import baseButton from "@/componentized/buttonBox/baseButton";
     import entityInput from "@/componentized/entity/entityInput";
-    import { consumableRecordList } from "api/consumable";
+    import { receiveConsumable, addConsumable } from "api/consumable";
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     var _ = require("lodash");
     export default {
         name: "consumableReceive",
         data() {
             return {
-                order: [],
+                order: {
+                    consumableItems:[],
+                },
                 selectData:[{
                     label:"领取",
-                    value:"1"
+                    value:"1",
                 },{
                     label:"补充",
                     value:"2"
                 }],
-                title:""
+                title:"",
+                category:""
             };
         },
         methods: {
             changeRow(state, data) { // 总清单删除
                 let temp = JSON.parse(JSON.stringify(this.order));
-                console.log("data",data);
 				if(state) {
 					temp.splice(data.$index+1, 0, {name:"",count:"",describes:""});
 				} else if(this.order.length>1) {
@@ -85,7 +88,37 @@
 				this.order.equips = temp;
             },
             submit(){
-                console.log("this.order",this.order);
+                if(this.title == "耗材领补"){
+                    let temp = []
+                    let order = JSON.parse(JSON.stringify(this.order))
+                    for(let i in order.consumableItems){
+                        if(JSON.stringify(order.consumableItems[i].consumable) != '{}'){
+                            if(order.consumableItems[i].count != ""){
+                                let a = JSON.parse(JSON.stringify(order.consumableItems[i].consumable))
+                                a.count = order.consumableItems[i].count
+                                temp.push(a)
+                            }
+                        }
+                    }
+                    order.consumableItems = temp
+                    receiveConsumable({category:this.category},order).then(res=>{
+                        this.$router.go(-1);
+                    })
+                }else if(this.title == "耗材新增"){
+                    let order = []
+                    for(let i in this.order.consumableItems){
+                        if(this.order.consumableItems[i].name != "" && this.order.consumableItems[i].count != ""
+                            && this.order.consumableItems[i].describes != ""){
+                                order.push(this.order.consumableItems[i])
+                        }
+                    }
+                    addConsumable({remark:this.order.remark},order).then(res=>{
+                        this.$router.go(-1);
+                    })
+                }
+            },
+            returnBack(){
+                this.$router.go(-1)
             }
         },
         created() {
@@ -94,9 +127,15 @@
                 this.$router.go(-1);
                 return
             }
+            this.operatorInfo={
+                id:JSON.parse(localStorage.getItem("user")).id,
+                name:JSON.parse(localStorage.getItem("user")).name
+            }
             this.title = this.$route.params.info.title
             if(this.title == '耗材新增'){
-                this.order = [
+                this.selectData=[{label:"新增",value:"0"}]
+                this.category = "0"
+                this.order.consumableItems = [
                     {name:"",count:"",describes:""},
                     {name:"",count:"",describes:""},
                     {name:"",count:"",describes:""},
@@ -110,17 +149,19 @@
                     {name:"",count:"",describes:""},
                 ]
             }else if (this.title == '耗材领补'){
-                this.order = [
-                    {consumable:{name:"",count:""},count:""},
-                    {consumable:{name:"",count:""},count:""},
-                    {consumable:{name:"",count:""},count:""},
-                    {consumable:{name:"",count:""},count:""},
-                    {consumable:{name:"",count:""},count:""},
-                    {consumable:{name:"",count:""},count:""},
-                    {consumable:{name:"",count:""},count:""},
-                    {consumable:{name:"",count:""},count:""},
-                    {consumable:{name:"",count:""},count:""},
-                ]
+                this.order.consumableItems = [
+                    {consumable:{},count:""},
+                    {consumable:{},count:""},
+                    {consumable:{},count:""},
+                    {consumable:{},count:""},
+                    {consumable:{},count:""},
+                    {consumable:{},count:""},
+                    {consumable:{},count:""},
+                    {consumable:{},count:""},
+                    {consumable:{},count:""},
+                ],
+                this.selectData=[{label:"领取",value:"1"},{label:"补充",value:"2"}]
+                this.category = ""
             }
         },
         components: {
@@ -149,7 +190,6 @@
         padding: 18px 0;
         display: flex;
         justify-content: space-between;
-        overflow: hidden;
     }
     .buttom {
         height: 72px;
@@ -162,5 +202,22 @@
             line-height: 72px;
             margin-right: 72px;
         }
+    }
+    .consumableReceive-header{
+        width: 100%;
+        padding-left: 18px;
+        padding-right: 35px;
+        height: 57px;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        color: rgba(112,112,112,1);
+        border-bottom: 1px solid rgba(112,112,112, 0.13);
     }
 </style>

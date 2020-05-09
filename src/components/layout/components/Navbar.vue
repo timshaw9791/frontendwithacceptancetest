@@ -87,7 +87,8 @@
             }
         },
         created(){
-            this.fetchData()
+            this.fetchData();
+            setInterval(this.fetchData, 2000)
         },
     }
 </script>

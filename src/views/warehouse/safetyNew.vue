@@ -45,10 +45,10 @@
                             <define-column label="操作" v-slot="{data}">
                                 <base-button label="删除" size="mini" @click="deleteShow('category',data)"></base-button>
                             </define-column>
-                            <define-column label="装备小类" field="name"></define-column>
+                            <define-column label="装备小类" field="category.name"></define-column>
                             <define-column label="装备数量" field="count"></define-column>
-                            <define-column label="安全库存" field="stock" v-slot="{data}">
-                                <define-input v-model="data.row.stock" :disabled="!editFlag"></define-input>
+                            <define-column label="安全库存" field="category.stock" v-slot="{data}">
+                                <define-input v-model="data.row.category.stock" :disabled="!editFlag"></define-input>
                             </define-column>
                         </define-table>
                         <define-table v-if="show=='category'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
@@ -66,7 +66,7 @@
          <service-dialog title="提示" ref="deleteDialog" width="3.3021rem" @confirm="submit" :secondary="false">
             <div>确定删除该{{dialogData.deleteTitle}}吗？</div>
         </service-dialog>
-         <safety-dialog ref="safetyDialogs" :addData="dialogData.addData" :title="dialogData.title" :editData="dialogData.editData"></safety-dialog>
+         <safety-dialog ref="safetyDialogs" @fetchData="fetchData" :addData="dialogData.addData" :title="dialogData.title" :editData="dialogData.editData" :assignedData="dialogData.assignedData"></safety-dialog>
     </div>
   </div>
 </template>
@@ -121,8 +121,6 @@
                 getgenresList().then(res=>{
                     this.tree.genres = res.content
                     Promise.all([this.getTree()]).then(res=>{
-                        console.log(res);
-                        console.log("this.tree",this.tree);
                         this.tree.treeData = [{
                             name:"未分配装备",
                             show:"unassigned",
@@ -141,7 +139,6 @@
             },
             changeCurrent(data){
                 this.choseCategory = data.current
-                console.log("this.choseCategory",this.choseCategory)
             },
             submit(){//确定删除大小类
                 if(this.dialogData.deleteTitle == "大类"){
@@ -172,22 +169,26 @@
                 
             },
             editStock(){
-                this.editFlag = !this.editFlag
-                console.log("editStock");
-                console.log("this.equipArg",this.equipArg);
-                setsafety(this.equipArg).then(res=>{
+                let equip = []
+                this.equipArg.forEach(item=>{
+                    equip.push(item.category)
+                })
+                setsafety(equip).then(res=>{
                     this.fetchData()
+                    this.editFlag = !this.editFlag
                 })
             },
             clickNode(data) {//树形点击事件
-                console.log("data",data);
                 this.choseCategory={}
                 this.show = data.data.show
                 this.title = data.data.name
                 if(this.show=="genres"){
                     this.choseGenre = data.data
-                    getcategories(data.data.id).then(res=>{
-                        this.equipArg = res
+                    getcategoriesSafety(data.data.id).then(res=>{
+                        this.equipArg = res.content
+                        if(this.equipArg.length == 1 && this.equipArg[0].category == null){
+                            this.equipArg = []
+                        }
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
                     })
@@ -200,7 +201,6 @@
                 }else if(this.show=="category"){
                     this.Assigned.categoryId = data.data.id
                     getequipArg({id:data.data.id}).then(res=>{
-                        console.log("res",res);
                         this.equipArg = res.content
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
@@ -222,7 +222,7 @@
                             this.$message.error("请选择小类")
                             return
                         }
-                        this.dialogData.editData = this.choseCategory
+                        this.dialogData.editData = this.choseCategory.category
                         this.dialogData.title = "编辑小类"
                     }
                 }else if(type == "add"){
@@ -236,7 +236,6 @@
                     }
                 }else if(type == "unassigned"){
                     this.dialogData.title = "装备分配"
-                    console.log("this.$refs.table.getSelection()",this.$refs.table.getSelection());
                     let list = this.$refs.table.getSelection()
                     if(list.length==0){
                         this.$message.error("请选择装备参数")
@@ -246,12 +245,11 @@
                     list.forEach(item=>{
                         idList.push(item.equipArg.id)
                     })
-                    console.log("idList",idList);
+                    this.dialogData.assignedData = idList
                 }
                 this.$refs.safetyDialogs.titleShow()
             },
             noAssigned(data){//装备参数与小类解绑
-                console.log("data.row.equipArg.id",data.row.equipArg.id);
                 noAssigned(this.Assigned.categoryId,{equipArgId:data.row.equipArg.id}).then(res=>{
                     this.fetchData()
                 })

@@ -42,9 +42,9 @@ export default({
                 {label: '女', key: '女'}
             ],
             roleList: [
-                {label: '管理员', key: 'ADMIN'}, 
-                {label: '领导', key: 'LEADER'}, 
-                {label: '警员', key: 'POLICE'
+                {label: '管理员', key: 1}, 
+                {label: '领导', key: 2}, 
+                {label: '警员', key: 3
                 }]
         }
     },
@@ -55,8 +55,10 @@ export default({
     },
     methods: {
         submit() {
-            editUser(this.userInfo.id, Object.assign(this.userInfo, {role: 2})).then(res => {
-                
+            editUser(this.userInfo.id, this.userInfo).then(res => {
+                this.userInfo = JSON.parse(JSON.stringify(res));
+                localStorage.setItem('user', JSON.stringify(res));
+                this.disabled = true;
             })
         }
     }
