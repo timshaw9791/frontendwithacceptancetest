@@ -13,7 +13,7 @@
     </div>
 </template>
 <script>
-import { stampToNow } from 'common/js/index'
+import { stampToNow, interval } from 'common/js/index'
 export default {
   name: "dateInput",
   data() {
@@ -110,6 +110,9 @@ export default {
         case 'since':
           this.insideValue = stampToNow(value);
           break;
+        case 'interval':
+          this.insideValue = interval(value);
+          break;
         default:
           this.insideValue = value
           break;
@@ -131,6 +134,8 @@ export default {
           this.$emit('input', val*1000*24*3600);
           break;
         case 'since':
+          break;
+        case 'interval':
           break;
         default:
           this.$emit('input', val);

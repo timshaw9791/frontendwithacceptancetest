@@ -97,6 +97,16 @@ export function stampToNow(time, cFormat) {
   }
 }
 
+// 时间戳转距今间隔(供组件使用)
+export function interval(time) {
+  if(isNaN(time)) {
+    console.error("时间格式有误");
+    return 'timeError';
+  }
+  let timeStamp = (Date.now() - +time)/24/3600/1000;
+  return timeStamp<1?'0天':timeStamp<2?'1天':timeStamp<3?'2天':'3天';
+}
+
 export function searchFormat(){
   let searchIndex=location.hash.indexOf('?')+1;
   let search=location.hash.slice(searchIndex);
