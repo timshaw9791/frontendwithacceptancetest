@@ -47,7 +47,7 @@
                             </define-column>
                             <define-column label="装备小类" field="category.name"></define-column>
                             <define-column label="装备数量" field="count"></define-column>
-                            <define-column label="安全库存" field="category.stock" v-slot="{data}">
+                            <define-column label="安全库存" v-slot="{data}">
                                 <define-input v-model="data.row.category.stock" :disabled="!editFlag"></define-input>
                             </define-column>
                         </define-table>
@@ -183,6 +183,7 @@
                 this.show = data.data.show
                 this.title = data.data.name
                 if(this.show=="genres"){
+                    this.equipArg=[{category:{},count:""}]
                     this.choseGenre = data.data
                     getcategoriesSafety(data.data.id).then(res=>{
                         this.equipArg = res.content
