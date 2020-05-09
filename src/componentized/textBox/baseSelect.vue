@@ -126,6 +126,8 @@ import { judgeRules } from "../rules"
         justify-content: center;
         align-items: center;
         border-radius: 4px;
+        height: 40px;
+        max-height: 40px;
         border: 1px solid #E4E7ED;
     }
     .title-name {
