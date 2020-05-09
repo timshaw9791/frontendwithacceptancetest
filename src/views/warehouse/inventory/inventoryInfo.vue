@@ -15,7 +15,7 @@
                     <define-table :data="equipItems" @changeCurrent="changeCurrent" :highLightCurrent="true">
                         <define-column label="装备名称" field="equipName"></define-column>
                         <define-column label="型号" field="equipModel"></define-column>
-                        <define-column label="位置" field="location"></define-column>
+                        <define-column label="位置" field="locationInfo"></define-column>
                         <define-column label="数量" field="count"></define-column>
                         <define-column label="状态" field="equipState"></define-column>
                     </define-table>
@@ -26,13 +26,13 @@
                         <define-column label="序号" field="serial"></define-column>
                     </define-table>
                 </template>
-                <template slot="slotHeader">
+                <template slot="slotHeader" v-if="!isInfo" >
                     <base-select v-model="hardwareSelect" label="硬件选择" :selectList="hardwareList"
-                                 :disabled="true"></base-select>
+                                 :disabled="true" ></base-select>
                     <base-button label="读取数据" @click="getArgsInfo()"></base-button>
                 </template>
             </bos-tabs>
-            <div class="box-bottom">
+            <div class="box-bottom"  v-if="!isInfo">
                 <base-button label="取消" @click="back"></base-button>
                 <base-button label="提交" @click="submit"></base-button>
             </div>
@@ -108,7 +108,6 @@
                         item.locationInfo = item.location
                     }
                 })
-                console.log(this.equipItems)
                 // 对数据进行分组 按照位置、名称、型号 通过lodash
                 let tempEquipItems = _.groupBy(this.equipItems, item =>
                     `${item.equipName}${item.equipModel}${item.state}${item.locationInfo.frameNumber}${item.locationInfo.surface}${item.locationInfo.section}${item.locationInfo.floor}`
@@ -116,23 +115,18 @@
                 let length = 0
                 // 对分组好的数据在处理
                 this.equipItems = _.map(tempEquipItems, item => {
-                    length += item.length
-                    let tempLocation = () => {
-                        if (item[0].locationInfo.id) {
-                            this.$formatFuncLoc(item[0].locationInfo)
-                        } else {
-                            this.$formatFuncOrderLoc(item[0].locationInfo)
+                        length += item.length
+                        let tempLocation = this.$formatFuncLoc(item[0].locationInfo)
+                        return {
+                            equipName: item[0].equipName,
+                            equipModel: item[0].equipName,
+                            equipState: item[0].state,
+                            locationInfo: tempLocation,
+                            item: item,
+                            count: item.length,
                         }
                     }
-                    return {
-                        equipName: item[0].equipName,
-                        equipModel: item[0].equipName,
-                        equipState: item[0].state,
-                        locationInfo: tempLocation,
-                        item: item,
-                        count: item.length,
-                    }
-                })
+                )
                 this.equipItems.forEach(item => {
                     item.equipState = item.equipState === 0 ? '可用' : '充电中'
                 })
