@@ -6,7 +6,7 @@
             <define-column label="操作" v-slot="{data}">
                 <base-button label="详情" @click="click(data.row)"></base-button>
             </define-column>
-            <define-column label="单号" field="rfid"></define-column>
+            <define-column label="单号" field="number"></define-column>
             <define-column label="耗材名称" field="name"></define-column>
             <define-column label="耗材数量" field="count"></define-column>
             <define-column label="类型" field="category"></define-column>
@@ -44,6 +44,8 @@
                             item.category="领取单"
                         }else if(item.category==2){
                             item.category="补充单"
+                        }else if(item.category==0){
+                            item.category="新增单"
                         }
                     })
                 })
@@ -54,6 +56,10 @@
             },
             click(data){
                 console.log("data",data);
+                this.$router.push({
+                    name: "consumablerecordInfo",
+                    params: {info: {data: data}}
+                })
             }
         },
         created() {

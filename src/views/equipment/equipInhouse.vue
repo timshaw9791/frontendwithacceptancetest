@@ -7,7 +7,7 @@
                 <entity-input label="入库人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :disabled="true" ></entity-input>
             </div>
         <div class="data-list">
-            <bos-tabs >
+            <bos-tabs @changeTab="changeTab">
                         <template slot="slotHeader">
                             <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96" @click="readData"></base-button>
                             <base-select label="硬件选择" v-model="select.selected" align="right" :selectList="select.handWareList"></base-select>
@@ -122,6 +122,9 @@ export default {
         methods:{
             selRow(data){
                this.findIndex=data.index
+            },
+            changeTab(data){
+                data.key=="total"?killProcess(this.pid):''
             },
             sumFunc(param) { // 表格合并行计算方法
                  let { columns, data } = param, sums = [];

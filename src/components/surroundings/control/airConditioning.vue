@@ -7,7 +7,7 @@
                     v-for="(item,index) in airList" 
                     :index="index"
                     :item="item"
-                    ></airControl>
+                    :key="'kt'+index"></airControl>
                 </div>
           </div>
         </dialogs>
@@ -19,14 +19,15 @@
     import surroundingCard from '../surroundingCard'
     import airControl from './airControl'
     import {baseURL} from "../../../api/config";
+    import { getdeploy } from 'api/login'
+    import { allAirConditionerStatus, temperatureThresholdSet, temperatureThreshold, airConditionerSwitch, airConditionerStatus } from 'api/surroundings'
 
     export default {
         name: "airConditioning",
         components: {
             dialogs,
             surroundingCard,
-            airControl,
-            nnn:['','','','','']
+            airControl
         },
         data() {
             return {
@@ -41,35 +42,16 @@
                 airList:''
             }
         },
-        created(){
-        
-        },
         methods:{
             getConfig(){
-               this.$ajax({
-                    method:'post',
-                    url:baseURL+'/environment/deviceConfig',
-                }).then(res=>{
-                    this.airNum=res.data.data.AIR_CONDITIONER_COUNT
-                    console.log("设备信息");
-                    console.log(this.airNum);
-                }).catch(err=>{
-                    this.$message.error(err.response.data.message);
-                });
+                getdeploy().then(res => {
+                    this.airNum = res.AIR_CONDITIONER_COUNT;
+                })
             },
             getAirStatusList(){
-               this.$ajax({
-                    method:'post',
-                    url:baseURL+'/environment/allAirConditionerStatus',
-                }).then(res=>{
-                    let arrList=res.data.data
-                    let newList=Object.values(arrList)
-                    this.airList=newList
-                    console.log(this.airList);
-                    console.log(res);
-                }).catch(err=>{
-                    this.$message.error(err.response.data.message);
-                });
+                allAirConditionerStatus().then(res => {
+                    this.arrList = Object.values(res);
+                })
             },
             refrigerationControl(data){
                if(data){
@@ -122,7 +104,7 @@
             show(){
                 this.getConfig()
                 this.getAirStatusList()
-                // this.getThreshold();
+                this.getThreshold();
                 
                 this.$refs.dialog.show();
             },
@@ -136,15 +118,9 @@
                 this.flag=!this.flag
             },
             controlAir(data){
-                this.$ajax({
-                    method:'post',
-                    url:baseURL+'/environment/airConditionerSwitch',
-                    params:{status:data}
-                }).then((res)=>{
-                    this.$message.success('操作成功')
-                }).catch(err=>{
-                    this.$message.error(err);
-                });
+                airConditionerSwitch({status: data}).then(res => {
+
+                })
             },
             submission(){
                 this.submissionThreshold()
@@ -159,34 +135,19 @@
                 }else{
                     this.order = false
                     this.num = false
-                    this.$ajax({
-                        method:'post',
-                        url:baseURL+'/environment/temperatureThresholdSet',
-                        params:{max:this.threshold.max,min:this.threshold.min}
-                    }).then((res)=>{
+                    temperatureThresoldSet(this.threshold).then(res => {
                         this.flag=!this.flag;
                         this.$message.success('提交成功');
-                    }).catch(err=>{
-                        this.$message.error(err);
-                    });
+                    })
                 }
-
             },
             getThreshold(){
-                this.$ajax({
-                    method:'post',
-                    url:baseURL+'/environment/temperatureThreshold',
-                }).then((res)=>{
-                    this.threshold.max=res.data.data.temperatureMaximum;
-                    this.threshold.min=res.data.data.temperatureMinimum;
-                }).catch(err=>{
-                    this.$message.error(err);
-                });
-                this.$ajax({
-                    method:'post',
-                    url:baseURL+'/environment/airConditionerStatus',
-                }).then((res)=>{
-                    let status = res.data.data.STATUS;
+                temperatureThreshold().then(res => {
+                    this.threshold.max=res.temperatureMaximum;
+                    this.threshold.min=res.temperatureMinimum;
+                })
+                airConditionerStatus().then(res => {
+                    let status = res.STATUS;
                     if(status=='REFRIGERATION'){
                         this.refrigeration=true;
                         this.initStatus('refrigeration')
@@ -199,16 +160,7 @@
                     }else if(status=='CLOSE'){
                         this.initStatus('close')
                     }
-                    //"REFRIGERATION"'"HOT""DEHUMIDIFICATION"
-                    // if(res.data){
-                    //     this.closeFlag=true
-                    // }else {
-                    //     this.closeFlag=false
-                    // }
-
-                }).catch(err=>{
-                    this.$message.error(err);
-                });
+                })
             }
         }
     }

@@ -7,7 +7,7 @@
                 <define-input label="操作人员" v-model="people" :disabled="true"  class="odd-number"></define-input>
             </div>
         <div class="data-list">
-            <bos-tabs >
+            <bos-tabs @changeTab="changeTab">
                         <template slot="slotHeader">
                             <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96" @click="readData"></base-button>
                             <base-select label="硬件选择" v-model="select.selected" align="right" :selectList="select.handWareList"></base-select>
@@ -113,6 +113,9 @@ export default {
             selRow(current){
                this.findIndex=current.index
             },
+            changeTab(data){
+                data.key=="total"?killProcess(this.pid):''
+            },
             sumFunc(param) { // 表格合并行计算方法
                 let { columns, data } = param, sums = [];
                 columns.forEach((colum, index) => {
@@ -213,6 +216,9 @@ export default {
         created(){
                 this.init()
                 this.people=JSON.parse(localStorage.getItem('user')).name
+        },
+        beforeDestroy(){
+            killProcess(this.pid)
         }
 }
 </script>

@@ -67,12 +67,13 @@ export default {
                 RepairOrder(this.params).then(res=>{
                     this.list=res.content
                     this.list.forEach(item=>{
-                        if(item.equipRepairItems.length==1)
-                        {
-                            item.equipArgs=item.equipRepairItems[0].equipName+'('+item.equipRepairItems[0].equipModel+')'
-                        }else{
-                            item.equipArgs=item.equipRepairItems[0].equipName+'('+item.equipRepairItems[0].equipModel+')'+'...'
-                        }
+                        item.equipArgs=`${item.equipName}(${item.equipModel})`
+                        // if(item.equipRepairItems.length==1)
+                        // {
+                        //     item.equipArgs=item.equipRepairItems[0].equipName+'('+item.equipRepairItems[0].equipModel+')'
+                        // }else{
+                        //     item.equipArgs=item.equipRepairItems[0].equipName+'('+item.equipRepairItems[0].equipModel+')'+'...'
+                        // }
                     })
                     
                 })

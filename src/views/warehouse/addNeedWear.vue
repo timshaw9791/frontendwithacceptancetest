@@ -82,11 +82,12 @@
             serviceDialog,
         },
         created(){
+            this.listData=[]
             if(this.$route.params.info.data.name!='')
             {
                 this.title=this.$route.params.info.data.name
+                
                 this.$route.params.info.data.equipArgs.forEach(item=>{
-                    this.listData=[]
                     this.listData.push({equipArg:item})
                 })
             }

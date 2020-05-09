@@ -65,35 +65,37 @@ export function parseTime(time, cFormat) {
 }
 //位置信息转换
 export function formatFunc(data){
-  if(data.surface!=null&&data.floor!=null){
-       return data.frameNumber?
-      `${data.frameNumber}架/${data.surface}面/${data.section}节/${data.floor}层`:
-      `${data.category}(${data.cabinetNumber})`
-     }else{
-         if(data.category=='单警柜'){
-             return `${data.cabinetNumber}(${data.name})`   
-         }else{
-              return data.frameNumber?
-      `${data.frameNumber}架/${data.section}节`:
-      `${data.category}(${data.cabinetNumber})`  
-         }
-       
-     }
+  if(data.categoryEnum!=undefined)
+  {
+    if(data.categoryEnum==0){
+      return `单警柜${data.locationInfo.frameNumber}-${data.locationInfo.section}(${data.cabinetUserName})`
+    }else if(data.categoryEnum==1){
+        return `公共柜(${data.locationInfo.frameNumber}-${data.locationInfo.section})`
+    }else if(data.categoryEnum==2){
+        return `备用柜(${data.locationInfo.frameNumber}-${data.locationInfo.section})`
+    }else{
+        return `${data.locationInfo.frameNumber}架/${data.locationInfo.surface}面/${data.locationInfo.section}节/${data.locationInfo.floor}层`
+    }
+  }else{
+    if(data.surface!=null&&data.floor!=null){
+      return data.frameNumber?
+     `${data.frameNumber}架/${data.surface}面/${data.section}节/${data.floor}层`:
+     `${data.category}(${data.cabinetNumber})`
+    }else{
+        if(data.category=='单警柜'){
+            return `单警柜${data.cabinetNumber}(${data.name})`   
+        }else{
+             return data.frameNumber?
+     `${data.frameNumber}架/${data.section}节`:
+     `${data.category}(${data.cabinetNumber})`  
+        }
+      
+    }
+  }
  }
  //放在数据列表里显示的
  export function formatFuncOrder(data){
-      console.log(data);
-      if(data.categoryEnum==0){
-        return `${data.locationInfo.frameNumber}-${data.locationInfo.section}(${data.userName})`
-      }else if(data.categoryEnum==1){
-          return `公共柜(${data.locationInfo.frameNumber}-${data.locationInfo.section})`
-      }else if(data.categoryEnum==2){
-          return `备用柜(${data.locationInfo.frameNumber}-${data.locationInfo.section})`
-      }else{
-        // if(data.surface!=null&&data.floor!=null){
-          return `${data.locationInfo.frameNumber}架/${data.locationInfo.surface}面/${data.locationInfo.section}节/${data.locationInfo.floor}层`
-        // }
-      }
+     
  }
 // 架体格式化
 export function filterFrame(data) {
@@ -126,6 +128,16 @@ export function stampToNow(time, cFormat) {
   } else {
     return "刚刚"
   }
+}
+
+// 时间戳转距今间隔(供组件使用)
+export function interval(time) {
+  if(isNaN(time)) {
+    console.error("时间格式有误");
+    return 'timeError';
+  }
+  let timeStamp = (Date.now() - +time)/24/3600/1000;
+  return timeStamp<1?'0天':timeStamp<2?'1天':timeStamp<3?'2天':'3天';
 }
 
 export function searchFormat(){

@@ -7,10 +7,10 @@
                 <date-select label="报废时间" placeholder="--" :disabled="true"></date-select>
                 <entity-input label="操作人员" v-model="people"  :disabled="true" ></entity-input>
             </div>
-        <define-input label="备注" v-model="remark" style="margin-top:15px" :disabled="false" ></define-input>
+        <define-input label="备注" v-model="remark" margin="15px  0.0521rem" :disabled="false" ></define-input>
     
     <div class="maintenance-form-body">
-        <bos-tabs >
+        <bos-tabs @changeTab="changeTab">
             <template slot="slotHeader">
                             <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96" @click="readData"></base-button>
                             <base-select label="硬件选择" v-model="select.selected" align="right" :selectList="select.handWareList"></base-select>
@@ -96,8 +96,11 @@ export default {
     }
   },
   methods: {
-           selRow(current,index){
-               this.findIndex=this._.indexOf(this.newData,current)
+           selRow(current){
+               this.findIndex=current.index
+            },
+            changeTab(data){
+                data.key=="total"?killProcess(this.pid):''
             },
             sumFunc(param) { // 表格合并行计算方法
                 let { columns, data } = param, sums = [];

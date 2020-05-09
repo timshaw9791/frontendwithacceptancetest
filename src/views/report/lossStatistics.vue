@@ -37,23 +37,28 @@
                     <define-table v-if="show=='All'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
                         <define-column label="装备大类" field="genre"/>
                         <define-column label="装备总数" field="totality"></define-column>
-                        <define-column label="可用数量" field="inHouseCount"></define-column>
-                        <define-column label="领用数量" field="receiveUseCount"></define-column>
-                        <define-column label="装备总价" field="totalPrice"></define-column>
+                        <define-column label="装备总价" field="totality"></define-column>
+                        <define-column label="损耗数" field="inHouseCount"></define-column>
+                        <define-column label="损耗总额" field="receiveUseCount"></define-column>
+                        <define-column label="损耗率" field="totalPrice"></define-column>
                     </define-table>
                     <define-table v-if="show=='genres'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
                         <define-column label="装备小类" field="category"/>
                         <define-column label="装备总数" field="totality"></define-column>
-                        <define-column label="可用数量" field="inHouseCount"></define-column>
-                        <define-column label="领用数量" field="receiveUseCount"></define-column>
-                        <define-column label="装备总价" field="totalPrice"></define-column>
+                        <define-column label="装备总价" field="totality"></define-column>
+                        <define-column label="损耗数" field="inHouseCount"></define-column>
+                        <define-column label="损耗总额" field="receiveUseCount"></define-column>
+                        <define-column label="损耗率" field="totalPrice"></define-column>
                     </define-table>
                     <define-table v-if="show=='category'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
-                        <define-column label="装备参数" field="equipArgs"/>
-                        <define-column label="装备总数" field="totality"></define-column>
-                        <define-column label="可用数量" field="inHouseCount"></define-column>
-                        <define-column label="领用数量" field="receiveUseCount"></define-column>
-                        <define-column label="装备总价" field="totalPrice"></define-column>>
+                        <define-column label="装备名称" field="equipArgs"/>
+                        <define-column label="装备型号" field="totality"></define-column>
+                        <define-column label="总数" field="inHouseCount"></define-column>
+                        <define-column label="总价" field="receiveUseCount"></define-column>
+                        <define-column label="损耗数" field="totalPrice"></define-column>
+                        <define-column label="损耗总额" field="totalPrice"></define-column>
+                        <define-column label="损耗率" field="totalPrice"></define-column>
+                        <define-column label="供应商" field="totalPrice"></define-column>
                     </define-table>
                 </div>
             </div>

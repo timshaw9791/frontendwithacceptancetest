@@ -20,14 +20,14 @@
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='genres'">
-                    <div style="float:left">装备大类：{{this.title}}</div>
+                    <div style="float:left">总计 装备大类：{{this.title}} 总数：{{addNum(1)}}件 可用数：{{addNum(2)}}件 领用数：{{addNum(3)}}件 总价：{{addNum(4)}}元</div>
                     <div style="float:right">
                         <define-input label="小类" v-model="search"></define-input>
                         <base-button label="查询"  size="mini"></base-button>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='category'">
-                    <div style="float:left">装备小类：{{this.title}}</div>
+                    <div style="float:left">总计 装备小类：{{this.title}} 总数：{{addNum(1)}}件 可用数：{{addNum(2)}}件 领用数：{{addNum(3)}}件 总价：{{addNum(4)}}元</div>
                     <div style="float:right">
                         <define-input label="小类" v-model="search"></define-input>
                         <base-button label="查询"  size="mini"></base-button>
@@ -95,6 +95,7 @@
                 equipArg:[],
                 search:"",
                 total:0,
+                computeTotal:{},
             };
         },
         methods: {
@@ -123,6 +124,12 @@
             changePage(page) {
                 this.paginator.page = page
                 this.fetchData()
+            },
+            addNum(item){
+               if(item==1)return this.equipArg.reduce((v,k)=>v+k.totality,0)
+               if(item==2)return this.equipArg.reduce((v,k)=>v+k.inHouseCount,0)
+               if(item==3)return this.equipArg.reduce((v,k)=>v+k.receiveUseCount,0)
+               if(item==4)return this.equipArg.reduce((v,k)=>v+k.totalPrice,0)
             },
             clickNode(data) {
                 console.log("-------------------");
