@@ -1,5 +1,5 @@
 <template>
-  <div class="text-input-container" ref="defineInput" :style="`width:${fixWidth};float:${align};margin:${margin}`"
+  <div class="define-input-container" ref="defineInput" :style="`width:${fixWidth};float:${align};margin:${margin}`"
       :class="[styleObj,{'disabled':disabled&&inTableStateContrl,'border':(tableEdit&&edit)}]" @click="changeEditState(true)">
     <div class="label" v-if="!inTable">{{ label }}
       <span class="required" v-if="required">*</span>
@@ -148,7 +148,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.text-input-container {
+.define-input-container {
   display: inline-flex;
   justify-content: flex-start;
   align-items: center;
@@ -209,7 +209,7 @@ export default {
     color:rgba(192,196,204,1);
   }
 }
-.text-input-container:hover {
+.define-input-container:hover {
   .iconwenbenkuangshanchu {
     display: inline-block;
   }
