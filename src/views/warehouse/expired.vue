@@ -20,7 +20,7 @@
                             </define-column>
                             <define-column label="到期时间" field="scarTime" :filter="(row)=>$filterTime(row.scarTime)"  />
                             <define-column label="到期倒计时/天" v-slot="{ data }">
-                            <date-input v-model="data.row.time" :tableEdit="false" filter="toDay"></date-input>
+                            <date-input v-model="data.row.scarTime" :tableEdit="false" filter="toDay"></date-input>
                             </define-column>
                         </define-table>
 
@@ -101,9 +101,9 @@ export default {
             getList(){
                 maturityScrap().then(res=>{
                     this.list=res.content
-                    this.list.forEach(item=>{
-                        item.time=item.scarTime-(new Date().getTime())
-                    })
+                    // this.list.forEach(item=>{
+                    //     item.time=item.scarTime-(new Date().getTime())
+                    // })
                 }).catch(err => {
                         this.$message.error(err.response.data.message);
                     })
