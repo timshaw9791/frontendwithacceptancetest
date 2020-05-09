@@ -2,7 +2,7 @@
     <div class="environmentalControl">
         <s_card :header="'设备状态及控制'" @editt="edit">
            <div class="control-box">
-               <control-template v-for="item in control"  :templateData="item" @handleConctrol="toConctrol"></control-template>
+               <control-template v-for="(item, i) in control"  :templateData="item" :key="i" @handleConctrol="toConctrol"></control-template>
            </div>
         </s_card>
         <editThreshold ref="editThreshold"></editThreshold>
@@ -95,9 +95,7 @@
                     this.control[5].flag=config.AIR_CONDITIONER;
                     
                     this.control[6].flag=config.EXHAUST_AIR;
-                }).catch(err=>{
-                    this.$message.error(err);
-                });
+                })
             },
             toConctrol(data){
                if(data.flag){

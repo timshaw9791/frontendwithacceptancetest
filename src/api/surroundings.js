@@ -58,4 +58,18 @@ export function Salutatory(data) {
     })
 }
 
+export function getDehumidifierStatus() {
+    return request({
+        url: '/environment/allDehumidifierStatus',
+        method: 'POST'
+    })
+}
+
+export function dehumidifierStatus(params) { // 除湿机状态查询(单个)
+    return request({
+        url: '/environment/dehumidifierStatus',
+        method: 'POST',
+        params
+    })
+}
 

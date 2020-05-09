@@ -14,7 +14,7 @@
             </div>
             <div @click="$router.push('/message/index')">
                 <el-tooltip class="item" effect="dark" content="消息中心" placement="bottom">
-                    <el-badge  :value="0" >
+                    <el-badge :value="unreadCount">
                         <svg-icon icon-class="通知" class="svg"/>
                     </el-badge>
                 </el-tooltip>
@@ -45,8 +45,6 @@
 
             </el-dropdown-menu>
         </el-dropdown>
-
-
     </el-menu>
 </template>
 
@@ -66,7 +64,8 @@
         },
         computed: {
             ...mapGetters([
-                'sidebar'
+                'sidebar',
+                'unreadCount'
             ])
         },
         methods: {
@@ -83,7 +82,7 @@
             },
             fetchData() {
                 getMsgList({id: JSON.parse(localStorage.getItem("user")).id}).then(res => {
-                    this.$store.commit('SET_MESSAGE', res.content.filter(item => !item.status).length);    
+                    this.$store.commit('setUnreadCount', res.content.filter(item => !item.status).length);
                 });
             }
         },

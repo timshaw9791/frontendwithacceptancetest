@@ -52,8 +52,6 @@
         watch:{
             'status':{
                 handler(newVal){
-                    console.log("newVal");
-                    console.log(newVal);
                     if(this.status){
                         this.value=true
                     }else if(this.status==false){
@@ -63,8 +61,6 @@
             }
         },
         created(){
-            console.log("this.status");
-            console.log(this.status);
           if(this.status){
               this.value=true
           }else {
@@ -73,14 +69,10 @@
         },
         methods:{
             change(data){
-                console.log("wdadwad66666666666666666");
-                console.log(data);
                 this.$emit('handleChange',data)
             },
             fail() {
-                console.log("触发");
                 this.value = !this.value
-                console.log(this.value);
             }
         }
     }

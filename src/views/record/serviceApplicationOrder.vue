@@ -9,9 +9,6 @@
                             <define-column label="装备序号" v-slot="{ data }">
                                 <define-input v-model="data.row.equipSerial" type="Number" :tableEdit="false"></define-input>
                             </define-column>
-                            <define-column label="单号" v-slot="{ data }">
-                                <define-input v-model="data.row.number" type="Number" :tableEdit="false"></define-input>
-                            </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
                                 <define-input v-model="data.row.equipArgs"  :tableEdit="false"></define-input>
                             </define-column>
@@ -22,7 +19,7 @@
                                 <define-input v-model="data.row.applyUser" type="String" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="申请时间" :filter="(row)=>$filterTime(row.createTime)"/>
-                            <define-column label="申请时间" field="reason"/>
+                            <define-column label="申请原因" field="reason"/>
                         </define-table>
         </div>
     </div>
