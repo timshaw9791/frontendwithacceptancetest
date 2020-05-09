@@ -23,6 +23,7 @@
 import myHeader from 'components/base/header/header';
 import { getMsgList, readMsg } from 'api/message'
 import { listTableMixin } from 'field/mixins/listMixin'
+import { jsqlPage } from 'api/basic'
 export default {
 	name: 'message',
 	components: { myHeader },
@@ -44,7 +45,8 @@ export default {
 				this.list = res.content;
 				this.paginator.totalElements = res.totalElements;
 				this.paginator.totalPages = res.totalPages;
-				this.$store.commit('setUnreadCount', res.content.filter(item => !item.status).length);
+				// 此处不可直接获取length，因为其带有分页
+				// this.$store.commit('setUnreadCount', res.content.filter(item => !item.status).length);
 			})
 		},
 		readIt(data) {
