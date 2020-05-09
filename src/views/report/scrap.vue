@@ -36,23 +36,23 @@
                 <div style="width:95%">
                     <define-table v-if="show=='All'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
                         <define-column label="装备大类" field="genre"/>
-                        <define-column label="装备总数" field="totality"></define-column>
+                        <define-column label="装备总数" field="totalCount"></define-column>
                         <define-column label="装备总价" field="totalPrice"></define-column>
-                        <define-column label="报废件数" field="totalPrice"></define-column>
+                        <define-column label="报废件数" field="totalLoss"></define-column>
                     </define-table>
                     <define-table v-if="show=='genres'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
                         <define-column label="装备小类" field="category"/>
-                        <define-column label="装备总数" field="totality"></define-column>
+                        <define-column label="装备总数" field="totalCount"></define-column>
                         <define-column label="装备总价" field="totalPrice"></define-column>
-                        <define-column label="报废件数" field="totalPrice"></define-column>
+                        <define-column label="报废件数" field="totalLoss"></define-column>
                     </define-table>
                     <define-table v-if="show=='category'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
-                        <define-column label="装备名称" field="equipArgs"/>
-                        <define-column label="装备型号" field="equipArgs"/>
-                        <define-column label="装备总数" field="totality"></define-column>
+                        <define-column label="装备名称" field="name"/>
+                        <define-column label="装备型号" field="model"/>
+                        <define-column label="装备总数" field="totalCount"></define-column>
                         <define-column label="装备总价" field="totalPrice"></define-column>
-                        <define-column label="报废件数" field="totalPrice"></define-column>
-                        <define-column label="供应商" field="totalPrice"></define-column>
+                        <define-column label="报废件数" field="totalLoss"></define-column>
+                        <define-column label="供应商" field="supplier"></define-column>
                     </define-table>
                 </div>
             </div>
@@ -135,7 +135,7 @@
                         this.paginator.totalElements = res.totalElements;
                     })
                 }else if(this.show=="All"){
-                    findEquipScrapStatistics({level:'ALL'}).then(res=>{
+                    findEquipScrapStatistics({categorys:3,level:'ALL'}).then(res=>{
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
@@ -144,9 +144,6 @@
                     console.log("-------------+");
                    findEquipScrapStatistics({categorys:3,id:data.data.id,level:'CATEGORY'}).then(res=>{
                         this.equipArg = res
-                        this.equipArg.forEach(item=>{
-                            item.equipArgs=`${item.name}(${item.model})`
-                        })
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
                     })

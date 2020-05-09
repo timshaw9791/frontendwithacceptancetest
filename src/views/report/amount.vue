@@ -20,14 +20,14 @@
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='genres'">
-                    <div style="float:left">装备大类：{{this.title}}</div>
+                    <div style="float:left">总计 装备大类：{{this.title}} 总数：{{addNum(1)}}件 可用数：{{addNum(2)}}件 领用数：{{addNum(3)}}件 总价：{{addNum(4)}}元</div>
                     <div style="float:right">
                         <define-input label="小类" v-model="search"></define-input>
                         <base-button label="查询"  size="mini"></base-button>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='category'">
-                    <div style="float:left">装备小类：{{this.title}}</div>
+                    <div style="float:left">总计 装备小类：{{this.title}} 总数：{{addNum(1)}}件 可用数：{{addNum(2)}}件 领用数：{{addNum(3)}}件 总价：{{addNum(4)}}元</div>
                     <div style="float:right">
                         <define-input label="小类" v-model="search"></define-input>
                         <base-button label="查询"  size="mini"></base-button>
@@ -49,13 +49,11 @@
                         <define-column label="装备总价" field="totalPrice"></define-column>
                     </define-table>
                     <define-table v-if="show=='category'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
-                        <define-column label="装备名称" field="equipArgs"/>
-                        <define-column label="装备型号" field="totality"></define-column>
-                        <define-column label="总数" field="inHouseCount"></define-column>
-                        <define-column label="总价" field="receiveUseCount"></define-column>
-                        <define-column label="可用数" field="totalPrice"></define-column>
-                        <define-column label="领用数" field="totalPrice"></define-column>
-                        <define-column label="供应商" field="totalPrice"></define-column>
+                        <define-column label="装备参数" field="equipArgs"/>
+                        <define-column label="装备总数" field="totality"></define-column>
+                        <define-column label="可用数量" field="inHouseCount"></define-column>
+                        <define-column label="领用数量" field="receiveUseCount"></define-column>
+                        <define-column label="装备总价" field="totalPrice"></define-column>>
                     </define-table>
                 </div>
             </div>
@@ -97,6 +95,7 @@
                 equipArg:[],
                 search:"",
                 total:0,
+                computeTotal:{},
             };
         },
         methods: {
@@ -125,6 +124,12 @@
             changePage(page) {
                 this.paginator.page = page
                 this.fetchData()
+            },
+            addNum(item){
+               if(item==1)return this.equipArg.reduce((v,k)=>v+k.totality,0)
+               if(item==2)return this.equipArg.reduce((v,k)=>v+k.inHouseCount,0)
+               if(item==3)return this.equipArg.reduce((v,k)=>v+k.receiveUseCount,0)
+               if(item==4)return this.equipArg.reduce((v,k)=>v+k.totalPrice,0)
             },
             clickNode(data) {
                 console.log("-------------------");
