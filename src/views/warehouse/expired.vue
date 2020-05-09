@@ -20,7 +20,7 @@
                             </define-column>
                             <define-column label="到期时间" field="scarTime" :filter="(row)=>$filterTime(row.scarTime)"  />
                             <define-column label="到期倒计时/天" v-slot="{ data }">
-                            <date-input v-model="data.row.scarTime" :tableEdit="false" filter="toDay"></date-input>
+                            <date-input v-model="data.row.scarTime" :tableEdit="false" filter="interval"></date-input>
                             </define-column>
                         </define-table>
 

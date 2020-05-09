@@ -65,6 +65,7 @@
             deleteplan(data){
                 deleteWearRates(data.id).then(res=>{
                     this.$message.success("删除成功")
+                    this.equipArg=[]
                     this.fetchData()
                 })
             },
