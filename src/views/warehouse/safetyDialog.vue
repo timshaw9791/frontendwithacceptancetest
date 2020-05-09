@@ -93,7 +93,6 @@
                 this.newName = ""
             },
             submit(){
-                console.log("提交");
                 if(this.title == "新增大类"){
                     addgenre({name:this.newName}).then(res=>{
                         this.$refs.safetyDialogs.hide()
@@ -116,9 +115,6 @@
                         this.$emit('fetchData');
                     })
                 }else if(this.title == "装备分配"){
-                    console.log("this.selectedData.selectGenre",this.selectedData.selectGenre);
-                    console.log("this.selectedData.selectCategory",this.selectedData.selectCategory);
-                    console.log("this.assignedData",this.assignedData);
                     this.assignedData = this.assignedData.toString()
                     distribution(this.selectedData.selectCategory,{equipArgs:this.assignedData}).then(res=>{
                         this.$refs.safetyDialogs.hide()
