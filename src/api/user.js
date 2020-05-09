@@ -3,7 +3,7 @@ import {baseURL} from "./config"
 
 export function getUser(params) {//获取user列表
   return request({
-    url: baseURL+'/users',
+    url: '/users',
     method: 'GET',
     params
   })
@@ -11,7 +11,7 @@ export function getUser(params) {//获取user列表
 
 export function editUser(params,data) {//编辑user
   return request({
-    url: baseURL+`/users/${params}`,
+    url: `/users/${params}`,
     method: 'PUT',
     data
   })
@@ -19,7 +19,7 @@ export function editUser(params,data) {//编辑user
 
 export function addUser(data) {//新增user
   return request({
-    url: baseURL+`/users`,
+    url: `/users`,
     method: 'POST',
     data
   })
@@ -27,7 +27,7 @@ export function addUser(data) {//新增user
 
 export function deleteUser(param) {//删除user
   return request({
-    url: baseURL+`/users/${param}`,
+    url: `/users/${param}`,
     method: 'DELETE',
   })
 }

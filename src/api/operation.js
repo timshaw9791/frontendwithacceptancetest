@@ -81,6 +81,14 @@ export function serviceOrders(params) {
         params:params
     })
 }
+//报废单列表
+export function scarpsOrders(params) {
+    return request({
+        url:  "/scarp-orders",
+        method: 'get',
+        params:params
+    })
+}
 //维修申请列表
 export function RepairOrder(params) {
     return request({

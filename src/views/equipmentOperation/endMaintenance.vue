@@ -18,8 +18,8 @@
                             <define-column label="装备参数" v-slot="{ data }">
                                 <entity-input v-model="data.row.equipArg"  :options="{detail:'equipArgsSelect'}" format="{name}({model})" :tableEdit="false" ></entity-input>
                             </define-column>
-                            <define-column label="装备位置" v-slot="{ data }">
-                                <define-input v-model="data.row.location"  :tableEdit="false"></define-input>
+                            <define-column label="装备位置"  v-slot="{ data }" >
+                                 <entity-input v-model="data.row.location"   :formatFunc="formatFunc" :tableEdit="true" ></entity-input>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
                                 <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
@@ -89,6 +89,17 @@ export default {
     selRow(current){
                 this.findIndex=current.index
             },
+            formatFunc(data){
+            if(data.surface!=null&&data.floor!=null){
+                 return data.frameNumber?
+                `${data.frameNumber}架/${data.surface}面/${data.section}节/${data.floor}层`:
+                `${data.category}(${data.cabinetNumber})`
+               }else{
+                 return data.frameNumber?
+                `${data.frameNumber}架/${data.section}节`:
+                `${data.category}(${data.cabinetNumber})`   
+               }
+           },
             sumFunc(param) { // 表格合并行计算方法
                 let { columns, data } = param, sums = [];
                 columns.forEach((colum, index) => {
@@ -142,7 +153,6 @@ export default {
                 data.forEach(item=>{this.list.push(item)})
                 let cList=this._.groupBy(this.list, item => `${item.equipArg.model}${item.location.id}`)
                 this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length,location:v[0].location}})
-                this.newData.forEach(item=>{item.location=this.milliLocation(item.location)})
                 }
                 }else{
                     this.$message.error('此装备不在保养状态')

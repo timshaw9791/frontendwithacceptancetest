@@ -15,7 +15,7 @@
                                 <entity-input v-model="data.row.equipArg"  :options="{search:'equipArgsSelect'}" format="{equipName}({equipModel})" :tableEdit="false" ></entity-input>
                             </define-column>
                             <define-column label="装备位置"  v-slot="{ data }" >
-                                 <entity-input v-model="data.row.location"  format="{frameNumber}架/{surface}面/{section}节/{floor}层" :tableEdit="false" ></entity-input>
+                                 <entity-input v-model="data.row.location"  :formatFunc="$formatFuncOrderLoc" :tableEdit="false" ></entity-input>
                             </define-column>
                             <define-column label="单价" v-slot="{ data }">
                                 <define-input v-model="data.row.equipArg.price" :tableEdit="false" type="Number" ></define-input>
@@ -89,6 +89,7 @@ export default {
             selRow(data){
                 this.findIndex=data.index
             },
+
             sumFunc(param) { // 表格合并行计算方法
                 let { columns, data } = param, sums = [];
                 columns.forEach((colum, index) => {
@@ -115,7 +116,7 @@ export default {
             data.forEach(item=>{this.list.push(item)})
                 /*详情单过来时 数据的属性不同处理方法不同*/
                 let cList=this._.groupBy(this.list, item => `${item.equipName}${item.equipModel}${item.locationInfo.id}`)
-                this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0],copyList:v,count:v.length,location:v[0].locationInfo}})
+                this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0],copyList:v,count:v.length,location:v[0]}})
                 //this.list=this._.map(this._.groupBy(this.list, item => `${item.equipArg.model}`),(v,k)=>{return {equipArg:v[0].equipArg,copyList:v}})
                 // return this._.map(this._.groupBy(this.list, item => `${item.equipArg.model}${item.location.surface}`),(v,k)=>{return {equipArg:v[0].equipArg,copyList:v}})
         },

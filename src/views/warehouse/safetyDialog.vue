@@ -1,70 +1,121 @@
 <template>
     <div>
-        <serviceDialog :title="title" ref="safetyDialog" width="3.3021rem"
+        <service-dialog :title="title" ref="dialog" width="3.3021rem"
                        :button="false">
-        <div v-if="dialogData.type=='add'">
-
-        </div>
-        <base-select label="选择大类"></base-select>
-        </serviceDialog>
+            <div v-if="title.indexOf('新增')!=-1" style="text-align: center;">
+                <define-input v-if="title.indexOf('小类')!=-1" v-model="addData.name" margin="15px" label="大类" :column="9" :disabled="true"></define-input>
+                <define-input v-model="newName" margin="15px" label="名称" :column="9"></define-input>
+            </div>
+            <div v-else-if="title.indexOf('编辑')!=-1" style="text-align: center;">
+                <define-input v-model="edit.name" margin="15px" :label="title.indexOf('大类')!=-1?'大类名称':'小类名称'" :column="9"></define-input>
+            </div>
+            <div v-else-if="title.indexOf('装备')!=-1" style="text-align: center;">
+                <base-select label="装备大类" :column="12" margin="15px" v-model="selectedData.selectGenre" :selectList="selectData.genre"></base-select>
+                <base-select label="装备小类" :column="12" margin="15px" v-model="selectedData.selectCategory" :selectList="selectData.category"></base-select>
+            </div>
+            <div style="text-align: center;">
+            <base-button label="取消" type="none" @click="cancel"></base-button>
+            <base-button label="确定" @click="submit"></base-button>
+            </div>
+        </service-dialog>
     </div>
 </template>
 
 <script>
-    import serviceDialog from 'components/base/gailiangban'
-    import baseSelect from '@/componentized/textBox/baseSelect.vue'
-    import { } from "api/safety"
+    import serviceDialog from 'components/base/serviceDialog'
+    import { addgenre, editgenre, addcategories, editcategories  ,getgenresList, getcategories,} from "api/safety"
 
     export default {
         name: "safetyDialog",
         components: {
             serviceDialog,
-            baseSelect
         },
         data() {
             return {
-                title:""
+                newName:"",
+                edit:{},
+                selectData:{
+                    genre:[],
+                    category:[]
+                },
+                selectedData:{
+                    selectGenre:"",
+                    selectCategory:""
+                }
             }
         },
-        computed: {
-            disabled() {
-                if (this.type === 'unallocated') {
-                    return false
-                } else {
-                    if (this.genre) {
-                        return false
-                    } else {
-                        return true
-                    }
-                }
-            },
-        },
-        created() {
-
-        },
-        activated() {
-        },
         props: {
-            dialogData: {
+            editData: {
                 type: Object
             },
+            addData:{
+                type:Object
+            },
+            title:{
+                type:String,
+            },
+        },
+        watch:{
+            'selectedData.selectGenre':{
+                handler(newVal){
+                    getcategories(newVal).then(res=>{
+                        res.forEach(item=>{
+                            this.selectData.category.push({
+                                label:item.name,
+                                value:item.id
+                            })
+                        })
+                    })
+                }
+            }
         },
         methods: {
             titleShow(){
-                if(this.dialogData.type == "edit"){
-                    if(this.dialogData.data == "genres"){
-                        this.title = "编辑大类"
-                    }else if(this.dialogData.data == "category"){
-                        this.title = "编辑小类"
-                    }
-                }else if(this.dialogData.type == "add"){
-                    if(this.dialogData.data == "genres"){
-                        this.title = "新增大类"
-                    }else if(this.dialogData.data == "category"){
-                        this.title = "新增小类"
-                    }
+                this.$refs.safetyDialogs.show()
+                this.edit=JSON.parse(JSON.stringify(this.editData))
+                if(this.title=="装备分配"){
+                    getgenresList().then(res=>{
+                        res.content.forEach(item=>{
+                            this.selectData.genre.push({
+                                value:item.id,
+                                label:item.name
+                            })
+                        })
+                    })
+
                 }
-                this.$refs.safetyDialog.show()
+            },
+            cancel(){
+                this.$refs.safetyDialogs.hide()
+                this.newName = ""
+            },
+            submit(){
+                console.log("提交");
+                if(this.title == "新增大类"){
+                    addgenre({name:this.newName}).then(res=>{
+                        this.$refs.safetyDialogs.hide()
+                        this.$emit('fetchData');
+                    })
+                }else if(this.title == "编辑大类"){
+                    let params = {name:this.edit.name}
+                    editgenre(this.editData.id,params).then(res=>{
+                        this.$refs.safetyDialogs.hide()
+                        this.$emit('fetchData');
+                    })
+                }else if(this.title == "新增小类"){
+                    addcategories(this.addData.id,{name:this.newName,genre:this.addData}).then(res=>{
+                        this.$refs.safetyDialogs.hide()
+                        this.$emit('fetchData');
+                    })
+                }else if(this.title == "编辑小类"){
+                    editcategories(this.editData.id,this.edit).then(res=>{
+                        this.$refs.safetyDialogs.hide()
+                        this.$emit('fetchData');
+                    })
+                }else if(this.title == "装备分配"){
+                    console.log("this.selectedData.selectGenre",this.selectedData.selectGenre);
+                    console.log("this.selectedData.selectCategory",this.selectedData.selectCategory);
+                }
             }
         }
     }

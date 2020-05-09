@@ -1,25 +1,29 @@
 <template>
-    <div class="opening-box">
-        <my-header title="维修申请记录"></my-header>
+    <div class="scrap-order-container">
+        <my-header title="报废单"></my-header>
         <div class="data-list">
             <define-table :data="list" height="3.64rem" @changeCurrent="selRow" @changePage="changePage" :pageInfo="paginator" >
-                            <define-column label="RFID" v-slot="{ data }">
-                                <define-input v-model="data.row.equipRfid" type="Number" :tableEdit="false"></define-input>
+                            <define-column label="操作" width="130" v-slot="{ data }">
+                                <div class="span-box">
+                                     <base-button label="详情" size="mini" @click="toDetail(data.row)" type="primary"></base-button>
+                                </div>
                             </define-column>
-                            <define-column label="装备序号" v-slot="{ data }">
-                                <define-input v-model="data.row.equipSerial" type="Number" :tableEdit="false"></define-input>
+                            <define-column label="单号" v-slot="{ data }">
+                                <define-input v-model="data.row.number" type="Number" :tableEdit="false"></define-input>
+                            </define-column>
+                            <define-column label="报废类型" v-slot="{ data }">
+                                <define-input v-model="data.row.category"  :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
-                                <define-input v-model="data.row.equipArgs"  :tableEdit="false"></define-input>
+                                <define-input v-model="data.row.equipArgs" type="Number" :tableEdit="false"></define-input>
                             </define-column>
-                            <define-column label="装备位置" v-slot="{ data }">
-                                <entity-input v-model="data.row.equipLocation" format="{frameNumber}架/{surface}面/{section}节/{surface}层" :tableEdit="false"></entity-input>
+                            <define-column label="装备数量" :filter="(row)=>filterNumber(row)">
+                                
                             </define-column>
-                            <define-column label="申请人" v-slot="{ data }">
-                                <define-input v-model="data.row.applyUser" type="String" :tableEdit="false"></define-input>
+                            <define-column label="操作人员" v-slot="{ data }">
+                                <define-input v-model="data.row.operatorInfo.operator" type="String" :tableEdit="false"></define-input>
                             </define-column>
-                            <define-column label="申请时间" :filter="(row)=>$filterTime(row.createTime)"/>
-                            <define-column label="申请原因" field="reason"/>
+                            <define-column label="报废时间" :filter="(row)=>$filterTime(row.createTime)"/>
                         </define-table>
         </div>
     </div>
@@ -35,7 +39,7 @@
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
-    import { RepairOrder} from "api/operation"
+    import { scarpsOrders} from "api/operation"
 export default {
     components:{
             myHeader,
@@ -61,24 +65,30 @@ export default {
             },
             toDetail(data){
                 console.log(data);
-                this.$router.push({name:'serviceDetails',params:{info:data}})
+                this.$router.push({name:'scrapOrderDetails',params:{info:data}})
             },
             getList(){
-                RepairOrder(this.params).then(res=>{
+                scarpsOrders(this.params).then(res=>{
                     this.list=res.content
                     this.list.forEach(item=>{
-                        if(item.equipRepairItems.length==1)
-                        {
-                            item.equipArgs=item.equipRepairItems[0].equipName+'('+item.equipRepairItems[0].equipModel+')'
-                        }else{
-                            item.equipArgs=item.equipRepairItems[0].equipName+'('+item.equipRepairItems[0].equipModel+')'+'...'
+                        if(item.category==0){item.category='维修报废'}
+                        if(item.category==1){item.category='到期报废'}
+                        if(item.category==2){item.category='盘点报废'}
+                        if(item.scrapItems.length!=0){
+                             if(item.scrapItems.length==1)
+                            {
+                                item.equipArgs=item.scrapItems[0].equipName+'('+item.scrapItems[0].equipModel+')'
+                            }else{
+                                item.equipArgs=item.scrapItems[0].equipName+'('+item.scrapItems[0].equipModel+')'+'...'
+                            }
                         }
+                       
                     })
                     
                 })
             },
             filterNumber(data){
-                return data.equipRepairItems.length
+                return data.scrapItems.length
             },
             changePage(page) {
             this.paginator.page = page;ss
