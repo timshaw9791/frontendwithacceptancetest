@@ -1,6 +1,9 @@
 <template>
   <div class="consumableReceive-form-container">
-    <my-header :title="title" :haveBlack="false"></my-header>
+      <div class="consumableReceive-header">
+        <span style="font-size: 20px;">{{title}}</span>
+        <base-button label="<-返回" align="right" type="none" @click="returnBack"></base-button>
+      </div>
     <div class="consumableReceive-form-body" >
         <div class="process-info">
             <define-input label="单号" :disabled="true"  placeholder="-"></define-input>
@@ -40,8 +43,8 @@
             </define-column>
         </define-table>
         <div class="buttom">
-            <base-button label="提交" align="right" size="large" @click="submit"></base-button>
-            <base-button label="返回" align="right" size="large" type="danger" @click="this.$router.go(-1);"></base-button>
+            <base-button label="提交" align="right" @click="submit"></base-button>
+            <base-button label="返回" align="right" @click="returnBack"></base-button>
         </div>
     </div>
   </div>
@@ -109,8 +112,13 @@
                                 order.push(this.order.consumableItems[i])
                         }
                     }
-                    addConsumable({remark:this.order.remark},order)
+                    addConsumable({remark:this.order.remark},order).then(res=>{
+                        this.$router.go(-1);
+                    })
                 }
+            },
+            returnBack(){
+                this.$router.go(-1)
             }
         },
         created() {
@@ -194,5 +202,22 @@
             line-height: 72px;
             margin-right: 72px;
         }
+    }
+    .consumableReceive-header{
+        width: 100%;
+        padding-left: 18px;
+        padding-right: 35px;
+        height: 57px;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        color: rgba(112,112,112,1);
+        border-bottom: 1px solid rgba(112,112,112, 0.13);
     }
 </style>
