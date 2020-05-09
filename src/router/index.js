@@ -225,10 +225,15 @@ export const asyncRouterMap = [{
             component: _import('surroundings/index'),
             meta: {title: '环境管理'},
         }, {
-            path: 'inventory',
-            name: 'warehouse/inventory',
-            component: _import('warehouse/inventory'),
+            path: 'inventoryList',
+            name: 'inventoryList',
+            component: _import('warehouse/inventory/inventoryList'),
             meta: {title: '盘点'},
+        },  {
+            path: 'inventoryInfo',
+            name: 'inventoryInfo',
+            component: _import('warehouse/inventory/inventoryInfo'),
+            hidden: true,
         }, {
             path: 'addPersonal',
             name: 'addPersonal',
@@ -344,10 +349,15 @@ export const asyncRouterMap = [{
         name: 'record',
         meta: {title: '记录管理', icon: '记录管理'},
         children: [{
-            path: 'opening',
-            name: 'opening',
-            component: _import('record/opening'),
+            path: 'openGate',
+            name: 'openGate',
+            component: _import('record/openGate'),
             meta: {title: '开门记录'},
+        }, {
+            path: 'openCabinet',
+            name: 'openCabinet',
+            component: _import('record/openCabinet'),
+            meta: {title: '开柜记录'},
         }, {
             path: 'RROList',
             name: 'RROList',
@@ -358,12 +368,7 @@ export const asyncRouterMap = [{
             name: 'RROInfo',
             component: _import('record/receiveReturnOrder/RROInfo'),
             hidden: true
-        }, {
-            path: 'inventory',
-            name: 'inventory',
-            component: _import('record/inventory'),
-            meta: {title: '盘点记录'},
-        }, {
+        },  {
             path: 'chargingRecord',
             name: 'chargingRecord',
             component: _import('record/chargingRecord'),

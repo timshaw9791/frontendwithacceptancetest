@@ -1,8 +1,8 @@
 <template>
     <div class="equip-params-container">
-        <define-input label="搜索" v-model="pageInfo.search" placeholder="装备名称/装备型号"></define-input>
+        <define-input label="搜索" v-model="paginator.search" placeholder="装备名称/装备型号"></define-input>
         <div class="table">
-            <define-table :data="list" height="560px" @changeCurrent="select" :pageInfo="pageInfo" @changePage="changePage" :highLightCurrent="true">
+            <define-table :data="list" height="560px" @changeCurrent="select" :pageInfo="paginator" @changePage="changePage" :highLightCurrent="true">
                 <define-column label="装备图片" v-slot="{ data }">
                     <img class="img" :src="imgBaseUrl+data.row.image" alt="暂无图片">
                 </define-column>
@@ -36,16 +36,16 @@
             return {
                 currentSel: '', // 当前选中行数据
                 list: [],
-                pageInfo: {page: 1, size: 10, totalPages: 1, totalElements: 0, search: ''},
+                paginator: {page: 1, size: 10, totalPages: 1, totalElements: 0, search: ''},
                 imgBaseUrl:imgBaseUrl
             }
         },
         methods: {
             getList() {
-                getEpArgsList(this.pageInfo).then(res => {
+                getEpArgsList(this.paginator).then(res => {
                     this.list = res.content;
-                    this.pageInfo.totalPages = res.totalPages;
-                    this.pageInfo.totalElements = res.totalElements;
+                    this.paginator.totalPages = res.totalPages;
+                    this.paginator.totalElements = res.totalElements;
                 })
             },
             cancel() {
@@ -62,7 +62,7 @@
                 }
             },
             changePage(page) {
-                this.pageInfo.page = page;
+                this.paginator.page = page;
                 this.getList();
             },
         },
