@@ -110,9 +110,10 @@ export function noAssigned(id,params) {
     })
 }
 // 通过大类id查找所有小类的安全库存和装备数量
-export function getcategoriesSafety(id) {
+export function getcategoriesSafety(id,params) {
     return request({
         url: `/genres/${id}`,
         method: 'GET',
+        params
     })
 }
