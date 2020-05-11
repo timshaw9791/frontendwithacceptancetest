@@ -14,8 +14,7 @@
 
 <script>
 import uploadFile from '@/componentized/uploadFile'
-import { getBosEntity } from 'api/basic'
-import { listMixin } from 'field/mixins/listMixin'
+import getBosEntity from '@/api/basic'
 export default {
     name: 'equipArgsDetail',
     data() {
@@ -33,13 +32,21 @@ export default {
     },
     props: ['detailParam'],
     components: { uploadFile },
-    mixins: [listMixin],
-    methods: {
-        fetchData() {
-            getBosEntity(this.detailParam).then(res => {
-                this.equipArgs = res;
+    methods:{
+        fetchData(){
+            getBosEntity(this.detailParam.id).then((res)=>{
+                    this.equipArgs = res.content
             })
+        },
+        fixData(){
+
         }
+    },
+    created() {
+        this.fetchData()
     }
 }
 </script>
+
+<style scoped>
+</style>

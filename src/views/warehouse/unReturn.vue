@@ -11,14 +11,11 @@
                 <define-column label="装备序号" field="serial"></define-column>
                 <define-column label="领取人员" field="operator"></define-column>
                 <define-column label="领取时间" field="receiveTime"></define-column>
-                <define-column label="逾期" v-slot="{data}">
-                    <date-input v-model="data.row.overDueTime" :disabled="true"></date-input>
-                </define-column>
+                <define-column label="逾期(天)" field="overDueTime"></define-column>
             </define-table>
         </div>
     </div>
 </template>
-
 
 <script>
     import myHeader from '@/components/base/header/header'
@@ -51,7 +48,8 @@
                     item.equipArgs = item.equipName + "(" + item.equipModel + ")"
                     //计算逾期时间
                     item.overDueTime =  new Date() - item.receiveTime
-                    console.log(item.overDueTime)
+                    //向上取整 不足一天算一天
+                    item.overDueTime=Math.ceil(item.overDueTime/86400000)
                     // 时间戳转日期
                     item.receiveTime = this.$filterTime(parseInt(item.receiveTime))
                 })

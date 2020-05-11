@@ -77,6 +77,8 @@ export function formatFunc(data){
         return `${data.locationInfo.frameNumber}架/${data.locationInfo.surface}面/${data.locationInfo.section}节/${data.locationInfo.floor}层`
     }
   }else{
+    if(data.surface==1)data.surface='B'
+    else{data.surface='A'}
     if(data.surface!=null&&data.floor!=null){
       return data.frameNumber?
      `${data.frameNumber}架/${data.surface}面/${data.section}节/${data.floor}层`:
