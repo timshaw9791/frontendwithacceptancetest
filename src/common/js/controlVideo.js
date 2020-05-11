@@ -9,7 +9,7 @@ if (process.env.NODE_ENV == "production") {
     //const spawn = window.require('child_process').spawn;
 }
 
-var cmdPath = 'C:\\Users\\Administrator'; // 读卡器路径
+var cmdPath = 'C:\\Users\\Administrator'; // 读写器路径
 // var com = 4
 var workerProcess; // 子进程名
 
@@ -35,7 +35,7 @@ function killProcessSync() {
 
 }
 
-/* 读卡器-连续 */
+/* 读写器-连续 */
 export function controlVideo(a){
     // const process = exec(`java -jar SendCamSignal.jar ${a}`, {cwd: cmdPath});
     // process.stderr.on('data', (err) => {
@@ -49,7 +49,7 @@ export function controlVideo(a){
     //     console.log(`子进程退出 ${code}`);
     // });
 }
-// /* 读卡器-单次 */
+// /* 读写器-单次 */
 // export function startOne(cmd, callBack, rfid=null) {
 //     if(rfid) exec(`${cmd} ${com} ${rfid}`, {cwd: cwd}, (err, data) => {callBack(data)})
 //     else exec(`${cmd} ${com}`, {cwd: cwd}, (err, data) => {callBack(data)})
