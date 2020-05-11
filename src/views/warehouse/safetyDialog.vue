@@ -33,7 +33,7 @@
         data() {
             return {
                 newName:"",
-                edit:{},
+                edit:this.editData,
                 selectData:{
                     genre:[],
                     category:[]
@@ -62,21 +62,46 @@
         watch:{
             'selectedData.selectGenre':{
                 handler(newVal){
+                    this.selectedData.selectCategory = ""
                     getcategories(newVal).then(res=>{
-                        res.forEach(item=>{
-                            this.selectData.category.push({
-                                label:item.name,
-                                value:item.id
+                        if(res.length == 0){
+                            this.selectData.category = []
+                        }else{
+                            this.selectData.category = []
+                            res.forEach(item=>{
+                                this.selectData.category.push({
+                                    label:item.name,
+                                    value:item.id
+                                })
+                            })
+                        }
+                    })
+                }
+            },
+            'editData':{
+                handler(newVal){
+                    this.edit = newVal
+                }
+            },
+            'title':{
+                handler(newVal){
+                    if(this.title=="装备分类"){
+                        getgenresList().then(res=>{
+                            res.content.forEach(item=>{
+                                this.selectData.genre.push({
+                                    value:item.id,
+                                    label:item.name
+                                })
                             })
                         })
-                    })
+                    }
                 }
             }
         },
         methods: {
             titleShow(){
-                this.edit=JSON.parse(JSON.stringify(this.editData))
-                if(this.title=="装备分配"){
+                this.$refs.safetyDialogs.show()
+                if(this.title=="装备分类"){
                     getgenresList().then(res=>{
                         res.content.forEach(item=>{
                             this.selectData.genre.push({
@@ -86,8 +111,6 @@
                         })
                     })
                 }
-                console.log("this.edit",this.edit);
-                this.$refs.safetyDialogs.show()
             },
             cancel(){
                 this.$refs.safetyDialogs.hide()
@@ -115,12 +138,16 @@
                         this.$refs.safetyDialogs.hide()
                         this.$emit('fetchData');
                     })
-                }else if(this.title == "装备分配"){
+                }else if(this.title == "装备分类"){
                     this.assignedData = this.assignedData.toString()
-                    distribution(this.selectedData.selectCategory,{equipArgs:this.assignedData}).then(res=>{
-                        this.$refs.safetyDialogs.hide()
-                        this.$emit('fetchData');
-                    })
+                    if(this.selectedData.selectCategory != null ||this.selectedData.selectCategory != ''){
+                        distribution(this.selectedData.selectCategory,{equipArgs:this.assignedData}).then(res=>{
+                            this.$refs.safetyDialogs.hide()
+                            this.$emit('fetchData');
+                        })
+                    }else {
+                        this.$message.error("请选择小类")
+                    }
                 }
             }
         }
