@@ -159,6 +159,15 @@
                         this.$message.error("请选择小类")
                     }
                 }
+                this.newName = ""
+                this.selectData={
+                    genre:[],
+                    category:[]
+                },
+                this.selectedData={
+                    selectGenre:"",
+                    selectCategory:""
+                }
             }
         }
     }
