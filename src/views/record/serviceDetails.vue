@@ -1,21 +1,20 @@
 <template>
-    <div class="opening-box">
+    <div class="service-details-container">
           <my-header :title="$route.meta.title" :haveBlack="true" @h_black="cancel"></my-header>
-         <div class="action_box" data-test="action_box">
+         <div class="service-details-top" data-test="service-details-top">
                 <define-input label="单号" v-model="orderNumber" :disabled="true" class="odd-number"></define-input>
                 <date-select label="维修开始时间" v-model="time" :disabled="true"></date-select>
                 <entity-input label="操作人员" v-model="people" format="{name}" :disabled="true" ></entity-input>
             </div>
-        <div class="data-list">
+        <div class="service-details-body">
             <bos-tabs >
-                       
                         <define-table :data="newData" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
                             :highLightCurrent="true"  slot="total" :showSummary="true" :summaryFunc="sumFunc">
                             <define-column label="装备参数" v-slot="{ data }">
-                                <entity-input v-model="data.row.equipArg"  :options="{search:'equipArgsSelect'}" format="{equipName}({equipModel})" :tableEdit="false" ></entity-input>
+                                <entity-input v-model="data.row.equipArg" :detailParam="data.row.equipArg" :options="{detail:'equipArgsDetail'}" format="{equipName}({equipModel})" :tableEdit="false" ></entity-input>
                             </define-column>
                             <define-column label="装备位置"  v-slot="{ data }" >
-                                 <entity-input v-model="data.row.location"  format="{frameNumber}架/{surface}面/{section}节/{floor}层" :tableEdit="false" ></entity-input>
+                                 <entity-input v-model="data.row.location"  :formatFunc="$formatFuncLoc" :tableEdit="false" ></entity-input>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
                                 <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
@@ -101,66 +100,33 @@ export default {
             data.forEach(item=>{this.list.push(item)})
                 let cList=this._.groupBy(this.list, item => `${item.equipName}${item.equipModel}${item.locationInfo.id}`)
                 this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0],copyList:v,count:v.length,location:v[0].locationInfo}})
+             },
         },
-        },
-        
         created(){
                 console.log(this.$route.params.info);
                 this.orderNumber=this.$route.params.info.number;
                 this.time=this.$route.params.info.createTime;
                 this.people=this.$route.params.info.operatorInfo.operator;
                 this.changeDataFormat(this.$route.params.info.equipRepairItems)
-
-            
         }
 }
 </script>
 <style lang="scss" scoped>
-.opening-box{
+.service-details-container{
     font-size: 16px;
     width: 100%;
     min-height: 4.4323rem;
-    .action_box{
+    .service-details-top{
         margin-top:15px;
         display: flex;
         justify-content: flex-start;
         align-items: center;
     }
-    .btn_box{
-    height:30px;
-    border-top:1px solid rgba(112, 112, 112, 0.13);
-    border-bottom:1px solid rgba(112, 112, 112, 0.13);
-    }
-    .data-list
+    .service-details-body
     {
         padding: 0 10px;
         margin-top:15px;
         height:"2.8648rem";
-        // border:1px solid rgba(112, 112, 112, 0.13)
-    }
-    .span-box{
-        display:flex;
-        justify-content: space-between;
     }
 }
-.location-select{
-    height: 500px;
-    width: 4.625rem;
-    z-index: 1200;
-    .select-location{
-        width:3.5rem;
-        height: 440px;
-        float: left;
-        margin-left: auto;
-}
-}
-.btn-box{
-        width: 4rem;
-        height: 50px;
-        margin-left:20px;
-        margin-top: 15px;
-        display: flex;
-        justify-content: flex-end;
-        align-items : center; 
-    }
 </style>

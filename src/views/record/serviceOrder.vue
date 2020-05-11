@@ -1,8 +1,8 @@
 <template>
     <div class="sevice-order-container">
-        <my-header title="维修单"></my-header>
+        <my-header :title="$route.meta.title"></my-header>
         <div class="sevice-order-body">
-            <define-table :data="listData" height="3.64rem" @changeCurrent="selRow" @changePage="changePage" :pageInfo="paginator" >
+            <define-table :data="listData" height="3.64rem"  @changePage="changePage" :pageInfo="paginator" >
                             <define-column label="操作" width="130" v-slot="{ data }">
                                 <base-button label="详情" size="mini" @click="toDetail(data.row)" type="primary"></base-button>
                             </define-column>

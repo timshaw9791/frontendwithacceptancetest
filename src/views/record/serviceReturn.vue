@@ -1,8 +1,8 @@
 <template>
     <div class="service-return-container">
-        <my-header title="维修单"></my-header>
+        <my-header :title="$route.meta.title"></my-header>
         <div class="service-return-body">
-            <define-table :data="list" height="3.64rem" @changeCurrent="selRow" @changePage="changePage" :pageInfo="paginator" >
+            <define-table :data="listData" height="3.64rem"  @changePage="changePage" :pageInfo="paginator" >
                             <define-column label="操作" width="130" v-slot="{ data }">
                                 <base-button label="详情" size="mini" @click="toDetail(data.row)" type="primary"></base-button>
                             </define-column>
@@ -43,7 +43,7 @@ export default {
         },
         data(){
             return{
-               list:[],
+               listData:[],
                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0,abnormal:false,category:5},
             }
         },
@@ -58,10 +58,10 @@ export default {
             },
             fetchData(){
                 serviceOrders(this.paginator).then(res=>{
-                    this.list=res.content
+                    this.listData=res.content
                     this.paginator.totalPages = res.totalPages
 					this.paginator.totalElements = res.totalElements
-					for(let elem of this.list.values()){
+					for(let elem of this.listData.values()){//处理装备参数显示格式
 						elem.equipArgs=elem.equipRepairItems.length==1?`${elem.equipRepairItems[0].equipName}(${elem.equipRepairItems[0].equipModel})`:
 						`${elem.equipRepairItems[0].equipName}(${elem.equipRepairItems[0].equipModel})...`
 					}
