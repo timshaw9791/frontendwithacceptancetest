@@ -1,19 +1,18 @@
 <template>
   <div class="maintenance-form-container">
     <my-header :title="$route.meta.title" :haveBlack="false"></my-header>
-    <div class="maintenance-form-top" v-if="show">
+    <div class="maintenance-form-top" >
       <base-button size="default" align="right" label="开始保养" @click="startMain"></base-button>
     </div>
-    <div class="maintenance-form-body" v-if="show">
+    <div class="maintenance-form-body" >
         <bos-tabs :option="['tabs']" :layoutRatio="[2, 1]">
           <define-table :havePage="false" :data="listData" height="2.6042rem"
             @changeCurrent="selRow" :summaryFunc="sumFunc" :showSummary="true" :highLightCurrent="true" slot="total" >
             <define-column label="装备参数" v-slot="{ data }">
               <entity-input v-model="data.row.equipArg" :detailParam="data.row.equipArg" :options="{ detail: 'equipArgsDetail' }" format="{name}({model})" :disabled="true" ></entity-input>
             </define-column>
-            <!-- <define-column label="装备位置" field="location" :filter="(row)=>milliLocation(row.location)"></define-column> -->
             <define-column label="装备位置"  v-slot="{ data }" >
-                  <entity-input v-model="data.row.location"  :formatFunc="formatFunc" :tableEdit="false" ></entity-input>
+                  <entity-input v-model="data.row.location"  :formatFunc="$formatFuncLoc" :tableEdit="false" ></entity-input>
             </define-column>
             <define-column label="可保养数量" field="count"></define-column>
           </define-table>
@@ -22,37 +21,6 @@
             <define-column label="装备序号" field="serial"></define-column>
           </define-table>
         </bos-tabs>
-    </div>
-    <div v-else class="maintenance-form-body">
-      <bos-tabs :option="['tabs']" :layoutRatio="[2, 1]">
-        <template slot="slotHeader">
-          <base-button label="读取数据" align="right" :disabled="!select.selected" @click="readData()" :width="96"></base-button>
-          <base-select label="硬件选择" v-model="select.selected" align="right" :selectList="select.handWareList"></base-select>
-        </template>
-        <define-table :havePage="false" :data="copyData" class="left_box" height="2.6042rem"
-           slot="total" >
-          <define-column label="操作">
-              <i class="iconfont icontianjialiang"></i>
-              <i class="iconfont iconyichuliang"></i>
-          </define-column>
-        </define-table>
-        <define-table :havePage="false" class="center_box" :data="listData" height="2.6042rem"
-          @changeCurrent="selRow" :summaryFunc="sumFunc" :haveIndex="false" :showSummary="true" :highLightCurrent="true" slot="total" >
-          <define-column label="装备参数" v-slot="{ data }">
-            <entity-input v-model="data.row.equipArg" :options="{ detail: 'equipArgsSelect' }" format="{name}({model})" :disabled="true" ></entity-input>
-          </define-column>
-          <define-column label="装备位置" field="location" :filter="(row)=>locations(row.location)"></define-column>
-          <define-column label="可保养数量" field="count"></define-column>
-        </define-table>
-        <define-table :havePage="false" class="right_box" :data="copyData" height="2.6042rem"
-          @changeCurrent="selRow" :summaryFunc="sumFunc" :haveIndex="false" :showSummary="true" :highLightCurrent="true" slot="total" >
-          <define-column label="本次保养数量" field="keepcount"></define-column>
-        </define-table>
-        <define-table :havePage="false"  :data="copyData[findIndex].copyList" height="2.6042rem" slot="detail" >
-          <define-column label="RFID" field="rfid"></define-column>
-          <define-column label="装备序号" field="serial"></define-column>
-        </define-table>
-      </bos-tabs>
     </div>
   </div>
 </template>
@@ -72,26 +40,8 @@ export default {
   name: "maintenance",
   data() {
     return {
-      show: true,
-      rowData: "", // 选中的单选行数据
-      select: {
-        handWareList: [{
-            label: "手持机",
-            value: 'handheld'
-        }, {
-            label: "读写器",
-            value: "reader"
-        }],
-        selected: ""
-      },
       findIndex:0,
       listData:[],
-      copyData:[{
-        equipArg:'',
-        location:'',
-        keepcount:0,
-        copyList:[{rfid:'',serial:''}]
-      }],
       list:[],
     }
   },
@@ -99,43 +49,15 @@ export default {
     selRow(data) { // 单选表格行
            this.findIndex=data.index
       },
-      formatFunc(data){
-            if(data.surface!=null&&data.floor!=null){
-                 return data.frameNumber?
-                `${data.frameNumber}架/${data.surface}面/${data.section}节/${data.floor}层`:
-                `${data.category}(${data.cabinetNumber})`
-               }else{
-                 return data.frameNumber?
-                `${data.frameNumber}架/${data.section}节`:
-                `${data.category}(${data.cabinetNumber})`   
-               }
-           },
     startMain(){
        this.$router.push({path: '/equipmentOperation/startMaintenance'});
     },
-      locations(data){
-        return data.floor+'/'+data.frameNumber+'/'+data.surface+'/'+data.section
-      },
-      classDataify(data)//读写器数据处理的方法
+    classDataify(data)//读写器数据处理的方法
             {
-                  if(this._.findIndex(this.list,data[0])==-1)//避免重复
-                {
                 data.forEach(item=>{this.list.push(item)})
                 let cList=this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}${item.location.id}`)
                 this.listData=this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length,location:v[0].location}})
-                }
             },
-      classDataifyRfid(data)
-      {
-          let newList=[]
-          data.forEach(item=>{newList.push(item)})
-          let cList=this._.groupBy(newList, item => `${item.equipArg.model}${item.equipArg.name}${item.location.id}`)
-          console.log(cList);
-          this.copyData=this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,clist:v,count:v.length,location:v[0].location,keepcount:0}})
-          this.copyData.forEach(item=>{item.keepcount=item.copyList=length})
-
-      },
-      cancel(){this.show = true},
       sumFunc(param) { // 表格合并行计算方法
       let { columns, data } = param, sums = [];
                 sums=new Array(columns.length).fill('')
@@ -143,35 +65,11 @@ export default {
                 sums[columns.length-1]=param.data.reduce((v,k)=>v+k.count,0)
                 return sums;      
       },
-      milliLocation(data)//对现实的装备位置信息进行处理
-            {
-                return data.frameNumber+'架/'+data.surface+'面/'+data.section+'节/'+data.floor+'层'
-            },
       getList(){
         needKeepEquips().then(res=>{
           this.classDataify(res.content)
         })
       },
-      readData(){
-                killProcess(this.pid)
-                start("java -jar scan.jar", (data) => {
-                    if(this.list[this.findIndex].copyList.length==1&&this.list[this.findIndex].copyList[0].rfid=='')
-                    {
-                        this.list[this.findIndex].copyList[0].rfid=data
-                    }else{
-                        this.list[this.findIndex].copyList.push({rfid:data,serial:''})
-                    }
-                    }, (fail) => {
-                        this.index = 1;
-                        this.$message.error(fail);
-                    }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
-                // let rfids=['00001545']
-                // rfids.forEach(item=>{
-                //     findByRfids(item).then(res=>{
-                //      this.classDataifyRfid(res)
-                //    })
-                // })
-            },
       init(){
                 this.listData=[{
                     equipArg: '',

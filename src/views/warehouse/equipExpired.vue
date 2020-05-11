@@ -1,21 +1,20 @@
 <template>
   <div class="maintenance-form-container">
        <my-header :title="$route.meta.title" ></my-header>
-       <div class="action_box" data-test="action_box">
-                <define-input label="单号" placeholder="--" :disabled="true" class="odd-number"></define-input>
-                <define-input label="报废类型" placeholder="到期报废" :disabled="true" class="odd-number"></define-input>
+       <div class="maintenance-form-top" data-test="maintenance-form-top">
+                <define-input label="单号" placeholder="--" :disabled="true" ></define-input>
+                <define-input label="报废类型" placeholder="到期报废" :disabled="true" ></define-input>
                 <date-select label="报废时间" placeholder="--" :disabled="true"></date-select>
                 <entity-input label="操作人员" v-model="people"  :disabled="true" ></entity-input>
-            </div>
-        <define-input label="备注" v-model="remark" margin="15px  0.0521rem" :disabled="false" ></define-input>
-    
+       </div>
+        <define-input label="备注" v-model="remark" margin="15px  15px" :disabled="false" ></define-input>
     <div class="maintenance-form-body">
         <bos-tabs @changeTab="changeTab">
             <template slot="slotHeader">
                             <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96" @click="readData"></base-button>
                             <base-select label="硬件选择" v-model="select.selected" align="right" :selectList="select.handWareList"></base-select>
                         </template>
-                        <define-table :data="newData" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
+                        <define-table :data="newData" height="2.8646rem" @changeCurrent="selRow" :havePage="false" ref="table"
                             :highLightCurrent="true"  slot="total" :showSummary="true" :summaryFunc="sumFunc">
                             <define-column label="操作" width="100" v-slot="{ data }">
                                <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
@@ -69,30 +68,29 @@ export default {
   name: "maintenance",
   data() {
     return {
-       copyData:{},
-               remark:'',
-               people:'',
-               requestBody:'',
-               paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
-               select: {
-                    handWareList: [{
-                        label: "手持机",
-                        value: 'handheld'
-                    }, {
-                        label: "读写器",
-                        value: "reader"
-                    }],
-                    selected: ""
-                },
-               pid:'',
-               findIndex:0,
-               newData:[{
-                   equipArg:'',
-                   count:0,
-                   copyList:[{rfid:'',serial:''}]
-               }],
-               list:[],
-               rfids:[]
+        copyData:{},
+        remark:'',
+        people:'',
+        paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
+        select: {
+            handWareList: [{
+                label: "手持机",
+                value: 'handheld'
+            }, {
+                label: "读写器",
+                value: "reader"
+            }],
+            selected: ""
+        },
+        pid:'',
+        findIndex:0,
+        newData:[{
+            equipArg:'',
+            count:0,
+            copyList:[{rfid:'',serial:''}]
+        }],
+        list:[],
+        rfids:[]
     }
   },
   methods: {
@@ -100,7 +98,7 @@ export default {
                this.findIndex=current.index
             },
             changeTab(data){
-                data.key=="total"?killProcess(this.pid):''
+                data.key=="total"?killProcess(this.pid):''//切换堆叠组件时关掉读写器的进程
             },
             sumFunc(param) { // 表格合并行计算方法
                 let { columns, data } = param, sums = [];
@@ -121,14 +119,8 @@ export default {
                 })
             },
             confirm(){
-                this.requestBody=JSON.parse(JSON.stringify(this.newData))
-                let rfidList=[]
-                this.requestBody.forEach(item=>{
-                    item.copyList.forEach(rf=>{
-                        rfidList.push(rf.rfid)
-                    })
-                })
-                equipScrap(1,this.remark,rfidList).then(res=>{
+                let req=this._.map(this._.flatten(this._.map(this.newData,'copyList')),'rfid')
+                equipScrap(1,this.remark,req).then(res=>{
                     this.$message.success('装备报废成功')
                     this.cancel()
                 })
@@ -142,23 +134,31 @@ export default {
                 {
                      data.forEach(item=>{this.list.push(item)})
                 let cList=_.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}`)
-                this.newData=_.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length,location:v[0].location}})
+                this.newData=_.map(cList,(v,k)=>({equipArg:v[0].equipArg,copyList:v,count:v.length,location:v[0].location}))
                 }
                
             },
             readData(){
-                killProcess(this.pid)
-                start("java -jar scan.jar", (data) => {
-                    if(this.rfids.findIndex((v)=>v==data)!=-1){
+                let rfids=['555599998799','78965655']
+                rfids.forEach(data=>{
+                        if(this.rfids.findIndex((v)=>v==data)!=-1){
                          findByRfids(data).then(res=>{
                          this.classDataify(res)
                     })
-                    } 
+                    }
+                })
+                // killProcess(this.pid)
+                // start("java -jar scan.jar", (data) => {
+                //     if(this.rfids.findIndex((v)=>v==data)!=-1){
+                //          findByRfids(data).then(res=>{
+                //          this.classDataify(res)
+                //     })
+                //     } 
                     
-                    }, (fail) => {
-                        this.index = 1;
-                        this.$message.error(fail);
-                    }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
+                //     }, (fail) => {
+                //         this.index = 1;
+                //         this.$message.error(fail);
+                //     }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
             },
             changeDetailRow(state,data)
             {
@@ -208,7 +208,7 @@ export default {
 <style lang="scss" scoped>
   .maintenance-form-container {
     font-size: 16px;
-    .action_box{
+    .maintenance-form-top{
         margin-top:15px;
         display: flex;
         justify-content: flex-start;
@@ -217,7 +217,7 @@ export default {
   }
   .maintenance-form-top {
     padding: 18px 7px;
-    border-bottom: 1px solid #ebeef5;
+    // border-bottom: 1px solid #ebeef5;
     overflow: hidden;
   }
   .maintenance-form-body {

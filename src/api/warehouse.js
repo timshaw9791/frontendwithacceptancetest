@@ -12,6 +12,15 @@ export function inHouse(rfids,serials,data) {
         data
     })
 }
+//jbql查询该警柜下的装备列表
+export function cabinetEquip(data) {
+    return request({
+        url: `/bos/jsql/list`,
+        method: "POST",
+        data
+    })
+}
+
 export function safetyStock(data) {
     return request({
         url: `/category/safetyStock`,
