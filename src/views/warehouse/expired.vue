@@ -6,23 +6,23 @@
         </div>
         <div class="maintenance-form-body">
             <define-table :data="list" height="3.64rem"  @changePage="changePage" :pageInfo="paginator">
-                            <define-column label="RFID" v-slot="{ data }">
-                                <define-input v-model="data.row.rfid"  :tableEdit="false"></define-input>
-                            </define-column>
-                            <define-column label="装备序号" v-slot="{ data }">
-                                <define-input v-model="data.row.serial" type="Number" :tableEdit="false"></define-input>
-                            </define-column>
-                            <define-column label="装备参数" v-slot="{ data }">
-                                <entity-input v-model="data.row" :detailParam="data.row.equipArg" :options="{ detail: 'equipArgsDetail' }" format="{equipName}({model})" :disabled="true" ></entity-input>
-                            </define-column>
-                            <define-column label="装备位置" v-slot="{data}">
-                                <entity-input v-model="data.row" :formatFunc="$formatFuncLoc" :tableEdit="false"></entity-input>
-                            </define-column>
-                            <define-column label="到期时间" field="scarTime" :filter="(row)=>$filterTime(row.scarTime)"  />
-                            <define-column label="到期倒计时/天" v-slot="{ data }">
-                            <date-input v-model="data.row.scarTime" :tableEdit="false" filter="interval"></date-input>
-                            </define-column>
-                        </define-table>
+                <define-column label="RFID" v-slot="{ data }">
+                    <define-input v-model="data.row.rfid"  :tableEdit="false"></define-input>
+                </define-column>
+                <define-column label="装备序号" v-slot="{ data }">
+                    <define-input v-model="data.row.serial" type="Number" :tableEdit="false"></define-input>
+                </define-column>
+                <define-column label="装备参数" v-slot="{ data }" width="400">
+                    <entity-input v-model="data.row" :detailParam="data.row.equipArg" :options="{ detail: 'equipArgsDetail' }" format="{equipName}({model})" :disabled="true" ></entity-input>
+                </define-column>
+                <define-column label="装备位置" v-slot="{data}">
+                    <entity-input v-model="data.row" :formatFunc="$formatFuncLoc" :tableEdit="false"></entity-input>
+                </define-column>
+                <define-column label="到期时间" field="scarTime" :filter="(row)=>$filterTime(row.scarTime)"  />
+                <define-column label="到期倒计时/天" v-slot="{ data }">
+                <date-input v-model="data.row.scarTime" :tableEdit="false" filter="interval"></date-input>
+                </define-column>
+            </define-table>
 
         </div>
     </div>
@@ -59,23 +59,22 @@ export default {
         data(){
             return{
                list:[],
-               paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0,abnormal:false},
+               paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
             }
         },
         methods:{
             fetchData(){
                 maturityScrap(this.paginator).then(res=>{
                     this.paginator.totalPages = res.totalPages
-					this.paginator.totalElements = res.totalElements
                     this.list=res.content
                 })
             },
             changePage(page) {
-            this.paginator.page = page;
-            this.fetchData()
+                this.paginator.page = page;
+                this.fetchData()
             },
             toInHouse(){
-                this.$router.push({path:"/warehouse/equipExpired"})
+                this.$router.push({name:"equipexpired",params:{data:this.paginator}})
             }
         },
         created(){
