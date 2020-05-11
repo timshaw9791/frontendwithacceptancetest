@@ -22,7 +22,7 @@ yarn package #(for electron,在前一句的基础上还需要运行这句打包e
 ```
 ###完整electron exe运行注意事项
 ```
-1.需要将外部工具（如视频监控、读卡器程序等相关程序放置到electron/external文件夹下，相关内容请找阿灿
+1.需要将外部工具（如视频监控、读写器程序等相关程序放置到electron/external文件夹下，相关内容请找阿灿
 2.和硬件或其他程序的交互请尽可能迁移到externalProcess.js文件中。
 2.注意这个electron/external文件夹不需要保存在git
 ```

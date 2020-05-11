@@ -1,6 +1,6 @@
 <template>
-    <div :class="[styleObj,'date-select-continer',{disabled:disabled&&inTableStateContrl}]" ref="dateSelect" :style="'width:'+fixWidth+';margin:'+margin+';align:'+align">
-        <div class="label">{{ label }}
+    <div :class="[styleObj,'date-select-continer',{disabled:disabled&&inTableStateContrl},{border:!(inTable&&disabled)}]" ref="dateSelect" :style="'width:'+fixWidth+';margin:'+margin+';align:'+align">
+        <div class="label" v-if="!inTable">{{ label }}
           <span class="required" v-if="required">*</span>
         </div>
         <el-date-picker
@@ -14,8 +14,9 @@
                 :readonly="disabled"
                 :editable="editable"
                 :default-time="defaultTime"
-                prefix-icon= "el-icon-date"
-                @change="change">
+                :prefix-icon="prefixIcon"
+                @change="change"
+                ref="dateSelect">
         </el-date-picker>
     </div>
 </template>
@@ -94,6 +95,9 @@ import { judgeRules } from "../rules"
         computed: {
           fixWidth() {
               return this.inTable?`calc(100% - 0.1042rem)`:`calc(${8.33*this.column}% - 0.1042rem)`;
+          },
+          prefixIcon() {
+            return this.inTable&&this.disabled?'none':'el-icon-date'
           }  
         },
         methods: {
@@ -122,6 +126,8 @@ import { judgeRules } from "../rules"
             if(this.$refs.dateSelect.parentNode.parentNode.nodeName == 'TD') {
                 this.inTable = true;
                 this.inTableStateContrl = this.disabled;
+                // 深层DOM访问并修改样式
+                this.$refs.dateSelect.children[1].children[0].style.textAlign="center";
             }
           } catch (error) {
             console.log("当前组件不存在上两级节点");
@@ -149,13 +155,15 @@ import { judgeRules } from "../rules"
     display: inline-flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid #E4E7ED;
     border-radius: 4px;
     margin: 0 0.0521rem;
     font-size: 16px;
     height: 40px;
     max-height: 40px;
 		box-sizing: border-box;
+  }
+  .border {
+    border: 1px solid #E4E7ED;
   }
   .label {
     min-width: 55px;
@@ -166,13 +174,14 @@ import { judgeRules } from "../rules"
   }
   .disabled {
     color: #C0C4CC;
-    background:rgba(248,249,251,1);
-    border:1px solid rgba(220,223,230,1);
   }
   .required {
     color: red;
   }
   .error {
     border: 1px solid red;
+  }
+  .text-center {
+    text-align: center;
   }
 </style>

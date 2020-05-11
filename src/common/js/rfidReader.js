@@ -1,4 +1,4 @@
-var cmdPath = 'C:\\Users\\Administrator'; // 读卡器路径
+var cmdPath = 'C:\\Users\\Administrator'; // 读写器路径
 var cmdStr = 'chcp 65001 && adb pull sdcard/inventoryData/inventory.json .';
 var fileName = 'inventory.json';
 var com = 7;
@@ -64,7 +64,7 @@ export function killProcess(pid) {
     spawn("taskkill", ["/PID", pid, "/T", "/F"]);
 }
 
-/* 读卡器-连续 */
+/* 读写器-连续 */
 export function start(cmd, success, failure, callBack) {
     //killProcessSync().then(() => {
     var index = 0; // 是否扫描过rfid
@@ -80,7 +80,7 @@ export function start(cmd, success, failure, callBack) {
     process.stderr.on("data", err => {
         console.log(err);
         if (!err.includes("Error")) failure.call(this, err)
-        else failure("请插拔读卡器后重试")
+        else failure("请插拔读写器后重试")
         index = 1;
         //callBack(null, "设备故障请重新插拔!插入后请重新选择装备")
         spawn("taskkill", ["/PID", process.pid, "/T", "/F"]);
@@ -104,7 +104,7 @@ export function start(cmd, success, failure, callBack) {
     });
 }
 
-/* 读卡器-单次 */
+/* 读写器-单次 */
 export function startOne(cmd, callBack, rfid = null) {
     if (rfid) exec(`${cmd} ${com} ${rfid}`, {
         cwd: cwd
