@@ -13,8 +13,7 @@
             <bos-tabs>
                 <template slot="total" >
                     <define-table :data="equipItems" @changeCurrent="changeCurrent" :highLightCurrent="true">
-                        <define-column label="装备名称" field="equipName"></define-column>
-                        <define-column label="型号" field="equipModel"></define-column>
+                        <define-column label="装备参数" field="equipArg"></define-column>
                         <define-column label="位置" field="locationInfo"></define-column>
                         <define-column label="数量" field="count"></define-column>
                         <define-column label="状态" field="equipState"></define-column>
@@ -27,13 +26,13 @@
                     </define-table>
                 </template>
                 <template slot="slotHeader" v-if="!isInfo" >
-                    <base-select v-model="hardwareSelect" label="硬件选择" :selectList="hardwareList"
+                    <base-select v-model="hardwareSelect.select" label="硬件选择" :selectList="hardwareSelect.list"
                                  :disabled="true" ></base-select>
                     <base-button label="读取数据" @click="getArgsInfo()"></base-button>
                 </template>
             </bos-tabs>
             <div class="box-bottom"  v-if="!isInfo">
-                <base-button label="取消" @click="back"></base-button>
+                <base-button label="取消" @click="cancel"></base-button>
                 <base-button label="提交" @click="submit"></base-button>
             </div>
         </div>
@@ -63,14 +62,16 @@
                     label: "明细",
                     key: 'detail'
                 }],
-                hardwareList: [{
-                    label: "手持机",
-                    value: 'handheld'
-                }, {
-                    label: "读卡器",
-                    value: "reader"
-                }],
-                hardwareSelect: "handheld",
+                hardwareSelect:{
+                    list: [{
+                        label: "手持机",
+                        value: 'handheld'
+                    }, {
+                        label: "读卡器",
+                        value: "reader"
+                    }],
+                    select: "handheld",
+                },
                 inventoryOrder: {
                     operatorInfo: {},
                     remark: ''
@@ -101,7 +102,7 @@
                 })
             },
             fixData() {
-                // info 和 新增数据有出入，强制 添加equipName、equipModel、locationInfo 以便统一
+                // 盘点单与手持机的装备列表数据字段不同，强制 添加equipName、equipModel、locationInfo 以便统一
                 this.equipItems.forEach(item => {
                     this.rfids.push(item.rfid)
                     if (item.equipArg) {
@@ -120,8 +121,8 @@
                         length += item.length
                         let tempLocation = this.$formatFuncLoc(item[0].locationInfo)
                         return {
-                            equipName: item[0].equipName,
-                            equipModel: item[0].equipName,
+                            // 参数后面可能会统一成 obj
+                            equipArg: item[0].equipName+"("+item[0].equipModel+")",
                             equipState: item[0].state,
                             locationInfo: tempLocation,
                             item: item,
@@ -134,12 +135,16 @@
                 })
                 // 假数据处理
                 if (!this.isInfo) {
-                    this.inventoryOrder.startTime = (new Date()).valueOf();
-                    this.inventoryOrder.operatorInfo.operator = JSON.parse(window.localStorage.getItem("user")).name
-                    this.inventoryOrder.operatorInfo.operatorId = JSON.parse(window.localStorage.getItem("user")).id
-                    this.inventoryOrder.inventoryCount = 10
-                    this.inventoryOrder.notCount = length
-                    this.inventoryOrder.count = this.inventoryOrder.inventoryCount - this.inventoryOrder.notCount
+                    this.inventoryOrder = {
+                        startTime : (new Date()).valueOf(),
+                        operatorInfo:{
+                            operator : JSON.parse(window.localStorage.getItem("user")).name,
+                            operatorId : JSON.parse(window.localStorage.getItem("user")).id
+                        },
+                        inventoryCount : 10,
+                        notCount : length,
+                        count : this.inventoryOrder.inventoryCount - this.inventoryOrder.notCount
+                    }
                 }
             },
             changeCurrent(data) {
@@ -153,7 +158,7 @@
                 inventoryOrder("post", data)
                 this.back()
             },
-            back() {
+            cancel() {
                 this.$router.back()
             }
         },

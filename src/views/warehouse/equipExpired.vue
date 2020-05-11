@@ -7,20 +7,20 @@
             <define-input label="报废时间" v-model="expiredOrder.createTime" :disabled="true"></define-input>
             <entity-input label="操作人员" v-model="expiredOrder.operatorInfo.operator" :disabled="true"></entity-input>
         </div>
-        <define-input label="备注" v-model="expiredOrder.remark" margin="15px  0.0521rem" :disabled="false"></define-input>
+        <define-input label="备注" v-model="expiredOrder.remark" margin="15px  0.0521rem"
+                      :disabled="isInfo"></define-input>
         <div class="maintenance-form-body">
             <bos-tabs @changeTab="changeTab">
-                <template slot="slotHeader">
-                    <base-button label="读取数据" :disabled="!select.selected" :width="96"
+                <template slot="slotHeader" v-if="!isInfo||isHardwareSelect">
+                    <base-button label="读取数据" :disabled="!hardwareSelect.select" :width="96"
                                  @click="readData"></base-button>
-                    <base-select label="硬件选择" v-model="select.selected"
-                                 :selectList="select.handWareList"></base-select>
+                    <base-select label="硬件选择" v-model="hardwareSelect.select"
+                                 :selectList="hardwareSelect.list"></base-select>
                 </template>
-                <define-table :data="expiredOrder.equipItems" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
+                <define-table :data="equipItems" height="2.8646rem" @changeCurrent="totalSelRow" :havePage="false"
                               :highLightCurrent="true" slot="total" :showSummary="true" :summaryFunc="sumFunc">
                     <define-column label="操作" width="100" v-slot="{ data }">
-                        <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
-                        <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
+                        <i class="iconfont iconyichuliang" @click="delRow('equipItems',data)"></i>
                     </define-column>
                     <define-column label="装备参数" v-slot="{ data }">
                         <entity-input v-model="data.row.equipArg" :options="{detail:'equipArgsSelect'}"
@@ -30,10 +30,9 @@
                         <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input>
                     </define-column>
                 </define-table>
-                <define-table :data="newData[findIndex].copyList" height="2.8646rem" :havePage="false" slot="detail">
+                <define-table :data="detailItems" height="2.8646rem" :havePage="false" slot="detail">
                     <define-column label="操作" width="100" v-slot="{ data }">
-                        <i class="iconfont icontianjialiang" @click="changeDetailRow(true,data)"></i>
-                        <i class="iconfont iconyichuliang" @click="changeDetailRow(false,data)"></i>
+                        <i class="iconfont iconyichuliang" @click="delRow('detailItems',data)"></i>
                     </define-column>
                     <define-column label="RFID" v-slot="{ data }">
                         <define-input v-model="data.row.rfid" type="String" :tableEdit="false"></define-input>
@@ -57,103 +56,70 @@
     import bosTabs from '@/componentized/table/bosTabs.vue'
     import entityInput from '@/componentized/entity/entityInput'
     import {start, killProcess} from 'common/js/rfidReader'
-    import {findByRfids} from "api/storage"
+    import {findByRfids} from 'api/storage'
     import divTmp from '@/componentized/divTmp'
-    import {equipScrap,maturityScrap} from "api/operation"
+    import {equipScrap} from 'api/operation'
+    import {getBosEntity} from 'src/api/basic'
 
-    var _ = require("lodash");
     export default {
         name: "maintenance",
         data() {
             return {
-                expiredOrder:{
-                    remark: '',
-                    expiredCategory:'',
-                    operatorInfo:{
-                        operator:''
+                expiredOrder: {
+                    operatorInfo: {
+                        operator: ''
                     },
-                    equipItems:[{
+                    equipItems: [{
                         equipArg: '',
                         count: '',
                     }],
                 },
-                detailItems:[{rfid: '', serial: ''}],
                 paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
-                select: {
-                    handWareList: [{
-                        label: "手持机",
+                hardwareSelect: {
+                    list: [{
+                        label: '手持机',
                         value: 'handheld'
                     }, {
-                        label: "读卡器",
-                        value: "reader"
+                        label: '读卡器',
+                        value: 'reader'
                     }],
-                    selected: ""
+                    select: '',
                 },
                 pid: '',
-                findIndex: 0,
-                list: [],
-                rfids: []
+                // 装备表渲染的数据
+                equipItems: [],
+                // 明细表渲染的数据
+                detailItems: [],
+                // 扫描到的装备rfid
+                rfids: [],
+                isInfo: [],
+                isHardwareSelect:true,
+                //用于处理报废类型Enum
+                expiredCategory:''
             }
         },
         methods: {
-            selRow(current) {
-                this.findIndex = current.index
+            totalSelRow(current) {
+                this.detailItems = current.current.items
             },
             changeTab(data) {
-                data.key === "total" ? killProcess(this.pid) : ''
+                data.key === 'total' ? killProcess(this.pid) : ''
             },
-            sumFunc(param) { // 表格合并行计算方法
+            // 表格合并行计算方法
+            sumFunc(param) {
                 let {columns} = param, sums = [];
                 sums = new Array(columns.length).fill('')
                 sums[0] = '合计'
                 sums[columns.length - 1] = param.data.reduce((v, k) => v + k.count, 0)
                 return sums;
             },
-            cancel() {
-                this.$router.back()
-            },
-            fetchData() {
-                maturityScrap().then(res => {
-                    res.content.forEach(item => {
-                        this.rfids.push(item.rfid)
-                    })
-
-                })
-            },
-            confirm() {
-                let rfidList = []
-                this.expiredOrder.equipItems.forEach(item => {
-                    item.items.forEach(rf => {
-                        rfidList.push(rf.rfid)
-                    })
-                })
-                equipScrap(1, this.expiredOrder.remark, rfidList).then(res => {
-                    this.cancel()
-                })
-            },
-            classDataify(data)//读写器数据处理的方法
-            {
-                if (this._.findIndex(this.list, data[0]) === -1) {
-                    data.forEach(item => {
-                        this.list.push(item)
-                    })
-                    let cList = this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}`)
-                    this.expiredOrder.equipItems = this._.map(cList, (v, k) => {
-                        return {
-                            equipArg: v[0].equipArg,
-                            location: v[0].location,
-                            item: v,
-                            count: v.length,
-                        }
-                    })
-                }
-            },
             readData() {
                 killProcess(this.pid)
                 start("java -jar scan.jar", (data) => {
                     if (this.rfids.findIndex((v) => v === data) !== -1) {
                         findByRfids(data).then(res => {
-                            this.classDataify(res)
+                            this.equipItems.push(res[0])
+                            this.fixData()
                         })
                     }
                 }, (fail) => {
@@ -163,46 +129,78 @@
                     pid ? this.pid = pid : this.$message.error(err)
                 })
             },
-            changeDetailRow(state, data) {
-                if (state) {
-                    this.newData[this.findIndex].copyList.push({rfid: '', serial: ''})
-                } else if (this.newData[this.findIndex].copyList.length > 1) {
-                    this.newData[this.findIndex].copyList.splice(data.$index, 1)
-                } else {
-                    this.newData[this.findIndex].copyList = [{rfid: '', serial: ''}]
-                }
+            initData(){
+               if (this.isInfo){
+                   this.fetchData()
+               }
             },
-            changeRow(state, data) {
-                if (state) {
-                    this.newData.push({
-                        name: '',
-                        location: '',
-                        price: 0,
-                        productTime: 0,
-                        rfids: [],
-                        serial: [],
-                        copyList: [{rfid: '', serial: ''}],
+            //读写器数据处理的方法
+            fixData() {
+                this.expiredOrder = {
+                    operatorInfo:{
+                        operator:JSON.parse(window.localStorage.getItem("user")).name,
+                        operatorId:JSON.JSON.parse(window.localStorage.getItem("user")).id,
+                    },
+                }
+                switch (this.$route.query.expiredCategory) {
+                    case '维修报废': {
+                        this.expiredCategory = 0
+                        break
+                    }
+                    case '到期报废': {
+                        this.expiredCategory = 1
+                        break
+                    }
+                    case '盘点报废': {
+                        this.expiredCategory = 2
+                        break
+                    }
+                    case '常规报废': {
+                        this.expiredCategory = 3
+                        break
+                    }
+                }
+                let tempList = this._.groupBy(this.equipItems, item => `${item.equipArg.model}${item.equipArg.name}`)
+                this.expiredOrder.equipItems = this._.map(tempList, (v) => {
+                    return {
+                        equipArg: v[0].equipArg,
+                        location: v[0].location,
+                        item: v,
+                        count: v.length,
+                    }
+                })
+            },
+            fetchData() {
+                getBosEntity().then( res => {
+                    this.expiredOrder = res
+                    this.fixData()
+                })
+            },
+            confirm() {
+                let rfidList = []
+                this.expiredOrder.equipItems.forEach(item => {
+                    item.items.forEach(rf => {
+                        rfidList.push(rf.rfid)
                     })
-                } else if (this.newData.length > 1) {
-                    this.newData.splice(data.$index, 1)
-                } else {
-                    this.newData = [{
-                        name: '',
-                        location: '',
-                        price: 0,
-                        productTime: 0,
-                        rfids: [],
-                        serial: [],
-                        copyList: [{rfid: '', serial: ''}],
-                    }]
-                }
+                })
+                equipScrap(1, this.expiredOrder.remark, rfidList).then(() => {
+                    this.cancel()
+                })
             },
+            cancel() {
+                this.$router.back()
+            },
+            delRow(list, data) {
+                this[list].splice(data.$index, 1,)
+            }
         },
         created() {
             this.fetchData()
-            this.people = JSON.parse(localStorage.getItem('user')).name
-            // 该组件获取两个参数 报废装备列表  报废类型
-            this.expiredCategory = this.$route.query.expiredCategory
+            // 报废可以调 id equipItems expiredCategory(0:维修报废,1:到期报废,2:盘点报废,3:常规报废) 只需带数字
+            this.isInfo = !!this.$route.query.id
+            if (this.$route.query.equipItems){
+
+            }
         },
         beforeDestroy() {
             killProcess(this.pid)
@@ -213,7 +211,7 @@
             entityInput,
             divTmp,
             bosTabs,
-        },
+        }
     };
 </script>
 
