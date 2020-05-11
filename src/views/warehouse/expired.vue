@@ -16,7 +16,7 @@
                                 <entity-input v-model="data.row" :detailParam="data.row.equipArg" :options="{ detail: 'equipArgsDetail' }" format="{equipName}({model})" :disabled="true" ></entity-input>
                             </define-column>
                             <define-column label="装备位置" v-slot="{data}">
-                                <entity-input v-model="data.row" :formatFunc="formatFunc" :tableEdit="false"></entity-input>
+                                <entity-input v-model="data.row" :formatFunc="$formatFuncLoc" :tableEdit="false"></entity-input>
                             </define-column>
                             <define-column label="到期时间" field="scarTime" :filter="(row)=>$filterTime(row.scarTime)"  />
                             <define-column label="到期倒计时/天" v-slot="{ data }">
@@ -101,9 +101,6 @@ export default {
             getList(){
                 maturityScrap().then(res=>{
                     this.list=res.content
-                    // this.list.forEach(item=>{
-                    //     item.time=item.scarTime-(new Date().getTime())
-                    // })
                 }).catch(err => {
                         this.$message.error(err.response.data.message);
                     })
