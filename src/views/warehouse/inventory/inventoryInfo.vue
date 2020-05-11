@@ -3,15 +3,15 @@
         <my-header title="盘点装备"></my-header>
         <div class="body">
             <div class="inputs">
-                <define-input label="单号" v-model="inventory.number" :disabled="true"></define-input>
-                <define-input label="盘点时间" v-model="inventory.startTime" :disabled="true"></define-input>
-                <define-input label="盘点人员" v-model="inventory.operatorInfo.operator" :disabled="true"></define-input>
-                <define-input label="应盘点总数" v-model="inventory.inventoryCount" :disabled="true"></define-input>
-                <define-input label="已盘点总数" v-model="inventory.count" :disabled="true"></define-input>
-                <define-input label="未知装备数" v-model="inventory.notCount" :disabled="true"></define-input>
+                <define-input label="单号" v-model="inventoryOrder.number" :disabled="true"></define-input>
+                <define-input label="盘点时间" v-model="inventoryOrder.startTime" :disabled="true"></define-input>
+                <define-input label="盘点人员" v-model="inventoryOrder.operatorInfo.operator" :disabled="true"></define-input>
+                <define-input label="应盘点总数" v-model="inventoryOrder.inventoryCount" :disabled="true"></define-input>
+                <define-input label="已盘点总数" v-model="inventoryOrder.count" :disabled="true"></define-input>
+                <define-input label="未知装备数" v-model="inventoryOrder.notCount" :disabled="true"></define-input>
             </div>
             <bos-tabs>
-                <template slot="total">
+                <template slot="total" >
                     <define-table :data="equipItems" @changeCurrent="changeCurrent" :highLightCurrent="true">
                         <define-column label="装备名称" field="equipName"></define-column>
                         <define-column label="型号" field="equipModel"></define-column>
@@ -55,6 +55,7 @@
         },
         data() {
             return {
+                isInfo: false,
                 tableName: [{
                     label: "未盘点清单",
                     key: 'total'
@@ -62,13 +63,6 @@
                     label: "明细",
                     key: 'detail'
                 }],
-                inventory: {
-                    operatorInfo: {},
-                    remark: ''
-                },
-                rfids: [],
-                equipItems: [],
-                detailItems: [],
                 hardwareList: [{
                     label: "手持机",
                     value: 'handheld'
@@ -76,8 +70,16 @@
                     label: "读卡器",
                     value: "reader"
                 }],
-                isInfo: false,
                 hardwareSelect: "handheld",
+                inventoryOrder: {
+                    operatorInfo: {},
+                    remark: ''
+                },
+                rfids: [],
+                // 盘点装备总列表
+                equipItems: [],
+                // 盘点装备明细列表
+                detailItems: [],
                 // 假列表
                 noInventoryList: ['110000060000000000000000', '110000030000000000000000', '57786', '8578576666', '12345678', '857985']
             }
@@ -86,7 +88,7 @@
             fetchData() {
                 if (this.isInfo) {
                     getBosEntity(this.$route.query.id).then(res => {
-                        this.inventory = res
+                        this.inventoryOrder = res
                         this.equipItems = res.inventoryItems
                         this.fixData()
                     })
@@ -132,12 +134,12 @@
                 })
                 // 假数据处理
                 if (!this.isInfo) {
-                    this.inventory.startTime = (new Date()).valueOf();
-                    this.inventory.operatorInfo.operator = JSON.parse(window.localStorage.getItem("user")).name
-                    this.inventory.operatorInfo.operatorId = JSON.parse(window.localStorage.getItem("user")).id
-                    this.inventory.inventoryCount = 10
-                    this.inventory.notCount = length
-                    this.inventory.count = this.inventory.inventoryCount - this.inventory.notCount
+                    this.inventoryOrder.startTime = (new Date()).valueOf();
+                    this.inventoryOrder.operatorInfo.operator = JSON.parse(window.localStorage.getItem("user")).name
+                    this.inventoryOrder.operatorInfo.operatorId = JSON.parse(window.localStorage.getItem("user")).id
+                    this.inventoryOrder.inventoryCount = 10
+                    this.inventoryOrder.notCount = length
+                    this.inventoryOrder.count = this.inventoryOrder.inventoryCount - this.inventoryOrder.notCount
                 }
             },
             changeCurrent(data) {
@@ -145,7 +147,7 @@
             },
             submit() {
                 let data = {
-                    inventoryOrder: this.inventory,
+                    inventoryOrder: this.inventoryOrder,
                     rfids: this.rfids
                 }
                 inventoryOrder("post", data)

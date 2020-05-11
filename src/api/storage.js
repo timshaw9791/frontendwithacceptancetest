@@ -24,14 +24,7 @@ export function deleteInhouseNumber(id) {
         method: 'delete',
     })
 }
-//获取需要报废的装备
-export function maturityScrap(params) {
-    return request({
-        url:"/equips/need-scrap",
-        method: 'get',
-        params
-    })
-}
+
 //获取货架列表信息
 export function getLocation() {
     return request({
