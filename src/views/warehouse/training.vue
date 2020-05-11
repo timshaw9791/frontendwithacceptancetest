@@ -15,12 +15,12 @@
                 <entity-input v-model="data.row.equipArg" format="{name}({model})" :options="{}"></entity-input>
             </define-column>
             <define-column label="教学视频" field="describes" v-slot="{data}">
-                <div v-for="(item, i) in data.row.video.fileName" :key="i">
+                <div  style="cursor:pointer;" v-for="(item, i) in data.row.video.fileName" :key="i">
                     <span @click="show('MP4',item)">{{item}}</span>
                 </div>
             </define-column>
             <define-column label="教学文档" field="describes" v-slot="{data}">
-                <div v-for="(item ,i) in data.row.pdf.fileName" :key="i">
+                <div style="cursor:pointer;" v-for="(item ,i) in data.row.pdf.fileName" :key="i">
                     <span @click="show('PDF',item)">{{item}}</span>
                 </div>
             </define-column>
@@ -81,7 +81,7 @@
                 })
             },
             deleteplan(data){
-                Promise.all(this.deleteTrainingOne(data)).then(response=>{
+                Promise.all([this.deleteTrainingOne(data)]).then(response=>{
                     this.fetchData()
                 })
             },
@@ -91,8 +91,7 @@
                     id.push(item)
                 })
                 for(let i in id){
-                    // await deleteTraining(id[i])
-                    console.log(id[i]);
+                    await deleteTraining(id[i])
                 }
             },
             changePage(page) {
