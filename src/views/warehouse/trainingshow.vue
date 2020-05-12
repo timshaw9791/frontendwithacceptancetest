@@ -1,17 +1,16 @@
 <template>
-  <div class="training-form-container">
-    <my-header title="查看" :haveBlack="false"></my-header>
-    <div class="training-form-top">
-        <base-button size="default" align="right" label="返回" @click="$router.go(-1)"></base-button>
-    </div>
-    <div class="training-form-body" >
-        <instructional :ins="insData" title=""></instructional>
-    </div>
-  </div>
+	<div class="training-container">
+		<div class="training-header">
+			<span style="font-size: 20px;">查看</span>
+			<base-button label="<-返回" align="right" type="none" @click="$router.go(-1)"></base-button>
+		</div>
+		<div class="training-body" >
+			<instructional :ins="insData" title=""></instructional>
+		</div>
+	</div>
 </template>
 
 <script>
-    import myHeader from "components/base/header/header";
     import instructional from 'components/teaching/instructional'
     var _ = require("lodash");
     export default {
@@ -25,40 +24,41 @@
                 },
             };
         },
-        methods: {
-            
-            
-        },
         created() {
-            if(this.$route.params.info == undefined) {
-                this.$message.info("数据丢失，返回教学培训");
-                this.$router.push({name: 'warehouse/training'});
-                return
-            }
             this.insData={
-                key:this.$route.params.info.item,
-                name:this.$route.params.info.item,
-                typeName:this.$route.params.info.data
+                key:this.$route.query.info.item,
+                name:this.$route.query.info.item,
+                typeName:this.$route.query.info.data
             }
         },
-        components: {
-            instructional,
-            myHeader
-        },
+        components: {instructional},
     };
 </script>
 
 <style lang="scss" scoped>
-  .training-form-container {
-    font-size: 16px;
-  }
-  .training-form-top {
-    padding: 18px 7px;
-    border-bottom: 1px solid #ebeef5;
-    overflow: hidden;
-  }
-  .training-form-body {
-    padding: 0 7px;
-    widows: 100%;
-  }
+	.training-container {
+		font-size: 16px;
+	}
+	.training-body {
+		padding: 0 7px;
+		widows: 100%;
+	}
+    .training-header{
+		margin-bottom: 50px;
+        width: 100%;
+        padding-left: 18px;
+        padding-right: 35px;
+        height: 57px;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        color: rgba(112,112,112,1);
+        border-bottom: 1px solid rgba(112,112,112, 0.13);
+    }
 </style>

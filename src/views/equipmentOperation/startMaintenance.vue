@@ -131,12 +131,9 @@ export default {
             },
        changeDetailRow(state,data)
             {
-                if(state)
-                {
-                    this.listData[this.findIndex].clist.push({rfid:'',serial:''})
-                }else if(this.listData[this.findIndex].clist.length>1){
-                    this.listData[this.findIndex].clist.splice(data.$index, 1)
-                }else{
+                state?this.listData[this.findIndex].clist.push({rfid:'',serial:''}):this.listData[this.findIndex].clist.splice(data.$index, 1)
+                state?'':this.listData[this.findIndex].keepcount--
+                if(this.listData[this.findIndex].clist.length==0){
                     this.listData[this.findIndex].clist=[{rfid:'',serial:''}]
                 }
             },
@@ -153,7 +150,7 @@ export default {
                     this.cancel()
                 })
       },
-      classDataify(data)//s
+      classDataify(data)//
             {
                     if(this._.findIndex(this.list,['rfid',data[0].rfid])==-1)//避免重复
                 {
