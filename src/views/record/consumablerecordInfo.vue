@@ -1,10 +1,10 @@
 <template>
-  <div class="consumableReceive-form-container">
-      <div class="consumableReceive-header">
-        <span style="font-size: 20px;">{{title}}</span>
+  <div class="consumableReceiveInfo-form-container">
+      <div class="consumableReceiveInfo-header">
+        <span style="font-size: 20px;">耗材记录详情</span>
         <base-button label="<-返回" align="right" type="none" @click="returnBack"></base-button>
       </div>
-    <div class="consumableReceive-form-body" >
+    <div class="consumableReceiveInfo-form-body" >
         <div class="process-info">
             <define-input label="单号" :disabled="true" v-model="order.number"  placeholder="-"></define-input>
             <base-select label="类型" v-model="order.category" :disabled="true" :selectList="selectData"></base-select>
@@ -12,7 +12,7 @@
             <entity-input label="操作人员" v-model="order.operatorInfo" format="{name}" :disabled="true" ></entity-input>
         </div>
         <div class="process-info" style="z-index:-1">
-            <define-input label="备注" v-model="order.remark" :column="12"></define-input>
+            <define-input label="备注" v-model="order.remark" :column="12" :disabled="true"></define-input>
         </div>
         <define-table :havaPage="false" :data="order.consumableItems" height="3.6042rem" >
             <define-column label="操作" width="100">
@@ -27,23 +27,22 @@
 </template>
 
 <script>
-    import myHeader from "components/base/header/header";
     import baseButton from "@/componentized/buttonBox/baseButton";
     import entityInput from "@/componentized/entity/entityInput";
-    import { receiveConsumable, addConsumable } from "api/consumable";
+    import { getBosEntity } from "api/basic";
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     var _ = require("lodash");
     export default {
-        name: "consumableReceive",
+        name: "consumableReceiveInfo",
         data() {
             return {
                 order: {},
                 selectData:[{
                     label:"领取",
-                    value:"领取单",
+                    value:"0",
                 },{
                     label:"补充",
-                    value:"补充单"
+                    value:"1"
                 }],
                 title:"",
             };
@@ -51,23 +50,21 @@
         methods: {
             returnBack(){
                 this.$router.go(-1)
+            },
+            fetchData(){
+                getBosEntity(this.$route.query.info).then(res=>{
+                    this.order = res
+                    this.order.operatorInfo={
+                        name:this.order.operatorInfo.operator,
+                        id:this.order.operatorInfo.operatorId
+                    }
+                })
             }
         },
         created() {
-            if(this.$route.params.info == undefined) {
-                this.$message.info("数据丢失，返回耗材记录");
-                this.$router.push({name: "record/consumablerecord",})
-                return
-            }
-            this.title = "耗材记录详情",
-            this.order = this.$route.params.info.data
-            this.order.operatorInfo={
-                name:this.order.operatorInfo.operator,
-                id:this.order.operatorInfo.operatorId
-            }
+            this.fetchData()
         },
         components: {
-            myHeader,
             baseButton,
             dateSelect,
             entityInput
@@ -76,15 +73,15 @@
 </script>
 
 <style lang="scss" scoped>
-    .consumableReceive-form-container {
+    .consumableReceiveInfo-form-container {
         font-size: 16px;
     }
-    .consumableReceive-form-top {
+    .consumableReceiveInfo-form-top {
         padding: 18px 7px;
         border-bottom: 1px solid #ebeef5;
         overflow: hidden;
     }
-    .consumableReceive-form-body {
+    .consumableReceiveInfo-form-body {
         padding: 0 7px;
         widows: 100%;
     }
@@ -105,7 +102,7 @@
             margin-right: 72px;
         }
     }
-    .consumableReceive-header{
+    .consumableReceiveInfo-header{
         width: 100%;
         padding-left: 18px;
         padding-right: 35px;

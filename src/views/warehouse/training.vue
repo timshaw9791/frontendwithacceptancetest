@@ -1,12 +1,14 @@
 <template>
-  <div class="training-form-container">
-    <my-header :title="$route.meta.title" :haveBlack="false"></my-header>
-    <div class="training-form-top">
+  <div class="training-container">
+    <div class="training-header">
+        <span style="font-size: 20px;">{{$route.meta.title}}</span>
+    </div>
+    <div class="training-top">
         <base-button size="default" align="right" label="新增教学培训" @click="dialogShow('add')"></base-button>
     </div>
-    <div class="training-form-body" >
-        <define-table  slot="slot1" :pageInfo="paginator" @changePage="changePage"
-                        :data="order" height="2.6042rem">
+    <div class="training-body" >
+        <define-table :pageInfo="paginator" @changePage="changePage"
+                        :data="order" height="3.6042rem">
             <define-column  label="操作"  v-slot="{ data }">
                 <base-button label="编辑" size="mini" @click="dialogShow('edit',data.row)" type="primary"></base-button>
                 <base-button label="删除" size="mini" @click="deleteplan(data.row)" type="danger"></base-button>
@@ -30,13 +32,8 @@
 </template>
 
 <script>
-    import myHeader from "components/base/header/header";
     import baseButton from "@/componentized/buttonBox/baseButton";
     import entityInput from "@/componentized/entity/entityInput";
-    import uploadFile from '@/componentized/uploadFile'
-    import defineInput from '@/componentized/textBox/defineInput'
-    import bosTabs from "@/componentized/table/bosTabs";
-    import serviceDialog from "components/base/serviceDialog"
     import { getTraining, addTraining, editTraining, deleteTraining } from "api/training";
     var _ = require("lodash");
     export default {
@@ -57,14 +54,8 @@
                     temp.forEach(item=>{
                         let a = {
                             equipArg:{},
-                            pdf:{
-                                fileName:[],
-                                id:[]
-                            },
-                            video:{
-                                fileName:[],
-                                id:[]
-                            },
+                            pdf:{fileName:[],id:[]},
+                            video:{fileName:[],id:[]},
                         }
                         item.forEach(i=>{
                             a.equipArg = i.equipArg
@@ -104,14 +95,8 @@
                 if(data=="add"){
                     dialogData = {
                         equipArg:{},
-                        pdf:{
-                            fileName:[],
-                            id:[]
-                        },
-                        video:{
-                            fileName:[],
-                            id:[]
-                        },
+                        pdf:{fileName:[],id:[]},
+                        video:{fileName:[],id:[]},
                     }
                     editflag = false
                 }else if(data == "edit"){
@@ -126,7 +111,7 @@
             show(data,item){
                 this.$router.push({
                     name: 'trainingShow',
-                    params: {type:'trainingShow', info: {data:data,item:item}}
+                    query: {type:'trainingShow', info: {data:data,item:item}}
                 })
             }
         },
@@ -134,28 +119,40 @@
             this.fetchData()
         },
         components: {
-            myHeader,
             baseButton,
-            entityInput,
-            bosTabs,
-            defineInput,
-            serviceDialog,
-            uploadFile
+            entityInput
         },
     };
 </script>
 
 <style lang="scss" scoped>
-  .training-form-container {
-    font-size: 16px;
-  }
-  .training-form-top {
-    padding: 18px 7px;
-    border-bottom: 1px solid #ebeef5;
-    overflow: hidden;
-  }
-  .training-form-body {
-    padding: 0 7px;
-    widows: 100%;
-  }
+    .training-container {
+        font-size: 16px;
+    }
+    .training-top {
+        padding: 18px 7px;
+        border-bottom: 1px solid #ebeef5;
+        overflow: hidden;
+    }
+    .training-body {
+        padding: 0 7px;
+        widows: 100%;
+    }
+    .training-header {
+        width: 100%;
+        padding-left: 18px;
+        padding-right: 35px;
+        height: 57px;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        color: rgba(112,112,112,1);
+        border-bottom: 1px solid rgba(112,112,112, 0.13);
+    }
 </style>

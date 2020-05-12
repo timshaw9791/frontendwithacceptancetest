@@ -1,9 +1,11 @@
 <template>
   <div class="charge-container">
-    <my-header :title="$route.meta.title" :haveBlack="false"></my-header>
+    <div class="charge-header">
+        <span style="font-size: 20px;">{{$route.meta.title}}</span>
+    </div>
     <div class="charge-body">
         <bos-tabs :label="label" @changeTab="change">
-            <define-table :havePage="false" :data="order" height="2.6042rem" slot="detail">
+            <define-table :havePage="false" :data="order" height="3.6042rem" slot="detail">
                 <define-column label="RFID" field="rfid"></define-column>
                 <define-column label="装备序号" field="serial"></define-column>
                 <define-column label="装备参数" v-slot="{ data }">
@@ -15,7 +17,7 @@
                     <date-input v-model="data.row.chargeingTime" :tableEdit="false" filter="toDay"></date-input>
                 </define-column>
             </define-table>
-            <define-table :havePage="false" :data="order" height="2.6042rem"  slot="total">
+            <define-table :havePage="false" :data="order" height="3.6042rem"  slot="total">
                 <define-column label="RFID" field="rfid"></define-column>
                 <define-column label="装备序号" field="serial"></define-column>
                 <define-column label="装备参数" v-slot="{ data }">
@@ -33,11 +35,9 @@
 </template>
 
 <script>
-import myHeader from "components/base/header/header";
 import baseButton from "@/componentized/buttonBox/baseButton";
 import entityInput from "@/componentized/entity/entityInput";
 import bosTabs from "@/componentized/table/bosTabs";
-import request from "common/js/request";
 import { getChargeList ,getNeedchargeList } from "api/charge";
 var _ = require("lodash");
 export default {
@@ -70,7 +70,6 @@ export default {
 		})
 	},
   components: {
-    myHeader,
     baseButton,
     entityInput,
     bosTabs,
@@ -86,4 +85,21 @@ export default {
 		padding: 0 7px;
 		widows: 100%;
 	}
+    .charge-header{
+        width: 100%;
+        padding-left: 18px;
+        padding-right: 35px;
+        height: 57px;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        color: rgba(112,112,112,1);
+        border-bottom: 1px solid rgba(112,112,112, 0.13);
+    }
 </style>
