@@ -22,7 +22,7 @@
                                 <entity-input v-model="data.row.equipArg" format="{name}({model})" :tableEdit="false" ></entity-input>
                             </define-column>
                             <define-column label="装备位置" v-slot="{ data }">
-                                <entity-input v-model="data.row.location" :formatFunc="formatFunc" :tableEdit="false"></entity-input>
+                                <entity-input v-model="data.row.location" :formatFunc="$formatFuncLoc" :tableEdit="false"></entity-input>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
                                 <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
@@ -77,14 +77,6 @@ export default {
             bosTabs,
             serviceDialog
         },
-        props:{
-            equipData: {
-              type: Object,
-              default() {
-                return {}
-              }
-            }
-        },
         data(){
             return{
                copyData:{},
@@ -118,81 +110,35 @@ export default {
             },
             sumFunc(param) { // 表格合并行计算方法
                 let { columns, data } = param, sums = [];
-                columns.forEach((colum, index) => {
-                    if(index == 0) {
-                        sums[index] =  '合计';
-                    } else if(index == columns.length-1) {
-                        const values = data.map(item => item.count?Number(item.count):0);
-                        if(!values.every(value => isNaN(value))) {
-                            sums[index] = values.reduce((pre, cur) => !isNaN(cur)?pre+cur:pre);
-                        }
-                    } else {
-                        sums[index] = '';
-                    }
-                })
+                sums=new Array(columns.length).fill('')
+                sums[0]='合计'
+                sums[columns.length-1]=param.data.reduce((v,k)=>v+k.count,0)
                 return sums;
             },
-            formatFunc(data){
-            if(data.surface!=null&&data.floor!=null){
-                 return data.frameNumber?
-                `${data.frameNumber}架/${data.surface}面/${data.section}节/${data.floor}层`:
-                `${data.category}(${data.cabinetNumber})`
-               }else{
-                 return data.frameNumber?
-                `${data.frameNumber}架/${data.section}节`:
-                `${data.category}(${data.cabinetNumber})`   
-               }
-           },
             cancel(){
                 this.$router.back()
             },
             confirm(){
-                this.requestBody=JSON.parse(JSON.stringify(this.newData))
-                let rfidList=[]
-                this.requestBody.forEach(item=>{
-                    item.copyList.forEach(rf=>{
-                        rfidList.push(rf.rfid)
-                    })
-                })
-                repairEquipMaintain(rfidList,false).then(res=>{
+                let req=this._.map(this._.flatten(this._.map(this.newData,'copyList')),'rfid')
+                repairEquipMaintain(req,false).then(res=>{
                     this.init()
                     this.cancel()
                 })
             },
             classDataify(data)//读写器数据处理的方法
             {
-                if(data[0].state==2)
-                {
-                    if(this._.findIndex(this.list,data[0])==-1)//避免重复
-                {
-                    data.forEach(item=>{this.list.push(item)})
-                    let cList=this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}${item.location.id}`)
-                    this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length,location:v[0].location}})
-                }                                                   
+                if(data[0].state==2){
+                    if(this._.findIndex(this.list,['rfid',data[0].rfid])==-1){//避免重复
+                        data.forEach(item=>{this.list.push(item)})
+                        let cList=this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}${item.location.id}`)
+                        this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length,location:v[0].location}})
+                    }                                                   
                 }else{
                     this.$message.error('此装备不在维修状态')
                 }
             },
             changePage(page) {
-            this.paginator.page = page;
-            },
-            changelocation(){
-                this.$refs.historyDialog.show()
-            },
-            getTime(ns) {
-                if(ns)
-                {
-                    var date=new Date(parseInt(nS));
-                }else{
-                    var date=new Date();
-                }
-            var year=date.getFullYear();
-            var mon = date.getMonth()+1;
-            var day = date.getDate();
-            var hours = date.getHours();
-            var minu = date.getMinutes();
-            var sec = date.getSeconds();
-            this.time= year+'/'+mon+'/'+day+'/'+hours+'时';
+                this.paginator.page = page;
             },
             readData(){
                 killProcess(this.pid)
@@ -207,34 +153,24 @@ export default {
             },
             changeDetailRow(state,data)
             {
-                if(state)
-                {
-                    this.newData[this.findIndex].copyList.push({rfid:'',serial:''})
-                }else if(this.newData[this.findIndex].copyList.length>1){
-                    this.newData[this.findIndex].copyList.splice(data.$index, 1)
-                }else{
+                state?'':this.newData[this.findIndex].copyList[data.$index].rfid!=''?this.newData[this.findIndex].count--:''
+                state?this.newData[this.findIndex].copyList.push({rfid:'',serial:''}):this.newData[this.findIndex].copyList.splice(data.$index, 1)
+                if(this.newData[this.findIndex].copyList.length==0){
                     this.newData[this.findIndex].copyList=[{rfid:'',serial:''}]
                 }
             },
             changeRow(state,data)
             {
-                if(state)
-                {
-                    this.newData.push({name: '',locationId: '',price: 0,productTime: 0,rfids: [],serial: [],copyList:[{rfid:'',serial:''}],})
-                }else if(this.newData.length>1){
-                    this.newData.splice(data.$index, 1)
-                }else{
-                    this.newData=[{name: '',locationId: '',price: 0,productTime: 0,rfids: [],serial: [],copyList:[{rfid:'',serial:''}],}]
+                state?this.newData.push({location: '',price: 0,count:0,copyList:[{rfid:'',serial:''}],}):
+                this.newData.splice(data.$index, 1)
+                if(this.newData.length==0){
+                    this.newData=[{location: '',price: 0,count:0,copyList:[{rfid:'',serial:''}],}]
                 }
             },
             init(){
                 this.newData=[{
-                    name: '',
-                    locationId: '',
-                    price: 0,
-                    productTime: 0,
-                    rfids: [],
-                    serial: [],
+                    location: '',
+                    count:0,
                     copyList:[{rfid:'',serial:''}]
                 }]
             }
