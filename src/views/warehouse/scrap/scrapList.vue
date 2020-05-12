@@ -28,7 +28,7 @@
     import bosTabs from '@/componentized/table/bosTabs.vue'
     import divTmp from '@/componentized/divTmp'
     import {scarpsOrders} from "api/operation"
-    import transScrapCategory from '../../../common/js'
+    import {transScrapCategory} from '../../../common/js'
     import {listTableMixin} from "../../../field/mixins/listMixin";
 
     export default {
