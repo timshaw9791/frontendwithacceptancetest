@@ -1,18 +1,17 @@
 <template>
   <div class="maintenance-form-container">
        <my-header :title="$route.meta.title" :haveBlack="true" @h_black="cancel"></my-header>
-       <div class="action_box" data-test="action_box">
+       <div class="maintenance-form-top" data-test="maintenance-form-top">
                 <define-input label="单号" v-model="orderNumber" placeholder="--" :disabled="true" class="odd-number"></define-input>
                 <define-input label="报废类型" v-model="$route.params.info.category" placeholder="到期报废" :disabled="true" class="odd-number"></define-input>
                 <date-select label="报废时间" v-model="time" placeholder="--" :disabled="true"></date-select>
                 <entity-input label="操作人员" v-model="people"  :disabled="true" ></entity-input>
             </div>
-        <define-input label="备注" v-model="$route.params.info.remark" style="margin-top:15px" :disabled="true" ></define-input>
+        <define-input label="备注" margin="15px 15px" v-model="$route.params.info.remark" style="margin-top:15px" :disabled="true" ></define-input>
     
     <div class="maintenance-form-body">
         <bos-tabs >
-            
-                        <define-table :data="newData" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
+                        <define-table :data="newData" height="2.8646rem" :havePage="false" @changeCurrent="selRow"
                             :highLightCurrent="true"  slot="total" :showSummary="true" :summaryFunc="sumFunc">
                             <define-column label="装备参数" v-slot="{ data }">
                                 <entity-input v-model="data.row.equipArg"  :options="{detail:'equipArgsDetails'}" format="{equipName}({equipModel})" :tableEdit="false" ></entity-input>
@@ -61,17 +60,6 @@ export default {
                orderNumber:'',
                time:'',
                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
-               select: {
-                    handWareList: [{
-                        label: "手持机",
-                        value: 'handheld'
-                    }, {
-                        label: "读卡器",
-                        value: "reader"
-                    }],
-                    selected: ""
-                },
-               pid:'',
                findIndex:0,
                newData:[{
                    equipArg:'',
@@ -79,12 +67,11 @@ export default {
                    copyList:[{rfid:'',serial:''}]
                }],
                list:[],
-               rfids:[]
     }
   },
   methods: {
-           selRow(current,index){
-               this.findIndex=this._.indexOf(this.newData,current)
+           selRow(current){
+               this.findIndex=current.index
             },
             sumFunc(param) { // 表格合并行计算方法
                 let { columns, data } = param, sums = [];
@@ -96,26 +83,11 @@ export default {
             cancel(){
                 this.$router.back()
             },
-            fetchData(){
-                maturityScrap().then(res=>{
-                    res.forEach(item=>{
-                      this.rfids.push(item.rfid)
-                    })
-                    
-                })
-            },
-            changePage(page) {
-            this.paginator.page = page;
-            },
            classDataify(data)//读写器数据处理的方法
             {
-                if(this._.findIndex(this.list,data[0])==-1)
-                {
-                     data.forEach(item=>{this.list.push(item)})
+                data.forEach(item=>{this.list.push(item)})
                 let cList=this._.groupBy(this.list, item => `${item.equipModel}${item.equipName}`)
                 this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0],copyList:v,count:v.length}})
-                }
-               
             },
 
     },
@@ -144,7 +116,7 @@ export default {
 <style lang="scss" scoped>
   .maintenance-form-container {
     font-size: 16px;
-    .action_box{
+    .maintenance-form-top{
         margin-top:15px;
         display: flex;
         justify-content: flex-start;
@@ -153,7 +125,7 @@ export default {
   }
   .maintenance-form-top {
     padding: 18px 7px;
-    border-bottom: 1px solid #ebeef5;
+    // border-bottom: 1px solid #ebeef5;
     overflow: hidden;
   }
   .maintenance-form-body {

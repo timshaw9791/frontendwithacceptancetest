@@ -95,7 +95,7 @@
                     label:'name',
                     children:'children'
                 },
-                title:"未分配装备",
+                title:"未分类装备",
                 paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
                 show:"unassigned",
                 equipArg:[],
@@ -104,15 +104,12 @@
                 dialogData:{
                     editData:{},
                     addData:{},
-                    deleteTitle:"大类"
+                    deleteTitle:"大类",
+                    title:""
                 },
                 choseGenre:{},
                 choseCategory:{},
-                Assigned:{
-                    categoryId:"",
-                    equipArgId:"",
-                    flag:false
-                },
+                Assigned:"",
                 editFlag:false
             };
         },
@@ -122,7 +119,7 @@
                     this.tree.genres = res.content
                     Promise.all([this.getTree()]).then(res=>{
                         this.tree.treeData = [{
-                            name:"未分配装备",
+                            name:"未分类装备",
                             show:"unassigned",
                             children:[]
                         }]
@@ -135,7 +132,35 @@
             },
             changePage(page) {
                 this.paginator.page = page
-                this.fetchData()
+                if(this.show == "category"){
+                    let params = JSON.parse(JSON.stringify(this.paginator))
+                    params.id = this.Assigned
+                    getequipArg(params).then(res=>{
+                        this.equipArg = res.content
+                        this.paginator.totalPages = res.totalPages;
+                        this.paginator.totalElements = res.totalElements;
+                        this.total = 0
+                        this.equipArg.forEach(item=>{
+                            this.total+=item.count
+                        })
+                    })
+                }else if(this.show ==  "genres"){
+                    this.equipArg=[{category:{},count:""}]
+                    getcategoriesSafety(this.choseGenre.id,this.paginator).then(res=>{
+                        this.equipArg = res.content
+                        if(this.equipArg.length == 1 && this.equipArg[0].category == null){
+                            this.equipArg = []
+                        }
+                        this.paginator.totalPages = res.totalPages;
+                        this.paginator.totalElements = res.totalElements;
+                    })
+                }else if(this.show == "unassigned"){
+                    getequipArg(this.paginator).then(res=>{
+                        this.equipArg = res.content
+                        this.paginator.totalPages = res.totalPages;
+                        this.paginator.totalElements = res.totalElements;
+                    })
+                }
             },
             changeCurrent(data){
                 this.choseCategory = data.current
@@ -179,13 +204,14 @@
                 })
             },
             clickNode(data) {//树形点击事件
+                this.paginator= {size: 10, page: 1, totalPages: 5, totalElements: 5},
                 this.choseCategory={}
                 this.show = data.data.show
                 this.title = data.data.name
                 if(this.show=="genres"){
                     this.equipArg=[{category:{},count:""}]
                     this.choseGenre = data.data
-                    getcategoriesSafety(data.data.id).then(res=>{
+                    getcategoriesSafety(data.data.id,this.paginator).then(res=>{
                         this.equipArg = res.content
                         if(this.equipArg.length == 1 && this.equipArg[0].category == null){
                             this.equipArg = []
@@ -194,21 +220,27 @@
                         this.paginator.totalElements = res.totalElements;
                     })
                 }else if(this.show=="unassigned"){
-                    getequipArg().then(res=>{
+                    getequipArg(this.paginator).then(res=>{
                         this.equipArg = res.content
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
                     })
                 }else if(this.show=="category"){
-                    this.Assigned.categoryId = data.data.id
-                    getequipArg({id:data.data.id}).then(res=>{
+                    this.total = 0
+                    this.Assigned = data.data.id
+                    let params = JSON.parse(JSON.stringify(this.paginator))
+                    params.id = data.data.id
+                    getequipArg(params).then(res=>{
                         this.equipArg = res.content
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
+                        this.equipArg.forEach(item=>{
+                            this.total+=item.count
+                        })
                     })
                 }
             },
-            dialogShow(type, data){//新增，编辑，装备分配窗口
+            dialogShow(type, data){//新增，编辑，装备分类窗口
                 if(type == "edit"){
                     this.dialogData.addData={}
                     if(data == "genres"){
@@ -236,7 +268,7 @@
                         this.dialogData.title = "新增小类"
                     }
                 }else if(type == "unassigned"){
-                    this.dialogData.title = "装备分配"
+                    this.dialogData.title = "装备分类"
                     let list = this.$refs.table.getSelection()
                     if(list.length==0){
                         this.$message.error("请选择装备参数")
@@ -251,7 +283,7 @@
                 this.$refs.safetyDialogs.titleShow()
             },
             noAssigned(data){//装备参数与小类解绑
-                noAssigned(this.Assigned.categoryId,{equipArgId:data.row.equipArg.id}).then(res=>{
+                noAssigned(this.Assigned,{equipArgId:data.row.equipArg.id}).then(res=>{
                     this.fetchData()
                 })
             },

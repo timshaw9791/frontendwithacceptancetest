@@ -95,7 +95,7 @@ export default {
                         label: "手持机",
                         value: 'handheld'
                     }, {
-                        label: "读卡器",
+                        label: "读写器",
                         value: "reader"
                     }],
                     selected: ""

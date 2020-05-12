@@ -9,11 +9,10 @@ export function getConsumableList(data) {
     })
 }
 // 新增耗材
-export function addConsumable(params,data) {
+export function addConsumable(data) {
     return request({
         url: '/consumables',
         method: 'post',
-        params:params,
         data:data
     })
 }

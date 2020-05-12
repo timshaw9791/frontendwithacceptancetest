@@ -37,8 +37,7 @@
         name: "consumable",
         data() {
             return {
-                paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
-                params:{page:1,size:10,search:''},
+                paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5,search:''},
                 order: [],
                 equipArg:[],
                 plan:{
@@ -51,11 +50,11 @@
         },
         methods: {
             fetchData(){
-                getWearRates(this.params).then(res=>{
+                getWearRates(this.paginator).then(res=>{
                     this.order = res.content
                     this.paginator.totalPages = res.totalPages;
                     this.paginator.totalElements = res.totalElements;
-                    if(this.order!=[]){
+                    if(this.order.length!=0){
                         this.equipArg = this.order[0].equipArgs
                     }else{
                         this.equipArg=[]
@@ -70,7 +69,7 @@
                 })
             },
             changePage(page) {
-                this.params.page = page
+                this.paginator.page = page
                 this.fetchData()
             },
             changeCurrent(current){

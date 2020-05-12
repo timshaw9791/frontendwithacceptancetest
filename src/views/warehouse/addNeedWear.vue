@@ -1,21 +1,21 @@
 <template>
   <div class="need-wear-container">
     <my-header :title="$route.meta.title" :haveBlack="false"></my-header>
-    <define-input v-model="title" label="必戴装备名称"></define-input>
+    <define-input v-model="title" margin="15px 15px" label="必戴装备名称"></define-input>
     <div class="need-wear-body" >
-            <define-table :data="listData" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
-                            :highLightCurrent="true"  :showSummary="true" :summaryFunc="sumFunc">
+            <define-table :data="listData" height="2.8646rem" :havePage="false"
+                            :highLightCurrent="true"  >
                              <define-column label="操作" width="100" v-slot="{ data }">
                                 <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
                                 <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
-                                <entity-input v-model="data.row.equipArg"  :options="{search:'equipArgsSelect'}" format="{name}({model})" :column="12" :tableEdit="true" ></entity-input>
+                                <entity-input v-model="data.row.equipArg" :options="{search:'equipArgsSelect'}" format="{name}({model})" :column="12" :tableEdit="true" ></entity-input>
                             </define-column>
                         </define-table>    
             <div class="btn-box">
-                  <base-button label="取消" align="right" :width="128" :height="25" :fontSize="20" @click="cancel"></base-button>
-                  <base-button label="提交" align="right" :width="128" :height="25" :fontSize="20" @click="confirm"></base-button>
+                  <base-button label="取消" align="right" size="default" @click="cancel"></base-button>
+                  <base-button label="提交" align="right" size="default" @click="confirm"></base-button>
               </div>      
     </div>
   </div>
@@ -50,8 +50,7 @@
                         equipArg.push(item.equipArg)
                     }
                 })
-                if(this.title==''||equipArg.length==0)
-                {
+                if(this.title==''||equipArg.length==0){
                     this.$message.error("请填写完整")
                 }else{
                     this.$route.params.info.edit?updateWearRates(this.$route.params.info.data.id,{name:this.title,equipArgs:equipArg,id:this.$route.params.info.data.id}).then(res=>{this.cancel()}):
@@ -59,7 +58,6 @@
                     this.cancel()
                 })
                 }
-                
             },
             cancel(){
                 this.$router.back()
@@ -82,11 +80,10 @@
             serviceDialog,
         },
         created(){
-            this.listData=[]
             if(this.$route.params.info.data.name!='')
             {
                 this.title=this.$route.params.info.data.name
-                
+                this.listData=[]
                 this.$route.params.info.data.equipArgs.forEach(item=>{
                     this.listData.push({equipArg:item})
                 })

@@ -4,8 +4,9 @@
         <div class="btn_box" v-if="!edit">
              <base-button label="一键开柜" align="right" :width="128" :height="25" :fontSize="20" ></base-button>
         </div>
-        <div class="data-list">
-            <define-table :data="list" height="4rem"  v-if="!edit">
+        <div class="data-list" v-if="!edit">
+            <bos-tabs :option="['contrast']" :layoutRatio="[3,1]" :contrastKey="['slot1', 'slot2']">
+            <define-table :data="list" slot="slot1" height="4rem" @changeCurrent="selRow" :havePage="false"  >
                             <define-column label="操作" width="150" v-slot="{ data }">
                                 <div class="span-box">
                                     <base-button label="分配" @click="toAssign(data.row)" size="small" ></base-button>
@@ -13,27 +14,30 @@
                                 </div>
                             </define-column>
                             <define-column label="警柜类型" v-slot="{ data }">
-                                <define-input v-model="data.row.category" type="Number" :tableEdit="false"></define-input>
+                                <define-input v-model="data.row.category"  :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="警柜编号" v-slot="{ data }">
                                 <define-input v-model="data.row.cabinetNumber" type="Number" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="所属人员" v-slot="{ data }">
-                                <define-input v-model="data.row.name" type="Number" :tableEdit="false"></define-input>
+                                <define-input v-model="data.row.name"  :tableEdit="false"></define-input>
                             </define-column>
                         </define-table>
-           
-            <div class="edit-equip" v-if='edit'>
+            <define-table :haveIndex="false"  slot="slot2" :havePage="false" :data="equipArg" height="4rem" >
+                <define-column label="装备参数" field="describes" v-slot="{data}">
+                    <entity-input v-model="data.row" format="{name}({model})" :tableEdit="false" :options="{}"></entity-input>
+                </define-column>
+             </define-table>
+            </bos-tabs>
+        </div>
+        <div class="edit-equip" v-if='edit'>
                 <base-select label="警柜类型" :column="10" v-model="select.selected" margin="0 0" align="left" :selectList="select.selectList"></base-select>
-                <!-- <entity-input label="装备位置" v-model="location" :column="6"  :options="{search:'locationSelect'}" margin="15px 0" format="{cabinetNumber}" :tableEdit="true" align="left"></entity-input> -->
-                <entity-input label="所属人员" v-model="people"  :options="{search:'applicant'}"  margin="15px 0" :column="6" format="{name}" :tableEdit="true" v-if="select.selected=='SINGLE_POLICE'"></entity-input>
+                <entity-input label="所属人员" v-model="people"  :options="{search:'applicant'}"  margin="15px 0" :column="6" format="{name}" :tableEdit="true" v-if="select.selected=='0'"></entity-input>
                 <div class="btn-box">
                   <base-button label="取消" align="right" :width="128" :height="25" :fontSize="20" @click="black"></base-button>
                   <base-button label="提交" align="right" :width="128" :height="25" :fontSize="20" @click="confirm"></base-button>
               </div>
             </div>
-
-        </div>
     </div>
 </template>
 
@@ -48,7 +52,7 @@
     import entityInput from '@/componentized/entity/entityInput'
     import serviceDialog from 'components/base/serviceDialog/index'
     import divTmp from '@/componentized/divTmp'
-    import {getPoliceCabinets,assignPeople} from 'api/warehouse'
+    import {getPoliceCabinets,assignPeople,cabinetEquip} from 'api/warehouse'
 export default {
     components:{
             myHeader,
@@ -65,6 +69,13 @@ export default {
         data(){
             return{
                list:[],
+               equipArg:[],
+               params:{
+                    returnType: "ARRAY",
+                    jpql: "select e from Equip e left join PoliceCabinet pc on e.policeCabinet.id = pc.id where pc.id = ?1 ",
+                    params: []
+                    },
+               paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
                select:{
                    selected:'',
                    selectList:[{
@@ -88,7 +99,6 @@ export default {
         },
         methods:{
             toAssign(data){
-                console.log(data);
                 this.select.selected=''
                 this.policeCabnietId=data.id
                 this.edit=!this.edit
@@ -96,38 +106,41 @@ export default {
             openCabniet(){
 
             },
+            selRow(data){
+                this.getCabinetEquipList(data.current.id)
+            },
             confirm(){
-                // console.log("111");
                 let params={
                     category:this.select.selected
                 }
             assignPeople({category:this.select.selected,policeCabinetId:this.policeCabnietId,userId:this.people.id}).then(res=>{
                 this.$message.success('警柜分配成功')
                 this.black()
-            }).catch(err => {
-                    this.$message.error(err.response.data.message)
-                })
+            })
             },
             getList()
             {
                 getPoliceCabinets().then(res=>{
                     this.list=res
-                    this.list.forEach(item=>{
-                        if(item.policeCabinetUserItems.length!=0)
-                        {
-                            item.name=item.policeCabinetUserItems[0].user.name
-                        }
-                        if(item.category=='2')
-                        {item.category='备用柜'}
-                        else if(item.category=='0')
-                        {
-                            item.category='单警柜'
-                        }
-                        else if(item.category=='1'){
-                            item.category='公共柜'}
-                    })
+                    for(let elem of this.list.values()){
+                        elem.policeCabinetUserItems.length!=0?elem.name=elem.policeCabinetUserItems[0].user.name:''
+                        if(elem.category=='2')elem.category='备用柜'
+                        if(elem.category=='0')elem.category='单警柜'
+                        if(elem.category=='1')elem.category='公共柜'
+                    }
+                    this.getCabinetEquipList(this.list[0].id)
                 }).catch(err => {
                     this.$message.error(err.response.data.message)
+                })
+            },
+            getCabinetEquipList(id){
+                this.params.params=[]
+                this.equipArg=[]
+                this.params.params.push(id)
+                cabinetEquip(this.params).then(res=>{
+                   res.forEach(item=>{
+                       this.equipArg.push(item[0].equipArg)
+                   })
                 })
             },
             black(){
