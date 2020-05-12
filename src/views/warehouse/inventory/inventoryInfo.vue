@@ -102,7 +102,6 @@
                 })
             },
             fixData() {
-                debugger
                 this.inventoryOrder.startTime = this.$filterTime(this.inventoryOrder.startTime)
                 // 盘点单与手持机的装备列表数据字段不同，强制 添加equipName、equipModel、locationInfo 以便统一
                 this.equipItems.forEach(item => {
@@ -123,7 +122,6 @@
                         length += item.length
                         let tempLocation = this.$formatFuncLoc(item[0].locationInfo)
                         return {
-                            // 参数后面可能会统一成 obj
                             equipArg: item[0].equipName+"("+item[0].equipModel+")",
                             equipState: item[0].state,
                             locationInfo: tempLocation,

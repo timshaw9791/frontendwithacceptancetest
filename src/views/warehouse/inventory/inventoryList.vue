@@ -5,7 +5,7 @@
             <base-button @click="goto()" label="开始盘点"></base-button>
         </div>
         <div class="body">
-            <define-table :data="list" :pageInfo="paginator">
+            <define-table :data="list" :pageInfo="paginator" @changePage="changePage">
                 <define-column label="操作" v-slot="{data}">
                     <span @click="goto(data.row.id)">详情</span>
                 </define-column>
@@ -56,6 +56,10 @@
             },
             goto(id){
                 this.$router.push({path:'inventoryInfo',query:{id}})
+            },
+            changePage(){
+                this.paginator.page = page
+                this.fetchData()
             }
         }
     }

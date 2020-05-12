@@ -280,11 +280,16 @@ export const asyncRouterMap = [{
             component: _import('warehouse/expired'),
             meta: {title: '到期报废'},
         },{
-            path: 'equipexpired',
-            name: 'equipexpired',
+            path: 'scrapList',
+            name: 'scrapList',
             component: _import('warehouse/scrap/scrapList'),
             meta:{title:'装备报废'},
         }, {
+            path: 'scrapInfo',
+            name: 'scrapInfo',
+            component: _import('warehouse/scrap/scrapInfo'),
+            hidden: true
+        },{
             path: 'training',
             name: 'warehouse/training',
             component: _import('warehouse/training'),
@@ -382,18 +387,7 @@ export const asyncRouterMap = [{
             component: _import('record/MaintenanceDetails'),
             hidden:true,
             meta: {title: '保养单/保养单详情'},
-        }, {
-            path: 'scrapOrder',
-            name: 'scrapOrder',
-            component: _import('record/scrapOrder'),
-            meta: {title: '报废单'},
-        },{
-            path: 'scrapOrderDetails',
-            name: 'scrapOrderDetails',
-            component: _import('record/scrapOrderDetails'),
-            hidden:true,
-            meta: {title: '报废单/报废单详情'},
-        }, {
+        },, {
             path: 'serviceOrder',
             name: 'serviceOrder',
             component: _import('record/serviceOrder'),

@@ -2,44 +2,38 @@
     <div class="scrap-list-container">
         <my-header title="装备报废"></my-header>
         <div class="action_box" data-test="action_box">
-            <define-input label="单号" v-model="expiredOrder.number" placeholder="--" :disabled="true"></define-input>
-            <define-input label="报废类型" v-model="expiredOrder.expiredCategory" :disabled="true"></define-input>
-            <define-input label="报废时间" v-model="expiredOrder.createTime" :disabled="true"></define-input>
-            <entity-input label="操作人员" v-model="expiredOrder.operatorInfo.operator" :disabled="true"></entity-input>
+            <define-input label="单号" v-model="scrapOrder.number" placeholder="--" :disabled="true"></define-input>
+            <define-input label="报废类型" v-model="scrapOrder.categoryContent" :disabled="true"></define-input>
+            <define-input label="报废时间" v-model="scrapOrder.createTime" :disabled="true"></define-input>
+            <entity-input label="操作人员" v-model="scrapOrder.operatorInfo.operator" :disabled="true"></entity-input>
         </div>
-        <define-input label="备注" v-model="expiredOrder.remark" margin="15px  0.0521rem"
+        <define-input label="备注" v-model="scrapOrder.remark" margin="15px  0.0521rem"
                       :disabled="isInfo"></define-input>
         <div class="scrap-list-body">
             <bos-tabs @changeTab="changeTab">
-                <template slot="slotHeader" v-if="!isInfo||isHardwareSelect">
+                <template slot="slotHeader" v-if="!isInfo||!isHardwareSelect">
                     <base-button label="读取数据" :disabled="!hardwareSelect.select" :width="96"
                                  @click="readData"></base-button>
                     <base-select label="硬件选择" v-model="hardwareSelect.select"
                                  :selectList="hardwareSelect.list"></base-select>
                 </template>
-                <define-table :data="equipItems" height="2.8646rem" @changeCurrent="totalSelRow" :havePage="false"
+                <define-table :data="equipItems" height="2.8646rem" @changeCurrent="changeRow" :havePage="false"
                               :highLightCurrent="true" slot="total" :showSummary="true" :summaryFunc="sumFunc">
                     <define-column label="操作" width="100" v-slot="{ data }">
-                        <i class="iconfont iconyichuliang" @click="delRow('equipItems',data)"></i>
+                        <i class="iconfont iconyichuliang" @click="delRow(data)"></i>
                     </define-column>
                     <define-column label="装备参数" v-slot="{ data }">
-                        <entity-input v-model="data.row.equipArg" :options="{detail:'equipArgsSelect'}"
+                        <entity-input v-model="data.row.equipArg" :options="{detail:'equipArgDetail'}"
                                       format="{name}({model})" :tableEdit="false"></entity-input>
                     </define-column>
-                    <define-column label="装备数量" v-slot="{ data }">
-                        <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input>
-                    </define-column>
+                    <define-column label="装备数量" field="count"></define-column>
                 </define-table>
                 <define-table :data="detailItems" height="2.8646rem" :havePage="false" slot="detail">
                     <define-column label="操作" width="100" v-slot="{ data }">
-                        <i class="iconfont iconyichuliang" @click="delRow('detailItems',data)"></i>
+                        <i class="iconfont iconyichuliang" @click="delRow(data)"></i>
                     </define-column>
-                    <define-column label="RFID" v-slot="{ data }">
-                        <define-input v-model="data.row.rfid" type="String" :tableEdit="false"></define-input>
-                    </define-column>
-                    <define-column label="装备序号" v-slot="{ data }">
-                        <define-input v-model="data.row.serial" type="Number" :tableEdit="false"></define-input>
-                    </define-column>
+                    <define-column label="RFID" field="rfid"></define-column>
+                    <define-column label="装备序号" field="serial"></define-column>
                 </define-table>
             </bos-tabs>
             <div class="btn-box">
@@ -60,17 +54,18 @@
     import divTmp from '@/componentized/divTmp'
     import {equipScrap} from 'api/operation'
     import {getBosEntity} from '@/api/basic'
+    import transScrapCategory from '../../../common/js/transScrapCategory'
 
     export default {
         name: "maintenance",
         data() {
             return {
-                expiredOrder: {
+                scrapOrder: {
                     operatorInfo: {
                         operator: '',
                         operatorId: ''
                     },
-                    equipItems: [{
+                    scrapItems: [{
                         equipArg: '',
                         count: '',
                     }],
@@ -87,7 +82,7 @@
                     select: '',
                 },
                 pid: '',
-                // 装备表渲染的数据
+                // 处理后的装备数据，用于渲染
                 equipItems: [],
                 // 明细表渲染的数据
                 detailItems: [],
@@ -95,12 +90,10 @@
                 rfids: [],
                 isInfo: [],
                 isHardwareSelect: true,
-                //用于处理报废类型Enum
-                expiredCategory: ''
             }
         },
         methods: {
-            totalSelRow(current) {
+            changeRow(current) {
                 this.detailItems = current.current.items
             },
             changeTab(data) {
@@ -118,10 +111,8 @@
                 killProcess(this.pid)
                 start("java -jar scan.jar", (data) => {
                     if (this.rfids.findIndex((v) => v === data) !== -1) {
-                        findByRfids(data).then(res => {
-                            this.equipItems.push(res[0])
-                            this.fixData()
-                        })
+                        this.rfids.push(data)
+                        this.fetchEquipItems()
                     }
                 }, (fail) => {
                     this.index = 1;
@@ -130,72 +121,65 @@
                     pid ? this.pid = pid : this.$message.error(err)
                 })
             },
-            initData() {
-                if (this.isInfo) {
-                    this.fetchData()
-                }
+            fetchEquipItems(data){
+                findByRfids(data).then(res => {
+                    this.scrapOrder.scrapItems.push(res[0])
+                    this.fixEquipItems()
+                })
             },
-            //读写器数据处理的方法
-            fixData() {
-                this.expiredCategory = this.$route.query.expiredCategory
-                switch (this.$route.query.expiredCategory) {
-                    case 0: {
-                        this.expiredCategoryContent = '维修报废'
-                        break
+            fixEquipItems(){
+                this.scrapOrder.scrapItems.forEach(item => {
+                    if (item.equipArg) {
+                        item.equipName = item.equipArg.name
+                        item.equipModel = item.equipArg.model
+                        item.locationInfo = item.location
                     }
-                    case 1: {
-                        this.expiredCategoryContent = '到期报废'
-                        break
-                    }
-                    case 2: {
-                        this.expiredCategoryContent = '盘点报废'
-                        break
-                    }
-                    case 3: {
-                        this.expiredCategoryContent = '常规报废'
-                        break
-                    }
-                }
-                let tempList = this._.groupBy(this.equipItems, item => `${item.equipArg.model}${item.equipArg.name}`)
-                this.expiredOrder.equipItems = this._.map(tempList, (v) => {
+                })
+                // 处理前的装备数据
+                let tempEquipItems = this._.groupBy(this.scrapOrder.scrapItems, item => `${item.equipModel}${item.equipName}`)
+                this.equipItems = this._.map(tempEquipItems, (item) => {
                     return {
-                        equipArg: v[0].equipArg,
-                        location: v[0].location,
-                        item: v,
-                        count: v.length,
+                        equipArg: item[0].equipName+"("+item[0].equipModel+")",
+                        location: item[0].location,
+                        item: item,
+                        count: item.length,
                     }
                 })
             },
             fetchData() {
-                getBosEntity().then(res => {
-                    this.expiredOrder = res
+                getBosEntity(this.$route.query.id).then(res => {
+                    this.scrapOrder = res
                     this.fixData()
                 })
             },
+            fixData() {
+                transScrapCategory(this.scrapOrder)
+                this.fixEquipItems()
+            },
             confirm() {
-                let rfidList = []
-                this.expiredOrder.equipItems.forEach(item => {
-                    item.items.forEach(rf => {
-                        rfidList.push(rf.rfid)
-                    })
-                })
-                equipScrap(1, this.expiredOrder.remark, rfidList).then(() => {
+                this._.map(this.equipItems,(item)=>this._.map(item.items,'rfid'))
+                equipScrap(this.scrapOrder.category, this.scrapOrder.remark, ).then(() => {
                     this.cancel()
                 })
             },
             cancel() {
                 this.$router.back()
             },
-            delRow(list, data) {
-                this[list].splice(data.$index, 1,)
+            delRow(data) {
+                data.splice(data.$index, 1,)
             }
         },
         created() {
-            this.fetchData()
-            // 报废可以调 id equipItems expiredCategory(0:维修报废,1:到期报废,2:盘点报废,3:常规报废) 只需带数字
-            this.isInfo = !!this.$route.query.id
-            if (this.$route.query.equipItems) {
-
+            // 详情带上id
+            // 新建rfids category(0:维修报废,1:到期报废,2:盘点报废,3:常规报废) 只需带数字
+            if (this.$route.query.id){
+                this.isInfo = true
+                this.fetchData()
+            }
+            else {
+                this.scrapOrder.category = this.$route.query.category
+                this.fetchEquipItems(this.$route.query.rfids)
+                this.fixData()
             }
         },
         beforeDestroy() {
