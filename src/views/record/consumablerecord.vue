@@ -1,8 +1,10 @@
 <template>
   <div class="consumablerecord-form-container">
-    <my-header :title="$route.meta.title" :haveBlack="false"></my-header>
+    <div class="consumablerecord-header">
+        <span style="font-size: 20px;">{{$route.meta.title}}</span>
+    </div>
     <div class="consumablerecord-form-body" >
-        <define-table  :pageInfo="paginator" @changePage="changePage" :data="order" height="2.6042rem" >
+        <define-table  :pageInfo="paginator" @changePage="changePage" :data="order" height="4rem" >
             <define-column label="操作" v-slot="{data}">
                 <base-button label="详情" @click="click(data.row)"></base-button>
             </define-column>
@@ -12,7 +14,7 @@
             <define-column label="类型" field="category"></define-column>
             <define-column label="操作人员" field="operatorInfo.operator"></define-column>
             <define-column label="操作时间" v-slot="{data}">
-                <date-select v-model="data.row.createTime"></date-select>
+                <date-select v-model="data.row.createTime" :disabled="true"></date-select>
             </define-column>
         </define-table>
     </div>
@@ -20,7 +22,6 @@
 </template>
 
 <script>
-    import myHeader from "components/base/header/header";
     import baseButton from "@/componentized/buttonBox/baseButton";
     import { consumableRecordList } from "api/consumable";
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
@@ -40,11 +41,16 @@
                     this.paginator.totalPages = res.totalPages;
                     this.paginator.totalElements = res.totalElements;
                     this.order.forEach(item=>{
-                        if(item.category==1){
+                        if(item.category==0){
                             item.category="领取单"
-                        }else if(item.category==2){
+                        }else if(item.category==1){
                             item.category="补充单"
                         }
+                        item.name = item.consumableItems.length==1?item.consumableItems[0].name:item.consumableItems[0].name+'...'
+                        item.count = 0
+                        item.consumableItems.forEach(it=>{
+                            item.count+=it.count
+                        })
                     })
                 })
             },
@@ -55,7 +61,7 @@
             click(data){
                 this.$router.push({
                     name: "consumablerecordInfo",
-                    params: {info: {data: data}}
+                    query: {info: data.id}
                 })
             }
         },
@@ -63,7 +69,6 @@
             this.fetchData()
         },
         components: {
-            myHeader,
             baseButton,
             dateSelect,
         },
@@ -71,16 +76,33 @@
 </script>
 
 <style lang="scss" scoped>
-  .consumablerecord-form-container {
-    font-size: 16px;
-  }
-  .consumablerecord-form-top {
-    padding: 18px 7px;
-    border-bottom: 1px solid #ebeef5;
-    overflow: hidden;
-  }
-  .consumablerecord-form-body {
-    padding: 0 7px;
-    widows: 100%;
-  }
+    .consumablerecord-form-container {
+        font-size: 16px;
+    }
+    .consumablerecord-form-top {
+        padding: 18px 7px;
+        border-bottom: 1px solid #ebeef5;
+        overflow: hidden;
+    }
+    .consumablerecord-form-body {
+        padding: 0 7px;
+        widows: 100%;
+    }
+    .consumablerecord-header{
+        width: 100%;
+        padding-left: 18px;
+        padding-right: 35px;
+        height: 57px;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        color: rgba(112,112,112,1);
+        border-bottom: 1px solid rgba(112,112,112, 0.13);
+    }
 </style>

@@ -36,7 +36,6 @@
 </template>
 
 <script>
-    import myHeader from "components/base/header/header";
     import baseButton from "@/componentized/buttonBox/baseButton";
     import entityInput from "@/componentized/entity/entityInput";
     import { receiveConsumable, addConsumable } from "api/consumable";
@@ -51,10 +50,10 @@
                 },
                 selectData:[{
                     label:"领取",
-                    value:"1",
+                    value:"0",
                 },{
                     label:"补充",
-                    value:"2"
+                    value:"1"
                 }],
                 title:"耗材领补",
                 category:""
@@ -114,7 +113,6 @@
             this.category = ""
         },
         components: {
-            myHeader,
             baseButton,
             dateSelect,
             entityInput
