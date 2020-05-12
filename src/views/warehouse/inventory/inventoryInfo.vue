@@ -1,6 +1,6 @@
 <template>
     <div class="inventory-info-container">
-        <my-header title="盘点装备"></my-header>
+        <my-header title="盘点装备" :haveBlack="true" @h_black="cancel"></my-header>
         <div class="body">
             <div class="inputs">
                 <define-input label="单号" v-model="inventoryOrder.number" :disabled="true"></define-input>
@@ -45,6 +45,7 @@
     import {findByRfids} from "../../../api/storage"
     import {inventoryOrder} from "../../../api/inventory"
     import {getBosEntity} from "../../../api/basic"
+    import {transEquipFormat} from "../../../common/js";
 
     export default {
         name: "inventoryInfo",
@@ -107,9 +108,7 @@
                 this.equipItems.forEach(item => {
                     this.rfids.push(item.rfid)
                     if (item.equipArg) {
-                        item.equipName = item.equipArg.name
-                        item.equipModel = item.equipArg.model
-                        item.locationInfo = item.location
+                       transEquipFormat(item)
                     }
                 })
                 // 对数据进行分组 按照位置、名称、型号 通过lodash

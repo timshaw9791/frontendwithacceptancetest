@@ -28,7 +28,7 @@
     import bosTabs from '@/componentized/table/bosTabs.vue'
     import divTmp from '@/componentized/divTmp'
     import {scarpsOrders} from "api/operation"
-    import transScrapCategory from '../../../common/js/transScrapCategory'
+    import transScrapCategory from '../../../common/js'
     import {listTableMixin} from "../../../field/mixins/listMixin";
 
     export default {
@@ -59,9 +59,9 @@
                     transScrapCategory(item)
                     // 装备数量
                     item.count=item.scrapItems.length
-                    if (item.equipItems.length !== 0) {
-                        item.equipArg = item.equipItems[0].equipName + '(' + item.equipItems[0].equipModel + ')'
-                        item.equipArg = item.equipItems.length > 0 ? item.equipArg+'...' : item.equipArg
+                    if (item.scrapItems.length !== 0) {
+                        item.equipArg = item.scrapItems[0].equipName + '(' + item.scrapItems[0].equipModel + ')'
+                        item.equipArg = item.scrapItems.length > 0 ? item.equipArg+'...' : item.equipArg
 
                     }
                 })

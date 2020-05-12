@@ -1,6 +1,6 @@
 <template>
     <div class="scrap-list-container">
-        <my-header title="装备报废"></my-header>
+        <my-header title="装备报废" :haveBlack="true" @h_black="cancel"></my-header>
         <div class="action_box" data-test="action_box">
             <define-input label="单号" v-model="scrapOrder.number" placeholder="--" :disabled="true"></define-input>
             <define-input label="报废类型" v-model="scrapOrder.categoryContent" :disabled="true"></define-input>
@@ -36,7 +36,7 @@
                     <define-column label="装备序号" field="serial"></define-column>
                 </define-table>
             </bos-tabs>
-            <div class="btn-box">
+            <div class="btn-box" v-if="!isInfo">
                 <base-button label="取消" @click="cancel"></base-button>
                 <base-button label="提交" @click="confirm"></base-button>
             </div>
@@ -54,7 +54,7 @@
     import divTmp from '@/componentized/divTmp'
     import {equipScrap} from 'api/operation'
     import {getBosEntity} from '@/api/basic'
-    import transScrapCategory from '../../../common/js/transScrapCategory'
+    import {transEquipFormat,transScrapCategory} from "../../../common/js";
 
     export default {
         name: "maintenance",
@@ -94,7 +94,7 @@
         },
         methods: {
             changeRow(current) {
-                this.detailItems = current.current.items
+                this.detailItems = current.current.item
             },
             changeTab(data) {
                 data.key === 'total' ? killProcess(this.pid) : ''
@@ -130,9 +130,7 @@
             fixEquipItems(){
                 this.scrapOrder.scrapItems.forEach(item => {
                     if (item.equipArg) {
-                        item.equipName = item.equipArg.name
-                        item.equipModel = item.equipArg.model
-                        item.locationInfo = item.location
+                        transEquipFormat(item)
                     }
                 })
                 // 处理前的装备数据
