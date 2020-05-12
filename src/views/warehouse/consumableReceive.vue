@@ -14,22 +14,7 @@
         <div class="process-info" style="z-index:-1">
             <define-input label="备注" v-model="order.remark" :column="12"></define-input>
         </div>
-        <define-table v-if="title=='耗材新增'" :havaPage="false" :data="order.consumableItems" height="3.6042rem" >
-            <define-column label="操作" width="100" v-slot="{ data }">
-                <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
-                <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
-            </define-column>
-            <define-column label="耗材名称" v-slot="{ data }">
-                <define-input v-model="data.row.name"></define-input>
-            </define-column>
-            <define-column label="库存数量" v-slot="{ data }">
-                <define-input v-model="data.row.count"></define-input>
-            </define-column>
-            <define-column label="耗材用途" v-slot="{ data }">
-                <define-input v-model="data.row.describes"></define-input>
-            </define-column>
-        </define-table>
-        <define-table v-if="title=='耗材领补'" :havaPage="false" :data="order.consumableItems" height="3.6042rem" >
+        <define-table :havaPage="false" :data="order.consumableItems" height="3.6042rem" >
             <define-column label="操作" width="100" v-slot="{ data }">
                 <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
                 <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
@@ -71,7 +56,7 @@
                     label:"补充",
                     value:"2"
                 }],
-                title:"",
+                title:"耗材领补",
                 category:""
             };
         },
@@ -88,81 +73,45 @@
 				this.order.equips = temp;
             },
             submit(){
-                if(this.title == "耗材领补"){
-                    let temp = []
-                    let order = JSON.parse(JSON.stringify(this.order))
-                    for(let i in order.consumableItems){
-                        if(JSON.stringify(order.consumableItems[i].consumable) != '{}'){
-                            if(order.consumableItems[i].count != ""){
-                                let a = JSON.parse(JSON.stringify(order.consumableItems[i].consumable))
-                                a.count = order.consumableItems[i].count
-                                temp.push(a)
-                            }
+                let temp = []
+                let order = JSON.parse(JSON.stringify(this.order))
+                for(let i in order.consumableItems){
+                    if(JSON.stringify(order.consumableItems[i].consumable) != '{}'){
+                        if(order.consumableItems[i].count != ""){
+                            let a = {}
+                            a.count = order.consumableItems[i].count
+                            a.consumableId = order.consumableItems[i].consumable.id
+                            a.name = order.consumableItems[i].consumable.name
+                            temp.push(a)
                         }
                     }
-                    order.consumableItems = temp
-                    receiveConsumable({category:this.category},order).then(res=>{
-                        this.$router.go(-1);
-                    })
-                }else if(this.title == "耗材新增"){
-                    let order = []
-                    for(let i in this.order.consumableItems){
-                        if(this.order.consumableItems[i].name != "" && this.order.consumableItems[i].count != ""
-                            && this.order.consumableItems[i].describes != ""){
-                                order.push(this.order.consumableItems[i])
-                        }
-                    }
-                    addConsumable({remark:this.order.remark},order).then(res=>{
-                        this.$router.go(-1);
-                    })
                 }
+                order.consumableItems = temp
+                receiveConsumable({category:this.category,remark:order.remark},order.consumableItems).then(res=>{
+                    this.$router.go(-1);
+                })
             },
             returnBack(){
                 this.$router.go(-1)
             }
         },
         created() {
-            if(this.$route.params.info == undefined) {
-                this.$message.info("数据丢失，返回耗材管理");
-                this.$router.go(-1);
-                return
-            }
             this.operatorInfo={
                 id:JSON.parse(localStorage.getItem("user")).id,
                 name:JSON.parse(localStorage.getItem("user")).name
             }
-            this.title = this.$route.params.info.title
-            if(this.title == '耗材新增'){
-                this.selectData=[{label:"新增",value:"0"}]
-                this.category = "0"
-                this.order.consumableItems = [
-                    {name:"",count:"",describes:""},
-                    {name:"",count:"",describes:""},
-                    {name:"",count:"",describes:""},
-                    {name:"",count:"",describes:""},
-                    {name:"",count:"",describes:""},
-                    {name:"",count:"",describes:""},
-                    {name:"",count:"",describes:""},
-                    {name:"",count:"",describes:""},
-                    {name:"",count:"",describes:""},
-                    {name:"",count:"",describes:""},
-                    {name:"",count:"",describes:""},
-                ]
-            }else if (this.title == '耗材领补'){
-                this.order.consumableItems = [
-                    {consumable:{},count:""},
-                    {consumable:{},count:""},
-                    {consumable:{},count:""},
-                    {consumable:{},count:""},
-                    {consumable:{},count:""},
-                    {consumable:{},count:""},
-                    {consumable:{},count:""},
-                    {consumable:{},count:""},
-                    {consumable:{},count:""},
-                ],
-                this.selectData=[{label:"领取",value:"1"},{label:"补充",value:"2"}]
-                this.category = ""
-            }
+            this.order.consumableItems = [
+                {consumable:{},count:""},
+                {consumable:{},count:""},
+                {consumable:{},count:""},
+                {consumable:{},count:""},
+                {consumable:{},count:""},
+                {consumable:{},count:""},
+                {consumable:{},count:""},
+                {consumable:{},count:""},
+                {consumable:{},count:""},
+            ],
+            this.category = ""
         },
         components: {
             myHeader,

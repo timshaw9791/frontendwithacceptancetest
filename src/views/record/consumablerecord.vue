@@ -44,8 +44,6 @@
                             item.category="领取单"
                         }else if(item.category==2){
                             item.category="补充单"
-                        }else if(item.category==0){
-                            item.category="新增单"
                         }
                     })
                 })
@@ -55,7 +53,6 @@
                 this.fetchData()
             },
             click(data){
-                console.log("data",data);
                 this.$router.push({
                     name: "consumablerecordInfo",
                     params: {info: {data: data}}

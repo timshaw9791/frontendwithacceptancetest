@@ -280,7 +280,6 @@
                     })
                     this.dialogData.assignedData = idList
                 }
-                console.log("this.dialogData.title",this.dialogData.title);
                 this.$refs.safetyDialogs.titleShow()
             },
             noAssigned(data){//装备参数与小类解绑
