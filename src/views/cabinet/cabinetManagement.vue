@@ -5,7 +5,7 @@
              <base-button label="一键开柜" align="right" :width="128" :height="25" :fontSize="20" ></base-button>
         </div>
         <div class="data-list" v-if="!edit">
-            <bos-tabs :option="['contrast']" :layoutRatio="[3,1]" :contrastKey="['slot1', 'slot2']">
+            <bos-tabs :option="['contrast']" :layoutRatio="[4,3]" :contrastKey="['slot1', 'slot2']">
             <define-table :data="list" slot="slot1" height="4rem" @changeCurrent="selRow" :havePage="false"  >
                             <define-column label="操作" width="150" v-slot="{ data }">
                                 <div class="span-box">
@@ -24,8 +24,14 @@
                             </define-column>
                         </define-table>
             <define-table :haveIndex="false"  slot="slot2" :havePage="false" :data="equipArg" height="4rem" >
-                <define-column label="装备参数" field="describes" v-slot="{data}">
-                    <entity-input v-model="data.row" format="{name}({model})" :tableEdit="false" :options="{}"></entity-input>
+                <define-column label="RFID"  v-slot="{data}">
+                    <define-input v-model="data.row.rfid"  :tableEdit="false" ></define-input>
+                </define-column>
+                <define-column label="装备序号"  v-slot="{data}">
+                    <define-input v-model="data.row.serial" :tableEdit="false" ></define-input>
+                </define-column>
+                <define-column label="装备参数" v-slot="{data}">
+                    <entity-input v-model="data.row.equipArg" format="{name}({model})" :tableEdit="false" :options="{}"></entity-input>
                 </define-column>
              </define-table>
             </bos-tabs>
@@ -70,9 +76,15 @@ export default {
             return{
                list:[],
                equipArg:[],
+               listData:[],
                params:{
+                    pageInfo: {
+                        direction: "ASC",
+                        page: 1,
+                        
+                    },
                     returnType: "ARRAY",
-                    jpql: "select e from Equip e left join PoliceCabinet pc on e.policeCabinet.id = pc.id where pc.id = ?1 ",
+                    jpql: "select e  from Equip e  left join PoliceCabinet pc on e.policeCabinet.id = pc.id where e.policeCabinet.id != null",
                     params: []
                     },
                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
@@ -107,7 +119,8 @@ export default {
 
             },
             selRow(data){
-                this.getCabinetEquipList(data.current.id)
+                this.equipArg=[]
+                this.equipArg=this._.flatten(this.listData.filter(item=>item[0].policeCabinet.id==data.current.id))
             },
             confirm(){
                 let params={
@@ -135,12 +148,9 @@ export default {
             },
             getCabinetEquipList(id){
                 this.params.params=[]
-                this.equipArg=[]
-                this.params.params.push(id)
                 cabinetEquip(this.params).then(res=>{
-                   res.forEach(item=>{
-                       this.equipArg.push(item[0].equipArg)
-                   })
+                   this.listData=this._.flatten(res)
+                   this.listData=this._.map(this._.groupBy(this.listData, item => `${item.policeCabinet.id}`))
                 })
             },
             black(){

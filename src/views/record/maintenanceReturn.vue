@@ -57,7 +57,7 @@ export default {
             },
             toDetail(data){
                 console.log(data);
-                this.$router.push({name:'maintenanceOrderDetails',params:{info:data}})
+                this.$router.push({name:'maintenanceOrderDetails',query:{id:data.id}})
                 this.$route.meta.title = '保养归还单/保养归还单详情'
             },
             fetchData(){

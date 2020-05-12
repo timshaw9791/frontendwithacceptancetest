@@ -113,9 +113,10 @@
                         this.tree.genres.forEach(item=>{
                             this.tree.treeData.push(item)
                         })
+                        this.tree.treeData.push({name:'单警装备',show:'GENRE',children:[]})
                     })
                 })
-                findEquipMoneyStatistics().then(res=>{
+                findEquipMoneyStatistics({categorys:[0,1,2,3],level:'ALL'}).then(res=>{
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
@@ -132,8 +133,6 @@
                if(item==4)return this.equipArg.reduce((v,k)=>v+k.totalPrice,0)
             },
             clickNode(data) {
-                console.log("-------------------");
-                console.log("data",data);
                 this.show = data.data.show
                 this.title = data.data.name
                 if(this.show=="genres"){
@@ -143,7 +142,7 @@
                         this.paginator.totalElements = res.totalElements;
                     })
                 }else if(this.show=="All"){
-                    findEquipMoneyStatistics({level:'ALL'}).then(res=>{
+                    findEquipMoneyStatistics({categorys:[0,1,2,3],level:'ALL'}).then(res=>{
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
