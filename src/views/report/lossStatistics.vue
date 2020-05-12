@@ -36,9 +36,9 @@
                 <div style="width:95%">
                     <define-table v-if="show=='All'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
                         <define-column label="装备大类" field="genre"/>
-                        <define-column label="装备总数" field="totality"></define-column>
-                        <define-column label="装备总价" field="totality"></define-column>
-                        <define-column label="损耗数" field="inHouseCount"></define-column>
+                        <define-column label="装备总数" field="totalCount"></define-column>
+                        <define-column label="装备总价" field="totalPrice"></define-column>
+                        <define-column label="损耗数" field="totalLoss"></define-column>
                         <define-column label="损耗总额" field="receiveUseCount"></define-column>
                         <define-column label="损耗率" field="totalPrice"></define-column>
                     </define-table>
@@ -119,7 +119,7 @@
                         })
                     })
                 })
-                findEquipLossStatistics().then(res=>{
+                findEquipLossStatistics({categorys:[0,1,2,3],level:'ALL'}).then(res=>{
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
@@ -141,7 +141,7 @@
                         this.paginator.totalElements = res.totalElements;
                     })
                 }else if(this.show=="All"){
-                    findEquipLossStatistics({level:'ALL'}).then(res=>{
+                    findEquipLossStatistics({categorys:[0,1,2,3],level:'ALL'}).then(res=>{
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
