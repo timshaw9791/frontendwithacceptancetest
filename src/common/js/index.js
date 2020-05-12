@@ -136,7 +136,7 @@ export function interval(time) {
     console.error("时间格式有误");
     return 'timeError';
   }
-  let timeStamp = (Date.now() - +time)/24/3600/1000;
+  let timeStamp = (+time - Date.now())/24/3600/1000;
   return timeStamp<1?'0天':timeStamp<2?'1天':timeStamp<3?'2天':'3天';
 }
 
