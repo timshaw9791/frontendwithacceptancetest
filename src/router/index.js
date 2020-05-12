@@ -282,9 +282,8 @@ export const asyncRouterMap = [{
         },{
             path: 'equipexpired',
             name: 'equipexpired',
-            component: _import('warehouse/equipExpired'),
-            meta:{title:'到期报废/装备报废'},
-            hidden: true,
+            component: _import('warehouse/scrap/scrapList'),
+            meta:{title:'装备报废'},
         }, {
             path: 'training',
             name: 'warehouse/training',
@@ -415,11 +414,6 @@ export const asyncRouterMap = [{
             name: 'serviceApplicationOrder',
             component: _import('record/serviceApplicationOrder'),
             meta: {title: '维修申请记录'},
-        }, {
-            path: 'scraded',
-            name: 'scraded',
-            component: _import('record/scraded'),
-            meta: {title: '报废记录'},
         }, {
             path: 'consumablerecord',
             name: 'consumablerecord',

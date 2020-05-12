@@ -1,5 +1,5 @@
 <template>
-    <div class="maintenance-form-container">
+    <div class="scrap-list-container">
         <my-header title="装备报废"></my-header>
         <div class="action_box" data-test="action_box">
             <define-input label="单号" v-model="expiredOrder.number" placeholder="--" :disabled="true"></define-input>
@@ -9,7 +9,7 @@
         </div>
         <define-input label="备注" v-model="expiredOrder.remark" margin="15px  0.0521rem"
                       :disabled="isInfo"></define-input>
-        <div class="maintenance-form-body">
+        <div class="scrap-list-body">
             <bos-tabs @changeTab="changeTab">
                 <template slot="slotHeader" v-if="!isInfo||isHardwareSelect">
                     <base-button label="读取数据" :disabled="!hardwareSelect.select" :width="96"
@@ -59,7 +59,7 @@
     import {findByRfids} from 'api/storage'
     import divTmp from '@/componentized/divTmp'
     import {equipScrap} from 'api/operation'
-    import {getBosEntity} from 'src/api/basic'
+    import {getBosEntity} from '@/api/basic'
 
     export default {
         name: "maintenance",
@@ -67,7 +67,8 @@
             return {
                 expiredOrder: {
                     operatorInfo: {
-                        operator: ''
+                        operator: '',
+                        operatorId: ''
                     },
                     equipItems: [{
                         equipArg: '',
@@ -93,9 +94,9 @@
                 // 扫描到的装备rfid
                 rfids: [],
                 isInfo: [],
-                isHardwareSelect:true,
+                isHardwareSelect: true,
                 //用于处理报废类型Enum
-                expiredCategory:''
+                expiredCategory: ''
             }
         },
         methods: {
@@ -129,34 +130,29 @@
                     pid ? this.pid = pid : this.$message.error(err)
                 })
             },
-            initData(){
-               if (this.isInfo){
-                   this.fetchData()
-               }
+            initData() {
+                if (this.isInfo) {
+                    this.fetchData()
+                }
             },
             //读写器数据处理的方法
             fixData() {
-                this.expiredOrder = {
-                    operatorInfo:{
-                        operator:JSON.parse(window.localStorage.getItem("user")).name,
-                        operatorId:JSON.JSON.parse(window.localStorage.getItem("user")).id,
-                    },
-                }
+                this.expiredCategory = this.$route.query.expiredCategory
                 switch (this.$route.query.expiredCategory) {
-                    case '维修报废': {
-                        this.expiredCategory = 0
+                    case 0: {
+                        this.expiredCategoryContent = '维修报废'
                         break
                     }
-                    case '到期报废': {
-                        this.expiredCategory = 1
+                    case 1: {
+                        this.expiredCategoryContent = '到期报废'
                         break
                     }
-                    case '盘点报废': {
-                        this.expiredCategory = 2
+                    case 2: {
+                        this.expiredCategoryContent = '盘点报废'
                         break
                     }
-                    case '常规报废': {
-                        this.expiredCategory = 3
+                    case 3: {
+                        this.expiredCategoryContent = '常规报废'
                         break
                     }
                 }
@@ -171,7 +167,7 @@
                 })
             },
             fetchData() {
-                getBosEntity().then( res => {
+                getBosEntity().then(res => {
                     this.expiredOrder = res
                     this.fixData()
                 })
@@ -198,7 +194,7 @@
             this.fetchData()
             // 报废可以调 id equipItems expiredCategory(0:维修报废,1:到期报废,2:盘点报废,3:常规报废) 只需带数字
             this.isInfo = !!this.$route.query.id
-            if (this.$route.query.equipItems){
+            if (this.$route.query.equipItems) {
 
             }
         },
@@ -216,7 +212,7 @@
 </script>
 
 <style lang="scss" scoped>
-    .maintenance-form-container {
+    .scrap-list-container {
         font-size: 16px;
 
         .action_box {
@@ -233,7 +229,7 @@
         overflow: hidden;
     }
 
-    .maintenance-form-body {
+    .scrap-list-body {
         margin-top: 15px;
         padding: 0 7px;
     }

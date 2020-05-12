@@ -102,6 +102,8 @@
                 })
             },
             fixData() {
+                debugger
+                this.inventoryOrder.startTime = this.$filterTime(this.inventoryOrder.startTime)
                 // 盘点单与手持机的装备列表数据字段不同，强制 添加equipName、equipModel、locationInfo 以便统一
                 this.equipItems.forEach(item => {
                     this.rfids.push(item.rfid)
@@ -135,6 +137,7 @@
                 })
                 // 假数据处理
                 if (!this.isInfo) {
+                    let count = 10 - length
                     this.inventoryOrder = {
                         startTime : (new Date()).valueOf(),
                         operatorInfo:{
@@ -143,7 +146,7 @@
                         },
                         inventoryCount : 10,
                         notCount : length,
-                        count : this.inventoryOrder.inventoryCount - this.inventoryOrder.notCount
+                        count:count
                     }
                 }
             },
@@ -156,7 +159,7 @@
                     rfids: this.rfids
                 }
                 inventoryOrder("post", data)
-                this.back()
+                this.cancel()
             },
             cancel() {
                 this.$router.back()
