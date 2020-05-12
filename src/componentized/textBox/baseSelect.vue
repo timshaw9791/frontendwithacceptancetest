@@ -8,7 +8,7 @@
             <span class="placeholder" v-else>{{ placeholder }}</span>
             <i class="iconfont iconxiala1" :class="{'icon-rotate': showOptions}" v-show="!disabled"></i>
             <div class="options-box" v-show="showOptions">
-                <div class="option" v-for="option in selectList" :key="option.value" @click.stop="clickOpt(option)">
+                <div class="option" v-for="option in selectList" :key="'sel'+option.value" @click.stop="clickOpt(option)">
                     <span class="label">{{ option.label }}</span>
                 </div>
             </div>
@@ -34,9 +34,7 @@ import { judgeRules } from "../rules"
                 type: String,
                 default: "流程管理"
             },
-            value: { // 父组件绑定值/选中值
-                type: [String, Object, Array]
-            },
+            value: {},// 父组件绑定值/选中值
             selectList: {
                 type: Array,
                 default() {
@@ -106,12 +104,13 @@ import { judgeRules } from "../rules"
                 this.$emit('input', data.value);
             }
         },
-        created() {
-            for(let k of this.selectList) {
-                if(k.value == this.value) {
-                    this.selectValue = k.label;
-                    break;
-                }
+        watch: {
+            value: {
+                handler(newVal) {
+                    let result = this.selectList.filter(item => item.value == newVal);
+                    this.selectValue = result[0]?result[0].label:''
+                },
+                immediate: true
             }
         }
     }
