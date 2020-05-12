@@ -1,12 +1,14 @@
 <template>
   <div class="consumable-form-container">
-    <my-header :title="$route.meta.title" :haveBlack="false"></my-header>
+    <div class="consumable-header">
+        <span style="font-size: 20px;">{{$route.meta.title}}</span>
+    </div>
     <div class="consumable-form-top">
         <base-button size="default" align="right" label="领补耗材" @click="receiceShow()"></base-button>
         <base-button size="default" align="right" label="新增耗材" @click="operating('add',data)"></base-button>
     </div>
     <div class="consumable-form-body" >
-        <define-table :pageInfo="paginator" @changePage="changePage" :data="order" height="2.6042rem" >
+        <define-table :pageInfo="paginator" @changePage="changePage" :data="order" height="3.6042rem" >
             <define-column label="操作" v-slot="{ data }">
                 <base-button label="编辑" size="mini" @click="operating('edit',data)" type="primary"></base-button>
             </define-column>
@@ -24,7 +26,6 @@
 </template>
 
 <script>
-    import myHeader from "components/base/header/header";
     import baseButton from "@/componentized/buttonBox/baseButton";
     import defineInput from '@/componentized/textBox/defineInput'
     import serviceDialog from "components/base/serviceDialog"
@@ -91,7 +92,7 @@
                 }else if(this.title.includes('新增')){
                     let param = {
                         name: this.consumableName,
-                        describes: this.describes,
+                        describes: this.consumableDescribes,
                         count:this.consumableCount 
                     }
                     addConsumable(param).then(res=>{
@@ -106,7 +107,6 @@
             this.fetchData()
         },
         components: {
-            myHeader,
             baseButton,
             defineInput,
             serviceDialog,
@@ -115,16 +115,33 @@
 </script>
 
 <style lang="scss" scoped>
-  .consumable-form-container {
-    font-size: 16px;
-  }
-  .consumable-form-top {
-    padding: 18px 7px;
-    border-bottom: 1px solid #ebeef5;
-    overflow: hidden;
-  }
-  .consumable-form-body {
-    padding: 0 7px;
-    widows: 100%;
-  }
+    .consumable-form-container {
+        font-size: 16px;
+    }
+    .consumable-form-top {
+        padding: 18px 7px;
+        border-bottom: 1px solid #ebeef5;
+        overflow: hidden;
+    }
+    .consumable-form-body {
+        padding: 0 7px;
+        widows: 100%;
+    }
+    .consumable-header{
+        width: 100%;
+        padding-left: 18px;
+        padding-right: 35px;
+        height: 57px;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        color: rgba(112,112,112,1);
+        border-bottom: 1px solid rgba(112,112,112, 0.13);
+    }
 </style>

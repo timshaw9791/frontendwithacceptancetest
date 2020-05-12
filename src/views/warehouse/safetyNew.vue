@@ -1,67 +1,71 @@
 <template>
   <div class="safety-container">
-    <my-header :title="$route.meta.title" :haveBlack="false"></my-header>
+    <div class="safety-header">
+        <span style="font-size: 20px;">{{$route.meta.title}}</span>
+    </div>
     <div class="safety-body" >
          <bos-tabs  :option="['contrast']" :layoutRatio="[1,3]" :contrastKey="['slot1', 'slot2']" >
-                <div slot="slot1"  class="safety-body-top">
-                    <define-input label="小类" v-model="search"></define-input>
-                    <div style="height:80%">
-                        <define-tree @clickNode="clickNode" :data="tree.treeData" :options="options" @nodeClick="clickNode"></define-tree>
-                    </div>
+            <div slot="slot1"  class="safety-body-top">
+                <define-input label="小类" v-model="search"></define-input>
+                <div style="height:85%">
+                    <define-tree :search="search" :data="tree.treeData" :options="options" @nodeClick="clickNode"></define-tree>
+                </div>
+                <div style="margin-bottom:2px">
                     <base-button label="添加大类" size="mini" @click="dialogShow('add','genres')"></base-button>
                     <base-button label="编辑大类" size="mini" @click="dialogShow('edit','genres')"></base-button>
                     <base-button label="删除大类" size="mini" @click="deleteShow('genres')"></base-button>
                 </div>
-                <div  slot="slot2" class="safety-body-top">
-                    <div class="safety-body-t" v-if="show=='unassigned'">
-                        <div style="float:left">{{this.title}}</div>
-                        <div style="float:right">
-                            <base-button label="装备分类" size="mini" @click="dialogShow('unassigned')"></base-button>
-                        </div>
-                    </div>
-                    <div style="safety-body-t" v-else-if="show=='genres'">
-                        <div style="float:left">装备大类：{{this.title}}</div>
-                        <div style="float:right">
-                            <base-button label="添加小类" size="mini" @click="dialogShow('add','category')"></base-button>
-                            <base-button label="编辑小类" size="mini" @click="dialogShow('edit','category')"></base-button>
-                            <base-button :label="editFlag?'取消编辑':'编辑库存'" size="mini" @click="editFlag?editStock():editFlag=!editFlag"></base-button>
-                        </div>
-                    </div>
-                    <div style="safety-body-t" v-else-if="show=='category'">
-                        <div style="float:left">装备小类：{{this.title}}</div>
-                        <div style="float:left;margin-left:120px">装备总数：{{this.total}}</div>
-                        <div style="float:left;margin-left:120px">安全库存：-</div>
-                    </div>
-                    <div style="width:95%">
-                        <define-table v-if="show=='unassigned'" ref="table" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
-                            <define-column columnType="selection"></define-column>
-                            <define-column label="装备参数" field="describes" v-slot="{data}">
-                                <entity-input v-model="data.row.equipArg"  format="{name}({model})" :detailParam="data.row.equipArg" :tableEdit="false" :options="{detail: 'equipArgsDetail'}"></entity-input>
-                            </define-column>
-                            <define-column label="装备数量" field="count"></define-column>
-                        </define-table>
-                        <define-table v-if="show=='genres'" :pageInfo="paginator" @changePage="changePage"
-                                        :data="equipArg" height="3.6042rem" @changeCurrent="changeCurrent">
-                            <define-column label="操作" v-slot="{data}">
-                                <base-button label="删除" size="mini" @click="deleteShow('category',data)"></base-button>
-                            </define-column>
-                            <define-column label="装备小类" field="category.name"></define-column>
-                            <define-column label="装备数量" field="count"></define-column>
-                            <define-column label="安全库存" v-slot="{data}">
-                                <define-input v-model="data.row.category.stock" :disabled="!editFlag"></define-input>
-                            </define-column>
-                        </define-table>
-                        <define-table v-if="show=='category'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
-                            <define-column label="操作" v-slot="{data}">
-                                <base-button label="删除" size="mini" @click="noAssigned(data)"></base-button>
-                            </define-column>
-                            <define-column label="装备参数" field="describes" v-slot="{data}">
-                                <entity-input v-model="data.row.equipArg" :detailParam="data.row.equipArg" format="{name}({model})" :tableEdit="false" :options="{detail: 'equipArgsDetail'}"></entity-input>
-                            </define-column>
-                            <define-column label="装备数量" field="count"></define-column>
-                        </define-table>
+            </div>
+            <div  slot="slot2" class="safety-body-top">
+                <div class="safety-body-t" v-if="show=='unassigned'">
+                    <div style="float:left">{{this.title}}</div>
+                    <div style="float:right">
+                        <base-button label="装备分类" size="mini" @click="dialogShow('unassigned')"></base-button>
                     </div>
                 </div>
+                <div style="safety-body-t" v-else-if="show=='genres'">
+                    <div style="float:left">装备大类：{{this.title}}</div>
+                    <div style="float:right">
+                        <base-button label="添加小类" size="mini" @click="dialogShow('add','category')"></base-button>
+                        <base-button label="编辑小类" size="mini" @click="dialogShow('edit','category')"></base-button>
+                        <base-button :label="editFlag?'取消编辑':'编辑库存'" size="mini" @click="editFlag?editStock():editFlag=!editFlag"></base-button>
+                    </div>
+                </div>
+                <div style="safety-body-t" v-else-if="show=='category'">
+                    <div style="float:left">装备小类：{{this.title}}</div>
+                    <div style="float:left;margin-left:120px">装备总数：{{this.total}}</div>
+                    <div style="float:left;margin-left:120px">安全库存：-</div>
+                </div>
+                <div style="width:95%">
+                    <define-table v-if="show=='unassigned'" ref="table" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
+                        <define-column columnType="selection"></define-column>
+                        <define-column label="装备参数" field="describes" v-slot="{data}">
+                            <entity-input v-model="data.row.equipArg"  format="{name}({model})" :detailParam="data.row.equipArg" :tableEdit="false" :options="{detail: 'equipArgsDetail'}"></entity-input>
+                        </define-column>
+                        <define-column label="装备数量" field="count"></define-column>
+                    </define-table>
+                    <define-table v-if="show=='genres'" :pageInfo="paginator" @changePage="changePage"
+                                    :data="equipArg" height="3.6042rem" @changeCurrent="changeCurrent">
+                        <define-column label="操作" v-slot="{data}">
+                            <base-button label="删除" size="mini" @click="deleteShow('category',data)"></base-button>
+                        </define-column>
+                        <define-column label="装备小类" field="category.name"></define-column>
+                        <define-column label="装备数量" field="count"></define-column>
+                        <define-column label="安全库存" v-slot="{data}">
+                            <define-input v-model="data.row.category.stock" :disabled="!editFlag"></define-input>
+                        </define-column>
+                    </define-table>
+                    <define-table v-if="show=='category'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
+                        <define-column label="操作" v-slot="{data}">
+                            <base-button label="删除" size="mini" @click="noAssigned(data)"></base-button>
+                        </define-column>
+                        <define-column label="装备参数" field="describes" v-slot="{data}">
+                            <entity-input v-model="data.row.equipArg" :detailParam="data.row.equipArg" format="{name}({model})" :tableEdit="false" :options="{detail: 'equipArgsDetail'}"></entity-input>
+                        </define-column>
+                        <define-column label="装备数量" field="count"></define-column>
+                    </define-table>
+                </div>
+            </div>
          </bos-tabs>
          <service-dialog title="提示" ref="deleteDialog" width="3.3021rem" @confirm="submit" :secondary="false">
             <div>确定删除该{{dialogData.deleteTitle}}吗？</div>
@@ -86,31 +90,31 @@
         name: "safety",
         data() {
             return {
-                tree:{
+                tree:{//树形的数据
                     treeData:[],
                     genres:[],
                     categories:[]
                 },
-                options:{
+                options:{//树形判断显示和下级
                     label:'name',
                     children:'children'
                 },
                 title:"未分类装备",
                 paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
-                show:"unassigned",
-                equipArg:[],
-                search:"",
-                total:0,
-                dialogData:{
+                show:"unassigned",//判断右侧显示的是小类，小类中的装备还是未分配装备
+                equipArg:[],//右侧的数据
+                search:"",//搜索
+                total:0,//显示小类中装备时的装备总数
+                dialogData:{//弹框数据
                     editData:{},
                     addData:{},
                     deleteTitle:"大类",
                     title:""
                 },
-                choseGenre:{},
-                choseCategory:{},
-                Assigned:"",
-                editFlag:false
+                choseGenre:{},//树形内所选择的大类
+                choseCategory:{},//表格内所选择的小类
+                Assigned:"",//树形内所选择的小类
+                editFlag:false//安全库存编辑
             };
         },
         methods: {
@@ -130,7 +134,7 @@
                     })
                 })
             },
-            changePage(page) {
+            changePage(page) {//表格内的页面转换
                 this.paginator.page = page
                 if(this.show == "category"){
                     let params = JSON.parse(JSON.stringify(this.paginator))
@@ -162,7 +166,7 @@
                     })
                 }
             },
-            changeCurrent(data){
+            changeCurrent(data){//存储表格内所选择的小类
                 this.choseCategory = data.current
             },
             submit(){//确定删除大小类
@@ -178,7 +182,7 @@
                     })
                 }
             },
-            deleteShow(data,row){
+            deleteShow(data,row){//删除大小类的dialog显示
                 if(data == "genres"){
                     this.dialogData.deleteTitle = "大类"
                     if(JSON.stringify(this.choseGenre)=='{}'){
@@ -191,9 +195,8 @@
                     this.dialogData.deleteId = row.row.category.id
                 }
                 this.$refs.deleteDialog.show()
-                
             },
-            editStock(){
+            editStock(){//安全库存编辑后的存储
                 let equip = []
                 this.equipArg.forEach(item=>{
                     equip.push(item.category)
@@ -226,7 +229,7 @@
                         this.paginator.totalElements = res.totalElements;
                     })
                 }else if(this.show=="category"){
-                    this.total = 0
+                    this.total = data.data.count
                     this.Assigned = data.data.id
                     let params = JSON.parse(JSON.stringify(this.paginator))
                     params.id = data.data.id
@@ -234,9 +237,6 @@
                         this.equipArg = res.content
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
-                        this.equipArg.forEach(item=>{
-                            this.total+=item.count
-                        })
                     })
                 }
             },
@@ -292,12 +292,16 @@
                     this.tree.genres[i].show = "genres"
                     this.tree.categories=this.tree.genres
                     this.tree.categories[i].children=[]
-                    await getcategories(this.tree.genres[i].id).then(res=>{
-                        let categories = res
-                        categories.forEach(item=>{
-                            item.show="category"
-                            this.tree.categories[i].children.push(item)
-                        })
+                    await getcategoriesSafety(this.tree.genres[i].id).then(res=>{
+                        let categories = res.content
+                        if(categories.length !=1 && categories[0].category != null){
+                            categories.forEach(item=>{
+                                let temp = JSON.parse(JSON.stringify(item.category))
+                                temp.show="category"
+                                temp.count = item.count
+                                this.tree.categories[i].children.push(temp)
+                            })
+                        }
                     })
                 }
             },
@@ -319,14 +323,14 @@
 </script>
 
 <style lang="scss" scoped>
-  .safety-container {
-    font-size: 16px;
-  }
-  .safety-body {
-    padding: 0 7px;
-    widows: 100%;
-  }
-  .safety-body-top{
+    .safety-container {
+        font-size: 16px;
+    }
+    .safety-body {
+        padding: 0 7px;
+        widows: 100%;
+    }
+    .safety-body-top{
         width: 100%;
         height: 100%;
         background: #F9F9F9;
@@ -338,11 +342,28 @@
         justify-content: space-between;
         padding-left: 5px;
         color: rgba(112, 112, 112, 1);
-  }
-  .safety-body-t{
-      height: 20px;
-      width: 95%;
-      align-items: center;
-      justify-content: space-between;
-  }
+    }
+    .safety-body-t{
+        height: 20px;
+        width: 95%;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .safety-header{
+        width: 100%;
+        padding-left: 18px;
+        padding-right: 35px;
+        height: 57px;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        color: rgba(112,112,112,1);
+        border-bottom: 1px solid rgba(112,112,112, 0.13);
+    }
 </style>
