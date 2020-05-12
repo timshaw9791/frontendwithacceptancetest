@@ -49,7 +49,7 @@ export default {
         },
         methods:{
             toDetail(data){
-                this.$router.push({name:'serviceDetails',params:{info:data}})
+                this.$router.push({name:'serviceDetails',query:{id:data.id}})
                 this.$route.meta.title = '维修归还单/维修归还单详情'
             },
             changePage(page){

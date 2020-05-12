@@ -2,9 +2,9 @@
     <div class="maintenance-details-container">
           <my-header :title="$route.meta.title" :haveBlack="true" @h_black="cancel"></my-header>
          <div class="maintenance-details-top" >
-                <define-input label="单号" v-model="orderNumber" :disabled="true"></define-input>
-                <date-select label="保养开始时间" v-model="time" :disabled="true"></date-select>
-                <entity-input label="操作人员" v-model="people" format="{name}" :disabled="true" ></entity-input>
+                <define-input label="单号" v-model="listData.number" :disabled="true"></define-input>
+                <date-select label="保养开始时间" v-model="listData.createTime" :disabled="true"></date-select>
+                <entity-input label="操作人员" v-model="listData.operatorInfo.operator" format="{name}" :disabled="true" ></entity-input>
             </div>
         <div class="maintenance-details-body">
             <bos-tabs >
@@ -46,6 +46,7 @@
     import { start, startOne, killProcess,handheld, modifyFileName } from 'common/js/rfidReader'
     import divTmp from '@/componentized/divTmp'
     import { getInhouseNumber,inHouse} from "api/storage"
+    import {getBosEntity} from "api/basic"
 export default {
     components:{
             myHeader,
@@ -61,13 +62,10 @@ export default {
         },
         data(){
             return{
-               time:"",
-               people:'',
-               requestBody:'',
-               orderNumber:'',
                findIndex:0,
                newData:[],
-               list:[]
+               list:[],
+               listData:[]
             }
         },
         methods:{
@@ -81,20 +79,24 @@ export default {
                 sums[columns.length-1]=param.data.reduce((v,k)=>v+k.count,0)
                 return sums;
             },
+            fetchData(id){
+                getBosEntity(id).then(res=>{
+                    this.listData=res
+                    this.changeDataFormat(res.equipKeepItems)
+                })
+            },
             cancel(){
                 this.$router.back()
             },
             changeDataFormat(data){
-            data.forEach(item=>{this.list.push(item)})
+                data.forEach(item=>{this.list.push(item)})
                 let cList=this._.groupBy(this.list, item => `${item.equipName}${item.equipModel}${item.locationInfo.id}`)
                 this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0],copyList:v,count:v.length,location:v[0].locationInfo}})
             },
         },
         created(){
-                this.orderNumber=this.$route.params.info.number;
-                this.time=this.$route.params.info.createTime;
-                this.people=this.$route.params.info.operatorInfo.operator;
-                this.changeDataFormat(this.$route.params.info.equipKeepItems)   
+                console.log(this.$route.query.id);
+                this.fetchData(this.$route.query.id)
         }
 }
 </script>

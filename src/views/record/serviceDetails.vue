@@ -2,9 +2,9 @@
     <div class="service-details-container">
           <my-header :title="$route.meta.title" :haveBlack="true" @h_black="cancel"></my-header>
          <div class="service-details-top" data-test="service-details-top">
-                <define-input label="单号" v-model="orderNumber" :disabled="true" class="odd-number"></define-input>
-                <date-select label="维修开始时间" v-model="time" :disabled="true"></date-select>
-                <entity-input label="操作人员" v-model="people" format="{name}" :disabled="true" ></entity-input>
+                <define-input label="单号" v-model="listData.number" :disabled="true" class="odd-number"></define-input>
+                <date-select label="维修开始时间" v-model="listData.createTime" :disabled="true"></date-select>
+                <entity-input label="操作人员" v-model="listData.operatorInfo.operator" format="{name}" :disabled="true" ></entity-input>
             </div>
         <div class="service-details-body">
             <bos-tabs >
@@ -46,6 +46,7 @@
     import { start, startOne, killProcess,handheld, modifyFileName } from 'common/js/rfidReader'
     import divTmp from '@/componentized/divTmp'
     import { getInhouseNumber,inHouse} from "api/storage"
+    import {getBosEntity} from "api/basic"
 export default {
     components:{
             myHeader,
@@ -61,33 +62,27 @@ export default {
         },
         data(){
             return{
-               time:"",
-               people:'',
-               requestBody:'',
-               orderNumber:'',
                findIndex:0,
                newData:[],
-               list:[]
+               list:[],
+               listData:[]
             }
         },
         methods:{
             selRow(data){
                 this.findIndex=data.index
             },
+            fetchData(id){
+                getBosEntity(id).then(res=>{
+                    this.listData=res
+                    this.changeDataFormat(res.equipRepairItems)
+                })
+            },
             sumFunc(param) { // 表格合并行计算方法
                 let { columns, data } = param, sums = [];
-                columns.forEach((colum, index) => {
-                    if(index == 0) {
-                        sums[index] =  '合计';
-                    } else if(index == columns.length-1) {
-                        const values = data.map(item => item.count?Number(item.count):0);
-                        if(!values.every(value => isNaN(value))) {
-                            sums[index] = values.reduce((pre, cur) => !isNaN(cur)?pre+cur:pre);
-                        }
-                    } else {
-                        sums[index] = '';
-                    }
-                })
+                sums=new Array(columns.length).fill('')
+                sums[0]='合计'
+                sums[columns.length-1]=param.data.reduce((v,k)=>v+k.count,0)
                 return sums;
             },
             cancel(){
@@ -103,11 +98,7 @@ export default {
              },
         },
         created(){
-                console.log(this.$route.params.info);
-                this.orderNumber=this.$route.params.info.number;
-                this.time=this.$route.params.info.createTime;
-                this.people=this.$route.params.info.operatorInfo.operator;
-                this.changeDataFormat(this.$route.params.info.equipRepairItems)
+                this.fetchData(this.$route.query.id)
         }
 }
 </script>

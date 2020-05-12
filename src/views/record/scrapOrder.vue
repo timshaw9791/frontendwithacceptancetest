@@ -55,7 +55,7 @@ export default {
         },
         methods:{
             toDetail(data){
-                this.$router.push({name:'scrapOrderDetails',params:{info:data}})
+                this.$router.push({name:'scrapOrderDetails',query:{id:data.id}})
             },
             fetchData(){
                 scarpsOrders(this.paginator).then(res=>{

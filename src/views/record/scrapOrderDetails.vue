@@ -2,12 +2,12 @@
   <div class="maintenance-form-container">
        <my-header :title="$route.meta.title" :haveBlack="true" @h_black="cancel"></my-header>
        <div class="maintenance-form-top" data-test="maintenance-form-top">
-                <define-input label="单号" v-model="orderNumber" placeholder="--" :disabled="true" class="odd-number"></define-input>
-                <define-input label="报废类型" v-model="$route.params.info.category" placeholder="到期报废" :disabled="true" class="odd-number"></define-input>
-                <date-select label="报废时间" v-model="time" placeholder="--" :disabled="true"></date-select>
-                <entity-input label="操作人员" v-model="people"  :disabled="true" ></entity-input>
+                <define-input label="单号" v-model="listData.number" placeholder="--" :disabled="true" class="odd-number"></define-input>
+                <define-input label="报废类型" v-model="listData.category" placeholder="到期报废" :disabled="true" class="odd-number"></define-input>
+                <date-select label="报废时间" v-model="listData.createTime" placeholder="--" :disabled="true"></date-select>
+                <entity-input label="操作人员" v-model="listData.operatorInfo.operator"  :disabled="true" ></entity-input>
             </div>
-        <define-input label="备注" margin="15px 15px" v-model="$route.params.info.remark" style="margin-top:15px" :disabled="true" ></define-input>
+        <define-input label="备注" margin="15px 15px" v-model="listData.remark" style="margin-top:15px" :disabled="true" ></define-input>
     
     <div class="maintenance-form-body">
         <bos-tabs >
@@ -48,25 +48,21 @@ import myHeader from 'components/base/header/header'
     import divTmp from '@/componentized/divTmp'
     import { equipScrap} from "api/operation"
     import { maturityScrap,equipById} from 'api/storage'
+    import {getBosEntity} from "api/basic"
 var _ = require("lodash");
 export default {
   name: "maintenance",
   data() {
     return {
-       copyData:{},
-               remark:'',
-               people:'',
-               requestBody:'',
-               orderNumber:'',
-               time:'',
-               paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
-               findIndex:0,
-               newData:[{
-                   equipArg:'',
-                   count:0,
-                   copyList:[{rfid:'',serial:''}]
-               }],
-               list:[],
+        listData:[],
+        paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
+        findIndex:0,
+        newData:[{
+            equipArg:'',
+            count:0,
+            copyList:[{rfid:'',serial:''}]
+        }],
+        list:[],
     }
   },
   methods: {
@@ -83,6 +79,16 @@ export default {
             cancel(){
                 this.$router.back()
             },
+            fetchData(id){
+                getBosEntity(id).then(res=>{
+                    this.listData=res
+                    if(this.listData.category==0)this.listData.category='维修报废'
+                    if(this.listData.category==1)this.listData.category='到期报废'
+                    if(this.listData.category==2)this.listData.category='盘点报废'
+                    if(this.listData.category==3)this.listData.category='常规报废'
+                    this.classDataify(res.scrapItems)
+                })
+            },
            classDataify(data)//读写器数据处理的方法
             {
                 data.forEach(item=>{this.list.push(item)})
@@ -92,11 +98,7 @@ export default {
 
     },
   created() {
-      this.orderNumber=this.$route.params.info.number;
-      this.time=this.$route.params.info.createTime;
-      this.people=this.$route.params.info.operatorInfo.operator
-      this.classDataify(this.$route.params.info.scrapItems)
-    
+      this.fetchData(this.$route.query.id)
   },
   components: {
     myHeader,
