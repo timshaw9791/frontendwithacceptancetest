@@ -22,7 +22,7 @@
                                 <entity-input v-model="data.row.equipArg"  :options="{detail:'equipArgsDetails'}" format="{name}({model})" :tableEdit="false" ></entity-input>
                             </define-column>
                             <define-column label="装备位置" v-slot="{ data }">
-                                <entity-input v-model="data.row.location" :formatFunc="formatFunc" :tableEdit="false"></entity-input>
+                                <entity-input v-model="data.row.location" :formatFunc="$formatFuncLoc" :tableEdit="false"></entity-input>
                             </define-column>
                             <define-column label="可保养数量" v-slot="{ data }">
                                 <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
@@ -99,7 +99,7 @@ export default {
                     label: "手持机",
                     value: 'handheld'
                 }, {
-                    label: "读卡器",
+                    label: "读写器",
                     value: "reader"
                 }],
                 selected: ""
@@ -122,17 +122,6 @@ export default {
           selRow(data) { // 单选表格行
            this.findIndex=data.index
       },
-      formatFunc(data){
-            if(data.surface!=null&&data.floor!=null){
-                 return data.frameNumber?
-                `${data.frameNumber}架/${data.surface}面/${data.section}节/${data.floor}层`:
-                `${data.category}(${data.cabinetNumber})`
-               }else{
-                 return data.frameNumber?
-                `${data.frameNumber}架/${data.section}节`:
-                `${data.category}(${data.cabinetNumber})`   
-               }
-           },
        changeRow(state,data){
 
            this.listData[this.findIndex].clist=[{rfid:'',serial:''}]
@@ -164,9 +153,9 @@ export default {
                     this.cancel()
                 })
       },
-      classDataify(data)//
+      classDataify(data)//s
             {
-                    if(this._.findIndex(this.list,data[0])==-1)//避免重复
+                    if(this._.findIndex(this.list,['rfid',data[0].rfid])==-1)//避免重复
                 {
                 data.forEach(item=>{this.list.push(item)})
                 let cList=this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}${item.location.id}`)

@@ -2,14 +2,14 @@
     <div>
         <service-dialog :title="title" ref="safetyDialogs" width="3.3021rem"
                        :button="false" :secondary="false">
-            <div v-if="title.indexOf('新增')!=-1" style="text-align: center;">
-                <define-input v-if="title.indexOf('小类')!=-1" v-model="addData.name" margin="15px" label="大类" :column="9" :disabled="true"></define-input>
+            <div v-if="title.includes('新增')" style="text-align: center;">
+                <define-input v-if="title.includes('小类')" v-model="addData.name" margin="15px" label="大类" :column="9" :disabled="true"></define-input>
                 <define-input v-model="newName" margin="15px" label="名称" :column="9"></define-input>
             </div>
-            <div v-else-if="title.indexOf('编辑')!=-1" style="text-align: center;">
-                <define-input v-model="edit.name" margin="15px" :label="title.indexOf('大类')!=-1?'大类名称':'小类名称'" :column="9"></define-input>
+            <div v-else-if="title.includes('编辑')" style="text-align: center;">
+                <define-input v-model="edit.name" margin="15px" :label="title.includes('大类')?'大类名称':'小类名称'" :column="9"></define-input>
             </div>
-            <div v-else-if="title.indexOf('装备')!=-1" style="text-align: center;">
+            <div v-else-if="title.includes('装备')" style="text-align: center;">
                 <base-select label="装备大类" :column="12" margin="15px" v-model="selectedData.selectGenre" :selectList="selectData.genre"></base-select>
                 <base-select label="装备小类" :column="12" margin="15px" v-model="selectedData.selectCategory" :selectList="selectData.category"></base-select>
             </div>
@@ -33,7 +33,7 @@
         data() {
             return {
                 newName:"",
-                edit:{},
+                edit:this.editData,
                 selectData:{
                     genre:[],
                     category:[]
@@ -62,21 +62,48 @@
         watch:{
             'selectedData.selectGenre':{
                 handler(newVal){
-                    getcategories(newVal).then(res=>{
-                        res.forEach(item=>{
-                            this.selectData.category.push({
-                                label:item.name,
-                                value:item.id
+                    this.selectedData.selectCategory = ""
+                    if(newVal!=""){
+                        getcategories(newVal).then(res=>{
+                            if(res.length == 0){
+                                this.selectData.category = []
+                            }else{
+                                this.selectData.category = []
+                                res.forEach(item=>{
+                                    this.selectData.category.push({
+                                        label:item.name,
+                                        value:item.id
+                                    })
+                                })
+                            }
+                        })
+                    }
+                }
+            },
+            'editData':{
+                handler(newVal){
+                    this.edit = JSON.parse(JSON.stringify(newVal))
+                }
+            },
+            'title':{
+                handler(newVal){
+                    if(this.title=="装备分类"){
+                        getgenresList().then(res=>{
+                            res.content.forEach(item=>{
+                                this.selectData.genre.push({
+                                    value:item.id,
+                                    label:item.name
+                                })
                             })
                         })
-                    })
+                    }
                 }
             }
         },
         methods: {
             titleShow(){
-                this.edit=JSON.parse(JSON.stringify(this.editData))
-                if(this.title=="装备分配"){
+                this.$refs.safetyDialogs.show()
+                if(this.title=="装备分类"){
                     getgenresList().then(res=>{
                         res.content.forEach(item=>{
                             this.selectData.genre.push({
@@ -86,12 +113,18 @@
                         })
                     })
                 }
-                console.log("this.edit",this.edit);
-                this.$refs.safetyDialogs.show()
             },
             cancel(){
                 this.$refs.safetyDialogs.hide()
                 this.newName = ""
+                this.selectData={
+                    genre:[],
+                    category:[]
+                },
+                this.selectedData={
+                    selectGenre:"",
+                    selectCategory:""
+                }
             },
             submit(){
                 if(this.title == "新增大类"){
@@ -115,12 +148,25 @@
                         this.$refs.safetyDialogs.hide()
                         this.$emit('fetchData');
                     })
-                }else if(this.title == "装备分配"){
+                }else if(this.title == "装备分类"){
                     this.assignedData = this.assignedData.toString()
-                    distribution(this.selectedData.selectCategory,{equipArgs:this.assignedData}).then(res=>{
-                        this.$refs.safetyDialogs.hide()
-                        this.$emit('fetchData');
-                    })
+                    if(this.selectedData.selectCategory != null ||this.selectedData.selectCategory != ''){
+                        distribution(this.selectedData.selectCategory,{equipArgs:this.assignedData}).then(res=>{
+                            this.$refs.safetyDialogs.hide()
+                            this.$emit('fetchData');
+                        })
+                    }else {
+                        this.$message.error("请选择小类")
+                    }
+                }
+                this.newName = ""
+                this.selectData={
+                    genre:[],
+                    category:[]
+                },
+                this.selectedData={
+                    selectGenre:"",
+                    selectCategory:""
                 }
             }
         }

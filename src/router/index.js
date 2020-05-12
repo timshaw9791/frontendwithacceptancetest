@@ -275,6 +275,12 @@ export const asyncRouterMap = [{
             component: _import('warehouse/consumable'),
             meta: {title: '耗材管理'},
         }, {
+            path: 'consumableReceive',
+            name: 'warehouse/consumableReceive',
+            component: _import('warehouse/consumableReceive'),
+            meta: {title: '耗材管理'},
+            hidden: true,
+        }, {
             path: 'expired',
             name: 'warehouse/expired',
             component: _import('warehouse/expired'),

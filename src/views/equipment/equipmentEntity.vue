@@ -26,7 +26,9 @@
                             <define-column label="联系人" width="100" field="equipArg.supplier.person" />
                             <define-column label="联系方式" width="150" field="equipArg.supplier.phone"/>
                             <define-column label="生产日期" width="200" :filter="(row)=>$filterTime(row.createTime)"/>
-                            <define-column label="装备位置" width="200" :filter="(row)=>milliLocation(row.location)"/>
+                            <define-column label="装备位置" width="200"  v-slot="{data}">
+                                <entity-input v-model="data.row.location" :formatFunc="$formatFuncLoc" :tableEdit="false"></entity-input>
+                            </define-column>
                             <define-column label="单价" field="price"/>
                             
                         </define-table>

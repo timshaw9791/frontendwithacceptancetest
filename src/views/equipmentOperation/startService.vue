@@ -98,7 +98,7 @@ export default {
                         label: "手持机",
                         value: 'handheld'
                     }, {
-                        label: "读卡器",
+                        label: "读写器",
                         value: "reader"
                     }],
                     selected: ""
@@ -134,7 +134,7 @@ export default {
             },
              classDataify(data)//读写器数据处理的方法
             {
-                    if(this._.findIndex(this.list,data[0])==-1)//避免重复
+                    if(this._.findIndex(this.list,['rfid',data[0].rfid])==-1)//避免重复
                 {
                 data.forEach(item=>{this.list.push(item)})
                 let cList=this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}${item.location.id}`)
@@ -166,7 +166,7 @@ export default {
                 return sums;
             },
             changePage(page) {
-            this.paginator.page = page;
+                this.paginator.page = page;
             },
             readData(){
                 killProcess(this.pid)

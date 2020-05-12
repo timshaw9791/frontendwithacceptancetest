@@ -14,22 +14,13 @@
         <div class="process-info" style="z-index:-1">
             <define-input label="备注" v-model="order.remark" :column="12"></define-input>
         </div>
-        <define-table v-if="order.category=='新增单'" :havaPage="false" :data="order.consumableItems" height="3.6042rem" >
+        <define-table :havaPage="false" :data="order.consumableItems" height="3.6042rem" >
             <define-column label="操作" width="100">
                 <i class="iconfont icontianjialiang"></i>
                 <i class="iconfont iconyichuliang"></i>
             </define-column>
             <define-column label="耗材名称" field="name"></define-column>
-            <define-column label="库存数量" field="count"></define-column>
-            <define-column label="耗材用途" field="describes"></define-column>
-        </define-table>
-        <define-table v-if="order.category=='领取单'||order.category=='补充单'" :havaPage="false" :data="order.consumableItems" height="3.6042rem" >
-            <define-column label="操作" width="100">
-                <i class="iconfont icontianjialiang"></i>
-                <i class="iconfont iconyichuliang"></i>
-            </define-column>
-            <define-column label="耗材名称" field="consumableItems.name"></define-column>
-            <define-column label="本次领补" field="consumableItems.name"></define-column>
+            <define-column label="本次领补" field="count"></define-column>
         </define-table>
     </div>
   </div>
@@ -53,9 +44,6 @@
                 },{
                     label:"补充",
                     value:"补充单"
-                },{
-                    label:"新增",
-                    value:"新增单"
                 }],
                 title:"",
             };
