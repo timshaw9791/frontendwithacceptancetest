@@ -1,8 +1,10 @@
 <template>
   <div class="chargingRecord-form-container">
-    <my-header :title="$route.meta.title" :haveBlack="false"></my-header>
+    <div class="chargingRecord-header">
+        <span style="font-size: 20px;">{{$route.meta.title}}</span>
+    </div>
     <div class="chargingRecord-form-body" >
-        <define-table  :pageInfo="paginator" @changePage="changePage" :data="order" height="2.6042rem" >
+        <define-table  :pageInfo="paginator" @changePage="changePage" :data="order" height="3.6042rem" >
             <define-column label="RFID" field="rfid"></define-column>
             <define-column label="装备序号" field="serial"></define-column>
             <define-column label="装备参数" field="equipName(equipModel)" :filter="(row)=>equip(row)"></define-column>
@@ -22,10 +24,7 @@
 </template>
 
 <script>
-    import myHeader from "components/base/header/header";
-    import report_tree from 'components/report/report_tree'
     import baseButton from "@/componentized/buttonBox/baseButton";
-    import entityInput from "@/componentized/entity/entityInput";
     import defineInput from '@/componentized/textBox/defineInput'
     import { getchargeRecordList } from "api/charge";
     var _ = require("lodash");
@@ -70,26 +69,40 @@
             this.fetchData()
         },
         components: {
-            myHeader,
             baseButton,
-            entityInput,
-            defineInput,
-            report_tree
+            defineInput
         },
     };
 </script>
 
 <style lang="scss" scoped>
-  .chargingRecord-form-container {
-    font-size: 16px;
-  }
-  .chargingRecord-form-top {
-    padding: 18px 7px;
-    border-bottom: 1px solid #ebeef5;
-    overflow: hidden;
-  }
-  .chargingRecord-form-body {
-    padding: 0 7px;
-    widows: 100%;
-  }
+    .chargingRecord-form-container {
+        font-size: 16px;
+    }
+    .chargingRecord-form-top {
+        padding: 18px 7px;
+        border-bottom: 1px solid #ebeef5;
+        overflow: hidden;
+    }
+    .chargingRecord-form-body {
+        padding: 0 7px;
+        widows: 100%;
+    }
+    .chargingRecord-header{
+        width: 100%;
+        padding-left: 18px;
+        padding-right: 35px;
+        height: 57px;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        color: rgba(112,112,112,1);
+        border-bottom: 1px solid rgba(112,112,112, 0.13);
+    }
 </style>
