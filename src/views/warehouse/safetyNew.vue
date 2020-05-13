@@ -34,7 +34,7 @@
                 <div style="safety-body-t" v-else-if="show=='category'">
                     <div style="float:left">装备小类：{{this.title}}</div>
                     <div style="float:left;margin-left:120px">装备总数：{{this.total}}</div>
-                    <div style="float:left;margin-left:120px">安全库存：-</div>
+                    <div style="float:left;margin-left:120px">安全库存：{{this.safety}}</div>
                 </div>
                 <div style="width:95%">
                     <define-table v-if="show=='unassigned'" ref="table" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
@@ -105,6 +105,7 @@
                 equipArg:[],//右侧的数据
                 search:"",//搜索
                 total:0,//显示小类中装备时的装备总数
+                safety:'-',
                 dialogData:{//弹框数据
                     editData:{},
                     addData:{},
@@ -226,6 +227,7 @@
                     })
                 }else if(this.show=="category"){
                     this.total = data.data.count
+                    this.safety = data.data.stock
                     this.Assigned = data.data.id
                     let params = JSON.parse(JSON.stringify(this.paginator))
                     params.id = data.data.id
