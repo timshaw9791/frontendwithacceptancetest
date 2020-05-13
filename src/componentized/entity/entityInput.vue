@@ -216,7 +216,7 @@ export default {
       justify-content: flex-start;
       align-items: center;
       font-size: 16px;
-      min-width: 298px;
+      // min-width: 298px;
       height: 40px;
       max-height: 40px;
       border-radius: 4px;
