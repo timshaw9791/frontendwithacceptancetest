@@ -5,13 +5,14 @@
             <div class="inputs">
                 <define-input label="单号" v-model="inventoryOrder.number" :disabled="true"></define-input>
                 <define-input label="盘点时间" v-model="inventoryOrder.startTime" :disabled="true"></define-input>
-                <define-input label="盘点人员" v-model="inventoryOrder.operatorInfo.operator" :disabled="true"></define-input>
+                <define-input label="盘点人员" v-model="inventoryOrder.operatorInfo.operator"
+                              :disabled="true"></define-input>
                 <define-input label="应盘点总数" v-model="inventoryOrder.inventoryCount" :disabled="true"></define-input>
                 <define-input label="已盘点总数" v-model="inventoryOrder.count" :disabled="true"></define-input>
                 <define-input label="未知装备数" v-model="inventoryOrder.notCount" :disabled="true"></define-input>
             </div>
-            <bos-tabs>
-                <template slot="total" >
+            <bos-tabs :label="[{label: '未知装备数清单', key: 'total'}, {label: '明细', key: 'detail'}]">
+                <template slot="total">
                     <define-table :data="equipItems" @changeCurrent="changeCurrent" :highLightCurrent="true">
                         <define-column label="装备参数" field="equipArg"></define-column>
                         <define-column label="位置" field="locationInfo"></define-column>
@@ -25,16 +26,19 @@
                         <define-column label="序号" field="serial"></define-column>
                     </define-table>
                 </template>
-                <template slot="slotHeader" v-if="!isInfo" >
+                <template slot="slotHeader" v-if="!isInfo">
                     <base-select v-model="hardwareSelect.select" label="硬件选择" :selectList="hardwareSelect.list"
-                                 :disabled="true" ></base-select>
+                                 :disabled="true"></base-select>
                     <base-button label="读取数据" @click="getArgsInfo()"></base-button>
                 </template>
             </bos-tabs>
-            <div class="box-bottom"  v-if="!isInfo">
+            <div class="box-bottom" v-if="!isInfo">
                 <base-button label="取消" @click="cancel"></base-button>
                 <base-button label="提交" @click="submit"></base-button>
             </div>
+            <service-dialog title="提示" ref="scrapDialog" width="3.3021rem" @confirm="dialogSub" :secondary="false">
+                <div>是否需要盘点报废</div>
+            </service-dialog>
         </div>
     </div>
 </template>
@@ -46,32 +50,20 @@
     import {inventoryOrder} from "../../../api/inventory"
     import {getBosEntity} from "../../../api/basic"
     import {transEquipFormat} from "../../../common/js";
-
+    import serviceDialog from "../../../components/base/serviceDialog"
     export default {
         name: "inventoryInfo",
         components: {
             BosTabs,
-            myHeader
+            myHeader,
+            serviceDialog
         },
         data() {
             return {
                 isInfo: false,
-                tableName: [{
-                    label: "未盘点清单",
-                    key: 'total'
-                }, {
-                    label: "明细",
-                    key: 'detail'
-                }],
-                hardwareSelect:{
-                    list: [{
-                        label: "手持机",
-                        value: 'handheld'
-                    }, {
-                        label: "读卡器",
-                        value: "reader"
-                    }],
-                    select: "handheld",
+                hardwareSelect: {
+                    list: [{label: "手持机", value: 'handheld'}, {label: "读卡器", value: "reader"}],
+                    select: "handheld"
                 },
                 inventoryOrder: {
                     operatorInfo: {},
@@ -83,7 +75,7 @@
                 // 盘点装备明细列表
                 detailItems: [],
                 // 假列表
-                noInventoryList: ['110000060000000000000000', '110000030000000000000000', '57786', '8578576666', '12345678', '857985']
+                noInventoryList: ['110000060000000000000000', '110000030000000000000000', '57786', '8578576666', '12345678', '857985'],
             }
         },
         methods: {
@@ -108,7 +100,7 @@
                 this.equipItems.forEach(item => {
                     this.rfids.push(item.rfid)
                     if (item.equipArg) {
-                       transEquipFormat(item)
+                        transEquipFormat(item)
                     }
                 })
                 // 对数据进行分组 按照位置、名称、型号 通过lodash
@@ -121,7 +113,7 @@
                         length += item.length
                         let tempLocation = this.$formatFuncLoc(item[0].locationInfo)
                         return {
-                            equipArg: item[0].equipName+"("+item[0].equipModel+")",
+                            equipArg: item[0].equipName + "(" + item[0].equipModel + ")",
                             equipState: item[0].state,
                             locationInfo: tempLocation,
                             item: item,
@@ -136,14 +128,14 @@
                 if (!this.isInfo) {
                     let count = 10 - length
                     this.inventoryOrder = {
-                        startTime : (new Date()).valueOf(),
-                        operatorInfo:{
-                            operator : JSON.parse(window.localStorage.getItem("user")).name,
-                            operatorId : JSON.parse(window.localStorage.getItem("user")).id
+                        startTime: (new Date()).valueOf(),
+                        operatorInfo: {
+                            operator: JSON.parse(window.localStorage.getItem("user")).name,
+                            operatorId: JSON.parse(window.localStorage.getItem("user")).id
                         },
-                        inventoryCount : 10,
-                        notCount : length,
-                        count:count
+                        inventoryCount: 10,
+                        notCount: length,
+                        count: count
                     }
                 }
             },
@@ -156,7 +148,10 @@
                     rfids: this.rfids
                 }
                 inventoryOrder("post", data)
-                this.cancel()
+                this.$refs.scrapDialog.show()
+            },
+            dialogSub() {
+                this.$router.push({path: 'scrapInfo',query:{category:'2',rfids:this.rfids}})
             },
             cancel() {
                 this.$router.back()

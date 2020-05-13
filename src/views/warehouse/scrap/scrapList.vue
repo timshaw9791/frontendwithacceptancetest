@@ -32,14 +32,14 @@
     import {listTableMixin} from "../../../field/mixins/listMixin";
 
     export default {
-        name:'scrapList',
+        name: 'scrapList',
         components: {
             myHeader,
             textInput,
             divTmp,
             bosTabs,
         },
-        mixins:[listTableMixin],
+        mixins: [listTableMixin],
         data() {
             return {
                 list: [],
@@ -58,10 +58,10 @@
                     // 通过 category 转成 enumContent
                     transScrapCategory(item)
                     // 装备数量
-                    item.count=item.scrapItems.length
+                    item.count = item.scrapItems.length
                     if (item.scrapItems.length !== 0) {
                         item.equipArg = item.scrapItems[0].equipName + '(' + item.scrapItems[0].equipModel + ')'
-                        item.equipArg = item.scrapItems.length > 0 ? item.equipArg+'...' : item.equipArg
+                        item.equipArg = item.scrapItems.length > 0 ? item.equipArg + '...' : item.equipArg
 
                     }
                 })
@@ -73,8 +73,8 @@
             toDetail(data) {
                 this.$router.push({path: 'scrapInfo', query: {id: data.id}})
             },
-            toScrap(){
-                this.$route.push({path: 'scrapInfo',query:{category:3}})
+            toScrap() {
+                this.$router.push({path: 'scrapInfo', query: {category: '3'}})
             }
         },
     }

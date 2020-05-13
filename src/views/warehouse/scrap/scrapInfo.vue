@@ -7,28 +7,25 @@
             <define-input label="报废时间" v-model="scrapOrder.createTime" :disabled="true"></define-input>
             <entity-input label="操作人员" v-model="scrapOrder.operatorInfo.operator" :disabled="true"></entity-input>
         </div>
-        <define-input label="备注" v-model="scrapOrder.remark" margin="15px  0.0521rem"
-                      :disabled="isInfo"></define-input>
+        <div>
+            <define-input label="备注" v-model="scrapOrder.remark" :disabled="isInfo"></define-input>
+        </div>
         <div class="scrap-list-body">
             <bos-tabs @changeTab="changeTab">
-                <template slot="slotHeader" v-if="!isInfo||!isHardwareSelect">
-                    <base-button label="读取数据" :disabled="!hardwareSelect.select" :width="96"
-                                 @click="readData"></base-button>
-                    <base-select label="硬件选择" v-model="hardwareSelect.select"
+                <template slot="slotHeader" v-if="!isInfo&&isHardwareSelect">
+                    <base-select v-model="hardwareSelect.select" label="硬件选择"
                                  :selectList="hardwareSelect.list"></base-select>
+                    <base-button label="读取数据" @click="readData" :disabled="!hardwareSelect.select"></base-button>
                 </template>
                 <define-table :data="equipItems" height="2.8646rem" @changeCurrent="changeRow" :havePage="false"
                               :highLightCurrent="true" slot="total" :showSummary="true" :summaryFunc="sumFunc">
                     <define-column label="操作" width="100" v-slot="{ data }">
-                        <i class="iconfont iconyichuliang" @click="delRow(data)"></i>
+                        <i class="iconfont iconyichuliang" @click="delRow('equipItems',data)"></i>
                     </define-column>
-                    <define-column label="装备参数" v-slot="{ data }">
-                        <entity-input v-model="data.row.equipArg" :options="{detail:'equipArgDetail'}"
-                                      format="{name}({model})" :tableEdit="false"></entity-input>
-                    </define-column>
+                    <define-column label="装备参数" field="equipArg"></define-column>
                     <define-column label="装备数量" field="count"></define-column>
                 </define-table>
-                <define-table :data="detailItems" height="2.8646rem" :havePage="false" slot="detail">
+                <define-table :data="equipItems[totalIndex].items" height="2.8646rem" :havePage="false" slot="detail">
                     <define-column label="操作" width="100" v-slot="{ data }">
                         <i class="iconfont iconyichuliang" @click="delRow(data)"></i>
                     </define-column>
@@ -54,65 +51,40 @@
     import divTmp from '@/componentized/divTmp'
     import {equipScrap} from 'api/operation'
     import {getBosEntity} from '@/api/basic'
-    import {transEquipFormat,transScrapCategory} from "../../../common/js";
+    import {transEquipFormat, transScrapCategory} from "../../../common/js";
+    import {equipmentScrapped} from "../../../api/statistics"
 
     export default {
         name: "maintenance",
         data() {
             return {
-                scrapOrder: {
-                    operatorInfo: {
-                        operator: '',
-                        operatorId: ''
-                    },
-                    scrapItems: [{
-                        equipArg: '',
-                        count: '',
-                    }],
-                },
+                scrapOrder: {operatorInfo: {operator: '', operatorId: ''}, scrapItems: [], remark: ''},
                 paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
                 hardwareSelect: {
-                    list: [{
-                        label: '手持机',
-                        value: 'handheld'
-                    }, {
-                        label: '读卡器',
-                        value: 'reader'
-                    }],
-                    select: '',
+                    list: [{label: '手持机', value: 'handheld'}, {label: '读卡器', value: 'reader'}],
+                    select: false,
                 },
                 pid: '',
                 // 处理后的装备数据，用于渲染
-                equipItems: [],
+                equipItems: [{items: []}],
                 // 明细表渲染的数据
-                detailItems: [],
+                totalIndex: 0,
                 // 扫描到的装备rfid
                 rfids: [],
-                isInfo: [],
-                isHardwareSelect: true,
+                // 需要判断的
+                matchRfids: [],
+                isInfo: false,
+                isHardwareSelect: false,
             }
         },
         methods: {
-            changeRow(current) {
-                this.detailItems = current.current.item
-            },
-            changeTab(data) {
-                data.key === 'total' ? killProcess(this.pid) : ''
-            },
-            // 表格合并行计算方法
-            sumFunc(param) {
-                let {columns} = param, sums = [];
-                sums = new Array(columns.length).fill('')
-                sums[0] = '合计'
-                sums[columns.length - 1] = param.data.reduce((v, k) => v + k.count, 0)
-                return sums;
-            },
             readData() {
                 killProcess(this.pid)
                 start("java -jar scan.jar", (data) => {
-                    if (this.rfids.findIndex((v) => v === data) !== -1) {
+                    if (this._.findIndex(this.matchRfids, data) === -1
+                        && this._.findIndex(this.rfids, data) === -1) {
                         this.rfids.push(data)
-                        this.fetchEquipItems()
+                        this.fetchEquipItems(this.rfids)
                     }
                 }, (fail) => {
                     this.index = 1;
@@ -121,13 +93,15 @@
                     pid ? this.pid = pid : this.$message.error(err)
                 })
             },
-            fetchEquipItems(data){
+            // 获取装备列表信息
+            fetchEquipItems(data) {
                 findByRfids(data).then(res => {
-                    this.scrapOrder.scrapItems.push(res[0])
+                    this.scrapOrder.scrapItems = res
                     this.fixEquipItems()
                 })
             },
-            fixEquipItems(){
+            // 处理装备列表信息
+            fixEquipItems() {
                 this.scrapOrder.scrapItems.forEach(item => {
                     if (item.equipArg) {
                         transEquipFormat(item)
@@ -137,9 +111,9 @@
                 let tempEquipItems = this._.groupBy(this.scrapOrder.scrapItems, item => `${item.equipModel}${item.equipName}`)
                 this.equipItems = this._.map(tempEquipItems, (item) => {
                     return {
-                        equipArg: item[0].equipName+"("+item[0].equipModel+")",
+                        equipArg: item[0].equipName + "(" + item[0].equipModel + ")",
                         location: item[0].location,
-                        item: item,
+                        items: item,
                         count: item.length,
                     }
                 })
@@ -147,37 +121,67 @@
             fetchData() {
                 getBosEntity(this.$route.query.id).then(res => {
                     this.scrapOrder = res
-                    this.fixData()
+                    transScrapCategory(this.scrapOrder)
+                    this.fixEquipItems()
                 })
             },
-            fixData() {
-                transScrapCategory(this.scrapOrder)
-                this.fixEquipItems()
+            fetchMatchRfids() {
+                // 获取到期装备的列表 用来对比扫描到的RFID是否在到期装备列表中
+                equipmentScrapped().then((res) => {
+                    this.matchRfids = this._.map(res.content, 'rfid')
+                })
+            },
+            changeRow(current) {
+                this.totalIndex = current.index
+            },
+            delRow(list, data) {
+                list === 'equipItems' ? this[list].length === 1 ? this[list] = [{items: []}] : this[list].splice(data.$index, 1) : '';
+            },
+            changeTab(data) {
+                data.key === 'total' ? killProcess(this.pid) : ''
+            },
+            // 表格合并行计算方法
+            sumFunc(param) {
+                let {columns} = param, sums = [];
+                sums = new Array(columns.length).fill('')
+                sums[0] = '合计'
+                console.log(param.data)
+                sums[columns.length - 1] = param.data.reduce((v, k) => {
+                    if (k.count) {
+                        return v + k.count
+                    }
+                    return v
+                }, 0)
+                return sums;
             },
             confirm() {
-                this._.map(this.equipItems,(item)=>this._.map(item.items,'rfid'))
-                equipScrap(this.scrapOrder.category, this.scrapOrder.remark, ).then(() => {
+                this._.map(this.equipItems, (item) => this._.map(item.items, 'rfid'))
+                equipScrap(this.scrapOrder.category, this.scrapOrder.remark, this.rfids).then(() => {
                     this.cancel()
                 })
             },
             cancel() {
                 this.$router.back()
-            },
-            delRow(data) {
-                data.splice(data.$index, 1,)
             }
         },
         created() {
             // 详情带上id
-            // 新建rfids category(0:维修报废,1:到期报废,2:盘点报废,3:常规报废) 只需带数字
-            if (this.$route.query.id){
+            // category(0:维修报废,1:到期报废,2:盘点报废,3:常规报废) query只能带String
+            // rfids数组 盘点和维修需要带
+            if (this.$route.query.id) {
                 this.isInfo = true
                 this.fetchData()
-            }
-            else {
-                this.scrapOrder.category = this.$route.query.category
-                this.fetchEquipItems(this.$route.query.rfids)
-                this.fixData()
+            } else {
+                this.scrapOrder.category = Number(this.$route.query.category)
+                transScrapCategory(this.scrapOrder)
+                if (this.scrapOrder.category === 0 || this.scrapOrder.category === 2) {
+                    this.fetchEquipItems(this.$route.query.rfids)
+                } else {
+                    this.isHardwareSelect = true
+                    if (this.scrapOrder.category === 1) {
+                        this.fetchMatchRfids()
+                    }
+                }
             }
         },
         beforeDestroy() {
