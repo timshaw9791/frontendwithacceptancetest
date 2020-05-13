@@ -31,19 +31,10 @@
                 <define-column label="维修时长" v-slot="{data}">
                     <date-input v-model="data.row.createTime" :validate="milliTime" :tableEdit="false"></date-input>
                 </define-column>
-
-
             </define-table>
-            <!-- <serviceDialog title="装备报废" ref="scrapDailog" @confirm="submit" width="250px;">
-                <div>
-                    <date-select label="申请时间" v-model="time" :disabled="true"></date-select>
-                    <entity-input label="申请人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :disabled="true" ></entity-input>
-                    <entity-input label="审核人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :disabled="true" ></entity-input>
-                    <define-input label="申请原因" v-model="scrapData.remark" :disabled="false" class="odd-number"></define-input>
-                </div>
-          </serviceDialog> -->
-
-
+            <service-dialog title="提示" ref="scrapDialog" width="3.3021rem" @confirm="submit" :secondary="false">
+                <div>是否需要维修报废</div>
+            </service-dialog>
         </div>
     </div>
 </template>
@@ -51,31 +42,19 @@
 <script>
     import myHeader from 'components/base/header/header';
     import textInput from '@/componentized/textBox/textInput.vue'
-    import defineInput from '@/componentized/textBox/defineInput.vue'
-    import bosTabs from '@/componentized/table/bosTabs.vue'
-    import baseButton from "@/componentized/buttonBox/baseButton.vue"
-    import baseSelect from '@/componentized/textBox/baseSelect.vue'
-    import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
     import endService from './startService'
     import serviceDialog from 'components/base/serviceDialog'
-    // import equipInhouseOrder from './equipInhouseOrder'
-    import {rightRepairOrder, equipScrap} from "api/operation"
-    import {getInhouseNumber, inOutHouseOrder, deleteInhouseNumber} from "api/storage"
+    import {rightRepairOrder} from "api/operation"
 
     export default {
         components: {
             myHeader,
             textInput,
-            defineInput,
-            baseButton,
-            baseSelect,
-            dateSelect,
             entityInput,
             endService,
             divTmp,
-            bosTabs,
             serviceDialog
         },
         data() {
@@ -90,33 +69,20 @@
             }
         },
         methods: {
-            selRow() {
-
-            },
-            sumFunc() {
-
-            },
             submit() {
-                this.$router.push({path: 'scrapInfo', query: {category: '0', rfids: this.scrapData.rfid}})
+                this.$router.push({path: '/warehouse/scrapInfo', query: {category: '0', rfids: this.scrapData.rfid}})
             },
             toDetail(data) {
                 this.equipData = data
                 this.inorder = true
             },
-            deleteNumber(data) {
-                deleteInhouseNumber(data.id).then(res => {
-                    this.$message.success('删除入库单成功')
-                }).catch(err => {
-                    this.$message.error(err.response.data.message);
-                })
-            },
             toScrap(data) {
-                this.$refs.scrapDailog.show()
+                this.$refs.scrapDialog.show()
                 this.scrapData = data
             },
             milliTime(data) {
                 let time = (new Date() - data) / (1000 * 60 * 60 * 24) > 1 ? (new Date() - data) / (1000 * 60 * 60 * 24) : 1
-                return time;
+                return time
             },
             black() {
                 this.inhouse = false
@@ -126,17 +92,12 @@
             getList() {
                 rightRepairOrder(this.params).then(res => {
                     this.list = res.content
-
                 }).catch(err => {
                     this.$message.error(err.response.data.message);
                 })
             },
-            filterNumber(data) {
-                return data.inOutHouseItems.length
-            },
             changePage(page) {
-                this.paginator.page = page;
-                ss
+                this.paginator.page = page
             },
             toInHouse() {
                 this.$router.push({path: "/equipmentOperation/endService"})
