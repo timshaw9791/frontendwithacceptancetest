@@ -24,6 +24,14 @@ export function deleteInhouseNumber(id) {
         method: 'delete',
     })
 }
+//装备位置批量变更
+export function locationChangeOrders(data) {
+    return request({
+        url:`/location-change-orders?`,
+        method: 'post',
+        data
+    })
+}
 //获取需要报废的装备
 export function maturityScrap(params) {
     return request({
