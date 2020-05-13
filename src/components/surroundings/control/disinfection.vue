@@ -3,7 +3,7 @@
         <dialogs :width="398" ref="dialog" :title="'消毒机控制'">
             <div class="disinfection-body">
                 <div class="disinfection-box">
-                    <svg-icon icon-class="消毒图标" style="width: 70px;height: 70px"></svg-icon>
+                    <svg-icon icon-class="消毒机" style="width: 70px;height: 70px"></svg-icon>
                     <span v-text="'消毒机控制'" style="margin-top: 8px"></span>
                     <switch-control :active="active" :inactive="inactive" style="margin-top: 31px"></switch-control>
                 </div>
