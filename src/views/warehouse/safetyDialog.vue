@@ -126,39 +126,7 @@
                     selectCategory:""
                 }
             },
-            submit(){
-                if(this.title == "新增大类"){
-                    addgenre({name:this.newName}).then(res=>{
-                        this.$refs.safetyDialogs.hide()
-                        this.$emit('fetchData');
-                    })
-                }else if(this.title == "编辑大类"){
-                    let params = {name:this.edit.name}
-                    editgenre(this.editData.id,params).then(res=>{
-                        this.$refs.safetyDialogs.hide()
-                        this.$emit('fetchData');
-                    })
-                }else if(this.title == "新增小类"){
-                    addcategories(this.addData.id,{name:this.newName,genre:this.addData}).then(res=>{
-                        this.$refs.safetyDialogs.hide()
-                        this.$emit('fetchData');
-                    })
-                }else if(this.title == "编辑小类"){
-                    editcategories(this.editData.id,this.edit).then(res=>{
-                        this.$refs.safetyDialogs.hide()
-                        this.$emit('fetchData');
-                    })
-                }else if(this.title == "装备分类"){
-                    this.assignedData = this.assignedData.toString()
-                    if(this.selectedData.selectCategory != null ||this.selectedData.selectCategory != ''){
-                        distribution(this.selectedData.selectCategory,{equipArgs:this.assignedData}).then(res=>{
-                            this.$refs.safetyDialogs.hide()
-                            this.$emit('fetchData');
-                        })
-                    }else {
-                        this.$message.error("请选择小类")
-                    }
-                }
+            clean(){
                 this.newName = ""
                 this.selectData={
                     genre:[],
@@ -167,6 +135,44 @@
                 this.selectedData={
                     selectGenre:"",
                     selectCategory:""
+                }
+            },
+            submit(){
+                if(this.title == "新增大类"){
+                    addgenre({name:this.newName}).then(res=>{
+                        this.$refs.safetyDialogs.hide()
+                        this.$emit('fetchData');
+                        this.clean()
+                    })
+                }else if(this.title == "编辑大类"){
+                    let params = {name:this.edit.name}
+                    editgenre(this.editData.id,params).then(res=>{
+                        this.$refs.safetyDialogs.hide()
+                        this.$emit('fetchData');
+                        this.clean()
+                    })
+                }else if(this.title == "新增小类"){
+                    addcategories(this.addData.id,{name:this.newName,genre:this.addData}).then(res=>{
+                        this.$refs.safetyDialogs.hide()
+                        this.$emit('fetchData');
+                        this.clean()
+                    })
+                }else if(this.title == "编辑小类"){
+                    editcategories(this.editData.id,this.edit).then(res=>{
+                        this.$refs.safetyDialogs.hide()
+                        this.$emit('fetchData');
+                        this.clean()
+                    })
+                }else if(this.title == "装备分类"){
+                    if(this.selectedData.selectCategory != null && this.selectedData.selectCategory != ''){
+                        distribution(this.selectedData.selectCategory,this.assignedData).then(res=>{
+                            this.$refs.safetyDialogs.hide()
+                            this.$emit('fetchData');
+                        this.clean()
+                        })
+                    }else {
+                        this.$message.error("请选择小类")
+                    }
                 }
             }
         }
