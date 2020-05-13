@@ -1,6 +1,11 @@
 <template>
     <div class="equip-allocation-container">
           <my-header :title="$route.meta.title" :haveBlack="true" @h_black="cancel"></my-header>
+          <div class="action_box" data-test="action_box">
+                <define-input label="单号" placeholder="--" :disabled="true" ></define-input>
+                <date-select label="操作时间" placeholder="--" :disabled="true"></date-select>
+                <entity-input label="操作人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :disabled="true" ></entity-input>
+            </div>
         <div class="equip-allocation-body">
            <bos-tabs :option="['contrast']" :layoutRatio="[2,3]" :contrastKey="['slot1', 'slot2']">
                <template slot="slotHeader">
@@ -166,6 +171,12 @@ export default {
     height:30px;
     border-top:1px solid rgba(112, 112, 112, 0.13);
     border-bottom:1px solid rgba(112, 112, 112, 0.13);
+    }
+    .action_box{
+        margin-top:15px;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
     }
     .equip-allocation-body
     {
