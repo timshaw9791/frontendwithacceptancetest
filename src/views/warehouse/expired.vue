@@ -3,7 +3,7 @@
         <my-header :title="$route.meta.title"></my-header>
         <div class="maintenance-form-top">
             <base-button label="报废装备" align="right" :width="128" :height="25" :fontSize="20"
-                         @click="toInHouse"></base-button>
+                         @click="toScrap"></base-button>
         </div>
         <div class="maintenance-form-body">
             <define-table :data="list" height="3.64rem" @changePage="changePage" :pageInfo="paginator">
@@ -61,7 +61,7 @@
                 this.paginator.page = page;
                 this.fetchData()
             },
-            toInHouse() {
+            toScrap() {
                 this.$router.push({path: "scrapInfo", query:{category: '1'}})
             }
         },
