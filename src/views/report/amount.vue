@@ -113,7 +113,7 @@
                         this.tree.genres.forEach(item=>{
                             this.tree.treeData.push(item)
                         })
-                        this.tree.treeData.push({name:'单警装备',show:'GENRE',children:[]})
+                        this.tree.treeData.push({name:'单警装备',show:'singlePolice',children:[]})
                     })
                 })
                 findEquipMoneyStatistics({categorys:[0,1,2,3],level:'ALL'}).then(res=>{
@@ -148,8 +148,16 @@
                         this.paginator.totalElements = res.totalElements;
                     })
                 }else if(this.show=="category"){
-                    console.log("-------------+");
                    findEquipMoneyStatistics({categorys:3,id:data.data.id,level:'CATEGORY'}).then(res=>{
+                        this.equipArg = res
+                        this.equipArg.forEach(item=>{
+                            item.equipArgs=`${item.name}(${item.model})`
+                        })
+                        this.paginator.totalPages = res.totalPages;
+                        this.paginator.totalElements = res.totalElements;
+                    })
+                }else if(this.show=="singlePolice"){
+                   findEquipMoneyStatistics({categorys:[0,1,2],id:data.data.id,level:'GENRE'}).then(res=>{
                         this.equipArg = res
                         this.equipArg.forEach(item=>{
                             item.equipArgs=`${item.name}(${item.model})`
@@ -210,7 +218,7 @@
         border-bottom: 1px solid rgba(112, 112, 112, 0.13);
         padding-right: 13px;
         padding-top: 15px;
-        color: #2F2F76FF!important;
+        color: black!important;
         align-items: center;
         justify-content: space-between;
         padding-left: 5px;

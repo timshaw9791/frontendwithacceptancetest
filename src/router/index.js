@@ -401,6 +401,11 @@ export const asyncRouterMap = [{
             component: _import('record/MaintenanceDetails'),
             hidden:true,
             meta: {title: '保养单/保养单详情'},
+        },{
+            path: 'equipAllocationOrder',
+            name: 'equipAllocationOrder',
+            component: _import('record/equipAllocationOrder'),
+            meta: {title: '位置变更单'},
         }, {
             path: 'scrapOrder',
             name: 'scrapOrder',
