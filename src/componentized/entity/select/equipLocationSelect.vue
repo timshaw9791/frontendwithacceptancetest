@@ -92,7 +92,11 @@ export default {
                     if(item.frameNumber!=null){
                        item.name=item.frameNumber+'架/',item.number=item.frameNumber+'-'}
                     if(item.surface!=null){
-                        item.name+=item.surface+'面/',item.number+=item.surface+'-'}
+                        let surface='A'
+                        if(item.surface==1){
+                            surface=='B'
+                        }
+                        item.name+=surface+'面/',item.number+=surface+'-'}
                     if(item.section!=null){
                         item.name+=item.section+'节',item.number+=item.section}
                     if(item.floor!=null){item.name+='/'+item.floor+'层',item.number+='-'+item.floor}
