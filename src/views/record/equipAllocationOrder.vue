@@ -32,7 +32,7 @@
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
-    import { keepOrders} from "api/operation"
+    import {jsqlPage,getBosEntity} from "api/basic"
 export default {
     components:{
             myHeader,
@@ -48,26 +48,37 @@ export default {
         data(){
             return{
                listData:[],
-               paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0,abnormal:false,category:2},
+               fetchParams:{
+               pageInfo: {
+                    direction: "DESC",
+                    page: 1,
+                    size: 9999
+                },
+                jpql: "select lco from LocationChangeOrder lco ",
+                returnType: "ARRAY",
+                params: []
+                },
+                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
             }
         },
         methods:{
             toDetail(data){
-                this.$router.push({name:'maintenanceOrderDetails',query:{id:data.id}})
+                this.$router.push({name:'equipAllocation',query:{id:data.id}})
+                this.$route.meta.title = '位置变更单/位置变更单详情'
             },
             fetchData(){
-                keepOrders(this.paginator).then(res=>{
-                    this.listData=res.content
-                    this.paginator.totalPages = res.totalPages
-					this.paginator.totalElements = res.totalElements
-					for(let elem of this.listData.values()){
-						elem.equipArgs=elem.equipKeepItems.length==1?`${elem.equipKeepItems[0].equipName}(${elem.equipKeepItems[0].equipModel})`:
-						`${elem.equipKeepItems[0].equipName}(${elem.equipKeepItems[0].equipModel})...`
+                this.fetchParams.params=[]
+                // this.fetchParams.params.push(id)
+                jsqlPage(this.fetchParams).then(res=>{
+                    this.listData=this._.flatten(res.content)
+                   for(let elem of this.listData.values()){
+						elem.equipArgs=elem.locationChangeItems.length==1?`${elem.locationChangeItems[0].equipName}(${elem.locationChangeItems[0].equipModel})`:
+						`${elem.locationChangeItems[0].equipName}(${elem.locationChangeItems[0].equipModel})...`
 					}
                 })
             },
             filterNumber(data){
-                return data.equipKeepItems.length
+                return data.locationChangeItems.length
             },
             changePage(page) {
             this.paginator.page = page;
