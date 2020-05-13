@@ -1,14 +1,15 @@
 <template>
     <div class="opening-box">
-        <my-header title="装备实体" :haveBlack="inAllocation||isEdit" @h_black="black"></my-header>
-        <div class="btn_box" v-if="!inAllocation&&!isEdit">
-             <base-button label="装备分配" align="right" :width="128" :height="25" :fontSize="20" @click="toAllocation"></base-button>
+        <my-header title="装备实体"></my-header>
+        <div class="btn_box">
+             <base-button label="位置变更" align="right" :width="128" :height="25" :fontSize="20" @click="toAllocation"></base-button>
         </div>
         <div class="data-list">
             <define-table :data="list" height="3.64rem" @changeCurrent="selRow" :pageInfo="this.paginator" @changePage="changePage" :haveIndex="false" v-if="inList">
                             <define-column label="序号" fixed columnType="index" width="65"></define-column>
-                            <define-column label="操作" width="100" v-slot="{ data }" fixed>
-                                <span @click="edit(data.row)">编辑</span>
+                            <define-column label="操作" width="150" v-slot="{ data }" fixed>
+                                <base-button label="编辑" size="mini" @click="edit(data.row)"></base-button>
+                                <base-button label="历史" size="mini" @click="show(data.row.id)"></base-button>
                             </define-column>
                             <define-column label="图片" width="120" v-slot="{ data }" fixed>
                             <img :src="imgsrc(data.row.equipArg.image)" style="height:100px;width:100px"  alt="暂无图片">
@@ -32,7 +33,7 @@
                             <define-column label="单价" field="price"/>
                             
                         </define-table>
-            <equip-allocation v-if="inAllocation"></equip-allocation>
+            
             <!-- <serviceDialog title="提示" ref="dialogButton" :secondary="false" @confirm="dialogConfim">
                         <div class="_dialogDiv">您确定要取消保养该装备吗？</div>
                     </serviceDialog> -->
@@ -96,6 +97,9 @@ export default {
                         this.$message.error(err.response.data.message)
                     })
              },
+             show(data){
+                 this.$router.push({name:'equiphistoryOrder',query:{id:data}})
+             },
              changePage(page) {
                 this.paginator.page = page
                 this.getList()
@@ -139,8 +143,7 @@ export default {
                 this.newLocation=data.name
             },
             toAllocation(){
-                this.inAllocation=true
-                this.inList=false
+                this.$router.push({name:'equipAllocation'})
             },
             milliToDay(data) {
             let date = JSON.parse(JSON.stringify(data));

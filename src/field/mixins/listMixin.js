@@ -24,4 +24,28 @@ const listTableMixin = {
     }
 }
 
-export { listMixin, listTableMixin }
+const bosMixin = {
+    data() {
+        return {
+            fetchParams: {
+				pageInfo: {
+					page: 1,
+					size: 10,
+					totalPages: 1
+				},
+			}
+        }
+    },
+    methods: {
+        fetchData() {},
+        changePage(page) {
+            this.fetchParams.pageInfo.page = page;
+            this.fetchData();
+        }
+    },
+    created() {
+        this.fetchData()
+    }
+}
+
+export { listMixin, listTableMixin, bosMixin }

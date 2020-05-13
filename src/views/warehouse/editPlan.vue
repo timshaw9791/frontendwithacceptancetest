@@ -1,10 +1,12 @@
 <template>
-  <div class="consumable-form-container">
-    <my-header :title="title" :haveBlack="false"></my-header>
-    <div class="consumable-form-body" >
+  <div class="editPlan-container">
+    <div class="editPlan-header">
+        <span style="font-size: 20px;">{{this.$route.query.info.edit?"预案编辑":"新增预案"}}</span>
+    </div>
+    <div class="editPlan-body" >
         <define-input label="预案名称" v-model="order.name" margin="15px"></define-input>
         <define-input label="预案描述" v-model="order.remark" margin="15px"></define-input>
-        <define-table :havePage="false" :data="order.equipArgItems" height="2.6042rem" >
+        <define-table :havePage="false" :data="order.equipArgItems" height="3.6042rem" >
             <define-column label="操作" width="100" v-slot="{ data }">
                 <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
                 <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
@@ -14,24 +16,24 @@
             </define-column>
         </define-table>
         <div class="buttom">
-            <base-button label="提交" align="right" size="large" @click="submit"></base-button>
-            <base-button label="取消" align="right" size="large" type="danger" @click="cansle"></base-button>
+            <base-button label="提交" align="right" @click="submit"></base-button>
+            <base-button label="取消" align="right" type="danger" @click="cansle"></base-button>
         </div>
     </div>
   </div>
 </template>
 
 <script>
-    import myHeader from "components/base/header/header";
     import baseButton from "@/componentized/buttonBox/baseButton";
     import entityInput from "@/componentized/entity/entityInput";
     import defineInput from '@/componentized/textBox/defineInput'
     import bosTabs from "@/componentized/table/bosTabs";
     import serviceDialog from "components/base/serviceDialog"
+    import { getBosEntity } from "api/basic";
     import { getPlan ,addPlan ,updatePlan ,delectPlan } from "api/plan";
     var _ = require("lodash");
     export default {
-        name: "consumable",
+        name: "editPlan",
         data() {
             return {
                 title:"",
@@ -58,7 +60,7 @@
                         temp.equipArgItems.push({equipArg:item.equipArg})
                     }
                 })
-                if(this.$route.params.info.edit){
+                if(this.$route.query.info.edit){
                     updatePlan(temp.id,temp).then(res=>{
                         this.$message.success("编辑成功")
                         this.$router.go(-1)
@@ -69,6 +71,26 @@
                         this.$router.go(-1)
                     })
                 }
+            },
+            fetchData(){
+                getBosEntity(this.$route.query.info.data).then(res=>{
+                    this.order = res
+                    if(this.order.equipArgItems.length==0){
+                        this.order.equipArgItems.push(
+                            {name:"",id:"",model:""},
+                            {name:"",id:"",model:""},
+                            {name:"",id:"",model:""},
+                            {name:"",id:"",model:""},
+                            {name:"",id:"",model:""},
+                            {name:"",id:"",model:""},
+                            {name:"",id:"",model:""},
+                            {name:"",id:"",model:""},
+                            {name:"",id:"",model:""},
+                            {name:"",id:"",model:""},
+                            {name:"",id:"",model:""},
+                        )
+                    }
+                })
             },
             changeRow(state, data) { // 总清单删除
                 let temp = JSON.parse(JSON.stringify(this.order.equipArgItems));
@@ -83,35 +105,16 @@
             },
         },
         created() {
-            if(this.$route.params.info == undefined) {
-                this.$message.info("数据丢失，返回应急预案");
-                this.$router.push({name: 'warehouse/plan'});
-                return
-            }
-            if(this.$route.params.info.edit){
-                this.title = "预案编辑"
-            }else{
-                this.title = "新增预案"
-            }
-            this.order = this.$route.params.info.data
-            if(this.order.equipArgItems.length==0){
-                this.order.equipArgItems.push(
-                    {name:"",id:"",model:""},
-                    {name:"",id:"",model:""},
-                    {name:"",id:"",model:""},
-                    {name:"",id:"",model:""},
-                    {name:"",id:"",model:""},
-                    {name:"",id:"",model:""},
-                    {name:"",id:"",model:""},
-                    {name:"",id:"",model:""},
-                    {name:"",id:"",model:""},
-                    {name:"",id:"",model:""},
-                    {name:"",id:"",model:""},
-                )
-            }
+            this.$route.query.info.edit?this.fetchData():this.order.equipArgItems.push(
+            {name:"",id:"",model:""},{name:"",id:"",model:""},
+            {name:"",id:"",model:""},{name:"",id:"",model:""},
+            {name:"",id:"",model:""},{name:"",id:"",model:""},
+            {name:"",id:"",model:""},{name:"",id:"",model:""},
+            {name:"",id:"",model:""},{name:"",id:"",model:""},
+            {name:"",id:"",model:""},{name:"",id:"",model:""}
+        )
         },
         components: {
-            myHeader,
             baseButton,
             entityInput,
             bosTabs,
@@ -122,15 +125,15 @@
 </script>
 
 <style lang="scss" scoped>
-    .consumable-form-container {
+    .editPlan-container {
         font-size: 16px;
     }
-    .consumable-form-top {
+    .editPlan-top {
         padding: 18px 7px;
         border-bottom: 1px solid #ebeef5;
         overflow: hidden;
     }
-    .consumable-form-body {
+    .editPlan-body {
         padding: 0 7px;
         widows: 100%;
     }
@@ -138,5 +141,22 @@
         height: 72px;
         width:100%;
         margin-top: 25px;
+    }
+    .editPlan-header{
+        width: 100%;
+        padding-left: 18px;
+        padding-right: 35px;
+        height: 57px;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        color: rgba(112,112,112,1);
+        border-bottom: 1px solid rgba(112,112,112, 0.13);
     }
 </style>

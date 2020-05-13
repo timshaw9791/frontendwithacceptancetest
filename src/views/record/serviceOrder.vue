@@ -3,21 +3,21 @@
         <my-header :title="$route.meta.title"></my-header>
         <div class="sevice-order-body">
             <define-table :data="listData" height="3.64rem"  @changePage="changePage" :pageInfo="paginator" >
-                            <define-column label="操作" width="130" v-slot="{ data }">
-                                <base-button label="详情" size="mini" @click="toDetail(data.row)" type="primary"></base-button>
-                            </define-column>
-                            <define-column label="单号" v-slot="{ data }">
-                                <define-input v-model="data.row.number" type="Number" :tableEdit="false"></define-input>
-                            </define-column>
-                            <define-column label="装备参数" v-slot="{ data }">
-                                <define-input v-model="data.row.equipArgs" :tableEdit="false"></define-input>
-                            </define-column>
-                            <define-column label="装备数量" :filter="(row)=>filterNumber(row)"></define-column>
-                            <define-column label="操作人员" v-slot="{ data }">
-                                <define-input v-model="data.row.operatorInfo.operator" type="String" :tableEdit="false"></define-input>
-                            </define-column>
-                            <define-column label="维修开始时间" :filter="(row)=>$filterTime(row.createTime)"/>
-                        </define-table>
+                <define-column label="操作" width="130" v-slot="{ data }">
+                    <base-button label="详情" size="mini" @click="toDetail(data.row)" type="primary"></base-button>
+                </define-column>
+                <define-column label="单号" v-slot="{ data }">
+                    <define-input v-model="data.row.number" type="Number" :tableEdit="false"></define-input>
+                </define-column>
+                <define-column label="装备参数" v-slot="{ data }">
+                    <define-input v-model="data.row.equipArgs" :tableEdit="false"></define-input>
+                </define-column>
+                <define-column label="装备数量" :filter="(row)=>filterNumber(row)"></define-column>
+                <define-column label="操作人员" v-slot="{ data }">
+                    <define-input v-model="data.row.operatorInfo.operator" type="String" :tableEdit="false"></define-input>
+                </define-column>
+                <define-column label="维修开始时间" :filter="(row)=>$filterTime(row.createTime)"/>
+            </define-table>
         </div>
     </div>
 </template>
@@ -53,7 +53,7 @@ export default {
         },
         methods:{
             toDetail(data){
-                this.$router.push({name:'serviceDetails',params:{info:data}})
+                this.$router.push({name:'serviceDetails',query:{id:data.id}})
             },
             fetchData(){
                 serviceOrders(this.paginator).then(res=>{

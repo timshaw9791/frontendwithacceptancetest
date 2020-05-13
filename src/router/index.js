@@ -67,6 +67,12 @@ export const asyncRouterMap = [{
             meta: {title: '入库单列表/入库单详情'},
             hidden:true
         },{
+            path: 'equiphistoryOrder',
+            name: 'equiphistoryOrder',
+            component: _import('equipment/equiphistoryOrder'),
+            meta: {title: '装备操作历史记录'},
+            hidden:true
+        },{
             path: 'outstorage',
             name: 'equipment/outstorage',
             component: _import('equipment/outHouseOrder'),
@@ -87,6 +93,12 @@ export const asyncRouterMap = [{
             name: 'equipment/equipmententity',
             component: _import('equipment/equipmentEntity'),
             meta: {title: '装备实体'},
+        },{
+            path: 'equipAllocation',
+            name: 'equipAllocation',
+            component: _import('equipment/equipAllocation'),
+            meta: {title: '装备实体/位置分配'},
+            hidden:true
         },{
             path: 'supplier',
             name: 'equipment/supplier',

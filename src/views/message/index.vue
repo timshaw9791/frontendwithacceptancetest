@@ -2,13 +2,13 @@
 	<div class="message-container">
 		<my-header title="消息中心"></my-header>
 		<div class="top">
-			<define-input label="消息标题" v-model="fetchParam.search"></define-input>
+			<define-input label="消息标题"></define-input>
 		</div>
 		<div class="body">
-			<define-table :data="list" :pageInfo="paginator" @changePage="changePage">
+			<define-table :data="list" :pageInfo="fetchParams.pageInfo" @changePage="changePage">
 				<define-column label="操作" width="100" v-slot="{ data }">
 					<span :class="['sign',{unread: !data.row.status}]" @click="readIt(data.row)">
-						{{ data.row.status | filterStaus }}
+						{{ data.row.status?'已读':'未读' }}
 					</span>
 				</define-column>
 				<define-column label="通知时间" :filter="row => this.$filterTime(row.createTime)" width="200"></define-column>
@@ -22,31 +22,35 @@
 <script>
 import myHeader from 'components/base/header/header';
 import { getMsgList, readMsg } from 'api/message'
-import { listTableMixin } from 'field/mixins/listMixin'
+import { bosMixin } from 'field/mixins/listMixin'
 import { jsqlPage } from 'api/basic'
 export default {
 	name: 'message',
 	components: { myHeader },
-	mixins: [listTableMixin],
+	mixins: [bosMixin],
 	data() {
 		return {
 			list: [],
-			fetchParam: {
-				search: '',
-				id: JSON.parse(localStorage.getItem('user')).id,
-				properties: ['status'],
-				direction: 'ASC'
+			fetchParams: {
+				jpql: "select m from Message m where m.userId = ?1 order by m.status asc, m.createTime desc ",
+				pageInfo: {
+					direction: "DESC",
+					page: 1,
+					size: 10,
+					totalPages: 1
+				},
+				returnType: "ARRAY",
+				params: [
+					JSON.parse(localStorage.getItem('user')).id
+				]
 			}
 		}
 	},
 	methods: {
 		fetchData() {
-			getMsgList(Object.assign(this.paginator, this.fetchParam)).then(res => {
-				this.list = res.content;
-				this.paginator.totalElements = res.totalElements;
-				this.paginator.totalPages = res.totalPages;
-				// 此处不可直接获取length，因为其带有分页
-				// this.$store.commit('setUnreadCount', res.content.filter(item => !item.status).length);
+			jsqlPage(this.fetchParams).then(res => {
+				this.list = this._.flatten(res.content);
+				this.fetchParams.pageInfo.totalPages = res.totalPages;
 			})
 		},
 		readIt(data) {
@@ -54,18 +58,6 @@ export default {
 				this.$message.success('标记已读');
 				this.fetchData();
 			})
-		}
-	},
-	filters: {
-		filterStaus(val) {
-			return val?'已读':'未读';
-		}
-	},
-	watch: {
-		'fetchParam.search': {
-			handler(val) {
-				this.fetchData();
-			}
 		}
 	}
 }

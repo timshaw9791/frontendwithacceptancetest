@@ -1,20 +1,20 @@
 import request from 'common/js/request'
-
+var qs = require('qs')
 //金额统计
 export function findEquipMoneyStatistics(params) {
     return request({
-        url: '/statistic/money',
+        url: `/statistic/money?${qs.stringify(params,{indices:false})}`,
         method: 'get',
-        params:params
+        // params:params
     })
 }
 
 //损耗统计
 export function findEquipLossStatistics(params) {
     return request({
-        url: '/statistic/loss',
+        url: `/statistic/loss?${qs.stringify(params,{indices:false})}`,
         method: 'get',
-        params:params
+        // params:params
     })
 }
 

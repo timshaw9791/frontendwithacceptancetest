@@ -1,39 +1,41 @@
 <template>
     <div class="opening-box">
-         
+          <my-header :title="$route.meta.title" :haveBlack="true" @h_black="cancel"></my-header>
         <div class="data-list">
-            <bos-tabs>
-                        <template slot="slotHeader">
-                            <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96" @click="readData"></base-button>
-                            <base-select label="硬件选择" v-model="select.selected" align="right" :selectList="select.handWareList"></base-select>
-                        </template>
-                        <define-table :data="list" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
-                            :highLightCurrent="true"  slot="total">
-                            <define-column label="操作" width="100" v-slot="{ data }">
-                                <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
-                                <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
+           <bos-tabs :option="['contrast']" :layoutRatio="[2,1]" :contrastKey="['slot1', 'slot2']">
+            <define-table :data="list" slot="slot1" height="4rem" @changeCurrent="selRow" :havePage="false"  >
+                            <define-column label="操作" width="150" v-slot="{ data }">
+                                <i class="iconfont icontianjialiang" ></i>
+                                <i class="iconfont iconyichuliang" ></i>
                             </define-column>
-                            <define-column label="装备位置" v-slot="{ data }">
-                                <!-- <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input> -->
+                            <define-column label="位置修改"  v-slot="{ data }">
+                                 <entity-input v-model="data.row.location"  :options="{search:'locationSelect'}" :formatFunc="$formatFuncLoc" :tableEdit="true" ></entity-input>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
-                                <!-- <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input> -->
+                                <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input>
+                            </define-column>
+                            <define-column label="所属人员" v-slot="{ data }">
+                                <define-input v-model="data.row.people"  :tableEdit="false"></define-input>
                             </define-column>
                         </define-table>
-                        <define-table :data="list" height="2.8646rem" :havePage="false" slot="detail">
-                            <define-column label="操作" width="100" v-slot="{ data }">
-                               <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
-                               <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
-                            </define-column>
-                            <define-column label="RFID" field="rfid"></define-column>
-                            <define-column label="装备序号" v-slot="{ data }">
-                                <!-- <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input> -->
-                            </define-column>
-                            <define-column label="装备参数" v-slot="{ data }">
-                                <!-- <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input> -->
-                            </define-column>
-                        </define-table>
-                    </bos-tabs>
+            <define-table :haveIndex="false"  slot="slot2" :havePage="false" :data="equipArg" height="4rem" >
+                <define-column label="RFID"  v-slot="{data}">
+                    <define-input v-model="data.row.rfid"  :tableEdit="false" ></define-input>
+                </define-column>
+                <define-column label="装备序号"  v-slot="{data}">
+                    <define-input v-model="data.row.serial" :tableEdit="false" ></define-input>
+                </define-column>
+                <define-column label="装备参数" v-slot="{data}">
+                    <entity-input v-model="data.row.equipArg" format="{name}({model})" :tableEdit="false" :options="{}"></entity-input>
+                </define-column>
+                <define-column label="原位置" v-slot="{data}">
+                    <entity-input v-model="data.row.equipArg" format="{name}({model})" :tableEdit="false" :options="{}"></entity-input>
+                </define-column>
+                <define-column label="操作" v-slot="{data}">
+                    <base-button label="删除" size="mini"></base-button>
+                </define-column>
+             </define-table>
+            </bos-tabs>
         </div>
     </div>
 </template>
@@ -63,7 +65,7 @@ export default {
         },
         data(){
             return{
-               list:[],
+               list:[{location:'',count:0,people:''}],
                orderNumber:'————',
                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
                select: {
