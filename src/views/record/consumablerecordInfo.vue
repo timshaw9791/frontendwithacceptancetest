@@ -14,7 +14,7 @@
         <div class="process-info" style="z-index:-1">
             <define-input label="备注" v-model="order.remark" :column="12" :disabled="true"></define-input>
         </div>
-        <define-table :havaPage="false" :data="order.consumableItems" height="3.6042rem" >
+        <define-table :showSummary="true" :summaryFunc="sumFunc" :havaPage="false" :data="order.consumableItems" height="3.6042rem" >
             <define-column label="操作" width="100">
                 <i class="iconfont icontianjialiang"></i>
                 <i class="iconfont iconyichuliang"></i>
@@ -36,7 +36,9 @@
         name: "consumableReceiveInfo",
         data() {
             return {
-                order: {},
+                order: {
+                    consumableItems:[]
+                },
                 selectData:[{
                     label:"领取",
                     value:"0",
@@ -59,7 +61,14 @@
                         id:this.order.operatorInfo.operatorId
                     }
                 })
-            }
+            },
+            sumFunc(param) { // 表格合并行计算方法
+                let { columns, data } = param, sums = [];
+                sums=new Array(columns.length).fill('')
+                sums[0]='合计'
+                sums[columns.length-1]=param.data.reduce((v,k)=>v+k.count,0)
+                return sums;
+            },
         },
         created() {
             this.fetchData()

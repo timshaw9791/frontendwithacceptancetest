@@ -143,16 +143,12 @@
                         this.equipArg = res.content
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
-                        this.total = 0
-                        this.equipArg.forEach(item=>{
-                            this.total+=item.count
-                        })
                     })
                 }else if(this.show ==  "genres"){
                     this.equipArg=[{category:{},count:""}]
                     getcategoriesSafety(this.choseGenre.id,this.paginator).then(res=>{
                         this.equipArg = res.content
-                        if(this.equipArg.length == 1 && this.equipArg[0].category == null){
+                        if(this.equipArg[0].category == null){
                             this.equipArg = []
                         }
                         this.paginator.totalPages = res.totalPages;
@@ -216,7 +212,7 @@
                     this.choseGenre = data.data
                     getcategoriesSafety(data.data.id,this.paginator).then(res=>{
                         this.equipArg = res.content
-                        if(this.equipArg.length == 1 && this.equipArg[0].category == null){
+                        if(this.equipArg[0].category == null){
                             this.equipArg = []
                         }
                         this.paginator.totalPages = res.totalPages;
@@ -294,7 +290,7 @@
                     this.tree.categories[i].children=[]
                     await getcategoriesSafety(this.tree.genres[i].id).then(res=>{
                         let categories = res.content
-                        if(categories.length !=1 && categories[0].category != null){
+                        if(categories[0].category != null){
                             categories.forEach(item=>{
                                 let temp = JSON.parse(JSON.stringify(item.category))
                                 temp.show="category"
