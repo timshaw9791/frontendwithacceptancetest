@@ -14,7 +14,7 @@
         <div class="process-info" style="z-index:-1">
             <define-input label="备注" v-model="order.remark" :column="12"></define-input>
         </div>
-        <define-table :havaPage="false" :data="order.consumableItems" height="3.6042rem" >
+        <define-table :showSummary="true" :summaryFunc="sumFunc" :havaPage="false" :data="order.consumableItems" height="3.6042rem" >
             <define-column label="操作" width="100" v-slot="{ data }">
                 <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
                 <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
@@ -61,15 +61,15 @@
         },
         methods: {
             changeRow(state, data) { // 总清单删除
-                let temp = JSON.parse(JSON.stringify(this.order));
+                let temp = JSON.parse(JSON.stringify(this.order.consumableItems));
 				if(state) {
 					temp.splice(data.$index+1, 0, {name:"",count:"",describes:""});
-				} else if(this.order.length>1) {
+				} else if(this.order.consumableItems.length>1) {
 					temp.splice(data.$index, 1); 
 				} else {
                     temp = [{name:"",count:"",describes:""}]
                 }
-				this.order.equips = temp;
+				this.order.consumableItems = temp;
             },
             submit(){
                 let temp = []
@@ -92,7 +92,28 @@
             },
             returnBack(){
                 this.$router.go(-1)
-            }
+            },
+            sumFunc(param) { // 表格合并行计算方法
+                let { columns, data } = param, sums = [];
+                columns.forEach((colum, index) => {
+                    if(index == 0) {
+                        sums[index] =  '合计';
+                    } else if(index == columns.length-1) {
+                        const values = data.map(item => item.count?Number(item.count):0);
+                        if(!values.every(value => isNaN(value))) {
+                            sums[index] = values.reduce((pre, cur) => !isNaN(cur)?pre+cur:pre);
+                        }
+                    }  else if(index == columns.length-2) {
+                        const values = data.map(item => item.consumable.count?Number(item.consumable.count):0);
+                        if(!values.every(value => isNaN(value))) {
+                            sums[index] = values.reduce((pre, cur) => !isNaN(cur)?pre+cur:pre);
+                        }
+                    } else {
+                        sums[index] = '';
+                    }
+                })
+                return sums;
+            },
         },
         created() {
             this.operatorInfo={
