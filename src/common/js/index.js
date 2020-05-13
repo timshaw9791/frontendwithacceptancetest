@@ -77,11 +77,12 @@ export function formatFunc(data){
         return `${data.locationInfo.frameNumber}架/${data.locationInfo.surface}面/${data.locationInfo.section}节/${data.locationInfo.floor}层`
     }
   }else{
-    if(data.surface==1)data.surface='B'
-    else{data.surface='A'}
+    let surface='A'
+    if(data.surface==1)surface='B'
+    else{surface='A'}
     if(data.surface!=null&&data.floor!=null){
       return data.frameNumber?
-     `${data.frameNumber}架/${data.surface}面/${data.section}节/${data.floor}层`:
+     `${data.frameNumber}架/${surface}面/${data.section}节/${data.floor}层`:
      `${data.category}(${data.cabinetNumber})`
     }else{
         if(data.category=='单警柜'){
@@ -138,7 +139,7 @@ export function interval(time) {
     console.error("时间格式有误");
     return 'timeError';
   }
-  let timeStamp = (Date.now() - +time)/24/3600/1000;
+  let timeStamp = ( +time - Date.now())/24/3600/1000;
   return timeStamp<1?'0天':timeStamp<2?'1天':timeStamp<3?'2天':'3天';
 }
 
