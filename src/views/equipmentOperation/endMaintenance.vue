@@ -133,15 +133,18 @@ export default {
     },
     
     readData(){
-        killProcess(this.pid)
-        start("java -jar scan.jar", (data) => {
-                findByRfids(data).then(res=>{
-                this.classDataify(res)
-            })
-            }, (fail) => {
-                this.index = 1;
-                this.$message.error(fail);
-            }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
+        findByRfids('555599998799').then(res=>{
+            this.classDataify(res)
+        })
+        // killProcess(this.pid)
+        // start("java -jar scan.jar", (data) => {
+        //         findByRfids(data).then(res=>{
+        //         this.classDataify(res)
+        //     })
+        //     }, (fail) => {
+        //         this.index = 1;
+        //         this.$message.error(fail);
+        //     }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
         
     },
     changeDetailRow(state,data)
