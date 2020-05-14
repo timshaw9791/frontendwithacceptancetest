@@ -298,12 +298,16 @@ export const asyncRouterMap = [{
             component: _import('warehouse/expired'),
             meta: {title: '到期报废'},
         },{
-            path: 'equipexpired',
-            name: 'equipexpired',
-            component: _import('warehouse/equipExpired'),
-            meta:{title:'到期报废/装备报废'},
-            hidden: true,
+            path: 'scrapList',
+            name: 'scrapList',
+            component: _import('warehouse/scrap/scrapList'),
+            meta:{title:'装备报废'},
         }, {
+            path: 'scrapInfo',
+            name: 'scrapInfo',
+            component: _import('warehouse/scrap/scrapInfo'),
+            hidden: true
+        },{
             path: 'training',
             name: 'warehouse/training',
             component: _import('warehouse/training'),
@@ -407,17 +411,6 @@ export const asyncRouterMap = [{
             component: _import('record/equipAllocationOrder'),
             meta: {title: '位置变更单'},
         }, {
-            path: 'scrapOrder',
-            name: 'scrapOrder',
-            component: _import('record/scrapOrder'),
-            meta: {title: '报废单'},
-        },{
-            path: 'scrapOrderDetails',
-            name: 'scrapOrderDetails',
-            component: _import('record/scrapOrderDetails'),
-            hidden:true,
-            meta: {title: '报废单/报废单详情'},
-        }, {
             path: 'serviceOrder',
             name: 'serviceOrder',
             component: _import('record/serviceOrder'),
@@ -438,11 +431,6 @@ export const asyncRouterMap = [{
             name: 'serviceApplicationOrder',
             component: _import('record/serviceApplicationOrder'),
             meta: {title: '维修申请记录'},
-        }, {
-            path: 'scraded',
-            name: 'scraded',
-            component: _import('record/scraded'),
-            meta: {title: '报废记录'},
         }, {
             path: 'consumablerecord',
             name: 'consumablerecord',

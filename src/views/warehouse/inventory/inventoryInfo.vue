@@ -1,20 +1,20 @@
 <template>
     <div class="inventory-info-container">
-        <my-header title="盘点装备"></my-header>
+        <my-header title="盘点装备" :haveBlack="true" @h_black="cancel"></my-header>
         <div class="body">
             <div class="inputs">
-                <define-input label="单号" v-model="inventory.number" :disabled="true"></define-input>
-                <define-input label="盘点时间" v-model="inventory.startTime" :disabled="true"></define-input>
-                <define-input label="盘点人员" v-model="inventory.operatorInfo.operator" :disabled="true"></define-input>
-                <define-input label="应盘点总数" v-model="inventory.inventoryCount" :disabled="true"></define-input>
-                <define-input label="已盘点总数" v-model="inventory.count" :disabled="true"></define-input>
-                <define-input label="未知装备数" v-model="inventory.notCount" :disabled="true"></define-input>
+                <define-input label="单号" v-model="inventoryOrder.number" :disabled="true"></define-input>
+                <define-input label="盘点时间" v-model="inventoryOrder.startTime" :disabled="true"></define-input>
+                <define-input label="盘点人员" v-model="inventoryOrder.operatorInfo.operator"
+                              :disabled="true"></define-input>
+                <define-input label="应盘点总数" v-model="inventoryOrder.inventoryCount" :disabled="true"></define-input>
+                <define-input label="已盘点总数" v-model="inventoryOrder.count" :disabled="true"></define-input>
+                <define-input label="未知装备数" v-model="inventoryOrder.notCount" :disabled="true"></define-input>
             </div>
-            <bos-tabs>
+            <bos-tabs :label="[{label: '未知装备数清单', key: 'total'}, {label: '明细', key: 'detail'}]">
                 <template slot="total">
                     <define-table :data="equipItems" @changeCurrent="changeCurrent" :highLightCurrent="true">
-                        <define-column label="装备名称" field="equipName"></define-column>
-                        <define-column label="型号" field="equipModel"></define-column>
+                        <define-column label="装备参数" field="equipArg"></define-column>
                         <define-column label="位置" field="locationInfo"></define-column>
                         <define-column label="数量" field="count"></define-column>
                         <define-column label="状态" field="equipState"></define-column>
@@ -22,20 +22,27 @@
                 </template>
                 <template slot="detail">
                     <define-table :data="detailItems">
+                        <define-column label="操作" v-slot="{data}">
+                            <span  @click="copyRfid(data.row.rfid)">复制</span>
+                        </define-column>
                         <define-column label="RFID" field="rfid"></define-column>
                         <define-column label="序号" field="serial"></define-column>
                     </define-table>
                 </template>
-                <template slot="slotHeader" v-if="!isInfo" >
-                    <base-select v-model="hardwareSelect" label="硬件选择" :selectList="hardwareList"
-                                 :disabled="true" ></base-select>
+                <template slot="slotHeader" v-if="!isInfo">
+                    <base-select v-model="hardwareSelect.select" label="硬件选择" :selectList="hardwareSelect.list"
+                                 :disabled="true"></base-select>
                     <base-button label="读取数据" @click="getArgsInfo()"></base-button>
                 </template>
             </bos-tabs>
-            <div class="box-bottom"  v-if="!isInfo">
-                <base-button label="取消" @click="back"></base-button>
+            <div class="box-bottom" v-if="!isInfo">
+                <base-button label="取消" @click="cancel"></base-button>
                 <base-button label="提交" @click="submit"></base-button>
             </div>
+            <service-dialog title="提示" ref="scrapDialog" width="3.3021rem" @confirm="dialogSub" :secondary="false">
+                <div>是否需要盘点报废</div>
+            </service-dialog>
+            <copy-rfid :rfid="rfid" :isShow="isShowDialog" @cancel="copyCancel"></copy-rfid>
         </div>
     </div>
 </template>
@@ -46,47 +53,41 @@
     import {findByRfids} from "../../../api/storage"
     import {inventoryOrder} from "../../../api/inventory"
     import {getBosEntity} from "../../../api/basic"
+    import {transEquipFormat} from "../../../common/js";
+    import serviceDialog from "../../../components/base/serviceDialog"
+    import copyRfid from "../../../components/copyRfid";
 
     export default {
         name: "inventoryInfo",
         components: {
             BosTabs,
-            myHeader
+            myHeader,
+            serviceDialog,
+            copyRfid
         },
         data() {
             return {
-                tableName: [{
-                    label: "未盘点清单",
-                    key: 'total'
-                }, {
-                    label: "明细",
-                    key: 'detail'
-                }],
-                inventory: {
-                    operatorInfo: {},
-                    remark: ''
-                },
-                rfids: [],
-                equipItems: [],
-                detailItems: [],
-                hardwareList: [{
-                    label: "手持机",
-                    value: 'handheld'
-                }, {
-                    label: "读卡器",
-                    value: "reader"
-                }],
                 isInfo: false,
-                hardwareSelect: "handheld",
+                hardwareSelect: {
+                    list: [{label: "手持机", value: 'handheld'}, {label: "读卡器", value: "reader"}],
+                    select: "handheld"
+                },
+                inventoryOrder: {operatorInfo: {}, remark: ''},
+                rfids: [],
+                // 盘点装备总列表
+                equipItems: [],
+                // 盘点装备明细列表
+                detailItems: [],
+                isShowDialog: false,
                 // 假列表
-                noInventoryList: ['110000060000000000000000', '110000030000000000000000', '57786', '8578576666', '12345678', '857985']
+                noInventoryList: ['110000060000000000000000', '110000030000000000000000', '57786', '8578576666', '12345678', '857985'],
             }
         },
         methods: {
             fetchData() {
                 if (this.isInfo) {
                     getBosEntity(this.$route.query.id).then(res => {
-                        this.inventory = res
+                        this.inventoryOrder = res
                         this.equipItems = res.inventoryItems
                         this.fixData()
                     })
@@ -99,13 +100,12 @@
                 })
             },
             fixData() {
-                // info 和 新增数据有出入，强制 添加equipName、equipModel、locationInfo 以便统一
+                this.inventoryOrder.startTime = this.$filterTime(this.inventoryOrder.startTime)
+                // 盘点单与手持机的装备列表数据字段不同，强制 添加equipName、equipModel、locationInfo 以便统一
                 this.equipItems.forEach(item => {
                     this.rfids.push(item.rfid)
                     if (item.equipArg) {
-                        item.equipName = item.equipArg.name
-                        item.equipModel = item.equipArg.model
-                        item.locationInfo = item.location
+                        transEquipFormat(item)
                     }
                 })
                 // 对数据进行分组 按照位置、名称、型号 通过lodash
@@ -118,8 +118,7 @@
                         length += item.length
                         let tempLocation = this.$formatFuncLoc(item[0].locationInfo)
                         return {
-                            equipName: item[0].equipName,
-                            equipModel: item[0].equipName,
+                            equipArg: item[0].equipName + "(" + item[0].equipModel + ")",
                             equipState: item[0].state,
                             locationInfo: tempLocation,
                             item: item,
@@ -132,12 +131,17 @@
                 })
                 // 假数据处理
                 if (!this.isInfo) {
-                    this.inventory.startTime = (new Date()).valueOf();
-                    this.inventory.operatorInfo.operator = JSON.parse(window.localStorage.getItem("user")).name
-                    this.inventory.operatorInfo.operatorId = JSON.parse(window.localStorage.getItem("user")).id
-                    this.inventory.inventoryCount = 10
-                    this.inventory.notCount = length
-                    this.inventory.count = this.inventory.inventoryCount - this.inventory.notCount
+                    let count = 10 - length
+                    this.inventoryOrder = {
+                        startTime: (new Date()).valueOf(),
+                        operatorInfo: {
+                            operator: JSON.parse(window.localStorage.getItem("user")).name,
+                            operatorId: JSON.parse(window.localStorage.getItem("user")).id
+                        },
+                        inventoryCount: 10,
+                        notCount: length,
+                        count: count
+                    }
                 }
             },
             changeCurrent(data) {
@@ -145,20 +149,30 @@
             },
             submit() {
                 let data = {
-                    inventoryOrder: this.inventory,
+                    inventoryOrder: this.inventoryOrder,
                     rfids: this.rfids
                 }
                 inventoryOrder("post", data)
-                this.back()
+                this.$refs.scrapDialog.show()
             },
-            back() {
+            dialogSub() {
+                this.$router.push({path: 'scrapInfo', query: {category: '2', rfids: this.rfids}})
+            },
+            cancel() {
                 this.$router.back()
+            },
+            copyRfid(data) {
+                this.rfid = data
+                this.isShowDialog = true
+            },
+            copyCancel() {
+                this.isShowDialog = false
             }
         },
         created() {
             this.isInfo = !!this.$route.query.id
             this.fetchData()
-        }
+        },
     }
 </script>
 

@@ -94,11 +94,11 @@ export function getequipArg(params) {
     })
 }
 // 将未分配装备分配到小类下
-export function distribution(id,params) {
+export function distribution(id,data) {
     return request({
         url: `/relate/categories/${id}`,
         method: 'POST',
-        params
+        data
     })
 }
 // 将装备参数从小类下删除
