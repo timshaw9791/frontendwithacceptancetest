@@ -22,6 +22,9 @@
                 </template>
                 <template slot="detail">
                     <define-table :data="detailItems">
+                        <define-column label="操作" v-slot="{data}">
+                            <span  @click="copyRfid(data.row.rfid)">复制</span>
+                        </define-column>
                         <define-column label="RFID" field="rfid"></define-column>
                         <define-column label="序号" field="serial"></define-column>
                     </define-table>
@@ -39,6 +42,7 @@
             <service-dialog title="提示" ref="scrapDialog" width="3.3021rem" @confirm="dialogSub" :secondary="false">
                 <div>是否需要盘点报废</div>
             </service-dialog>
+            <copy-rfid :rfid="rfid" :isShow="isShowDialog" @cancel="copyCancel"></copy-rfid>
         </div>
     </div>
 </template>
@@ -51,12 +55,15 @@
     import {getBosEntity} from "../../../api/basic"
     import {transEquipFormat} from "../../../common/js";
     import serviceDialog from "../../../components/base/serviceDialog"
+    import copyRfid from "../../../components/copyRfid";
+
     export default {
         name: "inventoryInfo",
         components: {
             BosTabs,
             myHeader,
-            serviceDialog
+            serviceDialog,
+            copyRfid
         },
         data() {
             return {
@@ -65,15 +72,13 @@
                     list: [{label: "手持机", value: 'handheld'}, {label: "读卡器", value: "reader"}],
                     select: "handheld"
                 },
-                inventoryOrder: {
-                    operatorInfo: {},
-                    remark: ''
-                },
+                inventoryOrder: {operatorInfo: {}, remark: ''},
                 rfids: [],
                 // 盘点装备总列表
                 equipItems: [],
                 // 盘点装备明细列表
                 detailItems: [],
+                isShowDialog: false,
                 // 假列表
                 noInventoryList: ['110000060000000000000000', '110000030000000000000000', '57786', '8578576666', '12345678', '857985'],
             }
@@ -151,16 +156,23 @@
                 this.$refs.scrapDialog.show()
             },
             dialogSub() {
-                this.$router.push({path: 'scrapInfo',query:{category:'2',rfids:this.rfids}})
+                this.$router.push({path: 'scrapInfo', query: {category: '2', rfids: this.rfids}})
             },
             cancel() {
                 this.$router.back()
+            },
+            copyRfid(data) {
+                this.rfid = data
+                this.isShowDialog = true
+            },
+            copyCancel() {
+                this.isShowDialog = false
             }
         },
         created() {
             this.isInfo = !!this.$route.query.id
             this.fetchData()
-        }
+        },
     }
 </script>
 

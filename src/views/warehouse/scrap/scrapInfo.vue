@@ -62,7 +62,7 @@
                 paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
                 hardwareSelect: {
                     list: [{label: '手持机', value: 'handheld'}, {label: '读卡器', value: 'reader'}],
-                    select: false,
+                    select: '',
                 },
                 pid: '',
                 // 处理后的装备数据，用于渲染
@@ -103,9 +103,7 @@
             // 处理装备列表信息
             fixEquipItems() {
                 this.scrapOrder.scrapItems.forEach(item => {
-                    if (item.equipArg) {
-                        transEquipFormat(item)
-                    }
+                    if (item.equipArg) transEquipFormat(item)
                 })
                 // 处理前的装备数据
                 let tempEquipItems = this._.groupBy(this.scrapOrder.scrapItems, item => `${item.equipModel}${item.equipName}`)
@@ -121,9 +119,19 @@
             fetchData() {
                 getBosEntity(this.$route.query.id).then(res => {
                     this.scrapOrder = res
-                    transScrapCategory(this.scrapOrder)
+                    this.fixData()
                     this.fixEquipItems()
                 })
+            },
+            fixData() {
+                if (!this.isInfo) {
+                    this.scrapOrder.operatorInfo.operator = JSON.parse(window.localStorage.getItem("user")).name
+                    this.scrapOrder.operatorInfo.operatorId = JSON.parse(window.localStorage.getItem("user")).id
+                }
+                if (this.scrapOrder.createTime) {
+                    this.scrapOrder.createTime = this.$filterTime(this.scrapOrder.createTime)
+                }
+                transScrapCategory(this.scrapOrder)
             },
             fetchMatchRfids() {
                 // 获取到期装备的列表 用来对比扫描到的RFID是否在到期装备列表中
@@ -135,7 +143,7 @@
                 this.totalIndex = current.index
             },
             delRow(list, data) {
-                list === 'equipItems' ? this[list].length === 1 ? this[list] = [{items: []}] : this[list].splice(data.$index, 1) : '';
+                list === 'equipItems' ? this[list].length === 1 ? this[list] = [{items: []}] : this[list].splice(data.$index, 1) : this[list].splice(data.$index, 1);
             },
             changeTab(data) {
                 data.key === 'total' ? killProcess(this.pid) : ''
@@ -161,6 +169,9 @@
                 })
             },
             cancel() {
+                if (this.scrapOrder.category === 2) {
+                    this.$router.go(-1)
+                }
                 this.$router.back()
             }
         },
@@ -173,8 +184,9 @@
                 this.fetchData()
             } else {
                 this.scrapOrder.category = Number(this.$route.query.category)
-                transScrapCategory(this.scrapOrder)
+                this.fixData()
                 if (this.scrapOrder.category === 0 || this.scrapOrder.category === 2) {
+                    this.rfids = this.$route.query.rfids
                     this.fetchEquipItems(this.$route.query.rfids)
                 } else {
                     this.isHardwareSelect = true

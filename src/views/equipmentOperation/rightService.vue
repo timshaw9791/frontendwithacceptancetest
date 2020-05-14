@@ -32,9 +32,6 @@
                     <date-input v-model="data.row.createTime" :validate="milliTime" :tableEdit="false"></date-input>
                 </define-column>
             </define-table>
-            <service-dialog title="提示" ref="scrapDialog" width="3.3021rem" @confirm="submit" :secondary="false">
-                <div>是否需要维修报废</div>
-            </service-dialog>
         </div>
     </div>
 </template>
@@ -45,7 +42,6 @@
     import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
     import endService from './startService'
-    import serviceDialog from 'components/base/serviceDialog'
     import {rightRepairOrder} from "api/operation"
 
     export default {
@@ -55,7 +51,6 @@
             entityInput,
             endService,
             divTmp,
-            serviceDialog
         },
         data() {
             return {
@@ -69,16 +64,12 @@
             }
         },
         methods: {
-            submit() {
-                this.$router.push({path: '/warehouse/scrapInfo', query: {category: '0', rfids: this.scrapData.rfid}})
-            },
             toDetail(data) {
                 this.equipData = data
                 this.inorder = true
             },
             toScrap(data) {
-                this.$refs.scrapDialog.show()
-                this.scrapData = data
+                this.$router.push({path: '/warehouse/scrapInfo', query: {category: '0', rfids: data.rfid}})
             },
             milliTime(data) {
                 let time = (new Date() - data) / (1000 * 60 * 60 * 24) > 1 ? (new Date() - data) / (1000 * 60 * 60 * 24) : 1

@@ -6,7 +6,7 @@
                          @click="toAllocation"></base-button>
         </div>
         <div class="data-list">
-            <define-table :data="list" height="3.64rem" @changeCurrent="selRow" :pageInfo="this.paginator"
+            <define-table :data="list" height="3.64rem"  :pageInfo="this.paginator"
                           @changePage="changePage" :haveIndex="false" v-if="inList">
                 <define-column label="序号" fixed columnType="index" width="65"></define-column>
                 <define-column label="操作" width="180" v-slot="{ data }" fixed>
@@ -37,9 +37,7 @@
                 <define-column label="单价" field="price"/>
             </define-table>
             <equipment-edit v-if="isEdit" @cancel="cancel" :editList="editList"></equipment-edit>
-            <service-dialog ref="copyRfid" with="400px" title="复制RFID" confirmInfo="写 入" @confirm="writeRfid" @cancel="cancelDialog" >
-                <define-input label="RFID" v-model=rfid :disabled="true"></define-input>
-            </service-dialog>
+            <copy-rfid :rfid="rfid" :isShow="isShowDialog" @cancel="copyCancel"></copy-rfid>
         </div>
     </div>
 </template>
@@ -52,11 +50,12 @@
     import {baseURL} from 'api/config'
     import equipmentEdit from './equipmentEdit'
     import serviceDialog from 'components/base/serviceDialog/index'
-    import {equipsAll, equipById} from 'api/storage'
-    import {startOne} from "../../common/js/rfidReader";
+    import {equipsAll} from 'api/storage'
+    import CopyRfid from "../../components/copyRfid";
 
     export default {
         components: {
+            CopyRfid,
             myHeader,
             entityInput,
             serviceDialog,
@@ -67,6 +66,7 @@
         data() {
             return {
                 rfid: '',
+                isShowDialog:false,
                 list: [],
                 newLocation: '',
                 editList: {},
@@ -160,15 +160,11 @@
             },
             copyRfid(data) {
                 this.rfid = data
-                this.$refs.copyRfid.show()
+                this.isShowDialog = true
             },
-            writeRfid() {
-                startOne("java -jar write.jar ", () => this.$message.success('写入成功'), this.rfid)
-            },
-            cancelDialog(){
-                this.$refs.copyRfid.hide()
+            copyCancel(){
+                this.isShowDialog = false
             }
-
         },
         created() {
             this.getList();
