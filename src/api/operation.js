@@ -29,6 +29,14 @@ export function endKeepEquips(state,list) {
     })
 }
 
+//获取需要报废的装备
+export function maturityScrap(params) {
+    return request({
+        url:"/equips/need-scrap",
+        method: 'get',
+        params
+    })
+}
 
 export function findkeepingequips() {
     return request({
@@ -61,10 +69,11 @@ export function rightRepairOrder(params) {
 //装备报废 
 export function equipScrap(category,remark,list) {
     return request({
-        url: `/equip-maintain/scrap?category=${category}&remark=${remark}&${qs.stringify({rfids:list},{indices:false})}`,
+        url: `/equip-maintain/scrap?category=${category}&remark=${remark}&rfids=${list}`,
         method: 'post',
     })
 }
+
 //保养单列表
 export function keepOrders(params) {
     return request({

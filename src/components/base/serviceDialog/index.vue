@@ -11,7 +11,7 @@
                     :visible.sync="innerVisible"
                     append-to-body
                     center>
-                <div class="_dialogDiv" >
+                <div class="_dialogDiv">
                     您确定要放弃本次操作吗?
                 </div>
                 <div slot="footer" class="dialog-footer" v-if="!ismore">
@@ -22,7 +22,9 @@
 
             <div slot="footer" class="dialog-footer" v-if="button">
                 <el-button @click="cancelDb" data-test="button">取 消</el-button>
-                <el-button type="primary" :disabled="disabled" @click="dialogConfirm" data-test="button">{{ confirmInfo }}</el-button>
+                <el-button type="primary" :disabled="disabled" @click="dialogConfirm" data-test="button">{{ confirmInfo
+                    }}
+                </el-button>
             </div>
         </el-dialog>
     </div>
@@ -57,7 +59,7 @@
                 type: String,
                 default: "确 定"
             },
-            ismore:{
+            ismore: {
                 type: Boolean,
                 default: false
             }
@@ -78,7 +80,7 @@
             cancel() {
                 this.innerVisible = false;
                 this.showFlag = false;
-                this.$emit('cancel','end');
+                this.$emit('cancel', 'end');
             },
             handleClose(done) {
                 if (this.secondary) {
@@ -103,6 +105,7 @@
 <style lang="scss" scoped>
     .dialog {
         font-size: 0.0833rem;
+
         /deep/ .el-dialog__header {
             background: #2F2F76 !important;
         }

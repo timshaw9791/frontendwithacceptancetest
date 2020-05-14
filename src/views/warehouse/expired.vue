@@ -1,26 +1,29 @@
 <template>
     <div class="right-service-container">
-        <my-header :title="$route.meta.title" ></my-header>
+        <my-header :title="$route.meta.title"></my-header>
         <div class="maintenance-form-top">
-             <base-button label="报废装备" align="right" :width="128" :height="25" :fontSize="20" @click="toInHouse"></base-button>
+            <base-button label="报废装备" align="right" :width="128" :height="25" :fontSize="20"
+                         @click="toScrap"></base-button>
         </div>
         <div class="maintenance-form-body">
-            <define-table :data="list" height="3.64rem"  @changePage="changePage" :pageInfo="paginator">
+            <define-table :data="list" height="3.64rem" @changePage="changePage" :pageInfo="paginator">
                 <define-column label="RFID" v-slot="{ data }">
-                    <define-input v-model="data.row.rfid"  :tableEdit="false"></define-input>
+                    <define-input v-model="data.row.rfid" :tableEdit="false"></define-input>
                 </define-column>
                 <define-column label="装备序号" v-slot="{ data }">
                     <define-input v-model="data.row.serial" type="Number" :tableEdit="false"></define-input>
                 </define-column>
                 <define-column label="装备参数" v-slot="{ data }" width="400">
-                    <entity-input v-model="data.row" :detailParam="data.row.equipArg" :options="{ detail: 'equipArgsDetail' }" format="{equipName}({model})" :disabled="true" ></entity-input>
+                    <entity-input v-model="data.row" :detailParam="data.row.equipArg"
+                                  :options="{ detail: 'equipArgsDetail' }" format="{equipName}({model})"
+                                  :disabled="true"></entity-input>
                 </define-column>
                 <define-column label="装备位置" v-slot="{data}">
                     <entity-input v-model="data.row" :formatFunc="$formatFuncLoc" :tableEdit="false"></entity-input>
                 </define-column>
-                <define-column label="到期时间" field="scarTime" :filter="(row)=>$filterTime(row.scarTime)"  />
+                <define-column label="到期时间" field="scarTime" :filter="(row)=>$filterTime(row.scarTime)"/>
                 <define-column label="到期倒计时/天" v-slot="{ data }">
-                <date-input v-model="data.row.scarTime" :tableEdit="false" filter="interval"></date-input>
+                    <date-input v-model="data.row.scarTime" :tableEdit="false" filter="interval"></date-input>
                 </define-column>
             </define-table>
 
@@ -30,71 +33,57 @@
 
 <script>
     import myHeader from 'components/base/header/header';
-    import textInput from '@/componentized/textBox/textInput.vue'
-    import defineInput from '@/componentized/textBox/defineInput.vue'
-    import bosTabs from '@/componentized/table/bosTabs.vue'
-    import baseButton from "@/componentized/buttonBox/baseButton.vue"
-    import baseSelect from '@/componentized/textBox/baseSelect.vue'
-    import dateSelect from '@/componentized/textBox/dateSelect.vue'
-    import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
     import serviceDialog from 'components/base/serviceDialog'
-    // import equipInhouseOrder from './equipInhouseOrder'
-    import {rightRepairOrder,equipScrap} from "api/operation"
-    import { maturityScrap,equipById} from 'api/storage'
-    import { getInhouseNumber,inOutHouseOrder,deleteInhouseNumber} from "api/storage"
-export default {
-    components:{
+    import {equipmentScrapped} from "../../api/statistics";
+
+
+    export default {
+        components: {
             myHeader,
-            textInput,
-            defineInput,
-            baseButton,
-            baseSelect,
-            dateSelect,
-            entityInput,
             divTmp,
-            bosTabs,
             serviceDialog
         },
-        data(){
-            return{
-               list:[],
-               paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
+        data() {
+            return {
+                list: [],
+                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
             }
         },
-        methods:{
-            fetchData(){
-                maturityScrap(this.paginator).then(res=>{
+        methods: {
+            fetchData() {
+                equipmentScrapped(this.paginator).then(res => {
                     this.paginator.totalPages = res.totalPages
-                    this.list=res.content
+                    this.list = res.content
                 })
             },
             changePage(page) {
                 this.paginator.page = page;
                 this.fetchData()
             },
-            toInHouse(){
-                this.$router.push({name:"equipexpired",params:{data:this.paginator}})
+            toScrap() {
+                this.$router.push({path: "scrapInfo", query:{category: '1'}})
             }
         },
-        created(){
+        created() {
             this.fetchData()
         }
-}
+    }
 </script>
 <style lang="scss" scoped>
-.right-service-container{
-    font-size: 16px;
-    width: 100%;
-    min-height: 4.4323rem;
-    .maintenance-form-top{
-    padding: 16px 7px;
+    .right-service-container {
+        font-size: 16px;
+        width: 100%;
+        min-height: 4.4323rem;
+
+        .maintenance-form-top {
+            padding: 16px 7px;
+        }
+
+        .maintenance-form-body {
+            padding: 0 10px;
+            margin-top: 30px;
+            height: "2.8648rem";
+        }
     }
-    .maintenance-form-body
-    {
-        padding: 0 10px;
-        margin-top:30px;
-        height:"2.8648rem";
-    }
-}
 </style>
