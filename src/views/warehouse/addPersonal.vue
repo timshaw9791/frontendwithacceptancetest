@@ -3,7 +3,7 @@
         <my-header :title="title"  :searchFlag="false" :haveBlack="false" ></my-header>
         <div style="display:block;width:100%;height:500px">
             <div  class="addpersonnelist">
-                <entity-input label="机构单位" margin="15px 0 0 0" :disabled="true" v-model="organUnit" format="{name}" :options="{search:'organUnits'}" placeholder="请选择"></entity-input>
+                <entity-input label="机构单位" margin="15px 0 0 0" :disabled="true" v-model="organUnit" format="{name}" :column="12" :options="{search:'organUnits'}" placeholder="请选择"></entity-input>
                 <define-input label="警号" margin="15px 0 0 0" :required="true" v-model="order.policeSign" :column="12"></define-input>
                 <define-input label="姓名" margin="15px 0 0 0" :required="true" v-model="order.name" :column="12"></define-input>
                 <base-select label="性别" margin="15px 0 0 0" :required="true" v-model="order.gender" :column="12" :selectList="genderList"></base-select>
@@ -61,6 +61,19 @@
                     name:this.order.organUnitName,
                     id:this.order.organUnitId
                 }
+                switch (this.order.role) {
+                            case '警员':
+                                this.order.role=0
+                                break;
+                            case "管理员":
+                                this.order.role=1
+                                break;
+                            case "领导":
+                                this.order.role=2
+                                break;
+                            default:
+                                break;
+                        }
             }else{
                 this.title = "新增人员"
                 let user = JSON.parse(localStorage.getItem('user'))
@@ -79,7 +92,7 @@
         data(){
             return{
                 genderList:[{label:"男",value:"男"},{label:"女",value:"女"}],
-                roleList:[{label:"管理员",value:"管理员"},{label:"警员",value:"警员"},{label:"领导",value:"领导"}],
+                roleList:[{label:"管理员",value:1},{label:"警员",value:0},{label:"领导",value:2}],
                 enterhouseList:[{label:"不允许",value:"不允许"},{label:"允许",value:"允许"}],
                 order:{},
                 title:"",
@@ -97,19 +110,6 @@
         },
         methods:{
             submit(){
-                switch(this.order.role){
-                    case '管理员':
-                        this.order.role = "ADMIN"
-                        break;
-                    case '领导':
-                        this.order.role = "LEADER"
-                        break;
-                    case '警员':
-                        this.order.role = "POLICE"
-                        break;
-                    default:
-                        break;
-                }
                 if(this.order.enterHouse=="允许"){
                     this.order.enterHouse=true
                 }else if(this.order.enterHouse=="不允许"){

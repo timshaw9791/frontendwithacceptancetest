@@ -16,7 +16,7 @@
                             <define-column label="操作人员" v-slot="{ data }">
                                 <define-input v-model="data.row.operatorInfo.operator" type="String" :tableEdit="false"></define-input>
                             </define-column>
-                            <define-column label="保养开始时间" :filter="(row)=>$filterTime(row.createTime)"/>
+                            <define-column label="保养结束时间" :filter="(row)=>$filterTime(row.createTime)"/>
                         </define-table>
         </div>
     </div>
