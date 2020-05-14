@@ -64,6 +64,7 @@
     import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
     import { findByRfids,locationChangeOrders} from "api/storage"
+    import { start, startOne, killProcess,handheld, modifyFileName } from 'common/js/rfidReader'
     import {jsqlPage,getBosEntity} from "api/basic"
 export default {
     components:{
@@ -176,12 +177,16 @@ export default {
             this.paginator.page = page;
             }
         },
+        beforeDestroy(){
+            killProcess(this.pid)
+        },
         created(){
             if(this.$route.query.id){
             this.edit=false;
             this.fetchData(this.$route.query.id)
             }
         }
+
 }
 </script>
 <style lang="scss" scoped>
