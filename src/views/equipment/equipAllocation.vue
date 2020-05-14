@@ -133,9 +133,8 @@ export default {
                 }
                 this.list.forEach(item=>{
                     item.locationChangeItems.forEach(it=>{
-                        console.log(item);
                         req.locationChangeItems.push({categoryNum:it.category,cabinetUserName:it.policeCabinet?it.policeCabinet.name:'',locationInfo:it.location,
-                        location:item.location,equipArgId:it.equipArg.id,equipId:it.id,equipModel:it.equipArg.model,equipName:it.equipArg.name,
+                        location:item.location,remark:`${this.$formatFuncLoc(it.location)}->${item.location.name}`,equipArgId:it.equipArg.id,equipId:it.id,equipModel:it.equipArg.model,equipName:it.equipArg.name,
                         equipSerial:it.serial,rfid:it.rfid,supplierId:it.equipArg.supplier.id,supplierName:it.equipArg.supplier.name
                         })
                     })
@@ -147,7 +146,7 @@ export default {
             },
             readData(){
                 
-                                     findByRfids('12345678').then(res=>{
+                                     findByRfids('7778889967').then(res=>{
                             if(this._.findIndex(this.list[this.findIndex].locationChangeItems,['rfid',res[0].rfid])==-1){
                                 this.list[this.findIndex].locationChangeItems.push(res[0])
                                 this.list[this.findIndex].count++
