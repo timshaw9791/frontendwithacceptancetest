@@ -165,7 +165,7 @@
                     })
                 }else if(this.title == "装备分类"){
                     if(this.selectedData.selectCategory != null && this.selectedData.selectCategory != ''){
-                        distribution(this.selectedData.selectCategory,this.assignedData).then(res=>{
+                        distribution(this.selectedData.selectCategory,{equipArgs:this.assignedData}).then(res=>{
                             this.$refs.safetyDialogs.hide()
                             this.$emit('fetchData');
                         this.clean()
