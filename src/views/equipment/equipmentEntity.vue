@@ -93,6 +93,7 @@
             },
             show(data) {
                 this.$router.push({name: 'equiphistoryOrder', query: {id: data}})
+                this.$route.meta.title = '装备实体/位置变更'
             },
             changePage(page) {
                 this.paginator.page = page
@@ -141,22 +142,6 @@
                 } else {
                     return day
                 }
-            },
-            milliLocation(data) {
-                return data.frameNumber + '架/' + data.surface + '面/' + data.section + '节/' + data.floor + '层'
-            },
-            getTime(nS) {
-                var date = new Date(parseInt(nS));
-                var year = date.getFullYear();
-                var mon = date.getMonth() + 1;
-                var day = date.getDate();
-                // var hours = date.getHours();
-                // var minu = date.getMinutes();
-                // var sec = date.getSeconds();
-                return year + '/' + mon + '/' + day;
-            },
-            selectLocation() {
-                this.isEdit = false
             },
             copyRfid(data) {
                 this.rfid = data
