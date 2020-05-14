@@ -21,27 +21,41 @@ export function findEquipLossStatistics(params) {
 //维修统计
 export function findEquipRepairStatistics(params) {
     return request({
-        url: '/statistic/repair',
+        url: `/statistic/repair?${qs.stringify(params,{indices:false})}`,
         method: 'get',
-        params:params
+        // params:params
     })
 }
-
+//单警装备维修统计/statistic/cabinet-loss
+export function cabinetLoss() {
+    return request({
+        url: "/statistic/cabinet-loss",
+        method: 'get',
+        // params:params
+    })
+}
+export function cabinetLossCategories(id,search='') {
+    return request({
+        url: `/statistic/cabinet-loss-categories?categories=${id}&search=${search}`,
+        method: 'get',
+        // params:params
+    })
+}
 //报废统计
 export function findEquipScrapStatistics(params) {
     return request({
-        url: '/statistic/scrapStatistic',
+        url: `/statistic/scrapStatistic?${qs.stringify(params,{indices:false})}`,
         method: 'get',
-        params:params
+        // params:params
     })
 }
 
 //使用频次统计
 export function findEquipFrequencyStatistics(params) {
     return request({
-        url: '/statistic/frequencyStatistic',
+        url: `/statistic/frequencyStatistic?${qs.stringify(params,{indices:false})}`,
         method: 'get',
-        params:params
+        // params:params
     })
 }
 export function findEquipMoneyStatistic(params) {

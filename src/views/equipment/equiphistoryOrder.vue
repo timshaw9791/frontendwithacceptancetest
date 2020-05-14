@@ -67,7 +67,9 @@ export default {
                         if(elem.category=='5')elem.category='结束维修'
                         if(elem.category=='6')elem.category='领取'
                         if(elem.category=='7')elem.category='归还'
-                        if(elem.category=='8')elem.category='装备位置变更单'
+                        if(elem.category=='8')elem.category='装备位置变更'
+                        if(elem.category=='9')elem.category='开始充电'
+                        if(elem.category=='10')elem.category='结束充电'
                     }
                 })
             },
