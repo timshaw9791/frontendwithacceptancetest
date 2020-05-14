@@ -20,6 +20,14 @@ export function allPoliceStatistic() {
         
     })
 }
+//单警柜金额统计all/statistic/cabinet-money
+export function allPoliceStatisticCategories(id,search='') {
+    return request({
+        url: `/statistic/cabinet-money-categories?categories=${id}&search=${search}`,
+        method: "get",
+        
+    })
+}
 
 //jbql查询该警柜下的装备列表
 export function cabinetEquip(data) {

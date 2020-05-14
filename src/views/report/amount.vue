@@ -7,7 +7,7 @@
                 <define-input label="小类" v-model="search"></define-input>
                 <base-button label="查询"  size="mini"></base-button>
                 <div style="height:80%">
-                    <define-tree @clickNode="clickNode" :data="tree.treeData" :options="options" @nodeClick="clickNode"></define-tree>
+                    <define-tree @clickNode="clickNode" :expandAll="false" :data="tree.treeData" :options="options" @nodeClick="clickNode"></define-tree>
                 </div>
 
             </div>
@@ -21,6 +21,20 @@
                 </div>
                 <div style="safety-body-t" v-else-if="show=='genres'">
                     <div style="float:left">总计 装备大类：{{this.title}} 总数：{{addNum(1)}}件 可用数：{{addNum(2)}}件 领用数：{{addNum(3)}}件 总价：{{addNum(4)}}元</div>
+                    <div style="float:right">
+                        <define-input label="小类" v-model="search"></define-input>
+                        <base-button label="查询"  size="mini"></base-button>
+                    </div>
+                </div>
+                <div style="safety-body-t" v-else-if="show=='singlePolice'">
+                    <div style="float:left">总计 装备大类：{{this.title}} 总数：{{this.equipArg.reduce((v,k)=>v+k.totalCount,0)}}件  总价：{{addNum(4)}}元</div>
+                    <div style="float:right">
+                        <define-input label="小类" v-model="search"></define-input>
+                        <base-button label="查询"  size="mini"></base-button>
+                    </div>
+                </div>
+                <div style="safety-body-t" v-else-if="show=='singlePoliceCategory'">
+                    <div style="float:left">总计 装备小类：{{this.title}} 总数：{{this.equipArg.reduce((v,k)=>v+k.totalCount,0)}}件  总价：{{addNum(4)}}元</div>
                     <div style="float:right">
                         <define-input label="小类" v-model="search"></define-input>
                         <base-button label="查询"  size="mini"></base-button>
@@ -56,12 +70,16 @@
                         <define-column label="装备总价" field="totalPrice"></define-column>>
                     </define-table>
                     <define-table v-if="show=='singlePolice'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
-                        <define-column label="装备参数" field="equipArgs"/>
+                        <define-column label="装备小类" field="cabinet"/>
                         <define-column label="装备总数" field="totalCount"></define-column>
-                        <define-column label="可用数量" field="inHouseCount"></define-column>
-                        <define-column label="领用数量" field="receiveUseCount"></define-column>
                         <define-column label="装备总价" field="totalPrice"></define-column>>
                     </define-table>
+                    <define-table v-if="show=='singlePoliceCategory'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
+                        <define-column label="装备参数" field="equipArgs"/>
+                        <define-column label="装备总数" field="totalCount"></define-column>
+                        <define-column label="装备总价" field="totalPrice"></define-column>>
+                    </define-table>
+                    
                 </div>
             </div>
          </bos-tabs>
@@ -80,7 +98,7 @@
     import defineTree from "@/componentized/defineTree"
     import {equipmentAmount} from "api/statistics";
     import {findEquipMoneyStatistics} from "api/report"
-    import {allPoliceStatistic} from "api/warehouse"
+    import {allPoliceStatistic,allPoliceStatisticCategories} from "api/warehouse"
     import { getgenresList, getcategories, getequipArg, } from "api/safety";
     var _ = require("lodash");
     export default {
@@ -121,7 +139,9 @@
                         this.tree.genres.forEach(item=>{
                             this.tree.treeData.push(item)
                         })
-                        this.tree.treeData.push({name:'单警装备',show:'singlePolice',children:[]})
+                        this.tree.treeData.push({name:'单警装备',show:'singlePolice',children:[
+                            {name:'公共柜装备',id:1,show:'singlePoliceCategory'},{name:'备用柜装备',id:2,show:'singlePoliceCategory'},{name:'单警柜装备',id:0,show:'singlePoliceCategory'}
+                        ]})
                     })
                 })
                 findEquipMoneyStatistics({categorys:[0,1,2,3],level:'ALL'}).then(res=>{
@@ -141,6 +161,8 @@
                if(item==4)return this.equipArg.reduce((v,k)=>v+k.totalPrice,0)
             },
             clickNode(data) {
+                console.log(data);
+                var id=data.data.id
                 this.show = data.data.show
                 this.title = data.data.name
                 if(this.show=="genres"){
@@ -167,6 +189,21 @@
                 }else if(this.show=="singlePolice"){
                    allPoliceStatistic().then(res=>{
                         this.equipArg = res
+                        this.equipArg.forEach(item=>{
+                            if(item.cabinet==0)item.cabinet='单警柜装备'
+                            if(item.cabinet==1)item.cabinet='公共柜装备'
+                            if(item.cabinet==2)item.cabinet='备用柜装备'
+                        })
+                        this.paginator.totalPages = res.totalPages;
+                        this.paginator.totalElements = res.totalElements;
+                    })
+                }
+                else if(this.show=="singlePoliceCategory"){
+                   allPoliceStatisticCategories(id).then(res=>{
+                        this.equipArg = res
+                        this.equipArg.forEach(item=>{
+                            item.equipArgs=item.name+item.model
+                        })
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
                     })

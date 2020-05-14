@@ -28,13 +28,12 @@
                 <define-column label="RFID"  v-slot="{data}">
                     <define-input v-model="data.row.rfid"  :tableEdit="edit" ></define-input>
                 </define-column>
-                <define-column label="装备序号"  v-slot="{data}">
-                    <define-input v-model="data.row.serial" :tableEdit="edit" ></define-input>
-                </define-column>
+                <define-column label="装备序号" field="serial" :tableEdit="edit" v-if="$route.query.id==undefined"/>
+                <define-column label="装备序号" field="equipSerial" :tableEdit="edit" v-if="$route.query.id!=undefined"/>    
                 <define-column label="装备参数" v-slot="{data}" v-if="$route.query.id==undefined">
                     <entity-input v-model="data.row.equipArg" format="{name}({model})" :tableEdit="edit" :options="{}"></entity-input>
                 </define-column>
-                <define-column label="装备参数1" v-slot="{data}" v-if="$route.query.id!=undefined">
+                <define-column label="装备参数" v-slot="{data}" v-if="$route.query.id!=undefined">
                     <entity-input v-model="data.row" format="{equipName}({equipModel})" :tableEdit="edit" :options="{}"></entity-input>
                 </define-column>
                 <define-column label="原位置" v-slot="{data}">
@@ -135,7 +134,7 @@ export default {
                 this.list.forEach(item=>{
                     item.locationChangeItems.forEach(it=>{
                         console.log(item);
-                        req.locationChangeItems.push({cabinetUserName:it.policeCabinet?it.policeCabinet.name:'',locationInfo:it.location,
+                        req.locationChangeItems.push({categoryNum:it.category,cabinetUserName:it.policeCabinet?it.policeCabinet.name:'',locationInfo:it.location,
                         location:item.location,equipArgId:it.equipArg.id,equipId:it.id,equipModel:it.equipArg.model,equipName:it.equipArg.name,
                         equipSerial:it.serial,rfid:it.rfid,supplierId:it.equipArg.supplier.id,supplierName:it.equipArg.supplier.name
                         })
@@ -147,22 +146,29 @@ export default {
                 })
             },
             readData(){
-                killProcess(this.pid)
-                start("java -jar scan.jar", (data) => {
-                    if(this.list[this.findIndex].location!=''){
-                     findByRfids(data).then(res=>{
+                
+                                     findByRfids('12345678').then(res=>{
                             if(this._.findIndex(this.list[this.findIndex].locationChangeItems,['rfid',res[0].rfid])==-1){
                                 this.list[this.findIndex].locationChangeItems.push(res[0])
                                 this.list[this.findIndex].count++
                             }
                     })
-                }else{
-                             this.$message.error('请先选择位置信息')
-                         }
-                    }, (fail) => {
-                        this.index = 1;
-                        this.$message.error(fail);
-                    }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
+                // killProcess(this.pid)
+                // start("java -jar scan.jar", (data) => {
+                //     if(this.list[this.findIndex].location!=''){
+                //      findByRfids(data).then(res=>{
+                //             if(this._.findIndex(this.list[this.findIndex].locationChangeItems,['rfid',res[0].rfid])==-1){
+                //                 this.list[this.findIndex].locationChangeItems.push(res[0])
+                //                 this.list[this.findIndex].count++
+                //             }
+                //     })
+                // }else{
+                //              this.$message.error('请先选择位置信息')
+                //          }
+                //     }, (fail) => {
+                //         this.index = 1;
+                //         this.$message.error(fail);
+                //     }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
             },
             changeRow(state,data){
                 state?this.list.push({location:'',count:0,locationChangeItems:[]}):this.list.splice(data.$index,1)
