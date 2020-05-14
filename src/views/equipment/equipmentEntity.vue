@@ -112,12 +112,12 @@
             black() {
                 this.isEdit = this.isEdit ? !this.isEdit : this.isEdit
                 this.inAllocation = this.inAllocation ? !this.inAllocation : this.inAllocation
-                this.inList = this.inList ? this.inList : !this.inList
+                this.inList = true
             },
             cancel() {
                 this.isEdit = this.isEdit ? !this.isEdit : this.isEdit
                 this.inAllocation = this.inAllocation ? !this.inAllocation : this.inAllocation
-                this.inList = this.inList ? this.inList : !this.inList
+                this.inList = true
                 this.getList()
             },
             confirm() {
@@ -138,7 +138,7 @@
                 let date = JSON.parse(JSON.stringify(data));
                 let day = Math.round(date / 24 / 60 / 60 / 1000);
                 if (day < 1) {
-                    return day = 1;
+                    return day = 0;
                 } else {
                     return day
                 }
