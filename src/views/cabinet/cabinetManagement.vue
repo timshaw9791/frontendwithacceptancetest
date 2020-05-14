@@ -38,7 +38,7 @@
         </div>
         <div class="edit-equip" v-if='edit'>
                 <base-select label="警柜类型" :column="10" v-model="select.selected" margin="0 0" align="left" :selectList="select.selectList"></base-select>
-                <entity-input label="所属人员" v-model="people"  :options="{search:'applicant'}"  margin="15px 0" :column="6" format="{name}" :tableEdit="true" v-if="select.selected=='0'"></entity-input>
+                <entity-input label="所属人员" v-model="people" :column="10" :options="{search:'applicant'}"  margin="15px 0"  format="{name}" :tableEdit="true" v-if="select.selected=='0'"></entity-input>
                 <div class="btn-box">
                   <base-button label="取消" align="right" :width="128" :height="25" :fontSize="20" @click="black"></base-button>
                   <base-button label="提交" align="right" :width="128" :height="25" :fontSize="20" @click="confirm"></base-button>

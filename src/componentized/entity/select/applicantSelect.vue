@@ -96,7 +96,7 @@ export default {
       this.$emit('select', {data: this.selected, ref: 'applicant'});
     },
     changeCurrent(data) {
-      this.selected = data;
+      this.selected = data.current;
     }
   },
   watch: {
