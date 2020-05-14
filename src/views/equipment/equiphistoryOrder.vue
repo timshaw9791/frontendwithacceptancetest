@@ -70,6 +70,7 @@ export default {
                         if(elem.category=='8')elem.category='装备位置变更'
                         if(elem.category=='9')elem.category='开始充电'
                         if(elem.category=='10')elem.category='结束充电'
+                        if(elem.remark==null)elem.remark='--'
                     }
                 })
             },
