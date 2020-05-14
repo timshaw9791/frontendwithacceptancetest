@@ -12,6 +12,15 @@ export function inHouse(rfids,serials,data) {
         data
     })
 }
+//单警柜金额统计all/statistic/cabinet-money
+export function allPoliceStatistic() {
+    return request({
+        url: "/statistic/cabinet-money",
+        method: "get",
+        
+    })
+}
+
 //jbql查询该警柜下的装备列表
 export function cabinetEquip(data) {
     return request({
