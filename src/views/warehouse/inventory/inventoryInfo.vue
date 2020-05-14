@@ -126,6 +126,7 @@
                         }
                     }
                 )
+                // 若未知装备的装备改变，那么需要修改
                 this.equipItems.forEach(item => {
                     item.equipState = item.equipState === 0 ? '可用' : '充电中'
                 })
