@@ -3,7 +3,7 @@
         <my-header title="盘点装备" :haveBlack="true" @h_black="cancel"></my-header>
         <div class="body">
             <div class="inputs">
-                <define-input label="单号" v-model="order.number" :disabled="true"></define-input>
+                <define-input label="单号" v-model="order.number" :disabled="true" :havePage="false"></define-input>
                 <date-select label="盘点时间" v-model="order.startTime" :disabled="true"></date-select>
                 <define-input label="盘点人员" v-model="order.operatorInfo.operator"
                               :disabled="true"></define-input>
@@ -13,7 +13,9 @@
             </div>
             <bos-tabs :label="[{label: '未知装备数清单', key: 'total'}, {label: '明细', key: 'detail'}]">
                 <template slot="total">
-                    <define-table :data="equipItems" @changeCurrent="changeRow" :highLightCurrent="true">
+                    <define-table :data="equipItems" @changeCurrent="changeRow"
+                                  :highLightCurrent="true"
+                                  :havePage="false">
                         <define-column label="装备参数" field="equipArg"></define-column>
                         <define-column label="位置" field="locationInfo"></define-column>
                         <define-column label="数量" field="count"></define-column>
@@ -26,7 +28,7 @@
                             <span @click="copyRfid(data.row.rfid)">复制</span>
                         </define-column>
                         <define-column label="RFID" field="rfid"></define-column>
-                        <define-column label="序号" field="serial"></define-column>
+                        <define-column label="序号" field="equipSerial"></define-column>
                     </define-table>
                 </template>
                 <template slot="slotHeader" v-if="!isInfo">
@@ -81,7 +83,7 @@
                 totalIndex: 0,
                 isShowDialog: false,
                 // 假列表
-                noInventoryList: ['20201544447777'],
+                noInventoryList: ['20120333344'],
             }
         },
         methods: {
