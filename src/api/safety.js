@@ -1,5 +1,5 @@
 import request from 'common/js/request'
-
+var qs = require('qs')
 // 获取所有大类
 export function getgenresList() {
     return request({
@@ -94,11 +94,10 @@ export function getequipArg(params) {
     })
 }
 // 将未分配装备分配到小类下
-export function distribution(id,data) {
+export function distribution(id,params) {
     return request({
-        url: `/relate/categories/${id}`,
+        url: `/relate/categories/${id}?${qs.stringify(params,{indices:false})}`,
         method: 'POST',
-        data
     })
 }
 // 将装备参数从小类下删除

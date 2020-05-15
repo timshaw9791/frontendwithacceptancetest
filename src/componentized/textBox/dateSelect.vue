@@ -1,5 +1,5 @@
 <template>
-    <div :class="[styleObj,'date-select-continer',{disabled:disabled&&inTableStateContrl},{border:!(inTable&&disabled)}]" ref="dateSelect" :style="'width:'+fixWidth+';margin:'+margin+';align:'+align">
+    <div :class="[styleObj,'date-select-continer',{disabled:disabled&&!inTable},{border:!(inTable&&disabled)}]" ref="dateSelect" :style="'width:'+fixWidth+';margin:'+margin+';align:'+align">
         <div class="label" v-if="!inTable">{{ label }}
           <span class="required" v-if="required">*</span>
         </div>
@@ -29,7 +29,6 @@ import { judgeRules } from "../rules"
             return {
                 selectValue: "",
                 inTable: false,
-                inTableStateContrl: true,
                 styleObj: {
                   error: false
                 }
@@ -125,7 +124,6 @@ import { judgeRules } from "../rules"
           try {
             if(this.$refs.dateSelect.parentNode.parentNode.nodeName == 'TD') {
                 this.inTable = true;
-                this.inTableStateContrl = this.disabled;
                 // 深层DOM访问并修改样式
                 this.$refs.dateSelect.children[1].children[0].style.textAlign="center";
             }
@@ -173,6 +171,7 @@ import { judgeRules } from "../rules"
     flex-shrink: 0; // 在父元素宽度不够的情况下不自动收缩
   }
   .disabled {
+    background-color: #f8f9fb;
     color: #C0C4CC;
   }
   .required {
