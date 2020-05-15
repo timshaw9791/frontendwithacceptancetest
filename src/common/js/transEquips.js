@@ -15,11 +15,10 @@ export  function transEquips(equips, groupRules='') {
             item.equipName = item.equipArg.name
             item.equipModel = item.equipArg.model
             item.locationInfo = item.location
+            item.equipSerial = item.serial
         }
     })
     //  优化
-    debugger
-    console.log(equips)
     if(groupRules===''){
         tempEquipItems = _.groupBy(equips, item =>
             `${item.equipName}${item.equipModel}${item.state}`

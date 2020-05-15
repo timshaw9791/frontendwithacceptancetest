@@ -30,7 +30,7 @@
                         <i class="iconfont iconyichuliang" @click="delRow(data)"></i>
                     </define-column>
                     <define-column label="RFID" field="rfid"></define-column>
-                    <define-column label="装备序号" field="serial"></define-column>
+                    <define-column label="装备序号" field="equipSerial"></define-column>
                 </define-table>
             </bos-tabs>
             <div class="btn-box" v-if="!isInfo">
@@ -105,9 +105,9 @@
                     this.fixEquipItems(res)
                 })
             },
-                fixEquipItems(data) {
+            fixEquipItems(data) {
                 let temp = transEquips(data)
-                if (temp.rfids.length > 0){
+                if (temp.rfids.length > 0) {
                     this.rfids = temp.rfids
                     this.equipItems = temp.equipItems
                 }
@@ -136,8 +136,20 @@
                 this.totalIndex = current.index
             },
             delRow(list, data) {
-                list === 'equipItems' ? this[list].length === 1 ? this[list] = [{items: []}] : this[list].splice(data.$index, 1) : this[list].splice(data.$index, 1);
-                this.rfids = _.pull(this.rfids, data.row.rfid)
+                console.log('我是equipItems')
+                console.log(data)
+                if (list === 'equipItems') {
+                    this[list].length === 1 ? this[list] = [{items: []}] : this[list].splice(data.$index, 1);
+                    data.row.items.forEach(item => {
+                            this.rfids = _.pull(this.rfids, item.rfid)
+                        }
+                    )
+                } else {
+                    this[list].splice(data.$index, 1);
+                    this.rfids = _.pull(this.rfids, data.row.rfid)
+                }
+                console.log('我是rfid')
+                console.log(this.rfids)
             },
             changeTab(data) {
                 data.key === 'total' ? killProcess(this.pid) : ''
@@ -147,7 +159,6 @@
                 let {columns} = param, sums = [];
                 sums = new Array(columns.length).fill('')
                 sums[0] = '合计'
-                console.log(param.data)
                 sums[columns.length - 1] = param.data.reduce((v, k) => {
                     if (k.count) {
                         return v + k.count
@@ -157,7 +168,7 @@
                 return sums;
             },
             confirm() {
-                if (this.rfids.length === 0)  return this.$message.error('装备列表不能为空')
+                if (this.rfids.length === 0) return this.$message.error('装备列表不能为空')
                 equipScrap(this.order.category, this.order.remark, this.rfids).then(() => {
                     this.cancel()
                 })
