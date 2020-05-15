@@ -38,7 +38,9 @@
             return {
                 title:"",
                 paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
-                order: {},
+                order: {
+                    equipArgItems:[]
+                },
                 equipArg:[],
                 planName:"",
                 planRemark:"",
@@ -105,14 +107,19 @@
             },
         },
         created() {
-            this.$route.query.info.edit?this.fetchData():this.order.equipArgItems.push(
-            {name:"",id:"",model:""},{name:"",id:"",model:""},
-            {name:"",id:"",model:""},{name:"",id:"",model:""},
-            {name:"",id:"",model:""},{name:"",id:"",model:""},
-            {name:"",id:"",model:""},{name:"",id:"",model:""},
-            {name:"",id:"",model:""},{name:"",id:"",model:""},
-            {name:"",id:"",model:""},{name:"",id:"",model:""}
-        )
+            if(this.$route.query.info.edit){
+                this.fetchData()
+            }else{
+                this.order.equipArgItems=[]
+                this.order.equipArgItems.push(
+                    {name:"",id:"",model:""},{name:"",id:"",model:""},
+                    {name:"",id:"",model:""},{name:"",id:"",model:""},
+                    {name:"",id:"",model:""},{name:"",id:"",model:""},
+                    {name:"",id:"",model:""},{name:"",id:"",model:""},
+                    {name:"",id:"",model:""},{name:"",id:"",model:""},
+                    {name:"",id:"",model:""},{name:"",id:"",model:""}
+                )
+            }
         },
         components: {
             baseButton,
