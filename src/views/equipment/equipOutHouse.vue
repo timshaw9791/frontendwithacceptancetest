@@ -1,5 +1,6 @@
 <template>
     <div class="opening-box">
+        <my-header :title="$route.meta.title" :haveBlack="true" @h_black="cancel" ></my-header>
           <div class="action_box" data-test="action_box">
                 <define-input label="单号" v-model="listData.number" placeholder="--" :disabled="true" class="odd-number"></define-input>
                 <date-select label="出库时间" v-model="listData.createTime" placeholder="--" :disabled="true"></date-select>

@@ -8,7 +8,7 @@
             <div slot="slot1"  class="safety-body-top">
                 <define-input label="小类" v-model="search"></define-input>
                 <div style="height:85%">
-                    <define-tree :search="search" :data="tree.treeData" :options="options" @nodeClick="clickNode"></define-tree>
+                    <define-tree :search="search" :accordion="true" :expandAll="false" :data="tree.treeData" :options="options" @nodeClick="clickNode"></define-tree>
                 </div>
                 <div style="margin-bottom:2px">
                     <base-button label="添加大类" size="mini" @click="dialogShow('add','genres')"></base-button>
@@ -109,6 +109,7 @@
                 dialogData:{//弹框数据
                     editData:{},
                     addData:{},
+                    assignedData:[],
                     deleteTitle:"大类",
                     title:""
                 },

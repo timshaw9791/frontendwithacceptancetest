@@ -80,13 +80,13 @@
                     this.paginator.totalElements = res.totalElements;
                     for(let i in this.list){
                         switch (this.list[i].role) {
-                            case 'ADMIN':
+                            case 1:
                                 this.list[i].role="管理员"
                                 break;
-                            case 'LEADER':
+                            case 2:
                                 this.list[i].role="领导"
                                 break;
-                            case 'POLICE':
+                            case 0:
                                 this.list[i].role="警员"
                                 break;
                             default:

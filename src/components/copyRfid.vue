@@ -1,5 +1,5 @@
 <template>
-    <service-dialog ref="copyRfid" width="40px" title="复制RFID" confirmInfo="写 入" @confirm="writeRFID"
+    <service-dialog ref="copyRfid" width="400px" title="复制RFID" confirmInfo="写 入" @confirm="writeRFID"
                     @firstCancel="cancel"
                     :secondary="false">
         <define-input label="RFID" v-model=rfid :disabled="true"></define-input>
