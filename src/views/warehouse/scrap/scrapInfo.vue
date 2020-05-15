@@ -126,18 +126,10 @@
                 transScrapCategory(this.order)
                 this.fixEquipItems(this.order.scrapItems)
             },
-            fetchMatchRfids() {
-                // 获取到期装备的列表 用来对比扫描到的RFID是否在到期装备列表中
-                equipmentScrapped().then((res) => {
-                    this.matchRfids = this._.map(res.content, 'rfid')
-                })
-            },
             changeRow(current) {
                 this.totalIndex = current.index
             },
             delRow(data,list) {
-                console.log('我是equipItems')
-                console.log(data)
                 if (list === 'equipItems') {
                     this[list].length === 1 ? this[list] = [{items: []}] : this[list].splice(data.$index, 1);
                     data.row.items.forEach(item => {
@@ -146,10 +138,9 @@
                     )
                 } else {
                     this.equipItems[this.totalIndex].items.splice(data.$index,1)
+                    this.equipItems[this.totalIndex].count = this.equipItems[this.totalIndex].count - 1
                     this.rfids = _.pull(this.rfids, data.row.rfid)
                 }
-                console.log('我是rfid')
-                console.log(this.rfids)
             },
             changeTab(data) {
                 data.key === 'total' ? killProcess(this.pid) : ''
