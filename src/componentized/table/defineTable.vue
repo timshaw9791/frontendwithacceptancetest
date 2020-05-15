@@ -90,6 +90,9 @@ import defineColumn from './defineColumn'
             getSelection() {
                 this.multiSelectiton = this.$refs.table.selection;
                 return this.multiSelectiton;
+            },
+            refreshLayout() { // 刷新表格布局
+                this.$refs.table.doLayout();
             }
         }
     }
