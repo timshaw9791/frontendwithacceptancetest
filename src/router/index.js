@@ -77,6 +77,12 @@ export const asyncRouterMap = [{
             name: 'equipment/outstorage',
             component: _import('equipment/outHouseOrder'),
             meta: {title: '出库单列表'},
+        },{
+            path: 'equipment/equipouthouse',
+            name: 'equipouthouse',
+            component: _import('equipment/equipOutHouse'),
+            meta: {title: '出库单列表/出库单列表详情'},
+            hidden:true
         }, {
             path: 'equipArgsList',
             name: 'equipArgsList',

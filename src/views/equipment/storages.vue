@@ -1,11 +1,11 @@
 <template>
     <div class="opening-box">
-        <my-header title="入库单列表"></my-header>
+        <my-header :title="$route.meta.title"></my-header>
         <div class="btn_box">
              <base-button label="入库装备 " align="right" :width="128" :height="25" :fontSize="20" @click="toInHouse"></base-button>
         </div>
         <div class="data-list">
-            <define-table :data="list" height="3.64rem" @changeCurrent="selRow" @changePage="changePage" :pageInfo="paginator" v-if="!inhouse&&!inorder">
+            <define-table :data="list" height="3.64rem" @changePage="changePage" :pageInfo="paginator" >
                             <define-column label="操作" width="130" v-slot="{ data }">
                                 <div class="span-box">
                                      <base-button label="详情" size="mini" @click="toDetail(data.row)" type="primary"></base-button>
@@ -26,8 +26,6 @@
                             </define-column>
                             <define-column label="入库时间" :filter="(row)=>$filterTime(row.createTime)"/>
                         </define-table>
-            <!-- <equip-inhouse v-if='inhouse'  @cancel="black"></equip-inhouse> -->
-            <equip-inhouse-order v-if="inorder" :equipData="equipData" @cancel="black"></equip-inhouse-order>
         </div>
     </div>
 </template>
@@ -70,16 +68,8 @@ export default {
             }
         },
         methods:{
-            selRow(){
-
-            },
-            sumFunc(){
-
-            },
             toDetail(data){
-                this.$router.push({name:'equipinhouseorder',params:{info:data}})
-                this.equipData=data
-                this.inorder=true
+                this.$router.push({name:'equipinhouseorder',query:{id:data.id}})
             },
             deleteNumber(data)
             {
@@ -88,11 +78,6 @@ export default {
                 }).catch(err => {
                         this.$message.error(err.response.data.message);
                     })
-            },
-            black(){
-                this.inhouse=false
-                this.inorder=false
-                this.getList()
             },
             getList(){
                 inOutHouseOrder(this.params).then(res=>{
