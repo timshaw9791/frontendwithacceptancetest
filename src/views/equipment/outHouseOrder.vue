@@ -1,11 +1,11 @@
 <template>
     <div class="opening-box">
-        <my-header :title="inhouse?'出库装备':'出库单列表'" :haveBlack="inhouse||inorder" @h_black="black"></my-header>
-        <div class="btn_box" v-if="!inhouse&&!inorder">
+        <my-header :title="$route.meta.title"></my-header>
+        <div class="btn_box">
              <base-button label="出库装备 " align="right" :width="128" :height="25" :fontSize="20" @click="toInHouse"></base-button>
         </div>
         <div class="data-list">
-            <define-table :data="list" height="3.64rem" @changeCurrent="selRow" @changePage="changePage" :pageInfo="paginator" v-if="!inhouse&&!inorder">
+            <define-table :data="list" height="3.64rem" @changePage="changePage" :pageInfo="paginator">
                             <define-column label="操作" width="120" v-slot="{ data }">
                                 <div class="span-box">
                                      <base-button label="详情" size="mini" @click="toDetail(data.row)" type="primary"></base-button>
@@ -26,8 +26,6 @@
                             </define-column>
                             <define-column label="出库时间" :filter="(row)=>$filterTime(row.createTime)"/>
                         </define-table>
-            <equip-out-house v-if='inhouse' :showDetail="showDetail" :equipData="equipData"  @cancel="black"></equip-out-house>
-            <!-- <equip-out-house-order v-if="inorder" :equipData="equipData" @cancel="black"></equip-out-house-order> -->
         </div>
     </div>
 </template>
@@ -62,7 +60,7 @@ export default {
         data(){
             return{
                list:[],
-               paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0,abnormal:false},
+               paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
                inhouse:false,
                inorder:false,
                params:{size:10,page:1},
@@ -71,16 +69,11 @@ export default {
             }
         },
         methods:{
-            selRow(){
-
-            },
             sumFunc(){
 
             },
             toDetail(data){
-                this.equipData=data
-                this.inhouse=true
-                this.showDetail=false
+               this.$router.push({name:'equipouthouse',query:{id:data.id}})
             },
             deleteNumber(data)
             {
@@ -118,8 +111,7 @@ export default {
             this.paginator.page = page;ss
             },
             toInHouse(){
-                this.inhouse=true
-                this.showDetail=true
+                this.$router.push({name:'equipouthouse'})
             }
         },
         created(){

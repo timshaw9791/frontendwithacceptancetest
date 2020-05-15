@@ -146,28 +146,28 @@ export default {
             },
             readData(){
                 
-            //                     findByRfids('555599999').then(res=>{
-            //         if(this._.findIndex(this.list[this.findIndex].locationChangeItems,['rfid',res[0].rfid])==-1){
-            //             this.list[this.findIndex].locationChangeItems.push(res[0])
-            //             this.list[this.findIndex].count++
-            //         }
-            // })
-                killProcess(this.pid)
-                start("java -jar scan.jar", (data) => {
-                    if(this.list[this.findIndex].location!=''){
-                     findByRfids(data).then(res=>{
-                            if(this._.findIndex(this.list[this.findIndex].locationChangeItems,['rfid',res[0].rfid])==-1){
-                                this.list[this.findIndex].locationChangeItems.push(res[0])
-                                this.list[this.findIndex].count++
-                            }
-                    })
-                }else{
-                             this.$message.error('请先选择位置信息')
-                         }
-                    }, (fail) => {
-                        this.index = 1;
-                        this.$message.error(fail);
-                    }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
+                                findByRfids('202015444477799').then(res=>{
+                    if(this._.findIndex(this.list[this.findIndex].locationChangeItems,['rfid',res[0].rfid])==-1){
+                        this.list[this.findIndex].locationChangeItems.push(res[0])
+                        this.list[this.findIndex].count++
+                    }
+            })
+                // killProcess(this.pid)
+                // start("java -jar scan.jar", (data) => {
+                //     if(this.list[this.findIndex].location!=''){
+                //      findByRfids(data).then(res=>{
+                //             if(this._.findIndex(this.list[this.findIndex].locationChangeItems,['rfid',res[0].rfid])==-1){
+                //                 this.list[this.findIndex].locationChangeItems.push(res[0])
+                //                 this.list[this.findIndex].count++
+                //             }
+                //     })
+                // }else{
+                //              this.$message.error('请先选择位置信息')
+                //          }
+                //     }, (fail) => {
+                //         this.index = 1;
+                //         this.$message.error(fail);
+                //     }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
             },
             changeRow(state,data){
                 state?this.list.push({location:'',count:0,locationChangeItems:[]}):this.list.splice(data.$index,1)
