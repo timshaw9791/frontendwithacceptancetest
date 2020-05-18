@@ -5,16 +5,22 @@
 			<define-input label="消息标题"></define-input>
 		</div>
 		<div class="body">
-			<define-table :data="list" :pageInfo="fetchParams.pageInfo" @changePage="changePage">
-				<define-column label="操作" width="100" v-slot="{ data }">
-					<span :class="['sign',{unread: !data.row.status}]" @click="readIt(data.row)">
-						{{ data.row.status?'已读':'未读' }}
-					</span>
-				</define-column>
-				<define-column label="通知时间" :filter="row => this.$filterTime(row.createTime)" width="200"></define-column>
-				<define-column label="消息标题" field="title" width="360"></define-column>
-				<define-column label="消息内容" field="content"></define-column>
-			</define-table>
+			<bos-tabs :option="['contrast']" :contrastKey="['main', 'content']" :layoutRatio="['45%', '55%']">
+				<define-table :data="list" :pageInfo="fetchParams.pageInfo" @changePage="changePage" height="2.7604rem" slot="main">
+					<define-column label="操作" field="opeare" width="60"></define-column>
+					<define-column label="消息状态" width="100" v-slot="{ data }">
+						<span :class="['sign',{unread: !data.row.status}]" @click="readIt(data.row)">
+							{{ data.row.status?'已读':'未读' }}
+						</span>
+					</define-column>
+					<define-column label="通知时间" :filter="row => this.$filterTime(row.createTime)" width="200"></define-column>
+					<define-column label="消息标题" field="title"></define-column>
+					<!-- <define-column label="消息内容" field="content"></define-column> -->
+				</define-table>
+				<define-table :data="contentList" :havePage="false" height="2.9948rem" slot="content">
+					<define-column label="消息内容" field="content"></define-column>
+				</define-table>
+			</bos-tabs>
 		</div>
 	</div>
 </template>
@@ -24,13 +30,15 @@ import myHeader from 'components/base/header/header';
 import { getMsgList, readMsg } from 'api/message'
 import { bosMixin } from 'field/mixins/listMixin'
 import { jsqlPage } from 'api/basic'
+import bosTabs from '@/componentized/table/bosTabs'
 export default {
 	name: 'message',
-	components: { myHeader },
+	components: { myHeader, bosTabs },
 	mixins: [bosMixin],
 	data() {
 		return {
 			list: [],
+			contentList: [],
 			fetchParams: {
 				jpql: "select m from Message m where m.userId = ?1 order by m.status asc, m.createTime desc ",
 				pageInfo: {
