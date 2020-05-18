@@ -20,14 +20,14 @@ export function findAllData() {
 /* 同步到手持机 */
 export function findEquipsNeedChange() {
     return request({
-        url: "/equip/findEquipsNeedChange",
+        url: "/equips/hand-set",
         method: "GET"
     })
 }
 
 export function findByOneLine() {
     return request({
-        url: "/equip/findByOneLine",
+        url: "/equips/findByOneLine",
         method: "GET"
     })
 }
