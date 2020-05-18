@@ -153,21 +153,18 @@ export default {
                 }
             },
             readData(){
-                         findByRfids('20201544447778').then(res=>{
+                if(this.select.selected=='reader')
+                {
+                    killProcess(this.pid)
+                    start("java -jar scan.jar", (data) => {
+                        findByRfids(data).then(res=>{
                         this.classDataify(res)
                     })
-                // if(this.select.selected=='reader')
-                // {
-                //     killProcess(this.pid)
-                //     start("java -jar scan.jar", (data) => {
-                //         findByRfids(data).then(res=>{
-                //         this.classDataify(res)
-                //     })
-                //         }, (fail) => {
-                //             this.index = 1;
-                //             this.$message.error(fail);
-                //         }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
-                // }
+                        }, (fail) => {
+                            this.index = 1;
+                            this.$message.error(fail);
+                        }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
+                }
             },
             changeDetailRow(state,data)
             {
