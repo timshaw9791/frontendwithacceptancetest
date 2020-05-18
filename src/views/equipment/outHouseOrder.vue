@@ -7,10 +7,8 @@
         <div class="data-list">
             <define-table :data="list" height="3.64rem" @changePage="changePage" :pageInfo="paginator">
                             <define-column label="操作" width="120" v-slot="{ data }">
-                                <div class="span-box">
-                                     <base-button label="详情" size="mini" @click="toDetail(data.row)" type="primary"></base-button>
-                                     <base-button label="删除" size="mini" type="danger" @click="deleteNumber(data.row)"></base-button>
-                                </div>
+                                    <base-button label="详情" size="mini" @click="toDetail(data.row)" type="primary"></base-button>
+                                    <!-- <base-button label="删除" size="mini" type="danger" @click="deleteNumber(data.row)"></base-button> -->
                             </define-column>
                             <define-column label="单号" v-slot="{ data }">
                                 <define-input v-model="data.row.number" type="Number" :tableEdit="false"></define-input>
