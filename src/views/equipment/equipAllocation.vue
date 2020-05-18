@@ -146,12 +146,6 @@ export default {
             },
             readData(){
                 
-            //                     findByRfids('555599999').then(res=>{
-            //         if(this._.findIndex(this.list[this.findIndex].locationChangeItems,['rfid',res[0].rfid])==-1){
-            //             this.list[this.findIndex].locationChangeItems.push(res[0])
-            //             this.list[this.findIndex].count++
-            //         }
-            // })
                 killProcess(this.pid)
                 start("java -jar scan.jar", (data) => {
                     if(this.list[this.findIndex].location!=''){

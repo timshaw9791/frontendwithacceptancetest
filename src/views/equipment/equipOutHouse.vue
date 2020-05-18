@@ -1,13 +1,14 @@
 <template>
     <div class="opening-box">
+        <my-header :title="$route.meta.title" :haveBlack="true" @h_black="cancel" ></my-header>
           <div class="action_box" data-test="action_box">
-                <define-input label="单号" v-model="orderNumber" :disabled="true" class="odd-number"></define-input>
-                <date-select label="出库时间" v-model="time" :disabled="true"></date-select>
-                <entity-input label="出库人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :disabled="true" ></entity-input>
+                <define-input label="单号" v-model="listData.number" placeholder="--" :disabled="true" class="odd-number"></define-input>
+                <date-select label="出库时间" v-model="listData.createTime" placeholder="--" :disabled="true"></date-select>
+                <entity-input label="出库人员" v-model="listData.operator.operator" placeholder="--" :options="{search:'locationSelect'}" format="{name}" :disabled="true" ></entity-input>
             </div>
         <div class="data-list">
             <bos-tabs @changeTab="changeTab">
-                        <template slot="slotHeader" v-if="showDetail">
+                        <template slot="slotHeader" v-if="!this.$route.query.id">
                             <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96" @click="readData"></base-button>
                             <base-select label="硬件选择" v-model="select.selected" align="right" :selectList="select.handWareList"></base-select>
                         </template>
@@ -17,10 +18,10 @@
                                 <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
                                 <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
                             </define-column>
-                            <define-column label="装备参数" v-slot="{ data }" v-if="showDetail">
+                            <define-column label="装备参数" v-slot="{ data }" v-if="!this.$route.query.id">
                                 <entity-input v-model="data.row.equipArg"  :options="{detail:'equipArgsSelect'}" format="{name}({model})" :tableEdit="false" ></entity-input>
                             </define-column>
-                            <define-column label="装备参数" v-slot="{ data }" v-if="!showDetail">
+                            <define-column label="装备参数1" v-slot="{ data }" v-if="this.$route.query.id">
                                 <entity-input v-model="data.row.equipArg"  :options="{detail:'equipArgsSelect'}" format="{equipName}({equipModel})" :tableEdit="false" ></entity-input>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
@@ -36,7 +37,7 @@
                             <define-column label="装备序号" field="equipSerial" :tableEdit="false"/>
                         </define-table>
                     </bos-tabs>
-        <div class="btn-box" v-if="showDetail">
+        <div class="btn-box" v-if="!this.$route.query.id">
                   <base-button label="取消" align="right"   @click="cancel"></base-button>
                   <base-button label="提交" align="right"   @click="confirm"></base-button>
               </div>
@@ -57,6 +58,7 @@
     import serviceDialog from 'components/base/serviceDialog/index'
     import { start, startOne, killProcess,handheld, modifyFileName } from 'common/js/rfidReader'
     import divTmp from '@/componentized/divTmp'
+     import {getBosEntity} from "api/basic"
     import { getInhouseNumber,inHouse,findByRfids,outHouse} from "api/storage"
 export default {
     components:{
@@ -70,18 +72,6 @@ export default {
             divTmp,
             bosTabs,
             serviceDialog
-        },
-        props:{
-            equipData: {
-              type: Object,
-              default() {
-                return {}
-              }
-            },
-            showDetail: {
-              type: Boolean,
-              default:true
-            },
         },
         data(){
             return{
@@ -104,6 +94,9 @@ export default {
                findIndex:0,
                newData:[],
                list:[],
+               listData:{operator:{
+                    operator:''
+                }},
             }
         },
         methods:{
@@ -121,7 +114,13 @@ export default {
                 return sums;
             },
             cancel(){
-                this.$emit('cancel')
+               this.$router.back()
+            },
+            fetchData(id){
+                getBosEntity(id).then(res=>{
+                    this.listData=res
+                    this.classDataify(res.inOutHouseItems)
+                })
             },
             confirm(){
                 this.requestBody=JSON.parse(JSON.stringify(this.newData))
@@ -149,8 +148,8 @@ export default {
                 if(this._.findIndex(this.list,data[0])==-1)//避免重复
                 {
                      data.forEach(item=>{this.list.push(item)})
-                let cList=this.showDetail?this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}`):this._.groupBy(this.list, item => `${item.equipName}${item.equipModel}`)
-                this.newData=this.showDetail?this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length}}):this._.map(cList,(v,k)=>{return {equipArg:v[0],copyList:v,count:v.length}})
+                let cList=this.$route.query.id?this._.groupBy(this.list, item => `${item.equipName}${item.equipModel}`):this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}`)
+                this.newData=this.$route.query.id?this._.map(cList,(v,k)=>{return {equipArg:v[0],copyList:v,count:v.length}}):this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length}})
                 }
             },
             readData(){
@@ -205,16 +204,12 @@ export default {
             killProcess(this.pid)
         },
         created(){
-               if(this.showDetail){
+            this.$route.query.id?this.fetchData(this.$route.query.id):this.people=JSON.parse(localStorage.getItem('user')).name
+            if(!this.$route.query.id){
+                this.listData.operator.operator=JSON.parse(localStorage.getItem('user')).name
                 this.init()
-                this.people=JSON.parse(localStorage.getItem('user')).name
-               }else{
-                   this.time=this.equipData.createTime
-                   this.people=this.equipData.operator.operator
-                   this.orderNumber=this.equipData.number
-                   this.classDataify(this.equipData.inOutHouseItems)
-               }
                 
+            }
         }
 }
 </script>

@@ -2,13 +2,13 @@
     <div class="scrap-list-container">
         <my-header title="装备报废" :haveBlack="true" @h_black="cancel"></my-header>
         <div class="action_box" data-test="action_box">
-            <define-input label="单号" v-model="scrapOrder.number" placeholder="--" :disabled="true"></define-input>
-            <define-input label="报废类型" v-model="scrapOrder.categoryContent" :disabled="true"></define-input>
-            <define-input label="报废时间" v-model="scrapOrder.createTime" :disabled="true"></define-input>
-            <entity-input label="操作人员" v-model="scrapOrder.operatorInfo.operator" :disabled="true"></entity-input>
+            <define-input label="单号" v-model="order.number" placeholder="--" :disabled="true"></define-input>
+            <define-input label="报废类型" v-model="order.categoryContent" :disabled="true"></define-input>
+            <date-select label="报废时间" v-model="order.createTime" :disabled="true"></date-select>
+            <entity-input label="操作人员" v-model="order.operatorInfo.operator" :disabled="true"></entity-input>
         </div>
         <div>
-            <define-input label="备注" v-model="scrapOrder.remark" :disabled="isInfo"></define-input>
+            <define-input label="备注" v-model="order.remark" :disabled="isInfo"></define-input>
         </div>
         <div class="scrap-list-body">
             <bos-tabs @changeTab="changeTab">
@@ -20,7 +20,7 @@
                 <define-table :data="equipItems" height="2.8646rem" @changeCurrent="changeRow" :havePage="false"
                               :highLightCurrent="true" slot="total" :showSummary="true" :summaryFunc="sumFunc">
                     <define-column label="操作" width="100" v-slot="{ data }">
-                        <i class="iconfont iconyichuliang" @click="delRow('equipItems',data)"></i>
+                        <i class="iconfont iconyichuliang" @click="delRow(data,'equipItems')"></i>
                     </define-column>
                     <define-column label="装备参数" field="equipArg"></define-column>
                     <define-column label="装备数量" field="count"></define-column>
@@ -30,7 +30,7 @@
                         <i class="iconfont iconyichuliang" @click="delRow(data)"></i>
                     </define-column>
                     <define-column label="RFID" field="rfid"></define-column>
-                    <define-column label="装备序号" field="serial"></define-column>
+                    <define-column label="装备序号" field="equipSerial"></define-column>
                 </define-table>
             </bos-tabs>
             <div class="btn-box" v-if="!isInfo">
@@ -51,14 +51,15 @@
     import divTmp from '@/componentized/divTmp'
     import {equipScrap} from 'api/operation'
     import {getBosEntity} from '@/api/basic'
-    import {transEquipFormat, transScrapCategory} from "../../../common/js";
+    import {transScrapCategory} from "../../../common/js";
+    import {transEquips} from "../../../common/js/transEquips";
     import {equipmentScrapped} from "../../../api/statistics"
 
     export default {
         name: "maintenance",
         data() {
             return {
-                scrapOrder: {operatorInfo: {operator: '', operatorId: ''}, scrapItems: [], remark: ''},
+                order: {operatorInfo: {operator: '', operatorId: ''}, scrapItems: [], remark: ''},
                 paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
                 hardwareSelect: {
                     list: [{label: '手持机', value: 'handheld'}, {label: '读卡器', value: 'reader'}],
@@ -81,8 +82,13 @@
             readData() {
                 killProcess(this.pid)
                 start("java -jar scan.jar", (data) => {
-                    if (this._.findIndex(this.matchRfids, data) === -1
-                        && this._.findIndex(this.rfids, data) === -1) {
+                    if (this.matchRfids.length !== 0) {
+                        if (this._.findIndex(this.matchRfids, data) !== -1
+                            && this._.findIndex(this.rfids, data) === -1) {
+                            this.rfids.push(data)
+                            this.fetchEquipItems(this.rfids)
+                        }
+                    } else {
                         this.rfids.push(data)
                         this.fetchEquipItems(this.rfids)
                     }
@@ -96,42 +102,29 @@
             // 获取装备列表信息
             fetchEquipItems(data) {
                 findByRfids(data).then(res => {
-                    this.scrapOrder.scrapItems = res
-                    this.fixEquipItems()
+                    this.fixEquipItems(res)
                 })
             },
-            // 处理装备列表信息
-            fixEquipItems() {
-                this.scrapOrder.scrapItems.forEach(item => {
-                    if (item.equipArg) transEquipFormat(item)
-                })
-                // 处理前的装备数据
-                let tempEquipItems = this._.groupBy(this.scrapOrder.scrapItems, item => `${item.equipModel}${item.equipName}`)
-                this.equipItems = this._.map(tempEquipItems, (item) => {
-                    return {
-                        equipArg: item[0].equipName + "(" + item[0].equipModel + ")",
-                        location: item[0].location,
-                        items: item,
-                        count: item.length,
-                    }
-                })
+            fixEquipItems(data) {
+                let temp = transEquips(data)
+                if (temp.rfids.length > 0) {
+                    this.rfids = temp.rfids
+                    this.equipItems = temp.equipItems
+                }
             },
             fetchData() {
                 getBosEntity(this.$route.query.id).then(res => {
-                    this.scrapOrder = res
+                    this.order = res
                     this.fixData()
-                    this.fixEquipItems()
                 })
             },
             fixData() {
                 if (!this.isInfo) {
-                    this.scrapOrder.operatorInfo.operator = JSON.parse(window.localStorage.getItem("user")).name
-                    this.scrapOrder.operatorInfo.operatorId = JSON.parse(window.localStorage.getItem("user")).id
+                    this.order.operatorInfo.operator = JSON.parse(window.localStorage.getItem("user")).name
+                    this.order.operatorInfo.operatorId = JSON.parse(window.localStorage.getItem("user")).id
                 }
-                if (this.scrapOrder.createTime) {
-                    this.scrapOrder.createTime = this.$filterTime(this.scrapOrder.createTime)
-                }
-                transScrapCategory(this.scrapOrder)
+                transScrapCategory(this.order)
+                this.fixEquipItems(this.order.scrapItems)
             },
             fetchMatchRfids() {
                 // 获取到期装备的列表 用来对比扫描到的RFID是否在到期装备列表中
@@ -142,8 +135,21 @@
             changeRow(current) {
                 this.totalIndex = current.index
             },
-            delRow(list, data) {
-                list === 'equipItems' ? this[list].length === 1 ? this[list] = [{items: []}] : this[list].splice(data.$index, 1) : this[list].splice(data.$index, 1);
+            delRow(data,list) {
+                console.log('我是equipItems')
+                console.log(data)
+                if (list === 'equipItems') {
+                    this[list].length === 1 ? this[list] = [{items: []}] : this[list].splice(data.$index, 1);
+                    data.row.items.forEach(item => {
+                            this.rfids = _.pull(this.rfids, item.rfid)
+                        }
+                    )
+                } else {
+                    this.equipItems[this.totalIndex].items.splice(data.$index,1)
+                    this.rfids = _.pull(this.rfids, data.row.rfid)
+                }
+                console.log('我是rfid')
+                console.log(this.rfids)
             },
             changeTab(data) {
                 data.key === 'total' ? killProcess(this.pid) : ''
@@ -153,7 +159,6 @@
                 let {columns} = param, sums = [];
                 sums = new Array(columns.length).fill('')
                 sums[0] = '合计'
-                console.log(param.data)
                 sums[columns.length - 1] = param.data.reduce((v, k) => {
                     if (k.count) {
                         return v + k.count
@@ -163,13 +168,13 @@
                 return sums;
             },
             confirm() {
-                this._.map(this.equipItems, (item) => this._.map(item.items, 'rfid'))
-                equipScrap(this.scrapOrder.category, this.scrapOrder.remark, this.rfids).then(() => {
+                if (this.rfids.length === 0) return this.$message.error('装备列表不能为空')
+                equipScrap(this.order.category, this.order.remark, this.rfids).then(() => {
                     this.cancel()
                 })
             },
             cancel() {
-                if (this.scrapOrder.category === 2) {
+                if (this.order.category === 2) {
                     this.$router.go(-1)
                 }
                 this.$router.back()
@@ -183,18 +188,22 @@
                 this.isInfo = true
                 this.fetchData()
             } else {
-                this.scrapOrder.category = Number(this.$route.query.category)
-                this.fixData()
-                if (this.scrapOrder.category === 0 || this.scrapOrder.category === 2) {
+                this.order.category = Number(this.$route.query.category)
+                //默认是正常报废
+                if (this.order.category === 0 || this.order.category === 2) {
                     this.rfids = this.$route.query.rfids
                     this.fetchEquipItems(this.$route.query.rfids)
                 } else {
                     this.isHardwareSelect = true
-                    if (this.scrapOrder.category === 1) {
-                        this.fetchMatchRfids()
+                    if (this.order.category === 1) {
+                        // 获取到期装备的列表 用来对比扫描到的RFID是否在到期装备列表中
+                        equipmentScrapped().then((res) => {
+                            this.matchRfids = this._.map(res.content, 'rfid')
+                        })
                     }
                 }
             }
+            this.fixData()
         },
         beforeDestroy() {
             killProcess(this.pid)

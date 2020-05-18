@@ -61,8 +61,7 @@
                     item.count = item.scrapItems.length
                     if (item.scrapItems.length !== 0) {
                         item.equipArg = item.scrapItems[0].equipName + '(' + item.scrapItems[0].equipModel + ')'
-                        item.equipArg = item.scrapItems.length > 0 ? item.equipArg + '...' : item.equipArg
-
+                        item.equipArg = item.scrapItems.length > 1 ? item.equipArg + '...' : item.equipArg
                     }
                 })
             },
