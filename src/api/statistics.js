@@ -16,7 +16,14 @@ export function equipmentScrapped(data) {
         params: data
     })
 }
-
+//单警柜佩戴率统计/statistic/cabinet-wearRate
+export function cabinetWearRate(data) {
+    return request({
+        url: '/statistic/cabinet-wearRate',
+        method: 'get',
+        params: data
+    })
+}
 export function equipmentScrappedInfo(data) {
     return request({
         url: '/equips/need-scrap/detail',
