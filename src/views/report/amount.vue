@@ -65,7 +65,7 @@
                         <define-column label="装备总价" field="totalPrice"></define-column>
                     </define-table>
                     <define-table v-if="show=='category'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
-                        <define-column label="装备参数" field="equipArgs"/>
+                        <define-column label="装备参数" :filter="(row)=>{return `${row.name}(${row.model})`}"></define-column>
                         <define-column label="装备总数" field="totality"></define-column>
                         <define-column label="可用数量" field="inHouseCount"></define-column>
                         <define-column label="领用数量" field="receiveUseCount"></define-column>
@@ -77,7 +77,7 @@
                         <define-column label="装备总价" field="totalPrice"></define-column>>
                     </define-table>
                     <define-table v-if="show=='singlePoliceCategory'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
-                        <define-column label="装备参数" field="equipArgs"/>
+                        <define-column label="装备参数" :filter="(row)=>{return `${row.name}(${row.model})`}"></define-column>
                         <define-column label="装备总数" field="totalCount"></define-column>
                         <define-column label="装备总价" field="totalPrice"></define-column>>
                     </define-table>
@@ -207,9 +207,6 @@
                 else if(this.show=="singlePoliceCategory"){
                    allPoliceStatisticCategories(this.id).then(res=>{
                         this.equipArg = res
-                        this.equipArg.forEach(item=>{
-                            item.equipArgs=item.name+item.model
-                        })
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
                     })
@@ -231,12 +228,19 @@
 
             },
             searchCategory(item){
-               if(item=='CATEGORY'||item=='GENRES'){
+               if(item=='CATEGORY'||item=='GENRE'){
+                   console.log("触发");
                    findEquipMoneyStatistics({categorys:3,id:this.id,level:item,search:this.search2}).then(res=>{
                         this.equipArg = res
                         this.equipArg.forEach(item=>{
                             item.equipArgs=`${item.name}(${item.model})`
                         })
+                        this.paginator.totalPages = res.totalPages;
+                        this.paginator.totalElements = res.totalElements;
+                    })
+               }else if(item=='singlePoliceCategory'){
+                    allPoliceStatisticCategories(this.id,this.search2).then(res=>{
+                        this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
                     })

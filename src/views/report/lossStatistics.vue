@@ -17,37 +17,37 @@
                 <div class="safety-body-t" v-if="show=='All'">
                     <div style="float:left">{{this.title}}</div>
                     <div style="float:right">
-                        <define-input label="小类" v-model="search"></define-input>
-                        <base-button label="查询"  size="mini"></base-button>
+                        <define-input label="小类" v-model="search2"></define-input>
+                        <base-button label="查询"  size="mini" @click="searchCategory('All')"></base-button>
                     </div>
 
                 </div>
                 <div style="safety-body-t" v-else-if="show=='genres'">
                     <div style="float:left">装备大类：{{this.title}} 总数：{{addNum(1)}}件 总价：{{addNum(4)}}元 损耗数：{{addNum(2)}}件 损耗总额：{{addNum(3)}}元  </div>
                     <div style="float:right">
-                        <define-input label="小类" v-model="search"></define-input>
-                        <base-button label="查询"  size="mini"></base-button>
+                        <define-input label="小类" v-model="search2"></define-input>
+                        <base-button label="查询"  size="mini" @click="searchCategory('GENRE')"></base-button>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='category'">
                     <div style="float:left">装备小类：{{this.title}} 总数：{{addNum(1)}}件 总价：{{addNum(4)}}元 损耗数：{{addNum(2)}}件 损耗总额：{{addNum(3)}}元 </div>
                     <div style="float:right">
-                        <define-input label="小类" v-model="search"></define-input>
-                        <base-button label="查询"  size="mini"></base-button>
+                        <define-input label="小类" v-model="search2"></define-input>
+                        <base-button label="查询"  size="mini" @click="searchCategory('CATEGORY')"></base-button>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='singlePoliceCategory'">
                     <div style="float:left">装备大类：{{this.title}} 总数：{{addNum(1)}}件 总价：{{addNum(4)}}元 损耗数：{{addNum(2)}}件 损耗总额：{{addNum(3)}}元 </div>
                     <div style="float:right">
-                        <define-input label="小类" v-model="search"></define-input>
-                        <base-button label="查询"  size="mini"></base-button>
+                        <define-input label="小类" v-model="search2"></define-input>
+                        <base-button label="查询"  size="mini" @click="searchCategory('singlePolice')"></base-button>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='singlePolice'">
                     <div style="float:left">装备大类：{{this.title}} 总数：{{addNum(1)}}件 总价：{{addNum(4)}}元 损耗数：{{addNum(2)}}件 损耗总额：{{addNum(3)}}元 </div>
                     <div style="float:right">
-                        <define-input label="小类" v-model="search"></define-input>
-                        <base-button label="查询"  size="mini"></base-button>
+                        <define-input label="小类" v-model="search2"></define-input>
+                        <base-button label="查询"  size="mini" @click="searchCategory('singlePolice')"></base-button>
                     </div>
                 </div>
                 <div style="width:95%">
@@ -125,8 +125,10 @@
                 show:"All",
                 equipArg:[],
                 search:"",
+                search2:'',
                 check:false,
                 total:0,
+                id:'',
                 paramArray:[0,1,2,3],
             };
         },
@@ -173,11 +175,11 @@
                if(item==4)return this.equipArg.reduce((v,k)=>v+k.totalPrice,0)
             },
             clickNode(data) {
-                var id=data.data.id
+               this.id=data.data.id
                 this.show = data.data.show
                 this.title = data.data.name
                 if(this.show=="genres"){
-                    findEquipLossStatistics({categorys:3,id:data.data.id,level:'GENRE'}).then(res=>{
+                    findEquipLossStatistics({categorys:3,id:this.id,level:'GENRE'}).then(res=>{
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
@@ -189,7 +191,7 @@
                         this.paginator.totalElements = res.totalElements;
                     })
                 }else if(this.show=="category"){
-                   findEquipLossStatistics({categorys:3,id:data.data.id,level:'CATEGORY'}).then(res=>{
+                   findEquipLossStatistics({categorys:3,id:this.id,level:'CATEGORY'}).then(res=>{
                         this.equipArg = res
                         this.equipArg.forEach(item=>{
                             item.equipArgs=`${item.name}(${item.model})`
@@ -210,7 +212,7 @@
                     })
                 }
                 else if(this.show=="singlePoliceCategory"){
-                   cabinetLossCategories(id).then(res=>{
+                   cabinetLossCategories(this.id).then(res=>{
                         this.equipArg = res
                         this.equipArg.forEach(item=>{
                             item.equipArgs=item.name+item.model
@@ -234,6 +236,25 @@
                     })
                 }
 
+            },
+            searchCategory(item){
+               if(item=='CATEGORY'||item=='GENRE'){
+                   console.log("触发");
+                   findEquipLossStatistics({categorys:3,id:this.id,level:item,search:this.search2}).then(res=>{
+                        this.equipArg = res
+                        this.equipArg.forEach(item=>{
+                            item.equipArgs=`${item.name}(${item.model})`
+                        })
+                        this.paginator.totalPages = res.totalPages;
+                        this.paginator.totalElements = res.totalElements;
+                    })
+               }else if(item=='singlePoliceCategory'){
+                    cabinetLossCategories(this.id,this.search2).then(res=>{
+                        this.equipArg = res
+                        this.paginator.totalPages = res.totalPages;
+                        this.paginator.totalElements = res.totalElements;
+                    })
+               }
             }
         },
         created() {
