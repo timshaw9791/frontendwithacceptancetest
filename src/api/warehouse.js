@@ -168,6 +168,14 @@ export function getHouse(params) {
     })
 }
 
+
+export function getHouseInfo() {
+    return request({
+        url: "/house/info",
+        method: "GET",
+    })
+}
+
 /* 标准库存 */
 export function getHouseStocks(params) {
     return request({
