@@ -14,7 +14,7 @@
       </div>
       <div class="contrast-component" v-for="(slotName, j) in contrastKey" :key="j" v-show="contrast">
         <slot :name="slotName"></slot>
-        <div class="mask" v-show="contrastMask"></div>
+        <div class="mask" v-show="contrastMask" :style="`background-color:${contrastColor[j]}`"></div>
       </div>
     </div>
   </div>
@@ -62,6 +62,12 @@ export default {
     contrastMask: {
       type: Boolean,
       default: true
+    },
+    contrastColor: {
+      type: Array,
+      default() {
+        return ['rgba(244,244,248,0.3)']
+      }
     },
     layoutRatio: {
       type: Array,
@@ -154,8 +160,8 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(244,244,248,0.3);
   pointer-events: none;
   z-index: 999;
+  opacity: 0.3;
 }
 </style>

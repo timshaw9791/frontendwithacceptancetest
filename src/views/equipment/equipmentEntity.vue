@@ -76,7 +76,7 @@
                 isEdit: false,
                 inList: true,
                 params: {size: 10, page: 1},
-                paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
+                paginator: {size: 10, page: 1, totalPages: 1, totalElements: 5},
             }
         },
         methods: {
