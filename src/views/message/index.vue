@@ -10,8 +10,8 @@
 				<define-table :data="list" :pageInfo="fetchParams.pageInfo" @changePage="changePage" height="4.0104rem" 
 					:highLightCurrent="true" @changeCurrent="changeCurrent" slot="main" ref="leftTable">
 					<define-column label="操作" field="opeare" width="60" v-slot="{ data }">
-						<i class="iconfont iconxingbiaotianchong star" @click="messageStar(false)" v-if="data.row.newStar"></i>
-						<i class="iconfont iconxingbiaoxianxing" @click="messageStar(true)" v-else></i>
+						<i class="iconfont iconxingbiaotianchong star" @click="messageStar(data.row.id,false)" v-if="data.row.newStar"></i>
+						<i class="iconfont iconxingbiaoxianxing" @click="messageStar(data.row.id, true)" v-else></i>
 					</define-column>
 					<define-column label="消息状态" width="100" v-slot="{ data }">
 						<span :class="['sign',{unread: !data.row.status}]" @click="readIt(data.row)">
@@ -85,13 +85,14 @@ export default {
 			let tmp = this.enumerator.find(item => item.value == value)
 			return tmp?tmp.chinese:''
 		},
-		messageStar(state) {
-			allRead
+		messageStar(id, status) {
+			markStar({id, status, userId: this.userId}).then(res => {
+				this.fetchData();
+			})
 		},
 		allMessageRead() {
 			allRead({userId: this.userId}).then(res => {
 				this.fetchData();
-				console.log(res);
 			})
 		}
 	},
