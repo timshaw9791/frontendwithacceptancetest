@@ -1,50 +1,52 @@
 <template>
   <div class="safety-container">
-    <my-header :title="$route.meta.title" :haveBlack="false"></my-header>
+    <my-header title="人员信息" :haveBlack="false"></my-header>
     <div class="safety-body" >
          <bos-tabs  :option="['contrast']" :layoutRatio="[1,3]" :contrastKey="['slot1', 'slot2']" >
             <div slot="slot1"  class="safety-body-top">
                 <define-input label="小类" v-model="search"></define-input>
                 <base-button label="查询"  size="mini"></base-button>
                 <div style="height:80%">
-                    <define-tree @clickNode="clickNode" :expandAll="false" :data="tree.treeData" :options="options" @nodeClick="clickNode"></define-tree>
+                    <define-tree @clickNode="clickNode" :search="search" :expandAll="false" :accordion="true" :data="tree.treeData" :options="options" @nodeClick="clickNode"></define-tree>
                 </div>
-
+            <div style="margin-bottom:2px,border:1px solid black">
+                   <checkbox label="仅显示公共库房" v-model="check" ></checkbox>
+                </div>
             </div>
             <div  slot="slot2" class="safety-body-top">
                 <div class="safety-body-t" v-if="show=='All'">
                     <div style="float:left">{{this.title}}</div>
                     <div style="float:right">
-                        <define-input label="小类" v-model="search"></define-input>
-                        <base-button label="查询"  size="mini"></base-button>
+                        <define-input label="小类" v-model="search2"></define-input>
+                        <base-button label="查询"  size="mini" @click="searchCategory('All')"></base-button>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='genres'">
                     <div style="float:left">总计 装备大类：{{this.title}} 总数：{{addNum(1)}}件 可用数：{{addNum(2)}}件 领用数：{{addNum(3)}}件 总价：{{addNum(4)}}元</div>
                     <div style="float:right">
-                        <define-input label="小类" v-model="search"></define-input>
-                        <base-button label="查询"  size="mini"></base-button>
+                        <define-input label="小类" v-model="search2"></define-input>
+                        <base-button label="查询"  size="mini" @click="searchCategory('GENRE')"></base-button>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='singlePolice'">
                     <div style="float:left">总计 装备大类：{{this.title}} 总数：{{this.equipArg.reduce((v,k)=>v+k.totalCount,0)}}件  总价：{{addNum(4)}}元</div>
                     <div style="float:right">
-                        <define-input label="小类" v-model="search"></define-input>
-                        <base-button label="查询"  size="mini"></base-button>
+                        <define-input label="小类" v-model="search2"></define-input>
+                        <base-button label="查询"  size="mini" @click="searchCategory('singlePolice')"></base-button>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='singlePoliceCategory'">
                     <div style="float:left">总计 装备小类：{{this.title}} 总数：{{this.equipArg.reduce((v,k)=>v+k.totalCount,0)}}件  总价：{{addNum(4)}}元</div>
                     <div style="float:right">
-                        <define-input label="小类" v-model="search"></define-input>
-                        <base-button label="查询"  size="mini"></base-button>
+                        <define-input label="小类" v-model="search2"></define-input>
+                        <base-button label="查询"  size="mini" @click="searchCategory('singlePoliceCategory')"></base-button>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='category'">
                     <div style="float:left">总计 装备小类：{{this.title}} 总数：{{addNum(1)}}件 可用数：{{addNum(2)}}件 领用数：{{addNum(3)}}件 总价：{{addNum(4)}}元</div>
                     <div style="float:right">
-                        <define-input label="小类" v-model="search"></define-input>
-                        <base-button label="查询"  size="mini"></base-button>
+                        <define-input label="小类" v-model="search2"></define-input>
+                        <base-button label="查询"  size="mini" @click="searchCategory('CATEGORY')"></base-button>
                     </div>
                 </div>
                 <div style="width:95%">
@@ -63,7 +65,7 @@
                         <define-column label="装备总价" field="totalPrice"></define-column>
                     </define-table>
                     <define-table v-if="show=='category'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
-                        <define-column label="装备参数" field="equipArgs"/>
+                        <define-column label="装备参数" :filter="(row)=>{return `${row.name}(${row.model})`}"></define-column>
                         <define-column label="装备总数" field="totality"></define-column>
                         <define-column label="可用数量" field="inHouseCount"></define-column>
                         <define-column label="领用数量" field="receiveUseCount"></define-column>
@@ -75,7 +77,7 @@
                         <define-column label="装备总价" field="totalPrice"></define-column>>
                     </define-table>
                     <define-table v-if="show=='singlePoliceCategory'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
-                        <define-column label="装备参数" field="equipArgs"/>
+                        <define-column label="装备参数" :filter="(row)=>{return `${row.name}(${row.model})`}"></define-column>
                         <define-column label="装备总数" field="totalCount"></define-column>
                         <define-column label="装备总价" field="totalPrice"></define-column>>
                     </define-table>
@@ -113,14 +115,18 @@
                     label:'name',
                     children:'children'
                 },
+                check:false,
+                search2:'',
                 title:"全部装备",
                 paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
                 order: [],
                 editflag:false,
                 show:"All",
                 equipArg:[],
+                paramArray:[0,1,2,3],
                 search:"",
                 total:0,
+                id:'',
                 computeTotal:{},
             };
         },
@@ -144,7 +150,7 @@
                         ]})
                     })
                 })
-                findEquipMoneyStatistics({categorys:[0,1,2,3],level:'ALL'}).then(res=>{
+                findEquipMoneyStatistics({categorys:this.paramArray,level:'ALL',search:this.search2}).then(res=>{
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
@@ -162,23 +168,23 @@
             },
             clickNode(data) {
                 console.log(data);
-                var id=data.data.id
+                this.id=data.data.id
                 this.show = data.data.show
                 this.title = data.data.name
                 if(this.show=="genres"){
-                    findEquipMoneyStatistics({categorys:3,id:data.data.id,level:'GENRE'}).then(res=>{
+                    findEquipMoneyStatistics({categorys:3,id:this.id,level:'GENRE',search:this.search2}).then(res=>{
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
                     })
                 }else if(this.show=="All"){
-                    findEquipMoneyStatistics({categorys:[0,1,2,3],level:'ALL'}).then(res=>{
+                    findEquipMoneyStatistics({categorys:this.paramArray,level:'ALL',search:this.search2}).then(res=>{
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
                     })
                 }else if(this.show=="category"){
-                   findEquipMoneyStatistics({categorys:3,id:data.data.id,level:'CATEGORY'}).then(res=>{
+                   findEquipMoneyStatistics({categorys:3,id:this.id,level:'CATEGORY',search:this.search2}).then(res=>{
                         this.equipArg = res
                         this.equipArg.forEach(item=>{
                             item.equipArgs=`${item.name}(${item.model})`
@@ -199,11 +205,8 @@
                     })
                 }
                 else if(this.show=="singlePoliceCategory"){
-                   allPoliceStatisticCategories(id).then(res=>{
+                   allPoliceStatisticCategories(this.id).then(res=>{
                         this.equipArg = res
-                        this.equipArg.forEach(item=>{
-                            item.equipArgs=item.name+item.model
-                        })
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
                     })
@@ -223,11 +226,55 @@
                     })
                 }
 
+            },
+            searchCategory(item){
+               if(item=='CATEGORY'||item=='GENRE'){
+                   console.log("触发");
+                   findEquipMoneyStatistics({categorys:3,id:this.id,level:item,search:this.search2}).then(res=>{
+                        this.equipArg = res
+                        this.equipArg.forEach(item=>{
+                            item.equipArgs=`${item.name}(${item.model})`
+                        })
+                        this.paginator.totalPages = res.totalPages;
+                        this.paginator.totalElements = res.totalElements;
+                    })
+               }else if(item=='singlePoliceCategory'){
+                    allPoliceStatisticCategories(this.id,this.search2).then(res=>{
+                        this.equipArg = res
+                        this.paginator.totalPages = res.totalPages;
+                        this.paginator.totalElements = res.totalElements;
+                    })
+               }
             }
         },
         created() {
             this.fetchData()
         },
+        watch: {
+        check: {
+            handler(newval) {
+                if(newval){
+                     this.paramArray=[3]
+                    this.tree.treeData.pop()
+                      findEquipMoneyStatistics({categorys:this.paramArray,level:'ALL'}).then(res=>{
+                        this.equipArg = res
+                        this.paginator.totalPages = res.totalPages;
+                        this.paginator.totalElements = res.totalElements;
+                    })
+                }else{
+                   this.paramArray=[0,1,2,3]
+                   this.tree.treeData.push({name:'单警装备',show:'singlePolice',children:[
+                            {name:'公共柜装备',id:1,show:'singlePoliceCategory'},{name:'备用柜装备',id:2,show:'singlePoliceCategory'},{name:'单警柜装备',id:0,show:'singlePoliceCategory'}
+                        ]})
+                    findEquipMoneyStatistics({categorys:this.paramArray,level:'ALL'}).then(res=>{
+                        this.equipArg = res
+                        this.paginator.totalPages = res.totalPages;
+                        this.paginator.totalElements = res.totalElements;
+                    })
+                }
+            },
+        },
+    },
         components: {
             myHeader,
             baseButton,

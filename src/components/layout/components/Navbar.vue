@@ -53,6 +53,8 @@
     import Hamburger from 'components/base/Hamburger'
     import { localTitle } from 'api/config'
     import { getMsgList } from "api/message";
+    import { jsqlPage } from 'api/basic'
+    import { message } from 'api/bosQuery/message'
     export default {
         data() {
             return {
@@ -81,9 +83,12 @@
                 window.close();
             },
             fetchData() {
-                getMsgList({id: JSON.parse(localStorage.getItem("user")).id}).then(res => {
-                    this.$store.commit('setUnreadCount', res.content.filter(item => !item.status).length);
-                });
+                jsqlPage(message).then(res => {
+                   this.$store.commit('setUnreadCount', this._.flatten(res.content).filter(item => !item.status).length);
+                })
+                // getMsgList({id: JSON.parse(localStorage.getItem("user")).id}).then(res => {
+                //     this.$store.commit('setUnreadCount', res.content.filter(item => !item.status).length);
+                // });
             }
         },
         created(){

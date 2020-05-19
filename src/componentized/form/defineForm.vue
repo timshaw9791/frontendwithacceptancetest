@@ -1,6 +1,6 @@
 <template>
     <div class="define-form-container" :style="`width:${fixWidth};float:${align};margin:${margin}`">
-        <slot name="form"></slot>
+        <!-- <slot name="form"></slot> -->
         <slot></slot>
     </div>
 </template>
@@ -27,7 +27,8 @@ export default {
                 console.error("defineForm未给定回调函数");
                 return;
             }
-            this.$slots.form instanceof Array&&this.$slots.form.map(cmp => cmp.componentInstance.reg()).every(s => s)?callBack(true):callBack(false);
+            typeof this.$slots.default == 'undefined'?callBack(true):this.$slots.default.filter(cmp => cmp.componentInstance&&'valid' in cmp.componentInstance.$attrs)
+                .map(cmp => cmp.componentInstance.reg()).every(s => s)?callBack(true):this.$message.warning('表单验证不通过');callBack(false);
         }
     },
     computed: {

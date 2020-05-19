@@ -1,5 +1,5 @@
 <template>
-    <div class="header">
+    <div class="header" :style="`height:${height}`">
         <span class="title" v-text="title"></span>
         <div class="input-box" v-if="searchFlag">
             <svg-icon icon-class="搜索" class="icon-search"></svg-icon>
@@ -50,6 +50,9 @@
             haveBlackTwo:{
                 type:Boolean,
                 default:false
+            },
+            height: {
+                default: '57px'
             }
         },
         methods:{
@@ -65,7 +68,6 @@
         width: 100%;
         padding-left: 18px;
         padding-right: 35px;
-        height: 57px;
         display: flex;
         align-items: center;
         justify-content: space-between;

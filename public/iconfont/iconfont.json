@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "14796155",
+      "name": "星标线性",
+      "font_class": "xingbiaoxianxing",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    },
+    {
+      "icon_id": "14796151",
+      "name": "星标填充",
+      "font_class": "xingbiaotianchong",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    },
+    {
+      "icon_id": "9161071",
+      "name": "汉堡",
+      "font_class": "hanbao",
+      "unicode": "e78c",
+      "unicode_decimal": 59276
+    },
+    {
       "icon_id": "14324250",
       "name": "电视-视频缩略",
       "font_class": "dianshi-shipinsuolve",

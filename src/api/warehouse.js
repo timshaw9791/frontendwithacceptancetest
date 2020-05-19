@@ -29,6 +29,57 @@ export function allPoliceStatisticCategories(id,search='') {
     })
 }
 
+//单警柜使用频次全部
+export function allPoliceFrequency() {
+    return request({
+        url: "/statistic/cabinet-frequency",
+        method: "get",
+        
+    })
+}
+//单警下三类柜子的统计
+export function allPoliceFrequencyCategories(id,search='') {
+    return request({
+        url: `/statistic/cabinet-frequency-categories?category=${id}&search=${search}`,
+        method: "get",
+        
+    })
+}
+
+//单警报废件数
+export function allPoliceScrap() {
+    return request({
+        url: "/statistic/cabinet-scrap",
+        method: "get",
+        
+    })
+}
+
+//单警下三类柜子的统计
+export function allPoliceScrapCategories(id,search='') {
+    return request({
+        url: `/statistic/cabinet-scrap-categories?category=${id}&search=${search}`,
+        method: "get",
+        
+    })
+}
+//单警维修件数
+export function allPoliceRepair() {
+    return request({
+        url: "/statistic/cabinet-repair",
+        method: "get",
+        
+    })
+}
+
+//单警下三类柜子的统计
+export function allPoliceRepairCategories(id,search='') {
+    return request({
+        url: `/statistic/cabinet-repair-categories?category=${id}&search=${search}`,
+        method: "get",
+        
+    })
+}
 //jbql查询该警柜下的装备列表
 export function cabinetEquip(data) {
     return request({
