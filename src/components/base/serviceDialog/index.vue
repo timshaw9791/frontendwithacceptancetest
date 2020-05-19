@@ -21,7 +21,7 @@
             </el-dialog>
 
             <div slot="footer" class="dialog-footer" v-if="button">
-                <el-button @click="cancelDb" data-test="button">取 消</el-button>
+                <el-button @click="cancelDb" data-test="button">{{ cancelInfo }}</el-button>
                 <el-button type="primary" :disabled="disabled" @click="dialogConfirm" data-test="button">{{ confirmInfo
                     }}
                 </el-button>
@@ -59,7 +59,15 @@
                 type: String,
                 default: "确 定"
             },
+            cancelInfo: {
+                type: String,
+                default: "取 消"
+            },
             ismore: {
+                type: Boolean,
+                default: false
+            },
+            isShow: {
                 type: Boolean,
                 default: false
             }
@@ -98,6 +106,16 @@
                     this.$emit('firstCancel')
                 }
             }
+        },
+        watch: {
+            'isShow': {
+                handler(newVal) {
+                    if (newVal) {
+                        console.log(newVal)
+                        this.showFlag = true;
+                    }
+                }
+            },
         }
     }
 </script>

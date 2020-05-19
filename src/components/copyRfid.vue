@@ -42,11 +42,12 @@
                 this.$emit('cancel')
                 this.isShow = false
                 this.rfid = ''
+                console.log(this)
                 this.$refs.copyRfid.hide()
             },
         },
         watch: {
-            isShow: {
+            'isShow': {
                 handler(newData) {
                     console.log(newData);
                     if (!!newData) this.$refs.copyRfid.show()
