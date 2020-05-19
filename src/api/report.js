@@ -36,7 +36,7 @@ export function cabinetLoss() {
 }
 export function cabinetLossCategories(id,search='') {
     return request({
-        url: `/statistic/cabinet-loss-categories?categories=${id}&search=${search}`,
+        url: `/statistic/cabinet-loss-categories?category=${id}&search=${search}`,
         method: 'get',
         // params:params
     })

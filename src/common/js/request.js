@@ -29,11 +29,11 @@ service.interceptors.request.use(config => {
 
 // respone拦截器
 service.interceptors.response.use(response => {
-        if(!['get','GET'].includes(response.config.method)) {
-            Message.success({
-                message: '操作成功'
-            })
-        }
+        // if(!['get','GET'].includes(response.config.method)) {
+        //     Message.success({
+        //         message: '操作成功'
+        //     })
+        // }
         let token = response.headers[tokenName];
         if (token) {
             setToken(token);

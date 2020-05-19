@@ -28,7 +28,7 @@ export default {
                 return;
             }
             typeof this.$slots.default == 'undefined'?callBack(true):this.$slots.default.filter(cmp => cmp.componentInstance&&'valid' in cmp.componentInstance.$attrs)
-                .map(cmp => cmp.componentInstance.reg()).every(s => s)?callBack(true):callBack(false);
+                .map(cmp => cmp.componentInstance.reg()).every(s => s)?callBack(true):this.$message.warning('表单验证不通过');callBack(false);
         }
     },
     computed: {
