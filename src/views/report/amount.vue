@@ -38,14 +38,14 @@
                 <div style="safety-body-t" v-else-if="show=='singlePoliceCategory'">
                     <div style="float:left">总计 装备小类：{{this.title}} 总数：{{this.equipArg.reduce((v,k)=>v+k.totalCount,0)}}件  总价：{{addNum(4)}}元</div>
                     <div style="float:right">
-                        <define-input label="小类" v-model="search2"></define-input>
+                        <define-input label="装备名称" v-model="search2"></define-input>
                         <base-button label="查询"  size="mini" @click="searchCategory('singlePoliceCategory')"></base-button>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='category'">
                     <div style="float:left">总计 装备小类：{{this.title}} 总数：{{addNum(1)}}件 可用数：{{addNum(2)}}件 领用数：{{addNum(3)}}件 总价：{{addNum(4)}}元</div>
                     <div style="float:right">
-                        <define-input label="小类" v-model="search2"></define-input>
+                        <define-input label="装备名称" v-model="search2"></define-input>
                         <base-button label="查询"  size="mini" @click="searchCategory('CATEGORY')"></base-button>
                     </div>
                 </div>

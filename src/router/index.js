@@ -364,7 +364,11 @@ export const asyncRouterMap = [{
             name: 'scrap',
             component: _import('report/scrap'),
             meta: {title: '装备报废件数'},
-        }]
+        },{
+            path: 'wate',
+            name: 'wate',
+            component: _import('report/wareRateAmount'),
+            meta: {title: '装备佩戴率'}}]
     }, {
         path: '/record',
         component: Layout,
