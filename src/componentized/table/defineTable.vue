@@ -80,6 +80,8 @@ import defineColumn from './defineColumn'
         },
         methods: {
             changePage(page) {
+                this.selectIndex = 0
+                this.$emit('changeCurrent', {current: {}, index: 0})
                 this.$emit('changePage', page);
             },
             changeCurrent(current, pre) { // 当前选中行改变
@@ -93,6 +95,15 @@ import defineColumn from './defineColumn'
             },
             refreshLayout() { // 刷新表格布局
                 this.$refs.table.doLayout();
+            }
+        },
+        mounted() {
+            if(this.highLightCurrent) {
+                this.$watch('data', newVal => {
+                    this.$refs.table.setCurrentRow(this.data[0])
+                }, {
+                    deep: true
+                })
             }
         }
     }

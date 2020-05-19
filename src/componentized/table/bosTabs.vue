@@ -1,11 +1,11 @@
 <template>
   <div class="bos-card-container" :style="'width:'+width">
-    <div class="top-tabs" v-if="tabs">
+    <div class="top-tabs" v-if="tabs&&header">
       <div v-for="(item, i) in label" :key="i" 
         :class="{'tabs':true,'selected':selectedIndex==i}"
         @click="changeTab(i, item)">{{ item.label }}</div>
     </div>
-    <div class="slot-component">
+    <div class="slot-component" v-if="header">
       <slot name="slotHeader"></slot>
     </div>
     <div class="bos-card-body" :style="'grid-template-columns:'+gridColumn">
@@ -14,7 +14,7 @@
       </div>
       <div class="contrast-component" v-for="(slotName, j) in contrastKey" :key="j" v-show="contrast">
         <slot :name="slotName"></slot>
-        <div class="mask" v-show="contrastMask"></div>
+        <div class="mask" v-show="contrastMask" :style="`background-color:${contrastColor[j]}`"></div>
       </div>
     </div>
   </div>
@@ -63,12 +63,22 @@ export default {
       type: Boolean,
       default: true
     },
+    contrastColor: {
+      type: Array,
+      default() {
+        return ['rgba(244,244,248,0.3)']
+      }
+    },
     layoutRatio: {
       type: Array,
       default() {
         return [1,1]
       }
     },
+    header: { // 是否启用顶部栏
+      type: Boolean,
+      default: true
+    }
   },
   computed: {
     gridColumn() {
@@ -154,8 +164,8 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(244,244,248,0.3);
   pointer-events: none;
   z-index: 999;
+  opacity: 0.3;
 }
 </style>
