@@ -19,14 +19,14 @@
                 </template>
                 <define-table :data="equipItems" height="2.8646rem" @changeCurrent="changeRow" :havePage="false"
                               :highLightCurrent="true" slot="total" :showSummary="true" :summaryFunc="sumFunc">
-                    <define-column label="操作" width="100" v-slot="{ data }">
+                    <define-column label="操作" width="100" v-slot="{ data }"  v-if="!isInfo">
                         <i class="iconfont iconyichuliang" @click="delRow(data,'equipItems')"></i>
                     </define-column>
                     <define-column label="装备参数" field="equipArg"></define-column>
                     <define-column label="装备数量" field="count"></define-column>
                 </define-table>
                 <define-table :data="equipItems[totalIndex].items" height="2.8646rem" :havePage="false" slot="detail">
-                    <define-column label="操作" width="100" v-slot="{ data }">
+                    <define-column label="操作" width="100" v-slot="{ data }"  v-if="!isInfo">
                         <i class="iconfont iconyichuliang" @click="delRow(data)"></i>
                     </define-column>
                     <define-column label="RFID" field="rfid"></define-column>
@@ -165,9 +165,6 @@
                 })
             },
             cancel() {
-                if (this.order.category === 2) {
-                    this.$router.go(-1)
-                }
                 this.$router.back()
             }
         },

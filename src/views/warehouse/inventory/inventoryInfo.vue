@@ -41,9 +41,6 @@
                 <base-button label="取消" @click="cancel"></base-button>
                 <base-button label="提交" @click="submit"></base-button>
             </div>
-            <service-dialog title="提示" ref="scrapDialog" width="3.3021rem" @confirm="dialogSub" :secondary="false">
-                <div>是否需要盘点报废</div>
-            </service-dialog>
             <copy-rfid :rfid="copyRFID" :isShow="isShowDialog" @cancel="copyCancel"></copy-rfid>
         </div>
     </div>
@@ -56,7 +53,6 @@
     import {inventoryOrder} from "../../../api/inventory"
     import {getBosEntity} from "../../../api/basic"
     import {transEquips} from "../../../common/js/transEquips";
-    import serviceDialog from "../../../components/base/serviceDialog"
     import copyRfid from "../../../components/copyRfid";
 
     export default {
@@ -64,7 +60,6 @@
         components: {
             BosTabs,
             myHeader,
-            serviceDialog,
             copyRfid
         },
         data() {
@@ -83,7 +78,7 @@
                 totalIndex: 0,
                 isShowDialog: false,
                 // 假列表
-                noInventoryList: ['20120333344'],
+                noInventoryList: ['555566666777'],
             }
         },
         methods: {
@@ -137,10 +132,12 @@
                     rfids: this.rfids
                 }
                 inventoryOrder("post", data)
-                this.$refs.scrapDialog.show()
-            },
-            dialogSub() {
-                this.$router.push({path: 'scrapInfo', query: {category: '2', rfids: this.rfids}})
+                this.$router.push({
+                    name:'inventoryList',
+                    params:{
+                        rfids:this.rfids
+                    }
+                })
             },
             cancel() {
                 this.$router.back()
@@ -151,13 +148,12 @@
             },
             copyCancel() {
                 this.isShowDialog = false
-                this.$router.back()
             }
         },
         created() {
             this.isInfo = !!this.$route.query.id
             this.fetchData()
-        },
+        }
     }
 </script>
 
