@@ -20,7 +20,7 @@
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='genres'">
-                    <div style="float:left">装备大类：{{this.title}} 总数：{{addNum(1)}}件 总价：{{addNum(4)}}元 损耗数：{{addNum(2)}}件 损耗总额：{{addNum(3)}}元 </div>
+                    <div style="float:left">装备大类：{{this.title}} 总数：{{addNum(1)}}件 总价：{{addNum(4)}}元 损耗数：{{addNum(2)}}件 损耗总额：{{addNum(3)}}元  </div>
                     <div style="float:right">
                         <define-input label="小类" v-model="search"></define-input>
                         <base-button label="查询"  size="mini"></base-button>
@@ -54,7 +54,7 @@
                         <define-column label="装备总价" field="totalPrice"></define-column>
                         <define-column label="损耗数" field="count"></define-column>
                         <define-column label="损耗总额" field="totalLoss"></define-column>
-                        <define-column label="损耗率" :filter="(row)=>rate(row)"></define-column>
+                        <define-column label="损耗率(%)" :filter="(row)=>rate(row)"></define-column>
                     </define-table>
                     <define-table v-if="show=='genres'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
                         <define-column label="装备小类" field="category"/>
@@ -62,16 +62,15 @@
                         <define-column label="装备总价" field="totalPrice"></define-column>
                         <define-column label="损耗数" field="count"></define-column>
                         <define-column label="损耗总额" field="totalLoss"></define-column>
-                        <define-column label="损耗率" :filter="(row)=>rate(row)"></define-column>
+                        <define-column label="损耗率(%)" :filter="(row)=>rate(row)"></define-column>
                     </define-table>
                     <define-table v-if="show=='category'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
-                        <define-column label="装备名称" field="name"/>
-                        <define-column label="装备型号" field="model"></define-column>
+                        <define-column label="装备参数" :filter="(row)=>{return `${row.name}(${row.model})`}"></define-column>
                         <define-column label="总数" field="totalCount"></define-column>
                         <define-column label="总价" field="totalPrice"></define-column>
                         <define-column label="损耗数" field="count"></define-column>
                         <define-column label="损耗总额" field="totalLoss"></define-column>
-                        <define-column label="损耗率" :filter="(row)=>rate(row)"></define-column>
+                        <define-column label="损耗率(%)" :filter="(row)=>rate(row)"></define-column>
                         <define-column label="供应商" field="supplier"></define-column>
                     </define-table>
                      <define-table v-if="show=='singlePolice'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
@@ -80,8 +79,7 @@
                         <define-column label="装备总价" field="totalPrice"></define-column>>
                     </define-table>
                     <define-table v-if="show=='singlePoliceCategory'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
-                        <define-column label="装备名称" field="name"/>
-                        <define-column label="装备型号" field="model"></define-column>
+                        <define-column label="装备参数" :filter="(row)=>{return `${row.name}(${row.model})`}"></define-column>
                         <define-column label="装备总数" field="totalCount"></define-column>
                         <define-column label="装备总价" field="totalPrice"></define-column>>
                     </define-table>

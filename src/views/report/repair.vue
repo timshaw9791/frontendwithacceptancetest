@@ -52,35 +52,36 @@
                         <define-column label="装备大类" field="genre"/>
                         <define-column label="装备总数" field="totalCount"></define-column>
                         <define-column label="装备总价" field="totalPrice"></define-column>
-                        <define-column label="维修数"  field="totalLoss"></define-column>
+                        <define-column label="维修数"  field="count"></define-column>
                         <define-column label="维修率" :filter="(row)=>rate(row)"></define-column>
                     </define-table>
                     <define-table v-if="show=='genres'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
                         <define-column label="装备小类" field="category"/>
                         <define-column label="装备总数" field="totalCount"></define-column>
                         <define-column label="装备总价" field="totalPrice"></define-column>
-                        <define-column label="维修数"  field="totalLoss"></define-column>
+                        <define-column label="维修数"  field="count"></define-column>
                         <define-column label="维修率" :filter="(row)=>rate(row)"></define-column>
                     </define-table>
                     <define-table v-if="show=='category'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
-                        <define-column label="装备名称" field="name"/>
-                        <define-column label="装备型号" field="model"></define-column>
+                        <define-column label="装备参数" :filter="(row)=>{return `${row.name}(${row.model})`}"></define-column>
                         <define-column label="总数" field="totalCount"></define-column>
                         <define-column label="总价" field="totalPrice"></define-column>
-                        <define-column label="维修数" field="totalLoss"></define-column>
+                        <define-column label="维修数" field="count"></define-column>
                         <define-column label="维修率" :filter="(row)=>rate(row)"></define-column>
                         <define-column label="供应商" field="supplier"></define-column>
                     </define-table>
                      <define-table v-if="show=='singlePolice'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
                         <define-column label="装备小类" field="cabinet"/>
                         <define-column label="装备总数" field="totalCount"></define-column>
-                        <define-column label="装备总价" field="totalPrice"></define-column>>
+                        <define-column label="装备总价" field="totalPrice"></define-column>
                     </define-table>
                     <define-table v-if="show=='singlePoliceCategory'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
-                        <define-column label="装备名称" field="name"/>
-                        <define-column label="装备型号" field="model"></define-column>
+                        <define-column label="装备参数" :filter="(row)=>{return `${row.name}(${row.model})`}"></define-column>
                         <define-column label="装备总数" field="totalCount"></define-column>
-                        <define-column label="装备总价" field="totalPrice"></define-column>>
+                        <define-column label="装备总价" field="totalPrice"></define-column>
+                        <define-column label="维修数" field="count"></define-column>
+                        <define-column label="维修率" :filter="(row)=>rate(row)"></define-column>
+                        <define-column label="供应商" field="supplier"></define-column>
                     </define-table>
                 </div>
             </div>
@@ -156,7 +157,7 @@
             },
             rate(data){
                 if(data.totalCount!=0){
-                return (data.totalLoss/data.totalCount*100).toFixed(2)
+                return (data.count/data.totalCount*100).toFixed(2)
                 }else {
                     return 0
                 }
