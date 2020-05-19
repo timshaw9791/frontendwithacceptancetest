@@ -26,3 +26,10 @@ export function jsqlPage(data) { // 根据jsql返回分页数据
     })
 }
 
+export function bosEnums(params) { // 根据枚举分类获取常量值
+    return request({
+        url: '/bos/bos-enums/by-category',
+        method: 'GET',
+        params
+    })
+}

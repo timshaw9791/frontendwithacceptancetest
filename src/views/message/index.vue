@@ -1,12 +1,14 @@
 <template>
 	<div class="message-container">
-		<my-header title="消息中心"></my-header>
+		<my-header title="消息中心" height="45px"></my-header>
 		<div class="top">
 			<define-input label="消息标题"></define-input>
+			<base-button label="一键已读" align="right" margin="0 30px 0 0"></base-button>
 		</div>
 		<div class="body">
-			<bos-tabs :option="['contrast']" :contrastKey="['main', 'content']" :layoutRatio="['45%', '55%']">
-				<define-table :data="list" :pageInfo="fetchParams.pageInfo" @changePage="changePage" height="2.7604rem" slot="main">
+			<bos-tabs :option="['contrast']" :contrastKey="['main', 'content']" :layoutRatio="['45%', '55%']" :header="false">
+				<define-table :data="list" :pageInfo="fetchParams.pageInfo" @changePage="changePage" height="4.0104rem" 
+					:highLightCurrent="true" @changeCurrent="changeCurrent" slot="main" ref="leftTable">
 					<define-column label="操作" field="opeare" width="60"></define-column>
 					<define-column label="消息状态" width="100" v-slot="{ data }">
 						<span :class="['sign',{unread: !data.row.status}]" @click="readIt(data.row)">
@@ -14,10 +16,10 @@
 						</span>
 					</define-column>
 					<define-column label="通知时间" :filter="row => this.$filterTime(row.createTime)" width="200"></define-column>
-					<define-column label="消息标题" field="title"></define-column>
+					<define-column label="消息标题" :filter="row=>fixTitle(row.title)"></define-column>
 					<!-- <define-column label="消息内容" field="content"></define-column> -->
 				</define-table>
-				<define-table :data="contentList" :havePage="false" height="2.9948rem" slot="content">
+				<define-table :data="list[selectIndex].messageItems" :havePage="false" height="4.2448rem" slot="content">
 					<define-column label="消息内容" field="content"></define-column>
 				</define-table>
 			</bos-tabs>
@@ -29,7 +31,7 @@
 import myHeader from 'components/base/header/header';
 import { getMsgList, readMsg } from 'api/message'
 import { bosMixin } from 'field/mixins/listMixin'
-import { jsqlPage } from 'api/basic'
+import { jsqlPage, bosEnums } from 'api/basic'
 import bosTabs from '@/componentized/table/bosTabs'
 export default {
 	name: 'message',
@@ -37,17 +39,18 @@ export default {
 	mixins: [bosMixin],
 	data() {
 		return {
-			list: [],
-			contentList: [],
+			list: [{messageItems:[]}],
+			selectIndex: 0,
+			enumerator: [], // 标题枚举对象
 			fetchParams: {
-				jpql: "select m from Message m where m.userId = ?1 order by m.status asc, m.createTime desc ",
+				jpql: "select ms from Message ms where ms.userId = ?1 order by ms.newStar desc, ms.status asc, ms.createTime desc",
+				returnType: "ARRAY",
 				pageInfo: {
 					direction: "DESC",
 					page: 1,
 					size: 10,
 					totalPages: 1
 				},
-				returnType: "ARRAY",
 				params: [
 					JSON.parse(localStorage.getItem('user')).id
 				]
@@ -56,9 +59,12 @@ export default {
 	},
 	methods: {
 		fetchData() {
-			jsqlPage(this.fetchParams).then(res => {
-				this.list = this._.flatten(res.content);
-				this.fetchParams.pageInfo.totalPages = res.totalPages;
+			bosEnums({category: 'MessageTitleEnum'}).then(res => {
+				this.enumerator = res;
+				jsqlPage(this.fetchParams).then(res => {
+					this.list = this._.flatten(res.content);
+					this.fetchParams.pageInfo.totalPages = res.totalPages;
+				})
 			})
 		},
 		readIt(data) {
@@ -66,6 +72,13 @@ export default {
 				this.$message.success('标记已读');
 				this.fetchData();
 			})
+		},
+		changeCurrent(data) {
+			this.selectIndex = data.index
+		},
+		fixTitle(value) {
+			let tmp = this.enumerator.find(item => item.value == value)
+			return tmp?tmp.chinese:''
 		}
 	}
 }
