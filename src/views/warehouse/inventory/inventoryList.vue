@@ -17,6 +17,10 @@
                 <define-column label="盘点时间" field="startTime"></define-column>
             </define-table>
         </div>
+        <service-dialog ref="scrapDialog" title="提示" width="3.3021rem" @confirm="dialogSub" :secondary="false"
+                        :is-show="isScrapDialog">
+            <div>是否需要盘点报废</div>
+        </service-dialog>
     </div>
 </template>
 
@@ -24,24 +28,29 @@
     import myHeader from 'components/base/header/header'
     import {listTableMixin} from '../../../field/mixins/listMixin.js'
     import {inventoryOrder} from "@/api/inventory"
+    import serviceDialog from '../../../components/base/serviceDialog'
 
     export default {
         name: "inventory",
         components: {
             myHeader,
-            listTableMixin
+            listTableMixin,
+            serviceDialog
         },
         data() {
             return {
                 list: [],
-                paginator:{page: 1, size: 10, totalElements: 0, totalPages: 0, search: ''}
+                paginator: {page: 1, size: 10, totalElements: 0, totalPages: 0, search: ''},
+                rfids: [],
+                isScrapDialog: false,
+                test: 111
             }
         },
 
-        mixins:[listTableMixin],
+        mixins: [listTableMixin],
 
         methods: {
-            fetchData(){
+            fetchData() {
                 inventoryOrder('get', this.paginator).then(res => {
                     this.list = res.content
                     this.paginator.totalPages = res.totalPages
@@ -49,17 +58,27 @@
                     this.fixData()
                 })
             },
-            fixData(){
-              this.list.forEach(item => {
-                  item.startTime = this.$filterTime(item.startTime)
-              })
+            fixData() {
+                this.list.forEach(item => {
+                    item.startTime = this.$filterTime(item.startTime)
+                })
             },
-            goto(id){
-                this.$router.push({path:'inventoryInfo',query:{id}})
+            goto(id) {
+                this.$router.push({path: 'inventoryInfo', query: {id}})
             },
-            changePage(){
+            changePage() {
                 this.paginator.page = page
                 this.fetchData()
+            },
+            dialogSub() {
+                this.$router.push({path: 'scrapInfo', query: {category: '2', rfids: this.rfids}})
+            }
+        },
+        mounted() {
+            let rfids = this.$route.params.rfids
+            if (rfids) {
+                this.rfids = rfids
+                this.isScrapDialog = true
             }
         }
     }

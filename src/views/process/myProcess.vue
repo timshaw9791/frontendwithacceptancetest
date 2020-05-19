@@ -5,7 +5,7 @@
             <div class="my-process-info">
                 <define-input label="请求标题" v-model="requestTitle" placeholder="请输入标题"></define-input>
                 <base-select label="流程类型" v-model="select.selected" :selectList="select.processList"></base-select>
-                <base-button label="查询" @click="getMyProcess()"></base-button>
+                <base-button label="查询" @click="fetchData()"></base-button>
             </div>
             <div class="my-process-body">
                 <define-table :data="myProcessList" height="3.6458rem" :pageInfo="paginator" @changePage="changePage">
@@ -26,6 +26,8 @@
 <script>
     import myHeader from 'components/base/header/header'
     import { processDefinitions, myProcess } from 'api/process'
+    import { listTableMixin } from "../../field/mixins/listMixin";
+
     export default {
         name: "myProcessNew",
         data(){
@@ -36,27 +38,18 @@
                     processList: [],
                     selected: "", // 选择结果
                 },
-                list: [{
-                    name: '123',
-                    age: '10'
-                },{
-                    name: '456',
-                    age: '11'
-                },{
-                    name: '789',
-                    age: '12'
-                }],
                 myProcessList: [],
                 edit: true
             }
         },
+        mixins:[listTableMixin],
         methods:{
             getProcessDefinitions() {
                 processDefinitions().then(res => {
                     this.select.processList = res.map(obj => ({label: obj.name, value: obj.name}));
                 })
             },
-            getMyProcess() {
+            fetchData() {
                 myProcess(Object.assign(this.paginator, {search: this.search})).then(res => {
                     this.myProcessList = res.content;
                     this.paginator.totalElements = res.totalElements;
@@ -65,26 +58,25 @@
             },
             changePage(page) {
                 this.paginator.page = page;
-                this.getMyProcess();
+                this.fetchData();
             },
             toDetail(data) {
                 switch (data.type) {
                     case '报废流程':
                         this.$router.push({
-                            name: 'applyAudit',
-                            params: {type:'apply', audit: 'order', info: {processInstanceId: data.processInstanceId, taskId: data.taskId, operate: false}}
+                            path: 'applyAudit',
+                            query: {type:'apply', audit: 'order', info: {processInstanceId: data.processInstanceId, taskId: data.taskId, operate: false}}
                         })
                         break;
                     case '调拨流程':
                         this.$router.push({
-                            name: 'transferDetail',
-                            params: {info: {processInstanceId: data.processInstanceId, taskId: data.taskId, operate: false}}
+                            path: 'transferDetail',
+                            query: {info: {processInstanceId: data.processInstanceId, taskId: data.taskId, operate: false}}
                         })
                         break;
                     default:
                         break;
                 }
-                
             }
         },
         computed: {
@@ -94,7 +86,6 @@
         },
         created() {
             this.getProcessDefinitions();
-            this.getMyProcess();
         },
         components:{
             myHeader
