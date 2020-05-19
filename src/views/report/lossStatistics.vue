@@ -7,9 +7,11 @@
                 <define-input label="小类" v-model="search"></define-input>
                 <base-button label="查询"  size="mini"></base-button>
                 <div style="height:80%">
-                    <define-tree @clickNode="clickNode" :data="tree.treeData" :expandAll="false" :options="options" @nodeClick="clickNode"></define-tree>
+                    <define-tree @clickNode="clickNode" :search="search" :accordion="true" :data="tree.treeData" :expandAll="false" :options="options" @nodeClick="clickNode"></define-tree>
                 </div>
-
+                <div style="margin-bottom:2px,border:1px solid black">
+                   <checkbox label="仅显示公共库房" v-model="check" ></checkbox>
+                </div>
             </div>
             <div  slot="slot2" class="safety-body-top">
                 <div class="safety-body-t" v-if="show=='All'">
@@ -18,6 +20,7 @@
                         <define-input label="小类" v-model="search"></define-input>
                         <base-button label="查询"  size="mini"></base-button>
                     </div>
+
                 </div>
                 <div style="safety-body-t" v-else-if="show=='genres'">
                     <div style="float:left">装备大类：{{this.title}} 总数：{{addNum(1)}}件 总价：{{addNum(4)}}元 损耗数：{{addNum(2)}}件 损耗总额：{{addNum(3)}}元  </div>
@@ -40,7 +43,7 @@
                         <base-button label="查询"  size="mini"></base-button>
                     </div>
                 </div>
-                <div style="safety-body-t" v-else-if="show=='category'">
+                <div style="safety-body-t" v-else-if="show=='singlePolice'">
                     <div style="float:left">装备大类：{{this.title}} 总数：{{addNum(1)}}件 总价：{{addNum(4)}}元 损耗数：{{addNum(2)}}件 损耗总额：{{addNum(3)}}元 </div>
                     <div style="float:right">
                         <define-input label="小类" v-model="search"></define-input>
@@ -122,7 +125,9 @@
                 show:"All",
                 equipArg:[],
                 search:"",
+                check:false,
                 total:0,
+                paramArray:[0,1,2,3],
             };
         },
         methods: {
@@ -145,7 +150,7 @@
                         ]})
                     })
                 })
-                findEquipLossStatistics({categorys:[0,1,2,3],level:'ALL'}).then(res=>{
+                findEquipLossStatistics({categorys:this.paramArray,level:'ALL'}).then(res=>{
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
@@ -178,7 +183,7 @@
                         this.paginator.totalElements = res.totalElements;
                     })
                 }else if(this.show=="All"){
-                    findEquipLossStatistics({categorys:[0,1,2,3],level:'ALL'}).then(res=>{
+                    findEquipLossStatistics({categorys:this.paramArray,level:'ALL'}).then(res=>{
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
@@ -234,6 +239,31 @@
         created() {
             this.fetchData()
         },
+        watch: {
+        check: {
+            handler(newval) {
+                if(newval){
+                     this.paramArray=[3]
+                    this.tree.treeData.pop()
+                    findEquipLossStatistics({categorys:this.paramArray,level:'ALL'}).then(res=>{
+                        this.equipArg = res
+                        this.paginator.totalPages = res.totalPages;
+                        this.paginator.totalElements = res.totalElements;
+                    })
+                }else{
+                   this.paramArray=[0,1,2,3]
+                   this.tree.treeData.push({name:'单警装备',show:'singlePolice',children:[
+                            {name:'公共柜装备',id:1,show:'singlePoliceCategory'},{name:'备用柜装备',id:2,show:'singlePoliceCategory'},{name:'单警柜装备',id:0,show:'singlePoliceCategory'}
+                        ]})
+                        findEquipLossStatistics({categorys:this.paramArray,level:'ALL'}).then(res=>{
+                        this.equipArg = res
+                        this.paginator.totalPages = res.totalPages;
+                        this.paginator.totalElements = res.totalElements;
+                    })
+                }
+            },
+        },
+    },
         components: {
             myHeader,
             baseButton,

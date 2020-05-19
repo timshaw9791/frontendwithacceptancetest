@@ -7,9 +7,11 @@
                 <define-input label="小类" v-model="search"></define-input>
                 <base-button label="查询"  size="mini"></base-button>
                 <div style="height:80%">
-                    <define-tree @clickNode="clickNode" :expandAll="false" :data="tree.treeData" :options="options" @nodeClick="clickNode"></define-tree>
+                    <define-tree @clickNode="clickNode" :search="search" :expandAll="false" :accordion="true" :data="tree.treeData" :options="options" @nodeClick="clickNode"></define-tree>
                 </div>
-
+                <div style="margin-bottom:2px,border:1px solid black">
+                   <checkbox label="仅显示公共库房" v-model="check" ></checkbox>
+                </div>
             </div>
             <div  slot="slot2" class="safety-body-top">
                 <div class="safety-body-t" v-if="show=='All'">
@@ -47,8 +49,19 @@
                         <define-column label="报废件数" field="count"></define-column>
                     </define-table>
                     <define-table v-if="show=='category'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
-                        <define-column label="装备名称" field="name"/>
-                        <define-column label="装备型号" field="model"/>
+                        <define-column label="装备参数" :filter="(row)=>{return `${row.name}(${row.model})`}"></define-column>
+                        <define-column label="装备总数" field="totalCount"></define-column>
+                        <define-column label="装备总价" field="totalPrice"></define-column>
+                        <define-column label="报废件数" field="count"></define-column>
+                        <define-column label="供应商" field="supplier"></define-column>
+                    </define-table>
+                    <define-table v-if="show=='singlePolice'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
+                        <define-column label="装备小类" field="cabinet"/>
+                        <define-column label="装备总数" field="totalCount"></define-column>
+                        <define-column label="装备总价" field="totalPrice"></define-column>
+                    </define-table>
+                    <define-table v-if="show=='singlePoliceCategory'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
+                        <define-column label="装备参数" :filter="(row)=>{return `${row.name}(${row.model})`}"></define-column>
                         <define-column label="装备总数" field="totalCount"></define-column>
                         <define-column label="装备总价" field="totalPrice"></define-column>
                         <define-column label="报废件数" field="count"></define-column>
@@ -71,6 +84,7 @@
     import serviceDialog from "components/base/serviceDialog"
     import defineTree from "@/componentized/defineTree"
     import {equipmentAmount} from "api/statistics";
+    import {allPoliceScrap,allPoliceScrapCategories} from "api/warehouse"
     import {findEquipScrapStatistics} from "api/report"
     import { getgenresList, getcategories, getequipArg, } from "api/safety";
     var _ = require("lodash");
@@ -86,6 +100,7 @@
                     label:'name',
                     children:'children'
                 },
+                check:false,
                 title:"全部装备",
                 paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
                 order: [],
@@ -94,6 +109,7 @@
                 equipArg:[],
                 search:"",
                 total:0,
+                paramArray:[0,1,2,3],
             };
         },
         methods: {
@@ -111,9 +127,12 @@
                         this.tree.genres.forEach(item=>{
                             this.tree.treeData.push(item)
                         })
+                        this.tree.treeData.push({name:'单警装备',show:'singlePolice',children:[
+                            {name:'公共柜装备',id:1,show:'singlePoliceCategory'},{name:'备用柜装备',id:2,show:'singlePoliceCategory'},{name:'单警柜装备',id:0,show:'singlePoliceCategory'}
+                        ]})
                     })
                 })
-                findEquipScrapStatistics({categorys:[0,1,2,3],level:'ALL'}).then(res=>{
+                findEquipScrapStatistics({categorys:this.paramArray,level:'ALL'}).then(res=>{
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
@@ -132,6 +151,7 @@
             clickNode(data) {
                 console.log("-------------------");
                 console.log("data",data);
+                var id=data.data.id
                 this.show = data.data.show
                 this.title = data.data.name
                 if(this.show=="genres"){
@@ -141,7 +161,7 @@
                         this.paginator.totalElements = res.totalElements;
                     })
                 }else if(this.show=="All"){
-                    findEquipScrapStatistics({categorys:[0,1,2,3],level:'ALL'}).then(res=>{
+                    findEquipScrapStatistics({categorys:this.paramArray,level:'ALL'}).then(res=>{
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
@@ -149,6 +169,24 @@
                 }else if(this.show=="category"){
                     console.log("-------------+");
                    findEquipScrapStatistics({categorys:3,id:data.data.id,level:'CATEGORY'}).then(res=>{
+                        this.equipArg = res
+                        this.paginator.totalPages = res.totalPages;
+                        this.paginator.totalElements = res.totalElements;
+                    })
+                }else if(this.show=="singlePolice"){
+                   allPoliceScrap().then(res=>{
+                        this.equipArg = res
+                        this.equipArg.forEach(item=>{
+                            if(item.cabinet==0)item.cabinet='单警柜装备'
+                            if(item.cabinet==1)item.cabinet='公共柜装备'
+                            if(item.cabinet==2)item.cabinet='备用柜装备'
+                        })
+                        this.paginator.totalPages = res.totalPages;
+                        this.paginator.totalElements = res.totalElements;
+                    })
+                }
+                else if(this.show=="singlePoliceCategory"){
+                   allPoliceScrapCategories(id).then(res=>{
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
@@ -174,6 +212,21 @@
         created() {
             this.fetchData()
         },
+        watch: {
+        check: {
+            handler(newval) {
+                if(newval){
+                     this.paramArray=[3]
+                    this.tree.treeData.pop()
+                }else{
+                   this.paramArray=[0,1,2,3]
+                   this.tree.treeData.push({name:'单警装备',show:'singlePolice',children:[
+                            {name:'公共柜装备',id:1,show:'singlePoliceCategory'},{name:'备用柜装备',id:2,show:'singlePoliceCategory'},{name:'单警柜装备',id:0,show:'singlePoliceCategory'}
+                        ]})
+                }
+            },
+        },
+    },
         components: {
             myHeader,
             baseButton,

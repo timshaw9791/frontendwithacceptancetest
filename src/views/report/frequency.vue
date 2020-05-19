@@ -7,9 +7,11 @@
                 <define-input label="小类" v-model="search"></define-input>
                 <base-button label="查询"  size="mini"></base-button>
                 <div style="height:80%">
-                    <define-tree @clickNode="clickNode" :expandAll="false" :data="tree.treeData" :options="options" @nodeClick="clickNode"></define-tree>
+                    <define-tree @clickNode="clickNode" :search="search" :expandAll="false" :accordion="true" :data="tree.treeData" :options="options" @nodeClick="clickNode"></define-tree>
                 </div>
-
+                <div style="margin-bottom:2px,border:1px solid black">
+                   <checkbox label="仅显示公共库房" v-model="check" ></checkbox>
+                </div>
             </div>
             <div  slot="slot2" class="safety-body-top">
                 <div class="safety-body-t" v-if="show=='All'">
@@ -33,6 +35,20 @@
                         <base-button label="查询"  size="mini"></base-button>
                     </div>
                 </div>
+                <div style="safety-body-t" v-else-if="show=='singlePolice'">
+                    <div style="float:left">装备小类：{{this.title}} 总数：{{addNum(1)}}件 总价：{{addNum(4)}}元 使用频次：</div>
+                    <div style="float:right">
+                        <define-input label="小类" v-model="search"></define-input>
+                        <base-button label="查询"  size="mini"></base-button>
+                    </div>
+                </div>
+                <div style="safety-body-t" v-else-if="show=='singlePoliceCategory'">
+                    <div style="float:left">装备小类：{{this.title}} 总数：{{addNum(1)}}件 总价：{{addNum(4)}}元 使用频次：</div>
+                    <div style="float:right">
+                        <define-input label="小类" v-model="search"></define-input>
+                        <base-button label="查询"  size="mini"></base-button>
+                    </div>
+                </div>
                 <div style="width:95%">
                     <define-table v-if="show=='All'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
                         <define-column label="装备大类" field="genre"/>
@@ -47,12 +63,23 @@
                         <define-column label="使用次数" field="count"></define-column>
                     </define-table>
                     <define-table v-if="show=='category'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
-                        <define-column label="装备名称" field="name"/>
-                        <define-column label="装备型号" field="model"/>
+                       <define-column label="装备参数" :filter="(row)=>{return `${row.name}(${row.model})`}"></define-column>
                         <define-column label="装备总数" field="totalCount"></define-column>
                         <define-column label="装备总价" field="totalPrice"></define-column>
                         <define-column label="使用次数" field="count"></define-column>
-                        <define-column label="供应商" field="totalPrice"></define-column>
+                        <define-column label="供应商" field="supplier"></define-column>
+                    </define-table>
+                      <define-table v-if="show=='singlePolice'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
+                        <define-column label="装备小类" field="cabinet"/>
+                        <define-column label="装备总数" field="totalCount"></define-column>
+                        <define-column label="装备总价" field="totalPrice"></define-column>
+                    </define-table>
+                    <define-table v-if="show=='singlePoliceCategory'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
+                        <define-column label="装备参数" :filter="(row)=>{return `${row.name}(${row.model})`}"></define-column>
+                        <define-column label="装备总数" field="totalCount"></define-column>
+                        <define-column label="装备总价" field="totalPrice"></define-column>
+                        <define-column label="使用次数" field="count"></define-column>
+                        <define-column label="供应商" field="supplier"></define-column>
                     </define-table>
                 </div>
             </div>
@@ -72,6 +99,7 @@
     import defineTree from "@/componentized/defineTree"
     import {equipmentAmount} from "api/statistics";
     import {findEquipFrequencyStatistics} from "api/report"
+    import {allPoliceFrequency,allPoliceFrequencyCategories} from "api/warehouse"
     import { getgenresList, getcategories, getequipArg, } from "api/safety";
     var _ = require("lodash");
     export default {
@@ -86,6 +114,7 @@
                     label:'name',
                     children:'children'
                 },
+                check:'',
                 title:"全部装备",
                 paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
                 order: [],
@@ -94,6 +123,7 @@
                 equipArg:[],
                 search:"",
                 total:0,
+                paramArray:[0,1,2,3],
             };
         },
         methods: {
@@ -111,9 +141,12 @@
                         this.tree.genres.forEach(item=>{
                             this.tree.treeData.push(item)
                         })
+                        this.tree.treeData.push({name:'单警装备',show:'singlePolice',children:[
+                            {name:'公共柜装备',id:1,show:'singlePoliceCategory'},{name:'备用柜装备',id:2,show:'singlePoliceCategory'},{name:'单警柜装备',id:0,show:'singlePoliceCategory'}
+                        ]})
                     })
                 })
-                findEquipFrequencyStatistics({categorys:[0,1,2,3],level:'ALL'}).then(res=>{
+                findEquipFrequencyStatistics({categorys:this.paramArray,level:'ALL'}).then(res=>{
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
@@ -130,6 +163,7 @@
                if(item==4)return this.equipArg.reduce((v,k)=>v+k.totalPrice,0)
             },
             clickNode(data) {
+                 var id=data.data.id
                 console.log("-------------------");
                 console.log("data",data);
                 this.show = data.data.show
@@ -141,7 +175,7 @@
                         this.paginator.totalElements = res.totalElements;
                     })
                 }else if(this.show=="All"){
-                    findEquipFrequencyStatistics({categorys:[0,1,2,3],level:'ALL'}).then(res=>{
+                    findEquipFrequencyStatistics({categorys:this.paramArray,level:'ALL'}).then(res=>{
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
@@ -152,6 +186,24 @@
                         this.equipArg.forEach(item=>{
                             item.equipArgs=`${item.name}(${item.model})`
                         })
+                        this.paginator.totalPages = res.totalPages;
+                        this.paginator.totalElements = res.totalElements;
+                    })
+                }else if(this.show=="singlePolice"){
+                   allPoliceFrequency().then(res=>{
+                        this.equipArg = res
+                        this.equipArg.forEach(item=>{
+                            if(item.cabinet==0)item.cabinet='单警柜装备'
+                            if(item.cabinet==1)item.cabinet='公共柜装备'
+                            if(item.cabinet==2)item.cabinet='备用柜装备'
+                        })
+                        this.paginator.totalPages = res.totalPages;
+                        this.paginator.totalElements = res.totalElements;
+                    })
+                }
+                else if(this.show=="singlePoliceCategory"){
+                   allPoliceFrequencyCategories(id).then(res=>{
+                        this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
                     })
@@ -176,6 +228,21 @@
         created() {
             this.fetchData()
         },
+        watch: {
+        check: {
+            handler(newval) {
+                if(newval){
+                     this.paramArray=[3]
+                    this.tree.treeData.pop()
+                }else{
+                   this.paramArray=[0,1,2,3]
+                   this.tree.treeData.push({name:'单警装备',show:'singlePolice',children:[
+                            {name:'公共柜装备',id:1,show:'singlePoliceCategory'},{name:'备用柜装备',id:2,show:'singlePoliceCategory'},{name:'单警柜装备',id:0,show:'singlePoliceCategory'}
+                        ]})
+                }
+            },
+        },
+    },
         components: {
             myHeader,
             baseButton,
