@@ -59,7 +59,7 @@
     },
     computed:{
       cWidth(){
-        return this.transformNumber(this.width)
+        return isNaN(this.width)?this.width:this.width+'px';
       }
     },
     methods:{
