@@ -32,14 +32,14 @@
                 <div style="safety-body-t" v-else-if="show=='category'">
                     <div style="float:left">装备小类：{{this.title}} 总数：{{addNum(1)}}件 总价：{{addNum(4)}}元 损耗数：{{addNum(2)}}件 损耗总额：{{addNum(3)}}元 </div>
                     <div style="float:right">
-                        <define-input label="小类" v-model="search2"></define-input>
+                        <define-input label="装备名称" v-model="search2"></define-input>
                         <base-button label="查询"  size="mini" @click="searchCategory('CATEGORY')"></base-button>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='singlePoliceCategory'">
-                    <div style="float:left">装备大类：{{this.title}} 总数：{{addNum(1)}}件 总价：{{addNum(4)}}元 损耗数：{{addNum(2)}}件 损耗总额：{{addNum(3)}}元 </div>
+                    <div style="float:left">装备小类：{{this.title}} 总数：{{addNum(1)}}件 总价：{{addNum(4)}}元 损耗数：{{addNum(2)}}件 损耗总额：{{addNum(3)}}元 </div>
                     <div style="float:right">
-                        <define-input label="小类" v-model="search2"></define-input>
+                        <define-input label="装备名称" v-model="search2"></define-input>
                         <base-button label="查询"  size="mini" @click="searchCategory('singlePolice')"></base-button>
                     </div>
                 </div>
