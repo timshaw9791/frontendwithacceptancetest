@@ -128,6 +128,7 @@ export default {
                 }
             assignPeople({category:this.select.selected,policeCabinetId:this.policeCabnietId,userId:this.people.id}).then(res=>{
                 this.$message.success('警柜分配成功')
+                this.people=''
                 this.black()
             })
             },
