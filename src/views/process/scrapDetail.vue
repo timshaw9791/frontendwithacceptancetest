@@ -1,12 +1,6 @@
 <template>
   <div class="process-form-container">
     <my-header :title="'我的流程/'+title+'申请单'" :haveBlack="false"></my-header>
-    <div class="process-form-top" v-if="show">
-      <define-input label="单号" v-model="order.number" :disabled="true"></define-input>
-      <base-button label="导出" type="none" align="right" v-show="operate"></base-button>
-      <base-button label="重填" align="right" @click="refill" v-show="operate"></base-button>
-      <base-button label="作废" align="right" @click="$refs.ratify.show()" v-show="operate"></base-button>
-    </div>
     <div class="process-form-body" v-if="show">
       <div class="process-info">
           <define-input label="所在库房" v-model="order.warehouse.name" :disabled="true"></define-input>

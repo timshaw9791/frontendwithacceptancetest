@@ -2,11 +2,11 @@
     <div class="apply-process-container">
         <my-header :title="title" :haveBlack="false"></my-header>
         <div class="apply-process">
-            <div class="apply-process-top" data-test="action_box">
-                <define-input label="单号" v-model="order.number" :disabled="true" class="odd-number"></define-input>
-            </div>
             <div class="apply-process-body">
                 <div class="process-info">
+                    <div class="process-info-top">
+                        <define-input label="单号" v-model="order.number" :disabled="true" class="odd-number"></define-input>
+                    </div>
                     <define-input label="所在库房" v-model="order.warehouse.name" :disabled="true"></define-input>
                     <date-select label="申请日期" v-model="order.createTime" :disabled="true"></date-select>
                     <entity-input label="申请人员" v-model="order.applicant"
@@ -23,31 +23,40 @@
                             <base-select label="硬件选择" v-model="select.selected" align="right"
                                          :selectList="select.handWareList"></base-select>
                         </template>
-                        <define-table :data="equipItems" @changeCurrent="selRow" :havePage="false"
-                                      :highLightCurrent="true" :showSummary="true" :summaryFunc="sumFunc" slot="total">
-                            <define-column label="操作" width="100" v-slot="{ data }">
-                                <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
-                                <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
-                            </define-column>
-                            <define-column label="装备参数" v-slot="{ data }">
-                                <entity-input v-model="data.row.equipArg" :options="{detail:'equipArgsSelect'}"
-                                              :tableEdit="false" format="{name}({model})"></entity-input>
-                            </define-column>
-                            <define-column label="装备数量" v-slot="{ data }">
-                                <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input>
-                            </define-column>
-                        </define-table>
-                        <define-table :data="equipItems[findIndex].items" :havePage="false" slot="detail">
-                            <define-column label="操作" width="100" v-slot="{ data }">
-                                <i class="iconfont iconyichuliang"></i>
-                            </define-column>
-                            <define-column label="RFID" field="rfid"></define-column>
-                        </define-table>
+                        <template>
+                            <define-table :data="equipItems" @changeCurrent="selRow" :havePage="false"
+                                          :highLightCurrent="true" :showSummary="true" :summaryFunc="sumFunc"
+                                          slot="total">
+                                <define-column label="操作" width="100" v-slot="{ data }">
+                                    <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
+                                    <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
+                                </define-column>
+                                <define-column label="装备参数" v-slot="{ data }">
+                                    <entity-input v-model="data.row.equipArg" :options="{detail:'equipArgsSelect'}"
+                                                  :tableEdit="false" format="{name}({model})"></entity-input>
+                                </define-column>
+                                <define-column label="装备数量" v-slot="{ data }">
+                                    <define-input v-model="data.row.count" type="Number"
+                                                  :tableEdit="false"></define-input>
+                                </define-column>
+                            </define-table>
+                        </template>
+                        <template>
+                            <define-table :data="equipItems[findIndex].items" :havePage="false" slot="detail">
+                                <define-column label="操作" width="100" v-slot="{ data }">
+                                    <i class="iconfont iconyichuliang"></i>
+                                </define-column>
+                                <define-column label="RFID" field="rfid"></define-column>
+                            </define-table>
+                        </template>
                     </bos-tabs>
                 </div>
-                <div class="buttom">
+                <div class="buttom" v-if="!isInfo">
                     <base-button label="提交" align="right" size="large" @click="submit"></base-button>
                     <base-button label="清空" align="right" size="large" type="danger"></base-button>
+                </div>
+                <div>
+
                 </div>
             </div>
         </div>
@@ -92,11 +101,12 @@
                     selected: ""
                 },
                 tips: [{value: '直接报废', key: '1'}, {value: '装备拿去维修，无法修补', key: '2'}],
-                equipItems: [{items: []}],
+                equipItems: []
                 //需要申请的装备列表
-                scrapEquips:[],
+                scrapEquips: [],
                 findIndex: 0,
                 isInfo: false,
+                isEdit: false,
                 //假数据
                 mockRFIDs: ['555566666777'],
             }
@@ -104,14 +114,13 @@
         methods: {
             init() {
                 getHouseInfo().then(res => {
+                    // A端数据和平台数据不一致
                     this.order.warehouse.id = res.houseId
                     this.order.warehouse.name = res.houseName
                     this.order.organUnit.id = res.organUnitId
                     this.order.organUnit.name = res.organUnitName
                 })
-                this.order.applicant.name = JSON.parse(window.localStorage.getItem("user")).name
-                this.order.applicant.id = JSON.parse(window.localStorage.getItem("user")).id
-                this.order.applicant.policeSign = JSON.parse(window.localStorage.getItem("user")).policeSign
+                this.order.applicant = JSON.parse(localStorage.getItem("user"))
             },
             selRow(current) { // 单选表格行
                 if (!current) return; // 避免切换数据时报错
@@ -124,9 +133,12 @@
                     })
                 }
             },
+            fetchData() {
+
+            },
             readData() { // 读取数据
                 findByRfids(this.mockRFIDs).then(res => {
-                    this.order.scrapEquips = transEquips(res,'args','args').simplifyItems
+                    this.order.scrapEquips = transEquips(res, 'args', 'args').simplifyItems
                     this.equipItems = transEquips(res,).equipItems
                 })
             },
@@ -155,9 +167,14 @@
             },
         },
         created() {
-            this.title = "申请" + this.$route.query.name.substr(0, 2);
-            console.log(this.$route.query)
-            this.init();
+            let {processInstanceId, name} = this.$route.query
+            if (!processInstanceId) {
+                this.title = name + '详情'
+                this.fetchData()
+            } else {
+                this.title = name + '申请'
+                this.init();
+            }
         }
     }
 </script>
