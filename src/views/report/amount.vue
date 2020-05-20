@@ -44,6 +44,7 @@
                     <define-table v-if="show=='All'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
                         <define-column label="装备大类" field="genre"/>
                         <define-column label="装备总数" field="totality"></define-column>
+                        <define-column label="当前库存" field="inHouseCount"></define-column>
                         <define-column label="可用数量" field="inHouseCount"></define-column>
                         <define-column label="领用数量" field="receiveUseCount"></define-column>
                         <define-column label="装备总价" field="totalPrice"></define-column>
@@ -114,7 +115,7 @@
                 editflag:false,
                 show:"All",
                 equipArg:[],
-                paramArray:[0,1,2,3],
+                // paramArray:[0,1,2,3],
                 search:"",
                 total:0,
                 id:'',
@@ -141,7 +142,7 @@
                         ]})
                     })
                 })
-                findEquipMoneyStatistics({categorys:this.paramArray,level:'ALL',search:this.search2}).then(res=>{
+                findEquipMoneyStatistics({categorys:3,level:'ALL',search:this.search2}).then(res=>{
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
@@ -169,7 +170,7 @@
                         this.paginator.totalElements = res.totalElements;
                     })
                 }else if(this.show=="All"){
-                    findEquipMoneyStatistics({categorys:this.paramArray,level:'ALL',search:this.search2}).then(res=>{
+                    findEquipMoneyStatistics({categorys:3,level:'ALL',search:this.search2}).then(res=>{
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
@@ -226,15 +227,13 @@
         check: {
             handler(newval) {
                 if(newval){
-                     this.paramArray=[3]
                     this.tree.treeData.pop()
-                      findEquipMoneyStatistics({categorys:this.paramArray,level:'ALL'}).then(res=>{
+                      findEquipMoneyStatistics({categorys:[3],level:'ALL'}).then(res=>{
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
                     })
                 }else{
-                   this.paramArray=[0,1,2,3]
                    this.tree.treeData.push({name:'单警装备',show:'singlePolice',children:[
                             {name:'公共柜装备',id:1,show:'singlePoliceCategory'},{name:'备用柜装备',id:2,show:'singlePoliceCategory'},{name:'单警柜装备',id:0,show:'singlePoliceCategory'}
                         ]})

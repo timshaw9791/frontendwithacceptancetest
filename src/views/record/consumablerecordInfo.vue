@@ -11,10 +11,10 @@
             <date-select label="操作时间"  :disabled="true"  v-model="order.createTime"  placeholder="-"></date-select>
             <entity-input label="操作人员" v-model="order.operatorInfo" format="{name}" :disabled="true" ></entity-input>
         </div>
-        <div class="process-info" style="z-index:-1">
-            <define-input label="备注" v-model="order.remark" :column="12" :disabled="true"></define-input>
+        <div class="process-info">
+            <define-input label="备注" margin="15px 15px " v-model="order.remark" placeholder="--"  :disabled="true"></define-input>
         </div>
-        <define-table :showSummary="true" :summaryFunc="sumFunc" :havaPage="false" :data="order.consumableItems" height="3.6042rem" >
+        <define-table :showSummary="true" :summaryFunc="sumFunc" :havePage="false" :data="order.consumableItems" height="4rem" >
             <define-column label="操作" width="100">
                 <i class="iconfont icontianjialiang"></i>
                 <i class="iconfont iconyichuliang"></i>
@@ -51,7 +51,7 @@
         },
         methods: {
             returnBack(){
-                this.$router.go(-1)
+                this.$router.back()
             },
             fetchData(){
                 getBosEntity(this.$route.query.info).then(res=>{
@@ -95,7 +95,7 @@
         widows: 100%;
     }
     .process-info {
-        padding: 18px 0;
+        // padding: 18px 0;
         display: flex;
         justify-content: space-between;
     }
