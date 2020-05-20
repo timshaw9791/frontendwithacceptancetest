@@ -146,15 +146,6 @@
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
                     })
-                allPoliceStatistic().then(res=>{
-                        this.equipArg = res
-                        this.equipArg.forEach(item=>{
-                            if(item.cabinet==0)item.cabinet='单警柜装备'
-                            if(item.cabinet==1)item.cabinet='公共柜装备'
-                            if(item.cabinet==2)item.cabinet='备用柜装备'
-                        })
-                       
-                    })
             },
             changePage(page) {
                 this.paginator.page = page
