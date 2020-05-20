@@ -36,7 +36,6 @@
                     size: 10,
                     totalElements: 0,
                     totalPages: 0,
-                    search: '',
                     assignee: JSON.parse(localStorage.getItem('user')).id
                 }
             }

@@ -1,20 +1,5 @@
 <template>
     <div>
-        <div class="process-info">
-            <div class="process-info-top">
-                <define-input label="单号" v-model="order.number" :disabled="true"
-                              class="odd-number"></define-input>
-            </div>
-            <div>
-                <define-input label="所在库房" v-model="order.warehouse.name" :disabled="true"></define-input>
-                <date-select label="申请日期" v-model="order.createTime" :disabled="true"></date-select>
-                <entity-input label="申请人员" v-model="order.applicant"
-                              :options="{detail:'applicant'}" :disabled="true"
-                              format="{name}({policeSign})">
-                </entity-input>
-                <text-input label="申请原因" v-model="order.note" :tips="tips" :title="order.note"></text-input>
-            </div>
-        </div>
         <div class="table-box">
             <bos-tabs>
                 <template slot="slotHeader">
@@ -58,12 +43,12 @@
     import bosTabs from "../../componentized/table/bosTabs";
 
     export default {
-        name: "scrapOrder",
+        name: "scrapEquips",
         components: {
             bosTabs
         },
-        data(){
-            return{
+        data() {
+            return {
                 select: {
                     handWareList: [{
                         label: "手持机",
@@ -77,33 +62,55 @@
                 tips: [{value: '直接报废', key: '1'}, {value: '装备拿去维修，无法修补', key: '2'}],
                 equipItems: [],
                 // todo 假数据
-                readData:['555566666777'],
+                readData: ['555566666777'],
+                findIndex: 0,
             }
         },
         props: {
-            order: {
-                type: Object,
-                default: function () {
-                    return {
-                        warehouse: {},
-                        organUnit: {},
-                        applicant: {}
-                    }
-                },
-            },
             equipItems: {
                 type: Object,
-                default: function () {
-                    return [{items: []}]
+                required: true
+            },
+            isInfo: {
+                type: Boolean,
+                required: true
+            },
+            isEdit: {
+                type: Boolean,
+                required: true
+            }
+        },
+        methods: {
+            readData() {
+                this.$emit('handleReadData', this.readData)
+            },
+            sumFunc(param) { // 表格合并行计算方法
+                let {columns, data} = param, sums = [];
+                columns.forEach((colum, index) => {
+                    if (index === 0) {
+                        sums[index] = '合计';
+                    } else if (index === columns.length - 1) {
+                        const values = data.map(item => item.count ? Number(item.count) : 0);
+                        if (!values.every(value => isNaN(value))) {
+                            sums[index] = values.reduce((pre, cur) => !isNaN(cur) ? pre + cur : pre);
+                        }
+                    } else {
+                        sums[index] = '';
+                    }
+                })
+                return sums;
+            },
+            selRow(current) { // 单选表格行
+                if (!current) return; // 避免切换数据时报错
+                this.detailTable.list = [];
+                this.rowData = current;
+                if (current.rfid === undefined) return;
+                for (let rfid of current.rfid) {
+                    this.detailTable.list.push({
+                        rfid: rfid
+                    })
                 }
             },
-            isInfo: false,
-            isEdit: false,
-        },
-        methods:{
-            readData(){
-                this.$emit('handleReadData',this.readData)
-            }
         }
     }
 </script>

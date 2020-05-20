@@ -38,7 +38,6 @@
     import {editEquipArgs, saveEquipArgs} from "@/api/equipArgs"
     import {getBosEntity} from "@/api/basic";
     import myHeader from "../../components/base/header/header"
-    import {listMixin} from "../../field/mixins/listMixin";
     import uploadFile from "../../componentized/uploadFile";
 
     export default {
@@ -46,19 +45,15 @@
         data() {
             return {
                 formData: {},
-                equipArgsID: ""
+                equipArgsID:'',
             }
         },
-
-        mixins: [listMixin],
-
         components: {
             textInput,
             serviceDialog,
             entityInput,
             defineInput,
             myHeader,
-            listMixin,
             uploadFile
         },
         methods: {
@@ -74,14 +69,20 @@
                 this.back()
             },
             fetchData() {
-                this.equipArgsID = this.$route.query.id
-                if (this.equipArgsID !== undefined) {
-                    getBosEntity(this.equipArgsID).then(res => {
-                        this.formData = res
-                    });
-                }
+                getBosEntity(this.equipArgsID).then(res => {
+                    this.formData = res
+                })
             },
         },
+        created() {
+            let {id} = this.$route.query
+            console.log(id)
+            if (id) {
+                this.equipArgsID = id
+                this.isEdit = true
+                this.fetchData()
+            }
+        }
     }
 </script>
 
