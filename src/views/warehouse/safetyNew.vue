@@ -37,7 +37,7 @@
                     <div style="float:left;margin-left:120px">安全库存：{{this.safety}}</div>
                 </div>
                 <div style="width:95%">
-                    <define-table v-if="show=='unassigned'" ref="table" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
+                    <define-table v-if="show=='unassigned'" key="unassigned" ref="table" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
                         <define-column columnType="selection"></define-column>
                         <define-column label="装备参数" field="describes" v-slot="{data}">
                             <entity-input v-model="data.row.equipArg"  format="{name}({model})" :detailParam="data.row.equipArg" :tableEdit="false" :options="{detail: 'equipArgsDetail'}"></entity-input>
