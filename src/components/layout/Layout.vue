@@ -1,15 +1,16 @@
 <template>
   <div class="app-wrapper" :class="classObj">
-    <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside"></div>
+    <navbar></navbar>
+    <!-- <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside"></div>
     <sidebar class="sidebar-container"></sidebar>
     <div class="main-container">
       <navbar></navbar>
       <app-main></app-main>
       <div class="main-bottom">
-        ◎ 2019 - 2020 警用装备智能管理系统
+        &copy; 2019 - 2020 警用装备智能管理系统
         <span style="margin-left: 10px">技术支持：浙江华安安全设备有限公司</span>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -52,7 +53,7 @@ export default {
 @import "~common/css/mixin.scss";
 
 .app-wrapper {
-  @include clearfix;
+  // @include clearfix;
   position: relative;
   height: 100%;
   width: 100%;
