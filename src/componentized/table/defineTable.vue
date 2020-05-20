@@ -20,7 +20,8 @@ import defineColumn from './defineColumn'
             return {
                 selectData: '',
                 selectIndex: '',
-                multiSelectiton: ''
+                multiSelectiton: '',
+                isScroll: false
             }
         },
         props: {
@@ -98,6 +99,7 @@ import defineColumn from './defineColumn'
             }
         },
         mounted() {
+            console.log(this.$refs.table);
             if(this.highLightCurrent) {
                 this.$watch('data', newVal => {
                     this.$refs.table.setCurrentRow(this.data[0])
@@ -119,12 +121,28 @@ import defineColumn from './defineColumn'
     }
     /deep/ .el-table {
         ::-webkit-scrollbar {
+            display: none;
             width: 6px;
-            height: 8px;
+            height: 15px;
         }
         ::-webkit-scrollbar-thumb {
             background:rgba(178,178,204,1);
             border-radius: 20px;
+        }
+        ::-webkit-scrollbar-track {
+            position: absolute !important;
+        }
+        .el-table__body-wrapper { // 使滚动条显示在文档内部，避免对文档内容造成位置影响
+            overflow-x: overlay !important;
+        }
+    }
+    .define-table-container:hover {
+        /deep/ .el-table {
+            ::-webkit-scrollbar {
+                display: block;
+                width: 6px;
+                height: 10px;
+            }
         }
     }
 </style>
