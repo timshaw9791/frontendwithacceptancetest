@@ -115,9 +115,12 @@
                 }else if(this.order.enterHouse=="不允许"){
                     this.order.enterHouse=false
                 }
+                console.log("------------------------");
+                console.log(this.order);
                 _.forIn(this.order,function(val,key){
                     if(key=="name"||key=="policeSign"||key=="role"||key=="phone"||key=="organUnitName"||key=="position"||key=="idNumber"){
                         if(val==""||val==null){
+                            console.log(object);
                             this.$message.error("请填写完整")
                             return false
                         }
