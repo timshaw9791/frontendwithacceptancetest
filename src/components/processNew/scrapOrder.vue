@@ -2,15 +2,18 @@
     <div>
         <div class="process-info">
             <div class="process-info-top">
-                <define-input label="单号" v-model="order.number" :disabled="true" class="odd-number"></define-input>
+                <define-input label="单号" v-model="order.number" :disabled="true"
+                              class="odd-number"></define-input>
             </div>
-            <define-input label="所在库房" v-model="order.warehouse.name" :disabled="true"></define-input>
-            <date-select label="申请日期" v-model="order.createTime" :disabled="true"></date-select>
-            <entity-input label="申请人员" v-model="order.applicant"
-                          :options="{detail:'applicant'}" :disabled="true"
-                          format="{name}({policeSign})">
-            </entity-input>
-            <text-input label="申请原因" v-model="order.note" :tips="tips" :title="order.note"></text-input>
+            <div>
+                <define-input label="所在库房" v-model="order.warehouse.name" :disabled="true"></define-input>
+                <date-select label="申请日期" v-model="order.createTime" :disabled="true"></date-select>
+                <entity-input label="申请人员" v-model="order.applicant"
+                              :options="{detail:'applicant'}" :disabled="true"
+                              format="{name}({policeSign})">
+                </entity-input>
+                <text-input label="申请原因" v-model="order.note" :tips="tips" :title="order.note"></text-input>
+            </div>
         </div>
         <div class="table-box">
             <bos-tabs>
@@ -55,9 +58,27 @@
     import bosTabs from "../../componentized/table/bosTabs";
 
     export default {
-        name: "processOrder",
+        name: "scrapOrder",
         components: {
             bosTabs
+        },
+        data(){
+            return{
+                select: {
+                    handWareList: [{
+                        label: "手持机",
+                        value: 'handheld'
+                    }, {
+                        label: "读写器",
+                        value: "reader"
+                    }],
+                    selected: ""
+                },
+                tips: [{value: '直接报废', key: '1'}, {value: '装备拿去维修，无法修补', key: '2'}],
+                equipItems: [],
+                // todo 假数据
+                readData:['555566666777'],
+            }
         },
         props: {
             order: {
@@ -75,6 +96,13 @@
                 default: function () {
                     return [{items: []}]
                 }
+            },
+            isInfo: false,
+            isEdit: false,
+        },
+        methods:{
+            readData(){
+                this.$emit('handleReadData',this.readData)
             }
         }
     }
