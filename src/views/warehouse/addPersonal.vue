@@ -117,7 +117,7 @@
                 }
                 _.forIn(this.order,function(val,key){
                     if(key=="name"||key=="policeSign"||key=="role"||key=="phone"||key=="organUnitName"||key=="position"||key=="idNumber"){
-                        if(val==""||val==null){
+                        if(val===""||val==null){
                             this.$message.error("请填写完整")
                             return false
                         }

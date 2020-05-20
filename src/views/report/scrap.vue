@@ -5,7 +5,6 @@
          <bos-tabs  :option="['contrast']" :layoutRatio="[1,3]" :contrastKey="['slot1', 'slot2']" >
             <div slot="slot1"  class="safety-body-top">
                 <define-input label="小类" v-model="search"></define-input>
-                <base-button label="查询"  size="mini"></base-button>
                 <div style="height:80%">
                     <define-tree @clickNode="clickNode" :search="search" :expandAll="false" :accordion="true" :data="tree.treeData" :options="options" @nodeClick="clickNode"></define-tree>
                 </div>
@@ -16,37 +15,27 @@
             <div  slot="slot2" class="safety-body-top">
                 <div class="safety-body-t" v-if="show=='All'">
                     <div style="float:left">{{this.title}}</div>
-                    <div style="float:right">
-                        <define-input label="小类" v-model="search2"></define-input>
-                        <base-button label="查询"  size="mini"></base-button>
-                    </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='genres'">
-                    <div style="float:left">装备大类：{{this.title}} 总数：{{addNum(1)}}件 总价：{{addNum(4)}}元 报废件数</div>
+                    <div style="float:left">装备大类：{{this.title}} 总数：{{addNum(1)}}件 总价：{{addNum(4)}}元 报废件数：{{addNum(2)}}</div>
                     <div style="float:right">
                         <define-input label="小类" v-model="search2"></define-input>
-                        <base-button label="查询"  size="mini" @click="searchCategory('GENRE')"></base-button>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='category'">
-                    <div style="float:left">装备小类：{{this.title}} 总数：{{addNum(1)}}件 总价：{{addNum(4)}}元 报废件数</div>
+                    <div style="float:left">装备小类：{{this.title}} 总数：{{addNum(1)}}件 总价：{{addNum(4)}}元 报废件数：{{addNum(2)}}</div>
                     <div style="float:right">
                         <define-input label="装备名称" v-model="search2"></define-input>
-                        <base-button label="查询"  size="mini" @click="searchCategory('CATEGORY')"></base-button>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='singlePolice'">
-                    <div style="float:left">装备小类：{{this.title}} 总数：{{addNum(1)}}件 总价：{{addNum(4)}}元 报废件数</div>
-                    <div style="float:right">
-                        <define-input label="小类" v-model="search2"></define-input>
-                        <base-button label="查询"  size="mini" @click="searchCategory('singlePolice')"></base-button>
-                    </div>
+                    <div style="float:left">装备小类：{{this.title}} 总数：{{addNum(1)}}件 总价：{{addNum(4)}}元 报废件数：{{addNum(2)}}</div>
+                    
                 </div>
                 <div style="safety-body-t" v-else-if="show=='singlePoliceCategory'">
-                    <div style="float:left">装备小类：{{this.title}} 总数：{{addNum(1)}}件 总价：{{addNum(4)}}元 报废件数</div>
+                    <div style="float:left">装备小类：{{this.title}} 总数：{{addNum(1)}}件 总价：{{addNum(4)}}元 报废件数：{{addNum(2)}}</div>
                     <div style="float:right">
                         <define-input label="装备名称" v-model="search2"></define-input>
-                        <base-button label="查询"  size="mini" @click="searchCategory('singlePoliceCategory')"></base-button>
                     </div>
                 </div>
                 <div style="width:95%">
@@ -224,25 +213,6 @@
                 }
 
             },
-            searchCategory(item){
-               if(item=='CATEGORY'||item=='GENRE'){
-                   console.log("触发");
-                   findEquipScrapStatistics({categorys:3,id:this.id,level:item,search:this.search2}).then(res=>{
-                        this.equipArg = res
-                        this.equipArg.forEach(item=>{
-                            item.equipArgs=`${item.name}(${item.model})`
-                        })
-                        this.paginator.totalPages = res.totalPages;
-                        this.paginator.totalElements = res.totalElements;
-                    })
-               }else if(item=='singlePoliceCategory'){
-                    allPoliceScrapCategories(this.id,this.search2).then(res=>{
-                        this.equipArg = res
-                        this.paginator.totalPages = res.totalPages;
-                        this.paginator.totalElements = res.totalElements;
-                    })
-               }
-            }
         },
         created() {
             this.fetchData()
@@ -261,6 +231,30 @@
                 }
             },
         },
+        search2:{
+            handler(newval){
+                console.log("触发");
+                if(this.show=='category'||this.show=='genres'){
+                    let searchI=''
+                    if(this.show=='genres') searchI='GENRE'
+                    if(this.show=='category')searchI='CATEGORY'
+                     findEquipScrapStatistics({categorys:3,id:this.id,level:searchI,search:newval}).then(res=>{
+                        this.equipArg = res
+                        this.equipArg.forEach(item=>{
+                            item.equipArgs=`${item.name}(${item.model})`
+                        })
+                        this.paginator.totalPages = res.totalPages;
+                        this.paginator.totalElements = res.totalElements;
+                    })
+                }else if(this.show=='singlePoliceCategory'){
+                     allPoliceScrapCategories(this.id,newval).then(res=>{
+                        this.equipArg = res
+                        this.paginator.totalPages = res.totalPages;
+                        this.paginator.totalElements = res.totalElements;
+                    })
+                }
+            }
+        }
     },
         components: {
             myHeader,
@@ -294,7 +288,7 @@
         border-bottom: 1px solid rgba(112, 112, 112, 0.13);
         padding-right: 13px;
         padding-top: 15px;
-        color: #2F2F76FF!important;
+        color: black!important;
         align-items: center;
         justify-content: space-between;
         padding-left: 5px;
