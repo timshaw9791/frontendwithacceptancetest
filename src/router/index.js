@@ -445,6 +445,7 @@ export const asyncRouterMap = [{
             path: 'consumablerecordInfo',
             name: 'consumablerecordInfo',
             component: _import('record/consumablerecordInfo'),
+            meta: {title: '耗材记录/耗材详情单'},
             hidden:true,
         }]
     }, {

@@ -14,7 +14,7 @@
 						<i class="iconfont iconxingbiaoxianxing" @click="messageStar(data.row.id, true)" v-else></i>
 					</define-column>
 					<define-column label="消息状态" width="100" v-slot="{ data }">
-						<span :class="['sign',{unread: !data.row.status}]" @click="readIt(data.row)">
+						<span :class="['sign',{unread: !data.row.status}]">
 							{{ data.row.status?'已读':'未读' }}
 						</span>
 					</define-column>
@@ -72,13 +72,11 @@ export default {
 				this.enumerator = res;
 			})
 		},
-		readIt(data) {
-			readMsg({ids: [data.id]}).then(res => {
+		changeCurrent(data) {
+			data.current && !data.current.status && readMsg({ids: [data.current.id]}).then(res => {
 				this.$message.success('标记已读');
 				this.fetchData();
 			})
-		},
-		changeCurrent(data) {
 			this.selectIndex = data.index
 		},
 		fixTitle(value) {
