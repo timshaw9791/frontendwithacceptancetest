@@ -77,6 +77,10 @@ import defineColumn from './defineColumn'
             indexFixed: {
                 type: [Boolean, String],
                 default: true
+            },
+            initSelect: {
+                type: Boolean,
+                default: false
             }
         },
         methods: {
@@ -99,8 +103,7 @@ import defineColumn from './defineColumn'
             }
         },
         mounted() {
-            console.log(this.$refs.table);
-            if(this.highLightCurrent) {
+            if(this.highLightCurrent && this.initSelect) {
                 this.$watch('data', newVal => {
                     this.$refs.table.setCurrentRow(this.data[0])
                 }, {
