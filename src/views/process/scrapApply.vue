@@ -101,7 +101,7 @@
                     selected: ""
                 },
                 tips: [{value: '直接报废', key: '1'}, {value: '装备拿去维修，无法修补', key: '2'}],
-                equipItems: []
+                equipItems: [],
                 //需要申请的装备列表
                 scrapEquips: [],
                 findIndex: 0,
