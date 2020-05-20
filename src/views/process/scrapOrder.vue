@@ -16,36 +16,7 @@
                     <text-input label="申请原因" v-model="order.note" :tips="tips" :title="order.note"
                                 :disabled="!isInfo||!isEdit"></text-input>
                 </div>
-                <div class="table-box">
-                    <bos-tabs>
-                        <template slot="slotHeader" v-if="!isInfo&&!isEdit">
-                            <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96"
-                                         @click="readData"></base-button>
-                            <base-select label="硬件选择" v-model="select.selected" align="right"
-                                         :selectList="select.handWareList"></base-select>
-                        </template>
-                        <define-table :data="equipItems" @changeCurrent="selRow" :havePage="false"
-                                      :highLightCurrent="true" :showSummary="true" :summaryFunc="sumFunc" slot="total">
-                            <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo&&!isEdit">
-                                <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
-                                <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
-                            </define-column>
-                            <define-column label="装备参数" v-slot="{ data }">
-                                <entity-input v-model="data.row.equipArg" :options="{detail:'equipArgsSelect'}"
-                                              :tableEdit="false" format="{name}({model})"></entity-input>
-                            </define-column>
-                            <define-column label="装备数量" v-slot="{ data }">
-                                <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input>
-                            </define-column>
-                        </define-table>
-                        <define-table :data="equipItems[findIndex].items" :havePage="false" slot="detail">
-                            <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo&&!isEdit">
-                                <i class="iconfont iconyichuliang"></i>
-                            </define-column>
-                            <define-column label="RFID" field="rfid"></define-column>
-                        </define-table>
-                    </bos-tabs>
-                </div>
+                <scrap-equips :equip-items="equipItems" :is-info="isInfo" :is-edit="isEdit" @handleReadData="handleReadData"></scrap-equips>
                 <div class="buttom" v-if="!isInfo&&!isEdit">
                     <base-button label="提交" align="right" size="large" @click="submit"></base-button>
                     <base-button label="清空" align="right" size="large" type="danger"></base-button>
@@ -59,16 +30,18 @@
 <script>
     import myHeader from 'components/base/header/header';
     import bosTabs from '@/componentized/table/bosTabs.vue'
-    import {processStart, processDetail,getHistoryTasks} from '../../api/process'
+    import {processStart, processDetail, getHistoryTasks} from '../../api/process'
     import {findByRfids} from "../../api/storage";
     import {transEquips} from "../../common/js/transEquips";
     import {getHouseInfo} from "../../api/organUnit";
     import TaskHistory from "../../components/processNew/taskHistory";
+    import ScrapEquips from "../../components/processNew/scrapEquips";
 
     var _ = require('lodash');
     export default {
         name: "scrapApply",
         components: {
+            ScrapEquips,
             TaskHistory,
             myHeader,
             bosTabs
@@ -76,7 +49,6 @@
         data() {
             return {
                 title: "",
-                rowData: '', // 选中的单选行数据
                 //申请单
                 order: {
                     warehouse: {},
@@ -85,25 +57,12 @@
                 },
                 //任务
                 taskHistory: {},
-                select: {
-                    handWareList: [{
-                        label: "手持机",
-                        value: 'handheld'
-                    }, {
-                        label: "读写器",
-                        value: "reader"
-                    }],
-                    selected: ""
-                },
-                tips: [{value: '直接报废', key: '1'}, {value: '装备拿去维修，无法修补', key: '2'}],
                 equipItems: [{items: []}],
                 //需要申请的装备列表
                 scrapEquips: [],
                 findIndex: 0,
                 isInfo: false,
                 isEdit: false,
-                //假数据
-                mockRFIDs: ['555566666777'],
             }
         },
         methods: {
@@ -136,12 +95,12 @@
                 )
                 getHistoryTasks({processInstanceId}).then(
                     res => {
-                      this.taskHistory = res
+                        this.taskHistory = res
                     }
                 )
             },
-            readData() { // 读取数据
-                findByRfids(this.mockRFIDs).then(res => {
+            handleReadData(data) { // 读取数据
+                findByRfids(data).then(res => {
                     this.order.equips = transEquips(res, 'args', 'args').simplifyItems
                     this.equipItems = transEquips(res).equipItems
                 })

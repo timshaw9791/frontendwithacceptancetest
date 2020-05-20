@@ -1,41 +1,33 @@
 <template>
-    <div>
-        <div class="table-box">
-            <bos-tabs>
-                <template slot="slotHeader">
-                    <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96"
-                                 @click="readData"></base-button>
-                    <base-select label="硬件选择" v-model="select.selected" align="right"
-                                 :selectList="select.handWareList"></base-select>
-                </template>
-                <template>
-                    <define-table :data="equipItems" @changeCurrent="selRow" :havePage="false"
-                                  :highLightCurrent="true" :showSummary="true" :summaryFunc="sumFunc"
-                                  slot="total">
-                        <define-column label="操作" width="100" v-slot="{ data }">
-                            <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
-                            <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
-                        </define-column>
-                        <define-column label="装备参数" v-slot="{ data }">
-                            <entity-input v-model="data.row.equipArg" :options="{detail:'equipArgsSelect'}"
-                                          :tableEdit="false" format="{name}({model})"></entity-input>
-                        </define-column>
-                        <define-column label="装备数量" v-slot="{ data }">
-                            <define-input v-model="data.row.count" type="Number"
-                                          :tableEdit="false"></define-input>
-                        </define-column>
-                    </define-table>
-                </template>
-                <template>
-                    <define-table :data="equipItems[findIndex].items" :havePage="false" slot="detail">
-                        <define-column label="操作" width="100" v-slot="{ data }">
-                            <i class="iconfont iconyichuliang"></i>
-                        </define-column>
-                        <define-column label="RFID" field="rfid"></define-column>
-                    </define-table>
-                </template>
-            </bos-tabs>
-        </div>
+    <div class="table-box">
+        <bos-tabs>
+            <template slot="slotHeader" v-if="!isInfo&&!isEdit">
+                <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96"
+                             @click="readData"></base-button>
+                <base-select label="硬件选择" v-model="select.selected" align="right"
+                             :selectList="select.handWareList"></base-select>
+            </template>
+            <define-table :data="equipItems" @changeCurrent="selRow" :havePage="false"
+                          :highLightCurrent="true" :showSummary="true" :summaryFunc="sumFunc" slot="total">
+                <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo&&!isEdit">
+                    <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
+                    <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
+                </define-column>
+                <define-column label="装备参数" v-slot="{ data }">
+                    <entity-input v-model="data.row.equipArg" :options="{detail:'equipArgsSelect'}"
+                                  :tableEdit="false" format="{name}({model})"></entity-input>
+                </define-column>
+                <define-column label="装备数量" v-slot="{ data }">
+                    <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input>
+                </define-column>
+            </define-table>
+            <define-table :data="equipItems[findIndex].items" :havePage="false" slot="detail">
+                <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo&&!isEdit">
+                    <i class="iconfont iconyichuliang"></i>
+                </define-column>
+                <define-column label="RFID" field="rfid"></define-column>
+            </define-table>
+        </bos-tabs>
     </div>
 </template>
 
