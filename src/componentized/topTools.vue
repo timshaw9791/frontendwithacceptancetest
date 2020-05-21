@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import breadCrumb from './components/topTools/breadCrumb'
+import breadCrumb from './breadCrumb'
 export default {
     name: 'topTools',
     data() {
