@@ -82,6 +82,8 @@
             readData() {
                 killProcess(this.pid)
                 start("java -jar scan.jar", (data) => {
+                    console.log('我是data')
+                    console.log(data)
                     if (this.matchRfids.length !== 0) {
                         if (this.matchRfids.indexOf(data) !== -1
                             && this.rfids.indexOf(data) === -1) {
@@ -106,10 +108,10 @@
                 })
             },
             fixEquipItems(data) {
-                let temp = transEquips(data)
-                if (temp.rfids.length > 0) {
-                    this.rfids = temp.rfids
-                    this.equipItems = temp.equipItems
+                let {equipItems, simplifyItems} = transEquips(data)
+                if (equipItems.length>0){
+                    this.rfids = simplifyItems
+                    this.equipItems = equipItems
                 }
             },
             fetchData() {
