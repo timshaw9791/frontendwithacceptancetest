@@ -93,7 +93,7 @@ export default {
             },
             changeDataFormat(data){
             data.forEach(item=>{this.list.push(item)})
-                let cList=this._.groupBy(this.list, item => `${item.equipName}${item.equipModel}${item.categoryEnum}`)
+                let cList=this._.groupBy(this.list, item => `${item.equipName}${item.equipModel}${item.categoryEnum}${item.locationInfo.floor}${item.locationInfo.frameNumber}${item.locationInfo.section}${item.locationInfo.surface}`)
                 this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0],copyList:v,count:v.length,location:v[0].locationInfo}})
              },
         },
