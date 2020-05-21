@@ -92,8 +92,7 @@
                 })
             },
             show(data) {
-                this.$router.push({name: 'equiphistoryOrder', query: {id: data}})
-                this.$route.meta.title = '装备实体/位置变更'
+                this.$router.push({name: 'equiphistoryOrder', query: {id: data,title:'装备实体/位置变更'}})
             },
             changePage(page) {
                 this.paginator.page = page

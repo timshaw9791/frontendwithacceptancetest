@@ -1,6 +1,6 @@
 <template>
     <div class="maintenance-details-container">
-          <my-header :title="$route.meta.title" :haveBlack="true" @h_black="cancel"></my-header>
+          <my-header :title="$route.query.title" :haveBlack="true" @h_black="cancel"></my-header>
          <div class="maintenance-details-top" >
                 <define-input label="单号" v-model="listData.number" :disabled="true"></define-input>
                 <date-select label="保养开始时间" v-model="listData.createTime" :disabled="true"></date-select>
