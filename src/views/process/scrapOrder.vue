@@ -30,7 +30,7 @@
 <script>
     import myHeader from 'components/base/header/header';
     import bosTabs from '@/componentized/table/bosTabs.vue'
-    import {processStart, processDetail, getHistoryTasks} from '../../api/process'
+    import {processStart, processDetail, getHistoryTasks, SAODetail} from '../../api/process'
     import {findByRfids} from "../../api/storage";
     import {transEquips} from "../../common/js/transEquips";
     import {getHouseInfo} from "../../api/organUnit";
@@ -56,7 +56,7 @@
                     applicant: {}
                 },
                 //任务
-                taskHistory: {},
+                taskHistory: [],
                 equipItems: [{items: []}],
                 //需要申请的装备列表
                 scrapEquips: [],
@@ -88,18 +88,14 @@
             },
             fetchData() {
                 let {processInstanceId} = this.$route.query
-                console.log(processInstanceId)
-                processDetail({processInstanceId}).then(
+                SAODetail({processInstanceId}).then(
                     res => {
-                        console.log(res)
-                        this.order = res.processVariables.applyOrder
-                        console.log(res.processVariables.applyOrder);
-                        this.equipItems = transEquips(res.processVariables.applyOrder.equips).equipItems
+                        this.order = res
+                        this.equipItems = transEquips(res.equips).equipItems
                     }
                 )
                 getHistoryTasks({processInstanceId}).then(
                     res => {
-                        console.log(res)
                         this.taskHistory = res
                     }
                 )
