@@ -63,8 +63,7 @@ export default {
         },
         methods:{
             toDetail(data){
-                this.$router.push({name:'equipAllocation',query:{id:data.id}})
-                this.$route.meta.title = '位置变更单/位置变更单详情'
+                this.$router.push({name:'equipAllocation',query:{id:data.id,title:'位置变更单/位置变更单详情'}})
             },
             fetchData(){
                 this.fetchParams.params=[]

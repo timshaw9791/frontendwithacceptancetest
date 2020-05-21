@@ -1,25 +1,42 @@
 import {formatFunc} from './index'
+
 /*
 * 
 * equip 需要分组的装备列表
-* groupRules 分组的规则数组类型 'state-locationInfo','state','locationInfo',''
-*
+* groupRules 分组的规则数组类型 'state-locationInfo','state','locationInfo','args'
+* returnFormat 'args','rfids'
 * 返回 equipItems
 */
-export  function transEquips(equips, groupRules='') {
-    let rfids = [], tempEquipItems, equipItems
-    // 添加equipName、equipModel、locationInfo 以便统一
+export function transEquips(equips, groupRules = 'args', simplifyRules = 'rfids') {
+    let simplifyItems = [], tempEquipItems, equipItems
+
     equips.forEach(item => {
-        rfids.push(item.rfid)
+        // 添加equipName、equipModel、locationInfo 以便统一
         if (item.equipArg) {
             item.equipName = item.equipArg.name
             item.equipModel = item.equipArg.model
             item.locationInfo = item.location
             item.equipSerial = item.serial
+            item.equipId = item.id
+        }
+        // 简化
+        if (simplifyRules === 'rfids') {
+            simplifyItems.push(item.rfid)
+        } else {
+            simplifyItems.push({
+                equipArg:{
+                    id:item.equipArg.id
+                },
+                equipName:item.equipName,
+                equipModel:item.equipModel,
+                equipSerial:item.equipSerial,
+                rfid:item.rfid,
+                equipId:item.equipId
+            })
         }
     })
     //  优化
-    if(groupRules===''){
+    if (groupRules === 'args') {
         tempEquipItems = _.groupBy(equips, item =>
             `${item.equipName}${item.equipModel}${item.state}`
         )
@@ -54,8 +71,7 @@ export  function transEquips(equips, groupRules='') {
                 count: item.length,
             }
         })
-    } else {
-
+    } else if (groupRules === 'state-locationInfo') {
         tempEquipItems = _.groupBy(equips, item =>
             `${item.equipName}${item.equipModel}${item.state}${item.locationInfo.frameNumber}${item.locationInfo.surface}${item.locationInfo.section}${item.locationInfo.floor}`
         )
@@ -73,6 +89,6 @@ export  function transEquips(equips, groupRules='') {
     }
     return {
         equipItems: equipItems,
-        rfids: rfids,
+        simplifyItems: simplifyItems,
     }
 }

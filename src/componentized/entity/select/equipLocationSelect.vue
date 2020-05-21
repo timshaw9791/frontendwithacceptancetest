@@ -86,7 +86,10 @@ export default {
             },
             getList(){
                 getLocation().then(res=>{
-                    this.surfaceList=res.content
+                    res.content.forEach(item=>{
+                        if(item.category==0)
+                        this.surfaceList.push(item)
+                    })
                     console.log(this.surfaceList);
                     this.surfaceList.forEach(item=>{
                     if(item.frameNumber!=null){

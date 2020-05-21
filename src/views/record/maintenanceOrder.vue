@@ -53,7 +53,7 @@ export default {
         },
         methods:{
             toDetail(data){
-                this.$router.push({name:'maintenanceOrderDetails',query:{id:data.id}})
+                this.$router.push({name:'maintenanceOrderDetails',query:{id:data.id,title:'保养单/保养单详情'}})
             },
             fetchData(){
                 keepOrders(this.paginator).then(res=>{

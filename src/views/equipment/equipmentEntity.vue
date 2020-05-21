@@ -29,7 +29,7 @@
                 <define-column label="供应商" field="equipArg.supplier.name" width="200"/>
                 <define-column label="联系人" width="100" field="equipArg.supplier.person"/>
                 <define-column label="联系方式" width="150" field="equipArg.supplier.phone"/>
-                <define-column label="生产日期" width="200" :filter="(row)=>$filterTime(row.createTime)"/>
+                <define-column label="生产日期" width="200" :filter="(row)=>$filterTime(row.productDate)"/>
                 <define-column label="装备位置" width="200" v-slot="{data}">
                     <entity-input v-model="data.row.location" :formatFunc="$formatFuncLoc"
                                   :tableEdit="false"></entity-input>
@@ -92,8 +92,7 @@
                 })
             },
             show(data) {
-                this.$router.push({name: 'equiphistoryOrder', query: {id: data}})
-                this.$route.meta.title = '装备实体/位置变更'
+                this.$router.push({name: 'equiphistoryOrder', query: {id: data,title:'装备实体/位置变更'}})
             },
             changePage(page) {
                 this.paginator.page = page

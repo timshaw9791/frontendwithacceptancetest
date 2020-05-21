@@ -25,15 +25,22 @@
 
 <script>
     import myHeader from 'components/base/header/header'
-    import { processDefinitions, myProcess } from 'api/process'
-    import { listTableMixin } from "../../field/mixins/listMixin";
+    import {processDefinitions, myProcess} from '../../api/process'
+    import {listTableMixin} from "../../field/mixins/listMixin";
 
     export default {
-        name: "myProcessNew",
-        data(){
-            return{
+        name: "myProcess",
+        data() {
+            return {
                 requestTitle: "",
-                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0, direction: 'DESC', startUserId: JSON.parse(localStorage.getItem('user')).id},
+                paginator: {
+                    size: 10,
+                    page: 1,
+                    totalElements: 0,
+                    totalPages: 0,
+                    direction: 'DESC',
+                    startUserId: JSON.parse(localStorage.getItem('user')).id
+                },
                 select: {
                     processList: [],
                     selected: "", // 选择结果
@@ -42,15 +49,10 @@
                 edit: true
             }
         },
-        mixins:[listTableMixin],
-        methods:{
-            getProcessDefinitions() {
-                processDefinitions().then(res => {
-                    this.select.processList = res.map(obj => ({label: obj.name, value: obj.name}));
-                })
-            },
+        mixins: [listTableMixin],
+        methods: {
             fetchData() {
-                myProcess(Object.assign(this.paginator, {search: this.search})).then(res => {
+                myProcess(this.paginator).then(res => {
                     this.myProcessList = res.content;
                     this.paginator.totalElements = res.totalElements;
                     this.paginator.totalPages = res.totalPages;
@@ -64,14 +66,23 @@
                 switch (data.type) {
                     case '报废流程':
                         this.$router.push({
-                            path: 'applyAudit',
-                            query: {type:'apply', audit: 'order', info: {processInstanceId: data.processInstanceId, taskId: data.taskId, operate: false}}
-                        })
+                            path: 'scrapOrder',
+                            query: {
+                                name:data.type,
+                                processInstanceId: data.processInstanceId,
+                                taskId: data.taskId,
+                            }})
                         break;
                     case '调拨流程':
                         this.$router.push({
                             path: 'transferDetail',
-                            query: {info: {processInstanceId: data.processInstanceId, taskId: data.taskId, operate: false}}
+                            query: {
+                                info: {
+                                    processInstanceId: data.processInstanceId,
+                                    taskId: data.taskId,
+                                    operate: false
+                                }
+                            }
                         })
                         break;
                     default:
@@ -84,10 +95,7 @@
                 return this.requestTitle + this.select.selected
             }
         },
-        created() {
-            this.getProcessDefinitions();
-        },
-        components:{
+        components: {
             myHeader
         },
     }
@@ -100,12 +108,14 @@
     //         background-color: white;
     //     }
     // }
-    .my-process-container{
-        color:#707070FF;
+    .my-process-container {
+        color: #707070FF;
         font-size: 16px;
+
         .my-process-info {
             padding: 16px 7px;
         }
+
         .my-process-body {
             padding: 0 17px;
         }

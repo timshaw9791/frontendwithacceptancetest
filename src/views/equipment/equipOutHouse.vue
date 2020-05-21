@@ -21,7 +21,7 @@
                             <define-column label="装备参数" v-slot="{ data }" v-if="!this.$route.query.id">
                                 <entity-input v-model="data.row.equipArg"  :options="{detail:'equipArgsSelect'}" format="{name}({model})" :tableEdit="false" ></entity-input>
                             </define-column>
-                            <define-column label="装备参数1" v-slot="{ data }" v-if="this.$route.query.id">
+                            <define-column label="装备参数" v-slot="{ data }" v-if="this.$route.query.id">
                                 <entity-input v-model="data.row.equipArg"  :options="{detail:'equipArgsSelect'}" format="{equipName}({equipModel})" :tableEdit="false" ></entity-input>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">

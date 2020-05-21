@@ -127,9 +127,9 @@ export const asyncRouterMap = [{
             component: _import('process/newProcess'),
             meta: {title: '新启流程'}
         }, {
-            path: 'scrapApply', // 工作流申请
-            name: 'scrapApply',
-            component: _import('process/scrapApply'),
+            path: 'scrapOrder', // 报废申请
+            name: 'scrapOrder',
+            component: _import('process/scrapOrder'),
             hidden: true,
         }, {
             path: 'transferApply', // 调拨申请
@@ -146,12 +146,7 @@ export const asyncRouterMap = [{
             name: 'transferStorehouse',
             component: _import('process/transferStorehouse'),
             hidden: true,
-        }, {
-            path: 'myProcess/:type/:audit', // 流程申请单
-            name: 'applyAudit',
-            component: _import('process/scrapDetail'),
-            hidden: true,
-        }, {
+        },  {
             path: 'agencyMatters',
             name: 'agencyMatters',
             component: _import('process/agencyMatters'),
@@ -450,6 +445,7 @@ export const asyncRouterMap = [{
             path: 'consumablerecordInfo',
             name: 'consumablerecordInfo',
             component: _import('record/consumablerecordInfo'),
+            meta: {title: '耗材记录/耗材详情单'},
             hidden:true,
         }]
     }, {

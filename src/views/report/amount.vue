@@ -20,57 +20,57 @@
                     </div> -->
                 </div>
                 <div style="safety-body-t" v-else-if="show=='genres'">
-                    <div style="float:left">总计 装备大类：{{this.title}} 总数：{{addNum(1)}}件 可用数：{{addNum(2)}}件 领用数：{{addNum(3)}}件 总价：{{addNum(4)}}元</div>
+                    <div style="float:left">总计 装备大类：{{this.title}} 当前库存：{{addNum(1)}}件 可用数：{{addNum(2)}}件 领用数：{{addNum(3)}}件 当前库存总价(￥)：{{addNum(4)}}</div>
                     <div style="float:right">
                         <define-input label="小类" v-model="search2"></define-input>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='singlePolice'">
-                    <div style="float:left">总计 装备大类：{{this.title}} 总数：{{this.equipArg.reduce((v,k)=>v+k.totalCount,0)}}件  总价：{{addNum(4)}}元</div>
+                    <div style="float:left">总计 装备大类：{{this.title}} 当前库存：{{this.equipArg.reduce((v,k)=>v+k.totalCount,0)}}件  当前库存总价(￥)：{{addNum(4)}}</div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='singlePoliceCategory'">
-                    <div style="float:left">总计 装备小类：{{this.title}} 总数：{{this.equipArg.reduce((v,k)=>v+k.totalCount,0)}}件  总价：{{addNum(4)}}元</div>
+                    <div style="float:left">总计 装备小类：{{this.title}} 当前库存：{{this.equipArg.reduce((v,k)=>v+k.totalCount,0)}}件  当前库存总价(￥)：{{addNum(4)}}</div>
                     <div style="float:right">
-                        <define-input label="装备名称" v-model="search2"></define-input>
+                        <define-input label="装备参数/供应商" v-model="search2"></define-input>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='category'">
-                    <div style="float:left">总计 装备小类：{{this.title}} 总数：{{addNum(1)}}件 可用数：{{addNum(2)}}件 领用数：{{addNum(3)}}件 总价：{{addNum(4)}}元</div>
+                    <div style="float:left">总计 装备小类：{{this.title}} 当前库存：{{addNum(1)}}件 可用数：{{addNum(2)}}件 领用数：{{addNum(3)}}件 当前库存总价(￥)：{{addNum(4)}}</div>
                     <div style="float:right">
-                        <define-input label="装备名称" v-model="search2"></define-input>
+                        <define-input label="装备参数/供应商" v-model="search2"></define-input>
                     </div>
                 </div>
                 <div style="width:95%">
                     <define-table v-if="show=='All'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
                         <define-column label="装备大类" field="genre"/>
-                        <define-column label="装备总数" field="totality"></define-column>
+                        <define-column label="当前库存" field="totality"></define-column>
                         <define-column label="可用数量" field="inHouseCount"></define-column>
                         <define-column label="领用数量" field="receiveUseCount"></define-column>
-                        <define-column label="装备总价" field="totalPrice"></define-column>
+                        <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
                     </define-table>
                     <define-table v-if="show=='genres'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
                         <define-column label="装备小类" field="category"/>
-                        <define-column label="装备总数" field="totality"></define-column>
+                        <define-column label="当前库存" field="totality"></define-column>
                         <define-column label="可用数量" field="inHouseCount"></define-column>
                         <define-column label="领用数量" field="receiveUseCount"></define-column>
-                        <define-column label="装备总价" field="totalPrice"></define-column>
+                        <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
                     </define-table>
                     <define-table v-if="show=='category'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
                         <define-column label="装备参数" :filter="(row)=>{return `${row.name}(${row.model})`}"></define-column>
-                        <define-column label="装备总数" field="totality"></define-column>
+                        <define-column label="当前库存" field="totality"></define-column>
                         <define-column label="可用数量" field="inHouseCount"></define-column>
                         <define-column label="领用数量" field="receiveUseCount"></define-column>
-                        <define-column label="装备总价" field="totalPrice"></define-column>>
+                        <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>>
                     </define-table>
                     <define-table v-if="show=='singlePolice'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
                         <define-column label="装备小类" field="cabinet"/>
-                        <define-column label="装备总数" field="totalCount"></define-column>
-                        <define-column label="装备总价" field="totalPrice"></define-column>>
+                        <define-column label="当前库存" field="totalCount"></define-column>
+                        <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>>
                     </define-table>
                     <define-table v-if="show=='singlePoliceCategory'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
                         <define-column label="装备参数" :filter="(row)=>{return `${row.name}(${row.model})`}"></define-column>
-                        <define-column label="装备总数" field="totalCount"></define-column>
-                        <define-column label="装备总价" field="totalPrice"></define-column>>
+                        <define-column label="当前库存" field="totalCount"></define-column>
+                        <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>>
                     </define-table>
                     
                 </div>
@@ -114,7 +114,7 @@
                 editflag:false,
                 show:"All",
                 equipArg:[],
-                paramArray:[0,1,2,3],
+                // paramArray:[0,1,2,3],
                 search:"",
                 total:0,
                 id:'',
@@ -141,15 +141,32 @@
                         ]})
                     })
                 })
-                findEquipMoneyStatistics({categorys:this.paramArray,level:'ALL',search:this.search2}).then(res=>{
+               
+                findEquipMoneyStatistics({categorys:3,level:'ALL',search:this.search2}).then(res=>{
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
+                        this.addPolice()
                     })
+                
             },
             changePage(page) {
                 this.paginator.page = page
                 this.fetchData()
+            },
+            addPolice(){
+                allPoliceStatistic().then(res=>{
+                    console.log("触发");
+                    let tabList={
+                        commStock:res.reduce((v,k)=>v+k.cabinetStock,0),
+                        totality:res.reduce((v,k)=>v+k.totalCount,0),
+                        inHouseCount:'--',
+                        genre:'单警柜装备',
+                        receiveUseCount:'--',
+                        totalPrice:res.reduce((v,k)=>v+k.totalPrice,0)
+                    }
+                    this.equipArg.push(tabList)
+                    })
             },
             addNum(item){
                if(item==1)return this.equipArg.reduce((v,k)=>v+k.totality,0)
@@ -169,10 +186,13 @@
                         this.paginator.totalElements = res.totalElements;
                     })
                 }else if(this.show=="All"){
-                    findEquipMoneyStatistics({categorys:this.paramArray,level:'ALL',search:this.search2}).then(res=>{
+                    findEquipMoneyStatistics({categorys:3,level:'ALL',search:this.search2}).then(res=>{
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
+                        if(!this.check){
+                            this.addPolice()
+                        }
                     })
                 }else if(this.show=="category"){
                    findEquipMoneyStatistics({categorys:3,id:this.id,level:'CATEGORY',search:this.search2}).then(res=>{
@@ -226,23 +246,13 @@
         check: {
             handler(newval) {
                 if(newval){
-                     this.paramArray=[3]
                     this.tree.treeData.pop()
-                      findEquipMoneyStatistics({categorys:this.paramArray,level:'ALL'}).then(res=>{
-                        this.equipArg = res
-                        this.paginator.totalPages = res.totalPages;
-                        this.paginator.totalElements = res.totalElements;
-                    })
+                    this.equipArg.pop()
                 }else{
-                   this.paramArray=[0,1,2,3]
                    this.tree.treeData.push({name:'单警装备',show:'singlePolice',children:[
                             {name:'公共柜装备',id:1,show:'singlePoliceCategory'},{name:'备用柜装备',id:2,show:'singlePoliceCategory'},{name:'单警柜装备',id:0,show:'singlePoliceCategory'}
                         ]})
-                    findEquipMoneyStatistics({categorys:this.paramArray,level:'ALL'}).then(res=>{
-                        this.equipArg = res
-                        this.paginator.totalPages = res.totalPages;
-                        this.paginator.totalElements = res.totalElements;
-                    })
+                    this.addPolice()
                 }
             },
         },

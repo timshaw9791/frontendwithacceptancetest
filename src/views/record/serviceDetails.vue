@@ -1,6 +1,6 @@
 <template>
     <div class="service-details-container">
-          <my-header :title="$route.meta.title" :haveBlack="true" @h_black="cancel"></my-header>
+          <my-header :title="$route.query.title" :haveBlack="true" @h_black="cancel"></my-header>
          <div class="service-details-top" data-test="service-details-top">
                 <define-input label="单号" v-model="listData.number" :disabled="true" class="odd-number"></define-input>
                 <date-select label="维修开始时间" v-model="listData.createTime" :disabled="true"></date-select>
@@ -93,7 +93,7 @@ export default {
             },
             changeDataFormat(data){
             data.forEach(item=>{this.list.push(item)})
-                let cList=this._.groupBy(this.list, item => `${item.equipName}${item.equipModel}${item.locationInfo.id}`)
+                let cList=this._.groupBy(this.list, item => `${item.equipName}${item.equipModel}${item.categoryEnum}${item.locationInfo.floor}${item.locationInfo.frameNumber}${item.locationInfo.section}${item.locationInfo.surface}`)
                 this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0],copyList:v,count:v.length,location:v[0].locationInfo}})
              },
         },

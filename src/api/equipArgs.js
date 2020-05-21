@@ -26,9 +26,8 @@ export function saveEquipArgs(data) {
 }
 
 export function editEquipArgs(data) {
-    let id = JSON.stringify(data.id)
     return request({
-        url: '/equip-args/'+id,
+        url: '/equip-args/'+data.id,
         method: "PUT",
         data
     })
