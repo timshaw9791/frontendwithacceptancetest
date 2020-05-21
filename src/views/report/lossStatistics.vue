@@ -39,7 +39,7 @@
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='singlePolice'">
-                    <div style="float:left">装备大类：{{this.title}} 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}} 损耗数：{{addNum(2)}}件 损耗总额：{{addNum(3)}}元 </div>
+                    <div style="float:left">装备大类：{{this.title}} 历史库存： 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}} 损耗数：{{addNum(2)}}件 损耗总额：{{addNum(3)}}元 </div>
                     <div style="float:right">
                         <define-input label="小类" v-model="search2"></define-input>
                     </div>
@@ -182,6 +182,7 @@
                if(item==2)return this.equipArg.reduce((v,k)=>v+k.count,0)
                if(item==3)return this.equipArg.reduce((v,k)=>v+k.totalLoss,0)
                if(item==4)return this.equipArg.reduce((v,k)=>v+k.totalPrice,0)
+               if(item==5)return this.equipArg.reduce((v,k)=>v+k.commonStock,0)
             },
             clickNode(data) {
                this.id=data.data.id
