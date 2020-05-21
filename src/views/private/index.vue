@@ -20,7 +20,7 @@
           </div>
       </div>
       <div class="footer">
-          <base-button :label="buttonLabel" @click="disabled=!disabled"></base-button>
+          <base-button :label="buttonLabel" @click="changeEdit"></base-button>
           <base-button label="确定" @click="submit"></base-button>
       </div>
     </div>
@@ -44,8 +44,8 @@ export default({
             roleList: [
                 {label: '管理员', key: 1}, 
                 {label: '领导', key: 2}, 
-                {label: '警员', key: 3
-                }]
+                {label: '警员', key: 3}
+            ]
         }
     },
     computed: {
@@ -65,6 +65,12 @@ export default({
                     })
                 }
             })
+        },
+        changeEdit() {
+            if(!this.disabled) {
+                this.userInfo = JSON.parse(localStorage.getItem('user'));
+            }
+            this.disabled = !this.disabled;
         }
     }
 })
