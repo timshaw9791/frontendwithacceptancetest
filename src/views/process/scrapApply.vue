@@ -39,7 +39,7 @@
 
     var _ = require('lodash');
     export default {
-        name: "scrapOrder",
+        name: "scrapApply",
         components: {
             equipItems,
             TaskHistory,

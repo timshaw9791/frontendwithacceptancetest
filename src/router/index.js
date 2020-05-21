@@ -127,9 +127,9 @@ export const asyncRouterMap = [{
             component: _import('process/newProcess'),
             meta: {title: '新启流程'}
         }, {
-            path: 'scrapOrder', // 报废申请
-            name: 'scrapOrder',
-            component: _import('process/scrapOrder'),
+            path: 'scrapApply', // 报废申请
+            name: 'scrapApply',
+            component: _import('process/scrapApply'),
             hidden: true,
         }, {
             path: 'transferOrder', // 调拨申请页面

@@ -66,7 +66,7 @@
                 switch (data.type) {
                     case '报废流程':
                         this.$router.push({
-                            path: 'scrapOrder',
+                            path: 'scrapApply',
                             query: {
                                 name:data.type,
                                 processInstanceId: data.processInstanceId,
