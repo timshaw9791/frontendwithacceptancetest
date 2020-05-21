@@ -244,20 +244,12 @@
             handler(newval) {
                 if(newval){
                     this.tree.treeData.pop()
-                      findEquipMoneyStatistics({categorys:[3],level:'ALL'}).then(res=>{
-                        this.equipArg = res
-                        this.paginator.totalPages = res.totalPages;
-                        this.paginator.totalElements = res.totalElements;
-                    })
+                    this.equipArg.pop()
                 }else{
                    this.tree.treeData.push({name:'单警装备',show:'singlePolice',children:[
                             {name:'公共柜装备',id:1,show:'singlePoliceCategory'},{name:'备用柜装备',id:2,show:'singlePoliceCategory'},{name:'单警柜装备',id:0,show:'singlePoliceCategory'}
                         ]})
-                    findEquipMoneyStatistics({categorys:this.paramArray,level:'ALL'}).then(res=>{
-                        this.equipArg = res
-                        this.paginator.totalPages = res.totalPages;
-                        this.paginator.totalElements = res.totalElements;
-                    })
+                    this.addPolice()
                 }
             },
         },

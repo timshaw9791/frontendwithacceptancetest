@@ -143,6 +143,7 @@
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
+                        this.addPolice()
                     })
             },
             changePage(page) {
@@ -154,6 +155,20 @@
                if(item==2)return this.equipArg.reduce((v,k)=>v+k.count,0)
                if(item==3)return this.equipArg.reduce((v,k)=>v+k.totalLoss,0)
                if(item==4)return this.equipArg.reduce((v,k)=>v+k.totalPrice,0)
+            },
+             addPolice(){
+                allPoliceFrequency().then(res=>{
+                    console.log("触发");
+                    let tabList={
+                        commStock:res.reduce((v,k)=>v+k.cabinetStock,0),
+                        totality:res.reduce((v,k)=>v+k.totalCount,0),
+                        inHouseCount:'--',
+                        genre:'单警柜装备',
+                        receiveUseCount:'--',
+                        totalPrice:res.reduce((v,k)=>v+k.totalPrice,0)
+                    }
+                    this.equipArg.push(tabList)
+                    })
             },
             clickNode(data) {
                  this.id=data.data.id
@@ -226,10 +241,12 @@
             handler(newval) {
                 if(newval){
                     this.tree.treeData.pop()
+                    this.equipArg.pop()
                 }else{
                    this.tree.treeData.push({name:'单警装备',show:'singlePolice',children:[
                             {name:'公共柜装备',id:1,show:'singlePoliceCategory'},{name:'备用柜装备',id:2,show:'singlePoliceCategory'},{name:'单警柜装备',id:0,show:'singlePoliceCategory'}
                         ]})
+                    this.addPolice()
                 }
             },
         },
