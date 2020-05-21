@@ -54,11 +54,17 @@
     import { localTitle } from 'api/config'
     import { getMsgList } from "api/message";
     import { jsqlPage } from 'api/basic'
-    import { message } from 'api/bosQuery/message'
     export default {
         data() {
             return {
                 title: localTitle,
+                fetchParams: {
+                    jpql: "select ms from Message ms where ms.userId = ?1 order by ms.createTime desc",
+                    returnType: "ARRAY",
+                    params: [
+                        JSON.parse(localStorage.getItem('user')).id
+                    ]
+                }
             }
         },
         components: {
@@ -83,12 +89,9 @@
                 window.close();
             },
             fetchData() {
-                jsqlPage(message).then(res => {
+                jsqlPage(this.fetchParams).then(res => {
                    this.$store.commit('setUnreadCount', this._.flatten(res.content).filter(item => !item.status).length);
                 })
-                // getMsgList({id: JSON.parse(localStorage.getItem("user")).id}).then(res => {
-                //     this.$store.commit('setUnreadCount', res.content.filter(item => !item.status).length);
-                // });
             }
         },
         created(){
