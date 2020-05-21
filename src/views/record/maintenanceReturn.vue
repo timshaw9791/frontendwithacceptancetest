@@ -57,8 +57,7 @@ export default {
             },
             toDetail(data){
                 console.log(data);
-                this.$router.push({name:'maintenanceOrderDetails',query:{id:data.id}})
-                this.$route.meta.title = '保养归还单/保养归还单详情'
+                this.$router.push({name:'maintenanceOrderDetails',query:{id:data.id,title:'保养归还单/保养归还单详情'}})
             },
             fetchData(){
                 keepOrders(this.paginator).then(res=>{
