@@ -98,12 +98,9 @@
                 })
             },
             fixData() {
-                let temp = transEquips(this.equipItems, 'state-locationInfo')
-                //改变equipItems
-                if (temp.rfids.length > 0) {
-                    this.rfids = temp.rfids
-                    this.equipItems = temp.equipItems
-                }
+                let {simplifyItems, equipItems} = transEquips(this.equipItems, 'state-locationInfo')
+                this.rfids = simplifyItems
+                this.equipItems = equipItems
                 // 若未知装备的装备改变，那么需要修改
                 this.equipItems.forEach(item => {
                     item.state = item.state === 0 ? '可用' : '充电中'
@@ -133,9 +130,9 @@
                 }
                 inventoryOrder("post", data)
                 this.$router.push({
-                    name:'inventoryList',
-                    params:{
-                        rfids:this.rfids
+                    name: 'inventoryList',
+                    params: {
+                        rfids: this.rfids
                     }
                 })
             },

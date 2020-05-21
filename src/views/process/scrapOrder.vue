@@ -1,4 +1,4 @@
-<template xmlns="http://www.w3.org/1999/html">
+<template>
     <div class="apply-process-container">
         <my-header :title="title" :haveBlack="false"></my-header>
         <div class="apply-process">
