@@ -14,9 +14,9 @@
                 </div>
                 <div>
                     <text-input label="申请原因" v-model="order.note" :tips="tips" :title="order.note"
-                                :disabled="!isInfo||!isEdit"></text-input>
+                                :disabled="isInfo||isEdit"></text-input>
                 </div>
-                <scrap-equips :equip-items="equipItems" :is-info="isInfo" :is-edit="isEdit" @handleReadData="handleReadData"></scrap-equips>
+                <equipItems :equip-items="equipItems" :is-info="isInfo" :is-edit="isEdit" @handleReadData="handleReadData"></equipItems>
                 <div class="buttom" v-if="!isInfo&&!isEdit">
                     <base-button label="提交" align="right" size="large" @click="submit"></base-button>
                     <base-button label="清空" align="right" size="large" type="danger"></base-button>
@@ -35,13 +35,13 @@
     import {transEquips} from "../../common/js/transEquips";
     import {getHouseInfo} from "../../api/organUnit";
     import TaskHistory from "../../components/processNew/taskHistory";
-    import ScrapEquips from "../../components/processNew/scrapEquips";
+    import equipItems from "../../components/processNew/equipItems";
 
     var _ = require('lodash');
     export default {
         name: "scrapApply",
         components: {
-            ScrapEquips,
+            equipItems,
             TaskHistory,
             myHeader,
             bosTabs

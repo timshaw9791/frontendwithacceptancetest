@@ -22,7 +22,6 @@
                 <div class="process-info">
                     <text-input label="申请原因" v-model="order.note" :column="12" :tips="tips"></text-input>
                 </div>
-                <scrap-equips
                 <div class="buttom">
                     <base-button label="提交" align="right" size="large" @click="submit"></base-button>
                     <base-button label="清空" align="right" size="large" type="danger" @click="clean"></base-button>
@@ -36,7 +35,7 @@
     import myHeader from 'components/base/header/header';
     import bosTabs from '@/componentized/table/bosTabs'
     import {complete, getOrder, processStart, processDetail} from 'api/process'
-    import ScrapEquips from "../../components/processNew/scrapEquips";
+    import ScrapEquips from "../../components/processNew/equipItems";
 
     var _ = require('lodash');
     export default {

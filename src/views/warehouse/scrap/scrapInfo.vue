@@ -83,6 +83,9 @@
                 killProcess(this.pid)
                 start("java -jar scan.jar", (data) => {
                     if (this.matchRfids.length !== 0) {
+                        console.log(this.matchRfids)
+                        console.log(this.rfids)
+                        console.log(data)
                         if (this._.findIndex(this.matchRfids, data) !== -1
                             && this._.findIndex(this.rfids, data) === -1) {
                             this.rfids.push(data)

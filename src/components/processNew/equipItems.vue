@@ -3,7 +3,7 @@
         <bos-tabs>
             <template slot="slotHeader" v-if="!isInfo&&!isEdit">
                 <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96"
-                             @click="readData"></base-button>
+                             @click="readData()"></base-button>
                 <base-select label="硬件选择" v-model="select.selected" align="right"
                              :selectList="select.handWareList"></base-select>
             </template>
@@ -35,7 +35,7 @@
     import bosTabs from "../../componentized/table/bosTabs";
 
     export default {
-        name: "scrapEquips",
+        name: "equipItems",
         components: {
             bosTabs
         },
@@ -54,7 +54,7 @@
                 tips: [{value: '直接报废', key: '1'}, {value: '装备拿去维修，无法修补', key: '2'}],
                 equipItems: [],
                 // todo 假数据
-                readData: ['555566666777'],
+                rfids: ['555566666777'],
                 findIndex: 0,
             }
         },
@@ -74,7 +74,7 @@
         },
         methods: {
             readData() {
-                this.$emit('handleReadData', this.readData)
+                this.$emit('handleReadData', this.rfids)
             },
             sumFunc(param) { // 表格合并行计算方法
                 let {columns, data} = param, sums = [];
