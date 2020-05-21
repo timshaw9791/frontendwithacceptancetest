@@ -39,7 +39,7 @@
 
     var _ = require('lodash');
     export default {
-        name: "scrapApply",
+        name: "scrapOrder",
         components: {
             equipItems,
             TaskHistory,
@@ -63,6 +63,7 @@
                 findIndex: 0,
                 isInfo: false,
                 isEdit: false,
+                tips: [{value: '直接报废', key: '1'}, {value: '装备拿去维修，无法修补', key: '2'}],
             }
         },
         methods: {
@@ -87,14 +88,18 @@
             },
             fetchData() {
                 let {processInstanceId} = this.$route.query
+                console.log(processInstanceId)
                 processDetail({processInstanceId}).then(
                     res => {
+                        console.log(res)
                         this.order = res.processVariables.applyOrder
+                        console.log(res.processVariables.applyOrder);
                         this.equipItems = transEquips(res.processVariables.applyOrder.equips).equipItems
                     }
                 )
                 getHistoryTasks({processInstanceId}).then(
                     res => {
+                        console.log(res)
                         this.taskHistory = res
                     }
                 )

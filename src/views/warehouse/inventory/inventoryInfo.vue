@@ -78,7 +78,7 @@
                 totalIndex: 0,
                 isShowDialog: false,
                 // 假列表
-                noInventoryList: ['555566666777'],
+                noInventoryList: ['19080010','110000030000000000000000','110000010000000000000000','19090907','87654321'],
             }
         },
         methods: {
@@ -99,8 +99,10 @@
             },
             fixData() {
                 let {simplifyItems, equipItems} = transEquips(this.equipItems, 'state-locationInfo')
-                this.rfids = simplifyItems
-                this.equipItems = equipItems
+                if (equipItems.length > 0) {
+                    this.rfids = simplifyItems
+                    this.equipItems = equipItems
+                }
                 // 若未知装备的装备改变，那么需要修改
                 this.equipItems.forEach(item => {
                     item.state = item.state === 0 ? '可用' : '充电中'
