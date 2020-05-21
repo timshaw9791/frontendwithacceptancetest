@@ -20,18 +20,16 @@
 
                 </div>
                 <div style="safety-body-t" v-else-if="show=='genres'">
-                    <div  >
-                         <div style="float:left">装备大类：{{this.title}}  </div>
+                   <div style="float:left">装备大类：{{this.title}} 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}} 损耗数：{{addNum(2)}}件 损耗总额：{{addNum(3)}}元 </div>
                     <div style="float:right">
-                        <define-input label="小类" v-model="search2"></define-input>
-                    </div>
+                        <define-input label="装备名称" v-model="search2"></define-input>
                     </div>
                     
                 </div>
                 <div style="safety-body-t" v-else-if="show=='category'">
                     <div style="float:left">装备小类：{{this.title}} 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}} 损耗数：{{addNum(2)}}件 损耗总额：{{addNum(3)}}元 </div>
                     <div style="float:right">
-                        <define-input label="装备名称" v-model="search2"></define-input>
+                        <define-input label="小类" v-model="search2"></define-input>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='singlePoliceCategory'">
