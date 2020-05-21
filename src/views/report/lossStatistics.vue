@@ -160,6 +160,7 @@
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
+                        this.addPolice()
                     })
                
             },
@@ -176,6 +177,22 @@
             changePage(page) {
                 this.paginator.page = page
                 this.fetchData()
+            },
+            addPolice(){
+                cabinetLoss().then(res=>{
+                    console.log("触发");
+                    let tabList={
+                        commonStock:res.reduce((v,k)=>v+k.cabinetStock,0),
+                        totalCount:res.reduce((v,k)=>v+k.totalCount,0),
+                        count:res.reduce((v,k)=>v+k.count,0),
+                        inHouseCount:'--',
+                        genre:'单警柜装备',
+                        receiveUseCount:'--',
+                        totalLoss:res.reduce((v,k)=>v+k.totalLoss,0),
+                        totalPrice:res.reduce((v,k)=>v+k.totalPrice,0)
+                    }
+                    this.equipArg.push(tabList)
+                    })
             },
             addNum(item){
                if(item==1)return this.equipArg.reduce((v,k)=>v+k.totalCount,0)
@@ -199,6 +216,9 @@
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
+                        if(!this.check){
+                            this.addPolice()
+                        }
                     })
                 }else if(this.show=="category"){
                    findEquipLossStatistics({categorys:3,id:this.id,level:'CATEGORY'}).then(res=>{
@@ -274,23 +294,13 @@
         check: {
             handler(newval) {
                 if(newval){
-                     this.paramArray=[3]
                     this.tree.treeData.pop()
-                    findEquipLossStatistics({categorys:this.paramArray,level:'ALL'}).then(res=>{
-                        this.equipArg = res
-                        this.paginator.totalPages = res.totalPages;
-                        this.paginator.totalElements = res.totalElements;
-                    })
+                    this.equipArg.pop()
                 }else{
-                   this.paramArray=[0,1,2,3]
                    this.tree.treeData.push({name:'单警装备',show:'singlePolice',children:[
                             {name:'公共柜装备',id:1,show:'singlePoliceCategory'},{name:'备用柜装备',id:2,show:'singlePoliceCategory'},{name:'单警柜装备',id:0,show:'singlePoliceCategory'}
                         ]})
-                        findEquipLossStatistics({categorys:this.paramArray,level:'ALL'}).then(res=>{
-                        this.equipArg = res
-                        this.paginator.totalPages = res.totalPages;
-                        this.paginator.totalElements = res.totalElements;
-                    })
+                    this.addPolice()
                 }
             },
         },

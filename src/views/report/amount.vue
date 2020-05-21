@@ -190,6 +190,9 @@
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
+                        if(!this.check){
+                            this.addPolice()
+                        }
                     })
                 }else if(this.show=="category"){
                    findEquipMoneyStatistics({categorys:3,id:this.id,level:'CATEGORY',search:this.search2}).then(res=>{
