@@ -125,7 +125,7 @@ import defineColumn from './defineColumn'
     /deep/ .el-table {
         ::-webkit-scrollbar {
             display: none;
-            width: 6px;
+            width: 9px;
             height: 15px;
         }
         ::-webkit-scrollbar-thumb {
@@ -143,8 +143,8 @@ import defineColumn from './defineColumn'
         /deep/ .el-table {
             ::-webkit-scrollbar {
                 display: block;
-                width: 6px;
-                height: 10px;
+                width: 9px;
+                height: 15px;
             }
         }
     }

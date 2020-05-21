@@ -45,7 +45,7 @@ export default {
 			selectIndex: 0,
 			enumerator: [], // 标题枚举对象
 			fetchParams: {
-				jpql: "select ms from Message ms where ms.userId = ?1 order by ms.newStar desc, ms.status asc, ms.createTime desc",
+				jpql: "select ms from Message ms where ms.userId = ?1 order by ms.createTime desc",
 				returnType: "ARRAY",
 				pageInfo: {
 					direction: "DESC",
@@ -73,7 +73,7 @@ export default {
 			})
 		},
 		changeCurrent(data) {
-			data.current && !data.current.status && readMsg({ids: [data.current.id]}).then(res => {
+			data.current && data.current.id && !data.current.status && readMsg({ids: [data.current.id]}).then(res => {
 				this.$message.success('标记已读');
 				this.fetchData();
 			})
