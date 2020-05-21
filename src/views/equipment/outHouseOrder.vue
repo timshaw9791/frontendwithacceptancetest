@@ -71,7 +71,7 @@ export default {
 
             },
             toDetail(data){
-               this.$router.push({name:'equipouthouse',query:{id:data.id}})
+               this.$router.push({name:'equipouthouse',query:{id:data.id,title:'出库单列表/出库单详情'}})
             },
             deleteNumber(data)
             {
@@ -109,7 +109,7 @@ export default {
             this.paginator.page = page;ss
             },
             toInHouse(){
-                this.$router.push({name:'equipouthouse'})
+                this.$router.push({name:'equipouthouse',query:{title:'出库单列表/出库装备'}})
             }
         },
         created(){
