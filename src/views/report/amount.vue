@@ -31,13 +31,13 @@
                 <div style="safety-body-t" v-else-if="show=='singlePoliceCategory'">
                     <div style="float:left">总计 装备小类：{{this.title}} 当前库存：{{this.equipArg.reduce((v,k)=>v+k.totalCount,0)}}件  当前库存总价(￥)：{{addNum(4)}}</div>
                     <div style="float:right">
-                        <define-input label="装备名称" v-model="search2"></define-input>
+                        <define-input label="装备参数/供应商" v-model="search2"></define-input>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='category'">
                     <div style="float:left">总计 装备小类：{{this.title}} 当前库存：{{addNum(1)}}件 可用数：{{addNum(2)}}件 领用数：{{addNum(3)}}件 当前库存总价(￥)：{{addNum(4)}}</div>
                     <div style="float:right">
-                        <define-input label="装备名称" v-model="search2"></define-input>
+                        <define-input label="装备参数/供应商" v-model="search2"></define-input>
                     </div>
                 </div>
                 <div style="width:95%">

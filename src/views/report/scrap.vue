@@ -17,44 +17,47 @@
                     <div style="float:left">{{this.title}}</div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='genres'">
-                    <div style="float:left">装备大类：{{this.title}} 总数：{{addNum(1)}}件 总价：{{addNum(4)}}元 报废件数：{{addNum(2)}}</div>
+                    <div style="float:left">装备大类：{{this.title}} 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}}元 报废件数：{{addNum(2)}}</div>
                     <div style="float:right">
                         <define-input label="小类" v-model="search2"></define-input>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='category'">
-                    <div style="float:left">装备小类：{{this.title}} 总数：{{addNum(1)}}件 总价：{{addNum(4)}}元 报废件数：{{addNum(2)}}</div>
+                    <div style="float:left">装备小类：{{this.title}} 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}}元 报废件数：{{addNum(2)}}</div>
                     <div style="float:right">
-                        <define-input label="装备名称" v-model="search2"></define-input>
+                        <define-input label="装备参数/供应商" v-model="search2"></define-input>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='singlePolice'">
-                    <div style="float:left">装备小类：{{this.title}} 总数：{{addNum(1)}}件 总价：{{addNum(4)}}元 报废件数：{{addNum(2)}}</div>
+                    <div style="float:left">装备小类：{{this.title}} 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}}元 报废件数：{{addNum(2)}}</div>
                     
                 </div>
                 <div style="safety-body-t" v-else-if="show=='singlePoliceCategory'">
-                    <div style="float:left">装备小类：{{this.title}} 总数：{{addNum(1)}}件 总价：{{addNum(4)}}元 报废件数：{{addNum(2)}}</div>
+                    <div style="float:left">装备小类：{{this.title}} 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}}元 报废件数：{{addNum(2)}}</div>
                     <div style="float:right">
-                        <define-input label="装备名称" v-model="search2"></define-input>
+                        <define-input label="装备参数/供应商" v-model="search2"></define-input>
                     </div>
                 </div>
                 <div style="width:95%">
                     <define-table v-if="show=='All'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
                         <define-column label="装备大类" field="genre"/>
-                        <define-column label="装备总数" field="totalCount"></define-column>
-                        <define-column label="装备总价" field="totalPrice"></define-column>
+                        <define-column label="历史库存" field="commonStock"/>
+                        <define-column label="当前库存" field="totalCount"></define-column>
+                        <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
                         <define-column label="报废件数" field="count"></define-column>
                     </define-table>
                     <define-table v-if="show=='genres'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
                         <define-column label="装备小类" field="category"/>
-                        <define-column label="装备总数" field="totalCount"></define-column>
-                        <define-column label="装备总价" field="totalPrice"></define-column>
+                        <define-column label="历史库存" field="commonStock"/>
+                        <define-column label="当前库存" field="totalCount"></define-column>
+                        <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
                         <define-column label="报废件数" field="count"></define-column>
                     </define-table>
                     <define-table v-if="show=='category'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
                         <define-column label="装备参数" :filter="(row)=>{return `${row.name}(${row.model})`}"></define-column>
-                        <define-column label="装备总数" field="totalCount"></define-column>
-                        <define-column label="装备总价" field="totalPrice"></define-column>
+                        <define-column label="历史库存" field="commonStock"/>
+                        <define-column label="当前库存" field="totalCount"></define-column>
+                        <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
                         <define-column label="报废件数" field="count"></define-column>
                         <define-column label="供应商" field="supplier"></define-column>
                     </define-table>

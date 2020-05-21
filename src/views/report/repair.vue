@@ -26,13 +26,13 @@
                 <div style="safety-body-t" v-else-if="show=='category'">
                     <div style="float:left">装备小类：{{this.title}} 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}}元 维修数：{{addNum(2)}}件 维修率：{{addNum(3)}}%</div>
                     <div style="float:right">
-                        <define-input label="装备名称" v-model="search2"></define-input>
+                        <define-input label="装备参数/供应商" v-model="search2"></define-input>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='singlePoliceCategory'">
                     <div style="float:left">装备大类：{{this.title}} 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}}元 维修数：{{addNum(2)}}件 维修率：{{addNum(3)}}% </div>
                     <div style="float:right">
-                        <define-input label="装备名称" v-model="search2"></define-input>
+                        <define-input label="装备参数/供应商" v-model="search2"></define-input>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='singlePolice'">
