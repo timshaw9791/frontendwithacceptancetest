@@ -141,15 +141,32 @@
                         ]})
                     })
                 })
+               
                 findEquipMoneyStatistics({categorys:3,level:'ALL',search:this.search2}).then(res=>{
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
+                        this.addPolice()
                     })
+                
             },
             changePage(page) {
                 this.paginator.page = page
                 this.fetchData()
+            },
+            addPolice(){
+                allPoliceStatistic().then(res=>{
+                    console.log("触发");
+                    let tabList={
+                        commStock:res.reduce((v,k)=>v+k.cabinetStock,0),
+                        totality:res.reduce((v,k)=>v+k.totalCount,0),
+                        inHouseCount:'--',
+                        genre:'单警柜装备',
+                        receiveUseCount:'--',
+                        totalPrice:res.reduce((v,k)=>v+k.totalPrice,0)
+                    }
+                    this.equipArg.push(tabList)
+                    })
             },
             addNum(item){
                if(item==1)return this.equipArg.reduce((v,k)=>v+k.totality,0)
