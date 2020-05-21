@@ -1,18 +1,27 @@
-<template>
+<template xmlns="http://www.w3.org/1999/html">
     <div class="apply-process-container">
         <my-header :title="title" :haveBlack="false"></my-header>
         <div class="apply-process">
             <div class="apply-process-body">
-                <div class="process-info">
-                    <scrap-order :order="order" :equip-items="equipItems"></scrap-order>
+                <div>
+                    <define-input label="单号" v-model="order.number" :disabled="true" class="odd-number"></define-input>
+                    <define-input label="所在库房" v-model="order.warehouse.name" :disabled="true"></define-input>
+                    <date-select label="申请日期" v-model="order.createTime" :disabled="true"></date-select>
+                    <entity-input label="申请人员" v-model="order.applicant"
+                                  :options="{detail:'applicant'}" :disabled="true"
+                                  format="{name}({policeSign})">
+                    </entity-input>
                 </div>
-                <div class="buttom" v-if="!isInfo">
+                <div>
+                    <text-input label="申请原因" v-model="order.note" :tips="tips" :title="order.note"
+                                :disabled="isInfo||isEdit"></text-input>
+                </div>
+                <equipItems :equip-items="equipItems" :is-info="isInfo" :is-edit="isEdit" @handleReadData="handleReadData"></equipItems>
+                <div class="buttom" v-if="!isInfo&&!isEdit">
                     <base-button label="提交" align="right" size="large" @click="submit"></base-button>
                     <base-button label="清空" align="right" size="large" type="danger"></base-button>
                 </div>
-                <div>
-
-                </div>
+                <task-history :list="taskHistory" v-if="isInfo||isEdit"></task-history>
             </div>
         </div>
     </div>
@@ -21,24 +30,25 @@
 <script>
     import myHeader from 'components/base/header/header';
     import bosTabs from '@/componentized/table/bosTabs.vue'
-    import {complete, processStart, processDetail} from 'api/process'
+    import {processStart, processDetail, getHistoryTasks} from '../../api/process'
     import {findByRfids} from "../../api/storage";
     import {transEquips} from "../../common/js/transEquips";
     import {getHouseInfo} from "../../api/organUnit";
-    import ScrapOrder from "../../components/processNew/scrapOrder";
+    import TaskHistory from "../../components/processNew/taskHistory";
+    import equipItems from "../../components/processNew/equipItems";
 
     var _ = require('lodash');
     export default {
         name: "scrapApply",
         components: {
-            ScrapOrder,
+            equipItems,
+            TaskHistory,
             myHeader,
-            bosTabs,
+            bosTabs
         },
         data() {
             return {
                 title: "",
-                rowData: '', // 选中的单选行数据
                 //申请单
                 order: {
                     warehouse: {},
@@ -46,7 +56,8 @@
                     applicant: {}
                 },
                 //任务
-                task: {},
+                taskHistory: {},
+                equipItems: [{items: []}],
                 //需要申请的装备列表
                 scrapEquips: [],
                 findIndex: 0,
@@ -55,15 +66,13 @@
             }
         },
         methods: {
-            init() {
-                getHouseInfo().then(res => {
-                    // A端数据和平台数据不一致
-                    this.order.warehouse.id = res.houseId
-                    this.order.warehouse.name = res.houseName
-                    this.order.organUnit.id = res.organUnitId
-                    this.order.organUnit.name = res.organUnitName
-                })
-                this.order.applicant = JSON.parse(localStorage.getItem("user"))
+            async init() {
+                let {houseId, houseName, organUnitId, organUnitName} = await getHouseInfo()
+                this.order.warehouse.id = houseId
+                this.order.warehouse.name = houseName
+                this.order.organUnit.id = organUnitId
+                this.order.organUnit.name = organUnitName
+                this.order.applicant = JSON.parse(window.localStorage.getItem("user"))
             },
             selRow(current) { // 单选表格行
                 if (!current) return; // 避免切换数据时报错
@@ -77,28 +86,31 @@
                 }
             },
             fetchData() {
-
+                let {processInstanceId} = this.$route.query
+                processDetail({processInstanceId}).then(
+                    res => {
+                        this.order = res.processVariables.applyOrder
+                        this.equipItems = transEquips(res.processVariables.applyOrder.equips).equipItems
+                    }
+                )
+                getHistoryTasks({processInstanceId}).then(
+                    res => {
+                        this.taskHistory = res
+                    }
+                )
             },
-            readData() { // 读取数据
-                findByRfids(this.mockRFIDs).then(res => {
-                    this.order.scrapEquips = transEquips(res, 'args', 'args').simplifyItems
-                    this.equipItems = transEquips(res,).equipItems
+            handleReadData(data) { // 读取数据
+                findByRfids(data).then(res => {
+                    this.order.equips = transEquips(res, 'args', 'args').simplifyItems
+                    this.equipItems = transEquips(res).equipItems
                 })
             },
             sumFunc(param) { // 表格合并行计算方法
                 let {columns, data} = param, sums = [];
-                columns.forEach((colum, index) => {
-                    if (index === 0) {
-                        sums[index] = '合计';
-                    } else if (index === columns.length - 1) {
-                        const values = data.map(item => item.count ? Number(item.count) : 0);
-                        if (!values.every(value => isNaN(value))) {
-                            sums[index] = values.reduce((pre, cur) => !isNaN(cur) ? pre + cur : pre);
-                        }
-                    } else {
-                        sums[index] = '';
-                    }
-                })
+                console.log(data)
+                sums = new Array(columns.length).fill('')
+                sums[0] = '合计'
+                sums[columns.length - 1] = data.reduce((v, k) => v + k.count ? k.count : 0, 0)
                 return sums;
             },
             submit() {
@@ -111,8 +123,9 @@
         },
         created() {
             let {processInstanceId, name} = this.$route.query
-            if (!processInstanceId) {
+            if (processInstanceId) {
                 this.title = name + '详情'
+                this.isInfo = true
                 this.fetchData()
             } else {
                 this.title = name + '申请'

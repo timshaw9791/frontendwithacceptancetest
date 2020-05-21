@@ -36,7 +36,7 @@
     import textInput from "../../componentized/textBox/textInput";
     import myHeader from "../../components/base/header/header"
     import {imgBaseUrl} from "../../api/config"
-    import {listMixin} from "../../field/mixins/listMixin"
+    import {listTableMixin} from "../../field/mixins/listMixin"
 
     export default {
         name: "equipArgsList",
@@ -53,7 +53,7 @@
             }
         },
 
-        mixins: [listMixin],
+        mixins: [listTableMixin],
 
         props: {
             showData: {

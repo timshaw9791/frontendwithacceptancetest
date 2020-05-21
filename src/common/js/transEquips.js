@@ -17,16 +17,21 @@ export function transEquips(equips, groupRules = 'args', simplifyRules = 'rfids'
             item.equipModel = item.equipArg.model
             item.locationInfo = item.location
             item.equipSerial = item.serial
+            item.equipId = item.id
         }
         // 简化
         if (simplifyRules === 'rfids') {
             simplifyItems.push(item.rfid)
         } else {
             simplifyItems.push({
+                equipArg:{
+                    id:item.equipArg.id
+                },
                 equipName:item.equipName,
                 equipModel:item.equipModel,
                 equipSerial:item.equipSerial,
-                rfid:item.rfid
+                rfid:item.rfid,
+                equipId:item.equipId
             })
         }
     })

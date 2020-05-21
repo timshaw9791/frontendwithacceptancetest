@@ -143,7 +143,6 @@ export default {
     line-height: 30px;
     padding: 10px 0;
     border-top: 1px solid rgba(112,112,112,0.13);
-
     .reson {
       color: #3F5FE0;
       cursor: pointer;

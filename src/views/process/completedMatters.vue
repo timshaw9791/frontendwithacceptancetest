@@ -31,7 +31,7 @@
         },
         data(){
             return{
-                paginator: {page: 1, size: 10, totalElements: 0, totalPages: 0, search: '', assignee: JSON.parse(localStorage.getItem('user')).id},
+                paginator: {page: 1, size: 10, totalElements: 0, totalPages: 0, assignee: JSON.parse(localStorage.getItem('user')).id},
                 list: []
             }
         },

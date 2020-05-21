@@ -141,10 +141,10 @@
                         this.$router.push({name: 'maintenance'})
                         break;
                     case 'NOT_RETURN':
-                        this.$router.push({name: 'warehouse/expired'})
+                        this.$router.push({name: 'warehouse/unReturn'})
                         break;
                     case 'SCRAP':
-                        this.$router.push({name: 'warehouse/unReturn'})
+                        this.$router.push({name: 'warehouse/expired'})
                         break;
                     case 'SYNC':
                         this.loading = true
