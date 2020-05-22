@@ -17,7 +17,7 @@
                                  :selectList="hardwareSelect.list"></base-select>
                     <base-button label="读取数据" @click="readData" :disabled="!hardwareSelect.select"></base-button>
                 </template>
-                <define-table :data="equipItems" height="2.8646rem" @changeCurrent="changeRow" :havePage="false"
+                <define-table :data="equipItems" height="2.8646rem" @changeCurrent="selectedRow" :havePage="false"
                               :highLightCurrent="true" slot="total" :showSummary="true" :summaryFunc="sumFunc">
                     <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
                         <i class="iconfont iconyichuliang" @click="delRow(data,'equipItems')"></i>
@@ -126,7 +126,7 @@
                 transScrapCategory(this.order)
                 this.fixEquipItems(this.order.scrapItems)
             },
-            changeRow(current) {
+            selectedRow(current) {
                 this.totalIndex = current.index
             },
             delRow(data, list) {
@@ -139,10 +139,6 @@
                 } else {
                     this.equipItems[this.totalIndex].items.splice(data.$index, 1)
                     this.equipItems[this.totalIndex].count = this.equipItems[this.totalIndex].count - 1
-                    this.rfids = _.pull(this.rfids, data.row.rfid)
-                    if (this.rfids.length === 0) {
-                        this.equipItems = [{items: []}]
-                    }
                 }
             },
             changeTab(data) {
