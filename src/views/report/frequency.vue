@@ -17,25 +17,25 @@
                     <div style="float:left">{{this.title}}</div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='genres'">
-                    <div style="float:left">装备大类：{{this.title}} 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}}元 使用频次：{{addNum(2)}}次</div>
+                    <div style="float:left">装备大类：{{this.title}}  历史库存：{{addNum(5)}}件 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}}元 使用频次：{{addNum(2)}}次</div>
                     <div style="float:right">
                         <define-input label="小类" v-model="search2"></define-input>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='category'">
-                    <div style="float:left">装备小类：{{this.title}} 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}}元 使用频次：{{addNum(2)}}次</div>
+                    <div style="float:left">装备小类：{{this.title}}  历史库存：{{addNum(5)}}件 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}}元 使用频次：{{addNum(2)}}次</div>
                     <div style="float:right">
                         <define-input label="装备参数/供应商" v-model="search2"></define-input>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='singlePolice'">
-                    <div style="float:left">装备小类：{{this.title}} 总数：{{addNum(1)}}件 总价：{{addNum(4)}}元 使用频次：{{addNum(2)}}次</div>
+                    <div style="float:left">装备小类：{{this.title}}  历史库存：{{addNum(6)}}件 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}}元 使用频次：{{addNum(2)}}次</div>
                     <!-- <div style="float:right">
                         <define-input label="小类" v-model="search2"></define-input>
                     </div> -->
                 </div>
                 <div style="safety-body-t" v-else-if="show=='singlePoliceCategory'">
-                    <div style="float:left">装备小类：{{this.title}} 总数：{{addNum(1)}}件 总价：{{addNum(4)}}元 使用频次：{{addNum(2)}}次</div>
+                    <div style="float:left">装备小类：{{this.title}}  历史库存：{{addNum(6)}}件 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}}元 使用频次：{{addNum(2)}}次</div>
                     <div style="float:right">
                         <define-input label="装备参数/供应商" v-model="search2"></define-input>
                     </div>
@@ -43,18 +43,21 @@
                 <div style="width:95%">
                     <define-table v-if="show=='All'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
                         <define-column label="装备大类" field="genre"/>
+                         <define-column label="历史库存" field="commonStock"></define-column>
                         <define-column label="当前库存" field="totalCount"></define-column>
                         <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
                         <define-column label="使用次数" field="count"></define-column>
                     </define-table>
                     <define-table v-if="show=='genres'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
                         <define-column label="装备小类" field="category"/>
+                         <define-column label="历史库存" field="commonStock"></define-column>
                         <define-column label="当前库存" field="totalCount"></define-column>
                         <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
                         <define-column label="使用次数" field="count"></define-column>
                     </define-table>
                     <define-table v-if="show=='category'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
                        <define-column label="装备参数" :filter="(row)=>{return `${row.name}(${row.model})`}"></define-column>
+                        <define-column label="历史库存" field="commonStock"></define-column>
                         <define-column label="当前库存" field="totalCount"></define-column>
                         <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
                         <define-column label="使用次数" field="count"></define-column>
@@ -62,13 +65,16 @@
                     </define-table>
                       <define-table v-if="show=='singlePolice'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
                         <define-column label="装备小类" field="cabinet"/>
-                        <define-column label="装备总数" field="totalCount"></define-column>
-                        <define-column label="装备总价" field="totalPrice"></define-column>
+                        <define-column label="历史库存" field="cabinetStock"></define-column>
+                        <define-column label="当前库存" field="totalCount"></define-column>
+                        <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
+                        <define-column label="使用次数" field="count"></define-column>
                     </define-table>
                     <define-table v-if="show=='singlePoliceCategory'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
                         <define-column label="装备参数" :filter="(row)=>{return `${row.name}(${row.model})`}"></define-column>
-                        <define-column label="装备总数" field="totalCount"></define-column>
-                        <define-column label="装备总价" field="totalPrice"></define-column>
+                        <define-column label="历史库存" field="cabinetStock"></define-column>
+                        <define-column label="当前库存" field="totalCount"></define-column>
+                        <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
                         <define-column label="使用次数" field="count"></define-column>
                         <define-column label="供应商" field="supplier"></define-column>
                     </define-table>
@@ -140,6 +146,9 @@
                     })
                 })
                 findEquipFrequencyStatistics({categorys:3,level:'ALL'}).then(res=>{
+                     res.forEach(item=>{
+                        item.commonStock=item.commonStock+item.totalCount
+                        })
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
@@ -155,12 +164,14 @@
                if(item==2)return this.equipArg.reduce((v,k)=>v+k.count,0)
                if(item==3)return this.equipArg.reduce((v,k)=>v+k.totalLoss,0)
                if(item==4)return this.equipArg.reduce((v,k)=>v+k.totalPrice,0)
+               if(item==5)return this.equipArg.reduce((v,k)=>v+k.commonStock,0)
+               if(item==6)return this.equipArg.reduce((v,k)=>v+k.cabinetStock,0)
             },
              addPolice(){
                 allPoliceFrequency().then(res=>{
                     console.log("触发");
                     let tabList={
-                        commStock:res.reduce((v,k)=>v+k.cabinetStock,0),
+                        commonStock:res.reduce((v,k)=>v+k.cabinetStock+k.totalCount,0),
                         totalCount:res.reduce((v,k)=>v+k.totalCount,0),
                         inHouseCount:'--',
                         count:res.reduce((v,k)=>v+k.count,0),
@@ -179,12 +190,18 @@
                 this.title = data.data.name
                 if(this.show=="genres"){
                     findEquipFrequencyStatistics({categorys:3,id:this.id,level:'GENRE'}).then(res=>{
+                         res.forEach(item=>{
+                        item.commonStock=item.commonStock+item.totalCount
+                        })
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
                     })
                 }else if(this.show=="All"){
                     findEquipFrequencyStatistics({categorys:3,level:'ALL'}).then(res=>{
+                         res.forEach(item=>{
+                        item.commonStock=item.commonStock+item.totalCount
+                        })
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
@@ -194,6 +211,9 @@
                     })
                 }else if(this.show=="category"){
                    findEquipFrequencyStatistics({categorys:3,id:this.id,level:'CATEGORY'}).then(res=>{
+                        res.forEach(item=>{
+                        item.commonStock=item.commonStock+item.totalCount
+                        })
                         this.equipArg = res
                         this.equipArg.forEach(item=>{
                             item.equipArgs=`${item.name}(${item.model})`
@@ -203,6 +223,9 @@
                     })
                 }else if(this.show=="singlePolice"){
                    allPoliceFrequency().then(res=>{
+                        res.forEach(item=>{
+                        item.cabinetStock=item.cabinetStock+item.totalCount
+                        })
                         this.equipArg = res
                         this.equipArg.forEach(item=>{
                             if(item.cabinet==0)item.cabinet='单警柜装备'
@@ -215,6 +238,9 @@
                 }
                 else if(this.show=="singlePoliceCategory"){
                    allPoliceFrequencyCategories(this.id).then(res=>{
+                        res.forEach(item=>{
+                        item.cabinetStock=item.cabinetStock+item.totalCount
+                        })
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;

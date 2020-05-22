@@ -20,26 +20,26 @@
 
                 </div>
                 <div style="safety-body-t" v-else-if="show=='genres'">
-                   <div style="float:left">装备大类：{{this.title}} 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}} 损耗数：{{addNum(2)}}件 损耗总额：{{addNum(3)}}元 </div>
+                   <div style="float:left">装备大类：{{this.title}}  历史库存：{{addNum(5)}}件 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}} 损耗数：{{addNum(2)}}件 损耗总额：{{addNum(3)}}元 </div>
                     <div style="float:right">
                         <define-input label="小类" v-model="search2"></define-input>
                     </div>
                     
                 </div>
                 <div style="safety-body-t" v-else-if="show=='category'">
-                    <div style="float:left">装备小类：{{this.title}} 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}} 损耗数：{{addNum(2)}}件 损耗总额：{{addNum(3)}}元 </div>
+                    <div style="float:left">装备小类：{{this.title}}  历史库存：{{addNum(5)}}件 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}} 损耗数：{{addNum(2)}}件 损耗总额：{{addNum(3)}}元 </div>
                     <div style="float:right">
                         <define-input label="装备参数/供应商" v-model="search2"></define-input>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='singlePoliceCategory'">
-                    <div style="float:left">装备小类：{{this.title}} 当前库存：{{addNum(1)}}件 当前库存总价(￥){{addNum(4)}} 损耗数：{{addNum(2)}}件 损耗总额：{{addNum(3)}}元 </div>
+                    <div style="float:left">装备小类：{{this.title}}  历史库存：{{addNum(5)}}件 当前库存：{{addNum(1)}}件 当前库存总价(￥){{addNum(4)}} 损耗数：{{addNum(2)}}件 损耗总额：{{addNum(3)}}元 </div>
                     <div style="float:right">
                         <define-input label="装备参数/供应商" v-model="search2"></define-input>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='singlePolice'">
-                    <div style="float:left">装备大类：{{this.title}} 历史库存： 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}} 损耗数：{{addNum(2)}}件 损耗总额：{{addNum(3)}}元 </div>
+                    <div style="float:left">装备大类：{{this.title}} 历史库存：{{addNum(6)}}件 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}} 损耗数：{{addNum(2)}}件 损耗总额：{{addNum(3)}}元 </div>
                     <div style="float:right">
                         <define-input label="小类" v-model="search2"></define-input>
                     </div>
@@ -75,16 +75,18 @@
                     </define-table>
                      <define-table v-if="show=='singlePolice'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
                         <define-column label="装备小类" field="cabinet"/>
-                        <define-column label="装备总数" field="totalCount"></define-column>
-                        <define-column label="装备总价(元)" field="totalPrice"></define-column>
+                        <define-column label="历史库存" field="cabinetStock"></define-column>
+                        <define-column label="当前库存" field="totalCount"></define-column>
+                        <define-column label="当前库存总价(元)" field="totalPrice"></define-column>
                         <define-column label="损耗数量" field="count"></define-column>
                         <define-column label="损耗总额" field="totalLoss"></define-column>
                         <define-column label="损耗率(%)" :filter="(row)=>policeRate(row)"></define-column>
                     </define-table>
                     <define-table v-if="show=='singlePoliceCategory'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
                         <define-column label="装备参数" :filter="(row)=>{return `${row.name}(${row.model})`}"></define-column>
-                        <define-column label="装备总数" field="totalCount"></define-column>
-                        <define-column label="装备总价(元)" field="totalPrice"></define-column>
+                        <define-column label="历史库存" field="cabinetStock"></define-column>
+                        <define-column label="当前库存" field="totalCount"></define-column>
+                        <define-column label="当前库存总价(元)" field="totalPrice"></define-column>
                         <define-column label="损耗数量" field="count"></define-column>
                         <define-column label="损耗总额" field="totalLoss"></define-column>
                         <define-column label="损耗率(%)" :filter="(row)=>policeRate(row)"></define-column>
@@ -157,12 +159,14 @@
                     })
                 })
                 findEquipLossStatistics({categorys:this.paramArray,level:'ALL'}).then(res=>{
+                         res.forEach(item=>{
+                        item.commonStock=item.commonStock+item.totalCount
+                        })
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
                         this.addPolice()
                     })
-               
             },
             rate(data){
                 if(data.totalCount+data.commonStock!=0){
@@ -182,7 +186,7 @@
                 cabinetLoss().then(res=>{
                     console.log("触发");
                     let tabList={
-                        commonStock:res.reduce((v,k)=>v+k.cabinetStock,0),
+                        commonStock:res.reduce((v,k)=>v+k.cabinetStock+k.totalCount,0),
                         totalCount:res.reduce((v,k)=>v+k.totalCount,0),
                         count:res.reduce((v,k)=>v+k.count,0),
                         inHouseCount:'--',
@@ -200,6 +204,7 @@
                if(item==3)return this.equipArg.reduce((v,k)=>v+k.totalLoss,0)
                if(item==4)return this.equipArg.reduce((v,k)=>v+k.totalPrice,0)
                if(item==5)return this.equipArg.reduce((v,k)=>v+k.commonStock,0)
+               if(item==6)return this.equipArg.reduce((v,k)=>v+k.cabinetStock,0)
             },
             clickNode(data) {
                this.id=data.data.id
@@ -207,12 +212,18 @@
                 this.title = data.data.name
                 if(this.show=="genres"){
                     findEquipLossStatistics({categorys:3,id:this.id,level:'GENRE'}).then(res=>{
+                        res.forEach(item=>{
+                        item.commonStock=item.commonStock+item.totalCount
+                        })
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
                     })
                 }else if(this.show=="All"){
                     findEquipLossStatistics({categorys:this.paramArray,level:'ALL'}).then(res=>{
+                          res.forEach(item=>{
+                        item.commonStock=item.commonStock+item.totalCount
+                        })
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
@@ -222,6 +233,9 @@
                     })
                 }else if(this.show=="category"){
                    findEquipLossStatistics({categorys:3,id:this.id,level:'CATEGORY'}).then(res=>{
+                         res.forEach(item=>{
+                        item.commonStock=item.commonStock+item.totalCount
+                        })
                         this.equipArg = res
                         this.equipArg.forEach(item=>{
                             item.equipArgs=`${item.name}(${item.model})`
@@ -231,6 +245,9 @@
                     })
                 }else if(this.show=="singlePolice"){
                    cabinetLoss().then(res=>{
+                         res.forEach(item=>{
+                        item.cabinetStock=item.cabinetStock+item.totalCount
+                        })
                         this.equipArg = res
                         this.equipArg.forEach(item=>{
                             if(item.cabinet==0)item.cabinet='单警柜装备'
@@ -243,6 +260,9 @@
                 }
                 else if(this.show=="singlePoliceCategory"){
                    cabinetLossCategories(this.id).then(res=>{
+                         res.forEach(item=>{
+                        item.cabinetStock=item.cabinetStock+item.totalCount
+                        })
                         this.equipArg = res
                         this.equipArg.forEach(item=>{
                             item.equipArgs=item.name+item.model
