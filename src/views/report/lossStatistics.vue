@@ -20,28 +20,26 @@
 
                 </div>
                 <div style="safety-body-t" v-else-if="show=='genres'">
-                    <div  >
-                         <div style="float:left">装备大类：{{this.title}}  </div>
+                   <div style="float:left">装备大类：{{this.title}} 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}} 损耗数：{{addNum(2)}}件 损耗总额：{{addNum(3)}}元 </div>
                     <div style="float:right">
                         <define-input label="小类" v-model="search2"></define-input>
-                    </div>
                     </div>
                     
                 </div>
                 <div style="safety-body-t" v-else-if="show=='category'">
                     <div style="float:left">装备小类：{{this.title}} 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}} 损耗数：{{addNum(2)}}件 损耗总额：{{addNum(3)}}元 </div>
                     <div style="float:right">
-                        <define-input label="装备名称" v-model="search2"></define-input>
+                        <define-input label="装备参数/供应商" v-model="search2"></define-input>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='singlePoliceCategory'">
                     <div style="float:left">装备小类：{{this.title}} 当前库存：{{addNum(1)}}件 当前库存总价(￥){{addNum(4)}} 损耗数：{{addNum(2)}}件 损耗总额：{{addNum(3)}}元 </div>
                     <div style="float:right">
-                        <define-input label="装备名称" v-model="search2"></define-input>
+                        <define-input label="装备参数/供应商" v-model="search2"></define-input>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='singlePolice'">
-                    <div style="float:left">装备大类：{{this.title}} 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}} 损耗数：{{addNum(2)}}件 损耗总额：{{addNum(3)}}元 </div>
+                    <div style="float:left">装备大类：{{this.title}} 历史库存： 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}} 损耗数：{{addNum(2)}}件 损耗总额：{{addNum(3)}}元 </div>
                     <div style="float:right">
                         <define-input label="小类" v-model="search2"></define-input>
                     </div>
@@ -162,6 +160,7 @@
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
+                        this.addPolice()
                     })
                
             },
@@ -179,11 +178,28 @@
                 this.paginator.page = page
                 this.fetchData()
             },
+            addPolice(){
+                cabinetLoss().then(res=>{
+                    console.log("触发");
+                    let tabList={
+                        commonStock:res.reduce((v,k)=>v+k.cabinetStock,0),
+                        totalCount:res.reduce((v,k)=>v+k.totalCount,0),
+                        count:res.reduce((v,k)=>v+k.count,0),
+                        inHouseCount:'--',
+                        genre:'单警柜装备',
+                        receiveUseCount:'--',
+                        totalLoss:res.reduce((v,k)=>v+k.totalLoss,0),
+                        totalPrice:res.reduce((v,k)=>v+k.totalPrice,0)
+                    }
+                    this.equipArg.push(tabList)
+                    })
+            },
             addNum(item){
                if(item==1)return this.equipArg.reduce((v,k)=>v+k.totalCount,0)
                if(item==2)return this.equipArg.reduce((v,k)=>v+k.count,0)
                if(item==3)return this.equipArg.reduce((v,k)=>v+k.totalLoss,0)
                if(item==4)return this.equipArg.reduce((v,k)=>v+k.totalPrice,0)
+               if(item==5)return this.equipArg.reduce((v,k)=>v+k.commonStock,0)
             },
             clickNode(data) {
                this.id=data.data.id
@@ -200,6 +216,9 @@
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
+                        if(!this.check){
+                            this.addPolice()
+                        }
                     })
                 }else if(this.show=="category"){
                    findEquipLossStatistics({categorys:3,id:this.id,level:'CATEGORY'}).then(res=>{
@@ -275,23 +294,13 @@
         check: {
             handler(newval) {
                 if(newval){
-                     this.paramArray=[3]
                     this.tree.treeData.pop()
-                    findEquipLossStatistics({categorys:this.paramArray,level:'ALL'}).then(res=>{
-                        this.equipArg = res
-                        this.paginator.totalPages = res.totalPages;
-                        this.paginator.totalElements = res.totalElements;
-                    })
+                    this.equipArg.pop()
                 }else{
-                   this.paramArray=[0,1,2,3]
                    this.tree.treeData.push({name:'单警装备',show:'singlePolice',children:[
                             {name:'公共柜装备',id:1,show:'singlePoliceCategory'},{name:'备用柜装备',id:2,show:'singlePoliceCategory'},{name:'单警柜装备',id:0,show:'singlePoliceCategory'}
                         ]})
-                        findEquipLossStatistics({categorys:this.paramArray,level:'ALL'}).then(res=>{
-                        this.equipArg = res
-                        this.paginator.totalPages = res.totalPages;
-                        this.paginator.totalElements = res.totalElements;
-                    })
+                    this.addPolice()
                 }
             },
         },
