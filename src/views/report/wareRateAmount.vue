@@ -5,7 +5,7 @@
             <define-table :data="list" height="3.64rem" @changePage="changePage" :pageInfo="paginator">
                 <define-column label="人员姓名" field="policeName" ></define-column>
                    
-                <define-column label="佩戴总数" field="totalCount"></define-column>
+                <define-column label="佩戴次数" field="totalCount"></define-column>
                   
                 <define-column label="标准次数" field='standCount' width="400"></define-column>
                  
