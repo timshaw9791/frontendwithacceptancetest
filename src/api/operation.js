@@ -10,14 +10,14 @@ export function retirementApplication(data) {
 //正在保养
 export function inKeepEquips() {
     return request({
-        url: '/equips/in-upkeep',
+        url: '/remind/in-upkeep',
         method: 'get',
     })
 }
 //正在保养
 export function needKeepEquips() {
     return request({
-        url: '/equips/need-upkeep',
+        url: '/remind/need-upkeep',
         method: 'get',
     })
 }
@@ -32,7 +32,7 @@ export function endKeepEquips(state,list) {
 //获取需要报废的装备
 export function maturityScrap(params) {
     return request({
-        url:"/equips/need-scrap",
+        url:"/remind/need-scrap",
         method: 'get',
         params
     })
@@ -40,7 +40,7 @@ export function maturityScrap(params) {
 
 export function findkeepingequips() {
     return request({
-        url: '/equip/findkeepingequips',
+        url: '/remind/findkeepingequips',
         method: 'get',
     })
 }
@@ -61,7 +61,7 @@ export function getRepairOrder(params) {
 }
 export function rightRepairOrder(params) {
     return request({
-        url: "/equips/in-repair",
+        url: "/remind/in-repair",
         method: 'get',
         params:params
     })
