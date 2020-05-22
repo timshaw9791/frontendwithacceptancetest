@@ -80,28 +80,24 @@
         },
         methods: {
             readData() {
-                this.rfids = ['9996666','66999666','998898989']
-                this.fetchEquipItems(this.rfids)
-                // killProcess(this.pid)
-                // start("java -jar scan.jar", (data) => {
-                //     console.log(this.matchRfids.indexOf(data) !== -1)
-                //     console.log(this.rfids.indexOf(data) === -1)
-                //     if (this.matchRfids.length !== 0) {
-                //         if (this.matchRfids.indexOf(data) !== -1
-                //             && this.rfids.indexOf(data) === -1) {
-                //             this.rfids.push(data)
-                //             this.fetchEquipItems(this.rfids)
-                //         }
-                //     } else {
-                //         this.rfids.push(data)
-                //         this.fetchEquipItems(this.rfids)
-                //     }
-                // }, (fail) => {
-                //     this.index = 1;
-                //     this.$message.error(fail);
-                // }, (pid, err) => {
-                //     pid ? this.pid = pid : this.$message.error(err)
-                // })
+                killProcess(this.pid)
+                start("java -jar scan.jar", (data) => {
+                    if (this.matchRfids.length !== 0) {
+                        if (this.matchRfids.indexOf(data) !== -1
+                            && this.rfids.indexOf(data) === -1) {
+                            this.rfids.push(data)
+                            this.fetchEquipItems(this.rfids)
+                        }
+                    } else {
+                        this.rfids.push(data)
+                        this.fetchEquipItems(this.rfids)
+                    }
+                }, (fail) => {
+                    this.index = 1;
+                    this.$message.error(fail);
+                }, (pid, err) => {
+                    pid ? this.pid = pid : this.$message.error(err)
+                })
             },
             // 获取装备列表信息
             fetchEquipItems(data) {
