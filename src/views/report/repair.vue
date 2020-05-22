@@ -66,7 +66,7 @@
                     </define-table>
                      <define-table v-if="show=='singlePolice'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
                         <define-column label="装备小类" field="cabinet"/>
-                        <define-column label="装备总数" field="totalCount"></define-column>
+                        <define-column label="当前库存" field="totalCount"></define-column>
                         <define-column label="当前库存总价(￥)：" field="totalPrice"></define-column>
                     </define-table>
                     <define-table v-if="show=='singlePoliceCategory'" :pageInfo="paginator" @changePage="changePage" :data="equipArg" height="3.6042rem" >
