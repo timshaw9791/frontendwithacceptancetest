@@ -82,8 +82,6 @@
             readData() {
                 killProcess(this.pid)
                 start("java -jar scan.jar", (data) => {
-                    console.log('我是data')
-                    console.log(data)
                     if (this.matchRfids.length !== 0) {
                         if (this.matchRfids.indexOf(data) !== -1
                             && this.rfids.indexOf(data) === -1) {
@@ -142,10 +140,16 @@
                     this.equipItems[this.totalIndex].items.splice(data.$index,1)
                     this.equipItems[this.totalIndex].count = this.equipItems[this.totalIndex].count - 1
                     this.rfids = _.pull(this.rfids, data.row.rfid)
+                    if (this.rfids.length === 0) {
+                        this.equipItems = [{items: []}]
+                    }
                 }
             },
             changeTab(data) {
                 data.key === 'total' ? killProcess(this.pid) : ''
+                if (this.equipItems[this.totalIndex].count === 0) {
+                    _.pullAt(this.equipItems, this.totalIndex)
+                }
             },
             // 表格合并行计算方法
             sumFunc(param) {
