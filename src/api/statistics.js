@@ -11,7 +11,7 @@ export function equipmentAmount(data) {
 
 export function equipmentScrapped(data) {
     return request({
-        url: '/equips/need-scrap',
+        url: '/remind/need-scrap',
         method: 'get',
         params: data
     })
