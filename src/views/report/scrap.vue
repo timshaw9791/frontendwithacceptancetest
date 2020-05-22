@@ -17,23 +17,23 @@
                     <div style="float:left">{{this.title}}</div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='genres'">
-                    <div style="float:left">装备大类：{{this.title}} 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}}元 报废件数：{{addNum(2)}}</div>
+                    <div style="float:left">装备大类：{{this.title}} 历史库存：{{addNum(5)}}件 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}}元 报废件数：{{addNum(2)}}</div>
                     <div style="float:right">
                         <define-input label="小类" v-model="search2"></define-input>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='category'">
-                    <div style="float:left">装备小类：{{this.title}} 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}}元 报废件数：{{addNum(2)}}</div>
+                    <div style="float:left">装备小类：{{this.title}} 历史库存：{{addNum(5)}}件 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}}元 报废件数：{{addNum(2)}}</div>
                     <div style="float:right">
                         <define-input label="装备参数/供应商" v-model="search2"></define-input>
                     </div>
                 </div>
                 <div style="safety-body-t" v-else-if="show=='singlePolice'">
-                    <div style="float:left">装备小类：{{this.title}} 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}}元 报废件数：{{addNum(2)}}</div>
+                    <div style="float:left">装备小类：{{this.title}} 历史库存：{{addNum(6)}}件 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}}元 报废件数：{{addNum(2)}}</div>
                     
                 </div>
                 <div style="safety-body-t" v-else-if="show=='singlePoliceCategory'">
-                    <div style="float:left">装备小类：{{this.title}} 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}}元 报废件数：{{addNum(2)}}</div>
+                    <div style="float:left">装备小类：{{this.title}} 历史库存：{{addNum(6)}}件 当前库存：{{addNum(1)}}件 当前库存总价(￥)：{{addNum(4)}}元 报废件数：{{addNum(2)}}</div>
                     <div style="float:right">
                         <define-input label="装备参数/供应商" v-model="search2"></define-input>
                     </div>
@@ -141,6 +141,9 @@
                     })
                 })
                 findEquipScrapStatistics({categorys:this.paramArray,level:'ALL'}).then(res=>{
+                     res.forEach(item=>{
+                        item.commonStock=item.commonStock+item.totalCount
+                        })
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
@@ -156,12 +159,14 @@
                if(item==2)return this.equipArg.reduce((v,k)=>v+k.count,0)
                if(item==3)return this.equipArg.reduce((v,k)=>v+k.totalLoss,0)
                if(item==4)return this.equipArg.reduce((v,k)=>v+k.totalPrice,0)
+               if(item==5)return this.equipArg.reduce((v,k)=>v+k.commonStock,0)
+               if(item==6)return this.equipArg.reduce((v,k)=>v+k.cabinetStock,0)
             },
             addPolice(){
                 allPoliceScrap().then(res=>{
                     console.log("触发");
                     let tabList={
-                        commonStock:res.reduce((v,k)=>v+k.cabinetStock,0),
+                        commonStock:res.reduce((v,k)=>v+k.cabinetStock+k.totalCount,0),
                         totalCount:res.reduce((v,k)=>v+k.totalCount,0),
                         count:res.reduce((v,k)=>v+k.count,0),
                         inHouseCount:'--',
@@ -181,12 +186,18 @@
                 this.title = data.data.name
                 if(this.show=="genres"){
                     findEquipScrapStatistics({categorys:3,id:this.id,level:'GENRE'}).then(res=>{
+                         res.forEach(item=>{
+                        item.commonStock=item.commonStock+item.totalCount
+                        })
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
                     })
                 }else if(this.show=="All"){
                     findEquipScrapStatistics({categorys:this.paramArray,level:'ALL'}).then(res=>{
+                         res.forEach(item=>{
+                        item.commonStock=item.commonStock+item.totalCount
+                        })
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
@@ -197,12 +208,18 @@
                 }else if(this.show=="category"){
                     console.log("-------------+");
                    findEquipScrapStatistics({categorys:3,id:this.id,level:'CATEGORY'}).then(res=>{
+                        res.forEach(item=>{
+                        item.commonStock=item.commonStock+item.totalCount
+                        })
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;
                     })
                 }else if(this.show=="singlePolice"){
                    allPoliceScrap().then(res=>{
+                        res.forEach(item=>{
+                        item.cabinetStock=item.cabinetStock+item.totalCount
+                        })
                         this.equipArg = res
                         this.equipArg.forEach(item=>{
                             if(item.cabinet==0)item.cabinet='单警柜装备'
@@ -215,6 +232,9 @@
                 }
                 else if(this.show=="singlePoliceCategory"){
                    allPoliceScrapCategories(this.id).then(res=>{
+                        res.forEach(item=>{
+                        item.cabinetStock=item.cabinetStock+item.totalCount
+                        })
                         this.equipArg = res
                         this.paginator.totalPages = res.totalPages;
                         this.paginator.totalElements = res.totalElements;

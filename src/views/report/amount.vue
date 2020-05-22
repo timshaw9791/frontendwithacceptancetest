@@ -1,6 +1,6 @@
 <template>
   <div class="safety-container">
-    <my-header title="人员信息" :haveBlack="false"></my-header>
+    <my-header title="装备金额统计" :haveBlack="false"></my-header>
     <div class="safety-body" >
          <bos-tabs  :option="['contrast']" :layoutRatio="[1,3]" :contrastKey="['slot1', 'slot2']" >
             <div slot="slot1"  class="safety-body-top">
