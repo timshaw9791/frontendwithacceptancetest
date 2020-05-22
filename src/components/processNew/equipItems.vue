@@ -52,7 +52,6 @@
                     selected: ""
                 },
                 tips: [{value: '直接报废', key: '1'}, {value: '装备拿去维修，无法修补', key: '2'}],
-                equipItems: [],
                 // todo 假数据
                 rfids: ['555566666777'],
                 findIndex: 0,
@@ -60,7 +59,7 @@
         },
         props: {
             equipItems: {
-                type: Object,
+                type: Array,
                 required: true
             },
             isInfo: {

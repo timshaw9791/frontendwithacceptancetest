@@ -34,10 +34,9 @@
 <script>
     import myHeader from 'components/base/header/header';
     import bosTabs from '@/componentized/table/bosTabs'
-    import {complete, getOrder, processStart, processDetail} from 'api/process'
+    import {getOrder, processStart} from 'api/process'
     import ScrapEquips from "../../components/processNew/equipItems";
 
-    var _ = require('lodash');
     export default {
         name: "transferOrder",
         components: {
@@ -50,6 +49,8 @@
                 title: "",
                 show: false,
                 order: {},
+                inHouseOrder:{},
+                outHouseOrder:{},
                 tips: [{value: '直接报废', key: '1'}, {value: '装备拿去维修，无法修补', key: '2'}]
             }
         },

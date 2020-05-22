@@ -37,7 +37,7 @@
             },
             apply(data) {
                 this.$router.push({
-                    path: `${data.key}` + 'Order',
+                    path: `${data.key}` + 'Apply',
                     query: {
                         name: `${data.name}`,
                         key: `${data.key}`,

@@ -1,6 +1,6 @@
 <template>
     <div class="equip-allocation-container">
-          <my-header :title="$route.meta.title" :haveBlack="true" @h_black="cancel"></my-header>
+          <my-header :title="$route.query.title" :haveBlack="true" @h_black="cancel"></my-header>
           <div class="action_box" data-test="action_box">
                 <define-input label="单号" v-model="listData.number" placeholder="--" :disabled="true" ></define-input>
                 <date-select label="操作时间" v-model="listData.createTime" placeholder="--" :disabled="true"></date-select>
@@ -13,14 +13,14 @@
                             <base-select label="硬件选择" v-model="select.selected" align="right" :selectList="select.handWareList"></base-select>
                         </template>
             <define-table :data="list" slot="slot1" height="4rem" @changeCurrent="selRow" :havePage="false"  >
-                            <define-column label="操作" width="150" v-slot="{ data }">
+                            <define-column label="操作" width="150px" v-slot="{ data }" v-if="$route.query.title!='位置变更单/位置变更单详情'">
                                 <i class="iconfont icontianjialiang" @click="changeRow(true,data)" ></i>
                                 <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
                             </define-column>
-                            <define-column label="位置修改" width="400" v-slot="{ data }">
+                            <define-column label="位置修改" v-slot="{ data }">
                                  <entity-input v-model="data.row.location" :column="3" :options="{search:'locationSelect'}" :formatFunc="$formatFuncLoc" :tableEdit="edit" ></entity-input>
                             </define-column>
-                            <define-column label="装备数量" width="100"  v-slot="{ data }">
+                            <define-column label="装备数量" width="100px"  v-slot="{ data }">
                                 <define-input v-model="data.row.count" type="Number" :tableEdit="edit"></define-input>
                             </define-column>
                         </define-table>

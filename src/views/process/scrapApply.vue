@@ -1,4 +1,4 @@
-<template xmlns="http://www.w3.org/1999/html">
+<template>
     <div class="apply-process-container">
         <my-header :title="title" :haveBlack="false"></my-header>
         <div class="apply-process">
@@ -30,7 +30,7 @@
 <script>
     import myHeader from 'components/base/header/header';
     import bosTabs from '@/componentized/table/bosTabs.vue'
-    import {processStart, processDetail, getHistoryTasks} from '../../api/process'
+    import {processStart, processDetail, getHistoryTasks, SAODetail} from '../../api/process'
     import {findByRfids} from "../../api/storage";
     import {transEquips} from "../../common/js/transEquips";
     import {getHouseInfo} from "../../api/organUnit";
@@ -56,13 +56,14 @@
                     applicant: {}
                 },
                 //任务
-                taskHistory: {},
+                taskHistory: [],
                 equipItems: [{items: []}],
                 //需要申请的装备列表
                 scrapEquips: [],
                 findIndex: 0,
                 isInfo: false,
                 isEdit: false,
+                tips: [{value: '直接报废', key: '1'}, {value: '装备拿去维修，无法修补', key: '2'}],
             }
         },
         methods: {
@@ -87,10 +88,10 @@
             },
             fetchData() {
                 let {processInstanceId} = this.$route.query
-                processDetail({processInstanceId}).then(
+                SAODetail({processInstanceId}).then(
                     res => {
-                        this.order = res.processVariables.applyOrder
-                        this.equipItems = transEquips(res.processVariables.applyOrder.equips).equipItems
+                        this.order = res
+                        this.equipItems = transEquips(res.equips).equipItems
                     }
                 )
                 getHistoryTasks({processInstanceId}).then(

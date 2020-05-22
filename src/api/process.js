@@ -9,6 +9,14 @@ export function getAllProcess() { // 获取所有流程定义
     })
 }
 
+export function SAODetail(params) { // 报废申请单详情
+    return request({
+        url: baseBURL + '/equip-order/process_id',
+        method: 'GET',
+        params
+    })
+}
+
 export function processStart(params, data) { // 流程启动
     return request({
         url: baseBURL + '/workflow/processes/start',

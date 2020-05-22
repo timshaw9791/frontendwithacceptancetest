@@ -127,19 +127,14 @@ export const asyncRouterMap = [{
             component: _import('process/newProcess'),
             meta: {title: '新启流程'}
         }, {
-            path: 'scrapOrder', // 报废申请
-            name: 'scrapOrder',
-            component: _import('process/scrapOrder'),
+            path: 'scrapApply', // 报废申请
+            name: 'scrapApply',
+            component: _import('process/scrapApply'),
             hidden: true,
         }, {
-            path: 'transferApply', // 调拨申请
-            name: 'transferApply',
-            component: _import('process/transferApply'),
-            hidden: true,
-        }, {
-            path: 'transfer/order', // 调拨详情页
-            name: 'transferDetail',
-            component: _import('process/transferDetail'),
+            path: 'transferOrder', // 调拨申请页面
+            name: 'transferOrder',
+            component: _import('process/transferOrder'),
             hidden: true,
         }, {
             path: 'transfer/:type', // 调拨出入库
