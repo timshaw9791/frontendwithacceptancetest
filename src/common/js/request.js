@@ -73,4 +73,11 @@ service.interceptors.response.use(response => {
     }
 )
 
-export default service
+function request(configParam, state = false) {
+    return service(configParam).then(res => {
+        state && Message.success('操作成功');
+        return new Promise(reslove => reslove(res))
+    })
+}
+
+export default request
