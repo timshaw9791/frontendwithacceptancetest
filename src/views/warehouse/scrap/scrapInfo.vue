@@ -80,7 +80,10 @@
         },
         methods: {
             readData() {
-                killProcess(this.pid)
+                // 测试代码
+                // this.rfids = "9996666"
+                // this.fetchEquipItems()
+                // killProcess(this.pid)
                 start("java -jar scan.jar", (data) => {
                     if (this.matchRfids.length !== 0) {
                         if (this.matchRfids.indexOf(data) !== -1
@@ -99,9 +102,9 @@
                     pid ? this.pid = pid : this.$message.error(err)
                 })
             },
-            // 获取装备列表信息
-            fetchEquipItems(data) {
-                findByRfids(data).then(res => {
+            // 根据RFID列表获取装备信息
+            fetchEquipItems() {
+                findByRfids(this.rfids).then(res => {
                     this.fixEquipItems(res)
                 })
             },
@@ -167,7 +170,7 @@
             confirm() {
                 if (this.rfids.length === 0) return this.$message.error('装备列表不能为空')
                 equipScrap(this.order.category, this.order.remark, this.rfids).then(() => {
-                    this.cancel()
+                    this.$router.push({path:'scrapList'})
                 })
             },
             cancel() {
@@ -186,7 +189,7 @@
                 //默认是正常报废
                 if (this.order.category === 0 || this.order.category === 2) {
                     this.rfids = this.$route.query.rfids
-                    this.fetchEquipItems(this.$route.query.rfids)
+                    this.fetchEquipItems()
                 } else {
                     this.isHardwareSelect = true
                     if (this.order.category === 1) {
