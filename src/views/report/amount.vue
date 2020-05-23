@@ -161,7 +161,7 @@
                         commStock:res.reduce((v,k)=>v+k.cabinetStock,0),
                         totality:res.reduce((v,k)=>v+k.totalCount,0),
                         inHouseCount:'--',
-                        genre:'单警柜装备',
+                        genre:'单警装备',
                         receiveUseCount:'--',
                         totalPrice:res.reduce((v,k)=>v+k.totalPrice,0)
                     }
