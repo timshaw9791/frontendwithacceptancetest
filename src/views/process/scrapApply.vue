@@ -2,6 +2,7 @@
     <div class="apply-process-container">
         <my-header :title="title" :haveBlack="false"></my-header>
         <div class="apply-process">
+            <operation-bar :task-definition-key="taskDefinitionKey" @refused="refused" @agree="agree"></operation-bar>
             <div class="apply-process-body">
                 <div>
                     <define-input label="单号" v-model="order.number" :disabled="true" class="odd-number"></define-input>
@@ -30,17 +31,19 @@
 <script>
     import myHeader from 'components/base/header/header';
     import bosTabs from '@/componentized/table/bosTabs.vue'
-    import {processStart, processDetail, getHistoryTasks, SAODetail} from '../../api/process'
+    import {processStart, getHistoryTasks,processDetail} from '../../api/process'
     import {findByRfids} from "../../api/storage";
     import {transEquips} from "../../common/js/transEquips";
     import {getHouseInfo} from "../../api/organUnit";
     import TaskHistory from "../../components/processNew/taskHistory";
     import equipItems from "../../components/processNew/equipItems";
+    import {completeTask, taskDetail} from "../../api/workflow";
+    import OperationBar from "../../components/processNew/operationBar";
 
-    var _ = require('lodash');
     export default {
         name: "scrapApply",
         components: {
+            OperationBar,
             equipItems,
             TaskHistory,
             myHeader,
@@ -64,6 +67,8 @@
                 isInfo: false,
                 isEdit: false,
                 tips: [{value: '直接报废', key: '1'}, {value: '装备拿去维修，无法修补', key: '2'}],
+                taskDefinitionKey:''
+
             }
         },
         methods: {
@@ -87,11 +92,11 @@
                 }
             },
             fetchData() {
-                let {processInstanceId} = this.$route.query
-                SAODetail({processInstanceId}).then(
+                let {processInstanceId, taskId} = this.$route.query
+                processDetail({processInstanceId}).then(
                     res => {
-                        this.order = res
-                        this.equipItems = transEquips(res.equips).equipItems
+                        this.order = res.processVariables.applicant
+                        this.equipItems = transEquips(res.processVariables.applicant.equips).equipItems
                     }
                 )
                 getHistoryTasks({processInstanceId}).then(
@@ -99,6 +104,13 @@
                         this.taskHistory = res
                     }
                 )
+                taskDetail({taskId}).then(res => {
+                    this.taskDefinitionKey = res.taskDefinitionKey
+                    if (this.order.applicant.name === JSON.parse(window.localStorage.getItem("user")).name){
+                        this.taskDefinitionKey ='reApply'
+                    }
+                })
+                debugger
             },
             handleReadData(data) { // 读取数据
                 findByRfids(data).then(res => {
@@ -121,11 +133,23 @@
                     this.$router.push({name: 'myProcess'});
                 })
             },
+            refused() {
+                completeTask(this.$route.query.taskId,
+                    [{pass: false, note: '驳回测试'}]).then(() => {
+                    this.back()
+                })
+            },
+            agree(){
+                completeTask(this.$route.query.taskId,
+                    [{pass: true, note: '审核通过'}]).then(() => {
+                    this.back()
+                })
+            },
         },
         created() {
             let {processInstanceId, name} = this.$route.query
             if (processInstanceId) {
-                this.title = name + '详情'
+                this.title = name.substring(0, 2) + '详情'
                 this.isInfo = true
                 this.fetchData()
             } else {

@@ -83,7 +83,7 @@ export function myProcess(params) { // 查询我的流程
     })
 }
 
-export function todoProcess(params) { // 查询待办任务
+export function todoTask(params) { // 查询待办任务
     return request({
         url: baseBURL + '/workflow/todo-task',
         method: 'GET',
