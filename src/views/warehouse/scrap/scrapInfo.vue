@@ -139,6 +139,10 @@
                 } else {
                     this.equipItems[this.totalIndex].items.splice(data.$index, 1)
                     this.equipItems[this.totalIndex].count = this.equipItems[this.totalIndex].count - 1
+                    this.rfids = _.pull(this.rfids, data.row.rfid)
+                    if (this.rfids.length === 0) {
+                        this.equipItems = [{items: []}]
+                    }
                 }
             },
             changeTab(data) {
