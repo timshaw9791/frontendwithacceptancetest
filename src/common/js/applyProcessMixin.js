@@ -1,4 +1,3 @@
-import {getPlatformHouse} from 'api/process'
 export const applyProcessMixin = {
     data() {
         return {
@@ -17,9 +16,6 @@ export const applyProcessMixin = {
         mixinGetUser(id){
         },
         mixinGetHouse(id){
-            getPlatformHouse(id).then(res=>{
-                this.mixinObject.houseList=res;
-            })
         },
         mixiGetLeader(data){
         },

@@ -62,7 +62,7 @@
 
 <script>
     import serviceDialog from "components/base/serviceDialog"
-    import {workflow,transferProcess} from "api/process"
+    import {transferProcess} from "api/process"
     import textButton from 'components/base/textButton'
     import select_apply from 'components/process/processDialog/selectApplyProcess'
     import t_dialog from 'components/process/transfer/transferDialog'
@@ -201,12 +201,6 @@
                 this.$refs.cancel.show();
             },
             closeApply(){
-                workflow(this.activeTask.processInstanceId,JSON.parse(localStorage.getItem("user")).id).then(res=>{
-                    this.$message.success('操作成功');
-                    this.$emit('back','refetch')
-                }).catch(err=>{
-                    this.$message.error(err.response.data.message);
-                })
             },
             processReviewInfo() {
                 if(this.$route.meta.title!=='申请单列表'){
