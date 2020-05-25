@@ -15,18 +15,18 @@ export function getMsgList(params) {
     })
 }
 
-export function markStar(params) { // 消息标星
+export function markStar(params, state) { // 消息标星
     return request({
         url: '/messages/mark-star',
         method: 'POST',
         params
-    })
+    }, state)
 }
 
-export function allRead(params) { // 消息一键已读
+export function allRead(params, state) { // 消息一键已读
     return request({
         url: '/messages/to-reads',
         method: 'POST',
         params
-    })
+    }, state)
 }
