@@ -92,7 +92,10 @@
             <define-column label="历史库存" field="cabinetStock"></define-column>
             <define-column label="当前库存" field="totalCount"></define-column>
             <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
-            <define-column label="使用次数" field="count"></define-column>
+            <define-column label="损耗数量" field="count"></define-column>
+            <define-column label="损耗总额" field="totalLoss"></define-column>
+            <define-column label="损耗率(%)" :filter="(row)=>rate(row)"></define-column>
+            <define-column label="供应商" field="supplier" v-if="show=='singlePoliceCategory'"></define-column>
           </define-table>
         </div>
         <div></div>
