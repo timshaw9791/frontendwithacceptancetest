@@ -127,7 +127,7 @@ export default {
                 data.key=="total"?killProcess(this.pid):''
             },
             sumFunc(param) { // 表格合并行计算方法
-                 let { columns, data } = param, sums = [];
+                let { columns, data } = param, sums = [];
                 sums=new Array(columns.length).fill('')
                 sums[0]='合计'
                 sums[columns.length-1]=param.data.reduce((v,k)=>v+k.count,0)

@@ -8,10 +8,11 @@
                              :selectList="select.handWareList"></base-select>
             </template>
             <define-table :data="equipItems" @changeCurrent="selRow" :havePage="false"
-                          :highLightCurrent="true" :showSummary="true" :summaryFunc="sumFunc" slot="total">
+                          :highLightCurrent="true" :showSummary="true" :summaryFunc="$sumFunc" slot="total">
                 <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo&&!isEdit">
                     <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
-                    <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
+                    <i class="iconfont iconyichuliang"
+                       @click="$delRow(equipItems,data.$index)"></i>
                 </define-column>
                 <define-column label="装备参数" v-slot="{ data }">
                     <entity-input v-model="data.row.equipArg" :options="{detail:'equipArgsSelect'}"
@@ -21,9 +22,10 @@
                     <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input>
                 </define-column>
             </define-table>
-            <define-table :data="equipItems[findIndex].items" :havePage="false" slot="detail">
+            <define-table :data="equipItems[totalIndex].items" :havePage="false" slot="detail">
                 <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo&&!isEdit">
-                    <i class="iconfont iconyichuliang"></i>
+                    <i class="iconfont iconyichuliang"
+                       @click="$delRow(equipItems[totalIndex].items,data.$index,()=>{!equipItems[totalIndex].items.length && equipItems.splice(totalIndex,1)})"></i>
                 </define-column>
                 <define-column label="RFID" field="rfid"></define-column>
             </define-table>
@@ -33,11 +35,12 @@
 
 <script>
     import bosTabs from "../../componentized/table/bosTabs";
+    import {sumFunc,delRow} from "@/common/js/tableFun";
 
     export default {
         name: "equipItems",
         components: {
-            bosTabs
+            bosTabs,
         },
         data() {
             return {
@@ -51,16 +54,15 @@
                     }],
                     selected: ""
                 },
-                tips: [{value: '直接报废', key: '1'}, {value: '装备拿去维修，无法修补', key: '2'}],
-                equipItems: [],
+                tips: ['直接报废', '装备拿去维修，无法修补'],
                 // todo 假数据
-                rfids: ['555566666777'],
-                findIndex: 0,
+                rfids: ['555566666777', '19090917', '7777778888'],
+                totalIndex: 0,
             }
         },
         props: {
             equipItems: {
-                type: Object,
+                type: Array,
                 required: true
             },
             isInfo: {
@@ -69,41 +71,22 @@
             },
             isEdit: {
                 type: Boolean,
-                required: true
+                default:false
             }
         },
         methods: {
             readData() {
                 this.$emit('handleReadData', this.rfids)
             },
-            sumFunc(param) { // 表格合并行计算方法
-                let {columns, data} = param, sums = [];
-                columns.forEach((colum, index) => {
-                    if (index === 0) {
-                        sums[index] = '合计';
-                    } else if (index === columns.length - 1) {
-                        const values = data.map(item => item.count ? Number(item.count) : 0);
-                        if (!values.every(value => isNaN(value))) {
-                            sums[index] = values.reduce((pre, cur) => !isNaN(cur) ? pre + cur : pre);
-                        }
-                    } else {
-                        sums[index] = '';
-                    }
-                })
-                return sums;
+            selRow(data) {
+                this.totalIndex = data.index
             },
-            selRow(current) { // 单选表格行
-                if (!current) return; // 避免切换数据时报错
-                this.detailTable.list = [];
-                this.rowData = current;
-                if (current.rfid === undefined) return;
-                for (let rfid of current.rfid) {
-                    this.detailTable.list.push({
-                        rfid: rfid
-                    })
-                }
-            },
-        }
+        },
+        watch: {
+            'equipItems.length'(newVal) {
+                !newVal && this.equipItems.push({items: []})
+            }
+        },
     }
 </script>
 

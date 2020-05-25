@@ -10,11 +10,11 @@ export function getReceiveList() {
 }
 
 /* 工作概况 */
-export function findAllData() {
+export function findAllData(state) {
     return request({
         url: "/equips/equips-situation",
         method: "GET"
-    })
+    }, state)
 }
 
 /* 同步到手持机 */

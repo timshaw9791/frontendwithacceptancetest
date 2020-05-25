@@ -1,8 +1,7 @@
-import {login, logout, getInfo} from 'api/login'
+import {login} from 'api/login'
+import { getHouseInfo } from 'api/warehouse'
 import {getToken, setToken, removeToken} from 'common/js/auth'
 import {Message} from 'element-ui'
-import {getdeploy} from "api/login";
-import {baseBURL, baseURL, localTitle} from "../../api/config";
 
 
 function setDeploy() {
@@ -23,6 +22,7 @@ const user = {
         roles: [],
         userId: '',
         deploy: '',
+        userInfo: ''
     },
 
     mutations: {
@@ -43,6 +43,9 @@ const user = {
         },
         SET_DEPLOY: (state, deploy) => {
             state.deploy = deploy
+        },
+        SET_USERINFO: (state, data) => {
+            state.allInfo = data
         }
     },
 
@@ -65,18 +68,16 @@ const user = {
         },
 
         GetInfo({commit}) {
+            getHouseInfo().then(res => {
+                commit('setOrganUnit', {id: res.organUnitId, name: res.organUnitName});
+                commit('setWarehouse', {id: res.houseId, name: res.houseName})
+            })
             return new Promise((resolve, reject) => {
                 if (localStorage.getItem('user')) {
-                    let data = JSON.parse(localStorage.getItem('user'));
-                    let roleData = [];
-                    if (data.role && data.role.length > 0) { // 验证返回的roles是否是一个非空数组
-                        roleData=[...data.role];
-                        commit('SET_ROLES', roleData);
-                    } else {
-                        roleData.push('look');
-                        commit('SET_ROLES', roleData);
-                        // reject('getInfo: roles must be a non-null array!')
-                    }
+                    let data = JSON.parse(localStorage.getItem('user')),
+                        roleData = data.role || 'look';
+                    commit('SET_USERINFO', data)
+                    commit('SET_ROLES', roleData)
                     resolve(roleData)
                 } else {
                     reject(error)
@@ -89,7 +90,8 @@ const user = {
         LogOut({commit, state}) {
             return new Promise((resolve, reject) => {
                     commit('SET_TOKEN', '');
-                    commit('SET_ROLES', []);
+                    commit('SET_ROLES', '');
+                    commit('SET_USERINFO', {});
                     removeToken();
                     localStorage.clear();
                     Message.success({

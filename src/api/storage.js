@@ -18,19 +18,19 @@ export function getInhouseNumber(params) {
 }
 
 
-export function deleteInhouseNumber(id) {
+export function deleteInhouseNumber(id, tipState) {
     return request({
         url: `/in-house-orders/${id}`,
         method: 'delete',
-    })
+    }, tipState)
 }
 //装备位置批量变更
-export function locationChangeOrders(data) {
+export function locationChangeOrders(data, tipState) {
     return request({
         url:`/location-change-orders?`,
         method: 'post',
         data
-    })
+    }, tipState)
 }
 //获取需要报废的装备
 export function maturityScrap(params) {
@@ -54,12 +54,12 @@ export function getPoliceCabniet() {
         method: 'get',
     })
 }
-export function saveEquipInfo(categoryId,data) {
+export function saveEquipInfo(categoryId,data, tipState) {
     return request({
         url: `/equip-args/${categoryId}`,
         method: 'put',
         data:data
-    })
+    }, tipState)
 }
 
 export function getSuppliers() {
@@ -71,45 +71,12 @@ export function getSuppliers() {
 
 
 
-export function delectPlan(data) {
+export function delectPlan(data, tipState) {
     return request({
         url: `/plan-manage/${data}`,
         method: 'delete',
-    })
+    }, tipState)
 }
-
-export function searchPlan(data) {
-    return request({
-        url: '/plan-manage/search/like-by-name',
-        method: 'get',
-        params:data
-    })
-}
-export function getGenreList() {
-    return request({
-        url: '/equip-args/contain-category-and-genre',
-        method: 'get',
-    })
-}
-
-export function addEquipInfo(params,data) {
-    return request({
-        url: '/equip-args',
-        method: 'post',
-        params:params,
-        data:data
-    })
-}
-
-
-
-export function getEquipById(id) {
-    return request({
-        url: `/equips/${id}`,
-        method: 'get',
-    })
-}
-
 
 /* 查询装备参数  通过名称*/
 export function equipArgsByName(params) {
@@ -128,12 +95,12 @@ export function equipsAll(params) {
     })
 }
 // 更新装备实体信息
-export function equipsToNew(id,data) {
+export function equipsToNew(id,data, tipState) {
     return request({
         url: `/equips/${id}`,
         method: 'put',
         data
-    })
+    }, tipState)
 }
 /* 查询装备参数 通过名称和型号 */
 export function equipArgsByNameModel(params) {
@@ -145,12 +112,12 @@ export function equipArgsByNameModel(params) {
 }
 
 /* 入库装备 */
-export function inHouse(data) {
+export function inHouse(data, tipState) {
     return request({
         url: "/equips/in-house",
         method: "POST",
         data
-    })
+    }, tipState)
 }
 //入库单outHouseOrder
 export function inOutHouseOrder() {
@@ -167,19 +134,19 @@ export function getOutHouseOrder() {
     })
 }
 /* 入库单删除 */
-export function inHouseOrder(id) {
+export function inHouseOrder(id, tipState) {
     return request({
         url: `/inouthouse/inHouseOrder/${id}`,
         method: "DELETE"
-    })
+    }, tipState)
 }
 
 /* 出库装备 */
-export function outHouse(list) {
+export function outHouse(list, tipState) {
     return request({
         url: `/equips/out-house?${qs.stringify({rfids:list},{indices:false})}`,
         method: "POST"
-    })
+    }, tipState)
 }
 
 /* 通过id找实体装备 */
@@ -200,30 +167,30 @@ export function findByRfids(params) {
 }
 
 /* 新增装备信息 */
-export function saveEquipArg(data) {
+export function saveEquipArg(data, tipState) {
     return request({
         url: "/equip-args",
         method: "POST",
         data
-    })
+    }, tipState)
 }
 
 /* 更新装备参数 */
-export function updateEquipArg(data) {
+export function updateEquipArg(data, tipState) {
     return request({
         url: "/equip/updateEquipArg",
         method: "POST",
         data
-    })
+    }, tipState)
 }
 
 /* 更新装备信息 */
-export function updateEquip(data) {
+export function updateEquip(data, tipState) {
     return request({
         url: "/equip/updateEquip",
         method: "POST",
         data
-    })
+    }, tipState)
 }
 
 /* 获取所有供应商 */

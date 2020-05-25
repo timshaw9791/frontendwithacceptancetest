@@ -14,7 +14,7 @@
 
 <script>
 import uploadFile from '@/componentized/uploadFile'
-import getBosEntity from '@/api/basic'
+import {getBosEntity} from '@/api/basic'
 export default {
     name: 'equipArgsDetail',
     data() {

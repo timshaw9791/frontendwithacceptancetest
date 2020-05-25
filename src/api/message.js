@@ -5,28 +5,28 @@ export function readMsg(data) { // 消息标记为已读
     return request({
         url: `/messages/mark-reads?${qs.stringify(data,{indices:false})}`,
         method: "post",
-    })
+    }, false)
 }
 export function getMsgList(params) {
     return request({
         url: `/messages/title?${qs.stringify(params, {indices:false})}`,
         method: "GET",
         // params
-    })
+    }, false)
 }
 
-export function markStar(params) { // 消息标星
+export function markStar(params, state) { // 消息标星
     return request({
         url: '/messages/mark-star',
         method: 'POST',
         params
-    })
+    }, state)
 }
 
-export function allRead(params) { // 消息一键已读
+export function allRead(params, state) { // 消息一键已读
     return request({
         url: '/messages/to-reads',
         method: 'POST',
         params
-    })
+    }, state)
 }

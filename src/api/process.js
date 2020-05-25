@@ -9,6 +9,14 @@ export function getAllProcess() { // 获取所有流程定义
     })
 }
 
+export function SAODetail(params) { // 报废申请单详情
+    return request({
+        url: baseBURL + '/equip-order/process_id',
+        method: 'GET',
+        params
+    })
+}
+
 export function processStart(params, data) { // 流程启动
     return request({
         url: baseBURL + '/workflow/processes/start',
@@ -75,7 +83,7 @@ export function myProcess(params) { // 查询我的流程
     })
 }
 
-export function todoProcess(params) { // 查询待办任务
+export function todoTask(params) { // 查询待办任务
     return request({
         url: baseBURL + '/workflow/todo-task',
         method: 'GET',

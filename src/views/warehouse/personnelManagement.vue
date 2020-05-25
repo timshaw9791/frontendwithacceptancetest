@@ -20,7 +20,7 @@
                 <define-column label="机构单位" field="organUnitName" width="180"></define-column>
                 <define-column label="角色" field="role" width="180"></define-column>
                 <define-column label="职位" field="position" width="180"></define-column>
-                <define-column label="联系方式" field="phone" width="180"></define-column>
+                <define-column label="联系方式" field="phone"></define-column>
             </define-table>
         </div>
     </div>
@@ -104,9 +104,9 @@
 
 <style>
     .personnelManagement {
-        display: flex;
-        width: 100%;
-        flex-direction: column;
+        /* display: flex; */
+        /* width: 100%; */
+        /* flex-direction: column; */
         font-size: 16px;
         color: rgba(112, 112, 112, 1);
     }

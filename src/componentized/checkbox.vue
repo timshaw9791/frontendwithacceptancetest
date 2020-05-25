@@ -61,6 +61,7 @@ export default {
                 this.$parent.select(this.itemLabel, !Boolean(this.value))
             }
             this.$emit('input', !Boolean(this.value));
+            this.$emit('change', !Boolean(this.value));
         }
     },
     computed: {
@@ -102,7 +103,7 @@ export default {
     }
     .label {
         min-width: 55px;
-        padding: 0 10px;
+        padding: 0 0 0 10px;
         color: #909399;
         overflow: hidden;
         flex-shrink: 0;
@@ -116,7 +117,7 @@ export default {
         height: 100%;
         justify-content: flex-start;
         align-items: center;
-        padding: 0 5px;
+        // padding: 0 5px;
     }
     .checkbox {
         margin: 0 5px;

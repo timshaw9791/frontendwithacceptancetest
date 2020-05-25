@@ -25,8 +25,8 @@
 
 <script>
     import myHeader from 'components/base/header/header'
-    import {processDefinitions, myProcess} from '../../api/process'
-    import {listTableMixin} from "../../field/mixins/listMixin";
+    import {processDefinitions, myProcess} from '@/api/process'
+    import {listTableMixin} from "@/field/mixins/listMixin";
 
     export default {
         name: "myProcess",
@@ -66,22 +66,19 @@
                 switch (data.type) {
                     case '报废流程':
                         this.$router.push({
-                            path: 'scrapOrder',
+                            path: 'scrapApply',
                             query: {
-                                name:data.type,
                                 processInstanceId: data.processInstanceId,
                                 taskId: data.taskId,
-                            }})
+                            }
+                        })
                         break;
                     case '调拨流程':
                         this.$router.push({
-                            path: 'transferDetail',
+                            path: 'transferApply',
                             query: {
-                                info: {
-                                    processInstanceId: data.processInstanceId,
-                                    taskId: data.taskId,
-                                    operate: false
-                                }
+                                processInstanceId: data.processInstanceId,
+                                taskId: data.taskId,
                             }
                         })
                         break;

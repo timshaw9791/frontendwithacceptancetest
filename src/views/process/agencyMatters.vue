@@ -22,9 +22,9 @@
 
 <script>
     import myHeader from 'components/base/header/header'
-    import { todoProcess } from 'api/process'
+    import { todoTask } from '../../api/process'
     export default {
-        name: "myProcess",
+        name: "agencyMatters",
         components:{
             myHeader
         },
@@ -42,7 +42,7 @@
         },
         methods:{
             getList() {
-                todoProcess(this.paginator).then(res => {
+                todoTask(this.paginator).then(res => {
                     this.list = res.content;
                     this.paginator.totalElements = res.totalElements;
                     this.paginator.totalPages = res.totalPages;
@@ -53,27 +53,15 @@
                 this.getList();
             },
             toDetail(data) {
-                if(data.processInstanceName.includes("调拨")){
-                    if(data.name.includes("出库")){
-                        this.$router.push({
-                            name: 'transferStorehouse',
-                            params: {type:'Outbound', info: {processInstanceId: data.processInstanceId, taskId: data.taskId}}
-                        })
-                    }else if(data.name.includes("申请")){
-                        this.$router.push({
-                            name: 'transferDetail',
-                            params: {info: {processInstanceId: data.processInstanceId, taskId: data.taskId}}
-                        })
-                    }else if(data.name.includes("入库")){
-                        this.$router.push({
-                            name: 'transferStorehouse',
-                            params: {type:'Inbound', info: {processInstanceId: data.processInstanceId, taskId: data.taskId,house:false}}
-                        })
-                    }
-                } else if(data.processInstanceName.includes("报废")){
+                console.log(data)
+                if(data.processInstanceName.includes("报废")) {
                     this.$router.push({
-                        name: 'applyAudit',
-                        params: {type:'apply', audit: 'order', info: {processInstanceId: data.processInstanceId, taskId: data.taskId}}
+                        path:'/process/scrapApply',
+                        query:{
+                            name:data.processInstanceName,
+                            processInstanceId: data.processInstanceId,
+                            taskId: data.taskId
+                        }
                     })
                 }
             }
