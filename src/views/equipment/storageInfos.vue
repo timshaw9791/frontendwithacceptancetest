@@ -1185,8 +1185,6 @@
                 killProcess(this.pid)
             }
              let gateModel="RECEIVE_RETURN"
-                changeRecognizeModel(gateModel).then(res=>{
-              })
             clearInterval(this.timeId)
         }
 
