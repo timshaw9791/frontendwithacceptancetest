@@ -10,16 +10,8 @@
 
 
 <script>
-    import {initmixinBosInput} from '../../field/common/mixinBosInput';
   export default {
     name: 'defineColumn',
-    data(){
-      return {
-        search:'',
-        basePx: localStorage.getItem('fontSize')
-      }
-    },
-    mixins: [initmixinBosInput],
     props: {
       field:{
         type: String,

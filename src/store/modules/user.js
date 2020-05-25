@@ -45,7 +45,7 @@ const user = {
             state.deploy = deploy
         },
         SET_USERINFO: (state, data) => {
-            state.allInfo = data
+            state.userInfo = data
         }
     },
 
