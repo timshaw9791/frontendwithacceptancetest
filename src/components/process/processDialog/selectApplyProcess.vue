@@ -20,7 +20,7 @@
 
 <script>
     import serviceDialog from 'components/base/gailiangban'
-    import {getHouseInfo} from 'api/process'
+    import {getHouseInfo} from 'api/warehouse'
     import applyBorrow from './applyBorrow'
     import applyScrap from './applyScrap'
     import applyDirect from './applyDirect'

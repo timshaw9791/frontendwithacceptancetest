@@ -9,19 +9,19 @@ export function getRfid() {
 }
 
 
-export function saveRfid(data) {
+export function saveRfid(data, tipState) {
     return request({
         url: '/other/rfid-generic',
         method: 'put',
         params: data
-    })
+    }, tipState)
 }
 
 
-export function getRfidinfo(data) {
+export function getRfidinfo(data, tipState) {
     return request({
         url: '/equips/by-rfidlist',
         method: 'put',
         data
-    })
+    }, tipState)
 }
