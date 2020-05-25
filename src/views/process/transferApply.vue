@@ -8,36 +8,39 @@
             ></operation-bar>
             <div class="apply-process-body">
                 <div class="process-info">
-                    <define-input label="单号" v-model="order.number" :disabled="true" placeholder="-"></define-input>
-                    <date-select label="申请时间" v-model="order.createTime" :disabled="true"></date-select>
-                    <entity-input label="申请人员" v-model="order.applicant" :required="true"
-                                  placeholder="请选择"></entity-input>
-                    <entity-input label="入库机构" v-model="order.inboundOrganUnit" format="{name}"
-                                  :options="{search:'organUnits'}" placeholder="请选择"></entity-input>
+                    <define-input label="单号" v-model="transferApplyOrder.number" :disabled="true"
+                                  placeholder="-"></define-input>
+                    <date-select label="申请时间" v-model="transferApplyOrder.createTime" :disabled="true"></date-select>
+                    <entity-input label="申请人员" v-model="transferApplyOrder.applicant"
+                                  :options="{detail:'applicant'}" :disabled="true"
+                                  format="{name}({policeSign})">
+                    </entity-input>
+                    <entity-input label="入库机构" v-model="transferApplyOrder.inboundOrganUnit" format="{name}"
+                                  :options="{search:'organUnits'}" :disabled="true" placeholder="请选择"></entity-input>
                 </div>
                 <div class="process-info">
                     <entity-input label="入库库房" :disabled="true" placeholder="-"></entity-input>
                     <entity-input label="入库人员" :disabled="true" placeholder="-"></entity-input>
-                    <entity-input label="出库机构" v-model="order.outboundOrganUnit" format="{name}"
-                                  :options="{search:'organUnits'}" placeholder="请选择"></entity-input>
+                    <entity-input label="出库机构" v-model="transferApplyOrder.outboundOrganUnit" format="{name}"
+                                  :options="{search:'organUnits'}" placeholder="请选择" :disabled="isInfo"></entity-input>
                     <entity-input label="出库库房" :disabled="true" placeholder="-"></entity-input>
                 </div>
                 <div class="process-info">
                     <entity-input label="出库人员" :disabled="true" placeholder="-"></entity-input>
-                    <text-input label="申请原因" v-model="order.note" :column="12" :tips="tips"></text-input>
+                    <text-input label="申请原因" v-model="transferApplyOrder.note" :column="12" :tips="tips" :disabled="isInfo"></text-input>
                 </div>
-                <define-table :havePage="false" :data="order.equips" height="2.8646rem"
+                <define-table :havePage="false" :data="transferApplyOrder.equips" height="2.8646rem"
                               :showSummary="true" :summaryFunc="$sumFunc" slot="total">
                     <define-column label="操作" width="100" v-slot="{ data }">
                         <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
-                        <i class="iconfont iconyichuliang" @click="$delRow(order.equips,data.index)"></i>
+                        <i class="iconfont iconyichuliang" @click="$delRow(transferApplyOrder.equips,data.index)"></i>
                     </define-column>
-                    <define-column label="装备参数" v-slot="{ data }">
+                    <define-column label="装备参数" v-slot="{ data }" >
                         <entity-input v-model="data.row.equipArg" :options="{search:'equipArgsSelect'}"
-                                      format="{name}({model})"></entity-input>
+                                      format="{name}({model})" :tableEdit="!isInfo"></entity-input>
                     </define-column>
                     <define-column label="装备数量" v-slot="{ data }">
-                        <define-input v-model="data.row.count" type="number"></define-input>
+                        <define-input v-model="data.row.count" type="number" :tableEdit="!isInfo"></define-input>
                     </define-column>
                 </define-table>
             </div>
@@ -52,7 +55,7 @@
 <script>
     import myHeader from 'components/base/header/header';
     import bosTabs from '@/componentized/table/bosTabs'
-    import {processStart, processDetail} from 'api/process'
+    import {transferStart, transferOrders} from '@/api/process'
     import OperationBar from "@/components/process/operationBar";
     import EquipItems from "@/components/process/equipItems";
     import {completeTask, processesDelete, taskDetail} from "@/api/workflow";
@@ -71,9 +74,12 @@
             return {
                 title: "",
                 show: false,
-                order: {
-                    equips:[{equipArg:{}}]
+                transferApplyOrder: {
+                    equips: [{equipArg: {}}],
+                    applicant: {}
                 },
+                outboundEquipsOrder: {},
+                inboundEquipsOrder: {},
                 tips: ['直接报废', '装备拿去维修，无法修补'],
                 taskDefinitionKey: '',
                 processDefinitionKey: '',
@@ -84,16 +90,17 @@
         },
         methods: {
             async init() {
-                Object.assign(this.order, {
+                Object.assign(this.transferApplyOrder, {
                     inboundOrganUnit: this.organUnit,
-                    applicant: this.userInfo
+                    applicant: JSON.parse(window.localStorage.getItem("user"))
                 })
             },
             fetchData() {
-                processDetail({processInstanceId: this.processInstanceId}).then(
+                transferOrders({processInstanceId: this.processInstanceId}).then(
                     res => {
-                        this.order = res.processVariables.applicant
-
+                        this.transferApplyOrder = res.transferApplyOrder
+                        this.outboundEquipsOrder = res.outboundEquipsOrder
+                        this.inboundEquipsOrder = res.inboundEquipsOrder
                     }
                 )
                 getHistoryTasks({processInstanceId: this.processInstanceId}).then(
@@ -103,13 +110,15 @@
                 )
                 taskDetail({taskId: this.taskId}).then(res => {
                     this.taskDefinitionKey = res.taskDefinitionKey
-                    if (this.order.applicant.name === JSON.parse(window.localStorage.getItem("user")).name) {
+                    console.log(this.transferApplyOrder.applicant.name === JSON.parse(window.localStorage.getItem("user")).name)
+                    if (this.transferApplyOrder.applicant.name === JSON.parse(window.localStorage.getItem("user")).name) {
                         this.taskDefinitionKey = 'reApply'
                     }
                 })
             },
             submit() {
-                processStart({processDefinitionKey: this.processDefinitionKey}, order).then(() => {
+                console.log(this)
+                transferStart({processDefinitionKey: this.key}, this.transferApplyOrder).then(() => {
                     this.$router.push({name: 'myProcess'});
                 })
             },
@@ -138,9 +147,10 @@
             }
         },
         created() {
-            // Object.assign(this,this.$route.query)
+            Object.assign(this, this.$route.query)
             if (this.processInstanceId) {
                 this.fetchData()
+                this.isInfo = true
             } else {
                 this.init()
                 this.title = '申请流程'
@@ -153,9 +163,9 @@
                 'organUnit'
             ])
         },
-        watch:{
-            'order.equips.length'(newVal){
-                !newVal && this.order.equips.push({equipArg:{}})
+        watch: {
+            'transferApplyOrder.equips.length'(newVal) {
+                !newVal && this.transferApplyOrder.equips.push({equipArg: {}})
             }
         }
     }

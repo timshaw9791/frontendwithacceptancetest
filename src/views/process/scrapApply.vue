@@ -17,7 +17,7 @@
                     </entity-input>
                 </div>
                 <div>
-                    <text-input label="申请原因" v-model="order.note" :tips="_.map(tips,(it,idx)=>({key:idx,value:it}))"
+                    <text-input label="申请原因" v-model="order.note" :tips="tips"
                                 :title="order.note"
                                 :disabled="isInfo"></text-input>
                 </div>
@@ -39,7 +39,6 @@
     import {processStart, getHistoryTasks, processDetail} from '@/api/process'
     import {findByRfids} from "@/api/storage";
     import {transEquips} from "@/common/js/transEquips";
-    import {getHouseInfo} from "@/api/organUnit";
     import TaskHistory from "@/components/process/taskHistory";
     import equipItems from "@/components/process/equipItems";
     import {completeTask, processesDelete, taskDetail} from "@/api/workflow";

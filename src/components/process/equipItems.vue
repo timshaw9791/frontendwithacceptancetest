@@ -35,8 +35,8 @@
 
 <script>
     import bosTabs from "../../componentized/table/bosTabs";
-    import {sumFunc,delRow} from "@/common/js/tableFun";
 
+    // todo 表格不规整
     export default {
         name: "equipItems",
         components: {

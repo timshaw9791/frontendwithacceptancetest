@@ -16,7 +16,7 @@ export function SAODetail(params) { // 报废申请单详情
         params
     })
 }
-
+// 通用接口
 export function processStart(params, data) { // 流程启动
     return request({
         url: baseBURL + '/workflow/processes/start',
@@ -25,6 +25,26 @@ export function processStart(params, data) { // 流程启动
         data
     })
 }
+
+// 非通用接口 调拨流程申请
+export function transferStart(params, data) { // 流程启动
+    return request({
+        url: baseBURL + '/workflow/transfer/start',
+        method: 'POST',
+        params,
+        data
+    })
+}
+
+export function transferOrders(params) { // 流程启动
+    return request({
+        url: baseBURL + '/workflow/transfer/orders',
+        method: 'GET',
+        params
+    })
+}
+
+
 
 export function processDetail(params) { // 流程内容
     return request({
