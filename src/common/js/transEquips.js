@@ -13,6 +13,7 @@ export function transEquips(equips, groupRules = 'args', simplifyRules = 'rfids'
     equips.forEach(item => {
         // 添加equipName、equipModel、locationInfo 以便统一
         if (item.equipArg) {
+           // todo 使用 Object.assign()
             item.equipName = item.equipArg.name
             item.equipModel = item.equipArg.model
             item.locationInfo = item.location
@@ -35,10 +36,11 @@ export function transEquips(equips, groupRules = 'args', simplifyRules = 'rfids'
             })
         }
     })
-    //  优化
+    //  todo 优化
     if (groupRules === 'args') {
         tempEquipItems = _.groupBy(equips, item =>
-            `${item.equipName}${item.equipModel}${item.state}`
+            // Arg使用唯一标识符
+            `${item.equipName}${item.equipModel}`
         )
         equipItems = _.map(tempEquipItems, item => {
             return {

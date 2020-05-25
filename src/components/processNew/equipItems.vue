@@ -11,7 +11,8 @@
                           :highLightCurrent="true" :showSummary="true" :summaryFunc="sumFunc" slot="total">
                 <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo&&!isEdit">
                     <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
-                    <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
+                    <i class="iconfont iconyichuliang"
+                       @click=""></i>
                 </define-column>
                 <define-column label="装备参数" v-slot="{ data }">
                     <entity-input v-model="data.row.equipArg" :options="{detail:'equipArgsSelect'}"
@@ -21,9 +22,10 @@
                     <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input>
                 </define-column>
             </define-table>
-            <define-table :data="equipItems[findIndex].items" :havePage="false" slot="detail">
+            <define-table :data="equipItems[totalIndex].items" :havePage="false" slot="detail">
                 <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo&&!isEdit">
-                    <i class="iconfont iconyichuliang"></i>
+                    <i class="iconfont iconyichuliang"
+                       @click="delRow(equipItems[totalIndex].items,data.$index,()=>{!equipItems[totalIndex].items.length && equipItems.splice(totalIndex,1)})"></i>
                 </define-column>
                 <define-column label="RFID" field="rfid"></define-column>
             </define-table>
@@ -53,8 +55,8 @@
                 },
                 tips: [{value: '直接报废', key: '1'}, {value: '装备拿去维修，无法修补', key: '2'}],
                 // todo 假数据
-                rfids: ['555566666777','19090917'],
-                findIndex: 0,
+                rfids: ['555566666777', '19090917', '7777778888'],
+                totalIndex: 0,
             }
         },
         props: {
@@ -68,7 +70,7 @@
             },
             isEdit: {
                 type: Boolean,
-                required: true
+                default:false
             }
         },
         methods: {
@@ -77,32 +79,24 @@
             },
             sumFunc(param) { // 表格合并行计算方法
                 let {columns, data} = param, sums = [];
-                columns.forEach((colum, index) => {
-                    if (index === 0) {
-                        sums[index] = '合计';
-                    } else if (index === columns.length - 1) {
-                        const values = data.map(item => item.count ? Number(item.count) : 0);
-                        if (!values.every(value => isNaN(value))) {
-                            sums[index] = values.reduce((pre, cur) => !isNaN(cur) ? pre + cur : pre);
-                        }
-                    } else {
-                        sums[index] = '';
-                    }
-                })
+                sums = new Array(columns.length).fill('')
+                sums[0] = '合计'
+                sums[columns.length - 1] = data.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue.length), 0)
                 return sums;
             },
-            selRow(current) { // 单选表格行
-                if (!current) return; // 避免切换数据时报错
-                this.detailTable.list = [];
-                this.rowData = current;
-                if (current.rfid === undefined) return;
-                for (let rfid of current.rfid) {
-                    this.detailTable.list.push({
-                        rfid: rfid
-                    })
-                }
+            delRow(data, index, callback) {
+                data.splice(index, 1);
+                callback && callback();
             },
-        }
+            selRow(data) {
+                this.totalIndex = data.index
+            },
+        },
+        watch: {
+            'equipItems.length'(newVal) {
+                !newVal && this.equipItems.push({items: []})
+            }
+        },
     }
 </script>
 

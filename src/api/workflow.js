@@ -14,12 +14,20 @@ export function scrappedApproval(data) {
     })
 }
 
-export function taskDetail(params) {
+export function taskDetail(params) { // 任务详情
     return request({
         url: baseBURL+'/workflow/task-detail',
         method:'GET',
         params
     })
+}
+
+export function processesDelete(params) {
+return request({
+    url: baseBURL+'/workflow/processes/delete',
+    method:'DELETE',
+    params
+})
 }
 
 

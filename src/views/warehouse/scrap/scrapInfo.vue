@@ -11,7 +11,7 @@
             <define-input label="备注" v-model="order.remark" :disabled="isInfo"></define-input>
         </div>
         <div class="scrap-list-body">
-            <bos-tabs @changeTab="changeTab">
+            <bos-tabs>
                 <template slot="slotHeader" v-if="!isInfo&&isHardwareSelect">
                     <base-select v-model="hardwareSelect.select" label="硬件选择"
                                  :selectList="hardwareSelect.list"></base-select>
@@ -20,14 +20,16 @@
                 <define-table :data="equipItems" height="2.8646rem" @changeCurrent="selectedRow" :havePage="false"
                               :highLightCurrent="true" slot="total" :showSummary="true" :summaryFunc="sumFunc">
                     <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
-                        <i class="iconfont iconyichuliang" @click="delRow(data,'equipItems')"></i>
+                        <i class="iconfont iconyichuliang"
+                           @click="delRow(equipItems,data.$index)"></i>
                     </define-column>
                     <define-column label="装备参数" field="equipArg"></define-column>
-                    <define-column label="装备数量" field="count"></define-column>
+                    <define-column label="装备数量" :filter="(row)=>row.items.length"></define-column>
                 </define-table>
                 <define-table :data="equipItems[totalIndex].items" height="2.8646rem" :havePage="false" slot="detail">
                     <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
-                        <i class="iconfont iconyichuliang" @click="delRow(data)"></i>
+                        <i class="iconfont iconyichuliang"
+                           @click="delRow(equipItems[totalIndex].items,data.$index,()=>{!equipItems[totalIndex].items.length && equipItems.splice(totalIndex,1)})"></i>
                     </define-column>
                     <define-column label="RFID" field="rfid"></define-column>
                     <define-column label="装备序号" field="equipSerial"></define-column>
@@ -81,26 +83,26 @@
         methods: {
             readData() {
                 // 测试代码
-                // this.rfids = "9996666"
-                // this.fetchEquipItems()
-                // killProcess(this.pid)
-                start("java -jar scan.jar", (data) => {
-                    if (this.matchRfids.length !== 0) {
-                        if (this.matchRfids.indexOf(data) !== -1
-                            && this.rfids.indexOf(data) === -1) {
-                            this.rfids.push(data)
-                            this.fetchEquipItems(this.rfids)
-                        }
-                    } else {
-                        this.rfids.push(data)
-                        this.fetchEquipItems(this.rfids)
-                    }
-                }, (fail) => {
-                    this.index = 1;
-                    this.$message.error(fail);
-                }, (pid, err) => {
-                    pid ? this.pid = pid : this.$message.error(err)
-                })
+                this.rfids = "888866694544"
+                this.fetchEquipItems()
+                killProcess(this.pid)
+                // start("java -jar scan.jar", (data) => {
+                //     if (this.matchRfids.length !== 0) {
+                //         if (this.matchRfids.indexOf(data) !== -1
+                //             && this.rfids.indexOf(data) === -1) {
+                //             this.rfids.push(data)
+                //             this.fetchEquipItems(this.rfids)
+                //         }
+                //     } else {
+                //         this.rfids.push(data)
+                //         this.fetchEquipItems(this.rfids)
+                //     }
+                // }, (fail) => {
+                //     this.index = 1;
+                //     this.$message.error(fail);
+                // }, (pid, err) => {
+                //     pid ? this.pid = pid : this.$message.error(err)
+                // })
             },
             // 根据RFID列表获取装备信息
             fetchEquipItems() {
@@ -110,7 +112,7 @@
             },
             fixEquipItems(data) {
                 let {equipItems, simplifyItems} = transEquips(data)
-                if (equipItems.length>0){
+                if (equipItems.length > 0) {
                     this.rfids = simplifyItems
                     this.equipItems = equipItems
                 }
@@ -132,27 +134,9 @@
             selectedRow(current) {
                 this.totalIndex = current.index
             },
-            delRow(data, list) {
-                if (list === 'equipItems') {
-                    this[list].length === 1 ? this[list] = [{items: []}] : this[list].splice(data.$index, 1);
-                    data.row.items.forEach(item => {
-                            this.rfids = _.pull(this.rfids, item.rfid)
-                        }
-                    )
-                } else {
-                    this.equipItems[this.totalIndex].items.splice(data.$index, 1)
-                    this.equipItems[this.totalIndex].count = this.equipItems[this.totalIndex].count - 1
-                    this.rfids = _.pull(this.rfids, data.row.rfid)
-                    if (this.rfids.length === 0) {
-                        this.equipItems = [{items: []}]
-                    }
-                }
-            },
-            changeTab(data) {
-                data.key === 'total' ? killProcess(this.pid) : ''
-                if (this.equipItems[this.totalIndex].count === 0) {
-                    _.pullAt(this.equipItems, this.totalIndex)
-                }
+            delRow(data, index, callback) {
+                data.splice(index, 1);
+                callback && callback();
             },
             // 表格合并行计算方法
             sumFunc(param) {
@@ -160,8 +144,8 @@
                 sums = new Array(columns.length).fill('')
                 sums[0] = '合计'
                 sums[columns.length - 1] = param.data.reduce((v, k) => {
-                    if (k.count) {
-                        return v + k.count
+                    if (k.items.length) {
+                        return v + k.items.length
                     }
                     return v
                 }, 0)
@@ -170,11 +154,16 @@
             confirm() {
                 if (this.rfids.length === 0) return this.$message.error('装备列表不能为空')
                 equipScrap(this.order.category, this.order.remark, this.rfids).then(() => {
-                    this.$router.push({path:'scrapList'})
+                    this.$router.push({path: 'scrapList'})
                 })
             },
             cancel() {
                 this.$router.back()
+            }
+        },
+        watch: {
+            'equipItems.length'(newVal) {
+                !newVal && this.equipItems.push({items: []})
             }
         },
         created() {

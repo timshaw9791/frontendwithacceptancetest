@@ -25,8 +25,8 @@
 
 <script>
     import myHeader from 'components/base/header/header'
-    import {processDefinitions, myProcess} from '../../api/process'
-    import {listTableMixin} from "../../field/mixins/listMixin";
+    import {processDefinitions, myProcess} from '@/api/process'
+    import {listTableMixin} from "@/field/mixins/listMixin";
 
     export default {
         name: "myProcess",
@@ -68,7 +68,6 @@
                         this.$router.push({
                             path: 'scrapApply',
                             query: {
-                                name:data.type,
                                 processInstanceId: data.processInstanceId,
                                 taskId: data.taskId,
                             }})
@@ -80,7 +79,6 @@
                                 info: {
                                     processInstanceId: data.processInstanceId,
                                     taskId: data.taskId,
-                                    operate: false
                                 }
                             }
                         })
