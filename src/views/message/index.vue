@@ -3,7 +3,9 @@
 		<my-header title="消息中心" height="45px"></my-header>
 		<div class="top">
 			<define-input label="消息标题"></define-input>
+			<checkbox label="只显示星标" v-model="onlyShowStar" @change="fetchData(false, true)"></checkbox>
 			<base-button label="一键已读" align="right" margin="0 30px 0 0" @click="allMessageRead"></base-button>
+			<base-button label="刷新" type="simple" align="right" @click="fetchData(true)"></base-button>
 		</div>
 		<div class="body">
 			<bos-tabs :option="['contrast']" :contrastKey="['main', 'content']" :layoutRatio="['45%', '55%']" :header="false">
@@ -42,6 +44,7 @@ export default {
 	data() {
 		return {
 			list: [{messageItems:[]}],
+			onlyShowStar: false,
 			selectIndex: -1,
 			enumerator: [], // 标题枚举对象
 			fetchParams: {
@@ -57,12 +60,29 @@ export default {
 					JSON.parse(localStorage.getItem('user')).id
 				]
 			},
+			// showStarFetchParams: {
+			// 	"jpql": "select ms from Message ms where ms.newStar = true and ms.userId = ?1",
+			// 	"returnType": "ARRAY",
+			// 	pageInfo: {
+			// 		direction: "DESC",
+			// 		page: 1,
+			// 		size: 10,
+			// 		totalPages: 1
+			// 	},
+			// 	params: [
+			// 		JSON.parse(localStorage.getItem('user')).id
+			// 	]
+			// },
 			userId: JSON.parse(localStorage.getItem('user')).id
 		}
 	},
 	methods: {
-		fetchData() {
-			jsqlPage(this.fetchParams).then(res => {
+		fetchData(tips=false, checkBox=false) {
+			(tips || checkBox ) && (this.fetchParams.pageInfo.page = 1);
+			this.fetchParams.jpql = this.onlyShowStar?
+				"select ms from Message ms where ms.newStar = true and ms.userId = ?1":
+				"select ms from Message ms where ms.userId = ?1 order by ms.createTime desc";
+			jsqlPage(this.fetchParams, tips).then(res => {
 				this.list = this._.flatten(res.content);
 				this.fetchParams.pageInfo.totalPages = res.totalPages;
 			})
