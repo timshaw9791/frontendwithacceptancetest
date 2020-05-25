@@ -80,8 +80,11 @@
         },
         methods: {
             async init() {
-                Object.assign(this.order, )
-                this.order.applicant = JSON.parse(localStorage.getItem("user"))
+                Object.assign(this.order,{
+                    organUnit:this.organUnit,
+                    warehouse:this.warehouse,
+                    applicant:this.userInfo
+                })
             },
             fetchData() {
                 processDetail({processInstanceId: this.processInstanceId}).then(
@@ -153,7 +156,8 @@
         computed:{
             ...mapGetters([
                 'userInfo',
-                ''
+                'warehouse',
+                'organUnit'
             ])
         }
     }

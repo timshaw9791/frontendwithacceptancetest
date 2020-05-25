@@ -26,7 +26,23 @@
                 <div class="process-info">
                     <text-input label="申请原因" v-model="order.note" :column="12" :tips="tips"></text-input>
                 </div>
-                <equip-items equip-items="" is-info="'"></equip-items>
+                <div class="table-box">
+                    <bos-tabs :label="[{label: '总清单',key: 'total'}]">
+                        <define-table :havePage="false" :data="order.equips" height="2.8646rem"
+                                      :showSummary="true" :summaryFunc="$sumFunc" slot="total">
+                            <define-column label="操作" width="100" v-slot="{ data }">
+                                <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
+                                <i class="iconfont iconyichuliang" @click="$delRow(order.equips,data.index)"></i>
+                            </define-column>
+                            <define-column label="装备参数" v-slot="{ data }">
+                                <entity-input v-model="data.row.equipArg" :options="{detail:'equipArgsSelect'}" format="{name}({model})"></entity-input>
+                            </define-column>
+                            <define-column label="装备数量" v-slot="{ data }">
+                                <define-input v-model="data.row.count" type="number"></define-input>
+                            </define-column>
+                        </define-table>
+                    </bos-tabs>
+                </div>
             <div class="buttom">
                 <base-button label="提交" align="right" size="large" @click="submit"></base-button>
                 <base-button label="清空" align="right" size="large" type="danger" @click="clean"></base-button>
@@ -42,11 +58,14 @@
     import {complete, getOrder, processStart, processDetail} from 'api/process'
     import OperationBar from "@/components/processNew/operationBar";
     import EquipItems from "@/components/processNew/equipItems";
-    import {completeTask, processesDelete} from "@/api/workflow";
+    import {completeTask, processesDelete, taskDetail} from "@/api/workflow";
+    import transferItems from "@/components/processNew/transferItems";
+    import {getHistoryTasks} from "@/api/process";
 
     export default {
         name: "scrapApply",
         components: {
+            transferItems,
             EquipItems,
             OperationBar,
             myHeader,
@@ -59,12 +78,39 @@
                 order: {},
                 tips: ['直接报废', '装备拿去维修，无法修补'],
                 taskDefinitionKey: '',
-                processDefinitionKey:''
+                processDefinitionKey:'',
+                processInstanceId:'',
+                equipItems:[{items:[]}],
+                isInfo:false,
+                isEdit:false
             }
         },
         methods: {
-            init() {
+            async init() {
+                Object.assign(this.order,{
+                    organUnit:this.organUnit,
+                    warehouse:this.warehouse,
+                    applicant:this.userInfo
+                })
+            },
+            fetchData() {
+                processDetail({processInstanceId: this.processInstanceId}).then(
+                    res => {
+                        this.order = res.processVariables.applicant
 
+                    }
+                )
+                getHistoryTasks({processInstanceId: this.processInstanceId}).then(
+                    res => {
+                        this.taskHistory = res
+                    }
+                )
+                taskDetail({taskId: this.taskId}).then(res => {
+                    this.taskDefinitionKey = res.taskDefinitionKey
+                    if (this.order.applicant.name === JSON.parse(window.localStorage.getItem("user")).name) {
+                        this.taskDefinitionKey = 'reApply'
+                    }
+                })
             },
             submit() {
                 processStart({processDefinitionKey: this.processDefinitionKey}, order).then(() => {
@@ -97,13 +143,9 @@
         },
         created() {
             Object.assign(this,this.$route.query)
-            if (this.$route.params.info === undefined) {
-                this.$message.info("数据丢失，返回新启流程");
-                this.$router.push({name: 'newProcess'});
-                return
+            if (!!this.processInstanceId ){
+                this.fetchData()
             }
-            this.title = "我的流程/申请"
-            this.init();
         }
     }
 </script>

@@ -133,9 +133,9 @@ export const asyncRouterMap = [{
             component: _import('process/scrapApply'),
             hidden: true,
         }, {
-            path: 'transferOrder', // 调拨申请页面
-            name: 'transferOrder',
-            component: _import('process/transferOrder'),
+            path: 'transferApply', // 调拨申请页面
+            name: 'transferApply',
+            component: _import('process/transferApply'),
             hidden: true,
         }, {
             path: 'transfer/:type', // 调拨出入库

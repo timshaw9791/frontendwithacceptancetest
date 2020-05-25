@@ -1,12 +1,6 @@
 <template>
     <div class="table-box">
         <bos-tabs>
-            <template slot="slotHeader" v-if="!isInfo&&!isEdit">
-                <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96"
-                             @click="readData()"></base-button>
-                <base-select label="硬件选择" v-model="select.selected" align="right"
-                             :selectList="select.handWareList"></base-select>
-            </template>
             <define-table :data="equipItems" @changeCurrent="selRow" :havePage="false"
                           :highLightCurrent="true" :showSummary="true" :summaryFunc="$sumFunc" slot="total">
                 <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo&&!isEdit">
@@ -35,10 +29,9 @@
 
 <script>
     import bosTabs from "../../componentized/table/bosTabs";
-    import {sumFunc,delRow} from "@/common/js/tableFun";
 
     export default {
-        name: "equipItems",
+        name: "transferEquipItems",
         components: {
             bosTabs,
         },
