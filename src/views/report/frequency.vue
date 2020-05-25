@@ -80,9 +80,10 @@
           >
             <define-column label="装备小类" field="cabinet" v-if="show=='singlePolice'" />
             <define-column
-              label="装备小类"
+              label="装备参数"
               :filter="(row)=>`${row.name}(${row.model})`"
               v-if="show=='singlePoliceCategory'"
+              key="equipArgs"
             />
             <define-column label="历史库存" field="cabinetStock"></define-column>
             <define-column label="当前库存" field="totalCount"></define-column>

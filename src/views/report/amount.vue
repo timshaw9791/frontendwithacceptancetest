@@ -57,6 +57,7 @@
               label="装备参数"
               :filter="(row)=>`${row.name}(${row.model})`"
               v-if="show=='category'"
+              key='equipArgs'
             />
             <define-column label="当前库存" field="totality"></define-column>
             <define-column label="可用数量" field="inHouseCount"></define-column>

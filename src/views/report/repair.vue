@@ -74,15 +74,16 @@
           >
             <define-column label="装备小类" field="cabinet" v-if="show=='singlePolice'" />
             <define-column
-              label="装备小类"
+              label="装备参数"
               :filter="(row)=>`${row.name}(${row.model})`"
+              key="equipArgs"
               v-if="show=='singlePoliceCategory'"
             />
             <define-column label="当前库存" field="totalCount"></define-column>
             <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
             <define-column label="维修数" field="count"></define-column>
             <define-column label="维修率" :filter="(row)=>rate(row)"></define-column>
-            <define-column label="供应商" field="supplier" v-if="show=='singlePoliceCategory'"></define-column>
+            <define-column label="供应商" key="supplier" field="supplier" v-if="show=='singlePoliceCategory'"></define-column>
           </define-table>
         </div>
         <div></div>

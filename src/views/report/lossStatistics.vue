@@ -85,7 +85,8 @@
           >
             <define-column label="装备小类" field="cabinet" v-if="show=='singlePolice'" />
             <define-column
-              label="装备小类"
+              label="装备参数"
+              key="equipArgs"
               :filter="(row)=>`${row.name}(${row.model})`"
               v-if="show=='singlePoliceCategory'"
             />
@@ -95,7 +96,7 @@
             <define-column label="损耗数量" field="count"></define-column>
             <define-column label="损耗总额" field="totalLoss"></define-column>
             <define-column label="损耗率(%)" :filter="(row)=>rate(row)"></define-column>
-            <define-column label="供应商" field="supplier" v-if="show=='singlePoliceCategory'"></define-column>
+            <define-column label="供应商" key="supplier" field="supplier" v-if="show=='singlePoliceCategory'"></define-column>
           </define-table>
         </div>
         <div></div>
