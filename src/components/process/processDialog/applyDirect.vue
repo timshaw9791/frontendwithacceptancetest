@@ -50,7 +50,6 @@
     import processTable from '../processTable'
     import processCascader from '../processCascader'
     import {applyProcessMixin} from "common/js/applyProcessMixin";
-    import {directRefill} from "api/process"
 
     export default {
         name: "applyDirect",
@@ -130,13 +129,6 @@
                 if(flag){
                     if(index===-1){
                         if (this.taskId){
-                            directRefill(apply, this.form.leader.id, this.taskId).then(res => {
-                                this.$message.success('操作成功');
-                                this.$emit('applySucess',true);
-                                this.cancelDb()
-                            }).catch(err=>{
-                                this.$message.error(err.response.data.message);
-                            })
                         }else {
                         }
                     }else {

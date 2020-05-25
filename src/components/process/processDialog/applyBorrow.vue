@@ -44,7 +44,6 @@
     import p_select from 'components/base/selected'
     import processTable from '../processTable'
     import processCascader from '../processCascader'
-    import {getEquipArgs} from 'api/process'
     export default {
         name: "applyBorrow",
         components: {
@@ -88,9 +87,6 @@
         },
         methods: {
             changeUnit(data){
-                getEquipArgs().then(res=>{
-                    console.log(res);
-                })
             },
             apply(data) {
                 console.log(data)

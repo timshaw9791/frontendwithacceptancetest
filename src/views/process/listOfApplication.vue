@@ -32,7 +32,6 @@
     import select_apply from 'components/process/processDialog/selectApplyProcess'
     import p_universal from 'components/process/universal'
     import myHeader from 'components/base/header/header'
-    import {transferApply} from 'api/process'
     export default {
         name: "myProcess",
         components:{
@@ -163,26 +162,6 @@
             },
             clickTable(table) {
                 let url =this.table.clickUrl+table.row.id;
-                transferApply(url).then(res=>{
-                    console.log(res);
-                    this.universal={title:this.table.type,universalObj:{id:res.id,processVariables:{applyOrder:res}}};
-                    this.status.tableOrUniversalFlag=!this.status.tableOrUniversalFlag;
-                    let url;
-                    switch (this.universal.title) {
-                        case "报废":
-                            url={transfer:'/workflow/scrap/order-to-excel?applyOrderId='};
-                            break;
-                        case "调拨":
-                            url={transfer:'/workflow/transfer/order-to-excel?applyOrderId='};
-                            break;
-                        case "直调":
-                            url={transfer:'/workflow/direct-allot/order-to-excel?applyOrderId='};
-                            break;
-                    }
-                    this.universal.url=url;
-                }).catch(err=>{
-                    this.$message.error(err.response.data.message);
-                })
 
             }
         }

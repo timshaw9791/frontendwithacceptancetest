@@ -58,8 +58,7 @@
     import processCascader from '../processCascader'
     import textButton from 'components/base/textButton'
     import {applyProcessMixin} from "common/js/applyProcessMixin";
-    import {scrapStarts,scrapRefill,equipById,equipMaintainScrapByProcess} from "api/process"
-    import {equipArgsByName, inHouse, findEquip, updateEquipArg, getAllSupplier, saveEquipArg, updateEquip,getRfidFromGate} from "api/storage"
+    import {equipArgsByName, inHouse, findEquip, updateEquipArg, getAllSupplier, saveEquipArg, updateEquip} from "api/storage"
     import {start, delFile, handheld, killProcess,modifyFileName} from 'common/js/rfidReader'
     export default {
         name: "applyScrap",
@@ -162,27 +161,7 @@
                 if(flag){
                     if(equips.length!==0){
                         if (this.taskId){
-                            scrapRefill(apply, this.form.leader.id, this.taskId).then(res => {
-                                equipMaintainScrapByProcess(_.join(rfids, ',')).then(res=>{}).catch(err=>{
-                                    this.$message.error(err.response.data.message);
-                                });
-                                this.$message.success('操作成功');
-                                this.$emit('applySucess',true);
-                                this.cancelDb()
-                            }).catch(err=>{
-                                this.$message.error(err.response.data.message);
-                            })
                         }else {
-                            scrapStarts(apply, this.form.leader.id, this.mixinObject.processConfigId).then(res => {
-                                equipMaintainScrapByProcess(_.join(rfids, ',')).then(res=>{}).catch(err=>{
-                                    this.$message.error(err.response.data.message);
-                                });
-                                this.$message.success('操作成功');
-                                this.$emit('applySucess',true);
-                                this.cancelDb()
-                            }).catch(err=>{
-                                this.$message.error(err.response.data.message);
-                            })
                         }
 
                     }else {
@@ -209,23 +188,7 @@
             },
             getEquipByRfid(data){
                data.forEach(item=>{
-                   equipById(item).then(res=>{
-                       this.form.equips=[...this.form.equips,...res.content];
-                   }).catch(err=>{
-                       this.$message.error(err.response.data.message);
-                   })
                })
-            },
-            getRfidFromGateAntenna(){//获取门感读取到的rfid
-               
-                getRfidFromGate().then(r=>{
-                    console.log(r.length);
-                    if(r.length!=0&&r!='')
-                    {
-                        this.getEquipByRfid(r)
-                    }
-                      
-                  })
             },
             getGateAntenna(){
                 let gateModel="OUT_HOUSE"

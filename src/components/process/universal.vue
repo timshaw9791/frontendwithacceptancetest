@@ -62,7 +62,7 @@
 
 <script>
     import serviceDialog from "components/base/serviceDialog"
-    import { historyTasks,workflow,equipsOutInbound,findInHouseNumberLike,findOutHouseNumberLike,transferProcess} from "api/process"
+    import {workflow,transferProcess} from "api/process"
     import textButton from 'components/base/textButton'
     import select_apply from 'components/process/processDialog/selectApplyProcess'
     import t_dialog from 'components/process/transfer/transferDialog'
@@ -112,41 +112,9 @@
             },
             lookInHouse(){
                 let equips=[],equip;
-                findInHouseNumberLike({search:this.universalObj.processVariables.applyOrder.inboundInfo.orderNumber}).then(res=>{
-                    equip=_.groupBy(JSON.parse(JSON.stringify(res.content[0].equipInOutHouseDetails)), 'model');
-                    for (let key in equip) {
-                        equips.push({name:equip[key][0].name,model:key,count:equip[key].length})
-                    }
-                    this.lookUp={
-                        title:'入库',
-                        number:res.content[0].orderNumber,
-                        user:res.content[0].operatorInfo.operator,
-                        table:equips,
-                        time:res.content[0].createTime
-                    };
-                    this.$refs.lookUp.show();
-                }).catch(err=>{
-                    this.$message.error(err.response.data.message);
-                });
             },
             lookOutHouse(){
                 let equips=[],equip;
-                findOutHouseNumberLike({search:this.universalObj.processVariables.applyOrder.outboundInfo.orderNumber}).then(res=>{
-                    equip=_.groupBy(JSON.parse(JSON.stringify(res.content[0].equipInOutHouseDetails)), 'model');
-                    for (let key in equip) {
-                        equips.push({name:equip[key][0].name,model:key,count:equip[key].length})
-                    }
-                    this.lookUp={
-                        title:'出库',
-                        number:res.content[0].orderNumber,
-                        user:res.content[0].operatorInfo.operator,
-                        table:equips,
-                        time:res.content[0].createTime
-                    };
-                    this.$refs.lookUp.show();
-                }).catch(err=>{
-                    this.$message.error(err.response.data.message);
-                });
             },
             transfer(){
                 if(this.$route.meta.title==='待办事宜'){
@@ -170,12 +138,6 @@
             },
             inHouseByProcess(data){
                 let url=`${this.url.inHouse}?taskId=${this.activeTask.id}`;
-                equipsOutInbound(url,data).then(res=>{
-                    this.$message.success('操作成功');
-                    this.$emit('back','refetch')
-                }).catch(err=>{
-                    this.$message.error(err.response.data.message);
-                })
             },
             outHouse(){
                 this.typeOperational='出库';
@@ -184,12 +146,6 @@
             },
             outHouseByProcess(data){
                 let url=`${this.url.outHouse}?taskId=${this.activeTask.id}`;
-                equipsOutInbound(url,data).then(res=>{
-                   this.$message.success('操作成功');
-                   this.$emit('back','refetch')
-                }).catch(err=>{
-                    this.$message.error(err.response.data.message);
-                })
             },
             initLeftList(typeOperational){
                 if(this.$route.meta.title!=='申请单列表'){
@@ -262,12 +218,6 @@
                     }
 
                     let params = {processInstanceId: id, includeProcessVariables: false, includeTaskVariables: true};
-                    historyTasks(params).then(res => {
-                        this.processList = JSON.parse(JSON.stringify(res));
-                        this.startShow = true
-                    }).catch(err=>{
-                        this.$message.error(err.response.data.message);
-                    })
                 }
 
             },
