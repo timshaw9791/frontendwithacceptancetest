@@ -7,6 +7,7 @@ import customer from './modules/customer'
 import getters from './getters'
 import permission from './modules/permission'
 import message from './modules/message'
+import warehouse from './modules/warehouse'
 
 
 Vue.use(Vuex);
@@ -19,7 +20,8 @@ const store = new Vuex.Store({
         user,
         customer,
         permission,
-        message
+        message,
+        warehouse
     },
     getters,
     // strict:debug,

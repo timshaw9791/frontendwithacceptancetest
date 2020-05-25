@@ -7,7 +7,7 @@ import {asyncRouterMap, constantRouterMap} from '@/router'
  */
 function hasPermission(roles, route) {
     if (route.meta && route.meta.roles) {
-        return roles.some(role => route.meta.roles.includes(role)); // 是否匹配路由权限
+        return route.meta.roles.includes(roles); // 是否匹配路由权限
     } else {
         return true;
     }
