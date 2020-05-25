@@ -34,7 +34,7 @@
 <script>
     import myHeader from 'components/base/header/header';
     import bosTabs from '@/componentized/table/bosTabs'
-    import {complete, getOrder, processStart, processDetail} from 'api/process'
+    import {complete, processStart, processDetail} from 'api/process'
     import ScrapEquips from "../../components/processNew/equipItems";
 
     var _ = require('lodash');
@@ -55,19 +55,6 @@
         },
         methods: {
             init() {
-                getOrder({processDefinitionKey: this.$route.params.info.key}).then(res => {
-                    this.order = res
-                    for (let i = 0; i < 10; i++) {
-                        this.order.equips.push({
-                                equipArg: {},
-                                count: ''
-                            }
-                        )
-                    }
-                    this.show = true;
-                }).catch(err => {
-                    this.$message.error(err.response.data.message);
-                })
             },
             sumFunc(param) { // 表格合并行计算方法
                 let {columns, data} = param, sums = [];

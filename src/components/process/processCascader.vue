@@ -12,8 +12,6 @@
 </template>
 
 <script>
-    import {getAllUnit} from 'api/process'
-
     export default {
         name: "processCascader",
         data() {
@@ -34,13 +32,6 @@
             },
             getUnitList() {
                 this.cascader.options = [];
-                getAllUnit().then(res => {
-                    let option=[JSON.parse(JSON.stringify(res))];
-                    option.forEach(item=>{
-                        fs(item)
-                    });
-                    this.cascader.options = option
-                });
                 function fs(item) {
                     item.value={
                         name:item.name,

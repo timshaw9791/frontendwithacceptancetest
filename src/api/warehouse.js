@@ -1,16 +1,12 @@
 import request from "common/js/request"
 
 
-
-
-
-
-export function inHouse(rfids,serials,data) {
+export function inHouse(rfids,serials,data, tipState) {
     return request({
         url: `/equip/inHouse?rfids=${rfids}&&serials=${serials}`,
         method: "POST",
         data
-    })
+    }, tipState)
 }
 //单警柜金额统计all/statistic/cabinet-money
 export function allPoliceStatistic() {
@@ -89,12 +85,12 @@ export function cabinetEquip(data) {
     })
 }
 
-export function safetyStock(data) {
+export function safetyStock(data, tipState) {
     return request({
         url: `/category/safetyStock`,
         method: "POST",
         data
-    })
+    }, tipState)
 }
 export function relateCategory(data) {
     return request({
@@ -159,32 +155,32 @@ export function findAllEquipArgs(categoryId) {
     })
 }
 
-export function deleteGenreById(genreId) {
+export function deleteGenreById(genreId, tipState) {
     return request({
         url: `/category/deleteGenre?genreId=${genreId}`,
         method: "DELETE",
-    })
+    }, tipState)
 }
-export function deleteCategory(categoryId) {
+export function deleteCategory(categoryId, tipState) {
     return request({
         url: `/category/deleteCategory?categoryId=${categoryId}`,
         method: "DELETE",
-    })
+    }, tipState)
 }
-export function updateGenre(data) {
+export function updateGenre(data, tipState) {
     return request({
         url: "/category/updateGenre",
         method: "POST",
         data
-    })
+    }, tipState)
 }
 
-export function updateCategory(data) {
+export function updateCategory(data, tipState) {
     return request({
         url: "/category/updateCategory",
         method: "POST",
         data
-    })
+    }, tipState)
 }
 /* 供应商 */
 export function getSuppliers(params) {
@@ -195,19 +191,19 @@ export function getSuppliers(params) {
     })
 }
 
-export function modifySupplier(data) {
+export function modifySupplier(data, tipState) {
     return request({
         url: "/suppliers",
         method: "POST",
         data
-    })
+    }, tipState)
 }
 
-export function deleteSupplier(id) {
+export function deleteSupplier(id, tipState) {
     return request({
         url: `/suppliers/${id}`,
         method: "DELETE"
-    })
+    }, tipState)
 }
 
 /* 库房信息 */
@@ -236,11 +232,11 @@ export function getHouseStocks(params) {
     })
 }
 
-export function setSafeStock(params) {
+export function setSafeStock(params, tipState) {
     return request({
         url: "/house-stocks/set-safe-stock",
         method: "PUT",
         params
-    })
+    }, tipState)
 
 }

@@ -46,7 +46,6 @@
     import processTable from '../processTable'
     import processCascader from '../processCascader'
     import {applyProcessMixin} from "common/js/applyProcessMixin";
-    import {transferStart,transferRefill} from "api/process"
 
     export default {
         name: "applyAllocation",
@@ -131,21 +130,7 @@
                 if(flag){
                     if(index===-1){
                         if (this.taskId){
-                            transferRefill(apply, this.form.leader.id, this.taskId).then(res => {
-                                this.$message.success('操作成功');
-                                this.$emit('applySucess',true);
-                                this.cancelDb()
-                            }).catch(err=>{
-                                this.$message.error(err.response.data.message);
-                            })
                         }else {
-                            transferStart(apply, this.form.leader.id, this.mixinObject.processConfigId).then(res => {
-                                this.$message.success('操作成功');
-                                this.$emit('applySucess',true);
-                                this.cancelDb()
-                            }).catch(err=>{
-                                this.$message.error(err.response.data.message);
-                            })
                         }
                     }else {
                         this.$message.error('装备数量不能为0和空');

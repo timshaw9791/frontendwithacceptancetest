@@ -11,7 +11,6 @@
 </template>
 
 <script>
-import { getAllUnit } from 'api/process'
 import defineTree from '../../defineTree'
 export default {
   name: 'organUnits',
@@ -28,9 +27,6 @@ export default {
   },
   methods: {
     getList() {
-      getAllUnit().then(res => {
-        this.list = [res];
-      })
     },
     select() {
       this.$emit('select', {data: this.selected, ref: 'organUnits'});

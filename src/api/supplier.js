@@ -9,18 +9,18 @@ export function getSupplier(params) {
     })
 }
 
-export function addSupplier(data) {
+export function addSupplier(data, tipState) {
     return request({
         url: "/suppliers",
         method: "POST",
         data
-    })
+    }, tipState)
 }
 
-export function updateSupplier(data) {
+export function updateSupplier(data, tipState) {
     return request({
         url: `/suppliers/${data.id}`,
         method: "PUT",
         data
-    })
+    }, tipState)
 }

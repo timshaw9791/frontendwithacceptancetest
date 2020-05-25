@@ -1,4 +1,3 @@
-import {getEquipArgs,getApplyLeader,getPlatformHouse,getUser} from 'api/process'
 export const applyProcessMixin = {
     data() {
         return {
@@ -13,32 +12,12 @@ export const applyProcessMixin = {
     },
     methods: {
         mixinEquipArgs(){
-            getEquipArgs().then(res=>{
-                this.classify(res);
-            })
         },
         mixinGetUser(id){
-            getUser(id).then(res=>{
-                this.mixinObject.userList=res;
-            })
         },
         mixinGetHouse(id){
-            getPlatformHouse(id).then(res=>{
-                this.mixinObject.houseList=res;
-            })
         },
         mixiGetLeader(data){
-            getApplyLeader(data).then(res=>{
-                let leader=[];
-                res.auditors.forEach(item=>{
-                    if(item.level===1){
-                        leader.push(item.leader)
-                    }
-                });
-                this.mixinObject.processConfigId=res.id;
-                this.$set(this.mixinObject,'leaderList',leader);
-                console.log('this.mixinObject',this.mixinObject)
-            })
         },
         classify(data){
             let classifyList=[];

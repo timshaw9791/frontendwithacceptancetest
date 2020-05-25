@@ -33,7 +33,7 @@
     import {processStart, processDetail, getHistoryTasks} from '../../api/process'
     import {findByRfids} from "../../api/storage";
     import {transEquips} from "../../common/js/transEquips";
-    import {getHouseInfo} from "../../api/organUnit";
+    import {getHouseInfo} from "../../api/warehouse";
     import TaskHistory from "../../components/processNew/taskHistory";
     import equipItems from "../../components/processNew/equipItems";
 

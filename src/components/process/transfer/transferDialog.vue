@@ -197,8 +197,7 @@
 <script>
     import dialogSvices from 'components/base/gailiangban'
     // import inventoryData from 'views/warehouse/inventoryData'
-    import {findByRfids, outHouse, checkUser, inHouses} from 'api/process'
-    import {equipArgsByName, inHouse, findEquip, updateEquipArg, getAllSupplier, saveEquipArg, updateEquip,changeRecognizeModel,getRfidFromGate} from "api/storage"
+    import {equipArgsByName, inHouse, findEquip, updateEquipArg, getAllSupplier, saveEquipArg, updateEquip} from "api/storage"
     import {start, delFile, handheld, killProcess, modifyFileName} from 'common/js/rfidReader'
 
     var _ = require("lodash");
@@ -301,8 +300,6 @@
             cancelDialog(){
                 this.closeGate=true;
                 let gateModel="RECEIVE_RETURN"
-                            changeRecognizeModel(gateModel).then(res=>{
-                            })
                 
                 killProcess(this.pid)
             },
@@ -367,27 +364,11 @@
             },       
             getRfidFromGateAntenna(){//获取门感读取到的rfid
                
-                getRfidFromGate().then(r=>{
-                      if(r.length!=0&&r!='')
-                      {
-                          this.getOutDataCopy(r)
-                      }
-                  })
             },
             getGateAntenna(gateModel){
                
                 
               setTimeout(() => this.throttle = false, 2000)
-              changeRecognizeModel(gateModel).then(res=>{
-                  this.$message.success('门感开始识别')
-                  this.timeId = setInterval(() => {
-                    if (this.closeGate) {
-                    console.log("清除定时器");
-                    clearInterval(this.timeId)
-                    };
-                    this.getRfidFromGateAntenna();
-                    },3000)
-              })
             },
             // deleteFile() {
             //     delFile(newFile_path, () => {console.log('删除文件' + newFile_path + '成功')})
@@ -451,18 +432,6 @@
                         userId: this.directObj.processVariables.applyOrder.inboundUser.id,
                         username: this.user.userName
                     };
-                    checkUser(param).then(res => {
-                        this.closeConfirm();
-                        let state;
-                        if (this.submitFlag) {
-                            state = 'NORMAL'
-                        } else {
-                            state = 'ABNORMAL'
-                        }
-                        this.transferEquipInOrOut(state)
-                    }).catch(err => {
-                        this.$message.error(err.response.data.message);
-                    })
                 } else {
                     this.$message.info('请先填写完整')
                 }
@@ -486,47 +455,8 @@
                     note = this.reason;
                 }
                 if (this.typeOperational === '出库') {
-                    outHouse(_.join(rfids, ',')).then(res => {
-                        res.equips.forEach(item => {
-                            price = price + item.price;
-                            equips.push({
-                                id: item.id,
-                                name: item.equipArg.name,
-                                model: item.equipArg.model,
-                                price: item.price,
-                                serial: item.serial,
-                                productDate: item.productDate,
-                                equipArgId: item.equipArg.id,
-                                rfid: item.rfid
-                            })
-                        });
-                        this.$emit('outHouse', {
-                            outboundEquipsOrder: {equips: equips},
-                            outboundInfo: {
-                                note: note,
-                                missEquips: this.missEquip,
-                                orderNumber: res.orderNumber,
-                                price: price
-                            }
-                        })
-                    }).catch(err => {
-                        this.$message.error(err.response.data.message);
-                    })
                     // equips=[{id:'2121',name:'item.equipArg.name',model:'item.equipArg.model',price:'item.price',serial:'item.serial',productDate:'item.productDate',equipArgId:'item.equipArg.id',rfid:'item.rfid'}],
                 } else {
-                    inHouses(equips).then(res => {
-                        res.equips.forEach(item => {
-                            price = price + item.price;
-                        });
-                        this.$emit('inHouse', {
-                            orderNumber: res.orderNumber,
-                            price: price,
-                            note: note,
-                            missEquips: this.missEquip
-                        })
-                    }).catch(err => {
-                        this.$message.error(err.response.data.message);
-                    })
                 }
 
             },
@@ -537,8 +467,6 @@
             },
             submit() {
                 let gateModel="RECEIVE_RETURN"
-                            changeRecognizeModel(gateModel).then(res=>{
-                            })
                  this.closeGate=true;
                 if(this.rightList.length!==0){
                     if (this.submitFlag) {
@@ -608,15 +536,6 @@
             // },
             getOutDataCopy(data) {
                 if (this.typeOperational == '出库') {
-                    findByRfids(data).then(res => {
-                        if (res.length !== 0) {
-                            this.getCategroy(res);
-                        } else {
-                            this.$message.error(`无法识别当前装备的RFID:[${data}]`)
-                        }
-                    }).catch(err => {
-                        this.$message.error(err.response.data.message);
-                    });
                 } else {
                     let equips = JSON.parse(JSON.stringify(this.directObj.processVariables.outboundEquipsOrder.equips));
                     this.getCategroyIn(data, equips);
@@ -752,8 +671,6 @@
         beforeDestroy() {
             killProcess(this.pid);
             let gateModel="RECEIVE_RETURN"
-                changeRecognizeModel(gateModel).then(res=>{
-              })
             clearInterval(this.timeId)
         }
     }
