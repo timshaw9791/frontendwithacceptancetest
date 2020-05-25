@@ -57,7 +57,7 @@
 <script>
     import { findAllData, findEquipsNeedChange, findByOneLine } from 'api/overview'
     import { writeFile } from "common/js/rfidReader"
-    import { todoProcess } from 'api/process'
+    import { todoTask } from 'api/process'
     
     export default {
         data() {
@@ -103,7 +103,7 @@
                 })
             },
             getToDoTasks() {
-                todoProcess({assignee: JSON.parse(localStorage.getItem('user')).id}).then(res => {
+                todoTask({assignee: JSON.parse(localStorage.getItem('user')).id}).then(res => {
                     this.toDoList = res.content.map(item => Object.assign({}, item, {time: this.$filterTime(item.createTime)}))
                 })
             },

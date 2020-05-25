@@ -40,10 +40,10 @@
     import {findByRfids} from "@/api/storage";
     import {transEquips} from "@/common/js/transEquips";
     import {getHouseInfo} from "@/api/organUnit";
-    import TaskHistory from "@/components/processNew/taskHistory";
-    import equipItems from "@/components/processNew/equipItems";
+    import TaskHistory from "@/components/process/taskHistory";
+    import equipItems from "@/components/process/equipItems";
     import {completeTask, processesDelete, taskDetail} from "@/api/workflow";
-    import OperationBar from "@/components/processNew/operationBar";
+    import OperationBar from "@/components/process/operationBar";
     import {mapGetters} from "vuex";
 
     export default {

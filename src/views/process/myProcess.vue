@@ -70,16 +70,15 @@
                             query: {
                                 processInstanceId: data.processInstanceId,
                                 taskId: data.taskId,
-                            }})
+                            }
+                        })
                         break;
                     case '调拨流程':
                         this.$router.push({
-                            path: 'transferDetail',
+                            path: 'transferApply',
                             query: {
-                                info: {
-                                    processInstanceId: data.processInstanceId,
-                                    taskId: data.taskId,
-                                }
+                                processInstanceId: data.processInstanceId,
+                                taskId: data.taskId,
                             }
                         })
                         break;

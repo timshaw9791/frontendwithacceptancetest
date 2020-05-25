@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { getAllUnit } from 'api/process'
+import { getAllUnit } from '@/api/basic'
 import defineTree from '../../defineTree'
 export default {
   name: 'organUnits',

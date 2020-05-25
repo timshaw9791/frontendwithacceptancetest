@@ -33,3 +33,10 @@ export function bosEnums(params) { // 根据枚举分类获取常量值
         params
     })
 }
+
+export function getAllUnit() {
+    return  request({
+        url:`${baseBURL}/organ-units/tree`,
+        method:'get'
+    })
+}
