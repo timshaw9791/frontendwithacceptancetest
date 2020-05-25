@@ -198,7 +198,7 @@
     import dialogSvices from 'components/base/gailiangban'
     // import inventoryData from 'views/warehouse/inventoryData'
     import {findByRfids, outHouse, checkUser, inHouses} from 'api/process'
-    import {equipArgsByName, inHouse, findEquip, updateEquipArg, getAllSupplier, saveEquipArg, updateEquip,changeRecognizeModel,getRfidFromGate} from "api/storage"
+    import {equipArgsByName, inHouse, findEquip, updateEquipArg, getAllSupplier, saveEquipArg, updateEquip,getRfidFromGate} from "api/storage"
     import {start, delFile, handheld, killProcess, modifyFileName} from 'common/js/rfidReader'
 
     var _ = require("lodash");
@@ -301,8 +301,6 @@
             cancelDialog(){
                 this.closeGate=true;
                 let gateModel="RECEIVE_RETURN"
-                            changeRecognizeModel(gateModel).then(res=>{
-                            })
                 
                 killProcess(this.pid)
             },
@@ -378,16 +376,6 @@
                
                 
               setTimeout(() => this.throttle = false, 2000)
-              changeRecognizeModel(gateModel).then(res=>{
-                  this.$message.success('门感开始识别')
-                  this.timeId = setInterval(() => {
-                    if (this.closeGate) {
-                    console.log("清除定时器");
-                    clearInterval(this.timeId)
-                    };
-                    this.getRfidFromGateAntenna();
-                    },3000)
-              })
             },
             // deleteFile() {
             //     delFile(newFile_path, () => {console.log('删除文件' + newFile_path + '成功')})
@@ -537,8 +525,6 @@
             },
             submit() {
                 let gateModel="RECEIVE_RETURN"
-                            changeRecognizeModel(gateModel).then(res=>{
-                            })
                  this.closeGate=true;
                 if(this.rightList.length!==0){
                     if (this.submitFlag) {
@@ -752,8 +738,6 @@
         beforeDestroy() {
             killProcess(this.pid);
             let gateModel="RECEIVE_RETURN"
-                changeRecognizeModel(gateModel).then(res=>{
-              })
             clearInterval(this.timeId)
         }
     }

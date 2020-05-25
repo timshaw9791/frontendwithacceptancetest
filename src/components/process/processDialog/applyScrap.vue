@@ -59,7 +59,7 @@
     import textButton from 'components/base/textButton'
     import {applyProcessMixin} from "common/js/applyProcessMixin";
     import {scrapStarts,scrapRefill,equipById,equipMaintainScrapByProcess} from "api/process"
-    import {equipArgsByName, inHouse, findEquip, updateEquipArg, getAllSupplier, saveEquipArg, updateEquip,changeRecognizeModel,getRfidFromGate} from "api/storage"
+    import {equipArgsByName, inHouse, findEquip, updateEquipArg, getAllSupplier, saveEquipArg, updateEquip,getRfidFromGate} from "api/storage"
     import {start, delFile, handheld, killProcess,modifyFileName} from 'common/js/rfidReader'
     export default {
         name: "applyScrap",
@@ -132,8 +132,6 @@
             cancelDialog(){
                 this.closeGate=true
                 let gateModel="RECEIVE_RETURN"
-                changeRecognizeModel(gateModel).then(res=>{
-              })
                 killProcess(this.pid)
             },
             clearEquip(){
@@ -143,8 +141,6 @@
                 let equips = [],rfids=[],flag=true;
                 this.closeGate=true;
                 let gateModel="RECEIVE_RETURN"
-                changeRecognizeModel(gateModel).then(res=>{
-              })
                 this.form.equips.forEach(item => {
                     equips.push({id:item.id,rfid:item.rfid,name:item.equipArg.name,model:item.equipArg.model});
                     rfids.push(item.rfid);
@@ -234,16 +230,6 @@
             getGateAntenna(){
                 let gateModel="OUT_HOUSE"
               setTimeout(() => this.throttle = false, 2000)
-              changeRecognizeModel(gateModel).then(res=>{
-                  this.$message.success('门感开始识别')
-                  this.timeId = setInterval(() => {
-                    if (this.closeGate) {
-                    console.log("清除定时器");
-                    clearInterval(this.timeId)
-                    };
-                    this.getRfidFromGateAntenna();
-                    },3000)
-              })
             },
             handheldMachine() {
                 modifyFileName('search.json');
@@ -286,8 +272,6 @@
         beforeDestroy() {
             killProcess(this.pid)
             let gateModel="RECEIVE_RETURN"
-                changeRecognizeModel(gateModel).then(res=>{
-              })
             clearInterval(this.timeId);
         }
     }

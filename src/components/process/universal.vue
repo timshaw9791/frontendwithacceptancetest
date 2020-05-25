@@ -62,7 +62,7 @@
 
 <script>
     import serviceDialog from "components/base/serviceDialog"
-    import { historyTasks,activeTasks,workflow,equipsOutInbound,findInHouseNumberLike,findOutHouseNumberLike,transferProcess} from "api/process"
+    import { historyTasks,workflow,equipsOutInbound,findInHouseNumberLike,findOutHouseNumberLike,transferProcess} from "api/process"
     import textButton from 'components/base/textButton'
     import select_apply from 'components/process/processDialog/selectApplyProcess'
     import t_dialog from 'components/process/transfer/transferDialog'
