@@ -1,5 +1,5 @@
 import {login} from 'api/login'
-import { getHouseInfo } from 'api/process'
+import { getHouseInfo } from 'api/warehouse'
 import {getToken, setToken, removeToken} from 'common/js/auth'
 import {Message} from 'element-ui'
 
