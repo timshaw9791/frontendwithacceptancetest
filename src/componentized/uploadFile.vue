@@ -213,6 +213,10 @@ export default {
 .border {
     border: 1px dashed #d9d9d9;
 }
+.tiny {
+    width: 30px;
+    height: 30px;
+}
 .mini {
     width: 60px;
     height: 60px;
