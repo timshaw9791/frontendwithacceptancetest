@@ -1,13 +1,11 @@
-import axios from 'axios'
 import request from "common/js/request"
-import {baseURL} from "./config";
 
-export function temperatureValue(data) {
+export function temperatureValue(data, tipState) {
     return request({
         method: 'post',
         url: '/environment/humitureQuery',
         params: data
-    })
+    }, tipState)
 }
 
 /* 烟雾 */

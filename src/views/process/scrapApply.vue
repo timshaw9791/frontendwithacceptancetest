@@ -39,7 +39,6 @@
     import {processStart, getHistoryTasks, processDetail} from '@/api/process'
     import {findByRfids} from "@/api/storage";
     import {transEquips} from "@/common/js/transEquips";
-    import {getHouseInfo} from "@/api/organUnit";
     import TaskHistory from "@/components/process/taskHistory";
     import equipItems from "@/components/process/equipItems";
     import {completeTask, processesDelete, taskDetail} from "@/api/workflow";
