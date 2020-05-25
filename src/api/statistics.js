@@ -26,7 +26,7 @@ export function cabinetWearRate(data) {
 }
 export function equipmentScrappedInfo(data) {
     return request({
-        url: '/equips/need-scrap/detail',
+        url: '/remind/need-scrap/detail',
         method: 'get',
         params: data
     })

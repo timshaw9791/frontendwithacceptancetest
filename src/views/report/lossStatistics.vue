@@ -190,7 +190,7 @@
                         totalCount:res.reduce((v,k)=>v+k.totalCount,0),
                         count:res.reduce((v,k)=>v+k.count,0),
                         inHouseCount:'--',
-                        genre:'单警柜装备',
+                        genre:'单警装备',
                         receiveUseCount:'--',
                         totalLoss:res.reduce((v,k)=>v+k.totalLoss,0),
                         totalPrice:res.reduce((v,k)=>v+k.totalPrice,0)

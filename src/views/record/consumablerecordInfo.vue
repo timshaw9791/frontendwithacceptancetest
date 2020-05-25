@@ -14,7 +14,7 @@
         <div class="process-info">
             <define-input label="备注" margin="15px 15px " v-model="order.remark" placeholder="--"  :disabled="true"></define-input>
         </div>
-        <define-table :showSummary="true" :summaryFunc="sumFunc" :havePage="false" :data="order.consumableItems" height="4rem" >
+        <define-table :showSummary="true" :summaryFunc="sumFunc" ref="table" :havePage="false" :data="order.consumableItems" height="4rem" >
             <define-column label="操作" width="100">
                 <i class="iconfont icontianjialiang"></i>
                 <i class="iconfont iconyichuliang"></i>
@@ -63,6 +63,9 @@
                 })
             },
             sumFunc(param) { // 表格合并行计算方法
+                this.$nextTick(() => {
+            this.$refs.table.refreshLayout();
+               });
                 let { columns, data } = param, sums = [];
                 sums=new Array(columns.length).fill('')
                 sums[0]='合计'
@@ -82,6 +85,9 @@
 </script>
 
 <style lang="scss" scoped>
+// /deep/.el-table__footer-wrapper{
+// overflow: visible !important
+// }
     .consumableReceiveInfo-form-container {
         font-size: 16px;
     }

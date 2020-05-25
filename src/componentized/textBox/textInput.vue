@@ -27,7 +27,8 @@ import { judgeRules } from "../rules"
               insideValue: "",
               styleObj: {
                   error: false
-              }
+              },
+              insideTips: []
           }
         },
         props: {
@@ -93,6 +94,9 @@ import { judgeRules } from "../rules"
             }
         },
         methods: {
+            init() {
+                this.insideTips = typeof this.tips[0] == 'object'?this.tips:this.tips.map((value, key) => ({value, key}))
+            },
             reg() {
                 if(judgeRules(this.required, this.type, this.value, this.validate)) {
                     this.styleObj.error=false;
@@ -106,7 +110,7 @@ import { judgeRules } from "../rules"
                 this.inputPrePt.style.cursor = state?'not-allowed':'auto';
             },
             querySearch(queryString, cb) {
-                var restaurants = this.tips;
+                var restaurants = this.insideTips;
                 var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
                 // 调用 callback 返回建议列表的数据
                 cb(results);

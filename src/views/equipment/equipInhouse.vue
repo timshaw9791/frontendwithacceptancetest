@@ -189,7 +189,9 @@ export default {
                     this.list[this.findIndex].copyList.push({rfid:'',serial:''})
                 }else if(this.list[this.findIndex].copyList.length>1){
                     this.list[this.findIndex].copyList.splice(data.$index, 1)
-                }else{
+                    this.list[this.findIndex].count--
+                }
+                if(this.list[this.findIndex].copyList.length==0){
                     this.list[this.findIndex].copyList=[{rfid:'',serial:''}]
                 }
             },
@@ -200,7 +202,8 @@ export default {
                     this.list.push({equipArgId: '',locationId: '',price: 0,productTime: Date.parse(new Date()),rfids: [],serial: [],copyList:[{rfid:'',serial:''}],})
                 }else if(this.list.length>1){
                     this.list.splice(data.$index, 1)
-                }else{
+                }
+                if(this.list.length==0){
                     this.list=[{equipArgId: '',locationId: '',price: 0,productTime: Date.parse(new Date()),rfids: [],serial: [],copyList:[{rfid:'',serial:''}],}]
                 }
             },
