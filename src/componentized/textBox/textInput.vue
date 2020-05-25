@@ -142,7 +142,8 @@ import { judgeRules } from "../rules"
             }
         },
         created() {
-            this.insideValue = this.value
+            this.insideValue = this.value;
+            this.init();
         },
         mounted() {
             this.inputPrePt = document.querySelector('.el-input-group__prepend');
