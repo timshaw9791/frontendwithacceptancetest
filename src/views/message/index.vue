@@ -10,8 +10,8 @@
 				<define-table :data="list" :pageInfo="fetchParams.pageInfo" @changePage="changePage" height="4.0104rem" 
 					:highLightCurrent="true" @changeCurrent="changeCurrent" slot="main" ref="leftTable">
 					<define-column label="操作" field="opeare" width="60" v-slot="{ data }">
-						<i class="iconfont iconxingbiaotianchong star" @click="messageStar(data.row.id,false)" v-if="data.row.newStar"></i>
-						<i class="iconfont iconxingbiaoxianxing" @click="messageStar(data.row.id, true)" v-else></i>
+						<i class="iconfont iconxingbiaotianchong star" @click="messageStar(data.row,false)" v-if="data.row.newStar"></i>
+						<i class="iconfont iconxingbiaoxianxing" @click="messageStar(data.row, true)" v-else></i>
 					</define-column>
 					<define-column label="消息状态" width="100" v-slot="{ data }">
 						<span :class="['sign',{unread: !data.row.status}]">
@@ -21,7 +21,7 @@
 					<define-column label="通知时间" :filter="row => this.$filterTime(row.createTime)" width="200"></define-column>
 					<define-column label="消息标题" :filter="row=>fixTitle(row.title)"></define-column>
 				</define-table>
-				<define-table :data="list[selectIndex].messageItems" :havePage="false" height="4.2448rem" slot="content">
+				<define-table :data="list[selectIndex]?list[selectIndex].messageItems:[]" :havePage="false" height="4.2448rem" slot="content">
 					<define-column label="消息内容" field="content"></define-column>
 				</define-table>
 			</bos-tabs>
@@ -42,7 +42,7 @@ export default {
 	data() {
 		return {
 			list: [{messageItems:[]}],
-			selectIndex: 0,
+			selectIndex: -1,
 			enumerator: [], // 标题枚举对象
 			fetchParams: {
 				jpql: "select ms from Message ms where ms.userId = ?1 order by ms.createTime desc",
@@ -74,8 +74,8 @@ export default {
 		},
 		changeCurrent(data) {
 			data.current && data.current.id && !data.current.status && readMsg({ids: [data.current.id]}).then(res => {
+				data.current.status = true
 				this.$message.success('标记已读');
-				this.fetchData();
 			})
 			this.selectIndex = data.index
 		},
@@ -83,16 +83,21 @@ export default {
 			let tmp = this.enumerator.find(item => item.value == value)
 			return tmp?tmp.chinese:''
 		},
-		messageStar(id, status) {
-			markStar({id, status, userId: this.userId}).then(res => {
-				this.fetchData();
+		messageStar(currentData, status) {
+			markStar({id:currentData.id, status, userId: this.userId}, true).then(res => {
+				currentData.newStar = status;
 			})
 		},
 		allMessageRead() {
-			allRead({userId: this.userId}).then(res => {
-				this.fetchData();
+			allRead({userId: this.userId}, true).then(res => {
+				this.list.forEach(item => item.status = true)
 			})
-		}
+		},
+		changePage(page) {
+			this.fetchParams.pageInfo.page = page;
+			this.selectIndex = -1;
+            this.fetchData();
+        }
 	},
 	created() {
 		this.fetchEnumerator();
