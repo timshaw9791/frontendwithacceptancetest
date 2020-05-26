@@ -474,6 +474,15 @@ export const asyncRouterMap = [{
             meta: {title: '个人中心'},
         }],
         hidden: true
+    }, {
+        path: '/test',
+        component: Layout,
+        children: [{
+            path: 'index',
+            name: 'test',
+            component: _import('test/test'),
+            meta: {title: '开发测试'}
+        }]
     },
     {path: '*', redirect: '/404', hidden: true}
 ]

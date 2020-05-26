@@ -1,0 +1,238 @@
+<template>
+    <div class="view-container">
+        <div class="top-tools-contaienr">
+            <div class="breadcrumb-box">
+                <bread-crumb :routeList="routeList"></bread-crumb>
+            </div>
+            <div class="tabs-box">
+                <div v-for="(tab, i) in tabs" :key="tab.key" class="tab" :class="{'tab-select': tabSelect==i}" @click="selectTab(tab, i)">{{ tab.label }}</div>
+            </div>
+            <div class="tools-box">
+                <define-input :label="baseSearchName" v-model="tabs[tabSelect].baseSearchValue" :column="6" v-show="tabs[tabSelect].baseSearch" class="base-input"></define-input>
+                <div class="button-box">
+                    <div v-for="tab in tabs" :key="'buttonslot'+tab.key" v-show="tabs[tabSelect].key==tab.key" class="button">
+                        <slot :name="'button'+tab.key"></slot>
+                    </div>
+                </div>
+                <div class="built-in-box">
+                    <span @click="advancedSearchShow = !advancedSearchShow" v-show="tabs[tabSelect].advancedSearch" class="built-in">高级搜索</span>
+                    <div class="dropdown-container" @mouseleave="showMenu=false">
+                        <span class="label" @click="showMenu=!showMenu">更多</span>
+                        <div class="menu" v-show="showMenu">
+                            <slot :name="'moreButton'+tabs[tabSelect].key"></slot>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        <div class="body">
+            <div v-for="tab in tabs" :key="'nameSlot'+tab.key" v-show="tabs[tabSelect].key==tab.key" class="name-slot-box">
+                <slot :name="tab.key"></slot>
+            </div>
+            <slot></slot>
+        </div>
+        <transition name="search">
+            <div class="advanced-search-box" v-show="advancedSearchShow"></div>
+        </transition>
+    </div>
+</template>
+
+<script>
+import breadCrumb from './breadCrumb'
+import dropdown from './dropdown'
+export default {
+    name: 'topTools',
+    data() {
+        return {
+            routeList: [],
+            tabSelect: 0,
+            advancedSearchShow: false,
+            showMenu: false, // 控制下拉菜单
+        }
+    },
+    methods: {
+        selectTab(tabData, index) { // 切换标签卡
+            this.tabSelect = index;
+            this.advancedSearchShow = false;
+            this.$emit('changeTab', tabData);
+        }
+    },
+    props: {
+        tabs: {
+            type: Array,
+            default() {
+                return [{
+                    label: '标签卡1',
+                    key: 'car1'
+                }, {
+                    label: '标签卡2',
+                    key: 'car2'
+                }]
+            }
+        },
+        baseSearchName: {
+            type: String,
+            default: '搜索'
+        },
+        value: {},
+    },
+    watch: {
+        $route: {
+            handler(val, oldVal) {
+                this.routeList = this._.drop(val.matched);
+            },
+            deep: true,
+            immediate: true
+        }
+    },
+    components: {breadCrumb, dropdown}
+}
+</script>
+
+<style lang="scss" scoped>
+    $mainHeight: calc(91vh - 78px);
+    .view-container {
+        width: 100%;
+        font-size: 16px;
+    }
+    .top-tools-contaienr {
+        width: 100%;
+        height: 60px;
+        padding: 0 6px;
+        display: grid;
+        z-index: 999;
+        grid-template-columns: 0.9fr 1fr 1.1fr;
+        border-bottom: 1px solid #DCDFE6;
+        box-shadow:1px 3px 8px rgba(0,0,0,0.04);
+        .breadcrumb-box {
+            background-color: lightcoral;
+            height: 60px;
+            display: inline-flex;
+            align-items: center;
+        }
+        .tabs-box {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            height: 60px;
+            .tab {
+                padding: 0 17px;
+                height: 42px;
+                line-height: 42px;
+                cursor: pointer;
+            }
+        }
+        .tools-box {
+            width: 620px;
+            display: inline-flex;
+            justify-content: flex-end;
+            align-items: center;
+            background-color: lightskyblue;
+            height: 60px;
+            line-height: 60px;
+            .base-input {
+                min-width: 240px;
+            }
+            .button-box {
+                width: auto;
+                min-width: 230px;
+                flex-grow: 1;
+                height: 60px;
+                background-color: orange;
+                white-space: nowrap;
+                text-align: right;
+                color: #51519A;
+                font-size:18px;
+                overflow: hidden;
+                user-select: none;
+            }
+            .built-in-box {
+                max-width: 124px;
+                min-width: 50px;
+                flex-grow: 0;
+                flex-shrink: 0;
+                background-color: red;
+                display: inline-flex;
+                justify-content: flex-end;
+            }
+            .built-in {
+                cursor: pointer;
+            }
+            .button {
+                text-align: right;
+            }
+        }
+        .tab-select {
+            border: 2px solid #DCDFE6;
+            border-bottom: 1px solid white;
+        }
+    }
+    .dropdown-container {
+        display: inline-block;
+        width: 50px;
+        position: relative;
+        text-align: center;
+        z-index: 9999999999;
+        .label {
+            cursor: pointer;
+        }
+        .menu {
+            position: absolute;
+            width: 100px;
+            min-height: 100px;
+            background-color: white;
+            border: 1px solid #ebeef5;
+            box-shadow:1px 3px 8px rgba(0,0,0,0.1);
+            left: -50px;
+        }
+        .menu::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            right: 10%;
+            width: 0;
+            height: 0;
+            border-width:5px;
+            border-style:solid;
+            border-color: transparent;
+            border-bottom-width: 8px;
+            border-bottom-color: currentColor;
+            color: #FFFFFF;
+        }
+    }
+    .advanced-search-box {
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        min-height: 100px;
+        border:1px solid rgba(220,223,230,1);
+        box-shadow:1px 3px 8px rgba(0,0,0,0.04);
+        background-color: white;
+    }
+    .body {
+         &::-webkit-scrollbar {
+            width: 6px;
+        }
+        &::-webkit-scrollbar-track {
+            background-color: white;
+        }
+        &::-webkit-scrollbar-thumb {
+            background:rgba(178,178,204,0.7);
+            border-radius: 20px;
+        }
+        width: 100%;
+        min-height: $mainHeight;
+        max-height: $mainHeight;
+        overflow-x: hidden;
+        overflow-y: auto;
+        margin-top: 18px;
+    }    
+    .search-enter-active, .search-leave-active {
+        transition: opacity .5s;
+    }
+    .search-enter, .search-leave-to{
+        opacity: 0;
+    }
+</style>
