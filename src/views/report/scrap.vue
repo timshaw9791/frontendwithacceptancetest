@@ -168,9 +168,9 @@ export default {
         });
     },
     rate(data) {
-      if (data.totalCount + data.commonStock != 0) {
+      if (data.commonStock != 0) {
         return (
-          (data.count / (data.totalCount + data.commonStock)) *
+          (data.count / data.commonStock) *
           100
         );
       } else return 0;
