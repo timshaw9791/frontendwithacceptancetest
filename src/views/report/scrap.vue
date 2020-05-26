@@ -172,11 +172,11 @@ export default {
         return (
           (data.count / (data.totalCount + data.commonStock)) *
           100
-        ).toFixed(2);
+        );
       } else return 0;
     },
     compuntedRate(){
-        return (this.show=='singlePolice'||this.show=='singlePoliceCategory'?this.addNum(4)/this.addNum(5):this.addNum(4)/this.addNum(1)*100).toFixed(2)
+        return (this.show=='singlePolice'||this.show=='singlePoliceCategory'?this.addNum(4)/this.addNum(5):this.addNum(4)/this.addNum(1)*100)
     },
     addNum(item) {
       return this.equipArg.reduce((v, k) => {
