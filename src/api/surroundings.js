@@ -22,14 +22,14 @@ export function chargeStatus(params) { // 充电台状态查询
         params
     }, false)
 }
-export function chargeInfo(params) {
+export function chargeInfo(params) { // 充电台充电装备信息
     return request({
         url: '/charge/info',
         method: 'GET',
         params
     }, false)
 }
-export function chargeSwitch(params, tipState) {
+export function chargeSwitch(params, tipState) { // 充电台开关
     return request({
         url: '/charge/switch',
         method: 'POST',
@@ -38,19 +38,41 @@ export function chargeSwitch(params, tipState) {
 }
 
 /* 除湿机 */
-export function allDehumidifierStatus() {
+export function allDehumidifierStatus() { // 除湿机状态
     return request({
         url: '/dehumidifier/status-all',
         method: 'GET'
     }, false)
 }
-export function dehumidifierSwitch(params, tipState) {
+export function dehumidifierSwitch(params, tipState) { // 除湿机开关
     return request({
         url: '/dehumidifier/switch',
         method: 'GET',
         params
     }, tipState)
 }
+/* 灯光 */
+export function lightQuery() { // 灯光状态
+    return request({
+        url: '/light/query',
+        method: 'GET'
+    }, false)
+}
+export function lightSwitch(params) { // 灯光控制
+    return request({
+        url: '/light/switch',
+        method: 'POST',
+        params
+    }, true)
+}
+export function allLightSwitch(params, tipState) { // 灯光一键控制
+    return request({
+        url: '/light/switch-all',
+        method: 'POST',
+        params
+    }, tipState)
+}
+
 
 
 /* 烟雾 */

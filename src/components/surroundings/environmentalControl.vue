@@ -9,7 +9,7 @@
         <charging-station ref="chargingStation" :count="deviceObj.ENVIRONMENT_CHARGE_COUNT"></charging-station>
         <dehumidification ref="dehumidification" :count="deviceObj.DEHUMIDIFIER_COUNT"></dehumidification>
         <air-conditioning ref="airConditioning"></air-conditioning>
-        <light ref="lighting"></light>
+        <light ref="lighting" :count="deviceObj.ENVIRONMENT_LIGHT_COUNT"></light>
         <smoke-alarm ref="smokeAlarm"></smoke-alarm>
         <exhaust ref="exhaust"></exhaust>
         <disinfection ref="disinfection"></disinfection>
