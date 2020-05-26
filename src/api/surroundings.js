@@ -37,8 +37,20 @@ export function chargeSwitch(params, tipState) {
     }, tipState)
 }
 
-
-
+/* 除湿机 */
+export function allDehumidifierStatus() {
+    return request({
+        url: '/dehumidifier/status-all',
+        method: 'GET'
+    }, false)
+}
+export function dehumidifierSwitch(params, tipState) {
+    return request({
+        url: '/dehumidifier/switch',
+        method: 'GET',
+        params
+    }, tipState)
+}
 
 
 /* 烟雾 */
@@ -57,26 +69,11 @@ export function setSmokeThreshold(params) {
     })
 }
 
-export function HunSwitch(params) {
-    return request({
-        url: '/environment/dehumidifierSwitch',
-        method: 'POST',
-        params:params
-    })
-}
-
 export function Salutatory(data) {
     return request({
         url: '/exhibition/salutatory',
         method: 'POST',
         data:data
-    })
-}
-
-export function getDehumidifierStatus() {
-    return request({
-        url: '/environment/allDehumidifierStatus',
-        method: 'POST'
     })
 }
 

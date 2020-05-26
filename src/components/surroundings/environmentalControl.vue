@@ -7,7 +7,7 @@
         </s-card>
         <edit-threshold ref="editThreshold"></edit-threshold>
         <charging-station ref="chargingStation" :count="deviceObj.ENVIRONMENT_CHARGE_COUNT"></charging-station>
-        <dehumidification ref="dehumidification"></dehumidification>
+        <dehumidification ref="dehumidification" :count="deviceObj.DEHUMIDIFIER_COUNT"></dehumidification>
         <air-conditioning ref="airConditioning"></air-conditioning>
         <light ref="lighting"></light>
         <smoke-alarm ref="smokeAlarm"></smoke-alarm>
