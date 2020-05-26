@@ -136,7 +136,7 @@ export default {
             }
             .button-box {
                 width: auto;
-                min-width: 230px;
+                // min-width: 230px;
                 flex-grow: 1;
                 height: 60px;
                 background-color: orange;
@@ -179,6 +179,7 @@ export default {
         }
         .menu {
             position: absolute;
+            line-height: initial;
             width: 100px;
             min-height: 100px;
             background-color: white;
