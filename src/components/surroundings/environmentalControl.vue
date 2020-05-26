@@ -1,12 +1,12 @@
 <template>
     <div class="environmentalControl">
-        <s_card :header="'设备状态及控制'" @editt="edit">
+        <s-card :header="'设备状态及控制'" @editt="edit">
            <div class="control-box">
                <control-template v-for="(item, i) in control"  :templateData="item" :key="i" @handleConctrol="toConctrol"></control-template>
            </div>
-        </s_card>
-        <editThreshold ref="editThreshold"></editThreshold>
-        <charging-station ref="chargingStation"></charging-station>
+        </s-card>
+        <edit-threshold ref="editThreshold"></edit-threshold>
+        <charging-station ref="chargingStation" :count="deviceObj.ENVIRONMENT_CHARGE_COUNT"></charging-station>
         <dehumidification ref="dehumidification"></dehumidification>
         <air-conditioning ref="airConditioning"></air-conditioning>
         <light ref="lighting"></light>
@@ -17,7 +17,8 @@
 </template>
 
 <script>
-    import s_card from './surroundingCard'
+    import { getDeviceConfig } from 'api/surroundings'
+    import sCard from './surroundingCard'
     import controlTemplate from './controlTemplate'
     import chargingStation from './control/chargingStation'
     import dehumidification from './control/dehumidification'
@@ -27,13 +28,12 @@
     import light from './control/lighting'
     import exhaust from './control/exhaust'
     import disinfection from './control/disinfection'
-    import {baseURL} from "../../api/config";
-    import {startProcessCamVideo} from '@/externalProcess'
+    import { startProcessCamVideo } from '@/externalProcess'
 
     export default {
         name: "environmentalControl",
         components:{
-            s_card,
+            sCard,
             controlTemplate,
             chargingStation,
             dehumidification,
@@ -47,86 +47,45 @@
         data(){
             return{
                 control:[
-                    {svg:'充电台',notSvg:'',text:'智能充电台',flag:true},
-                    {svg:'除湿器',notSvg:'无除湿器',text:'除湿器控制',flag:true},
-                    {svg:'灯光',notSvg:'',text:'灯光控制',flag:true},
-                    {svg:'烟雾报警',notSvg:'无烟雾报警',text:'烟雾报警',flag:true},
+                    {svg:'充电台',notSvg:'',text:'智能充电台',flag:true, ref:'chargingStation'},
+                    {svg:'除湿器',notSvg:'无除湿器',text:'除湿器控制',flag:true, ref:'dehumidification'},
+                    {svg:'灯光',notSvg:'',text:'灯光控制',flag:true, ref:'lighting'},
+                    {svg:'烟雾报警',notSvg:'无烟雾报警',text:'烟雾报警',flag:true, ref:'smokeAlarm'},
                     {svg:'视频监控',notSvg:'',text:'视频监控',flag:true},
-                    {svg:'空调',notSvg:'无空调',text:'空调控制',flag:true},
-                    {svg:'排风',notSvg:'无排风',text:'排风控制',flag:true},
-                    {svg:'消毒机',notSvg:'无消毒机',text:'消毒机控制',flag:true},
+                    {svg:'空调',notSvg:'无空调',text:'空调控制',flag:true, ref:'airConditioning'},
+                    {svg:'排风',notSvg:'无排风',text:'排风控制',flag:true, ref:'exhaust'},
+                    {svg:'消毒机',notSvg:'无消毒机',text:'消毒机控制',flag:true, ref:'disinfection'},
                 ],
-                clickRefList:[
-                    {name:'智能充电台',ref:'chargingStation'},
-                    {name:'除湿器控制',ref:'dehumidification'},
-                    {name:'空调控制', ref:'airConditioning'},
-                    {name:'灯光控制',ref:'lighting'},
-                    {name:'烟雾报警',ref:'smokeAlarm'},
-                    {name:'排风控制',ref:'exhaust'},
-                    {name:'消毒机控制',ref:'disinfection'}
-                    ],
-                flag:{
-                    chargingStation:false,
-                    dehumidification:false,
-                    airConditioning:false,
-                    lighting:false,
-                    smokeAlarm:false,
-                    exhaust:false,
-                    disinfection:false
-                }
+                deviceObj: {}
             }
         },
         created(){
             this.getConfigs();
         },
         methods:{
-            edit(){
-             this.$refs.editThreshold.show()
+            edit(){ // 编辑阈值
+                this.$refs.editThreshold.show()
             },
             getConfigs(){
-                this.$ajax({
-                    method:'post',
-                    url:baseURL+'/environment/deviceConfig',
-                }).then((res)=>{
-                    let config=res.data.data;
-                    this.control[3].flag=config.SMOKE;
-                    this.control[1].flag=config.DEHUMIDIFIER;
-                    this.control[7].flag=config.DISINFECTION;
-                    this.control[5].flag=config.AIR_CONDITIONER;
-                    
-                    this.control[6].flag=config.EXHAUST_AIR;
+                getDeviceConfig().then(res => {
+                    this.control[3].flag=res.SMOKE;
+                    this.control[1].flag=res.DEHUMIDIFIER;
+                    this.control[7].flag=res.DISINFECTION;
+                    this.control[5].flag=res.AIR_CONDITIONER;
+                    this.control[6].flag=res.EXHAUST_AIR;
+                    this.deviceObj = res;
+                    this.$store.commit('setConfig', res);
                 })
             },
             toConctrol(data){
-               if(data.flag){
-                   this.handleClick(data.text);
-               }else {
-                   this.$message.error('本仓库尚未开放此功能')
-               }
-            },
-            handleClick(clickItem){
-                
-                let clickRef;
-                if(clickItem=='视频监控'){
-                    startProcessCamVideo();
-                   //this.$emit('toVideo')
-                }else {
-                    this.clickRefList.forEach(item=>{
-                        if(clickItem==item.name){
-                            clickRef = item.ref;
-                            this.$refs[clickRef].show();
-                        }
-                    });
-                }
-
-            },
-            clickFlag(ref){
-                for (let key in this.flag){
-                    if(key!=ref){
-                        this.flag[key]=false
-                    }else {
-                        this.flag[key]=true
+                if(data.flag){
+                    if(data.text == '视频监控') {
+                        startProcessCamVideo();
+                    } else {
+                        this.$refs[data.ref].show();
                     }
+                }else {
+                    this.$message.error('本仓库尚未开放此功能')
                 }
             }
         }

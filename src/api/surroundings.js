@@ -1,12 +1,45 @@
 import request from "common/js/request"
 
-export function temperatureValue(data, tipState) {
+export function getDeviceConfig() { // 获取设备配置信息
     return request({
-        method: 'post',
-        url: '/environment/humitureQuery',
-        params: data
+        url: '/environment/device-config',
+        method: 'GET'
+    }, false)
+}
+
+export function humitureQuery() { // 温湿度查询
+    return request({
+        method: 'GET',
+        url: '/environment/humiture-query',
+    }, false)
+}
+
+/* 充电 */
+export function chargeStatus(params) { // 充电台状态查询
+    return request({
+        url: '/charge/status',
+        method: 'GET',
+        params
+    }, false)
+}
+export function chargeInfo(params) {
+    return request({
+        url: '/charge/info',
+        method: 'GET',
+        params
+    }, false)
+}
+export function chargeSwitch(params, tipState) {
+    return request({
+        url: '/charge/switch',
+        method: 'POST',
+        params
     }, tipState)
 }
+
+
+
+
 
 /* 烟雾 */
 export function smokeThreshold() {
@@ -21,22 +54,6 @@ export function setSmokeThreshold(params) {
         url: "/environment/smokeThresholdSet",
         method: "POST",
         params
-    })
-}
-
-export function getChangeStationStatus(params) {
-    return request({
-        url: '/environment/chargeQuery',
-        method: 'POST',
-        params:params
-    })
-}
-
-export function getEquipChargeRecordList(params) {
-    return request({
-        url: '/environment/chargeInfo',
-        method: 'POST',
-        params:params
     })
 }
 
