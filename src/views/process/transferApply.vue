@@ -44,7 +44,7 @@
                     </define-column>
                 </define-table>
             </div>
-            <tatsk-history></tatsk-history>
+            <task-history :list="taskHistory" v-if="isInfo"></task-history>
             <div class="buttom" v-if="!isInfo">
                 <base-button label="提交" align="right" size="large" @click="submit"></base-button>
                 <base-button label="清空" align="right" size="large" type="danger" @click=""></base-button>
@@ -87,6 +87,7 @@
                 taskDefinitionKey: '',
                 processDefinitionKey: '',
                 processInstanceId: '',
+                taskHistory:[],
                 isInfo: false,
                 isEdit: false,
 

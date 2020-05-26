@@ -28,6 +28,7 @@
                        @click="$delRow(equipItems[totalIndex].items,data.$index,()=>{!equipItems[totalIndex].items.length && equipItems.splice(totalIndex,1)})"></i>
                 </define-column>
                 <define-column label="RFID" field="rfid"></define-column>
+                <define-column label="序号" field="serial"></define-column>
             </define-table>
         </bos-tabs>
     </div>
