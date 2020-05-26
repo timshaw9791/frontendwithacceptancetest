@@ -72,16 +72,23 @@ export function allLightSwitch(params, tipState) { // 灯光一键控制
         params
     }, tipState)
 }
+/* 烟雾 */
+export function smokeQuery() { // 获取烟雾浓度
+    return request({
+        url: '/environment/smoke-query',
+        method: 'GET'
+    }, false)
+}
+export function smokeThreshold() { // 获取烟雾阈值
+    return request({
+        url: '/environment/smoke-threshold',
+        method: 'GET'
+    }, false)
+}
 
 
 
 /* 烟雾 */
-export function smokeThreshold() {
-    return request({
-        url: "/environment/smokeThreshold",
-        method: "POST"
-    })
-}
 
 export function setSmokeThreshold(params) {
     return request({
@@ -104,13 +111,6 @@ export function dehumidifierStatus(params) { // 除湿机状态查询(单个)
         url: '/environment/dehumidifierStatus',
         method: 'POST',
         params
-    })
-}
-
-export function smokeQuery() { // 查询烟雾状态
-    return request({
-        url: '/environment/smokeQuery',
-        method: 'POST'
     })
 }
 
