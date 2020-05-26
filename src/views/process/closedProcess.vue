@@ -21,10 +21,10 @@
 </template>
 
 <script>
-    import myHeader from 'components/base/header/header'
-    import {doneProcess} from 'api/process'
+    import myHeader from '@/components/base/header/header'
+    import {doneProcess} from '@/api/process'
     export default {
-        name: "completedProcess",
+        name: "closedProcess",
         components:{
             myHeader
         },

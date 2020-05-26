@@ -73,7 +73,6 @@
                 taskDefinitionKey: '', // 当前任务KEY
                 processInstanceId: '', // 当前流程ID
                 taskId: ''
-
             }
         },
         methods: {

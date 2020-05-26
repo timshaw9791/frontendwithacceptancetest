@@ -22,7 +22,7 @@
 
 <script>
     import myHeader from 'components/base/header/header'
-    import {todoTask} from '../../api/process'
+    import {todoTask} from '@/api/process'
 
     export default {
         name: "agencyMatters",
