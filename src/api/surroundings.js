@@ -85,6 +85,13 @@ export function smokeThreshold() { // 获取烟雾阈值
         method: 'GET'
     }, false)
 }
+export function setSmokeThreshold(params, tipState) {
+    return request({
+        url: '/environment/smoke-threshold',
+        method: 'POST',
+        params
+    }, tipState)
+}
 /* 空调 */
 export function allAirControlStatus() { // 所有空调状态
     return request({
@@ -99,38 +106,54 @@ export function airControlSwitch(params) { // 空调控制
         params
     }, true)
 }
-
-
-/* 烟雾 */
-
-export function setSmokeThreshold(params) {
+/* 环境 */
+export function temperatureThreshold() { // 温度阈值信息
     return request({
-        url: "/environment/smokeThresholdSet",
-        method: "POST",
-        params
-    })
+        url: '/environment/temperature-threshold',
+        method: 'GET'
+    }, false)
 }
-
-export function Salutatory(data) {
+export function setTemperatureThreshold(params, tipState) {
+    return request({
+        url: '/environment/temperature-threshold',
+        method: 'POST',
+        params
+    }, tipState)
+}
+export function humidityThreshold() { // 湿度阈值信息
+    return request({
+        url: '/environment/humidity-threshold',
+        method: 'GET'
+    }, false)
+}
+export function setHumidityThreshold(params, tipState) {
+    return request({
+        url: '/environment/humidity-threshold',
+        method: 'POST',
+        params
+    }, tipState)
+}
+export function salutatory() { // 欢迎屏
     return request({
         url: '/exhibition/salutatory',
-        method: 'POST',
-        data:data
-    })
+        method: 'GET'
+    }, false)
 }
+export function modifySalutatory(data, tipState) { // 编辑欢迎屏
+    return request({
+        url: '/exhibition/salutatory',
+        method: 'PUT',
+        data
+    }, tipState)
+}
+
+/* 烟雾 */
 
 export function dehumidifierStatus(params) { // 除湿机状态查询(单个)
     return request({
         url: '/environment/dehumidifierStatus',
         method: 'POST',
         params
-    })
-}
-
-export function temperatureThreshold() { // 获取温度阈值信息
-    return request({
-        url: '/environment/temperatureThreshold',
-        method: 'POST'
     })
 }
 
