@@ -85,7 +85,20 @@ export function smokeThreshold() { // 获取烟雾阈值
         method: 'GET'
     }, false)
 }
-
+/* 空调 */
+export function allAirControlStatus() { // 所有空调状态
+    return request({
+        url: '/air-conditioner/status-all',
+        method: 'GET'
+    }, false)
+}
+export function airControlSwitch(params) { // 空调控制
+    return request({
+        url: '/air-conditioner/switch',
+        method: 'POST',
+        params
+    }, true)
+}
 
 
 /* 烟雾 */
@@ -111,13 +124,6 @@ export function dehumidifierStatus(params) { // 除湿机状态查询(单个)
         url: '/environment/dehumidifierStatus',
         method: 'POST',
         params
-    })
-}
-
-export function allAirConditionerStatus() { // 查询所有空调状态
-    return request({
-        url: '/environment/allAirConditionerStatus',
-        method: 'POST'
     })
 }
 
