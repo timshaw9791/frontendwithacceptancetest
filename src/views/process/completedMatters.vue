@@ -44,18 +44,15 @@
                 })
             },
             toDetail(data) {
-                if(data.processInstanceName.includes("调拨")){
-                    console.log("调拨");
-                    this.$router.push({
-                        path: 'transferDetail',
-                        query: {type:'transfer', audit: 'order', info: {processInstanceId: data.processInstanceId, taskId: data.taskId, operate: false}}
-                    })
-                } else if(data.processInstanceName.includes("报废")){
-                    this.$router.push({
-                        path: 'applyAudit',
-                        query: {type:'apply', audit: 'order', info: {processInstanceId: data.processInstanceId, taskId: data.taskId, operate: false}}
-                    })
-                }
+                let applyName = data.processInstanceName.includes('报废') ? 'scrap' : 'transfer'
+                this.$router.push({
+                    path: `/process/${applyName}Apply`,
+                    query: {
+                        name: data.processInstanceName,
+                        processInstanceId: data.processInstanceId,
+                        taskId: data.taskId
+                    }
+                })
             },
             changePage(page) {
                 this.paginator.page = page;
@@ -69,7 +66,6 @@
                 let minutes = my_time / 1000 / 60 - (24 * 60 * daysRound) - (60 * hoursRound);
                 let minutesRound = Math.floor(minutes);
                 let seconds = my_time / 1000 - (24 * 60 * 60 * daysRound) - (60 * 60 * hoursRound) - (60 * minutesRound);
-                console.log('转换时间:', daysRound + '天', hoursRound + '时', minutesRound + '分', seconds + '秒');
                 let time = '';
                 let h,m,s;
                 if(hoursRound===0){

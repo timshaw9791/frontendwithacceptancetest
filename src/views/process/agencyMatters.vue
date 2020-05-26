@@ -22,14 +22,15 @@
 
 <script>
     import myHeader from 'components/base/header/header'
-    import { todoTask } from '../../api/process'
+    import {todoTask} from '../../api/process'
+
     export default {
         name: "agencyMatters",
-        components:{
+        components: {
             myHeader
         },
-        data(){
-            return{
+        data() {
+            return {
                 list: [],
                 paginator: {
                     page: 1,
@@ -40,7 +41,7 @@
                 }
             }
         },
-        methods:{
+        methods: {
             getList() {
                 todoTask(this.paginator).then(res => {
                     this.list = res.content;
@@ -53,17 +54,15 @@
                 this.getList();
             },
             toDetail(data) {
-                console.log(data)
-                if(data.processInstanceName.includes("报废")) {
-                    this.$router.push({
-                        path:'/process/scrapApply',
-                        query:{
-                            name:data.processInstanceName,
-                            processInstanceId: data.processInstanceId,
-                            taskId: data.taskId
-                        }
-                    })
-                }
+                let applyName = data.processInstanceName.includes('报废') ? 'scrap' : 'transfer'
+                this.$router.push({
+                    path: `/process/${applyName}Apply`,
+                    query: {
+                        name: data.processInstanceName,
+                        processInstanceId: data.processInstanceId,
+                        taskId: data.taskId
+                    }
+                })
             }
         },
         created() {
@@ -73,15 +72,17 @@
 </script>
 
 <style lang="scss" scoped>
-    .agency-matters{
+    .agency-matters {
         width: 100%;
-        color:#707070FF;
+        color: #707070FF;
         font-size: 16px;
     }
+
     .agency-metters-top {
         padding: 16px 7px;
         overflow: hidden;
     }
+
     .agency-matters_main_box {
         padding: 0 17px;
     }

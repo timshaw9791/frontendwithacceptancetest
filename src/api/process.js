@@ -44,7 +44,13 @@ export function transferOrders(params) { // 流程启动
     })
 }
 
-
+export function scrapOrders(params) { // 报废流程
+    return request({
+        url: baseBURL + "/workflow/scrap/orders",
+        method: "GET",
+        params
+    })
+}
 
 export function processDetail(params) { // 流程内容
     return request({

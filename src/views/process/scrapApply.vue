@@ -27,7 +27,7 @@
                     <base-button label="提交" align="right" size="large" @click="submit"></base-button>
                     <base-button label="清空" align="right" size="large" type="danger"></base-button>
                 </div>
-                <task-history :list="taskHistory" v-if="isInfo||!isEdit"></task-history>
+                <task-history :list="taskHistory" v-if="isInfo"></task-history>
             </div>
         </div>
     </div>
@@ -36,7 +36,7 @@
 <script>
     import myHeader from 'components/base/header/header';
     import bosTabs from '@/componentized/table/bosTabs.vue'
-    import {processStart, getHistoryTasks, processDetail} from '@/api/process'
+    import {processStart, getHistoryTasks, scrapOrders} from '@/api/process'
     import {findByRfids} from "@/api/storage";
     import {transEquips} from "@/common/js/transEquips";
     import TaskHistory from "@/components/process/taskHistory";
@@ -69,7 +69,6 @@
                 //需要申请的装备列表
                 scrapEquips: [],
                 isInfo: false,
-                isEdit: false,
                 tips: ['直接报废', '装备拿去维修，无法修补'],
                 taskDefinitionKey: '', // 当前任务KEY
                 processInstanceId: '', // 当前流程ID
@@ -82,14 +81,14 @@
                 Object.assign(this.order,{
                     organUnit:this.organUnit,
                     warehouse:this.warehouse,
-                    applicant:this.userInfo
+                    applicant: JSON.parse(window.localStorage.getItem("user"))
                 })
             },
             fetchData() {
-                processDetail({processInstanceId: this.processInstanceId}).then(
+                scrapOrders({processInstanceId: this.processInstanceId}).then(
                     res => {
-                        this.order = res.processVariables.applicant
-                        this.equipItems = transEquips(res.processVariables.applicant.equips).equipItems
+                        this.order = res
+                        this.equipItems = transEquips(res.equips).equipItems
                     }
                 )
                 getHistoryTasks({processInstanceId: this.processInstanceId}).then(

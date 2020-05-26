@@ -1,16 +1,16 @@
 <template>
     <div class="operator">
-        <div v-if="taskDefinitionKey.includes('outbound')">
+        <div v-if="taskDefinitionKey.includes('outbound')&&isNeedMe">
             <base-button label="出库" @click="outbound"></base-button>
         </div>
-        <div v-if="taskDefinitionKey.includes('inbound')">
+        <div v-if="taskDefinitionKey.includes('inbound')&&isNeedMe">
             <base-button label="出库" @click="inbound"></base-button>
         </div>
-        <div v-if="taskDefinitionKey.includes('apply')">
+        <div v-if="taskDefinitionKey.includes('apply')&&isNeedMe">
             <base-button label="驳回" @click="refused"></base-button>
             <base-button label="审核" @click="agree"></base-button>
         </div>
-        <div v-if="taskDefinitionKey.includes('reApply')">
+        <div v-if="taskDefinitionKey.includes('reApply')&&isNeedMe">
             <base-button label="重填" @click="edit"></base-button>
             <base-button label="作废" @click="invalid"></base-button>
         </div>
@@ -41,6 +41,10 @@
                 type:Boolean,
                 default:false
             },
+            isNeedMe:{
+                type:Boolean,
+                default:false
+            }
         },
         methods: {
             outbound() {

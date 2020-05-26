@@ -153,9 +153,9 @@ export const asyncRouterMap = [{
             component: _import('process/completedMatters'),
             meta: {title: '已办事宜'},
         }, {
-            path: 'handlingMatters',
-            name: 'handlingMatters',
-            component: _import('process/handlingMatters'),
+            path: 'completedProcess',
+            name: 'completedProcess',
+            component: _import('process/completedProcess'),
             meta: {title: '办结事宜'},
         }]
 }, {

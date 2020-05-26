@@ -2,7 +2,7 @@
     <div class="transfer-apply-container">
         <my-header :title="title" :haveBlack="false"></my-header>
         <div class="apply-process">
-            <operation-bar :task-definition-key="taskDefinitionKey"
+            <operation-bar :task-definition-key="taskDefinitionKey" :is-need-me="isNeedMe"
                            @refused="refused" @agree="agree"
                            @invalid="invalid" @edit="edit"
             ></operation-bar>
@@ -31,7 +31,7 @@
                 </div>
                 <define-table :havePage="false" :data="transferApplyOrder.equips" height="2.8646rem"
                               :showSummary="true" :summaryFunc="$sumFunc" slot="total">
-                    <define-column label="操作" width="100" v-slot="{ data }">
+                    <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
                         <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
                         <i class="iconfont iconyichuliang" @click="$delRow(transferApplyOrder.equips,data.index)"></i>
                     </define-column>
@@ -44,7 +44,8 @@
                     </define-column>
                 </define-table>
             </div>
-            <div class="buttom">
+            <tatsk-history></tatsk-history>
+            <div class="buttom" v-if="!isInfo">
                 <base-button label="提交" align="right" size="large" @click="submit"></base-button>
                 <base-button label="清空" align="right" size="large" type="danger" @click=""></base-button>
             </div>
@@ -53,13 +54,14 @@
 </template>
 
 <script>
-    import myHeader from 'components/base/header/header';
+    import myHeader from 'components/base/header/header'
     import bosTabs from '@/componentized/table/bosTabs'
     import {transferStart, transferOrders} from '@/api/process'
     import OperationBar from "@/components/process/operationBar";
     import EquipItems from "@/components/process/equipItems";
     import {completeTask, processesDelete, taskDetail} from "@/api/workflow";
     import {getHistoryTasks} from "@/api/process";
+    import TaskHistory from "@/components/process/taskHistory";
     import {mapGetters} from "vuex";
 
     export default {
@@ -68,7 +70,8 @@
             EquipItems,
             OperationBar,
             myHeader,
-            bosTabs
+            bosTabs,
+            TaskHistory
         },
         data() {
             return {
@@ -85,7 +88,8 @@
                 processDefinitionKey: '',
                 processInstanceId: '',
                 isInfo: false,
-                isEdit: false
+                isEdit: false,
+
             }
         },
         methods: {
@@ -151,6 +155,7 @@
             if (this.processInstanceId) {
                 this.fetchData()
                 this.isInfo = true
+                this.title = '调拨流程详情'
             } else {
                 this.init()
                 this.title = '申请流程'
