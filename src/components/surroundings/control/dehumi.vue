@@ -14,7 +14,7 @@
 <script>
     import surroundingCard from '../surroundingCard'
     import switchControl from './controlComponents/switchControl'
-    import {dehumidifierSwitch, dehumidifierStatus} from "api/surroundings"
+    import {dehumidifierSwitch} from "api/surroundings"
 
      export default {
         name: "dehumi",
@@ -34,13 +34,9 @@
                     color:'#B8B8B8',
                 },
                 threshold:'',
-                dehumidificationStatus:false,
                 flag:true
             }
         },
-        created(){
-            // this.getDehumidification()
-            },
         props:{
             index:{
                     type:Number
@@ -51,11 +47,6 @@
             }
         },
         methods:{
-            getDehumidification(){
-                dehumidifierStatus({number: this.index+1}).then(res => {
-                    this.dehumidificationStatus = res
-                })
-            },
             dehumidificationControl(data){
                 dehumidifierSwitch({number: this.index+1, status: data}).then(res => {
                     this.$emit('success', {number: this.index, status: data});
