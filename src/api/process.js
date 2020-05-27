@@ -50,7 +50,6 @@ export function scrapOrders(processInstanceId) { // 报废流程
     })
 }
 
-
 export function SAODetail(params) { // 报废申请单详情
     return request({
         url: baseBURL + '/equip-order/process_id',
@@ -58,7 +57,6 @@ export function SAODetail(params) { // 报废申请单详情
         params
     })
 }
-
 
 export function processDetail(params) { // 流程内容
     return request({
@@ -143,79 +141,18 @@ export function doneProcess(params) { // 查询办结任务
     })
 }
 
-
-export function getMyhouse() {
+export function processOutbound(processDto){ // A端调拨出库
     return request({
-        url: '/house',
-        method: 'get'
-    })
+        url:'/process/out-house',
+        method:'POST',
+        data: processDto
+    },true)
 }
 
-export function getOrganUnitById(params) {
+export function processInbound(processDto){ // A端调拨入库
     return request({
-        url: `${baseBURL}/architecture/findById`,
-        method: 'get',
-        params: params
-    })
+        url:'/process/in-house',
+        method:'POST',
+        data: processDto
+    },true)
 }
-
-export function findHouseByOrganUnitId(organUnitId) {
-    return request({
-        method: 'get',
-        url: `${baseBURL}/architecture/findHouseByOrganUnitId`,
-        params: {organUnitId: organUnitId}
-    })
-}
-
-export function equipArgListByHouseIds(houseId) {
-    return request({
-        method: 'get',
-        url: `${baseBURL}/equip-arg/by-houseIds/list`,
-        params: {houseIds: houseId}
-    })
-}
-
-export function findByUnitAdmin(unitId) {
-    return request({
-        method: 'get',
-        url: `${baseBURL}/identity/findByUnitAdmin`,
-        params: {unitId: unitId}
-    })
-}
-
-export function byOrganUnitAndTransferType(organUnitId, transferType) {
-    return request({
-        method: 'get',
-        url: `${baseBURL}/process-level/by-organ-unit-and-transfer-type`,
-        params: {
-            organUnitId: organUnitId,
-            transferType: transferType
-        }
-    })
-}
-
-
-export function organUnitInfo() {
-    return request({
-        method: 'get',
-        url: `${baseBURL}/architecture/organUnitInfo`,
-    })
-}
-
-export function equipsByRfidList(data) {
-    return request({
-        method: 'PUT',
-        url: '/equips/by-rfidlist',
-        data: data
-    })
-}
-
-export function tagNeedScrap(equipList) {
-    return request({
-        method: 'put',
-        url: '/equips/tag-need-scrap',
-        data: equipList
-    })
-}
-
-

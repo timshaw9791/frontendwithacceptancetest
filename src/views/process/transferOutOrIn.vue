@@ -4,9 +4,11 @@
         <div class="process-form-body">
             <div class="process-info">
                 <define-input label="单号" v-model="order.number" :disabled="true"></define-input>
-                <entity-input :label="isInbound?'入库机构':'出库机构'" v-model="order.house.organUnit" :disabled="true" format="{name}"
+                <entity-input :label="isInbound?'入库机构':'出库机构'" v-model="order.house.organUnit" :disabled="true"
+                              format="{name}"
                               :options="{search:'organUnits'}"></entity-input>
-                <define-input :label="isInbound?'入库库房':'出库库房'" v-model="order.house.name" :disabled="true"></define-input>
+                <define-input :label="isInbound?'入库库房':'出库库房'" v-model="order.house.name"
+                              :disabled="true"></define-input>
                 <entity-input :label="isInbound?'入库人员':'出库人员'" v-model="order.operator" :disabled="true"></entity-input>
             </div>
             <div class="table-box">
@@ -44,7 +46,8 @@
                         <define-column label="序号" field="serial"></define-column>
                     </define-table>
                     <!--申请的装备-->
-                    <define-table :havePage="false" :data="applyEquips" height="2.6042rem" slot="contrast">
+                    <define-table :havePage="false" :data="transferApplyOrder.equips" height="2.6042rem"
+                                  slot="contrast">
                         <define-column label="装备参数" v-slot="{ data }">
                             <entity-input v-model="data.row.equipArg" format="{name}({model})"
                                           :disabled="true"></entity-input>
@@ -73,7 +76,7 @@
     import HardwareSelect from "@/components/hardwareSelect";
     import {transEquips} from "@/common/js/transEquips";
     import {mapGetters} from "vuex";
-    import {transferOrders} from "@/api/process";
+    import {processInbound, processOutbound, transferOrders} from "@/api/process";
 
     export default {
         name: "transferOutOrIn",   // 调拨出入库
@@ -98,7 +101,7 @@
                 isInbound: false,
                 processInstanceId: '',
                 rfids: [], //读到的RFID
-                applyEquips: []
+                transferApplyOrder: {}
             }
         },
         methods: {
@@ -108,12 +111,12 @@
                         switch (this.type) {
                             case "out": {
                                 this.isInbound = false
-                                this.applyEquips = res.transferApplyOrder.equips
+                                this.transferApplyOrder = res.transferApplyOrder
                                 break
                             }
                             case "in": {
                                 this.isInbound = true
-                                this.applyEquips = res.transferApplyOrder.equips
+                                this.transferApplyOrder = res.transferApplyOrder
                                 break
                             }
                             case "showIn": {
@@ -133,16 +136,16 @@
                     }
                 )
             },
-            fixData(){
-               if (!this.isInfo){
-                   Object.assign(this.order, {operator: this.userInfo},{
-                       house: {
-                           name: this.warehouse.name,
-                           id: this.warehouse.id,
-                           organUnit: this.organUnit
-                       }
-                   })
-               }
+            fixData() {
+                if (!this.isInfo) {
+                    Object.assign(this.order, {operator: this.userInfo}, {
+                        house: {
+                            name: this.warehouse.name,
+                            id: this.warehouse.id,
+                            organUnit: this.organUnit
+                        }
+                    })
+                }
             },
             readData() {
                 this.rfids = ['9996664784848']
@@ -172,11 +175,36 @@
             clean() {
 
             },
-            // submit() {
-            //     outHouse(){
-            //
-            //     }
-            // },
+            submit() {
+                let processDto = {
+                    "inboundOrganUnit": this.transferApplyOrder.inboundOrganUnit.name,
+                    "outboundOrganUnit": this.transferApplyOrder.outboundOrganUnit.name,
+                    "orderCategory": 1, // 1为出库
+                    "processCategory": 1 // 1为调拨流程
+                }
+                if (!this.isInbound) {
+                    processDto.rfids = this.rfids
+                    processOutbound(processDto)
+                } else {
+                    processDto.inOutHouseOrderDTO = [
+                        {
+                            "equipArgId": "string",
+                            "locationId": "string",
+                            "price": 0,
+                            "productTime": 0,
+                            "rfids": [
+                                "string"
+                            ],
+                            "serial": [
+                                "string"
+                            ]
+                        }
+                    ]
+                    processInbound(processDto).then(res => {
+                        console.log(res)
+                    })
+                }
+            },
         },
         created() {
             Object.assign(this, this.$route.query)
