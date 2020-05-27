@@ -18,7 +18,7 @@
     import s_card from './surroundingCard'
     import s_thermometerComponent from './control/controlComponents/thermometerComponent'
     import s_lineChart_t from './control/controlComponents/lineChart/lineChart'
-    import {baseURL} from "../../api/config";
+    import { humitureQuery, temperatureHistory, temperatureHistoryDay, temperatureHistoryMonth } from 'api/surroundings'
 
     export default {
         name: "thermometer",
@@ -51,7 +51,6 @@
         watch:{
             'monthDate':{
                 handler(newval){
-                    console.log(newval)
                     if(newval!=''){
                         this.getMonthTemperature(newval)
                     }
@@ -59,42 +58,21 @@
             }
         },
         methods:{
-            toTemLineChart(){
-                this.getHumiture().then(data=>{
-                    this.getHs(data.temperature);
+            async toTemLineChart(){
+                humitureQuery().then(res => {
+                    this.getHs(res.temperature);
                 })
             },
-            getHumiture(){
-                let promise=new Promise((resolve,reject)=>{
-                    this.$ajax({
-                        method:'post',
-                        url:baseURL+'/environment/humitureQuery',
-                    }).then((res)=>{
-                        resolve(res.data.data)
-                    }).catch(err=>{
-                        this.$message.error(err.response.data.message);
-                    });
-                });
-               return promise
-            },
-            getMonthTemperature(date){
+            getMonthTemperature(date){ // 选择月后，重新获取月的数据
                 let year = date.getFullYear();
                 let month = date.getMonth();
-                    let params={
-                    month:String(month+1),
-                    year:String(year)
-                };
-                this.$ajax({
-                    method:'post',
-                    url:baseURL+'/environment/temperatureMonthHS',
-                    params:params
-                }).then((res)=>{
-                    let copyList=[];
-                    let region=[];
-                    let days=this.getMonthDays(month+1,year);
+                temperatureHistoryMonth({year: String(year), month: String(month+1)}).then(res => {
+                    let copyList=[],
+                        region=[],
+                        days = new Date(year, month+1, 0).getDate();
                     region.push(new Date(year,month,1),new Date(year,month,days));
-                    if(res.data.data.length!=0){
-                        res.data.data.forEach((item,index)=>{
+                    if(res.length!=0){
+                        res.forEach((item,index)=>{
                             copyList.push({sale:item,time:new Date(year,month,index+1)})
                         });
                         this.getThreshold(copyList);
@@ -112,37 +90,30 @@
                         timeType:'day'
                     };
                     this.$emit('temperature',dataTemperature);
-                }).catch(err=>{
-                    this.$message.error(err.response.data.message);
-                });
+                })
             },
             getMonthDays(month,year){
                let date=new Date(year,month,0);
                return date.getDate();
             },
-            getHs(temperature){
-                this.$ajax({
-                    method:'post',
-                    url:baseURL+'/environment/temperatureHS',
-                }).then((res)=>{
-                    let dateNow =  new Date();
-                    let year = dateNow.getFullYear();
-                    let moth = dateNow.getMonth()+1;
-                    let day = dateNow.getDate();
-                    let hour = dateNow.getHours()+1;
-                    let copyList=[];
-                    let initTime=new Date(year,moth,day,hour);
+            getHs(temperature){ // 获取天历史记录并且拼接上当前温度
+                temperatureHistoryDay().then(res => {
+                    let date = new Date(),
+                        year = date.getFullYear(),
+                        month = date.getMonth()+1,
+                        day = date.getDate(),
+                        hour = date.getHours()+1,
+                        copyList = [],
+                        initTime = new Date(year, month, day, hour);
                     this.initTime = Number(hour);
-                    this.region.push(new Date(year,moth,day-1,hour),new Date(year,moth,day,hour));
-                    copyList.push({sale:temperature,time:new Date(year,moth,day,hour)});
-                    res.data.data.forEach((item,index)=>{
-                        if(index%2==0){
-                            initTime = new Date(initTime.valueOf()-60*60*1000*2);
-                            copyList.push({
-                                sale:Number(item),time:initTime
-                            })
+                    this.region.push(new Date(year, month, day-1, hour), new Date(year, month, day, hour));
+                    copyList.push({sale: temperature, time: new Date(year, month, day, hour)});
+                    res.forEach((item, index) => {
+                        if(index%2==0) {
+                            initTime = new Date(initTime.valueOf() - 60*60*1000*2);
+                            copyList.push({sale: Number(item), time: initTime});
                         }
-                    });
+                    })
                     this.getThreshold(copyList);
                     this.$set(this,'svgData',copyList);
                     let dataTemperature={
@@ -153,10 +124,7 @@
                         timeType:'hour'
                     };
                     this.$emit('temperature',dataTemperature);
-                    // this.$refs.tLine.show();
-                }).catch(err=>{
-                    this.$message.error(err.response.data.message);
-                });
+                })
             },
             getThreshold(copyList){
                 let sortList=[];
