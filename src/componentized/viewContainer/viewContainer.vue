@@ -33,7 +33,27 @@
             <slot></slot>
         </div>
         <transition name="search">
-            <div class="advanced-search-box" v-show="advancedSearchShow"></div>
+            <div class="advanced-search-box" v-show="advancedSearchShow">
+                <div class="serch-box">
+                    <div class="group">
+                        <base-select :selectList="testArr" :haveLabel="false" :column="3.5" margin="0 3px"></base-select>
+                        <base-select :selectList="[{label: '勾选', value: 'True'}, {label: '不选', value: 'False'}]" :haveLabel="false" :column="3.5" margin="0"></base-select>
+                        <define-input :haveLabel="false" :column="3"  margin="0 3px" align="right"></define-input>
+                    </div>
+                    <base-select :selectList="[{label: '并且', value: 'and'}, {label: '或者', value: 'or'}]" :haveLabel="false" :column="1"></base-select>
+                    <div class="group">
+                        <base-select :selectList="testArr" :haveLabel="false" :column="3.5" margin="0 3px"></base-select>
+                        <base-select :selectList="[{label: '勾选', value: 'True'}, {label: '不选', value: 'False'}]" :haveLabel="false" :column="3.5"  margin="0 3px"></base-select>
+                        <define-input :haveLabel="false" :column="3"></define-input>
+                    </div>
+                    <base-select :selectList="[{label: '并且', value: 'and'}, {label: '或者', value: 'or'}]" :haveLabel="false" :column="1" ></base-select>
+                    <div class="group">
+                        <base-select :selectList="testArr" :haveLabel="false" :column="3.5"  margin="0 3px"></base-select>
+                        <base-select :selectList="[{label: '勾选', value: 'True'}, {label: '不选', value: 'False'}]" :haveLabel="false" :column="3.5"  margin="0 3px"></base-select>
+                        <define-input :haveLabel="false" :column="3"  margin="0 3px"></define-input>
+                    </div>
+                </div>
+            </div>
         </transition>
     </div>
 </template>
@@ -49,6 +69,9 @@ export default {
             tabSelect: 0,
             advancedSearchShow: false,
             showMenu: false, // 控制下拉菜单
+            logicArr: [{label: '并且', key: 'and'}, {label: '或者', key: 'or'}],
+            triggleArr: [{label: '勾选', key: 'True'}, {label: '不选', key: 'False'}],
+            testArr: [{label: '星标1', value: 'xb1'}, {label: '星标2', value: 'xb2'}]
         }
     },
     methods: {
@@ -211,6 +234,19 @@ export default {
         border:1px solid rgba(220,223,230,1);
         box-shadow:1px 3px 8px rgba(0,0,0,0.04);
         background-color: white;
+        .serch-box {
+            display: flex;
+            height: 70px;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .group {
+            padding: 3px;
+            flex-shrink: 0;
+            flex-grow: 1;
+            background-color: #F0F2F7;
+        }
     }
     .body {
          &::-webkit-scrollbar {

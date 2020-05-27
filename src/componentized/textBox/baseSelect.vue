@@ -1,6 +1,6 @@
 <template>
     <div class="base-select-container" :class="[styleObj]" :style="'width:'+fixWidth+';float:'+align+';margin:'+margin">
-        <div class="slot-label">{{ label }}
+        <div class="slot-label" v-if="haveLabel">{{ label }}
             <span class="required" v-if="required">*</span>
         </div>
         <div class="select" @click="clickSel">
@@ -33,6 +33,10 @@ import { judgeRules } from "../rules"
             label: { // 标题名
                 type: String,
                 default: "流程管理"
+            },
+            haveLabel: {
+                type: Boolean,
+                default: true
             },
             value: {},// 父组件绑定值/选中值
             selectList: {
