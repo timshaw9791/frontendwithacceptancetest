@@ -1,6 +1,6 @@
 <template>
     <div class="opening-box">
-        <my-header title="入库单列表/装备入库"></my-header>
+        <my-header title="入库单列表/入库装备"></my-header>
          <div class="action_box" data-test="action_box">
                 <define-input label="单号" placeholder="--" :disabled="true" ></define-input>
                 <date-select label="入库时间" placeholder="--" :disabled="true"></date-select>
@@ -96,7 +96,7 @@ export default {
                     equipArgId: '',
                     locationId: '',
                     price: 0,
-                    productTime:Date.parse(new Date()),
+                    productTime:'',
                     rfids: [],
                     serial: [],
                     count:0,
