@@ -58,8 +58,8 @@
             ref="table"
             v-if="show!='singlePolice'&&show!='singlePoliceCategory'"
           >
-            <define-column label="装备大类" field="genre" v-if="show=='All'" />
-            <define-column label="装备小类" field="category" v-if="show=='genres'" />
+            <define-column label="装备大类" field="genre" key="all" v-if="show=='All'" />
+            <define-column label="装备小类" field="category" key='genres' v-if="show=='genres'" />
             <define-column
               label="装备参数"
               :filter="(row)=>`${row.name}(${row.model})`"
@@ -69,7 +69,7 @@
             <define-column label="当前库存" field="totalCount"></define-column>
             <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
             <define-column label="报废件数" field="count"></define-column>
-            <define-column label="供应商" field="supplier" v-if="show=='category'"></define-column>
+            <define-column label="供应商" key="commonSup" field="supplier" v-if="show=='category'"></define-column>
           </define-table>
           <define-table
             :pageInfo="paginator"
@@ -89,7 +89,7 @@
             <define-column label="历史库存" field="cabinetStock"></define-column>
             <define-column label="当前库存" field="totalCount"></define-column>
             <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
-            <define-column label="报废件数" field="count"></define-column>
+            <define-column label="报废件数" key="count" field="count"></define-column>
             <define-column label="供应商" key="supplier" field="supplier" v-if="show=='singlePoliceCategory'"></define-column>
           </define-table>
         </div>

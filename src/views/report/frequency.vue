@@ -58,10 +58,11 @@
             ref="table"
             v-if="show!='singlePolice'&&show!='singlePoliceCategory'"
           >
-            <define-column label="装备大类" field="genre" v-if="show=='All'" />
-            <define-column label="装备小类" field="category" v-if="show=='genres'" />
+            <define-column label="装备大类" field="genre" key="genre" v-if="show=='All'" />
+            <define-column label="装备小类" field="category" key="category" v-if="show=='genres'" />
             <define-column
               label="装备参数"
+              key="commonEquip"
               :filter="(row)=>`${row.name}(${row.model})`"
               v-if="show=='category'"
             />
@@ -78,7 +79,7 @@
             ref="table"
             v-if="show=='singlePolice'||show=='singlePoliceCategory'"
           >
-            <define-column label="装备小类" field="cabinet" v-if="show=='singlePolice'" />
+            <define-column label="装备小类" field="cabinet" key="cabinet" v-if="show=='singlePolice'" />
             <define-column
               label="装备参数"
               :filter="(row)=>`${row.name}(${row.model})`"

@@ -60,10 +60,11 @@
             ref="table"
             v-if="show!='singlePolice'&&show!='singlePoliceCategory'"
           >
-            <define-column label="装备大类" field="genre" v-if="show=='All'" />
-            <define-column label="装备小类" field="category" v-if="show=='genres'" />
+            <define-column label="装备大类" key="genre" field="genre" v-if="show=='All'" />
+            <define-column label="装备小类" key="category" field="category" v-if="show=='genres'" />
             <define-column
               label="装备参数"
+              key="commonEquipArgs"
               :filter="(row)=>`${row.name}(${row.model})`"
               v-if="show=='category'"
             />
@@ -72,8 +73,8 @@
             <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
             <define-column label="损耗数" field="count"></define-column>
             <define-column label="损耗总额" field="totalLoss"></define-column>
-            <define-column label="损耗率(%)" :filter="(row)=>rate(row)"></define-column>
-            <define-column label="供应商" field="supplier" v-if="show=='category'"></define-column>
+            <define-column label="损耗率(%)" key="commonRate" :filter="(row)=>rate(row)"></define-column>
+            <define-column label="供应商" ke="commonSup" field="supplier" v-if="show=='category'"></define-column>
           </define-table>
           <define-table
             :pageInfo="paginator"
@@ -83,7 +84,7 @@
             ref="table"
             v-if="show=='singlePolice'||show=='singlePoliceCategory'"
           >
-            <define-column label="装备小类" field="cabinet" v-if="show=='singlePolice'" />
+            <define-column label="装备小类" field="cabinet" key="singlePoliceCabinet" v-if="show=='singlePolice'" />
             <define-column
               label="装备参数"
               key="equipArgs"
@@ -95,7 +96,7 @@
             <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
             <define-column label="损耗数量" field="count"></define-column>
             <define-column label="损耗总额" field="totalLoss"></define-column>
-            <define-column label="损耗率(%)" :filter="(row)=>rate(row)"></define-column>
+            <define-column label="损耗率(%)" key="singlePoliceRate" :filter="(row)=>{return row.cabinetStock!=0?(row.count/row.cabinetStock*100).toFixed(2):0}"></define-column>
             <define-column label="供应商" key="supplier" field="supplier" v-if="show=='singlePoliceCategory'"></define-column>
           </define-table>
         </div>

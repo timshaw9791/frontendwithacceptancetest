@@ -61,7 +61,7 @@
             <define-column label="当前库存" field="totalCount"></define-column>
             <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
             <define-column label="维修数" field="count"></define-column>
-            <define-column label="维修率(%)" :filter="(row)=>rate(row)"></define-column>
+            <define-column label="维修率(%)" key="commonRate" :filter="(row)=>rate(row)"></define-column>
             <define-column label="供应商" key="sup" field="supplier" v-if="show=='category'"></define-column>
           </define-table>
           <define-table
@@ -82,7 +82,7 @@
             <define-column label="当前库存" field="totalCount"></define-column>
             <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
             <define-column label="维修数" field="count"></define-column>
-            <define-column label="维修率" :filter="(row)=>rate(row)"></define-column>
+            <define-column label="维修率" key="singlePoliceRate" :filter="(row)=>rate(row)"></define-column>
             <define-column label="供应商" key="supplier" field="supplier" v-if="show=='singlePoliceCategory'"></define-column>
           </define-table>
         </div>
