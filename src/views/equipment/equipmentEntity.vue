@@ -131,7 +131,7 @@
                 this.newLocation = data.name
             },
             toAllocation() {
-                this.$router.push({name: 'equipAllocation'})
+                this.$router.push({name: 'equipAllocation',query:{title:'装备实体/位置变更'}})
             },
             milliToDay(data) {
                 let date = JSON.parse(JSON.stringify(data));
