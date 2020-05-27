@@ -61,7 +61,7 @@
             <define-column label="当前库存" field="totalCount"></define-column>
             <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
             <define-column label="维修数" field="count"></define-column>
-            <define-column label="维修率(%)" :filter="(row)=>rate(row)"></define-column>
+            <define-column label="维修率(%)" key="commonRate" :filter="(row)=>rate(row)"></define-column>
             <define-column label="供应商" key="sup" field="supplier" v-if="show=='category'"></define-column>
           </define-table>
           <define-table
@@ -82,7 +82,7 @@
             <define-column label="当前库存" field="totalCount"></define-column>
             <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
             <define-column label="维修数" field="count"></define-column>
-            <define-column label="维修率" :filter="(row)=>rate(row)"></define-column>
+            <define-column label="维修率" key="singlePoliceRate" :filter="(row)=>rate(row)"></define-column>
             <define-column label="供应商" key="supplier" field="supplier" v-if="show=='singlePoliceCategory'"></define-column>
           </define-table>
         </div>
@@ -162,14 +162,14 @@ export default {
     },
     rate(data) {
       if (data.totalCount != 0) {
-        return ((data.count / data.totalCount) * 100)!=0.00?((data.count / data.totalCount) * 100):0;
+        return ((data.count / data.totalCount) * 100)!=0.00?((data.count / data.totalCount) * 100).toFixed(2):0;
       } else {
         return 0;
       }
     },
     compuntedRate() {
       if (this.addNum(2) != 0) {
-        return ((this.addNum(4) / this.addNum(2)) * 100);
+        return ((this.addNum(4) / this.addNum(2)) * 100).toFixed(2);
       } else {
         return 0;
       }
@@ -363,32 +363,32 @@ export default {
   margin-top: 5px;
   //   border: 1px solid black;
   .lossStatistics-body-left {
-    width: 362px;
+    width: 2rem;
     height: 840px;
     float: left;
     border: 1px solid rgba(236, 236, 236, 1);
     .lossStatistics-body-left-top {
-      width: 360px;
+      width: 1.99rem;
       margin-top: 5px;
       height: 50px;
       //   border: 1px solid blue;
     }
     .lossStatistics-body-left-body {
       overflow-y: auto;
-      width: 360px;
+      width: 1.99rem;
       height: 780px;
       //   border: 1px solid blue;
     }
   }
   .lossStatistics-body-right {
-    width: 1117px;
+    width: 6rem;
     height: 840px;
     float: left;
     margin-left: 30px;
     border: 1px solid rgba(236, 236, 236, 1);
     .lossStatistics-body-right-top {
       background: rgba(249, 249, 249, 1);
-      width: 1117px;
+      width: 5.99rem;
       height: 20px;
       //   border: 1px solid blue;
       .title_box {
@@ -397,7 +397,7 @@ export default {
     }
     .lossStatistics-body-right-title {
       background: rgba(249, 249, 249, 1);
-      width: 1117px;
+      width: 5.99rem;
       height: 50px;
       display: flex;
       align-items: center;
@@ -405,7 +405,7 @@ export default {
       //   border: 1px solid blue;
     }
     .lossStatistics-body-right-body {
-      width: 1117px;
+      width: 5.99rem;
       height: 770px;
       //   border: 1px solid palegoldenrod;
     }

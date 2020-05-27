@@ -171,10 +171,12 @@ export default {
                 if(state)
                 {
                     this.newData[this.findIndex].copyList.push({rfid:'',serial:''})
-                }else if(this.newData[this.findIndex].copyList.length>1){
-                    this.newData[this.findIndex].copyList.splice(data.$index, 1)
-                }else{
+                }else {
+                    if(this.newData[this.findIndex].copyList.length>1){
+                        this.newData[this.findIndex].copyList.splice(data.$index, 1)
+                    }else{
                     this.newData[this.findIndex].copyList=[{rfid:'',serial:''}]
+                }
                 }
             },
             changeRow(state,data)
