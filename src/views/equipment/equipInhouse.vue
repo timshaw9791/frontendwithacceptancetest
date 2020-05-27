@@ -103,6 +103,7 @@ export default {
                     copyList:[{rfid:'',serial:''}],
                 }],
                people:'',
+               checkList:[],
                requestBody:'',
                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
                select: {
@@ -138,7 +139,7 @@ export default {
             },
             confirm(){
                 this.requestBody=JSON.parse(JSON.stringify(this.list))
-                if(this.requestBody.equipArgId==undefined||this.locationId==undefined){
+                if(this.requestBody.equipArgId=='undefined'||this.locationId=='undefined'){
                     this.$message.error('请填写完整')
                     return
                 }
@@ -170,6 +171,8 @@ export default {
             readData(){
                 killProcess(this.pid)
                 start("java -jar scan.jar", (data) => {
+                    this.checkList.push(data)
+
                     var nelist=this.list[this.findIndex].copyList.filter(function(item){
                         return item.rfid==data
                     })

@@ -62,13 +62,14 @@
             <define-column label="装备小类" field="category" key='genres' v-if="show=='genres'" />
             <define-column
               label="装备参数"
+              key="commonEquip"
               :filter="(row)=>`${row.name}(${row.model})`"
               v-if="show=='category'"
             />
             <define-column label="历史库存" field="commonStock"></define-column>
             <define-column label="当前库存" field="totalCount"></define-column>
-            <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
-            <define-column label="报废件数" field="count"></define-column>
+            <define-column label="当前库存总价(￥)" key="categoryPrice" field="totalPrice"></define-column>
+            <define-column label="报废件数" key="categoryCount" field="count"></define-column>
             <define-column label="供应商" key="commonSup" field="supplier" v-if="show=='category'"></define-column>
           </define-table>
           <define-table

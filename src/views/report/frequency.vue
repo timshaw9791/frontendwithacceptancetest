@@ -359,32 +359,32 @@ export default {
   margin-top: 5px;
   //   border: 1px solid black;
   .frequency-body-left {
-    width: 362px;
+    width: 2rem;
     height: 840px;
     float: left;
     border: 1px solid rgba(236, 236, 236, 1);
     .frequency-body-left-top {
-      width: 360px;
+      width: 1.99rem;
       margin-top: 5px;
       height: 50px;
       //   border: 1px solid blue;
     }
     .frequency-body-left-body {
       overflow-y: auto;
-      width: 360px;
+      width: 1.99rem;
       height: 780px;
       //   border: 1px solid blue;
     }
   }
   .frequency-body-right {
-    width: 1117px;
+    width: 6rem;
     height: 840px;
     float: left;
     margin-left: 30px;
     border: 1px solid rgba(236, 236, 236, 1);
     .frequency-body-right-top {
       background: rgba(249, 249, 249, 1);
-      width: 1117px;
+      width: 5.99rem;
       height: 20px;
       //   border: 1px solid blue;
       .title_box {
@@ -393,7 +393,7 @@ export default {
     }
     .frequency-body-right-title {
       background: rgba(249, 249, 249, 1);
-      width: 1117px;
+      width: 5.99rem;
       height: 50px;
       display: flex;
       align-items: center;
@@ -401,7 +401,7 @@ export default {
       //   border: 1px solid blue;
     }
     .frequency-body-right-body {
-      width: 1117px;
+      width: 5.99rem;
       height: 770px;
       //   border: 1px solid palegoldenrod;
     }
