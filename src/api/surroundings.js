@@ -7,13 +7,6 @@ export function getDeviceConfig() { // 获取设备配置信息
     }, false)
 }
 
-export function humitureQuery() { // 温湿度查询
-    return request({
-        method: 'GET',
-        url: '/environment/humiture-query',
-    }, false)
-}
-
 /* 充电 */
 export function chargeStatus(params) { // 充电台状态查询
     return request({
@@ -107,9 +100,54 @@ export function airControlSwitch(params) { // 空调控制
     }, true)
 }
 /* 环境 */
+export function humitureQuery() { // 温湿度查询
+    return request({
+        method: 'GET',
+        url: '/environment/humiture-query',
+    }, false)
+}
 export function temperatureThreshold() { // 温度阈值信息
     return request({
         url: '/environment/temperature-threshold',
+        method: 'GET'
+    }, false)
+}
+export function temperatureHistoryDay() { // 天温度历史记录
+    return request({
+        url: '/environment/temperature-day-history',
+        method: 'GET'
+    }, false)
+    
+}
+export function temperatureHistoryMonth(params) { // 月温度历史记录
+    return request({
+        url: '/environment/temperature-month-history',
+        method: 'GET',
+        params
+    }, false)
+}
+export function temperatureHistory() { // 30天温度历史记录
+    return request({
+        url: '/environment/temperature-30day-history',
+        method: 'GET'
+    }, false)
+}
+export function humidityHistoryDay() { // 天湿度历史记录
+    return request({
+        url: '/environment/humidity-day-history',
+        method: 'GET'
+    }, false)
+}
+export function humidityHistoryMonth(params) { // 月湿度历史记录
+    return request({
+        url: '/environment/humidity-month-history',
+        method: 'GET',
+        params
+    }, false)
+}
+export function humidityHistory() { // 30天湿度历史记录
+    return request({
+        url: '/environment/humidity-30day-history',
         method: 'GET'
     }, false)
 }

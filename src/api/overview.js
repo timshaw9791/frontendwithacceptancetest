@@ -32,4 +32,9 @@ export function findByOneLine() {
     })
 }
 
-
+export function policeEquipSituation() { // 公共柜+备用柜 统计
+    return request({
+        url: '/police-cabinets/equip-situation',
+        method: 'GET'
+    }, false)
+}
