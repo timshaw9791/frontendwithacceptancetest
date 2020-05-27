@@ -114,7 +114,7 @@ export function equipArgsByNameModel(params) {
 /* 入库装备 */
 export function inHouse(data, tipState) {
     return request({
-        url: "/equips/in-house",
+        url: "/in-house",
         method: "POST",
         data
     }, tipState)
@@ -144,7 +144,7 @@ export function inHouseOrder(id, tipState) {
 /* 出库装备 */
 export function outHouse(list, tipState) {
     return request({
-        url: `/equips/out-house?${qs.stringify({rfids:list},{indices:false})}`,
+        url: `/out-house?${qs.stringify({rfids:list},{indices:false})}`,
         method: "POST"
     }, tipState)
 }
