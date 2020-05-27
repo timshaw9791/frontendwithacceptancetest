@@ -75,6 +75,7 @@ export default {
             {
                 deleteInhouseNumber(data.id).then(res=>{
                     this.$message.success('删除入库单成功')
+                    this.getList()
                 }).catch(err => {
                         this.$message.error(err.response.data.message);
                     })

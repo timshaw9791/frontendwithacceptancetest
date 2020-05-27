@@ -10,7 +10,7 @@
                     <span v-text="time" style="margin-top: 0.026rem;font-size: 14px"  v-if="socket.chargingTime!=''&&flag"></span>
                     <span v-text="'空闲'" style="margin-top: 0.1042rem;margin-bottom: 0.0625rem" v-if="!flag||socket.name==''"></span>
                 </div>
-                <switch-control ref="switch_single" style="margin-top: 0.0677rem" width="0.3646rem" :status="socket.status==1?false:true" @handleChange="change"></switch-control>
+                <switch-control ref="switch_single" style="margin-top: 0.0677rem" :width="70" :status="socket.status==1?false:true" @handleChange="controlCharging"></switch-control>
             </div>
         </surrounding-card>
     </div>
@@ -19,7 +19,7 @@
 <script>
     import surroundingCard from '../../surroundingCard'
     import switchControl from './switchControl'
-    import {baseURL} from "../../../../api/config";
+    import { chargeSwitch } from 'api/surroundings'
 
     export default {
         name: "socket",
@@ -32,53 +32,26 @@
                 type:Object
             }
         },
-        data(){
-            return{
+        data() {
+            return {
                 flag:true
             }
         },
-        computed:{
-          time(){
-              let nowDate = new Date().valueOf();
-              return '已充电'+Math.round((nowDate-this.socket.chargingTime)/1000/60)+'分钟'
-          }
+        computed: {
+            time() {
+                let nowDate = new Date().valueOf();
+                return '已充电'+Math.round((nowDate-this.socket.chargingTime)/1000/60)+'分钟'
+            }
         },
         methods:{
-            change(data){
-                this.controlCharging(data);
-            },
-            getFlag(){
-              if(this.socket.name==''){
-                  return false
-              }else {
-                  if(this.flag){
-                      return false
-                  }else {
-                      return true
-                  }
-              }
-            },
             controlCharging(data){
-                let params={station:this.socket.station,number:this.socket.number,status:data};
-                this.$ajax({
-                    method:'post',
-                    url:baseURL+'/environment/chargeSwitch',
-                    params:params
-                }).then((res)=>{
-                    let resData={
-                        number:this.socket.number,
-                        flag:data
-                    };
-                    this.flag=false;
-                    this.$emit('sucess',resData);
-                    this.$message.success('成功');
-                }).catch(err=>{
-                    this.$message.error(err.response.data.message);
-                    this.$parent.show()
-                    this.$refs.switch_single.fail()
-                    
-                    
-                });
+                chargeSwitch({station: this.socket.station, number: this.socket.number, status: data}, true).then(res => {
+                    this.flag = false;
+                    this.$emit('success', {number: this.socket.number, flag: data})
+                }).catch(err => {
+                    this.$parent.show();
+                    this.$refs.switch_single.fail();
+                })
             }
         }
     }

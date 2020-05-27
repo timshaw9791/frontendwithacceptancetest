@@ -3,7 +3,7 @@
         <div class="temperature-theme">
             <div class="temperature-body">
                 <div class="temperature-scale">
-                    <div class="temperature-scale-item" v-for="(item,index) in scale">
+                    <div class="temperature-scale-item" v-for="(item,index) in scale" :key="'wd'+index">
                         <div class="temperature-scale-short" style="position: absolute;top: 0px" v-if="index!=0"></div>
                         <div class="temperature-scale-long"></div>
                         <div style="width:0.1719rem"></div>

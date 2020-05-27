@@ -133,7 +133,7 @@ export default {
             {
                 state?this.listData[this.findIndex].clist.push({rfid:'',serial:''}):this.listData[this.findIndex].clist.splice(data.$index, 1)
                 state?'':this.listData[this.findIndex].keepcount--
-                if(this.listData[this.findIndex].clist.length==0){
+                if(this.listData[this.findIndex].clist.length==1){
                     this.listData[this.findIndex].clist=[{rfid:'',serial:''}]
                 }
             },

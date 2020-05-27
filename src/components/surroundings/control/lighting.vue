@@ -1,16 +1,17 @@
 <template>
     <div class="lighting">
-        <dialogs ref="dialog" :width="900" :title="'灯光控制'">
+        <dialogs ref="dialog" :width="920" :title="'灯光控制'">
             <div class="lighting-box">
                 <div class="lighting-select">
-                    <select-charging-station id="" :placeholder="'选择照明路数'" :select="select.selectList"
+                    <select-charging-station :placeholder="'选择照明路数'" :select="select.selectList"
                                              @selectRole="selectSation" :havaDefault="true"></select-charging-station>
                    <div style="width: 210px;margin-left: 0.1042rem">
                        <switch-control :width="70" :active="active.all" :inactive="inactive.all" @handleChange="changeAll"></switch-control>
                    </div>
                 </div>
                 <div class="lighting-controls">
-                   <light-control v-for="(item,index) in lightList" :light="item" :active="active.item" :inactive="inactive.item" :index="Number(index)"></light-control>
+                   <light-control v-for="(item,index) in lightList" :light="item" :active="active.item" 
+                   :inactive="inactive.item" :index="Number(index)" :key="'kt'+index"></light-control>
                 </div>
             </div>
         </dialogs>
@@ -21,6 +22,7 @@
     import dialogs from '../surroundingDialog'
     import switchControl from './controlComponents/switchControl'
     import lightControl from './controlComponents/lightControl'
+    import { lightQuery, allLightSwitch } from 'api/surroundings'
     import {baseURL} from "../../../api/config";
     import selectChargingStation from 'components/personnelManagement/personnelSelect'
 
@@ -30,10 +32,7 @@
             dialogs,
             switchControl,
             lightControl,
-            selectChargingStation,
-            contorlNum:0,
-            lightNum:0,
-            deviceNum:0
+            selectChargingStation
         },
         data(){
             return{
@@ -64,81 +63,30 @@
                 },
             }
         },
-        created(){
+        props: {
+            count: {
+                default: 0
+            }
         },
         methods:{
             selectSation(data){
-                let route=_.findLastIndex(this.select.selectList,(item)=>{ return item.value === data; })+1,list=[],li=data;
-                list=[{number:1,route:route, status:li[8]},{number:2,route:route, status:li[7]}];
-                this.lightList=list;
+                let route = Number(data[0])+1,
+                    statusArr = data.toString().split('').reverse();
+                statusArr.pop(); // 去除route数据
+                this.lightList = statusArr.map((status, number) => ({number:number+1,status,route})).slice(0, this.count);
             },
-            getLightQuery(){
-                this.$ajax({
-                    method:'post',
-                    url:baseURL+'/environment/lightQuery',
-                }).then(res=>{
-                    let resData=res.data;
-                    this.select.selectList=[];
-                    resData.forEach((item,index)=>{
-                        let i=index+1;
-                        this.select.selectList.push({
-                            label:i+'路照明',
-                            value:i+item
-                        })
-                    });
+            getLightQuery() {
+                lightQuery().then(res => {
+                    this.select.selectList = res.map((item, index) => ({label: `${index+1}路照明`, value: index+item}));
                     this.$refs.dialog.show();
-                }).catch(err=>{
-                    this.$message.error(err.response.data.message);
-                });
+                })
             },
-            // getlightInfo(){
-            //     // this.contorlNum=5//有几个开关
-            //     // this.deviceNum=2//一个开关可操作几盏灯
-            //     // this.lightNum=this.contorlNum*this.deviceNum//总共有几盏灯
-            //     // // let newList=[];
-            //     // // for(let i=0;i<this.lightNum;i++) {
-            //     // //     newList.push(this.lightList[i]);
-            //     // //     newList[i].route=Math.ceil((newList[i].number)/this.deviceNum*1.0)
-            //     // // }
-            //     // this.lightList=newList;
-            //     console.log('111',this.lightNum)
-            //     this.$refs.dialog.show();
-            // // this.$ajax({
-            // //         method:'post',
-            // //         url:baseURL+'/environment/deviceConfig',
-            // //     }).then((res)=>{
-            // //      this.contorlNum=res.data.data.ENVIRONMENT_LIGHT_CONTROL_COUNT//有几个开关
-            // //      this.deviceNum=res.data.data.ENVIRONMENT_LIGHT_COUNT//一个开关可操作几盏灯
-            // //      this.lightNum=this.contorlNum*this.deviceNum//总共有几盏灯
-            // //      let newList=[];
-            // //      for(let i=0;i<this.lightNum;i++) {
-            // //          newList.push(this.lightList[i]);
-            // //          console.log("object");
-            // //          console.log(newList[i].number);
-            // //          newList[i].route=Math.ceil((newList[i].number)/this.deviceNum*1.0)
-            // //
-            // //      }
-            // //      this.lightList=newList;
-            // //      this.$refs.dialog.show();
-            // //     })
-            // },
             changeAll(data){
-                let flag=1;
-                if(data){
-                    flag=0
-                }
-                this.$ajax({
-                    method:'post',
-                    url:baseURL+'/environment/lightSwitch',
-                    params:{status:data}
-                }).then((res)=>{
-                   this.lightList.forEach(item=>{
-                       item.status=flag
-                   });
-                   this.$message.sucess('成功')
-                }).catch(err=>{
-                    this.$message.error(err);
-                });
+                allLightSwitch({status: data}, true).then(res => {
+                    this.lightList.forEach(item => {
+                        item.status = data?0:1
+                    })
+                })
             },
             show(){
                 this.getLightQuery();
@@ -180,9 +128,7 @@
     }
     .lighting-box .lighting-controls{
         display: flex;
-        flex-direction: row;
         flex-wrap: wrap;
-        padding-left: 0.3125rem;
     }
     .lighting-box .lighting-select{
         padding-top: 0.1458rem;

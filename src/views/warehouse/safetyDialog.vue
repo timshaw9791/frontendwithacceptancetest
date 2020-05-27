@@ -85,20 +85,20 @@
                     this.edit = JSON.parse(JSON.stringify(newVal))
                 }
             },
-            'title':{
-                handler(newVal){
-                    if(this.title=="装备分类"){
-                        getgenresList().then(res=>{
-                            res.content.forEach(item=>{
-                                this.selectData.genre.push({
-                                    value:item.id,
-                                    label:item.name
-                                })
-                            })
-                        })
-                    }
-                }
-            }
+            // 'title':{
+            //     handler(newVal){
+            //         if(this.title=="装备分类"){
+            //             getgenresList().then(res=>{
+            //                 res.content.forEach(item=>{
+            //                     this.selectData.genre.push({
+            //                         value:item.id,
+            //                         label:item.name
+            //                     })
+            //                 })
+            //             })
+            //         }
+            //     }
+            // }
         },
         methods: {
             titleShow(){

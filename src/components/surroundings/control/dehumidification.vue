@@ -3,7 +3,7 @@
         <dialogs :width="1040" ref="dialog" :title="'除湿器控制'">
             <div class="hum_box">
                 <div class="dehumidification-box">
-                    <dehumi v-for="(item,index) in humList" :index="index" :item="item" :key="index"></dehumi>
+                    <dehumi v-for="(item,index) in humList" :index="index" :item="item" :key="index" @success="success"></dehumi>
                 </div>
             </div>
         </dialogs>
@@ -16,7 +16,7 @@
     import surroundingCard from '../surroundingCard'
     import switchControl from './controlComponents/switchControl'
     import { getdeploy } from 'api/login'
-    import { HunSwitch, getDehumidifierStatus } from 'api/surroundings'
+    import { HunSwitch, allDehumidifierStatus } from 'api/surroundings'
     import {baseURL} from "../../../api/config";
 
     export default {
@@ -41,82 +41,30 @@
                 threshold:'',
                 dehumidificationStatus:false,
                 flag:true,
-                humNum:0,
-                humList:''
+                humList: []
             }
         },
-        created(){
-             
-           
-            },
+        props: {
+            count: {
+                default: 0
+            }
+        },
         methods:{
-            getConfig(){
-                getdeploy().then(res => {
-                    this.humNum = res.DEHUMIDIFIER_COUNT
-                })
-            },
-            dehumidificationControl(){
-                // HunSwitch
-                this.$ajax({
-                    method:'post',
-                    url:baseURL+'/environment/dehumidifierSwitch?status='+data,
-                }).then((res)=>{
-                    if (res.data.msg=='成功') {
-                        this.dehumidificationStatus=data;
-                        if(data){
-                            this.$message.success('开启成功');
-                        }else {
-                            this.$message.success('关闭成功');
-                        }
-                    }
-                }).catch(err=>{
-                    this.$message.error(err.response.data.message);
-                });
-            },
             gethumList(){
-                getDehumidifierStatus().then(res => {
+                allDehumidifierStatus().then(res => {
                     this.humList = Object.values(res);
                 })
             },
+            success(data) { // 改变状态成功
+                this.gethumList();
+            },
             show(){
-                this.getConfig()
                 this.gethumList();
                 this.$refs.dialog.show();
             },
             close(){
                 this.$refs.dialog.close();
-            },
-            toSetThreshold(){
-                this.flag=!this.flag
-            },
-            cancel(){
-                this.flag=!this.flag
-            },
-            // submission(){
-            //     this.submissionThreshold()
-            // },
-            // submissionThreshold(){
-            //     this.$ajax({
-            //         method:'post',
-            //         url:baseURL+'/environment/humidityThresholdSet',
-            //         params:{max:this.threshold}
-            //     }).then((res)=>{
-            //         this.flag=!this.flag;
-            //         this.$message.success('提交成功');
-            //     }).catch(err=>{
-            //         this.$message.error(err.response.data.message);
-            //     });
-            // },
-            // getThreshold(){
-            //     this.$ajax({
-            //         method:'post',
-            //         url:baseURL+'/environment/humidityThreshold',
-            //     }).then((res)=>{
-            //         this.threshold=res.data.data.humidityThreshold
-            //     }).catch(err=>{
-            //         this.$message.error(err.response.data.message);
-            //     });
-            // }
+            }
         }
     }
 </script>

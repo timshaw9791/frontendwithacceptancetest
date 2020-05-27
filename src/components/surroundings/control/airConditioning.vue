@@ -3,11 +3,11 @@
         <dialogs :width="1040" ref="dialog" :title="'空调控制'">
          <div class="air_box">
                 <div class="airConditioning-box">
-                   <airControl
+                   <air-control
                     v-for="(item,index) in airList" 
                     :index="index"
                     :item="item"
-                    :key="'kt'+index"></airControl>
+                    :key="'kt'+index"></air-control>
                 </div>
           </div>
         </dialogs>
@@ -18,9 +18,8 @@
     import dialogs from '../surroundingDialog'
     import surroundingCard from '../surroundingCard'
     import airControl from './airControl'
-    import {baseURL} from "../../../api/config";
     import { getdeploy } from 'api/login'
-    import { allAirConditionerStatus, temperatureThresholdSet, temperatureThreshold, airConditionerSwitch, airConditionerStatus } from 'api/surroundings'
+    import { allAirControlStatus, temperatureThreshold } from 'api/surroundings'
 
     export default {
         name: "airConditioning",
@@ -31,136 +30,26 @@
         },
         data() {
             return {
-                num:false,
-                order:false,
-                flag:true,
-                threshold:{
-                    max:'',
-                    min:''
-                },
-                airNum:0,
-                airList:''
+                airList: []
             }
         },
+        props: {
+            count: {
+                default: 0
+            }  
+        },
         methods:{
-            getConfig(){
-                getdeploy().then(res => {
-                    this.airNum = res.AIR_CONDITIONER_COUNT;
-                })
-            },
             getAirStatusList(){
-                allAirConditionerStatus().then(res => {
-                    this.arrList = Object.values(res);
+                allAirControlStatus().then(res => {
+                    this.airList = Object.values(res)
                 })
-            },
-            refrigerationControl(data){
-               if(data){
-                   this.controlAir(1);
-                   this.initStatus('refrigeration')
-               }else {
-                   this.controlAir(0)
-               }
-            },
-            heatingControl(data){
-                if(data){
-                    this.controlAir(2);
-                    this.initStatus('heating')
-                }else {
-                    this.controlAir(0)
-                }
-            },
-            dehumidificationControl(data){
-                if(data){
-                    this.controlAir(3);
-                    this.initStatus('dehumidification')
-                }else {
-                    this.controlAir(0)
-                }
-            },
-            initStatus(data){
-                switch (data) {
-                    case 'refrigeration':
-                        this.refrigeration=true;
-                        this.heating=false;
-                        this.dehumidification=false;
-                        break;
-                    case 'heating':
-                        this.heating=true;
-                        this.refrigeration=false;
-                        this.dehumidification=false;
-                        break;
-                    case 'dehumidification':
-                        this.dehumidification=true;
-                        this.refrigeration=false;
-                        this.heating=false;
-                        break;
-                    case 'close':
-                        this.refrigeration=false;
-                        this.heating=false;
-                        this.dehumidification=false;
-                        break;
-                }
             },
             show(){
-                this.getConfig()
                 this.getAirStatusList()
-                this.getThreshold();
-                
                 this.$refs.dialog.show();
             },
             close(){
                 this.$refs.dialog.close();
-            },
-            toSetThreshold(){
-                this.flag=!this.flag
-            },
-            cancel(){
-                this.flag=!this.flag
-            },
-            controlAir(data){
-                airConditionerSwitch({status: data}).then(res => {
-
-                })
-            },
-            submission(){
-                this.submissionThreshold()
-            },
-            submissionThreshold(){
-                if(this.threshold.min>this.threshold.max){
-                    this.num = false
-                    this.order = true
-                }else if(this.threshold.min<-100||this.threshold.max>100){
-                    this.order = false
-                    this.num = true
-                }else{
-                    this.order = false
-                    this.num = false
-                    temperatureThresoldSet(this.threshold).then(res => {
-                        this.flag=!this.flag;
-                        this.$message.success('提交成功');
-                    })
-                }
-            },
-            getThreshold(){
-                temperatureThreshold().then(res => {
-                    this.threshold.max=res.temperatureMaximum;
-                    this.threshold.min=res.temperatureMinimum;
-                })
-                airConditionerStatus().then(res => {
-                    let status = res.STATUS;
-                    if(status=='REFRIGERATION'){
-                        this.refrigeration=true;
-                        this.initStatus('refrigeration')
-                    }else if(status=='HOT'){
-                        this.heating=true;
-                        this.initStatus('heating')
-                    }else if(status=='DEHUMIDIFICATION'){
-                        this.dehumidification=true;
-                        this.initStatus('dehumidification')
-                    }else if(status=='CLOSE'){
-                        this.initStatus('close')
-                    }
-                })
             }
         }
     }

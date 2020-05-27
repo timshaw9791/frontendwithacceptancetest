@@ -155,7 +155,7 @@ export default {
             {
                 state?'':this.newData[this.findIndex].copyList[data.$index].rfid!=''?this.newData[this.findIndex].count--:''
                 state?this.newData[this.findIndex].copyList.push({rfid:'',serial:''}):this.newData[this.findIndex].copyList.splice(data.$index, 1)
-                if(this.newData[this.findIndex].copyList.length==0){
+                if(this.newData[this.findIndex].copyList.length==1){
                     this.newData[this.findIndex].copyList=[{rfid:'',serial:''}]
                 }
             },

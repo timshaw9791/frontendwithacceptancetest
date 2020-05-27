@@ -1,6 +1,6 @@
 <template>
     <div class="opening-box">
-        <my-header title="入库单列表/装备入库"></my-header>
+        <my-header title="入库单列表/入库装备"></my-header>
          <div class="action_box" data-test="action_box">
                 <define-input label="单号" placeholder="--" :disabled="true" ></define-input>
                 <date-select label="入库时间" placeholder="--" :disabled="true"></date-select>
@@ -96,13 +96,14 @@ export default {
                     equipArgId: '',
                     locationId: '',
                     price: 0,
-                    productTime:Date.parse(new Date()),
+                    productTime:'',
                     rfids: [],
                     serial: [],
                     count:0,
                     copyList:[{rfid:'',serial:''}],
                 }],
                people:'',
+               checkList:[],
                requestBody:'',
                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
                select: {
@@ -138,6 +139,10 @@ export default {
             },
             confirm(){
                 this.requestBody=JSON.parse(JSON.stringify(this.list))
+                if(this.requestBody.equipArgId=='undefined'||this.locationId=='undefined'){
+                    this.$message.error('请填写完整')
+                    return
+                }
                 this.requestBody.forEach(item=>{
                     item.equipArgId=item.equipArgId.id
                     if(item.locationId.location){
@@ -166,6 +171,8 @@ export default {
             readData(){
                 killProcess(this.pid)
                 start("java -jar scan.jar", (data) => {
+                    this.checkList.push(data)
+
                     var nelist=this.list[this.findIndex].copyList.filter(function(item){
                         return item.rfid==data
                     })
@@ -187,13 +194,16 @@ export default {
                 if(state)
                 {
                     this.list[this.findIndex].copyList.push({rfid:'',serial:''})
-                }else if(this.list[this.findIndex].copyList.length>1){
-                    this.list[this.findIndex].copyList.splice(data.$index, 1)
-                    this.list[this.findIndex].count--
+                }else{
+                    if(this.list[this.findIndex].copyList.length>1){
+                        this.list[this.findIndex].copyList.splice(data.$index, 1)
+                        this.list[this.findIndex].count--
+                    }
+                    else{
+                        this.list[this.findIndex].copyList=[{rfid:'',serial:''}]
+                    }
                 }
-                if(this.list[this.findIndex].copyList.length==0){
-                    this.list[this.findIndex].copyList=[{rfid:'',serial:''}]
-                }
+                
             },
             changeRow(state,data)
             {
