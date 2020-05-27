@@ -162,7 +162,7 @@
                     rfid: '',
                     serial: ''
                 }) : this.newData[this.findIndex].copyList.splice(data.$index, 1)
-                if (this.newData[this.findIndex].copyList.length == 0) {
+                if (this.newData[this.findIndex].copyList.length == 1) {
                     this.newData[this.findIndex].copyList = [{rfid: '', serial: ''}]
                 }
             },

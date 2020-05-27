@@ -60,10 +60,11 @@
             ref="table"
             v-if="show!='singlePolice'&&show!='singlePoliceCategory'"
           >
-            <define-column label="装备大类" field="genre" v-if="show=='All'" />
-            <define-column label="装备小类" field="category" v-if="show=='genres'" />
+            <define-column label="装备大类" key="genre" field="genre" v-if="show=='All'" />
+            <define-column label="装备小类" key="category" field="category" v-if="show=='genres'" />
             <define-column
               label="装备参数"
+              key="commonEquipArgs"
               :filter="(row)=>`${row.name}(${row.model})`"
               v-if="show=='category'"
             />
@@ -72,8 +73,8 @@
             <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
             <define-column label="损耗数" field="count"></define-column>
             <define-column label="损耗总额" field="totalLoss"></define-column>
-            <define-column label="损耗率(%)" :filter="(row)=>rate(row)"></define-column>
-            <define-column label="供应商" field="supplier" v-if="show=='category'"></define-column>
+            <define-column label="损耗率(%)" key="commonRate" :filter="(row)=>rate(row)"></define-column>
+            <define-column label="供应商" ke="commonSup" field="supplier" v-if="show=='category'"></define-column>
           </define-table>
           <define-table
             :pageInfo="paginator"
@@ -83,7 +84,7 @@
             ref="table"
             v-if="show=='singlePolice'||show=='singlePoliceCategory'"
           >
-            <define-column label="装备小类" field="cabinet" v-if="show=='singlePolice'" />
+            <define-column label="装备小类" field="cabinet" key="singlePoliceCabinet" v-if="show=='singlePolice'" />
             <define-column
               label="装备参数"
               key="equipArgs"
@@ -95,7 +96,7 @@
             <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
             <define-column label="损耗数量" field="count"></define-column>
             <define-column label="损耗总额" field="totalLoss"></define-column>
-            <define-column label="损耗率(%)" :filter="(row)=>rate(row)"></define-column>
+            <define-column label="损耗率(%)" key="singlePoliceRate" :filter="(row)=>{return row.cabinetStock!=0?(row.count/row.cabinetStock*100).toFixed(2):0}"></define-column>
             <define-column label="供应商" key="supplier" field="supplier" v-if="show=='singlePoliceCategory'"></define-column>
           </define-table>
         </div>
@@ -177,11 +178,11 @@ export default {
         return (
           (data.count / data.commonStock) *
           100
-        );
+        ).toFixed(2);
       } else return 0;
     },
     compuntedRate(){
-        return (this.show=='singlePolice'||this.show=='singlePoliceCategory'?this.addNum(4)/this.addNum(5):this.addNum(4)/this.addNum(1)*100)
+        return (this.show=='singlePolice'||this.show=='singlePoliceCategory'?this.addNum(4)/this.addNum(5):this.addNum(4)/this.addNum(1)*100).toFixed(2)
     },
     addNum(item) {
       return this.equipArg.reduce((v, k) => {
@@ -372,32 +373,32 @@ export default {
   margin-top: 5px;
   //   border: 1px solid black;
   .lossStatistics-body-left {
-    width: 362px;
+    width: 2rem;
     height: 840px;
     float: left;
     border: 1px solid rgba(236, 236, 236, 1);
     .lossStatistics-body-left-top {
-      width: 360px;
+      width: 1.99rem;
       margin-top: 5px;
       height: 50px;
       //   border: 1px solid blue;
     }
     .lossStatistics-body-left-body {
       overflow-y: auto;
-      width: 360px;
+      width: 1.99rem;
       height: 780px;
       //   border: 1px solid blue;
     }
   }
   .lossStatistics-body-right {
-    width: 1117px;
+    width: 6rem;
     height: 840px;
     float: left;
     margin-left: 30px;
     border: 1px solid rgba(236, 236, 236, 1);
     .lossStatistics-body-right-top {
       background: rgba(249, 249, 249, 1);
-      width: 1117px;
+      width: 5.99rem;
       height: 20px;
       //   border: 1px solid blue;
       .title_box {
@@ -406,7 +407,7 @@ export default {
     }
     .lossStatistics-body-right-title {
       background: rgba(249, 249, 249, 1);
-      width: 1117px;
+      width: 5.99rem;
       height: 50px;
       display: flex;
       align-items: center;
@@ -414,7 +415,7 @@ export default {
       //   border: 1px solid blue;
     }
     .lossStatistics-body-right-body {
-      width: 1117px;
+      width: 5.99rem;
       height: 770px;
       //   border: 1px solid palegoldenrod;
     }

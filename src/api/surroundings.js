@@ -184,37 +184,3 @@ export function modifySalutatory(data, tipState) { // 编辑欢迎屏
         data
     }, tipState)
 }
-
-/* 烟雾 */
-
-export function dehumidifierStatus(params) { // 除湿机状态查询(单个)
-    return request({
-        url: '/environment/dehumidifierStatus',
-        method: 'POST',
-        params
-    })
-}
-
-export function temperatureThresholdSet(params) { // 设置温度阈值
-    return request({
-        url: '/environment/temperatureThresholdSet',
-        method: 'POST',
-        params
-    })
-}
-
-export function airConditionerSwitch(params) { // 空调开关
-    return request({
-        url: '/environment/airConditionerSwitch',
-        method: 'POST',
-        params
-    })
-}
-
-export function airConditionerStatus(params) { // 查询状态查询
-    return request({
-        url: '/environment/airConditionerStatus',
-        method: 'POST',
-        params
-    })
-}

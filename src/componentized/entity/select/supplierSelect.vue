@@ -39,7 +39,11 @@
                 this.$emit('cancel');
             },
             select() {
-                this.$emit('select', {data: this.selected, ref: 'supplierSelect'});
+                 if(!this.selected) {
+                    this.$message.warning("请选择供应商");
+                }else{
+                    this.$emit('select', {data: this.selected, ref: 'supplierSelect'});
+                }
             },
         },
         mounted() {

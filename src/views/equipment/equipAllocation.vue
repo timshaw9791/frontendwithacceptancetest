@@ -183,6 +183,8 @@ export default {
             if(this.$route.query.id){
             this.edit=false;
             this.fetchData(this.$route.query.id)
+            }else{
+                this.listData.operatorInfo.operator=JSON.parse(localStorage.getItem('user')).name
             }
         }
 

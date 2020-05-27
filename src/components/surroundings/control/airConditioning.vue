@@ -19,7 +19,7 @@
     import surroundingCard from '../surroundingCard'
     import airControl from './airControl'
     import { getdeploy } from 'api/login'
-    import { allAirControlStatus, temperatureThresholdSet, temperatureThreshold, airConditionerSwitch, airConditionerStatus } from 'api/surroundings'
+    import { allAirControlStatus, temperatureThreshold } from 'api/surroundings'
 
     export default {
         name: "airConditioning",
