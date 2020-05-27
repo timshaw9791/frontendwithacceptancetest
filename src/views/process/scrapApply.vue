@@ -36,7 +36,7 @@
 <script>
     import myHeader from 'components/base/header/header';
     import bosTabs from '@/componentized/table/bosTabs.vue'
-    import {processStart, getHistoryTasks, scrapOrders} from '@/api/process'
+    import {processStart, getHistoryTasks, scrapOrders, activeTask} from '@/api/process'
     import {findByRfids} from "@/api/storage";
     import {transEquips} from "@/common/js/transEquips";
     import TaskHistory from "@/components/process/taskHistory";
@@ -84,22 +84,22 @@
                 })
             },
             fetchData() {
-                scrapOrders({processInstanceId: this.processInstanceId}).then(
+                scrapOrders(this.processInstanceId).then(
                     res => {
                         this.order = res
                         this.equipItems = transEquips(res.equips).equipItems
                     }
                 )
-                getHistoryTasks({processInstanceId: this.processInstanceId}).then(
+                getHistoryTasks(this.processInstanceId).then(
                     res => {
                         this.taskHistory = res
                     }
                 )
-                taskDetail({taskId: this.taskId}).then(res => {
-                    this.taskDefinitionKey = res.taskDefinitionKey
-                    if (this.order.applicant.name === JSON.parse(window.localStorage.getItem("user")).name) {
-                        this.taskDefinitionKey = 'reApply'
-                    }
+                this.type === "todo" && activeTask(this.processInstanceId).then(res => {
+                    this.taskId = res.taskId
+                    // 如果是任务处理人是我，且为申请任务，那么就显示是否重填
+                    this.taskDefinitionKey = res.assignee === this.userInfo.id && res.taskDefinitionKey.includes('apply')
+                        ?'reApply':res.taskDefinitionKey
                 })
             },
             handleReadData(data) { // 读取数据
@@ -110,13 +110,13 @@
             },
             submit() {
                 processStart({
-                    processDefinitionKey: this.$route.query.key,
+                    processDefinitionKey: this.key,
                 }, this.order).then(() => {
                     this.$router.push({name: 'myProcess'});
                 })
             },
             refused() {  // 驳回
-                completeTask(this.$route.query.taskId,
+                completeTask(this.taskId,
                     [{pass: false, note: '驳回测试'}]).then(() => {
                     this.back()
                 })
@@ -134,8 +134,7 @@
                     this.$router.back()
                 })
             },
-            edit() { // 重填与编辑
-                this.isEdit = true
+            edit() { // 重填
                 this.isInfo = false
             }
         },

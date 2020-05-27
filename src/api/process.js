@@ -1,23 +1,22 @@
 import request from 'common/js/request'
 import {baseBURL} from "./config";
 
-/***********  工作流接口 ************/
-export function getAllProcess() { // 获取所有流程定义
+export function getAllProcess() { // 新起流程列表
     return request({
         url: baseBURL + '/process-definitions',
         method: 'GET'
     })
 }
 
-export function SAODetail(params) { // 报废申请单详情
+export function activeTask(processInstanceId) {
     return request({
-        url: baseBURL + '/equip-order/process_id',
-        method: 'GET',
-        params
+        url: baseBURL + "/workflow/active-task",
+        method: "GET",
+        params:{processInstanceId}
     })
 }
-// 通用接口
-export function processStart(params, data) { // 流程启动
+
+export function processStart(params, data) { // 流程启动 通用接口
     return request({
         url: baseBURL + '/workflow/processes/start',
         method: 'POST',
@@ -26,8 +25,7 @@ export function processStart(params, data) { // 流程启动
     })
 }
 
-// 非通用接口 调拨流程申请
-export function transferStart(params, data) { // 流程启动
+export function transferStart(params, data) { // 调拨流程申请
     return request({
         url: baseBURL + '/workflow/transfer/start',
         method: 'POST',
@@ -36,21 +34,31 @@ export function transferStart(params, data) { // 流程启动
     })
 }
 
-export function transferOrders(params) { // 流程启动
+export function transferOrders(processInstanceId) { // 调拨相关的单据
     return request({
         url: baseBURL + '/workflow/transfer/orders',
+        method: 'GET',
+        params:{processInstanceId}
+    })
+}
+
+export function scrapOrders(processInstanceId) { // 报废流程
+    return request({
+        url: baseBURL + "/workflow/scrap/orders",
+        method: "GET",
+        params:{processInstanceId}
+    })
+}
+
+
+export function SAODetail(params) { // 报废申请单详情
+    return request({
+        url: baseBURL + '/equip-order/process_id',
         method: 'GET',
         params
     })
 }
 
-export function scrapOrders(params) { // 报废流程
-    return request({
-        url: baseBURL + "/workflow/scrap/orders",
-        method: "GET",
-        params
-    })
-}
 
 export function processDetail(params) { // 流程内容
     return request({
@@ -68,11 +76,13 @@ export function processwarehouseDetail(params) { // 流程内容
     })
 }
 
-export function getHistoryTasks(params) { // 历史任务实例
+export function getHistoryTasks(processInstanceId) { // 历史任务实例
     return request({
         url: baseBURL + '/workflow/history-tasks',
         method: 'GET',
-        params
+        params:{
+            processInstanceId
+        }
     })
 }
 

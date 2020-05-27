@@ -38,7 +38,7 @@
 <script>
     import {formRulesMixin} from '../../field/common/mixinTableRest';
     import serviceDialog from '../../components/base/serviceDialog/index'
-    import {getSupplier, addSupplier, updateSupplier} from "@/api/supplier"
+    import {getSuppliers, addSupplier, updateSupplier} from "@/api/supplier"
     import myHeader from "../../components/base/header/header"
     import textInput from "../../componentized/textBox/textInput";
 
@@ -71,7 +71,7 @@
                     properties: "updateTime"
                 };
 
-                getSupplier(params).then(res => {
+                getSuppliers(params).then(res => {
                     this.list = res.content
                     this.paginator.totalPages = res.totalPages
                     this.paginator.totalElements = res.totalElements

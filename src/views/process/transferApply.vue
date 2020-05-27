@@ -2,9 +2,11 @@
     <div class="transfer-apply-container">
         <my-header :title="title" :haveBlack="false"></my-header>
         <div class="apply-process">
-            <operation-bar :task-definition-key="taskDefinitionKey" :is-need-me="isNeedMe"
+            <operation-bar :task-definition-key="taskDefinitionKey"
+                           :is-out-house="isOutHouse" :is-in-house="isInHouse"
                            @refused="refused" @agree="agree"
                            @invalid="invalid" @edit="edit"
+                           @outbound="outbound" @inbound="inbound"
             ></operation-bar>
             <div class="apply-process-body">
                 <div class="process-info">
@@ -16,28 +18,33 @@
                                   format="{name}({policeSign})">
                     </entity-input>
                     <entity-input label="入库机构" v-model="transferApplyOrder.inboundOrganUnit" format="{name}"
-                                  :options="{search:'organUnits'}" :disabled="true" placeholder="请选择"></entity-input>
+                                  :options="{search:'organUnits'}" :disabled="true" placeholder="请选择">
+                    </entity-input>
                 </div>
                 <div class="process-info">
                     <entity-input label="入库库房" :disabled="true" placeholder="-"></entity-input>
                     <entity-input label="入库人员" :disabled="true" placeholder="-"></entity-input>
                     <entity-input label="出库机构" v-model="transferApplyOrder.outboundOrganUnit" format="{name}"
-                                  :options="{search:'organUnits'}" placeholder="请选择" :disabled="isInfo"></entity-input>
+                                  :options="{search:'organUnits'}" placeholder="请选择" :disabled="isInfo">
+                    </entity-input>
                     <entity-input label="出库库房" :disabled="true" placeholder="-"></entity-input>
                 </div>
                 <div class="process-info">
                     <entity-input label="出库人员" :disabled="true" placeholder="-"></entity-input>
-                    <text-input label="申请原因" v-model="transferApplyOrder.note" :column="12" :tips="tips" :disabled="isInfo"></text-input>
+                    <text-input label="申请原因" v-model="transferApplyOrder.note" :column="12" :tips="tips"
+                                :disabled="isInfo">
+                    </text-input>
                 </div>
                 <define-table :havePage="false" :data="transferApplyOrder.equips" height="2.8646rem"
                               :showSummary="true" :summaryFunc="$sumFunc" slot="total">
                     <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
-                        <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
+                        <i class="iconfont icontianjialiang" @click=""></i>
                         <i class="iconfont iconyichuliang" @click="$delRow(transferApplyOrder.equips,data.index)"></i>
                     </define-column>
-                    <define-column label="装备参数" v-slot="{ data }" >
+                    <define-column label="装备参数" v-slot="{ data }">
                         <entity-input v-model="data.row.equipArg" :options="{search:'equipArgsSelect'}"
-                                      format="{name}({model})" :tableEdit="!isInfo"></entity-input>
+                                      format="{name}({model})" :tableEdit="!isInfo">
+                        </entity-input>
                     </define-column>
                     <define-column label="装备数量" v-slot="{ data }">
                         <define-input v-model="data.row.count" type="number" :tableEdit="!isInfo"></define-input>
@@ -56,7 +63,7 @@
 <script>
     import myHeader from 'components/base/header/header'
     import bosTabs from '@/componentized/table/bosTabs'
-    import {transferStart, transferOrders} from '@/api/process'
+    import {transferStart, transferOrders, activeTask} from '@/api/process'
     import OperationBar from "@/components/process/operationBar";
     import EquipItems from "@/components/process/equipItems";
     import {completeTask, processesDelete, taskDetail} from "@/api/workflow";
@@ -76,7 +83,6 @@
         data() {
             return {
                 title: "",
-                show: false,
                 transferApplyOrder: {
                     equips: [{equipArg: {}}],
                     applicant: {}
@@ -87,54 +93,54 @@
                 taskDefinitionKey: '',
                 processDefinitionKey: '',
                 processInstanceId: '',
-                taskHistory:[],
+                taskHistory: [],
                 isInfo: false,
-                isEdit: false,
-
+                isLeaderEdit: false,
+                isOutHouse: false,
+                isInHouse: false,
+                taskId:''
             }
         },
         methods: {
             async init() {
                 Object.assign(this.transferApplyOrder, {
                     inboundOrganUnit: this.organUnit,
-                    applicant: JSON.parse(window.localStorage.getItem("user"))
+                    applicant: this.userInfo
                 })
             },
             fetchData() {
-                transferOrders({processInstanceId: this.processInstanceId}).then(
+                transferOrders(this.processInstanceId).then(
                     res => {
                         this.transferApplyOrder = res.transferApplyOrder
                         this.outboundEquipsOrder = res.outboundEquipsOrder
                         this.inboundEquipsOrder = res.inboundEquipsOrder
                     }
                 )
-                getHistoryTasks({processInstanceId: this.processInstanceId}).then(
+                getHistoryTasks(this.processInstanceId).then(
                     res => {
                         this.taskHistory = res
                     }
                 )
-                taskDetail({taskId: this.taskId}).then(res => {
-                    this.taskDefinitionKey = res.taskDefinitionKey
-                    console.log(this.transferApplyOrder.applicant.name === JSON.parse(window.localStorage.getItem("user")).name)
-                    if (this.transferApplyOrder.applicant.name === JSON.parse(window.localStorage.getItem("user")).name) {
-                        this.taskDefinitionKey = 'reApply'
-                    }
+                this.type === "todo" && activeTask(this.processInstanceId).then(res => {
+                    this.taskId = res.taskId
+                    // 如果是任务处理人是我，且为申请任务，那么就显示是否重填
+                    this.taskDefinitionKey = res.assignee === this.userInfo.id && res.taskDefinitionKey.includes('apply')
+                        ?'reApply':res.taskDefinitionKey
                 })
             },
             submit() {
-                console.log(this)
                 transferStart({processDefinitionKey: this.key}, this.transferApplyOrder).then(() => {
                     this.$router.push({name: 'myProcess'});
                 })
             },
             refused() {  // 驳回
-                completeTask(this.$route.query.taskId,
+                completeTask(this.taskId,
                     [{pass: false, note: '驳回测试'}]).then(() => {
                     this.back()
                 })
             },
             agree() {  // 审批
-                completeTask(this.$route.query.taskId,
+                completeTask(this.taskId,
                     [{pass: true, note: '审核通过'}]).then(() => {
                     this.back()
                 })
@@ -147,8 +153,19 @@
                 })
             },
             edit() { // 重填与编辑
-                this.isEdit = true
                 this.isInfo = false
+            },
+            outbound() {
+                this.$router.push({
+                    path: 'transferOutOrIn',
+                    query: {type: 'out', processInstanceId: this.processInstanceId}
+                })
+            },
+            inbound() {
+                this.$router.push({
+                    path: 'transferOutOrIn',
+                    query: {type: 'in', processInstanceId: this.processInstanceId}
+                })
             }
         },
         created() {

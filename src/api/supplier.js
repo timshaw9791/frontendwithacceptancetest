@@ -1,7 +1,7 @@
 import request from 'common/js/request'
 
 /* 供应商管理 */
-export function getSupplier(params) {
+export function getSuppliers(params) {
     return request({
         url: "/suppliers",
         method: "GET",

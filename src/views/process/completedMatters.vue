@@ -50,7 +50,6 @@
                     query: {
                         name: data.processInstanceName,
                         processInstanceId: data.processInstanceId,
-                        taskId: data.taskId
                     }
                 })
             },

@@ -63,28 +63,15 @@
                 this.fetchData();
             },
             toDetail(data) {
-                switch (data.type) {
-                    case '报废流程':
-                        this.$router.push({
-                            path: 'scrapApply',
-                            query: {
-                                processInstanceId: data.processInstanceId,
-                                taskId: data.taskId,
-                            }
-                        })
-                        break;
-                    case '调拨流程':
-                        this.$router.push({
-                            path: 'transferApply',
-                            query: {
-                                processInstanceId: data.processInstanceId,
-                                taskId: data.taskId,
-                            }
-                        })
-                        break;
-                    default:
-                        break;
-                }
+                let applyName = data.type.includes('报废') ? 'scrap' : 'transfer'
+                this.$router.push({
+                    path: `/process/${applyName}Apply`,
+                    query: {
+                        name: data.type,
+                        processInstanceId: data.processInstanceId,
+                        taskId: data.taskId
+                    }
+                })
             }
         },
         computed: {

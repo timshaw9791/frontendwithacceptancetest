@@ -182,14 +182,6 @@ export function updateCategory(data, tipState) {
         data
     }, tipState)
 }
-/* 供应商 */
-export function getSuppliers(params) {
-    return request({
-        url: "/suppliers",
-        method: "GET",
-        params
-    })
-}
 
 export function modifySupplier(data, tipState) {
     return request({

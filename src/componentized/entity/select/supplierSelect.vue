@@ -18,7 +18,7 @@
 
 <script>
     import textInput from '@/componentized/textBox/textInput.vue'
-    import {getSupplier} from "api/supplier";
+    import {getSuppliers} from "@/api/supplier";
 
     export default {
         name: "supplierSelect",
@@ -43,7 +43,7 @@
             },
         },
         mounted() {
-            getSupplier().then((res)=>{
+            getSuppliers().then((res)=>{
                this.supplierList = res.content
             })
         }
