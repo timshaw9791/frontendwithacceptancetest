@@ -68,7 +68,7 @@
               :filter="(row)=>`${row.name}(${row.model})`"
               v-if="show=='category'"
             />
-            <define-column label="历史库存" field="commonStock"></define-column>
+            <define-column label="历史库存" key="categoryHistory" field="commonStock"></define-column>
             <define-column label="当前库存" field="totalCount"></define-column>
             <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
             <define-column label="损耗数" field="count"></define-column>
@@ -91,7 +91,7 @@
               :filter="(row)=>`${row.name}(${row.model})`"
               v-if="show=='singlePoliceCategory'"
             />
-            <define-column label="历史库存" field="cabinetStock"></define-column>
+            <define-column label="历史库存" key="singleHistory" field="cabinetStock"></define-column>
             <define-column label="当前库存" field="totalCount"></define-column>
             <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
             <define-column label="损耗数量" field="count"></define-column>
