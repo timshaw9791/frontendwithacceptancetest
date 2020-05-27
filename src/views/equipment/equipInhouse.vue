@@ -191,13 +191,16 @@ export default {
                 if(state)
                 {
                     this.list[this.findIndex].copyList.push({rfid:'',serial:''})
-                }else if(this.list[this.findIndex].copyList.length>1){
-                    this.list[this.findIndex].copyList.splice(data.$index, 1)
-                    this.list[this.findIndex].count--
+                }else{
+                    if(this.list[this.findIndex].copyList.length>1){
+                        this.list[this.findIndex].copyList.splice(data.$index, 1)
+                        this.list[this.findIndex].count--
+                    }
+                    else{
+                        this.list[this.findIndex].copyList=[{rfid:'',serial:''}]
+                    }
                 }
-                if(this.list[this.findIndex].copyList.length==0){
-                    this.list[this.findIndex].copyList=[{rfid:'',serial:''}]
-                }
+                
             },
             changeRow(state,data)
             {
