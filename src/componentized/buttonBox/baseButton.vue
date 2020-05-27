@@ -121,6 +121,12 @@ export default {
         background-color: #F56C6C;
         color: white;
     }
+    .text {
+        display: inline;
+        padding: 0;
+        background: transparent;
+        border: none;
+    }
     .disabled {
         opacity: 0.6;
         cursor: not-allowed;

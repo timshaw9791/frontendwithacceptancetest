@@ -5,7 +5,6 @@
                 <div class="smokeAlarm-top">
                     <svg-icon icon-class="烟雾报警" style="width: 56px;height: 70px"></svg-icon>
                     <span v-text="'烟雾报警'" style="margin-top: 8px"></span>
-                    <!-- <span v-text="'关闭报警'" class="smokeAlarm-button"></span> -->
                 </div>
                 <div class="smokeAlarm-bottom">
                     <span v-text="'当前浓度：'+concentration+'ppm'"></span>
@@ -20,7 +19,7 @@
     import dialogs from '../surroundingDialog'
     import surroundingCard from '../surroundingCard'
     import switchControl from './controlComponents/switchControl'
-    import { smokeThreshold, setSmokeThreshold, smokeQuery } from "api/surroundings"
+    import { smokeQuery } from "api/surroundings"
 
     export default {
         name: "smokeAlarm",
@@ -39,9 +38,7 @@
                     text:'关闭',
                     color:'#B8B8B8',
                 },
-                concentration:'',
-                notModify: true,
-                threshold: 0, // 烟雾阈值
+                concentration:'', // 烟雾浓度
             }
         },
         created(){
@@ -58,9 +55,6 @@
                 smokeQuery().then(res => {
                     this.concentration = res;
                 })            
-                smokeThreshold().then(res => {
-                    this.threshold = res;
-                })
             }
         }
     }

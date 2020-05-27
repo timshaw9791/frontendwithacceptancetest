@@ -3,11 +3,12 @@
         <dialogs ref="dialog" :width="920" :title="'智能充电台'">
             <div class="charging-sation-box">
                 <div class="charging-sation-select">
-                    <select-charging-station id="chargingSationSelect" :placeholder="'请选择充电台'" :select="select.selectList"
-                                             @selectRole="selectSation" :havaDefault="true"></select-charging-station>
+                    <select-charging-station id="chargingSationSelect" :placeholder="'请选择充电台'" 
+                        :select="select.selectList" @selectRole="getChargingStationtNumber" :havaDefault="true">
+                    </select-charging-station>
                 </div>
                 <div class="charging-sation-controls">
-                    <socket v-for="(item, i) in socketList" :key="cd+i" :socket="item" v-if="flag" @sucess="sucess"></socket>
+                    <socket v-for="(item, i) in socketList" :key="'cd'+i" :socket="item" @sucess="sucess"></socket>
                 </div>
             </div>
         </dialogs>
@@ -18,8 +19,7 @@
     import dialogs from '../surroundingDialog'
     import selectChargingStation from 'components/personnelManagement/personnelSelect'
     import socket from './controlComponents/socket'
-    import { getdeploy } from 'api/login'
-    import {getEquipChargeRecordList,getChangeStationStatus} from 'api/surroundings'
+    import {chargeInfo, chargeStatus} from 'api/surroundings'
 
     export default {
         name: "chargingStation",
@@ -33,34 +33,21 @@
                 select:{
                     selectList:[],
                 },
-                socketList:[],
-                flag:false,
-                changeCount:0
+                socketList:[]
             }
         },
-        created(){
-            this.getConfigs()
+        props: {
+            count: {
+                default: 0
+            }
         },
         methods:{
-            getConfigs(){
-                getdeploy().then(res => {
-                    this.changeCount = res.ENVIRONMENT_CHARGE_COUNT;
-                })
-            },
             getChargingStationtList(){
-                this.select.selectList=[];
-                for(let i=1;i<=this.changeCount;i++){
-                    this.select.selectList.push({
-                            label:i+'号智能充电台',
-                            value:i
-                        })
-                }
+                this.select.selectList = Array.from(Array(this.count), (v, i) => i)
+                    .map(val => ({label: `${val+1}号智能充电台`, value: val+1}))
                 this.$refs.dialog.show();
             },
-            selectSation(data){
-                this.getChargingStationtNumber(data)
-            },
-            sucess(data){
+            sucess(data){ // 判断是关闭还是开启充电
                 if(data.flag){}else {
                     this.socketList[Number(data.number)-1]={
                         socketName:data.number+'号智能插座',
@@ -72,84 +59,41 @@
                     };
                 }
             },
-            getChargingStationtNumber(number){
-                getChangeStationStatus({station:number}).then(res=>{
-                    let soList=''
-                    soList=res.toString()
-                    let socket = soList.split('').reverse();
-                    let socketCopy=[];
-                    socket.forEach((item,index)=>{
-                        let numberItem = index+1;
-                        if(numberItem<=8){
-                            socketCopy.push({
-                                socketName:numberItem+'号智能插座',
-                                name:'',
-                                number:numberItem,
-                                station:number,
-                                chargingTime:'',
-                                status:Number(item)
-                            })
+            getChargingStationtNumber(station){ // 获取充电台状态
+                chargeStatus({station}).then(res => { 
+                    let socketCopy = res.toString().split('').reverse().map((item, index) => {
+                        return {
+                            socketName: `${index+1}号智能插座`,
+                            name: '',
+                            number: index+1,
+                            chargingTime: '',
+                            status: Number(item),
+                            station
                         }
-                    });
-                   
-                    this.socketList=socketCopy;
-                    this.flag=true;
-                    this.getContextGql(number,socketCopy)
+                    })
+                    this.getContextGql(station, socketCopy);
                 })
             },
-            getContextGql(number,copyList){
-                getEquipChargeRecordList({station:number}).then(res=>{
-                    res.equipInfo.forEach(item=>{
-                            let number = Number(item.chargeNumber)-1;
-                            if(copyList[number].name==''){
-                                copyList[number].name=item.equipName;
-                                copyList[number].number=item.chargeNumber;
-                                copyList[number].station=item.chargeStation;
-                                copyList[number].chargingTime=item.occurrenceTimeMillis;
-                            }
-                        });
-                        this.socketList=copyList;
-                        this.flag=false;
-                        setTimeout(()=>{
-                            this.flag=true;
-                        },0)
-                }).catch(err=>{
-                    this.$message.error(err.response.data.message);
-                });
-            },
-            change(data){
-
+            getContextGql(station, copyList){ // 获取充电台充电装备信息
+                chargeInfo({station}).then(res => {
+                    res.equipInfo.forEach(item => {
+                        let number = Number(item.chargeNumber)-1
+                        !copyList[number].name && (copyList[number] = Object.assign(copyList[number], {
+                            name: item.equipName,
+                            number: item.chargeNumber,
+                            station: item.chargeStation,
+                            chargingTime: item.occurrenceTimeMillis
+                        }))
+                    })
+                    this.socketList = copyList;
+                })
             },
             show(){
-                this.getConfigs();
                 this.getChargingStationtList();
-
             },
             close(){
                 this.$refs.dialog.close();
-            },
-            ajax(url, data, sCallback) {
-                if(data!=''){
-                    this.$ajax({
-                        method:'post',
-                        url:url,
-                        params:data
-                    }).then((res)=>{
-                        sCallback.call(this,res);
-                    }).catch(err=>{
-                        this.$message.error(err.response.data.message);
-                    })
-                }else {
-                    this.$ajax({
-                        method:'post',
-                        url:url,
-                    }).then((res)=>{
-                        sCallback.call(this,res);
-                    }).catch(err=>{
-                        this.$message.error(err.response.data.message);
-                    })
-                }
-            },
+            }
         }
     }
 </script>

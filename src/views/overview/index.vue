@@ -24,56 +24,80 @@
 
         <el-card shadow="never" :body-style="{ padding:'0.156rem'}">
             <div class="inventory-statistics">
-                <div class="header">
-                    <div class="title">库存统计</div>
-                    <div class="sum-info">
+                <div class="header">库存统计</div>
+                <bos-tabs :label="[{label:'公共库房',key:'public'},{label:'单警柜',key:'police'}]" 
+                    @changeTab="changeTab" margin="10px 0 0 -10px">
+                    <div class="sum-info" slot="slotHeader">
                         <div>领用总数</div>
-                        <div class="num">{{ totalIsUse }}</div>
+                        <div class="num">{{ selectTab=='public'?inventory.totalIsUse:policeCabinet.totalIsUse }}</div>
                         <div class="temp"></div>
                         <div>可用总数</div>
-                        <div class="num">{{ totalCanUse }}</div>
+                        <div class="num">{{ selectTab=='public'?inventory.totalCanUse:policeCabinet.totalCanUse }}</div>
                     </div>
-                </div>
-                <!-- 表格类 -->
-                <div class="body">
-                    <div class="body-left">
-                        <div class="header-type">装备大类</div>
-                        <div class="header-num">领用数量</div>
-                        <div class="header-num">可用数量</div>
-                    </div>
-                    <div class="body-right">
-                        <div class="item" v-for="(item, i) in inventoryList" :key="i">
-                            <div class="header-type">{{ item.name }}</div>
-                            <div class="header-num">{{ item.isUse }}</div>
-                            <div class="header-num">{{ item.canUse }}</div>
+                    <!-- 表格类 -->
+                    <div class="body" slot="public">
+                        <div class="body-left">
+                            <div class="header-type">装备大类</div>
+                            <div class="header-num">领用数量</div>
+                            <div class="header-num">可用数量</div>
+                        </div>
+                        <div class="body-right">
+                            <div class="item" v-for="(item, i) in inventory.list" :key="'public'+i">
+                                <div class="header-type">{{ item.name }}</div>
+                                <div class="header-num">{{ item.isUse }}</div>
+                                <div class="header-num">{{ item.canUse }}</div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                    <div class="body" slot="police">
+                        <div class="body-left">
+                            <div class="header-type">装备大类</div>
+                            <div class="header-num">领用数量</div>
+                            <div class="header-num">可用数量</div>
+                        </div>
+                        <div class="body-right">
+                            <div class="item" v-for="(item, i) in policeCabinet.list" :key="'police'+i">
+                                <div class="header-type">{{ item.name }}</div>
+                                <div class="header-num">{{ item.isUse }}</div>
+                                <div class="header-num">{{ item.canUse }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </bos-tabs>
+                
             </div>
         </el-card>
     </div>
 </template>
 
 <script>
-    import { findAllData, findEquipsNeedChange, findByOneLine } from 'api/overview'
+    import { findAllData, findEquipsNeedChange, findByOneLine, policeEquipSituation } from 'api/overview'
     import { writeFile } from "common/js/rfidReader"
     import { todoTask } from 'api/process'
-    
+    import bosTabs from '@/componentized/table/bosTabs'
     export default {
         data() {
             return {
                 topRemindList: [
-                {count: 0,key: 'CHARGE',tag: "充电提醒"},
-                {count: 0,key: 'KEEP',tag: "保养提醒"},
-                {count: 0,key: 'NOT_RETURN',tag: "未归还提醒"},
-                {count: 0,key: 'SCRAP',tag: "到期报废提醒"},
-                { key: 'SYNC',tag: "导入手持机"}
+                    {count: 0,key: 'CHARGE',tag: "充电提醒"},
+                    {count: 0,key: 'KEEP',tag: "保养提醒"},
+                    {count: 0,key: 'NOT_RETURN',tag: "未归还提醒"},
+                    {count: 0,key: 'SCRAP',tag: "到期报废提醒"},
+                    { key: 'SYNC',tag: "导入手持机"}
                 ],
                 toDoList: [],
-                inventoryList: [],
-                totalCanUse: 0,
-                totalIsUse: 0,
-                loading: false
+                inventory: {
+                    list: [],
+                    totalCanUse: 0,
+                    totalIsUse: 0
+                },
+                policeCabinet: {
+                    list: [],
+                    totalCanUse: 0,
+                    totalIsUse: 0
+                },
+                loading: false,
+                selectTab: 'public', // 用以控制总数据的切换显示
             }
         },
         methods: {
@@ -97,9 +121,19 @@
                     //         this.$refs.inventory.appendChild(document.createElement('i'))
                     //     }
                     // }
-                    this.inventoryList = list
-                    this.totalIsUse = isUse
-                    this.totalCanUse = canUse
+                    this.inventory.list = list
+                    this.inventory.totalIsUse = isUse
+                    this.inventory.totalCanUse = canUse
+                })
+                policeEquipSituation().then(res => {
+                    let isUse = 0, canUse = 0;
+                    res.forEach(item => {
+                        isUse += item.isUse;
+                        canUse += item.canUse;
+                    })
+                    this.policeCabinet.list = res;
+                    this.policeCabinet.totalIsUse = isUse;
+                    this.policeCabinet.totalCanUse = canUse;
                 })
             },
             getToDoTasks() {
@@ -153,8 +187,12 @@
                     default:
                         break;
                 }
+            },
+            changeTab(data) {
+                this.selectTab = data.key
             }
         },
+        components: {bosTabs},
         created() {
             this.getAllData()
             this.getToDoTasks()
@@ -231,8 +269,8 @@
             .event-list {
                 margin-top: 0.0781rem;
                 width: 100%;
-                height: 1.2656rem;
-                max-height: 1.2656rem;
+                height: 0.9896rem;
+                max-height: 0.9896rem;
                 overflow-x: hidden;
                 overflow-y: auto;
                 .event-box {
@@ -251,26 +289,24 @@
             border-radius: 10px;
             padding: 0.0521rem;
             .header {
+                font-size: 20px;
+                color: #707070;
+            }
+            .sum-info {
+                width: 200px;
+                float: right;
                 display: flex;
+                font-size:14px;
+                align-items: center;
                 justify-content: space-between;
-                .title {
-                    font-size: 20px;
-                    color: #707070;
+                margin: 0 0 10px 0;
+                .num {
+                    margin: 0 10px;
+                    font-size: 25px;
+                    font-weight: bold;
                 }
-                .sum-info {
-                    display: flex;
-                    font-size:14px;
-                    align-items: center;
-                    justify-content: space-between;
-                    margin: 0 0 10px 0;
-                    .num {
-                        margin: 0 10px;
-                        font-size: 25px;
-                        font-weight: bold;
-                    }
-                    .temp {
-                        width: 10px;
-                    }
+                .temp {
+                    width: 10px;
                 }
             }
             // 表格类

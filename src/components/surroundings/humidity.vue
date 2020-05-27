@@ -20,6 +20,7 @@
     import s_humidityComponent from './control/controlComponents/thermometerComponent'
     import s_lineChart from './control/controlComponents/lineChart/lineChart'
     import {baseURL} from "../../api/config";
+    import { humitureQuery, humidityHistoryDay, humidityHistoryMonth } from 'api/surroundings'
 
     export default {
         name: "humidity",
@@ -59,28 +60,20 @@
         },
         methods:{
             toLineChart(){
-                this.getHumiture().then(data=>{
-                    this.getHs(data.humidity);
+                humitureQuery().then(res => {
+                    this.getHs(res.humidity)
                 })
             },
             getMonthHumidity(date){
-                let year = date.getFullYear();
-                let month = date.getMonth();
-                let params={
-                    month:String(month+1),
-                    year:String(year)
-                };
-                this.$ajax({
-                    method:'post',
-                    url:baseURL+'/environment/humidityMonthHS',
-                    params:params
-                }).then((res)=>{
-                    let copyList=[];
-                    let region=[];
-                    let days=this.getMonthDays(month+1,year);
+                let year = date.getFullYear(),
+                    month = date.getMonth();
+                humidityHistoryMonth({year: String(year), month: String(month+1)}).then(res => {
+                    let copyList=[],
+                        region=[],
+                        days = new Date(year, month+1, 0).getDate();
                     region.push(new Date(year,month,1),new Date(year,month,days));
-                    if(res.data.data.length!=0){
-                        res.data.data.forEach((item,index)=>{
+                    if(res.length!=0){
+                        res.forEach((item,index)=>{
                             copyList.push({sale:item,time:new Date(year,month,index+1)})
                         });
                         this.getThreshold(copyList);
@@ -98,48 +91,24 @@
                         timeType:'day'
                     };
                     this.$emit('humidity',dataHumidity);
-                }).catch(err=>{
-                    this.$message.error(err.response.data.message);
-                });
+                })
             },
-            getMonthDays(month,year){
-                let date=new Date(year,month,0);
-                return date.getDate();
-            },
-            getHumiture(){
-                let promise=new Promise((resolve,reject)=>{
-                    this.$ajax({
-                        method:'post',
-                        url:baseURL+'/environment/humitureQuery',
-                    }).then((res)=>{
-                        resolve(res.data.data)
-                    }).catch(err=>{
-                        this.$message.error(err.response.data.message);
-                    });
-                });
-                return promise
-            },
-            getHs(humidity){
-                this.$ajax({
-                    method:'post',
-                    url:baseURL+'/environment/humidityHS',
-                }).then((res)=>{
-                    let dateNow =  new Date();
-                    let year = dateNow.getFullYear();
-                    let moth = dateNow.getMonth()+1;
-                    let day = dateNow.getDate();
-                    let hour = dateNow.getHours()+1;
-                    let copyList=[];
-                    let initTime=new Date(year,moth,day,hour);
+            getHs(humidity){ // 获取天湿度记录并拼接当前湿度
+                humidityHistoryDay().then(res => {
+                    let dateNow =  new Date(),
+                        year = dateNow.getFullYear(),
+                        moth = dateNow.getMonth()+1,
+                        day = dateNow.getDate(),
+                        hour = dateNow.getHours()+1,
+                        copyList=[],
+                        initTime=new Date(year,moth,day,hour);
                     this.initTime = Number(hour);
                     this.region.push(new Date(year,moth,day-1,hour),new Date(year,moth,day,hour));
                     copyList.push({sale:humidity,time:new Date(year,moth,day,hour)});
-                    res.data.data.forEach((item,index)=>{
+                    res.forEach((item,index)=>{
                         if(index%2==0){
                             initTime = new Date(initTime.valueOf()-60*60*1000*2);
-                            copyList.push({
-                                sale:Number(item),time:initTime
-                            })
+                            copyList.push({sale:Number(item),time:initTime})
                         }
                     });
                     this.getThreshold(copyList);
@@ -152,9 +121,7 @@
                         timeType:'hour'
                     };
                     this.$emit('humidity',dataHumidity);
-                }).catch(err=>{
-                    this.$message.error(err.response.data.message);
-                });
+                })
             },
             getThreshold(copyList){
                 let sortList=[];
