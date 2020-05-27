@@ -138,6 +138,10 @@ export default {
             },
             confirm(){
                 this.requestBody=JSON.parse(JSON.stringify(this.list))
+                if(this.requestBody.equipArgId==undefined||this.locationId==undefined){
+                    this.$message.error('请填写完整')
+                    return
+                }
                 this.requestBody.forEach(item=>{
                     item.equipArgId=item.equipArgId.id
                     if(item.locationId.location){

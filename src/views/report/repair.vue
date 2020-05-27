@@ -162,14 +162,14 @@ export default {
     },
     rate(data) {
       if (data.totalCount != 0) {
-        return ((data.count / data.totalCount) * 100)!=0.00?((data.count / data.totalCount) * 100):0;
+        return ((data.count / data.totalCount) * 100)!=0.00?((data.count / data.totalCount) * 100).toFixed(2):0;
       } else {
         return 0;
       }
     },
     compuntedRate() {
       if (this.addNum(2) != 0) {
-        return ((this.addNum(4) / this.addNum(2)) * 100);
+        return ((this.addNum(4) / this.addNum(2)) * 100).toFixed(2);
       } else {
         return 0;
       }
