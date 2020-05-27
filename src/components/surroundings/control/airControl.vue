@@ -15,7 +15,7 @@
 <script>
     import surroundingCard from '../surroundingCard'
     import switchControl from './controlComponents/switchControl'
-    import {baseURL} from "../../../api/config";
+    import { airControlSwitch } from 'api/surroundings'
 
     export default {
         name: "airControl",
@@ -55,42 +55,32 @@
             }
         },
         created(){
-        this.getAirStatusList()
+        // this.getAirStatusList()
         this.initStatus(this.item.STATUS.toLowerCase())
         },
         methods:{
             refrigerationControl(data){
                if(data){
-                   this.controlAir(1);
+                   this.controlAir('REFRIGERATION');
                    this.initStatus('refrigeration')
                }else {
-                   this.controlAir(0)
+                   this.controlAir('CLOSE')
                }
-            },
-            getAirStatusList(){
-               this.$ajax({
-                    method:'post',
-                    url:baseURL+'/environment/allAirConditionerStatus',
-                }).then(res=>{
-                    let arrList=res.data.data
-                    let newList=Object.values(arrList)
-                    this.initStatus(newList[this.index].STATUS.toLowerCase())
-                })
             },
             hotControl(data){
                 if(data){
-                    this.controlAir(2);
+                    this.controlAir('HOT');
                     this.initStatus('hot')
                 }else {
-                    this.controlAir(0)
+                    this.controlAir('CLOSE')
                 }
             },
             dehumidificationControl(data){
                 if(data){
-                    this.controlAir(3);
+                    this.controlAir('DEHUMIDIFICATION');
                     this.initStatus('dehumidification')
                 }else {
-                    this.controlAir(0)
+                    this.controlAir('CLOSE')
                 }
             },
             initStatus(data){
@@ -118,38 +108,30 @@
                 }
             },
             controlAir(data){
-                this.$ajax({
-                    method:'post',
-                    url:baseURL+'/environment/airConditionerSwitch',
-                    params:{
-                        number:this.index+1,
-                        status:data
+                airControlSwitch({number: this.index+1, airConditionerEnum: data}).then(res=>{})
+                    .catch(err => {
+                        switch (data) {
+                            case 'REFRIGERATION':
+                                this.$refs.switch_single1.fail();
+                                break;
+                            case 'HOT':
+                                this.$refs.switch_single2.fail();
+                                break;
+                            case 'DEHUMIDIFICATION':
+                                this.$refs.switch_single3.fail();
+                                break;
                         }
-                }).then((res)=>{
-                    this.$message.success('操作成功')
-                }).catch(err=>{
-                    if(data==1)
-                    {
-                    this.$refs.switch_single1.fail()
-                    }
-                    if(data==2){
-                    this.$refs.switch_single2.fail()
-                    }
-                    if(data==3){
-                    this.$refs.switch_single3.fail()
-                    }
-                    this.$message.error(err);
-                });
+                    })
             },
         },
         props:{
-        index:{
+            index:{
                 type:Number
             },
-        item:{
-            type:Object,
-            default:''
-        }
+            item:{
+                type:Object,
+                default:''
+            }
         },
         
        

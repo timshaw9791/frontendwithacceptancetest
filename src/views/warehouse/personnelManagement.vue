@@ -21,6 +21,9 @@
                 <define-column label="角色" field="role" width="180"></define-column>
                 <define-column label="职位" field="position" width="180"></define-column>
                 <define-column label="联系方式" field="phone"></define-column>
+                <define-column label="身份证号" field="idNumber"></define-column>
+                <define-column label="指纹信息" :filter="(row)=>{return fingerprintInformation==''||fingerprintInformation==null?'无':'有'}"></define-column>
+                <define-column label="开门库房权限" :filter="(row)=>{return enterHouse?'有':'无'}"></define-column>
             </define-table>
         </div>
     </div>

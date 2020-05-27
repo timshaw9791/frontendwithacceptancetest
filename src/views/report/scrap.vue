@@ -168,15 +168,15 @@ export default {
         });
     },
     rate(data) {
-      if (data.totalCount + data.commonStock != 0) {
+      if (data.commonStock != 0) {
         return (
-          (data.count / (data.totalCount + data.commonStock)) *
+          (data.count / data.commonStock) *
           100
-        ).toFixed(2);
+        );
       } else return 0;
     },
     compuntedRate(){
-        return (this.show=='singlePolice'||this.show=='singlePoliceCategory'?this.addNum(4)/this.addNum(5):this.addNum(4)/this.addNum(1)*100).toFixed(2)
+        return (this.show=='singlePolice'||this.show=='singlePoliceCategory'?this.addNum(4)/this.addNum(5):this.addNum(4)/this.addNum(1)*100)
     },
     addNum(item) {
       return this.equipArg.reduce((v, k) => {

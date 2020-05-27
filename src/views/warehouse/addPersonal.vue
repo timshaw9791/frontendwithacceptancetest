@@ -13,7 +13,7 @@
                 <define-input label="联系方式" margin="15px 0 0 0" :required="true" type="Phone" v-model="order.phone" :column="12"></define-input>
                 <define-input label="身份证号" margin="15px 0 0 0" :required="true" type="CardId" v-model="order.idNumber" :column="12"></define-input>
                 <define-input label="密码" margin="15px 0 0 0" pattern="password" :required="true" v-model="order.password" :column="12"></define-input>
-                <define-input label="指纹信息" margin="15px 0 0 0" v-model="order.fingerprintInformation" :column="12"></define-input>
+                <define-input label="指纹信息" margin="15px 0 0 0" placeholder="无" :disabled="true" :column="12"></define-input>
             </div>
             <div  class="addpersonnelist">
                 <upload-file type="img" v-model="order.faceInformation" margin="15px"></upload-file>

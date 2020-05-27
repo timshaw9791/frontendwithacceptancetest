@@ -62,7 +62,7 @@
             <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
             <define-column label="维修数" field="count"></define-column>
             <define-column label="维修率(%)" :filter="(row)=>rate(row)"></define-column>
-            <define-column label="供应商" field="supplier" v-if="show=='category'"></define-column>
+            <define-column label="供应商" key="sup" field="supplier" v-if="show=='category'"></define-column>
           </define-table>
           <define-table
             :pageInfo="paginator"
@@ -162,14 +162,14 @@ export default {
     },
     rate(data) {
       if (data.totalCount != 0) {
-        return ((data.count / data.totalCount) * 100).toFixed(2)!=0.00?((data.count / data.totalCount) * 100).toFixed(2):0;
+        return ((data.count / data.totalCount) * 100)!=0.00?((data.count / data.totalCount) * 100):0;
       } else {
         return 0;
       }
     },
     compuntedRate() {
       if (this.addNum(2) != 0) {
-        return ((this.addNum(4) / this.addNum(2)) * 100).toFixed(2);
+        return ((this.addNum(4) / this.addNum(2)) * 100);
       } else {
         return 0;
       }

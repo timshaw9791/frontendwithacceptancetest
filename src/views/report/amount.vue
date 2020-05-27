@@ -37,9 +37,10 @@
           ></define-input>
         </div>
         <div class="amount-body-right-top">
-          <span v-text="`当前库存：${addNum(1)}`"></span>
-          <span v-text="`可用数量：${addNum(2)}`" class="title_box"></span>
-          <span v-text="`领用数量：${addNum(3)}`" class="title_box"></span>
+          <span v-text="`当前库存：${addNum(1)}`" v-if="show!='singlePolice'&&show!='singlePoliceCategory'"></span>
+          <span v-text="`当前库存：${addNum(5)}`" v-if="show=='singlePolice'||show=='singlePoliceCategory'"></span>
+          <span v-text="`可用数量：${addNum(2)}`" class="title_box" v-if="title!='单警装备'||title!='单警柜装备'"></span>
+          <span v-text="`领用数量：${addNum(3)}`" class="title_box" v-if="title!='单警装备'||title!='单警柜装备'"></span>
           <span v-text="`当前库存总价(￥)：${addNum(4)}`" class="title_box"></span>
         </div>
         <div class="amount-body-right-body">
@@ -59,7 +60,7 @@
               v-if="show=='category'"
               key='equipArgs'
             />
-            <define-column label="当前库存" field="totality"></define-column>
+            <define-column label="当前库存" field="totalCount"></define-column>
             <define-column label="可用数量" field="inHouseCount"></define-column>
             <define-column label="领用数量" field="receiveUseCount"></define-column>
             <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
@@ -79,8 +80,8 @@
               v-if="show=='singlePoliceCategory'"
             />
             <define-column label="当前库存" field="totalCount"></define-column>
-            <define-column label="可用数量" field="inHouseCount"></define-column>
-            <define-column label="领用数量" field="receiveUseCount"></define-column>
+            <define-column label="可用数量" :filter="(row)=>{return title=='单警装备'||title=='单警柜装备'?'--':row.inHouseCount}"></define-column>
+            <define-column label="领用数量" :filter="(row)=>{return title=='单警装备'||title=='单警柜装备'?'--':row.receiveUseCount}"></define-column>
             <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
           </define-table>
         </div>
@@ -161,19 +162,21 @@ export default {
     addNum(item) {
       return this.equipArg.reduce((v, k) => {
         return item == 1
-          ? v + k.totality
+          ? v + k.totalCount
           : item == 2
           ? v + k.inHouseCount
           : item == 3
           ? v + k.receiveUseCount
-          : v + k.totalPrice;
+          : item==4
+          ?v + k.totalPrice
+          :v + k.cabinetStock;
       }, 0);
     },
     addPolice() {
       allPoliceStatistic().then(res => {
         let tabList = {
           commStock: res.reduce((v, k) => v + k.cabinetStock, 0),
-          totality: res.reduce((v, k) => v + k.totalCount, 0),
+          totalCount: res.reduce((v, k) => v + k.totalCount, 0),
           inHouseCount: res.reduce((v, k) => v + k.inHouseCount, 0),
           genre: "单警装备",
           receiveUseCount: res.reduce((v, k) => v + k.receiveUseCount, 0),
