@@ -137,7 +137,7 @@
                 let date = JSON.parse(JSON.stringify(data));
                 let day = Math.round(date / 24 / 60 / 60 / 1000);
                 if (day < 1) {
-                    return day = 0;
+                    return day = '--';
                 } else {
                     return day
                 }
