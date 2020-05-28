@@ -63,7 +63,8 @@ export default {
                inorder:false,
                params:{size:10,page:1},
                equipData:{},
-               showDetail:true
+               showDetail:true,
+               newData:[]
             }
         },
         methods:{
@@ -90,12 +91,22 @@ export default {
                 getOutHouseOrder(this.params).then(res=>{
                     this.list=res.content
                     this.list.forEach(item=>{
-                        if(item.inOutHouseItems.length==1)
+                        // if(item.inOutHouseItems.length==1)
+                        // {
+                        //     item.equipArgs=item.inOutHouseItems[0].equipName+'('+item.inOutHouseItems[0].equipModel+')'
+                        // }else{
+                        //     item.equipArgs=item.inOutHouseItems[0].equipName+'('+item.inOutHouseItems[0].equipModel+')'+'...'
+                        // }
+                     
+                        this.newData = this._.groupBy(item.inOutHouseItems, it => `${it.equipArgId}`)
+                        console.log(this.newData);
+                        if(this.newData.length==1)
                         {
                             item.equipArgs=item.inOutHouseItems[0].equipName+'('+item.inOutHouseItems[0].equipModel+')'
                         }else{
                             item.equipArgs=item.inOutHouseItems[0].equipName+'('+item.inOutHouseItems[0].equipModel+')'+'...'
                         }
+                     
                     })
                     
                 }).catch(err => {
