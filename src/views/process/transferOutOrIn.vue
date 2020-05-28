@@ -18,14 +18,15 @@
                     </template>
                     <!--装备总清单-->
                     <define-table :havePage="false" :data="equipItems" height="2.6042rem" @changeCurrent="selRow"
-                                  :showSummary="true" :summaryFunc="$sumFunc" :highLightCurrent="true" slot="total">
-                        <define-column label="操作" width="100" v-slot="{ data }">
+                                  :showSummary="true" :summaryFunc="sumCountAndPrice" :highLightCurrent="true"
+                                  slot="total">
+                        <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
                             <i class="iconfont icontianjialiang" @click="addRow()"></i>
                             <i class="iconfont iconyichuliang" @click="$delRow(equipItems,data.$index)"></i>
                         </define-column>
                         <define-column label="装备位置" v-slot="{ data }" v-if="isInbound">
                             <entity-input v-model="data.row.location" format=""
-                                          :disabled="isShowIn"></entity-input>
+                                          :disabled="isInfo"></entity-input>
                         </define-column>
                         <define-column label="装备参数" v-slot="{ data }">
                             <entity-input v-model="data.row.equipArg" format="{name}({model})"
@@ -37,8 +38,7 @@
                     <!--装备明细-->
                     <define-table :havePage="false" :data="equipItems[totalIndex].items" height="2.6042rem"
                                   slot="detail">
-                        <define-column label="操作" width="100" v-slot="{ data }">
-                            <i class="iconfont icontianjialiang" @click="addRow()"></i>
+                        <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
                             <i class="iconfont iconyichuliang"
                                @click="$delRow(equipItems[totalIndex].items,data.$index,()=>{!equipItems[totalIndex].items.length && equipItems.splice(totalIndex,1)})"></i>
                         </define-column>
@@ -47,7 +47,7 @@
                     </define-table>
                     <!--申请的装备-->
                     <define-table :havePage="false" :data="transferApplyOrder.equips" height="2.6042rem"
-                                  slot="contrast">
+                                  slot="contrast" v-if="!isInfo">
                         <define-column label="装备参数" v-slot="{ data }">
                             <entity-input v-model="data.row.equipArg" format="{name}({model})"
                                           :disabled="true"></entity-input>
@@ -58,7 +58,7 @@
                     </define-table>
                 </bos-tabs>
             </div>
-            <div class="button">
+            <div class="button" v-if="!isInfo">
                 <base-button label="提交" align="right" :width="128" :height="72" :fontSize="20"
                              @click="submit"></base-button>
                 <base-button label="清空" align="right" :width="128" :height="72" :fontSize="20" type="danger"
@@ -76,7 +76,7 @@
     import HardwareSelect from "@/components/hardwareSelect";
     import {transEquips} from "@/common/js/transEquips";
     import {mapGetters} from "vuex";
-    import {processInbound, processOutbound, transferOrders} from "@/api/process";
+    import {activeTask, processOutbound, transferOrders} from "@/api/process";
 
     export default {
         name: "transferOutOrIn",   // 调拨出入库
@@ -88,12 +88,13 @@
         data() {
             return {
                 order: {
-                    application: {},
+                    operator: {},
                     outboundOrganUnit: {},
                     house: {
                         name: '',
                         organUnit: {}
-                    }
+                    },
+                    equips: []
                 },
                 equipItems: [{items: []}],
                 totalIndex: 0,
@@ -101,7 +102,8 @@
                 isInbound: false,
                 processInstanceId: '',
                 rfids: [], //读到的RFID
-                transferApplyOrder: {}
+                transferApplyOrder: {},
+                taskId: ""
             }
         },
         methods: {
@@ -112,11 +114,14 @@
                             case "out": {
                                 this.isInbound = false
                                 this.transferApplyOrder = res.transferApplyOrder
+                                this.order.organUnit = res.transferApplyOrder.outboundOrganUnit
+                                console.log(this.transferApplyOrder)
                                 break
                             }
                             case "in": {
                                 this.isInbound = true
                                 this.transferApplyOrder = res.transferApplyOrder
+                                this.order.organUnit = res.transferApplyOrder.inboundOrganUnit
                                 break
                             }
                             case "showIn": {
@@ -129,11 +134,15 @@
                                 this.isInbound = false
                                 this.isInfo = true
                                 this.order = res.outboundEquipsOrder
+                                console.log(this.order)
                                 break
                             }
                         }
                         this.fixData()
-                    }
+                    },
+                    activeTask(this.processInstanceId).then(res => {
+                        this.taskId = res.taskId
+                    })
                 )
             },
             fixData() {
@@ -142,13 +151,15 @@
                         house: {
                             name: this.warehouse.name,
                             id: this.warehouse.id,
-                            organUnit: this.organUnit
+                            organUnit: this.order.organUnit
                         }
                     })
+                } else {
+                    this.fixEquipItems(this.order.equips)
                 }
             },
             readData() {
-                this.rfids = ['9996664784848']
+                this.rfids = ['7777778888']
                 findByRfids(this.rfids, true).then(
                     res => {
                         this.fixEquipItems(res)
@@ -158,12 +169,25 @@
             fixEquipItems(data) {
                 this.equipItems = transEquips(data).equipItems
                 //缺少价格信息
-                //(row)=>{return _.reduce(row.items,(initVal,item)=>{initVal+200},0)}
                 _.forEach(this.equipItems, (equipItem) => {
                     equipItem.price = _.reduce(equipItem.items, (initVal, item) =>
-                        !!item.price && initVal + item.price
+                            item.price ? initVal + item.price : initVal + 0
                         , 0)
                 })
+            },
+            sumCountAndPrice(param) { // 表格合并行计算方法
+                let {columns, data} = param, sums;
+                sums = new Array(columns.length).fill('')
+                sums[0] = '合计'
+                sums[columns.length - 2] = data.reduce(
+                    (accumulator, currentValue) =>
+                        !!currentValue.count ? accumulator + parseInt(currentValue.count) : accumulator
+                    , 0)
+                sums[columns.length - 1] = data.reduce(
+                    (accumulator, currentValue) =>
+                        !!currentValue.price ? accumulator + parseInt(currentValue.price) : accumulator
+                    , 0)
+                return sums;
             },
             selRow(data) {
                 console.log(data)
@@ -176,33 +200,14 @@
 
             },
             submit() {
-                let processDto = {
-                    "inboundOrganUnit": this.transferApplyOrder.inboundOrganUnit.name,
-                    "outboundOrganUnit": this.transferApplyOrder.outboundOrganUnit.name,
-                    "orderCategory": 1, // 1为出库
-                    "processCategory": 1 // 1为调拨流程
-                }
+                _.map(this.equipItems, (item) => {
+                    this.order.equips = this.order.equips.concat(item.items)
+                    this.order.equips.equipId = this.order.equips.id
+                })
+                this.order.processCategory = 1 // 1为调拨流程
+                this.order.processInstanceId = this.processInstanceId
                 if (!this.isInbound) {
-                    processDto.rfids = this.rfids
-                    processOutbound(processDto)
-                } else {
-                    processDto.inOutHouseOrderDTO = [
-                        {
-                            "equipArgId": "string",
-                            "locationId": "string",
-                            "price": 0,
-                            "productTime": 0,
-                            "rfids": [
-                                "string"
-                            ],
-                            "serial": [
-                                "string"
-                            ]
-                        }
-                    ]
-                    processInbound(processDto).then(res => {
-                        console.log(res)
-                    })
+                    processOutbound(this.taskId, this.order)
                 }
             },
         },

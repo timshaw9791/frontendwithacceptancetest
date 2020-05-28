@@ -1,20 +1,7 @@
 import request from 'common/js/request'
 import {baseBURL} from "./config";
 
-export function getAllProcess() { // 新起流程列表
-    return request({
-        url: baseBURL + '/process-definitions',
-        method: 'GET'
-    })
-}
 
-export function activeTask(processInstanceId) {
-    return request({
-        url: baseBURL + "/workflow/active-task",
-        method: "GET",
-        params:{processInstanceId}
-    })
-}
 
 export function processStart(params, data) { // 流程启动 通用接口
     return request({
@@ -50,21 +37,16 @@ export function scrapOrders(processInstanceId) { // 报废流程
     })
 }
 
-export function SAODetail(params) { // 报废申请单详情
+
+export function scrapReapply(taskId,data) { // 报废单重填接口
     return request({
-        url: baseBURL + '/equip-order/process_id',
-        method: 'GET',
-        params
+        url: baseBURL + "/workflow/scrap/reapply",
+        method: "PUT",
+        params:{taskId},
+        data
     })
 }
 
-export function processDetail(params) { // 流程内容
-    return request({
-        url: baseBURL + "/workflow/process-instance-detail",
-        method: "GET",
-        params
-    })
-}
 
 export function processwarehouseDetail(params) { // 流程内容
     return request({
@@ -117,6 +99,14 @@ export function myProcess(params) { // 查询我的流程
     })
 }
 
+export function activeTask(processInstanceId) { // 流程的当前任务
+    return request({
+        url: baseBURL + "/workflow/active-task",
+        method: "GET",
+        params:{processInstanceId}
+    })
+}
+
 export function todoTask(params) { // 查询待办任务
     return request({
         url: baseBURL + '/workflow/todo-task',
@@ -141,10 +131,13 @@ export function doneProcess(params) { // 查询办结任务
     })
 }
 
-export function processOutbound(processDto){ // A端调拨出库
+export function processOutbound(taskId,processDto){ // A端调拨出库
     return request({
-        url:'/process/out-house',
+        url:`/process/out-house`,
         method:'POST',
+        params:{
+            taskId
+        },
         data: processDto
     },true)
 }

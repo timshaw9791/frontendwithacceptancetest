@@ -54,6 +54,7 @@
                 this.getList();
             },
             toDetail(data) {
+                console.log(data)
                 let applyName = data.processInstanceName.includes('报废') ? 'scrap' : 'transfer'
                 this.$router.push({
                     path: `/process/${applyName}Apply`,

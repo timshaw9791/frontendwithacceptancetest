@@ -3,10 +3,11 @@
         <my-header :title="title" :haveBlack="false"></my-header>
         <div class="apply-process">
             <operation-bar :task-definition-key="taskDefinitionKey"
-                           :is-out-house="isOutHouse" :is-in-house="isInHouse"
+                           :is-show-out="isShowOut" :is-show-in="isShowIn"
                            @refused="refused" @agree="agree"
                            @invalid="invalid" @edit="edit"
                            @outbound="outbound" @inbound="inbound"
+                           @showOutOrder="showOutOrder" @showInOrder="showInOrder"
             ></operation-bar>
             <div class="apply-process-body">
                 <div class="process-info">
@@ -38,7 +39,7 @@
                 <define-table :havePage="false" :data="transferApplyOrder.equips" height="2.8646rem"
                               :showSummary="true" :summaryFunc="$sumFunc" slot="total">
                     <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
-                        <i class="iconfont icontianjialiang" @click=""></i>
+                        <i class="iconfont icontianjialiang" @click="addRow()"></i>
                         <i class="iconfont iconyichuliang" @click="$delRow(transferApplyOrder.equips,data.index)"></i>
                     </define-column>
                     <define-column label="装备参数" v-slot="{ data }">
@@ -87,8 +88,8 @@
                     equips: [{equipArg: {}}],
                     applicant: {}
                 },
-                outboundEquipsOrder: {},
-                inboundEquipsOrder: {},
+                outboundEquipsOrder: {id: ''},
+                inboundEquipsOrder: {id: ''},
                 tips: ['直接报废', '装备拿去维修，无法修补'],
                 taskDefinitionKey: '',
                 processDefinitionKey: '',
@@ -96,9 +97,7 @@
                 taskHistory: [],
                 isInfo: false,
                 isLeaderEdit: false,
-                isOutHouse: false,
-                isInHouse: false,
-                taskId:''
+                taskId: ''
             }
         },
         methods: {
@@ -112,8 +111,8 @@
                 transferOrders(this.processInstanceId).then(
                     res => {
                         this.transferApplyOrder = res.transferApplyOrder
-                        this.outboundEquipsOrder = res.outboundEquipsOrder
-                        this.inboundEquipsOrder = res.inboundEquipsOrder
+                        !!res.outboundEquipsOrder && (this.outboundEquipsOrder = res.outboundEquipsOrder)
+                        !!res.inboundEquipsOrder && (this.inboundEquipsOrder = res.inboundEquipsOrder)
                     }
                 )
                 getHistoryTasks(this.processInstanceId).then(
@@ -125,8 +124,11 @@
                     this.taskId = res.taskId
                     // 如果是任务处理人是我，且为申请任务，那么就显示是否重填
                     this.taskDefinitionKey = res.assignee === this.userInfo.id && res.taskDefinitionKey.includes('apply')
-                        ?'reApply':res.taskDefinitionKey
+                        ? 'reApply' : res.taskDefinitionKey
                 })
+            },
+            addRow(){
+                this.transferApplyOrder.equips.push({equipArg: {}})
             },
             submit() {
                 transferStart({processDefinitionKey: this.key}, this.transferApplyOrder).then(() => {
@@ -166,6 +168,24 @@
                     path: 'transferOutOrIn',
                     query: {type: 'in', processInstanceId: this.processInstanceId}
                 })
+            },
+            showInOrder() {
+                this.$router.push({
+                    path: "transferOutOrIn",
+                    query: {
+                        type: "showIn",
+                        processInstanceId: this.processInstanceId
+                    }
+                })
+            },
+            showOutOrder() {
+                this.$router.push({
+                    path: "transferOutOrIn",
+                    query: {
+                        type: "showOut",
+                        processInstanceId: this.processInstanceId
+                    }
+                })
             }
         },
         created() {
@@ -184,7 +204,13 @@
                 'userInfo',
                 'warehouse',
                 'organUnit'
-            ])
+            ]),
+            isShowIn() {
+                return !!this.inboundEquipsOrder.id
+            },
+            isShowOut() {
+                return !!this.outboundEquipsOrder.id
+            }
         },
         watch: {
             'transferApplyOrder.equips.length'(newVal) {

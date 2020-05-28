@@ -7,10 +7,9 @@
                 <base-select label="硬件选择" v-model="select.selected" align="right"
                              :selectList="select.handWareList"></base-select>
             </template>
-            <define-table :data="equipItems" @changeCurrent="selRow" :havePage="false"
+            <define-table ref="totalTable" :data="equipItems" @changeCurrent="selRow" :havePage="false"
                           :highLightCurrent="true" :showSummary="true" :summaryFunc="$sumFunc" slot="total">
                 <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
-                    <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
                     <i class="iconfont iconyichuliang"
                        @click="$delRow(equipItems,data.$index)"></i>
                 </define-column>
@@ -22,7 +21,7 @@
                     <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input>
                 </define-column>
             </define-table>
-            <define-table :data="equipItems[totalIndex].items" :havePage="false" slot="detail">
+            <define-table ref="detailTable" :data="equipItems[totalIndex].items" :havePage="false" slot="detail">
                 <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
                     <i class="iconfont iconyichuliang"
                        @click="$delRow(equipItems[totalIndex].items,data.$index,()=>{!equipItems[totalIndex].items.length && equipItems.splice(totalIndex,1)})"></i>
@@ -57,7 +56,7 @@
                 },
                 tips: ['直接报废', '装备拿去维修，无法修补'],
                 // todo 假数据
-                rfids: ['555566666777', '19090917', '7777778888'],
+                rfids: ['555566666777', '19090917', '7777778888',"2011115555"],
                 totalIndex: 0,
             }
         },
@@ -84,6 +83,10 @@
                 !newVal && this.equipItems.push({items: []})
             }
         },
+        updated() {
+            this.$refs.totalTable.refreshLayout();
+            this.$refs.detailTable.refreshLayout();
+        }
     }
 </script>
 

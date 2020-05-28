@@ -25,8 +25,9 @@
 
 <script>
     import myHeader from 'components/base/header/header'
-    import {processDefinitions, myProcess} from '@/api/process'
+    import {myProcess} from '@/api/process'
     import {listTableMixin} from "@/field/mixins/listMixin";
+    import {mapGetters} from "vuex";
 
     export default {
         name: "myProcess",
@@ -77,7 +78,8 @@
         computed: {
             search() {
                 return this.requestTitle + this.select.selected
-            }
+            },
+            ...mapGetters(["userId"])
         },
         components: {
             myHeader
@@ -86,12 +88,6 @@
 </script>
 
 <style lang="scss" scoped>
-    // /deep/ .el-table {
-    //     .el-table--enable-row-hover,
-    //     .el-table__body tr:hover > td {
-    //         background-color: white;
-    //     }
-    // }
     .my-process-container {
         color: #707070FF;
         font-size: 16px;

@@ -9,6 +9,9 @@ function sumFunc(param) { // 表格合并行计算方法
     return sums;
 }
 
+
+
+
 function delRow(data, index, callback) {
     data.splice(index, 1);
     callback && callback();

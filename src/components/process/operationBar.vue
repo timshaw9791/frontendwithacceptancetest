@@ -14,9 +14,9 @@
             <base-button label="重填" @click="edit"></base-button>
             <base-button label="作废" @click="invalid"></base-button>
         </div>
-        <div class="receipt" v-if="isInHouse||isOutHouse">
-            <base-button label="查看入库单" @click="showOutOrder" v-if="isInHouse"></base-button>
-            <base-button label="查看出库单" @click="showInOrder" v-if="isOutHouse"></base-button>
+        <div v-if="isShowIn||isShowOut">
+            <base-button label="查看入库单" @click="showInOrder" v-if="isShowIn"></base-button>
+            <base-button label="查看出库单" @click="showOutOrder" v-if="isShowOut"></base-button>
         </div>
     </div>
 </template>
@@ -33,14 +33,14 @@
                 type: String,
                 default: ''
             },
-            isInHouse: {
+            isShowIn: {
                 type:Boolean,
                 default:false
             },
-            isOutHouse:{
+            isShowOut: {
                 type:Boolean,
                 default:false
-            }
+            },
         },
         methods: {
             outbound() {
@@ -67,6 +67,10 @@
             invalid() {
                 this.$emit('invalid')
             }
+        },
+        created(){
+            console.log("我是组件")
+            console.log(this.isShowOut)
         }
     }
 </script>

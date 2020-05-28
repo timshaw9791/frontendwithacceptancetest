@@ -36,7 +36,7 @@
 <script>
     import myHeader from 'components/base/header/header';
     import bosTabs from '@/componentized/table/bosTabs.vue'
-    import {processStart, getHistoryTasks, scrapOrders, activeTask} from '@/api/process'
+    import {processStart, getHistoryTasks, scrapOrders, activeTask, scrapReapply} from '@/api/process'
     import {findByRfids} from "@/api/storage";
     import {transEquips} from "@/common/js/transEquips";
     import TaskHistory from "@/components/process/taskHistory";
@@ -77,16 +77,18 @@
         },
         methods: {
             async init() {
-                Object.assign(this.order,{
-                    organUnit:this.organUnit,
-                    warehouse:this.warehouse,
+                Object.assign(this.order, {
+                    organUnit: this.organUnit,
+                    warehouse: this.warehouse,
                     applicant: JSON.parse(window.localStorage.getItem("user"))
                 })
             },
+
             fetchData() {
                 scrapOrders(this.processInstanceId).then(
                     res => {
                         this.order = res
+                        console.log(res)
                         this.equipItems = transEquips(res.equips).equipItems
                     }
                 )
@@ -99,21 +101,28 @@
                     this.taskId = res.taskId
                     // 如果是任务处理人是我，且为申请任务，那么就显示是否重填
                     this.taskDefinitionKey = res.assignee === this.userInfo.id && res.taskDefinitionKey.includes('apply')
-                        ?'reApply':res.taskDefinitionKey
+                        ? 'reApply' : res.taskDefinitionKey
                 })
             },
             handleReadData(data) { // 读取数据
                 findByRfids(data).then(res => {
                     this.order.equips = transEquips(res, 'args', 'args').simplifyItems
+                    console.log(this.order.equips)
                     this.equipItems = transEquips(res).equipItems
                 })
             },
             submit() {
-                processStart({
-                    processDefinitionKey: this.key,
-                }, this.order).then(() => {
-                    this.$router.push({name: 'myProcess'});
-                })
+                if (this.taskDefinitionKey === "reApple"){
+                    processStart({
+                        processDefinitionKey: this.key,
+                    }, this.order).then(() => {
+                        this.$router.push({name: 'myProcess'});
+                    })
+                }else {
+                    scrapReapply(this.taskId,this.order).then(
+                        this.$router.push({name: 'agencyMatters'})
+                    )
+                }
             },
             refused() {  // 驳回
                 completeTask(this.taskId,
@@ -130,7 +139,7 @@
             invalid() { //作废
                 processesDelete({
                     processInstanceId: this.$route.query.processInstanceId
-                }, true).then(()=>{
+                }, true).then(() => {
                     this.$router.back()
                 })
             },
@@ -149,7 +158,7 @@
                 this.init();
             }
         },
-        computed:{
+        computed: {
             ...mapGetters([
                 'userInfo',
                 'warehouse',
