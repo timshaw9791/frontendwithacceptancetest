@@ -1,7 +1,7 @@
 <template>
   <div class="define-input-container" ref="defineInput" :style="`width:${fixWidth};float:${align};margin:${margin}`"
       :class="[styleObj,{'disabled':disabled&&inTableStateContrl,'border':(tableEdit&&edit)}]" @click="changeEditState(true)">
-    <div class="label" v-if="!inTable">{{ label }}
+    <div class="label" v-if="!inTable&&haveLabel">{{ label }}
       <span class="required" v-if="required">*</span>
     </div>
     <input :type="pattern" class="input" :disabled="disabled" v-model="insideValue" 
@@ -93,6 +93,10 @@ export default {
     placeholder: {
       type: [Number, String],
       default: ""
+    },
+    haveLabel: {
+      type: Boolean,
+      default: true
     }
   },
   computed: {

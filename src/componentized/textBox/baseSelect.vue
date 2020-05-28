@@ -1,6 +1,6 @@
 <template>
     <div class="base-select-container" :class="[styleObj]" :style="'width:'+fixWidth+';float:'+align+';margin:'+margin">
-        <div class="slot-label">{{ label }}
+        <div class="slot-label" v-if="haveLabel">{{ label }}
             <span class="required" v-if="required">*</span>
         </div>
         <div class="select" @click="clickSel">
@@ -76,6 +76,10 @@ import { judgeRules } from "../rules"
                     return () => true;
                 }
             },
+            haveLabel: {
+                type: Boolean,
+                default: true
+            }
         },
         computed: {
             fixWidth() {
