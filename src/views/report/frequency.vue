@@ -39,15 +39,17 @@
         <div class="frequency-body-right-top">
           <span
             v-text="`历史库存：${addNum(1)}`"
+            key="singleHistory"
             v-if="show!='singlePolice'&&show!='singlePoliceCategory'"
           ></span>
           <span
             v-text="`历史库存：${addNum(5)}`"
+            key="commonHistory"
             v-if="show=='singlePolice'||show=='singlePoliceCategory'"
           ></span>
-          <span v-text="`当前库存：${addNum(2)}`" class="title_box"></span>
-          <span v-text="`当前库存总价(￥)：${addNum(3)}`" class="title_box"></span>
-          <span v-text="`使用次数：${addNum(4)}`" class="title_box"></span>
+          <span v-text="`当前库存：${addNum(2)}`" key="nowKunCun" class="title_box"></span>
+          <span v-text="`当前库存总价(￥)：${addNum(3)}`" key="nowKunCunPrice" class="title_box"></span>
+          <span v-text="`使用次数：${addNum(4)}`" key="nowKuncunPIngci" class="title_box"></span>
         </div>
         <div class="frequency-body-right-body">
           <define-table
@@ -66,10 +68,10 @@
               :filter="(row)=>`${row.name}(${row.model})`"
               v-if="show=='category'"
             />
-            <define-column label="历史库存" field="commonStock"></define-column>
-            <define-column label="当前库存" field="totalCount"></define-column>
-            <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
-            <define-column label="使用次数" field="count"></define-column>
+            <define-column label="历史库存" key="commonStock" field="commonStock"></define-column>
+            <define-column label="当前库存" key="totalCount" field="totalCount"></define-column>
+            <define-column label="当前库存总价(￥)" key="totalPrice" field="totalPrice"></define-column>
+            <define-column label="使用次数" key="count" field="count"></define-column>
           </define-table>
           <define-table
             :pageInfo="paginator"
@@ -86,10 +88,10 @@
               v-if="show=='singlePoliceCategory'"
               key="equipArgs"
             />
-            <define-column label="历史库存" field="cabinetStock"></define-column>
-            <define-column label="当前库存" field="totalCount"></define-column>
-            <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
-            <define-column label="使用次数" field="count"></define-column>
+            <define-column label="历史库存"  key="cabinetStock" field="cabinetStock"></define-column>
+            <define-column label="当前库存" key="cabnietTotalCount" field="totalCount"></define-column>
+            <define-column label="当前库存总价(￥)" key="total" field="totalPrice"></define-column>
+            <define-column label="使用次数" key="cabinetCount" field="count"></define-column>
           </define-table>
         </div>
         <div></div>

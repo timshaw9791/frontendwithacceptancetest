@@ -195,10 +195,12 @@ export default {
                 if(state)
                 {
                     this.newData.push({name: '',locationId: '',price: 0,productTime: 0,rfids: [],serial: [],copyList:[{rfid:'',serial:''}],})
-                }else if(this.newData.length>1){
-                    this.newData.splice(data.$index, 1)
-                }else{
+                }else {
+                    if(this.newData.length>1){
+                        this.newData.splice(data.$index, 1)
+                    }else{
                     this.newData=[{name: '',locationId: '',price: 0,productTime: 0,rfids: [],serial: [],copyList:[{rfid:'',serial:''}],}]
+                }
                 }
             },
             init(){

@@ -39,6 +39,7 @@
         <div class="lossStatistics-body-right-top">
           <span
             v-text="`历史库存：${addNum(1)}`"
+            key="singlePoliceHistory"
             v-if="show!='singlePolice'&&show!='singlePoliceCategory'"
           ></span>
           <span
@@ -66,8 +67,8 @@
               :filter="(row)=>`${row.name}(${row.model})`"
               v-if="show=='category'"
             />
-            <define-column label="历史库存" field="commonStock"></define-column>
-            <define-column label="当前库存" field="totalCount"></define-column>
+            <define-column label="历史库存" key="commonStock" field="commonStock"></define-column>
+            <define-column label="当前库存" key="totalCount" field="totalCount"></define-column>
             <define-column label="当前库存总价(￥)" key="categoryPrice" field="totalPrice"></define-column>
             <define-column label="报废件数" key="categoryCount" field="count"></define-column>
             <define-column label="供应商" key="commonSup" field="supplier" v-if="show=='category'"></define-column>
@@ -87,9 +88,9 @@
               v-if="show=='singlePoliceCategory'"
               key='equipArgs'
             />
-            <define-column label="历史库存" field="cabinetStock"></define-column>
-            <define-column label="当前库存" field="totalCount"></define-column>
-            <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
+            <define-column label="历史库存" key="cabinetStock" field="cabinetStock"></define-column>
+            <define-column label="当前库存" key="cabnietTotalCount" field="totalCount"></define-column>
+            <define-column label="当前库存总价(￥)" key="cabnietTotalPrice" field="totalPrice"></define-column>
             <define-column label="报废件数" key="count" field="count"></define-column>
             <define-column label="供应商" key="supplier" field="supplier" v-if="show=='singlePoliceCategory'"></define-column>
           </define-table>
