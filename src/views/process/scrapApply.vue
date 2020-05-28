@@ -112,7 +112,7 @@
                 })
             },
             submit() {
-                if (this.taskDefinitionKey === "reApple"){
+                if (this.taskDefinitionKey !== "reApple"){
                     processStart({
                         processDefinitionKey: this.key,
                     }, this.order).then(() => {
