@@ -139,9 +139,17 @@ export default {
             },
             confirm(){
                 this.requestBody=JSON.parse(JSON.stringify(this.list))
-                if(this.requestBody.equipArgId=='undefined'||this.locationId=='undefined'){
-                    this.$message.error('请填写完整')
-                    return
+                console.log(this.requestBody.equipArgId);
+                let flag=false
+                this.requestBody.map((v,k)=>{
+                    console.log(v.equipArgId);
+                    if(v.equipArgId==''||v.locationId==''||v.productTime==''||v.rfid==''){
+                        this.$message.error('请填写完整')
+                        flag=true
+                    }
+                })
+                if(flag){
+                    return 
                 }
                 this.requestBody.forEach(item=>{
                     item.equipArgId=item.equipArgId.id
@@ -171,12 +179,9 @@ export default {
             readData(){
                 killProcess(this.pid)
                 start("java -jar scan.jar", (data) => {
-                    this.checkList.push(data)
-
-                    var nelist=this.list[this.findIndex].copyList.filter(function(item){
-                        return item.rfid==data
-                    })
-                    if(nelist.length==0){
+                   this.checkList=[]
+                   this.list.map((v,k)=>{v.copyList.filter(it=>{it.rfid==data?this.checkList.push(it.rfid):''})})
+                    if(this.checkList.length==0){
                          if(this.list[this.findIndex].copyList.length==1&&this.list[this.findIndex].copyList[0].rfid=='')
                     {
                         this.list[this.findIndex].copyList[0].rfid=data
@@ -209,13 +214,16 @@ export default {
             {
                 if(state)
                 {
-                    this.list.push({equipArgId: '',locationId: '',price: 0,productTime: Date.parse(new Date()),rfids: [],serial: [],copyList:[{rfid:'',serial:''}],})
-                }else if(this.list.length>1){
-                    this.list.splice(data.$index, 1)
+                    this.list.push({equipArgId: '',locationId: '',price: 0,productTime:'',rfids: [],serial: [],copyList:[{rfid:'',serial:''}],})
+                }else {
+                    if(this.list.length>1){
+                        this.list.splice(data.$index, 1)
+                    }
+                    if(this.list.length==1){
+                    this.list=[{equipArgId: '',locationId: '',price: 0,productTime: '',rfids: [],serial: [],copyList:[{rfid:'',serial:''}],}]
                 }
-                if(this.list.length==0){
-                    this.list=[{equipArgId: '',locationId: '',price: 0,productTime: Date.parse(new Date()),rfids: [],serial: [],copyList:[{rfid:'',serial:''}],}]
                 }
+                
             },
             init(){
                 this.list=[{

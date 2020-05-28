@@ -37,10 +37,10 @@
           ></define-input>
         </div>
         <div class="lossStatistics-body-right-top">
-          <span v-text="`当前库存：${addNum(2)}`" class="title_box"></span>
-          <span v-text="`当前库存总价(￥)：${addNum(3)}`" class="title_box"></span>
-          <span v-text="`维修数：${addNum(4)}`" class="title_box"></span>
-          <span v-text="`维修率(%)：${compuntedRate()}`" class="title_box"></span>
+          <span v-text="`当前库存：${addNum(2)}`" key="nowStock" class="title_box"></span>
+          <span v-text="`当前库存总价(￥)：${addNum(3)}`" key="nowStockPrice" class="title_box"></span>
+          <span v-text="`维修数：${addNum(4)}`" key="repairCountTotal" class="title_box"></span>
+          <span v-text="`维修率(%)：${compuntedRate()}`" key="y" class="title_box"></span>
         </div>
         <div class="lossStatistics-body-right-body">
           <define-table
@@ -58,9 +58,9 @@
               :filter="(row)=>`${row.name}(${row.model})`"
               v-if="show=='category'"
             />
-            <define-column label="当前库存" field="totalCount"></define-column>
-            <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
-            <define-column label="维修数" field="count"></define-column>
+            <define-column label="当前库存" key="totalCount" field="totalCount"></define-column>
+            <define-column label="当前库存总价(￥)" key="kuncunPrice" field="totalPrice"></define-column>
+            <define-column label="维修数" key="count" field="count"></define-column>
             <define-column label="维修率(%)" key="commonRate" :filter="(row)=>rate(row)"></define-column>
             <define-column label="供应商" key="sup" field="supplier" v-if="show=='category'"></define-column>
           </define-table>
@@ -79,9 +79,9 @@
               key="equipArgs"
               v-if="show=='singlePoliceCategory'"
             />
-            <define-column label="当前库存" field="totalCount"></define-column>
-            <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
-            <define-column label="维修数" field="count"></define-column>
+            <define-column label="当前库存" key="repairCount" field="totalCount"></define-column>
+            <define-column label="当前库存总价(￥)" key="repairTotalPrice" field="totalPrice"></define-column>
+            <define-column label="维修数" key="repirCount" field="count"></define-column>
             <define-column label="维修率" key="singlePoliceRate" :filter="(row)=>rate(row)"></define-column>
             <define-column label="供应商" key="supplier" field="supplier" v-if="show=='singlePoliceCategory'"></define-column>
           </define-table>

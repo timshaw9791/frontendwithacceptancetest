@@ -39,17 +39,19 @@
         <div class="lossStatistics-body-right-top">
           <span
             v-text="`历史库存：${addNum(1)}`"
+             key="commonHistory"
             v-if="show!='singlePolice'&&show!='singlePoliceCategory'"
           ></span>
           <span
             v-text="`历史库存：${addNum(5)}`"
+            key="singleHistoryCommonStock"
             v-if="show=='singlePolice'||show=='singlePoliceCategory'"
           ></span>
-          <span v-text="`当前库存：${addNum(2)}`" class="title_box"></span>
-          <span v-text="`当前库存总价(￥)：${addNum(3)}`" class="title_box"></span>
-          <span v-text="`损耗数：${addNum(4)}`" class="title_box"></span>
-          <span v-text="`损耗金额(￥)：${addNum(6)}`" class="title_box"></span>
-          <span v-text="`损耗率(%)：${compuntedRate()}`" class="title_box"></span>
+          <span v-text="`当前库存：${addNum(2)}`" key="nowStock" class="title_box"></span>
+          <span v-text="`当前库存总价(￥)：${addNum(3)}`" key="nowStockPrice" class="title_box"></span>
+          <span v-text="`损耗数：${addNum(4)}`" key="nowLoss" class="title_box"></span>
+          <span v-text="`损耗金额(￥)：${addNum(6)}`" key="nowLossCount" class="title_box"></span>
+          <span v-text="`损耗率(%)：${compuntedRate()}`" key="compunted" class="title_box"></span>
         </div>
         <div class="lossStatistics-body-right-body">
           <define-table
@@ -69,10 +71,10 @@
               v-if="show=='category'"
             />
             <define-column label="历史库存" key="categoryHistory" field="commonStock"></define-column>
-            <define-column label="当前库存" field="totalCount"></define-column>
-            <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
-            <define-column label="损耗数" field="count"></define-column>
-            <define-column label="损耗总额" field="totalLoss"></define-column>
+            <define-column label="当前库存" key="historyCount" field="totalCount"></define-column>
+            <define-column label="当前库存总价(￥)" key="toalPrice" field="totalPrice"></define-column>
+            <define-column label="损耗数" key="lossCount" field="count"></define-column>
+            <define-column label="损耗总额" key="commonTotalLoss" field="totalLoss"></define-column>
             <define-column label="损耗率(%)" key="commonRate" :filter="(row)=>rate(row)"></define-column>
             <define-column label="供应商" ke="commonSup" field="supplier" v-if="show=='category'"></define-column>
           </define-table>
@@ -92,10 +94,10 @@
               v-if="show=='singlePoliceCategory'"
             />
             <define-column label="历史库存" key="singleHistory" field="cabinetStock"></define-column>
-            <define-column label="当前库存" field="totalCount"></define-column>
-            <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
-            <define-column label="损耗数量" field="count"></define-column>
-            <define-column label="损耗总额" field="totalLoss"></define-column>
+            <define-column label="当前库存" key="kucun" field="totalCount"></define-column>
+            <define-column label="当前库存总价(￥)" key="kuncunqian" field="totalPrice"></define-column>
+            <define-column label="损耗数量" key="countLoss" field="count"></define-column>
+            <define-column label="损耗总额" key="totalLoss" field="totalLoss"></define-column>
             <define-column label="损耗率(%)" key="singlePoliceRate" :filter="(row)=>{return row.cabinetStock!=0?(row.count/row.cabinetStock*100).toFixed(2):0}"></define-column>
             <define-column label="供应商" key="supplier" field="supplier" v-if="show=='singlePoliceCategory'"></define-column>
           </define-table>
