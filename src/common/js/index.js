@@ -76,6 +76,7 @@ export function formatFunc(data) {
         } else {
             return `${data.locationInfo.frameNumber}架/${data.locationInfo.surface}面/${data.locationInfo.section}节/${data.locationInfo.floor}层`
         }
+        
     } else {
         let surface = 'A'
         if (data.surface == 1) surface = 'B'
@@ -99,9 +100,41 @@ export function formatFunc(data) {
     }
 }
 
-//放在数据列表里显示的
+//只供装备实体列表使用
 export function formatFuncOrder(data) {
+    if(data.policeCabinet!=null){
+        if (data.policeCabinet.category == 0) {
+            return `单警柜${data.policeCabinet.cabinetNumber}(${data.policeCabinet.singleCabinetUser.name})`
+        } else if (data.categoryEnum == 1) {
+            return `公共柜(${data.policeCabinet.cabinetNumber}`
+        } else if (data.categoryEnum == 2) {
+            return `备用柜(${data.policeCabinet.cabinetNumber}`
+        } 
+    }else {
+        let surface = 'A'
+        console.log(data.location);
+        if(data.location.surface!=undefined){
+            if (data.location.surface == 1) surface = 'B'
+            else {
+                surface = 'A'
+            }
+        }
+       
+        if (data.location.surface != null && data.location.floor != null) {
+            return data.location.frameNumber ?
+                `${data.location.frameNumber}架/${surface}面/${data.location.section}节/${data.location.floor}层` :
+                `${data.location.category}(${data.location.cabinetNumber})`
+        } else {
+            if (data.location.category == '单警柜') {
+                return `单警柜${data.location.cabinetNumber}(${data.location.name})`
+            } else {
+                return data.location.frameNumber ?
+                    `${data.location.frameNumber}架/${data.location.section}节` :
+                    `${data.location.category}(${data.location.cabinetNumber})`
+            }
 
+        }
+    }
 }
 
 // 架体格式化

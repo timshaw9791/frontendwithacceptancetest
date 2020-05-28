@@ -11,6 +11,7 @@
           slot="slot1"
           height="4rem"
           @changeCurrent="selRow"
+          :highLightCurrent="true"
           :havePage="false"
         >
           <define-column label="操作" width="150" v-slot="{ data }">

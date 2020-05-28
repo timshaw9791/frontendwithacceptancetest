@@ -19,7 +19,7 @@ const user = {
         token: getToken(),
         name: '',
         avatar: '',
-        roles: [],
+        roles: '',
         userId: '',
         deploy: '',
         userInfo: ''
@@ -105,6 +105,8 @@ const user = {
         FedLogOut({commit}) {
             return new Promise(resolve => {
                 commit('SET_TOKEN', '')
+                commit('SET_ROLES', '');
+                commit('SET_USERINFO', {});
                 removeToken()
                 resolve()
             })

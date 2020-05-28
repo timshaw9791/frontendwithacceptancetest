@@ -15,12 +15,16 @@ router.beforeEach((to, from, next) => {
         if (to.path === '/login') {
             next();
         } else {
-            if (store.getters.roles.length === 0) { // 判断当前用户是否已拉取完user_info信息
+            if (!store.getters.roles) { // 判断当前用户是否已拉取完user_info信息
                 store.dispatch('GetInfo').then((res) => { // 没有用户信息则重新拉取
                     store.dispatch('GenerateRoutes', res).then(() => { // 获得信息后，再获取权限匹配的路由表
-                        router.addRoutes(store.getters.addRouters); // 动态添加可访问路由表
+                        return new Promise((reslove, reject) => {
+                            router.addRoutes(store.getters.addRouters); // 动态添加可访问路由表
+                            reslove();
+                        })
+                    }).then(() => {
                         next({...to, replace: true});
-                    })
+                   })
                 }).catch((err) => { // localStorage没有用户信息
                     store.dispatch('FedLogOut').then(() => {
                         Message.error(err);
