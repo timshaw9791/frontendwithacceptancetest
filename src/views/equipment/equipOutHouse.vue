@@ -127,10 +127,15 @@ export default {
                 let rfidList=[]
                 this.requestBody.forEach(item=>{
                     item.copyList.forEach(rf=>{
-                        rfidList.push(rf.rfid)
+                        if(rf.rfid!=''){
+                            rfidList.push(rf.rfid)
+                        }
                     })
                 })
-                
+                if(rfidList.length==0){
+                    this.$message.error('未扫入装备')
+                    return
+                }
                 outHouse(rfidList).then(res=>{
                     this.$message.success('装备出库成功')
                     this.init()
@@ -201,7 +206,7 @@ export default {
                     productTime: 0,
                     rfids: [],
                     serial: [],
-                    copyList:[{rfid:'',serial:''}]
+                    copyList:[]
                 }]
             }
         },

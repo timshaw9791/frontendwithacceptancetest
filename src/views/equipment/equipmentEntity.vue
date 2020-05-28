@@ -7,6 +7,7 @@
         </div>
         <div class="data-list">
             <define-table :data="list" height="3.64rem"  :pageInfo="this.paginator"
+                          :highLightCurrent="true"
                           @changePage="changePage" :haveIndex="false" v-if="inList">
                 <define-column label="序号" fixed columnType="index" width="65"></define-column>
                 <define-column label="操作" width="180" v-slot="{ data }" fixed>
@@ -30,8 +31,8 @@
                 <define-column label="联系人" width="100" field="equipArg.supplier.person"/>
                 <define-column label="联系方式" width="150" field="equipArg.supplier.phone"/>
                 <define-column label="生产日期" width="200" :filter="(row)=>$filterTime(row.productDate)"/>
-                <define-column label="装备位置" width="250" v-slot="{data}">
-                    <entity-input v-model="data.row.location" :formatFunc="$formatFuncLoc"
+                <define-column label="装备位置" width="300" v-slot="{data}">
+                    <entity-input v-model="data.row" :formatFunc="$formatFuncOrderLoc"
                                   :tableEdit="false"></entity-input>
                 </define-column>
                 <define-column label="单价" field="price"/>

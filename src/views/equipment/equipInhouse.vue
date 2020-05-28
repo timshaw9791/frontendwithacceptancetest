@@ -36,7 +36,7 @@
                         </define-table>
                         <define-table :data="list[findIndex].copyList" height="2.8646rem" :havePage="false" slot="detail">
                             <define-column label="操作" width="100" v-slot="{ data }">
-                               <i class="iconfont icontianjialiang" @click="changeDetailRow(true,data)"></i>
+                               <i class="iconfont icontianjia" ></i>
                                <i class="iconfont iconyichuliang" @click="changeDetailRow(false,data)"></i>
                             </define-column>
                             <define-column label="RFID" v-slot="{ data }">
