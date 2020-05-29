@@ -16,6 +16,7 @@ export function transEquips(equips, groupRules = 'args', simplifyRules = 'rfids'
            // todo 使用 Object.assign()
             item.equipName = item.equipArg.name
             item.equipModel = item.equipArg.model
+            item.equipArgId = item.equipArg.id
             item.locationInfo = item.location
             item.equipSerial = item.serial
             item.equipId = item.id

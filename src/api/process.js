@@ -142,10 +142,13 @@ export function processOutbound(taskId,processDto){ // A端流程出库(通过�
     },true)
 }
 
-export function processInbound(processDto){ // A端调拨入库
+export function processInbound(taskId,processDto){ // A端调拨入库
     return request({
         url:'/process/in-house',
         method:'POST',
+        params:{
+            taskId
+        },
         data: processDto
     },true)
 }
