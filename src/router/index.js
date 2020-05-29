@@ -138,9 +138,9 @@ export const asyncRouterMap = [{
             component: _import('process/transferApply'),
             hidden: true,
         }, {
-            path: 'transfer/:type', // 调拨出入库
-            name: 'transferStorehouse',
-            component: _import('process/transferStorehouse'),
+            path: 'transferOutOrIn', // 调拨出入库
+            name: 'transferOutOrIn',
+            component: _import('process/transferOutOrIn'),
             hidden: true,
         }, {
             path: 'agencyMatters',
@@ -153,9 +153,9 @@ export const asyncRouterMap = [{
             component: _import('process/completedMatters'),
             meta: {title: '已办事宜'},
         }, {
-            path: 'handlingMatters',
-            name: 'handlingMatters',
-            component: _import('process/handlingMatters'),
+            path: 'closedProcess',
+            name: 'closedProcess',
+            component: _import('process/closedProcess'),
             meta: {title: '办结事宜'},
         }]
 }, {

@@ -25,8 +25,9 @@
 
 <script>
     import myHeader from 'components/base/header/header'
-    import {processDefinitions, myProcess} from '@/api/process'
+    import {myProcess} from '@/api/process'
     import {listTableMixin} from "@/field/mixins/listMixin";
+    import {mapGetters} from "vuex";
 
     export default {
         name: "myProcess",
@@ -63,34 +64,22 @@
                 this.fetchData();
             },
             toDetail(data) {
-                switch (data.type) {
-                    case '报废流程':
-                        this.$router.push({
-                            path: 'scrapApply',
-                            query: {
-                                processInstanceId: data.processInstanceId,
-                                taskId: data.taskId,
-                            }
-                        })
-                        break;
-                    case '调拨流程':
-                        this.$router.push({
-                            path: 'transferApply',
-                            query: {
-                                processInstanceId: data.processInstanceId,
-                                taskId: data.taskId,
-                            }
-                        })
-                        break;
-                    default:
-                        break;
-                }
+                let applyName = data.type.includes('报废') ? 'scrap' : 'transfer'
+                this.$router.push({
+                    path: `/process/${applyName}Apply`,
+                    query: {
+                        name: data.type,
+                        processInstanceId: data.processInstanceId,
+                        taskId: data.taskId
+                    }
+                })
             }
         },
         computed: {
             search() {
                 return this.requestTitle + this.select.selected
-            }
+            },
+            ...mapGetters(["userId"])
         },
         components: {
             myHeader
@@ -99,12 +88,6 @@
 </script>
 
 <style lang="scss" scoped>
-    // /deep/ .el-table {
-    //     .el-table--enable-row-hover,
-    //     .el-table__body tr:hover > td {
-    //         background-color: white;
-    //     }
-    // }
     .my-process-container {
         color: #707070FF;
         font-size: 16px;

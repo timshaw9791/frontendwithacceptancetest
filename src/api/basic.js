@@ -1,4 +1,5 @@
 import request from 'common/js/request';
+import {baseBURL} from "@/api/config";
 
 export function delFile(data, state) {
     return request({
@@ -36,7 +37,7 @@ export function bosEnums(params, state) { // 根据枚举分类获取常量值
 
 export function getAllUnit() {
     return  request({
-        url:`${baseBURL}/organ-units/tree`,
+        url:baseBURL+'/organ-units/tree',
         method:'get'
     })
 }

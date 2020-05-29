@@ -137,12 +137,7 @@ export function deleteWearRates(id, state) {
       data
     }, state)
   }
-export function findByRfids(rfids, state) {
-    return request({
-        url: `/equip/findByRfids?rfids=${rfids}`,
-        method: 'get',
-    }, state)
-}
+
 export function upkeep(rfids,state, tipState) {
     return request({
         url: `/equipMaintain/upkeep?rfids=${rfids}&&state=${state}`,

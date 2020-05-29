@@ -62,15 +62,6 @@ export function saveEquipInfo(categoryId,data, tipState) {
     }, tipState)
 }
 
-export function getSuppliers() {
-    return request({
-        url: '/suppliers/list',
-        method: 'get',
-    })
-}
-
-
-
 export function delectPlan(data, tipState) {
     return request({
         url: `/plan-manage/${data}`,
@@ -158,12 +149,12 @@ export function findEquip(id) {
 }
 
 /* 通过rfid找实体装备 */
-export function findByRfids(params) {
+export function findByRfids(params,tipState) {
     return request({
         // url: `/equips/findByRfids?${qs.stringify(params, { indices: false })}`,
         url:`/equips/by-rfids?rfids=${params}`,
         method: "GET"
-    })
+    },tipState)
 }
 
 /* 新增装备信息 */

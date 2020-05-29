@@ -83,26 +83,26 @@
         methods: {
             readData() {
                 // 测试代码
-                this.rfids = "888866694544"
-                this.fetchEquipItems()
+                // this.rfids = "888866694544"
+                // this.fetchEquipItems()
                 killProcess(this.pid)
-                // start("java -jar scan.jar", (data) => {
-                //     if (this.matchRfids.length !== 0) {
-                //         if (this.matchRfids.indexOf(data) !== -1
-                //             && this.rfids.indexOf(data) === -1) {
-                //             this.rfids.push(data)
-                //             this.fetchEquipItems(this.rfids)
-                //         }
-                //     } else {
-                //         this.rfids.push(data)
-                //         this.fetchEquipItems(this.rfids)
-                //     }
-                // }, (fail) => {
-                //     this.index = 1;
-                //     this.$message.error(fail);
-                // }, (pid, err) => {
-                //     pid ? this.pid = pid : this.$message.error(err)
-                // })
+                start("java -jar scan.jar", (data) => {
+                    if (this.matchRfids.length !== 0) {
+                        if (this.matchRfids.indexOf(data) !== -1
+                            && this.rfids.indexOf(data) === -1) {
+                            this.rfids.push(data)
+                            this.fetchEquipItems()
+                        }
+                    } else {
+                        this.rfids.push(data)
+                        this.fetchEquipItems()
+                    }
+                }, (fail) => {
+                    this.index = 1;
+                    this.$message.error(fail);
+                }, (pid, err) => {
+                    pid ? this.pid = pid : this.$message.error(err)
+                })
             },
             // 根据RFID列表获取装备信息
             fetchEquipItems() {
