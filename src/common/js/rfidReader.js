@@ -190,6 +190,7 @@ export function handheld(errCB) {
                 console.log("手持机文件导出失败, 所需文件不存在");
                 console.log("尝试命令行运行","chcp 65001 && adb pull sdcard/inventoryData/[文件名.后缀].");
                 console.log("如显示device offline，请插拔手持机重试");
+                console.log("如显示含有 cannot create file...，则需在手持机创建intentoryData文件夹");
                 console.log('-----------------------------------------');
             }
             console.log('out code：' + code);

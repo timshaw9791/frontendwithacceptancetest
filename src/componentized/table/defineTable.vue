@@ -138,6 +138,9 @@ import defineColumn from './defineColumn'
         .el-table__body-wrapper { // 使滚动条显示在文档内部，避免对文档内容造成位置影响
             overflow-x: overlay !important;
         }
+        .el-table__fixed {
+            pointer-events: none;
+        }
     }
     .define-table-container:hover {
         /deep/ .el-table {
