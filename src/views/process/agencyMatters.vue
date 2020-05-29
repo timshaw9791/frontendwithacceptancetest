@@ -61,7 +61,8 @@
                     query: {
                         name: data.processInstanceName,
                         processInstanceId: data.processInstanceId,
-                        type: 'todo'
+                        type: 'todo',
+                        category: data.category
                     }
                 })
             }

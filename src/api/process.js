@@ -131,7 +131,7 @@ export function doneProcess(params) { // 查询办结任务
     })
 }
 
-export function processOutbound(taskId,processDto){ // A端调拨出库
+export function processOutbound(taskId,processDto){ // A端流程出库(通过状态判断)
     return request({
         url:`/process/out-house`,
         method:'POST',

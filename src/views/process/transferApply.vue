@@ -97,7 +97,9 @@
                 taskHistory: [],
                 isInfo: false,
                 isLeaderEdit: false,
-                taskId: ''
+                taskId: '',
+                isShowIn:false,
+                isShowOut:false
             }
         },
         methods: {
@@ -110,9 +112,10 @@
             fetchData() {
                 transferOrders(this.processInstanceId).then(
                     res => {
+                        console.log(res)
                         this.transferApplyOrder = res.transferApplyOrder
-                        !!res.outboundEquipsOrder && (this.outboundEquipsOrder = res.outboundEquipsOrder)
-                        !!res.inboundEquipsOrder && (this.inboundEquipsOrder = res.inboundEquipsOrder)
+                        !!res.outboundEquipsOrder  && (this.isShowOut = true) &&( this.inboundEquipsOrder = res.inboundEquipsOrder)
+                        !!res.inboundEquipsOrder && (this.isShowIn = true) &&( this.outboundEquipsOrder = res.outboundEquipsOrder)
                     }
                 )
                 getHistoryTasks(this.processInstanceId).then(
@@ -205,12 +208,6 @@
                 'warehouse',
                 'organUnit'
             ]),
-            isShowIn() {
-                return !!this.inboundEquipsOrder.id
-            },
-            isShowOut() {
-                return !!this.outboundEquipsOrder.id
-            }
         },
         watch: {
             'transferApplyOrder.equips.length'(newVal) {
