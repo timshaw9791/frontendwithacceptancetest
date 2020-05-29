@@ -148,7 +148,7 @@ export default {
             ]
           });
           findEquipMoneyStatistics({
-            categorys: 3,
+            categories: 3,
             level: "ALL",
             search: ""
           }).then(res => {
@@ -208,7 +208,7 @@ export default {
       this.id = data.data.id;
       if (this.show == "genres") {
         findEquipMoneyStatistics({
-          categorys: 3,
+          categories: 3,
           id: data.data.id,
           level: "GENRE",
           search: this.detailSearch
@@ -219,7 +219,7 @@ export default {
         });
       } else if (this.show == "All") {
         findEquipMoneyStatistics({
-          categorys: 3,
+          categories: 3,
           level: "ALL",
           search: this.detailSearch
         }).then(res => {
@@ -232,7 +232,7 @@ export default {
         });
       } else if (this.show == "category") {
         findEquipMoneyStatistics({
-          categorys: 3,
+          categories: 3,
           id: data.data.id,
           level: "CATEGORY",
           search: this.detailSearch
@@ -281,7 +281,7 @@ export default {
           if (this.show == "genres") searchI = "GENRE";
           if (this.show == "category") searchI = "CATEGORY";
           findEquipMoneyStatistics({
-            categorys: 3,
+            categories: 3,
             id: this.id,
             level: searchI,
             search: newval

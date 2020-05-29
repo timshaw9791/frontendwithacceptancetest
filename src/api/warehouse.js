@@ -36,7 +36,7 @@ export function allPoliceFrequency() {
 //单警下三类柜子的统计
 export function allPoliceFrequencyCategories(id,search='') {
     return request({
-        url: `/statistic/cabinet-frequency-categories?category=${id}&search=${search}`,
+        url: `/statistic/cabinet-frequency-categories?categories=${id}&search=${search}`,
         method: "get",
         
     })
@@ -54,7 +54,7 @@ export function allPoliceScrap() {
 //单警下三类柜子的统计
 export function allPoliceScrapCategories(id,search='') {
     return request({
-        url: `/statistic/cabinet-scrap-categories?category=${id}&search=${search}`,
+        url: `/statistic/cabinet-scrap-categories?categories=${id}&search=${search}`,
         method: "get",
         
     })
@@ -71,7 +71,7 @@ export function allPoliceRepair() {
 //单警下三类柜子的统计
 export function allPoliceRepairCategories(id,search='') {
     return request({
-        url: `/statistic/cabinet-repair-categories?category=${id}&search=${search}`,
+        url: `/statistic/cabinet-repair-categories?categories=${id}&search=${search}`,
         method: "get",
         
     })
