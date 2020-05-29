@@ -76,6 +76,7 @@
     import {transEquips} from "@/common/js/transEquips";
     import {mapGetters} from "vuex";
     import {activeTask, processInbound, processOutbound, transferOrders} from "@/api/process";
+    import {killProcess} from "@/common/js/rfidReader";
 
     export default {
         name: "transferOutOrIn",   // 调拨出入库
@@ -104,7 +105,8 @@
                 taskId: '',
                 title: '',
                 highLightCurrent: false,
-                outboundEquips: []
+                outboundEquips: [],
+                pid:''
             }
         },
         methods: {
@@ -166,13 +168,20 @@
             },
             readData() {
                 if (!this.isInbound) {
-                    let rfids = ['7777778888', '123456781112131415161718']
-                    findByRfids(rfids, true).then(
-                        res => {
-                            this.readEquips = res
-                            this.fixEquipItems(this.readEquips)
-                        }
-                    )
+                    killProcess(this.pid)
+                    start("java -jar scan.jar", (data) => {
+                        findByRfids(data, true).then(
+                            res => {
+                                this.readEquips = this.readEquips.push(res)
+                                this.fixEquipItems(this.readEquips)
+                            }
+                        )
+                    }, (fail) => {
+                        this.index = 1;
+                        this.$message.error(fail);
+                    }, (pid, err) => {
+                        pid ? this.pid = pid : this.$message.error(err)
+                    })
                 } else {
                     // 1.判断是否选中当前行
                     // 2.判断当前行是否有位置信息
@@ -180,32 +189,39 @@
                         this.$message.error("先选择需要扫描的位置")
                         return
                     }
-                    let data = '7777778888'
-                    let tempLocation = this.equipItems[this.totalIndex].locationInfo
-                    this.outboundEquips.forEach(item => {
-                        let temp = this.equipItems[this.totalIndex]
-                        if (item.rfid !== data) {
-                            this.$message.error("该装备不在出库装备列表内！")
-                            return
-                        }
-                        item.locationInfo = tempLocation
-                        // 要删价格
-                        item.price = '1'
-                        item.productTime = '1590721943'
-                        if (temp.hasOwnProperty("equipArg")) {
-                            if (item.equipName + "(" + item.equipModel + ")" !== temp.equipArg) {
-                                this.$message.error("该装备与当前选中的装备参数不匹配！")
+                    killProcess(this.pid)
+                    start("java -jar scan.jar", (data) => {
+                        let tempLocation = this.equipItems[this.totalIndex].locationInfo
+                        this.outboundEquips.forEach(item => {
+                            let temp = this.equipItems[this.totalIndex]
+                            if (item.rfid !== data) {
+                                this.$message.error("该装备不在出库装备列表内！")
                                 return
                             }
-                            temp.items.push(item)
-                            temp.count = temp.items.length
-                            this.$forceUpdate()
-                        } else {
-                            temp.equipArg = item.equipName + "(" + item.equipModel + ")"
-                            temp.items.push(item)
-                            temp.count = temp.items.length
-                            this.equipItems[this.totalIndex] = temp
-                        }
+                            item.locationInfo = tempLocation
+                            // 要删价格
+                            item.price = '1'
+                            item.productTime = '1590721943'
+                            if (temp.hasOwnProperty("equipArg")) {
+                                if (item.equipName + "(" + item.equipModel + ")" !== temp.equipArg) {
+                                    this.$message.error("该装备与当前选中的装备参数不匹配！")
+                                    return
+                                }
+                                temp.items.push(item)
+                                temp.count = temp.items.length
+                                this.$forceUpdate()
+                            } else {
+                                temp.equipArg = item.equipName + "(" + item.equipModel + ")"
+                                temp.items.push(item)
+                                temp.count = temp.items.length
+                                this.equipItems[this.totalIndex] = temp
+                            }
+                        })
+                    }, (fail) => {
+                        this.index = 1;
+                        this.$message.error(fail);
+                    }, (pid, err) => {
+                        pid ? this.pid = pid : this.$message.error(err)
                     })
                   this.addRow()
                 }
