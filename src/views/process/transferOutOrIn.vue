@@ -24,7 +24,7 @@
                             <i class="iconfont icontianjialiang" @click="addRow()" v-if="!isInbound"></i>
                             <i class="iconfont iconyichuliang" @click="$delRow(equipItems,data.$index)"></i>
                         </define-column>
-                        <define-column label="装备位置" v-slot="{ data }">
+                        <define-column label="装备位置" v-slot="{ data }" v-if="isInbound">
                             <entity-input v-model="data.row.locationInfo" :options="{search:'locationSelect'}"
                                           :formatFunc="$formatFuncLoc" :tableEdit="true"></entity-input>
                         </define-column>
@@ -172,7 +172,7 @@
                     start("java -jar scan.jar", (data) => {
                         findByRfids(data, true).then(
                             res => {
-                                this.readEquips = this.readEquips.push(res)
+                                this.readEquips = this.readEquips.concat(res)
                                 this.fixEquipItems(this.readEquips)
                             }
                         )
