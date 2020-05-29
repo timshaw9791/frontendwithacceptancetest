@@ -91,15 +91,11 @@ export default {
                 getOutHouseOrder(this.params).then(res=>{
                     this.list=res.content
                     this.list.forEach(item=>{
-                        // if(item.inOutHouseItems.length==1)
-                        // {
-                        //     item.equipArgs=item.inOutHouseItems[0].equipName+'('+item.inOutHouseItems[0].equipModel+')'
-                        // }else{
-                        //     item.equipArgs=item.inOutHouseItems[0].equipName+'('+item.inOutHouseItems[0].equipModel+')'+'...'
-                        // }
-                     
-                        this.newData = this._.groupBy(item.inOutHouseItems, it => `${it.equipArgId}`)
-                        console.log(this.newData);
+                        let cList = this._.groupBy(item.inOutHouseItems, item => `${item.equipArgId}`)//当单据中为同一种装备时 不管件数多少 都不显示省略号
+                        this.newData = this._.map(cList, (v, k) => {
+                            return {equipArg: v[0].equipArg}
+                        })
+                        console.log(this.newData.length);
                         if(this.newData.length==1)
                         {
                             item.equipArgs=item.inOutHouseItems[0].equipName+'('+item.inOutHouseItems[0].equipModel+')'
