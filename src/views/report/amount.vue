@@ -37,10 +37,9 @@
           ></define-input>
         </div>
         <div class="amount-body-right-top">
-          <span v-text="`当前库存：${addNum(1)}`" v-if="show!='singlePolice'&&show!='singlePoliceCategory'"></span>
-          <span v-text="`当前库存：${addNum(5)}`" v-if="show=='singlePolice'||show=='singlePoliceCategory'"></span>
-          <span v-text="`可用数量：${addNum(2)}`" class="title_box" v-if="title!='单警装备'||title!='单警柜装备'"></span>
-          <span v-text="`领用数量：${addNum(3)}`" class="title_box" v-if="title!='单警装备'||title!='单警柜装备'"></span>
+          <span v-text="`当前库存：${addNum(1)}`" ></span>
+          <span v-text="`可用数量：${addNum(2)}`" class="title_box" v-if="title!='单警柜装备'"></span>
+          <span v-text="`领用数量：${addNum(3)}`" class="title_box" v-if="title!='单警柜装备'"></span>
           <span v-text="`当前库存总价(￥)：${addNum(4)}`" class="title_box"></span>
         </div>
         <div class="amount-body-right-body">
@@ -60,10 +59,11 @@
               v-if="show=='category'"
               key='equipArgs'
             />
-            <define-column label="当前库存" field="totalCount"></define-column>
-            <define-column label="可用数量" field="inHouseCount"></define-column>
-            <define-column label="领用数量" field="receiveUseCount"></define-column>
-            <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
+            <define-column label="当前库存" key="totalCount" field="totalCount"></define-column>
+            <define-column label="可用数量" key="inHouseCount" field="inHouseCount"></define-column>
+            <define-column label="领用数量" key="receiveUseCount" field="receiveUseCount"></define-column>
+            <define-column label="当前库存总价(￥)" key="totalPrice" field="totalPrice"></define-column>
+            <define-column label="供应商" field="supplier" key="supplier" v-if="show=='category'"></define-column>
           </define-table>
           <define-table
             :pageInfo="paginator"
@@ -73,16 +73,18 @@
             ref="table"
             v-if="show=='singlePolice'||show=='singlePoliceCategory'"
           >
-            <define-column label="装备小类" field="cabinet" v-if="show=='singlePolice'" />
+            <define-column label="装备小类" field="cabinet" key="cabniet" v-if="show=='singlePolice'" />
             <define-column
-              label="装备小类"
+              label="装备参数"
+              key="singlePoliceCategoryEquips"
               :filter="(row)=>`${row.name}(${row.model})`"
               v-if="show=='singlePoliceCategory'"
             />
-            <define-column label="当前库存" field="totalCount"></define-column>
-            <define-column label="可用数量" :filter="(row)=>{return title=='单警装备'||title=='单警柜装备'?'--':row.inHouseCount}"></define-column>
-            <define-column label="领用数量" :filter="(row)=>{return title=='单警装备'||title=='单警柜装备'?'--':row.receiveUseCount}"></define-column>
-            <define-column label="当前库存总价(￥)" field="totalPrice"></define-column>
+            <define-column label="当前库存" key="cabnietTotalCount" field="totalCount"></define-column>
+            <define-column label="可用数量" key="cabnietinHouseCount" :filter="(row)=>{return (title=='单警柜装备'||row.inHouseCount===null)?'--':row.inHouseCount}"></define-column>
+            <define-column label="领用数量" key="cabnietreceiveUseCount" :filter="(row)=>{return (title=='单警柜装备'||row.receiveUseCount===null)?'--':row.receiveUseCount}"></define-column>
+            <define-column label="当前库存总价(￥)" key="cabniettotalPrice" field="totalPrice"></define-column>
+            <define-column label="供应商" field="supplier" key="cabnietsupplier" v-if="show=='singlePoliceCategory'"></define-column>
           </define-table>
         </div>
         <div></div>
@@ -148,7 +150,7 @@ export default {
             ]
           });
           findEquipMoneyStatistics({
-            categorys: 3,
+            categories: 3,
             level: "ALL",
             search: ""
           }).then(res => {
@@ -208,7 +210,7 @@ export default {
       this.id = data.data.id;
       if (this.show == "genres") {
         findEquipMoneyStatistics({
-          categorys: 3,
+          categories: 3,
           id: data.data.id,
           level: "GENRE",
           search: this.detailSearch
@@ -219,7 +221,7 @@ export default {
         });
       } else if (this.show == "All") {
         findEquipMoneyStatistics({
-          categorys: 3,
+          categories: 3,
           level: "ALL",
           search: this.detailSearch
         }).then(res => {
@@ -232,7 +234,7 @@ export default {
         });
       } else if (this.show == "category") {
         findEquipMoneyStatistics({
-          categorys: 3,
+          categories: 3,
           id: data.data.id,
           level: "CATEGORY",
           search: this.detailSearch
@@ -281,7 +283,7 @@ export default {
           if (this.show == "genres") searchI = "GENRE";
           if (this.show == "category") searchI = "CATEGORY";
           findEquipMoneyStatistics({
-            categorys: 3,
+            categories: 3,
             id: this.id,
             level: searchI,
             search: newval

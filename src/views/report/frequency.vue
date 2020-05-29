@@ -65,13 +65,14 @@
             <define-column
               label="装备参数"
               key="commonEquip"
-              :filter="(row)=>`${row.name}(${row.model})`"
+              :filter="(row)=>`${row.category}(${row.model})`"
               v-if="show=='category'"
             />
             <define-column label="历史库存" key="commonStock" field="commonStock"></define-column>
             <define-column label="当前库存" key="totalCount" field="totalCount"></define-column>
             <define-column label="当前库存总价(￥)" key="totalPrice" field="totalPrice"></define-column>
             <define-column label="使用次数" key="count" field="count"></define-column>
+            <define-column label="供应商" key="supplier" field="supplier" v-if="show=='category'"></define-column>
           </define-table>
           <define-table
             :pageInfo="paginator"
@@ -92,6 +93,7 @@
             <define-column label="当前库存" key="cabnietTotalCount" field="totalCount"></define-column>
             <define-column label="当前库存总价(￥)" key="total" field="totalPrice"></define-column>
             <define-column label="使用次数" key="cabinetCount" field="count"></define-column>
+            <define-column label="供应商" key="cabnietsupplier" field="supplier" v-if="show=='singlePoliceCategory'"></define-column>
           </define-table>
         </div>
         <div></div>
@@ -161,7 +163,7 @@ export default {
             ]
           });
           findEquipFrequencyStatistics({
-            categorys: 3,
+            categories: 3,
             level: "ALL",
             search: ""
           }).then(res => {
@@ -226,7 +228,7 @@ export default {
       this.id = data.data.id;
       if (this.show == "genres") {
         findEquipFrequencyStatistics({
-          categorys: 3,
+          categories: 3,
           id: data.data.id,
           level: "GENRE",
           search: this.detailSearch
@@ -240,7 +242,7 @@ export default {
         });
       } else if (this.show == "All") {
         findEquipFrequencyStatistics({
-          categorys: 3,
+          categories: 3,
           level: "ALL",
           search: this.detailSearch
         }).then(res => {
@@ -256,7 +258,7 @@ export default {
         });
       } else if (this.show == "category") {
         findEquipFrequencyStatistics({
-          categorys: 3,
+          categories: 3,
           id: data.data.id,
           level: "CATEGORY",
           search: this.detailSearch
@@ -314,7 +316,7 @@ export default {
           if (this.show == "genres") searchI = "GENRE";
           if (this.show == "category") searchI = "CATEGORY";
           findEquipFrequencyStatistics({
-            categorys: 3,
+            categories: 3,
             id: this.id,
             level: searchI,
             search: newval

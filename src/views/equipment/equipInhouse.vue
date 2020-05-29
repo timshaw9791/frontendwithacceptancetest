@@ -30,21 +30,15 @@
                             <define-column label="生产日期" v-slot="{ data }">
                                 <date-select label="生产日期" v-model="data.row.productTime" :column="12" ></date-select>
                             </define-column>
-                            <define-column label="装备数量" v-slot="{ data }">
-                                <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
-                            </define-column>
+                            <define-column label="装备数量" :filter="(row)=>row.copyList.length"/>
                         </define-table>
                         <define-table :data="list[findIndex].copyList" height="2.8646rem" :havePage="false" slot="detail">
                             <define-column label="操作" width="100" v-slot="{ data }">
                                <i class="iconfont icontianjia" ></i>
                                <i class="iconfont iconyichuliang" @click="changeDetailRow(false,data)"></i>
                             </define-column>
-                            <define-column label="RFID" v-slot="{ data }">
-                                <define-input v-model="data.row.rfid" type="String" :tableEdit="false"></define-input>
-                            </define-column>
-                            <define-column label="装备序号" v-slot="{ data }">
-                                <define-input v-model="data.row.serial" type="Number" ></define-input>
-                            </define-column>
+                            <define-column label="RFID" field="rfid"></define-column>
+                            <define-column label="装备序号" field="serial"></define-column>
                         </define-table>
                     </bos-tabs>
         <div class="btn-box">
@@ -100,7 +94,7 @@ export default {
                     rfids: [],
                     serial: [],
                     count:0,
-                    copyList:[{rfid:'',serial:''}],
+                    copyList:[],
                 }],
                people:'',
                checkList:[],
@@ -131,7 +125,8 @@ export default {
                 let { columns, data } = param, sums = [];
                 sums=new Array(columns.length).fill('')
                 sums[0]='合计'
-                sums[columns.length-1]=param.data.reduce((v,k)=>v+k.count,0)
+                console.log(data);
+                sums[columns.length-1]=param.data.reduce((v,k)=>v+k.copyList.length,0)
                 return sums;
             },
             cancel(){
@@ -212,18 +207,11 @@ export default {
             },
             changeRow(state,data)
             {
-                if(state)
-                {
-                    this.list.push({equipArgId: '',locationId: '',price: 0,productTime:'',rfids: [],serial: [],copyList:[{rfid:'',serial:''}],})
-                }else {
-                    if(this.list.length>1){
-                        this.list.splice(data.$index, 1)
-                    }
-                    if(this.list.length==1){
-                    this.list=[{equipArgId: '',locationId: '',price: 0,productTime: '',rfids: [],serial: [],copyList:[{rfid:'',serial:''}],}]
+                state?this.list.push({equipArgId: '',locationId: '',price: 0,productTime:'',rfids: [],serial: [],copyList:[]}):this.list.splice(data.$index, 1)
+                 if(this.list.length==0){
+                    this.list=[{equipArgId: '',locationId: '',price: 0,productTime: '',rfids: [],serial: [],copyList:[],}]
                 }
-                }
-                
+                // if(state)
             },
             init(){
                 this.list=[{
@@ -233,7 +221,7 @@ export default {
                     productTime: 0,
                     rfids: [],
                     serial: [],
-                    copyList:[{rfid:'',serial:''}]
+                    copyList:[]
                 }]
             }
         },

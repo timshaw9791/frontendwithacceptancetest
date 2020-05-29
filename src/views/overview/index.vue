@@ -25,7 +25,7 @@
         <el-card shadow="never" :body-style="{ padding:'0.156rem'}">
             <div class="inventory-statistics">
                 <div class="header">库存统计</div>
-                <bos-tabs :label="[{label:'公共库房',key:'public'},{label:'单警柜',key:'police'}]" 
+                <bos-tabs :label="[{label:'公共装备',key:'public'},{label:'单警装备',key:'police'}]" 
                     @changeTab="changeTab" margin="10px 0 0 -10px">
                     <div class="sum-info" slot="slotHeader">
                         <div>领用总数</div>
