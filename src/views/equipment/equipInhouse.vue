@@ -30,19 +30,15 @@
                             <define-column label="生产日期" v-slot="{ data }">
                                 <date-select label="生产日期" v-model="data.row.productTime" :column="12" ></date-select>
                             </define-column>
-                            <define-column label="装备数量" :filter="(row)=>row.length"/>
+                            <define-column label="装备数量" :filter="(row)=>row.copyList.length"/>
                         </define-table>
                         <define-table :data="list[findIndex].copyList" height="2.8646rem" :havePage="false" slot="detail">
                             <define-column label="操作" width="100" v-slot="{ data }">
                                <i class="iconfont icontianjia" ></i>
                                <i class="iconfont iconyichuliang" @click="changeDetailRow(false,data)"></i>
                             </define-column>
-                            <define-column label="RFID" v-slot="{ data }">
-                                <define-input v-model="data.row.rfid" type="String" :tableEdit="false"></define-input>
-                            </define-column>
-                            <define-column label="装备序号" v-slot="{ data }">
-                                <define-input v-model="data.row.serial" type="Number" ></define-input>
-                            </define-column>
+                            <define-column label="RFID" field="rfid"></define-column>
+                            <define-column label="装备序号" field="serial"></define-column>
                         </define-table>
                     </bos-tabs>
         <div class="btn-box">

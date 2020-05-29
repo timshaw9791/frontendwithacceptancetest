@@ -176,10 +176,11 @@
     import serviceDialog from "components/base/serviceDialog";
     import {transformMixin} from "common/js/transformMixin";
     import {getNeedUpkeep, findneedkeepEquips} from "api/needs";
-    import {upkeep, findByRfids} from "api/operation"
+    import {upkeep} from "api/operation"
 
     var _ = require("lodash");
     import {start, killProcess, modifyFileName, handheld} from "common/js/rfidReader"
+    import {findByRfids} from "@/api/storage";
     //const exec = window.require('child_process').exec;
     //const spawn = window.require('child_process').spawn;
     // import {killProcess} from "common/js/kill";

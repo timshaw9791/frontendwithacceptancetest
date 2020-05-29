@@ -34,25 +34,7 @@
             list: {
                 type: Array,
                 default() {
-                    return [{
-                        type: '审核',
-                        person: 'SprWu',
-                        state: '通过',
-                        reson: true,
-                        time: '2020/3/27'
-                    },{
-                        type: '审核',
-                        person: 'SprWu',
-                        state: '通过',
-                        reson: true,
-                        time: '2020/3/27'
-                    },{
-                        type: '审核',
-                        person: 'SprWu',
-                        state: '通过',
-                        reson: true,
-                        time: '2020/3/27'
-                    }]
+                    return []
                 }
             },
             height: {
@@ -100,6 +82,7 @@
                         time: this.$filterTime(obj.endTime)
                     };
                 })
+                console.log(this.processList)
             },
             lookReson(note) {
                 this.reson = note;

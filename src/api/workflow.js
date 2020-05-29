@@ -14,11 +14,11 @@ export function scrappedApproval(data) {
     })
 }
 
-export function taskDetail(params) { // 任务详情
+export function taskDetail(taskId) { // 任务详情
     return request({
         url: baseBURL+'/workflow/task-detail',
         method:'GET',
-        params
+        params:{taskId}
     })
 }
 

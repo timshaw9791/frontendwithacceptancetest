@@ -16,7 +16,7 @@ Vue.prototype.$video = Video;
 
 import { parseTime, filterFrame,formatFunc,formatFuncOrder } from 'common/js/index'
 import VideoPlayer from 'vue-video-player'
-import {sumFunc,delRow} from "@/common/js/tableFun";
+import {sumFunc,delRow} from "@/common/js/tableFunc";
 
 Vue.use(VideoPlayer);
 

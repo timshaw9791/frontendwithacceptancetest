@@ -65,13 +65,14 @@
             <define-column
               label="装备参数"
               key="commonEquip"
-              :filter="(row)=>`${row.name}(${row.model})`"
+              :filter="(row)=>`${row.category}(${row.model})`"
               v-if="show=='category'"
             />
             <define-column label="历史库存" key="commonStock" field="commonStock"></define-column>
             <define-column label="当前库存" key="totalCount" field="totalCount"></define-column>
             <define-column label="当前库存总价(￥)" key="totalPrice" field="totalPrice"></define-column>
             <define-column label="使用次数" key="count" field="count"></define-column>
+            <define-column label="供应商" key="supplier" field="supplier" v-if="show=='category'"></define-column>
           </define-table>
           <define-table
             :pageInfo="paginator"
@@ -92,6 +93,7 @@
             <define-column label="当前库存" key="cabnietTotalCount" field="totalCount"></define-column>
             <define-column label="当前库存总价(￥)" key="total" field="totalPrice"></define-column>
             <define-column label="使用次数" key="cabinetCount" field="count"></define-column>
+            <define-column label="供应商" key="cabnietsupplier" field="supplier" v-if="show=='singlePoliceCategory'"></define-column>
           </define-table>
         </div>
         <div></div>

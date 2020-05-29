@@ -14,17 +14,17 @@
                 <define-column label="图片" v-slot="{ data }" style="width: 30px">
                     <img class="img" :src="data.row.image" alt="暂无图片"/>
                 </define-column>
-                <define-column label="装备名称" field="name"></define-column>
+                <define-column label="装备名称" field="name" ></define-column>
                 <define-column label="装备型号" field="model"></define-column>
                 <define-column label="供应商" field="supplier.name"></define-column>
                 <define-column label="保质期(天)" v-slot="{data}">
-                    <date-input v-model="data.row.shelfLife" :disabled="true"  ></date-input>
+                    <date-input v-model="data.row.shelfLife" :disabled="true" placeholder="-" ></date-input>
                 </define-column>
                 <define-column label="充电周期(天)" v-slot="{data}">
-                    <date-input v-model="data.row.chargeCycle" :disabled="true" ></date-input>
+                    <date-input v-model="data.row.chargeCycle" :disabled="true"  placeholder="-" ></date-input>
                 </define-column>
                 <define-column label="保养周期(天)" v-slot="{data}">
-                    <date-input v-model="data.row.upkeepCycle" :disabled="true" ></date-input>
+                    <date-input v-model="data.row.upkeepCycle" :disabled="true" placeholder="-"  ></date-input>
                 </define-column>
             </define-table>
         </div>
