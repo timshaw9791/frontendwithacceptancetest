@@ -161,7 +161,7 @@ export default {
             ]
           });
           findEquipLossStatistics({
-            categorys: 3,
+            categories: 3,
             level: "ALL",
             search: ""
           }).then(res => {
@@ -205,7 +205,7 @@ export default {
       cabinetLoss().then(res => {
         let tabList = {
           commonStock: res.reduce(
-            (v, k) => v + k.cabinetStock + k.totalCount,
+            (v, k) => v + k.cabinetStock + k.totalCount+k.outHouseCount,
             0
           ),
           totalCount: res.reduce((v, k) => v + k.totalCount, 0),
@@ -240,7 +240,7 @@ export default {
       this.id = data.data.id;
       if (this.show == "genres") {
         findEquipLossStatistics({
-          categorys: 3,
+          categories: 3,
           id: data.data.id,
           level: "GENRE",
           search: this.detailSearch
@@ -254,7 +254,7 @@ export default {
         });
       } else if (this.show == "All") {
         findEquipLossStatistics({
-          categorys: 3,
+          categories: 3,
           level: "ALL",
           search: this.detailSearch
         }).then(res => {
@@ -270,7 +270,7 @@ export default {
         });
       } else if (this.show == "category") {
         findEquipLossStatistics({
-          categorys: 3,
+          categories: 3,
           id: data.data.id,
           level: "CATEGORY",
           search: this.detailSearch
@@ -288,7 +288,7 @@ export default {
       } else if (this.show == "singlePolice") {
         cabinetLoss().then(res => {
           res.forEach(item => {
-            item.cabinetStock = item.cabinetStock + item.totalCount;
+            item.cabinetStock = item.cabinetStock + item.totalCount+item.outHouseCount;
           });
           this.equipArg = res;
           this.equipArg.forEach(item => {
@@ -302,7 +302,7 @@ export default {
       } else if (this.show == "singlePoliceCategory") {
         cabinetLossCategories(data.data.id).then(res => {
           res.forEach(item => {
-            item.cabinetStock = item.cabinetStock + item.totalCount;
+            item.cabinetStock = item.cabinetStock + item.totalCount+item.outHouseCount;
           });
           this.equipArg = res;
           //   this.paginator.totalPages = res.totalPages;
@@ -328,7 +328,7 @@ export default {
           if (this.show == "genres") searchI = "GENRE";
           if (this.show == "category") searchI = "CATEGORY";
           findEquipLossStatistics({
-            categorys: 3,
+            categories: 3,
             id: this.id,
             level: searchI,
             search: newval
