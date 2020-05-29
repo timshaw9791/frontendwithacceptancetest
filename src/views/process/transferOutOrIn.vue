@@ -76,7 +76,7 @@
     import {transEquips} from "@/common/js/transEquips";
     import {mapGetters} from "vuex";
     import {activeTask, processInbound, processOutbound, transferOrders} from "@/api/process";
-    import {killProcess} from "@/common/js/rfidReader";
+    import {killProcess,start} from "@/common/js/rfidReader";
 
     export default {
         name: "transferOutOrIn",   // 调拨出入库
