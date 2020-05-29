@@ -86,8 +86,7 @@ export function transEquips(equips, groupRules = 'args', simplifyRules = 'rfids'
                     items: item,
                     count: item.length,
                 }
-            }
-        )
+            })
     }
     return {
         equipItems: equipItems,

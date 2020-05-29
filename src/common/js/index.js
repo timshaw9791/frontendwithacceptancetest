@@ -105,10 +105,10 @@ export function formatFuncOrder(data) {
     if(data.policeCabinet!=null){
         if (data.policeCabinet.category == 0) {
             return `单警柜${data.policeCabinet.cabinetNumber}(${data.policeCabinet.singleCabinetUser.name})`
-        } else if (data.categoryEnum == 1) {
-            return `公共柜(${data.policeCabinet.cabinetNumber}`
-        } else if (data.categoryEnum == 2) {
-            return `备用柜(${data.policeCabinet.cabinetNumber}`
+        } else if (data.policeCabinet.category == 1) {
+            return `公共柜(${data.policeCabinet.cabinetNumber})`
+        } else if (data.policeCabinet.category == 2) {
+            return `备用柜(${data.policeCabinet.cabinetNumber})`
         } 
     }else {
         let surface = 'A'

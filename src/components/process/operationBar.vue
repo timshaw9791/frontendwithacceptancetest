@@ -4,7 +4,7 @@
             <base-button label="出库" @click="outbound"></base-button>
         </div>
         <div v-if="taskDefinitionKey.includes('inbound')">
-            <base-button label="出库" @click="inbound"></base-button>
+            <base-button label="入库" @click="inbound"></base-button>
         </div>
         <div v-if="taskDefinitionKey.includes('apply')">
             <base-button label="驳回" @click="refused"></base-button>
@@ -14,9 +14,9 @@
             <base-button label="重填" @click="edit"></base-button>
             <base-button label="作废" @click="invalid"></base-button>
         </div>
-        <div class="receipt" v-if="isInHouse||isOutHouse">
-            <base-button label="查看入库单" @click="showOutOrder" v-if="showOutOrder"></base-button>
-            <base-button label="查看出库单" @click="showInOrder" v-if="isInHouse"></base-button>
+        <div v-if="isShowIn||isShowOut">
+            <base-button label="查看入库单" @click="showInOrder" v-if="isShowIn"></base-button>
+            <base-button label="查看出库单" @click="showOutOrder" v-if="isShowOut"></base-button>
         </div>
     </div>
 </template>
@@ -33,11 +33,11 @@
                 type: String,
                 default: ''
             },
-            isInHouse: {
+            isShowIn: {
                 type:Boolean,
                 default:false
             },
-            isOutHouse: {
+            isShowOut: {
                 type:Boolean,
                 default:false
             },
@@ -67,6 +67,10 @@
             invalid() {
                 this.$emit('invalid')
             }
+        },
+        created(){
+            console.log("我是组件")
+            console.log(this.isShowOut)
         }
     }
 </script>

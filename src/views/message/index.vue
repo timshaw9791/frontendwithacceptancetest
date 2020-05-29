@@ -78,7 +78,8 @@ export default {
 	},
 	methods: {
 		fetchData(tips=false, checkBox=false) {
-			(tips || checkBox ) && (this.fetchParams.pageInfo.page = 1);
+			(tips || checkBox ) && (this.fetchParams.pageInfo.page = 1, this.selectIndex = -1);
+			console.log(this.selectIndex);
 			this.fetchParams.jpql = this.onlyShowStar?
 				"select ms from Message ms where ms.newStar = true and ms.userId = ?1":
 				"select ms from Message ms where ms.userId = ?1 order by ms.createTime desc";

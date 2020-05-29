@@ -184,7 +184,7 @@ export default {
       } else return 0;
     },
     compuntedRate(){
-        return (this.show=='singlePolice'||this.show=='singlePoliceCategory'?this.addNum(4)/this.addNum(5):this.addNum(4)/this.addNum(1)*100).toFixed(2)
+        return this.show=='singlePolice'||this.show=='singlePoliceCategory'?(this.addNum(4)/this.addNum(5)*100).toFixed(2):(this.addNum(4)/this.addNum(1)*100).toFixed(2)
     },
     addNum(item) {
       return this.equipArg.reduce((v, k) => {
