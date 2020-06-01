@@ -33,7 +33,7 @@
           <define-input
             :label="show=='genres'||show=='singlePolice'?'小类':'装备参数/供应商'"
             v-model="detailSearch"
-            v-if="show!='All'"
+            v-if="show!='All'&&show!='singlePolice'"
           ></define-input>
         </div>
         <div class="lossStatistics-body-right-top">

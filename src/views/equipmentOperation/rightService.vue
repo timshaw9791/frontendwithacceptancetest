@@ -29,7 +29,7 @@
                                   :tableEdit="false"></entity-input>
                 </define-column>
                 <define-column label="维修时长" v-slot="{data}">
-                    <date-input v-model="data.row.createTime" :filter="toDay" :tableEdit="false"></date-input>
+                    <date-input v-model="data.row.createTime" filter="toDay" :tableEdit="false"></date-input>
                 </define-column>
             </define-table>
         </div>
