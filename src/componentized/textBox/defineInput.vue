@@ -1,15 +1,18 @@
 <template>
   <div class="define-input-container" ref="defineInput" :style="`width:${fixWidth};float:${align};margin:${margin}`"
       :class="[styleObj,{'disabled':disabled&&inTableStateContrl,'border':(tableEdit&&edit)}]" @click="changeEditState(true)">
-    <div class="label" v-if="!inTable&&haveLabel">{{ label }}
+    <div class="label" v-if="!inTable&&haveLabel">
+      <i :class="`iconfont ${iconfont}`" v-if="iconfont"></i>
+      <span v-else>{{ label }}</span>
       <span class="required" v-if="required">*</span>
     </div>
-    <input :type="pattern" class="input" :disabled="disabled" v-model="insideValue" 
+    <input :type="insidePattern" class="input" :disabled="disabled" v-model="insideValue" 
       :maxlength="maxlength" @change="reg" :readonly="!(tableEdit&&edit)" :placeholder="placeholder"
       @blur="changeEditState(false)" @keydown.13="changeEditState(false)"/>
-    <div class="icon" v-show="insideValue!=''&&clearable&&!disabled&&tableEdit&&edit">
-      <i class="iconfont iconwenbenkuangshanchu" @click="clear"></i>
-    </div>
+      <div class="icon" v-show="insideValue!=''&&clearable&&!disabled&&tableEdit&&edit">
+        <i class="iconfont iconwenhao" @click="trigglePattern" v-if="pattern=='password'"></i>
+        <i class="iconfont iconwenbenkuangshanchu" @click="clear"></i>
+      </div>
   </div>
 </template>
 
@@ -26,13 +29,18 @@ export default {
       styleObj: {
         error: false,
         'table-error': false
-      }
+      },
+      insidePattern: 'text' , // 内部pattern状态
     };
   },
   props: {
     label: {
       type: String,
-      default: "标题"
+      default: ""
+    },
+    iconfont: {
+      type: String,
+      default: ''
     },
     value: {
       type: [String, Number],
@@ -120,6 +128,9 @@ export default {
     changeEditState(state) {
       if(!this.inTable || this.disabled) return;
       this.edit = state;
+    },
+    trigglePattern() { // 在输入框为密码框类型时，用以切换值是否可见
+      this.insidePattern = this.insidePattern=='text'?'password':'text';
     }
   },
   watch: {
@@ -134,6 +145,7 @@ export default {
   },
   created() {
     this.insideValue = this.value;
+    this.insidePattern = this.pattern;
   },
   mounted() {
     try {
@@ -163,7 +175,7 @@ export default {
   border-radius: 4px;
   box-sizing: border-box;
   margin: 0 0.0521rem;
-  .iconwenbenkuangshanchu {
+  .iconfont {
     display: none;
   }
   .label {
@@ -191,7 +203,9 @@ export default {
     color: #C0C4CC;
   }
   .icon {
-    width: 35px;
+    min-width: 35px;
+    overflow: hidden;
+    display: inline-flex;
     padding: 0 10px;
   }
 }
@@ -214,7 +228,7 @@ export default {
   }
 }
 .define-input-container:hover {
-  .iconwenbenkuangshanchu {
+  .iconfont {
     display: inline-block;
   }
 }

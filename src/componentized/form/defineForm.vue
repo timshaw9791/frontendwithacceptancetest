@@ -1,5 +1,5 @@
 <template>
-    <div class="define-form-container" :style="`width:${fixWidth};float:${align};margin:${margin}`">
+    <div class="define-form-container" :style="`width:${fixWidth};float:${align};margin:${margin};padding:${padding}`">
         <!-- <slot name="form"></slot> -->
         <slot></slot>
     </div>
@@ -20,6 +20,14 @@ export default {
             type: String,
             default: '0'
         },
+        padding: {
+            type: String,
+            default: '0'
+        },
+        tip: { // 未通过时是否内部提示
+            tyep: Boolean,
+            default: true
+        }
     },
     methods: {
         validate(callBack) {
@@ -28,7 +36,7 @@ export default {
                 return;
             }
             typeof this.$slots.default == 'undefined'?callBack(true):this.$slots.default.filter(cmp => cmp.componentInstance&&'valid' in cmp.componentInstance.$attrs)
-                .map(cmp => cmp.componentInstance.reg()).every(s => s)?callBack(true):this.$message.warning('表单验证不通过');callBack(false);
+                .map(cmp => cmp.componentInstance.reg()).every(s => s)?callBack(true):(this.tip&&this.$message.warning('表单验证不通过'),callBack(false));
         }
     },
     computed: {
