@@ -6,12 +6,12 @@
                     <select-charging-station :placeholder="'选择照明路数'" :select="select.selectList"
                                              @selectRole="selectSation" :havaDefault="true"></select-charging-station>
                    <div style="width: 210px;margin-left: 0.1042rem">
-                       <switch-control :width="70" :active="active.all" :inactive="inactive.all" @handleChange="changeAll"></switch-control>
+                       <switch-control :width="70" :status="status" :active="active.all" :inactive="inactive.all" @handleChange="changeAll"></switch-control>
                    </div>
                 </div>
                 <div class="lighting-controls">
                    <light-control v-for="(item,index) in lightList" :light="item" :active="active.item" 
-                   :inactive="inactive.item" :index="Number(index)" :key="'kt'+index"></light-control>
+                   :inactive="inactive.item" :index="Number(index)" :key="'kt'+index" @success="success"></light-control>
                 </div>
             </div>
         </dialogs>
@@ -36,7 +36,7 @@
         },
         data(){
             return{
-                status:null,
+                status: false,
                 select:{
                     selectList:[],
                 },
@@ -73,6 +73,7 @@
                 let route = Number(data[0])+1,
                     statusArr = data.toString().split('').reverse();
                 statusArr.pop(); // 去除route数据
+                this.status = statusArr.slice(0, this.count).every(item => item==0);
                 this.lightList = statusArr.map((status, number) => ({number:number+1,status,route})).slice(0, this.count);
             },
             getLightQuery() {
@@ -86,7 +87,12 @@
                     this.lightList.forEach(item => {
                         item.status = data?0:1
                     })
+                    this.status = data;
                 })
+            },
+            success(data) { // 单个灯光状态改变 用以判断一键开关的状态
+                this.lightList[data.number-1].status = data.status?0:1;
+                this.status = this.lightList.every(item => item.status==0);
             },
             show(){
                 this.getLightQuery();
