@@ -202,6 +202,7 @@ export default {
     },
     changePage() {},
     clickNode(data) {
+      this.detailSearch=''
       this.$nextTick(() => {
         this.$refs.table.refreshLayout();
       });
@@ -296,6 +297,7 @@ export default {
             // this.paginator.totalElements = res.totalElements;
           });
         } else if (this.show == "singlePoliceCategory") {
+          console.log(allPoliceStatisticCategories);
           allPoliceStatisticCategories(this.id, newval).then(res => {
             this.equipArg = res;
             // this.paginator.totalPages = res.totalPages;
