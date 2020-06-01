@@ -9,7 +9,7 @@
                               :options="{search:'organUnits'}"></entity-input>
                 <define-input label="出库库房" v-model="order.house.name"
                               :disabled="true"></define-input>
-                <entity-input label="出库人员" v-model="order.operator" format="{name}({policeSign})" :disabled="true"></entity-input>
+                <entity-input label="出库人员" v-model="order.operator" :disabled="true"></entity-input>
             </div>
             <div class="table-box">
                 <bos-tabs :option="isInfo?['tabs']:['tabs', 'contrast']" :layoutRatio="isInfo?[1,1]:[2,1]">

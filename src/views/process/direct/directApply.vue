@@ -123,8 +123,8 @@
                 transferOrders(this.processInstanceId).then(
                     res => {
                         this.transferApplyOrder = res.transferApplyOrder
-                        !!res.inboundEquipsOrder  && (this.inboundEquipsOrder = res.inboundEquipsOrder) && (this.isShowIn = true)
-                        !!res.outboundEquipsOrder && (this.outboundEquipsOrder = res.outboundEquipsOrder) && (this.isShowOut = true)
+                        !!res.inboundEquipsOrder  && (this.inboundEquipsOrder = res.inboundEquipsOrder)
+                        !!res.outboundEquipsOrder && (this.outboundEquipsOrder = res.outboundEquipsOrder)
                     }
                 )
                 getHistoryTasks(this.processInstanceId).then(
