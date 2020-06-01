@@ -16,7 +16,7 @@
                             :highLightCurrent="true"  slot="total"  :showSummary="true" :summaryFunc="sumFunc">
                              <define-column label="操作" width="100"  v-slot="{ data }">
                                 <i class="iconfont icontianjialiang"></i>
-                                <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
+                                <i class="iconfont iconyichuliang" @click="changeRow(data)"></i>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
                                 <entity-input v-model="data.row.equipArg"  :options="{detail:'equipArgsDetails'}" format="{name}({model})" :tableEdit="false" ></entity-input>
@@ -106,6 +106,7 @@ export default {
             },
             findIndex:0,
             rfidsList:[],
+            checkList:[],
             listData:[{
                     equipArg: '',
                     location: '',
@@ -122,9 +123,9 @@ export default {
           selRow(data) { // 单选表格行
            this.findIndex=data.index
       },
-       changeRow(state,data){
-
-           this.listData[this.findIndex].clist=[{rfid:'',serial:''}]
+       changeRow(data){
+           this.listData[data.$index].clist=[{rfid:'',serial:''}]
+           this.listData[data.$index].keepcount=0
        },
        changeTab(data){
                 data.key=="total"?killProcess(this.pid):''
@@ -133,7 +134,7 @@ export default {
             {
                 state?this.listData[this.findIndex].clist.push({rfid:'',serial:''}):this.listData[this.findIndex].clist.splice(data.$index, 1)
                 state?'':this.listData[this.findIndex].keepcount--
-                if(this.listData[this.findIndex].clist.length==1){
+                if(this.listData[this.findIndex].clist.length==0){
                     this.listData[this.findIndex].clist=[{rfid:'',serial:''}]
                 }
             },
@@ -162,6 +163,7 @@ export default {
       classDataifyRfid(data)
       {
           let flag=true
+          console.log(this.rfidsList);
           console.log(this._.findIndex(this.rfidsList,data[0].rfid));
           this.listData.forEach(item=>{
               if(item.equipArg.name==data[0].equipArg.name&&item.location.id==data[0].location.id&&item.equipArg.model==data[0].equipArg.model)
@@ -211,9 +213,13 @@ export default {
       readData(){
                 killProcess(this.pid)
                 start("java -jar scan.jar", (data) => {
-                     findByRfids(data).then(res=>{
-                     this.classDataifyRfid(res)
-                   })
+                    this.checkList=[]
+                    this.listData.map((v,k)=>{v.clist.filter(it=>{it.rfid==data?this.checkList.push(it.rfid):''})})//
+                    if(this.checkList.length==0){
+                    findByRfids(data).then(res=>{
+                        this.classDataifyRfid(res)
+                    })    
+                }
                     }, (fail) => {
                         this.index = 1;
                         this.$message.error(fail);
