@@ -19,13 +19,14 @@
                     <!--装备总清单-->
                     <define-table :havePage="false" :data="equipItems" @changeCurrent="selRow"
                                   :showSummary="true" :summaryFunc="sumCountAndPrice" :highLightCurrent="true"
-                                  slot="total" ref="totalTable">
+                                  slot="total" ref="totalTable" :init-select="true">
                         <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
+                            <i class="iconfont icontianjialiang" @click="addRow()" v-if="!isInbound"></i>
                             <i class="iconfont iconyichuliang" @click="$delRow(equipItems,data.$index)"></i>
                         </define-column>
                         <define-column label="装备位置" v-slot="{ data }" v-if="isInbound">
-                            <entity-input v-model="data.row.location" format=""
-                                          :disabled="isInfo"></entity-input>
+                            <entity-input v-model="data.row.locationInfo" :options="{search:'locationSelect'}"
+                                          :formatFunc="$formatFuncLoc" :tableEdit="true"></entity-input>
                         </define-column>
                         <define-column label="装备参数" v-slot="{ data }">
                             <entity-input v-model="data.row.equipArg" format="{name}({model})"
@@ -74,7 +75,8 @@
     import HardwareSelect from "@/components/hardwareSelect";
     import {transEquips} from "@/common/js/transEquips";
     import {mapGetters} from "vuex";
-    import {activeTask, processOutbound, transferOrders} from "@/api/process";
+    import {activeTask, processInbound, processOutbound, transferOrders} from "@/api/process";
+    import {killProcess,start} from "@/common/js/rfidReader";
 
     export default {
         name: "transferOutOrIn",   // 调拨出入库
@@ -93,7 +95,7 @@
                     },
                     equips: []
                 },
-                equipItems: [{items: [{locationInfo: {}}]}],
+                equipItems: [{items: [], locationInfo: {}}],
                 totalIndex: -1,
                 isInfo: false,
                 isInbound: false,
@@ -103,7 +105,8 @@
                 taskId: '',
                 title: '',
                 highLightCurrent: false,
-                outboundEquips: []
+                outboundEquips: [],
+                pid:''
             }
         },
         methods: {
@@ -157,32 +160,70 @@
                             organUnit: this.order.organUnit
                         }
                     })
-                } else {
+                    return
+                }
+                if (!this.isInbound) {
                     this.fixEquipItems(this.order.equips)
                 }
             },
             readData() {
                 if (!this.isInbound) {
-                    let rfids = ['7777778888', '123456781112131415161718']
-                    findByRfids(rfids, true).then(
-                        res => {
-                            this.readEquips = res
-                            this.fixEquipItems(this.readEquips)
-                        }
-                    )
+                    killProcess(this.pid)
+                    start("java -jar scan.jar", (data) => {
+                        findByRfids(data, true).then(
+                            res => {
+                                this.readEquips = this.readEquips.concat(res)
+                                this.fixEquipItems(this.readEquips)
+                            }
+                        )
+                    }, (fail) => {
+                        this.index = 1;
+                        this.$message.error(fail);
+                    }, (pid, err) => {
+                        pid ? this.pid = pid : this.$message.error(err)
+                    })
                 } else {
-                    let data = '7777778888'
                     // 1.判断是否选中当前行
                     // 2.判断当前行是否有位置信息
                     if (this.totalIndex === -1) {
                         this.$message.error("先选择需要扫描的位置")
+                        return
                     }
-                    this.outboundEquips.forEach(item => {
-                        console.log(item)
-                        console.log(this.readEquips)
-                        item.rfid === data ? this.readEquips.push(item) : this.$message.error("该装备不在出库列表内！")
-                        this.fixEquipItems(this.readEquips)
+                    killProcess(this.pid)
+                    start("java -jar scan.jar", (data) => {
+                        let tempLocation = this.equipItems[this.totalIndex].locationInfo
+                        this.outboundEquips.forEach(item => {
+                            let temp = this.equipItems[this.totalIndex]
+                            if (item.rfid !== data) {
+                                this.$message.error("该装备不在出库装备列表内！")
+                                return
+                            }
+                            item.locationInfo = tempLocation
+                            // 要删价格
+                            item.price = '1'
+                            item.productTime = '1590721943'
+                            if (temp.hasOwnProperty("equipArg")) {
+                                if (item.equipName + "(" + item.equipModel + ")" !== temp.equipArg) {
+                                    this.$message.error("该装备与当前选中的装备参数不匹配！")
+                                    return
+                                }
+                                temp.items.push(item)
+                                temp.count = temp.items.length
+                                this.$forceUpdate()
+                            } else {
+                                temp.equipArg = item.equipName + "(" + item.equipModel + ")"
+                                temp.items.push(item)
+                                temp.count = temp.items.length
+                                this.equipItems[this.totalIndex] = temp
+                            }
+                        })
+                    }, (fail) => {
+                        this.index = 1;
+                        this.$message.error(fail);
+                    }, (pid, err) => {
+                        pid ? this.pid = pid : this.$message.error(err)
                     })
+                  this.addRow()
                 }
             },
             fixEquipItems(data) {
@@ -210,12 +251,15 @@
             },
             selRow(data) {
                 this.totalIndex = data.index
-                console.log(data)
+            },
+            addRow() {
+                this.equipItems.push({items: [], locationInfo: {}})
             },
             clean() {
 
             },
             submit() {
+                this.equipItems.pop()
                 _.map(this.equipItems, (item) => {
                     this.order.equips = this.order.equips.concat(item.items)
                     this.order.equips.equipId = this.order.equips.id
@@ -225,7 +269,14 @@
                 if (!this.isInbound) {
                     processOutbound(this.taskId, this.order)
                 } else {
-
+                    this.order.inOutHouseItems = this.order.equips
+                    this.order.inboundOrganUnitId = this.order.organUnit.id
+                    this.order.inboundOrganUnitName = this.order.organUnit.name
+                    this.order.operator = {
+                        operatorId : this.order.operator.id,
+                        operator : this.order.operator.name
+                    }
+                    processInbound(this.taskId, this.order)
                 }
             }
         },
@@ -244,7 +295,7 @@
         },
         watch: {
             'equipItems.length'(newVal) {
-                !newVal && this.equipItems.push({items: []})
+                !newVal && this.equipItems.push({items: [], locationInfo: {}})
             }
         },
     }
