@@ -18,7 +18,7 @@
                                   :tableEdit="false" format="{name}({model})"></entity-input>
                 </define-column>
                 <define-column label="装备数量" v-slot="{ data }">
-                    <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input>
+                    <define-input v-model="data.row.items.length" type="Number" :tableEdit="false"></define-input>
                 </define-column>
             </define-table>
             <define-table ref="detailTable" :data="equipItems[totalIndex].items" :havePage="false" slot="detail">

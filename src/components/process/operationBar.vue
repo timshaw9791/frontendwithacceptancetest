@@ -6,7 +6,7 @@
         <div v-if="taskDefinitionKey.includes('inbound')">
             <base-button label="入库" @click="inbound"></base-button>
         </div>
-        <div v-if="taskDefinitionKey.includes('apply')">
+        <div v-if="taskDefinitionKey.includes('audit')">
             <base-button label="驳回" @click="refused"></base-button>
             <base-button label="审核" @click="agree"></base-button>
         </div>
@@ -68,10 +68,6 @@
                 this.$emit('invalid')
             }
         },
-        created(){
-            console.log("我是组件")
-            console.log(this.isShowOut)
-        }
     }
 </script>
 

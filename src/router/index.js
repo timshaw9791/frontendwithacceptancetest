@@ -135,12 +135,17 @@ export const asyncRouterMap = [{
         }, {
             path: 'transferApply', // 调拨申请页面
             name: 'transferApply',
-            component: _import('process/transferApply'),
+            component: _import('process/transfer/transferApply'),
             hidden: true,
         }, {
-            path: 'transferOutOrIn', // 调拨出入库
-            name: 'transferOutOrIn',
-            component: _import('process/transferOutOrIn'),
+            path: 'transferOut', // 调拨出库
+            name: 'transferOut',
+            component: _import('process/transfer/transferOut'),
+            hidden: true,
+        },{
+            path: 'transferIn', // 调拨入库
+            name: 'transferIn',
+            component: _import('process/transfer/transferIn'),
             hidden: true,
         }, {
             path: 'agencyMatters',

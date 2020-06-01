@@ -152,3 +152,23 @@ export function processInbound(taskId,processDto){ // A端调拨入库
         data: processDto
     },true)
 }
+
+export function processesDelete(params) { //作废
+    return request({
+        url: baseBURL+'/workflow/processes/delete',
+        method:'DELETE',
+        params
+    })
+}
+
+
+export function processAudit(taskId, data) { //审批
+    return request({
+        url: baseBURL+`/workflow/audit`,
+        method:'PUT',
+        params:{
+            taskId
+        },
+        data
+    })
+}

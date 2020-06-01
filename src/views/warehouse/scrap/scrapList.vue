@@ -50,6 +50,8 @@
             fetchData() {
                 scarpsOrders(this.paginator).then(res => {
                     this.list = res.content
+                    this.paginator.totalElements = res.totalElements
+                    this.paginator.totalPages = res.totalPages
                     this.fixData()
                 })
             },

@@ -41,7 +41,7 @@
     import {transEquips} from "@/common/js/transEquips";
     import TaskHistory from "@/components/process/taskHistory";
     import equipItems from "@/components/process/equipItems";
-    import {completeTask, processesDelete, taskDetail} from "@/api/workflow";
+    import {processAudit, processesDelete} from "@/api/process";
     import OperationBar from "@/components/process/operationBar";
     import {mapGetters} from "vuex";
 
@@ -112,34 +112,32 @@
                 })
             },
             submit() {
-                if (this.taskDefinitionKey !== "reApple"){
+                if (this.taskDefinitionKey !== "reApple") {
                     processStart({
                         processDefinitionKey: this.key,
                     }, this.order).then(() => {
                         this.$router.push({name: 'myProcess'});
                     })
-                }else {
-                    scrapReapply(this.taskId,this.order).then(
+                } else {
+                    scrapReapply(this.taskId, this.order).then(
                         this.$router.push({name: 'agencyMatters'})
                     )
                 }
             },
             refused() {  // 驳回
-                completeTask(this.taskId,
+                processAudit(this.taskId,
                     [{pass: false, note: '驳回测试'}]).then(() => {
                     this.back()
                 })
             },
             agree() {  // 审批
-                completeTask(this.$route.query.taskId,
+                processAudit(this.$route.query.taskId,
                     [{pass: true, note: '审核通过'}]).then(() => {
                     this.back()
                 })
             },
             invalid() { //作废
-                processesDelete({
-                    processInstanceId: this.$route.query.processInstanceId
-                }, true).then(() => {
+                processesDelete(this.processInstanceId, true).then(() => {
                     this.$router.back()
                 })
             },

@@ -6,8 +6,8 @@
                            :is-show-out="isShowOut" :is-show-in="isShowIn"
                            @refused="refused" @agree="agree"
                            @invalid="invalid" @edit="edit"
-                           @outbound="outbound" @inbound="inbound"
-                           @showOutOrder="showOutOrder" @showInOrder="showInOrder"
+                           @outbound="outbound" @showOutOrder="showOutOrder"
+                           @inbound="inbound" @showInOrder="showInOrder"
             ></operation-bar>
             <div class="apply-process-body">
                 <div class="process-info">
@@ -23,15 +23,19 @@
                     </entity-input>
                 </div>
                 <div class="process-info">
-                    <entity-input label="入库库房" :disabled="true" placeholder="-"></entity-input>
-                    <entity-input label="入库人员" :disabled="true" placeholder="-"></entity-input>
+                    <define-input label="入库库房" v-model="inboundEquipsOrder.house.name" :disabled="true"
+                                  placeholder="-"></define-input>
+                    <entity-input label="入库人员" v-model="inboundEquipsOrder.operator" :disabled="true"
+                                  placeholder="-" format="{name}({policeSign})"></entity-input>
                     <entity-input label="出库机构" v-model="transferApplyOrder.outboundOrganUnit" format="{name}"
                                   :options="{search:'organUnits'}" placeholder="请选择" :disabled="isInfo">
                     </entity-input>
-                    <entity-input label="出库库房" :disabled="true" placeholder="-"></entity-input>
+                    <define-input label="出库库房" v-model="outboundEquipsOrder.house.name" :disabled="true"
+                                  placeholder="-"></define-input>
                 </div>
                 <div class="process-info">
-                    <entity-input label="出库人员" :disabled="true" placeholder="-"></entity-input>
+                    <entity-input label="出库人员" v-model="outboundEquipsOrder.operator" :disabled="true"
+                                  placeholder="-" format="{name}({policeSign})"></entity-input>
                     <text-input label="申请原因" v-model="transferApplyOrder.note" :column="12" :tips="tips"
                                 :disabled="isInfo">
                     </text-input>
@@ -58,6 +62,9 @@
                 <base-button label="清空" align="right" size="large" type="danger" @click=""></base-button>
             </div>
         </div>
+        <serviceDialog title="提示" ref="RfDialog" @confirm="refused">
+            <define-input label="驳回原因" v-model="remark"></define-input>
+        </serviceDialog>
     </div>
 </template>
 
@@ -67,9 +74,10 @@
     import {transferStart, transferOrders, activeTask} from '@/api/process'
     import OperationBar from "@/components/process/operationBar";
     import EquipItems from "@/components/process/equipItems";
-    import {completeTask, processesDelete, taskDetail} from "@/api/workflow";
+    import {processAudit, processesDelete} from "@/api/process";
     import {getHistoryTasks} from "@/api/process";
     import TaskHistory from "@/components/process/taskHistory";
+    import serviceDialog from "@/components/base/serviceDialog"
     import {mapGetters} from "vuex";
 
     export default {
@@ -79,7 +87,8 @@
             OperationBar,
             myHeader,
             bosTabs,
-            TaskHistory
+            TaskHistory,
+            serviceDialog
         },
         data() {
             return {
@@ -88,8 +97,8 @@
                     equips: [{equipArg: {}}],
                     applicant: {}
                 },
-                outboundEquipsOrder: {id: ''},
-                inboundEquipsOrder: {id: ''},
+                outboundEquipsOrder: {operator: {}, house: {}},
+                inboundEquipsOrder: {operator: {}, house: {}},
                 tips: ['直接报废', '装备拿去维修，无法修补'],
                 taskDefinitionKey: '',
                 processDefinitionKey: '',
@@ -98,8 +107,9 @@
                 isInfo: false,
                 isLeaderEdit: false,
                 taskId: '',
-                isShowIn:false,
-                isShowOut:false
+                isShowIn: false,
+                isShowOut: false,
+                remark: ''
             }
         },
         methods: {
@@ -112,10 +122,9 @@
             fetchData() {
                 transferOrders(this.processInstanceId).then(
                     res => {
-                        console.log(res)
                         this.transferApplyOrder = res.transferApplyOrder
-                        !!res.outboundEquipsOrder  && (this.isShowOut = true) &&( this.inboundEquipsOrder = res.inboundEquipsOrder)
-                        !!res.inboundEquipsOrder && (this.isShowIn = true) &&( this.outboundEquipsOrder = res.outboundEquipsOrder)
+                        !!res.inboundEquipsOrder  && (this.inboundEquipsOrder = res.inboundEquipsOrder)
+                        !!res.outboundEquipsOrder && (this.outboundEquipsOrder = res.outboundEquipsOrder)
                     }
                 )
                 getHistoryTasks(this.processInstanceId).then(
@@ -130,7 +139,7 @@
                         ? 'reApply' : res.taskDefinitionKey
                 })
             },
-            addRow(){
+            addRow() {
                 this.transferApplyOrder.equips.push({equipArg: {}})
             },
             submit() {
@@ -138,14 +147,16 @@
                     this.$router.push({name: 'myProcess'});
                 })
             },
-            refused() {  // 驳回
-                completeTask(this.taskId,
-                    [{pass: false, note: '驳回测试'}]).then(() => {
+            showRfDialog() {
+                this.$refs.RfDialog.show()
+            },
+            refused() { // 驳回
+                processAudit(this.taskId, [{pass: false, note: this.remark}]).then(() => {
                     this.back()
                 })
             },
             agree() {  // 审批
-                completeTask(this.taskId,
+                processAudit(this.taskId,
                     [{pass: true, note: '审核通过'}]).then(() => {
                     this.back()
                 })
@@ -162,36 +173,36 @@
             },
             outbound() {
                 this.$router.push({
-                    path: 'transferOutOrIn',
+                    path: 'transferOut',
                     query: {type: 'out', processInstanceId: this.processInstanceId}
+                })
+            },
+            showOutOrder() {
+                this.$router.push({
+                    path: "transferOut",
+                    query: {type: "showOut", processInstanceId: this.processInstanceId}
                 })
             },
             inbound() {
                 this.$router.push({
-                    path: 'transferOutOrIn',
+                    path: 'transferIn',
                     query: {type: 'in', processInstanceId: this.processInstanceId}
                 })
             },
             showInOrder() {
                 this.$router.push({
-                    path: "transferOutOrIn",
-                    query: {
-                        type: "showIn",
-                        processInstanceId: this.processInstanceId
-                    }
+                    path: "transferIn",
+                    query: {type: "showIn", processInstanceId: this.processInstanceId}
                 })
             },
-            showOutOrder() {
-                this.$router.push({
-                    path: "transferOutOrIn",
-                    query: {
-                        type: "showOut",
-                        processInstanceId: this.processInstanceId
-                    }
-                })
-            }
         },
         created() {
+            //query: {
+            // name: data.processInstanceName,
+            // processInstanceId: data.processInstanceId,
+            // type: 'todo',
+            // category: data.category
+            // }
             Object.assign(this, this.$route.query)
             if (this.processInstanceId) {
                 this.fetchData()
@@ -208,7 +219,8 @@
                 'warehouse',
                 'organUnit'
             ]),
-        },
+        }
+        ,
         watch: {
             'transferApplyOrder.equips.length'(newVal) {
                 !newVal && this.transferApplyOrder.equips.push({equipArg: {}})
