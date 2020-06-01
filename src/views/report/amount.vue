@@ -60,9 +60,9 @@
               key='equipArgs'
             />
             <define-column label="当前库存" key="totalCount" field="totalCount"></define-column>
+            <define-column label="当前库存总价(￥)" key="totalPrice" field="totalPrice"></define-column>
             <define-column label="可用数量" key="inHouseCount" field="inHouseCount"></define-column>
             <define-column label="领用数量" key="receiveUseCount" field="receiveUseCount"></define-column>
-            <define-column label="当前库存总价(￥)" key="totalPrice" field="totalPrice"></define-column>
             <define-column label="供应商" field="supplier" key="supplier" v-if="show=='category'"></define-column>
           </define-table>
           <define-table
@@ -81,9 +81,9 @@
               v-if="show=='singlePoliceCategory'"
             />
             <define-column label="当前库存" key="cabnietTotalCount" field="totalCount"></define-column>
+            <define-column label="当前库存总价(￥)" key="cabniettotalPrice" field="totalPrice"></define-column>
             <define-column label="可用数量" key="cabnietinHouseCount" :filter="(row)=>{return (title=='单警柜装备'||row.inHouseCount===null)?'--':row.inHouseCount}"></define-column>
             <define-column label="领用数量" key="cabnietreceiveUseCount" :filter="(row)=>{return (title=='单警柜装备'||row.receiveUseCount===null)?'--':row.receiveUseCount}"></define-column>
-            <define-column label="当前库存总价(￥)" key="cabniettotalPrice" field="totalPrice"></define-column>
             <define-column label="供应商" field="supplier" key="cabnietsupplier" v-if="show=='singlePoliceCategory'"></define-column>
           </define-table>
         </div>
@@ -202,6 +202,7 @@ export default {
     },
     changePage() {},
     clickNode(data) {
+      this.detailSearch=''
       this.$nextTick(() => {
         this.$refs.table.refreshLayout();
       });
@@ -296,6 +297,7 @@ export default {
             // this.paginator.totalElements = res.totalElements;
           });
         } else if (this.show == "singlePoliceCategory") {
+          console.log(allPoliceStatisticCategories);
           allPoliceStatisticCategories(this.id, newval).then(res => {
             this.equipArg = res;
             // this.paginator.totalPages = res.totalPages;

@@ -4,7 +4,7 @@ import request from '../common/js/request'
 /* 查询装备参数  通过名称*/
 export function getEpArgsList(params, state) {
     return request({
-        url: "/equip-args",
+        url: "/equip-args/name-or-model",
         method: "GET",
         params
     }, state)

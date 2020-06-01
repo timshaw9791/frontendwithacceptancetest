@@ -5,7 +5,7 @@
       <base-button label="一键开柜" align="right" :width="128" :height="25" :fontSize="20"></base-button>
     </div>
     <div class="data-list" v-if="!edit">
-      <bos-tabs :option="['contrast']" :layoutRatio="[4,3]" :contrastKey="['slot1', 'slot2']">
+      <bos-tabs :option="['contrast']" :layoutRatio="[3,4]" :contrastKey="['slot1', 'slot2']">
         <define-table
           :data="list"
           slot="slot1"
@@ -23,10 +23,10 @@
           <define-column label="警柜类型" v-slot="{ data }">
             <define-input v-model="data.row.category" :tableEdit="false"></define-input>
           </define-column>
-          <define-column label="警柜编号" v-slot="{ data }">
+          <define-column label="警柜编号" width="100" v-slot="{ data }">
             <define-input v-model="data.row.cabinetNumber" type="Number" :tableEdit="false"></define-input>
           </define-column>
-          <define-column label="所属人员" v-slot="{ data }">
+          <define-column label="所属人员" width="150" v-slot="{ data }">
             <define-input v-model="data.row.name" :tableEdit="false"></define-input>
           </define-column>
         </define-table>
@@ -40,17 +40,10 @@
           <define-column label="RFID" v-slot="{data}">
             <define-input v-model="data.row.rfid" :tableEdit="false"></define-input>
           </define-column>
-          <define-column label="装备序号" v-slot="{data}">
+          <define-column label="装备序号" width="200" v-slot="{data}">
             <define-input v-model="data.row.serial" :tableEdit="false"></define-input>
           </define-column>
-          <define-column label="装备参数" v-slot="{data}">
-            <entity-input
-              v-model="data.row.equipArg"
-              format="{name}({model})"
-              :tableEdit="false"
-              :options="{}"
-            ></entity-input>
-          </define-column>
+          <define-column label="装备参数" field="equipArg" :filter="(row)=>{return `${row.equipArg.name}(${row.equipArg.model})`}" ></define-column>
         </define-table>
       </bos-tabs>
     </div>

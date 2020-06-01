@@ -341,7 +341,7 @@ export default {
             // this.paginator.totalElements = res.totalElements;
           });
         } else if (this.show == "singlePoliceCategory") {
-          allPoliceStatisticCategories(this.id, newval).then(res => {
+          cabinetLossCategories(this.id, newval).then(res => {
             this.equipArg = res;
             // this.paginator.totalPages = res.totalPages;
             // this.paginator.totalElements = res.totalElements;

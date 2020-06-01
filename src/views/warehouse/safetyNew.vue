@@ -293,7 +293,9 @@
                     this.tree.categories[i].children=[]
                     await getcategoriesSafety(this.tree.genres[i].id).then(res=>{
                         let categories = res.content
-                        if(categories[0].category != null){
+                        console.log(res.content);
+                        if(categories.length!=0){
+                            if(categories[0].category != null){
                             categories.forEach(item=>{
                                 let temp = JSON.parse(JSON.stringify(item.category))
                                 temp.show="category"
@@ -301,6 +303,8 @@
                                 this.tree.categories[i].children.push(temp)
                             })
                         }
+                        }
+                        
                     })
                 }
             },
