@@ -95,7 +95,6 @@ export default {
                         this.newData = this._.map(cList, (v, k) => {
                             return {equipArg: v[0].equipArg}
                         })
-                        console.log(this.newData.length);
                         if(this.newData.length==1)
                         {
                             item.equipArgs=item.inOutHouseItems[0].equipName+'('+item.inOutHouseItems[0].equipModel+')'
