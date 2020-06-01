@@ -26,7 +26,9 @@
         methods:{
             changeItem(data){
                 lightSwitch({number:this.light.number,route:this.light.route,status:data})
-                    .then(res => {})
+                    .then(res => {
+                        this.$emit('success', {number:this.light.number,route:this.light.route,status:data})
+                    })
                     .catch(err => {
                         this.$refs.switch_single.fail();
                     })
