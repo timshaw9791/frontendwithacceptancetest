@@ -6,14 +6,14 @@
         </div>
         <div class="form-box">
             <div class="logo">
-                <img src="../../common/images/policeBadge.png" style="cursor:pointer" @click="windowClose">
+                <img src="../../common/images/policeBadge.png" style="cursor:pointer" @dblclick="windowClose">
                 <div>{{ title }}</div>
             </div>
             <define-form ref="form" :tip="false" margin="0.4167rem 0" padding="0 0.1042rem">
                 <define-input iconfont="iconzhanghao" v-model="loginForm.username" type="Require" 
                     placeholder="请输入账号" :column="12" margin="10px 0 0 0" valid>
                 </define-input>
-                <define-input iconfont="iconmima" v-model="loginForm.password" type="Require" 
+                <define-input iconfont="iconmima" v-model="loginForm.password" type="Require" @keyup.native.enter="handleLogin"
                     placeholder="请输入密码" pattern="password" :column="12" margin="0.1042rem 0 0 0" valid>
                 </define-input>
             </define-form>
