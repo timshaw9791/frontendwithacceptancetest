@@ -15,7 +15,7 @@ export function transferStart(processDefinitionKey, data) { // 调拨流程申�
     return request({
         url: baseBURL + '/workflow/transfer/start',
         method: 'POST',
-        processDefinitionKey:{
+        params:{
             processDefinitionKey
         },
         data

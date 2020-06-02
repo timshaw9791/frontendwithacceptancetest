@@ -144,12 +144,12 @@
             },
             submit() {
                 if(this.taskDefinitionKey === "reapply"){
-                    transferReapply( this.taskId, this.transferApplyOrder).then(() => {
+                    transferReapply(this.taskId, this.transferApplyOrder).then(() => {
                         this.$router.push({name: 'myProcess'});
                     })
                 }else {
-                    transferStart( this.key, this.transferApplyOrder).then(() => {
-                        this.$router.push({name: 'myProcess'});
+                    transferStart(this.key, this.transferApplyOrder).then(() => {
+                        this.$router.push({name:'myProcess'});
                     })
                 }
             },
