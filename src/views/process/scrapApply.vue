@@ -101,7 +101,7 @@
                     this.taskId = res.taskId
                     // 如果是任务处理人是我，且为申请任务，那么就显示是否重填
                     this.taskDefinitionKey = res.assignee === this.userInfo.id && res.taskDefinitionKey.includes('apply')
-                        ? 'reApply' : res.taskDefinitionKey
+                        ? 'reapply' : res.taskDefinitionKey
                 })
             },
             handleReadData(data) { // 读取数据
@@ -112,7 +112,7 @@
                 })
             },
             submit() {
-                if (this.taskDefinitionKey !== "reApple") {
+                if (this.taskDefinitionKey !== "reapply") {
                     processStart({
                         processDefinitionKey: this.key,
                     }, this.order).then(() => {

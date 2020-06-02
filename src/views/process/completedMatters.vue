@@ -14,7 +14,7 @@
                     <define-column label="请求标题" field="processInstanceName"></define-column>
                     <define-column label="任务名称" field="name"></define-column>
                     <define-column label="办理时间" :filter="(row)=>$filterTime(row.endTime)"></define-column>
-                    <define-column label="处理时间" :filter="(row)=>minuteFormate(row.endTime)"></define-column>
+                    <define-column label="处理时间" :filter="(row)=>minuteFormate(row.endTime-row.createTime)"></define-column>
                 </define-table>
             </div>
         </div>

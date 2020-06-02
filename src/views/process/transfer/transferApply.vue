@@ -44,7 +44,7 @@
                               :showSummary="true" :summaryFunc="$sumFunc" slot="total">
                     <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
                         <i class="iconfont icontianjialiang" @click="addRow()"></i>
-                        <i class="iconfont iconyichuliang" @click="$delRow(transferApplyOrder.equips,data.index)"></i>
+                        <i class="iconfont iconyichuliang" @click="$delRow(transferApplyOrder.equips,data.$index)"></i>
                     </define-column>
                     <define-column label="装备参数" v-slot="{ data }">
                         <entity-input v-model="data.row.equipArg" :options="{search:'equipArgsSelect'}"
@@ -71,7 +71,7 @@
 <script>
     import myHeader from 'components/base/header/header'
     import bosTabs from '@/componentized/table/bosTabs'
-    import {transferStart, transferOrders, activeTask} from '@/api/process'
+    import {transferStart, transferOrders, activeTask, transferReapply} from '@/api/process'
     import OperationBar from "@/components/process/operationBar";
     import EquipItems from "@/components/process/equipItems";
     import {processAudit, processesDelete} from "@/api/process";
@@ -136,16 +136,22 @@
                     this.taskId = res.taskId
                     // 如果是任务处理人是我，且为申请任务，那么就显示是否重填
                     this.taskDefinitionKey = res.assignee === this.userInfo.id && res.taskDefinitionKey.includes('apply')
-                        ? 'reApply' : res.taskDefinitionKey
+                        ? 'reapply' : res.taskDefinitionKey
                 })
             },
             addRow() {
                 this.transferApplyOrder.equips.push({equipArg: {}})
             },
             submit() {
-                transferStart({processDefinitionKey: this.key}, this.transferApplyOrder).then(() => {
-                    this.$router.push({name: 'myProcess'});
-                })
+                if(this.taskDefinitionKey === "reapply"){
+                    transferReapply( this.taskId, this.transferApplyOrder).then(() => {
+                        this.$router.push({name: 'myProcess'});
+                    })
+                }else {
+                    transferStart( this.key, this.transferApplyOrder).then(() => {
+                        this.$router.push({name: 'myProcess'});
+                    })
+                }
             },
             showRfDialog() {
                 this.$refs.RfDialog.show()
@@ -169,7 +175,7 @@
                 })
             },
             edit() { // 重填与编辑
-                this.isInfo = false
+                this.isInfo = true
             },
             outbound() {
                 this.$router.push({

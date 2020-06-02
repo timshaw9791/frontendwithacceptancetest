@@ -26,7 +26,7 @@
 
 <script>
     import myHeader from 'components/base/header/header'
-    import {listTableMixin} from '../../../field/mixins/listMixin.js'
+    import {listTableMixin} from '@/field/mixins/listMixin.js'
     import {inventoryOrder} from "@/api/inventory"
     import serviceDialog from '../../../components/base/serviceDialog'
 

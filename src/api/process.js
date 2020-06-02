@@ -12,11 +12,13 @@ export function processStart(params, data) { // 流程启动 通用接口
     })
 }
 
-export function transferStart(params, data) { // 调拨流程申请
+export function transferStart(processDefinitionKey, data) { // 调拨流程申请
     return request({
         url: baseBURL + '/workflow/transfer/start',
         method: 'POST',
-        params,
+        processDefinitionKey:{
+            processDefinitionKey
+        },
         data
     })
 }
@@ -26,6 +28,15 @@ export function transferOrders(processInstanceId) { // 调拨相关的单据
         url: baseBURL + '/workflow/transfer/orders',
         method: 'GET',
         params:{processInstanceId}
+    })
+}
+
+export function transferReapply(taskId,data) { // 调拨重填
+    return request({
+        url: baseBURL + '/workflow/transfer/reapply',
+        method: 'GET',
+        params:{taskId},
+        data
     })
 }
 
@@ -172,3 +183,4 @@ export function processAudit(taskId, data) { //审批
         data
     })
 }
+

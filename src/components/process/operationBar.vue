@@ -10,7 +10,7 @@
             <base-button label="驳回" @click="refused"></base-button>
             <base-button label="审核" @click="agree"></base-button>
         </div>
-        <div v-if="taskDefinitionKey.includes('reApply')">
+        <div v-if="taskDefinitionKey.includes('reapply')">
             <base-button label="重填" @click="edit"></base-button>
             <base-button label="作废" @click="invalid"></base-button>
         </div>

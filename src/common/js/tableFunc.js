@@ -13,6 +13,8 @@ function sumFunc(param) { // 表格合并行计算方法
 
 
 function delRow(data, index, callback) {
+    console.log('-----')
+    console.log(index)
     data.splice(index, 1);
     callback && callback();
 }

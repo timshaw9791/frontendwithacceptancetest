@@ -39,8 +39,8 @@
                 this.$router.push({
                     path: `${data.key}` + 'Apply',
                     query: {
-                        name: `${data.name}`,
-                        key: `${data.key}`,
+                        name: `${data.name}`, // 流程的名称
+                        key: `${data.key}`, // 该值为 processDefinitionKey
                     }
                 })
             },
