@@ -67,9 +67,9 @@
             </div>
             <div class="button" v-if="!isInfo">
                 <base-button label="提交" align="right" :width="128" :height="72" :fontSize="20"
-                             @click="submit"></base-button>
+                             @click="submit()"></base-button>
                 <base-button label="清空" align="right" :width="128" :height="72" :fontSize="20" type="danger"
-                             @click="clean"></base-button>
+                             @click="clean()"></base-button>
             </div>
         </div>
     </div>
@@ -85,7 +85,7 @@
     import {killProcess, start} from "@/common/js/rfidReader";
 
     export default {
-        name: "transferOutOrIn",   // 调拨出入库
+        name: "transferIn",   // 调拨入库
         components: {
             HardwareSelect,
             bosTabs,
@@ -107,7 +107,7 @@
                 isInbound: false,
                 processInstanceId: '',
                 readEquips: [], //读到的RFID
-                matchEquips: [],
+                matchEquips: [], //出库是为申请装备  入库时为出库装备
                 taskId: '',
                 title: '',
                 highLightCurrent: false,
@@ -169,7 +169,6 @@
                             this.$message.error("该装备不在出库装备列表内！")
                             return
                         }
-                        item.locationInfo = tempLocation
                         // 要删价格
                         item.price = '1'
                         item.productTime = '1590721943'
@@ -229,7 +228,8 @@
                 this.equipItems.push({items: [], locationInfo: {}})
             },
             clean() {
-
+                this.fetchData()
+                this.equipItems =[{items: [], locationInfo: {}}]
             },
             submit() {
                 let subOrder,tempLocation

@@ -24,8 +24,8 @@
                 <equipItems :equip-items="equipItems" :is-info="isInfo"
                             @handleReadData="handleReadData"></equipItems>
                 <div class="buttom" v-if="!isInfo">
-                    <base-button label="提交" align="right" size="large" @click="submit"></base-button>
-                    <base-button label="清空" align="right" size="large" type="danger"></base-button>
+                    <base-button label="提交" align="right" size="large" @click="submit()"></base-button>
+                    <base-button label="清空" align="right" size="large" type="danger" @click="clean()"></base-button>
                 </div>
                 <task-history :list="taskHistory" v-if="isInfo"></task-history>
             </div>
@@ -83,7 +83,6 @@
                     applicant: JSON.parse(window.localStorage.getItem("user"))
                 })
             },
-
             fetchData() {
                 scrapOrders(this.processInstanceId).then(
                     res => {
@@ -142,7 +141,11 @@
                 })
             },
             edit() { // 重填
-                this.isInfo = false
+                this.isInfo = true
+            },
+            clean(){
+                this.init()
+                this.equipItems = [{items: []}]
             }
         },
         created() {
@@ -153,7 +156,7 @@
                 this.fetchData()
             } else {
                 this.title = '报废详情'
-                this.init();
+                this.init()
             }
         },
         computed: {

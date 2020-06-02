@@ -58,8 +58,8 @@
             </div>
             <task-history :list="taskHistory" v-if="isInfo"></task-history>
             <div class="buttom" v-if="!isInfo">
-                <base-button label="提交" align="right" size="large" @click="submit"></base-button>
-                <base-button label="清空" align="right" size="large" type="danger" @click=""></base-button>
+                <base-button label="提交" align="right" size="large" @click="submit()"></base-button>
+                <base-button label="清空" align="right" size="large" type="danger" @click="clean()"></base-button>
             </div>
         </div>
         <serviceDialog title="提示" ref="RfDialog" @confirm="refused">
@@ -201,6 +201,9 @@
                     query: {type: "showIn", processInstanceId: this.processInstanceId}
                 })
             },
+            clean(){
+                this.init()
+            }
         },
         created() {
             //query: {
