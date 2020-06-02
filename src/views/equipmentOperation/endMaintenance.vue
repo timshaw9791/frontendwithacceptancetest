@@ -133,9 +133,9 @@
                             this.list.push(item)
                         })
                         let cList = this._.groupBy(this.list, item => `${item.equipArg.model}${item.location.id}`)
-                        this.newData = this._.map(cList, (v, k) => {
+                        this.newData =JSON.parse(JSON.stringify( this._.map(cList, (v, k) => {
                             return {equipArg: v[0].equipArg, copyList: v, count: v.length, location: v[0].location}
-                        })
+                        })))
                     }
                 } else {
                     this.$message.error('此装备不在保养状态')
@@ -143,6 +143,7 @@
             },
 
             readData() {
+               
                 killProcess(this.pid)
                 start("java -jar scan.jar", (data) => {
                     findByRfids(data).then(res => {
@@ -165,8 +166,14 @@
                 if (this.newData[this.findIndex].copyList.length == 1) {
                     this.newData[this.findIndex].copyList = [{rfid: '', serial: ''}]
                 }
+                if(!state){
+                    this.list.splice(this.list.findIndex(v=>v.rfid==this.newData[this.findIndex].copyList[data.$index].rfid),1)
+                }
             },
             changeRow(state, data) {
+                data.row.copyList.forEach(item=>{
+                    this.list.splice(this.list.findIndex(v=>v.rfid==item.rfid),1)
+                })
                 state ? this.newData.push({location: '', copyList: [{rfid: '', serial: ''}],}) :
                     this.newData.splice(data.$index, 1)
                 if (this.newData.length == 0) {
