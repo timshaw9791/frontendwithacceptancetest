@@ -124,8 +124,10 @@ export default {
         label: "name",
         children: "children"
       },
+      paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
       id: "",
       check: "",
+      equipArgList:[],
       equipArg: []
     };
   },
@@ -154,10 +156,12 @@ export default {
             level: "ALL",
             search: ""
           }).then(res => {
-            this.equipArg = res;
+            this.equipArg=res
+            this.addPolice();
+            // this.fixPageData(this.equipArg)
             // this.paginator.totalPages = res.totalPages;
             // this.paginator.totalElements = res.totalElements;
-            this.addPolice();
+           
           });
         });
     },
@@ -184,7 +188,8 @@ export default {
           receiveUseCount: res.reduce((v, k) => v + k.receiveUseCount, 0),
           totalPrice: res.reduce((v, k) => v + k.totalPrice, 0)
         };
-        this.equipArg.push(tabList);
+        this.equipArg.splice(0,0,tabList);
+        this.fixPageData(this.equipArg)
       });
     },
     async buildTree() {
@@ -200,7 +205,14 @@ export default {
         });
       }
     },
-    changePage() {},
+    fixPageData(data){
+      this.equipArgList=this._.chunk(data,10)
+      this.equipArg=this.equipArgList[this.paginator.page-1]
+      this.paginator.totalPages=this.equipArgList.length
+    },
+    changePage(page) {
+      this.equipArg=this.equipArgList[page-1]
+    },
     clickNode(data) {
       this.detailSearch=''
       this.$nextTick(() => {
@@ -216,7 +228,7 @@ export default {
           level: "GENRE",
           search: this.detailSearch
         }).then(res => {
-          this.equipArg = res;
+          this.fixPageData(res)
           //   this.paginator.totalPages = res.totalPages;
           //   this.paginator.totalElements = res.totalElements;
         });
@@ -226,7 +238,7 @@ export default {
           level: "ALL",
           search: this.detailSearch
         }).then(res => {
-          this.equipArg = res;
+          this.fixPageData(res)
           //   this.paginator.totalPages = res.totalPages;
           //   this.paginator.totalElements = res.totalElements;
           if (!this.check) {
@@ -240,7 +252,7 @@ export default {
           level: "CATEGORY",
           search: this.detailSearch
         }).then(res => {
-          this.equipArg = res;
+          this.fixPageData(res)
           this.equipArg.forEach(item => {
             item.equipArgs = `${item.name}(${item.model})`;
           });
@@ -249,7 +261,7 @@ export default {
         });
       } else if (this.show == "singlePolice") {
         allPoliceStatistic().then(res => {
-          this.equipArg = res;
+          this.fixPageData(res)
           this.equipArg.forEach(item => {
             if (item.cabinet == 0) item.cabinet = "单警柜装备";
             if (item.cabinet == 1) item.cabinet = "公共柜装备";
@@ -260,7 +272,7 @@ export default {
         });
       } else if (this.show == "singlePoliceCategory") {
         allPoliceStatisticCategories(data.data.id).then(res => {
-          this.equipArg = res;
+          this.fixPageData(res)
           //   this.paginator.totalPages = res.totalPages;
           //   this.paginator.totalElements = res.totalElements;
         });
