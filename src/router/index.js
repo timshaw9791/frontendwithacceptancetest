@@ -147,6 +147,21 @@ export const asyncRouterMap = [{
             name: 'transferIn',
             component: _import('process/transfer/transferIn'),
             hidden: true,
+        },{
+            path: 'directApply', // 直调申请页面
+            name: 'directApply',
+            component: _import('process/direct/directApply'),
+            hidden: true,
+        }, {
+            path: 'directOut', // 直调出库
+            name: 'directOut',
+            component: _import('process/direct/directOut'),
+            hidden: true,
+        },{
+            path: 'directIn', // 直调入库
+            name: 'directIn',
+            component: _import('process/direct/directIn'),
+            hidden: true,
         }, {
             path: 'agencyMatters',
             name: 'agencyMatters',

@@ -15,10 +15,10 @@
 </template>
 
 <script>
-    import myHeader from 'components/base/header/header'
-    import {processDefinitions} from 'api/process'
+    import myHeader from '@/components/base/header/header'
+    import {processDefinitions} from '@/api/process'
     import bosTabs from '@/componentized/table/bosTabs'
-    import {listTableMixin} from "../../field/mixins/listMixin";
+    import {listTableMixin} from "@/field/mixins/listMixin";
 
     export default {
         name: 'newProcess',
@@ -36,8 +36,9 @@
                 })
             },
             apply(data) {
+                let path = data.key.includes('direct') ? 'direct' : data.key
                 this.$router.push({
-                    path: `${data.key}` + 'Apply',
+                    path: `${path}` + 'Apply',
                     query: {
                         name: `${data.name}`, // 流程的名称
                         key: `${data.key}`, // 该值为 processDefinitionKey
@@ -48,7 +49,6 @@
                 this.paginator.page = page;
             }
         },
-
         components: {
             myHeader,
             bosTabs,

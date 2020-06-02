@@ -2,10 +2,9 @@ import request from 'common/js/request'
 import {baseBURL} from "./config";
 
 
-
-export function processStart(params, data) { // 流程启动 通用接口
+export function scrapStart(params, data) { // 流程启动 通用接口
     return request({
-        url: baseBURL + '/workflow/processes/start',
+        url: baseBURL + '/workflow/scrap/start',
         method: 'POST',
         params,
         data
@@ -59,14 +58,6 @@ export function scrapReapply(taskId,data) { // 报废单重填接口
 }
 
 
-export function processwarehouseDetail(params) { // 流程内容
-    return request({
-        url: baseBURL + "/equip-order/process-instance-id",
-        method: "GET",
-        params
-    })
-}
-
 export function getHistoryTasks(processInstanceId) { // 历史任务实例
     return request({
         url: baseBURL + '/workflow/history-tasks',
@@ -74,14 +65,6 @@ export function getHistoryTasks(processInstanceId) { // 历史任务实例
         params:{
             processInstanceId
         }
-    })
-}
-
-export function processDelete(params) { // 删除流程
-    return request({
-        url: baseBURL + '/workflow/processes/delete',
-        method: 'DELETE',
-        params
     })
 }
 
@@ -184,3 +167,13 @@ export function processAudit(taskId, data) { //审批
     })
 }
 
+export function directStart(processDefinitionKey, data) { // 直调流程申请
+    return request({
+        url: baseBURL + '/direct_allot/start',
+        method: 'POST',
+        processDefinitionKey:{
+            processDefinitionKey
+        },
+        data
+    })
+}

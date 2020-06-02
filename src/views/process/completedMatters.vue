@@ -23,7 +23,7 @@
 
 <script>
     import myHeader from 'components/base/header/header'
-    import {doneTask} from 'api/process'
+    import {doneTask} from '@/api/process'
     export default {
         name: "myProcess",
         components:{

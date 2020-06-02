@@ -19,7 +19,7 @@
                                   format="{name}({policeSign})">
                     </entity-input>
                     <entity-input label="入库机构" v-model="transferApplyOrder.inboundOrganUnit" format="{name}"
-                                  :options="{search:'organUnits'}" :disabled="true" placeholder="请选择">
+                                  :options="{search:'organUnits'}" :disabled="isInfo" placeholder="请选择">
                     </entity-input>
                 </div>
                 <div class="process-info">
@@ -28,7 +28,7 @@
                     <entity-input label="入库人员" v-model="inboundEquipsOrder.operator" :disabled="true"
                                   placeholder="-" format="{name}({policeSign})"></entity-input>
                     <entity-input label="出库机构" v-model="transferApplyOrder.outboundOrganUnit" format="{name}"
-                                  :options="{search:'organUnits'}" placeholder="请选择" :disabled="isInfo">
+                                  :options="{search:'organUnits'}" placeholder="请选择"  :disabled="true">
                     </entity-input>
                     <define-input label="出库库房" v-model="outboundEquipsOrder.house.name" :disabled="true"
                                   placeholder="-"></define-input>
@@ -71,17 +71,17 @@
 <script>
     import myHeader from 'components/base/header/header'
     import bosTabs from '@/componentized/table/bosTabs'
-    import {transferStart, transferOrders, activeTask} from '@/api/process'
+    import {transferStart, transferOrders, activeTask, directStart} from '@/api/process'
     import OperationBar from "@/components/process/operationBar";
     import EquipItems from "@/components/process/equipItems";
     import {processAudit, processesDelete} from "@/api/process";
     import {getHistoryTasks} from "@/api/process";
     import TaskHistory from "@/components/process/taskHistory";
-    import serviceDialog from "@/components/base/serviceDialog"
+    import serviceDialog from "@/components/base/serviceDialog/index"
     import {mapGetters} from "vuex";
 
     export default {
-        name: "scrapApply",
+        name: "directApply",
         components: {
             EquipItems,
             OperationBar,
@@ -115,7 +115,7 @@
         methods: {
             async init() {
                 Object.assign(this.transferApplyOrder, {
-                    inboundOrganUnit: this.organUnit,
+                    outboundOrganUnit: this.organUnit,
                     applicant: this.userInfo
                 })
             },
@@ -136,14 +136,14 @@
                     this.taskId = res.taskId
                     // 如果是任务处理人是我，且为申请任务，那么就显示是否重填
                     this.taskDefinitionKey = res.assignee === this.userInfo.id && res.taskDefinitionKey.includes('apply')
-                        ? 'reApply' : res.taskDefinitionKey
+                        ? 'reapply' : res.taskDefinitionKey
                 })
             },
             addRow() {
                 this.transferApplyOrder.equips.push({equipArg: {}})
             },
             submit() {
-                transferStart({processDefinitionKey: this.key}, this.transferApplyOrder).then(() => {
+                directStart({processDefinitionKey: this.key}, this.transferApplyOrder).then(() => {
                     this.$router.push({name: 'myProcess'});
                 })
             },
@@ -169,29 +169,29 @@
                 })
             },
             edit() { // 重填与编辑
-                this.isInfo = false
+                this.isInfo = true
             },
             outbound() {
                 this.$router.push({
-                    path: 'transferOut',
+                    path: 'directOut',
                     query: {type: 'out', processInstanceId: this.processInstanceId}
                 })
             },
             showOutOrder() {
                 this.$router.push({
-                    path: "transferOut",
+                    path: "directOut",
                     query: {type: "showOut", processInstanceId: this.processInstanceId}
                 })
             },
             inbound() {
                 this.$router.push({
-                    path: 'transferIn',
+                    path: 'directIn',
                     query: {type: 'in', processInstanceId: this.processInstanceId}
                 })
             },
             showInOrder() {
                 this.$router.push({
-                    path: "transferIn",
+                    path: "directIn",
                     query: {type: "showIn", processInstanceId: this.processInstanceId}
                 })
             },
@@ -200,7 +200,7 @@
             //query: {
             // name: data.processInstanceName,
             // processInstanceId: data.processInstanceId,
-            // type: 'todo',
+            // type: 'todo'
             // category: data.category
             // }
             Object.assign(this, this.$route.query)

@@ -36,7 +36,7 @@
 <script>
     import myHeader from 'components/base/header/header';
     import bosTabs from '@/componentized/table/bosTabs.vue'
-    import {processStart, getHistoryTasks, scrapOrders, activeTask, scrapReapply} from '@/api/process'
+    import {scrapStart, getHistoryTasks, scrapOrders, activeTask, scrapReapply} from '@/api/process'
     import {findByRfids} from "@/api/storage";
     import {transEquips} from "@/common/js/transEquips";
     import TaskHistory from "@/components/process/taskHistory";
@@ -112,7 +112,7 @@
             },
             submit() {
                 if (this.taskDefinitionKey !== "reapply") {
-                    processStart({
+                    scrapStart({
                         processDefinitionKey: this.key,
                     }, this.order).then(() => {
                         this.$router.push({name: 'myProcess'});
