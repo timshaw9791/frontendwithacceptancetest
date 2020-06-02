@@ -10,7 +10,7 @@
       :maxlength="maxlength" @change="reg" :readonly="!(tableEdit&&edit)" :placeholder="placeholder"
       @blur="changeEditState(false)" @keydown.13="changeEditState(false)"/>
       <div class="icon" v-show="insideValue!=''&&clearable&&!disabled&&tableEdit&&edit">
-        <i class="iconfont iconwenhao" @click="trigglePattern" v-if="pattern=='password'"></i>
+        <i class="iconfont iconxiaoyanjing" :class="{'pwd-tri': insidePattern == 'text'}" @click="trigglePattern" v-if="pattern=='password'"></i>
         <i class="iconfont iconwenbenkuangshanchu" @click="clear"></i>
       </div>
   </div>
@@ -175,8 +175,12 @@ export default {
   border-radius: 4px;
   box-sizing: border-box;
   margin: 0 0.0521rem;
-  .iconfont {
+  .iconxiaoyanjing,
+  .iconwenbenkuangshanchu {
     display: none;
+  }
+  .iconxiaoyanjing {
+    color: #bdbec8;
   }
   .label {
     min-width: 55px;
@@ -228,8 +232,12 @@ export default {
   }
 }
 .define-input-container:hover {
-  .iconfont {
+  .iconxiaoyanjing,
+  .iconwenbenkuangshanchu {
     display: inline-block;
   }
+}
+.pwd-tri {
+  color: #4b4bb3 !important;
 }
 </style>

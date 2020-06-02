@@ -9,11 +9,11 @@
                 <img src="../../common/images/policeBadge.png" style="cursor:pointer" @click="windowClose">
                 <div>{{ title }}</div>
             </div>
-            <define-form ref="form" :tip="false" margin="0.3646rem 0" padding="0 0.1042rem">
-                <define-input label="账号" v-model="loginForm.username" type="Require" 
+            <define-form ref="form" :tip="false" margin="0.4167rem 0" padding="0 0.1042rem">
+                <define-input iconfont="iconzhanghao" v-model="loginForm.username" type="Require" 
                     placeholder="请输入账号" :column="12" margin="10px 0 0 0" valid>
                 </define-input>
-                <define-input label="密码" v-model="loginForm.password" type="Require" 
+                <define-input iconfont="iconmima" v-model="loginForm.password" type="Require" 
                     placeholder="请输入密码" pattern="password" :column="12" margin="0.1042rem 0 0 0" valid>
                 </define-input>
             </define-form>
@@ -72,7 +72,12 @@
         .label {
             height: 0.2917rem;
             border-radius:6px 0px 0px 6px;
+            line-height: 0.2917rem;
             background-color: #4B4BB3;
+            .iconfont {
+                font-size: 30px;
+                color: white;
+            }
         }
         .input {
             font-size: 0.0938rem !important;
