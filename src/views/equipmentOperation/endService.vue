@@ -131,7 +131,7 @@ export default {
                     if(this._.findIndex(this.list,['rfid',data[0].rfid])==-1){//避免重复
                         data.forEach(item=>{this.list.push(item)})
                         let cList=this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}${item.location.id}`)
-                        this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length,location:v[0].location}})
+                        this.newData=JSON.parse(JSON.stringify(this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length,location:v[0].location}})))
                     }                                                   
                 }else{
                     this.$message.error('此装备不在维修状态')
@@ -141,6 +141,7 @@ export default {
                 this.paginator.page = page;
             },
             readData(){
+
                 killProcess(this.pid)
                 start("java -jar scan.jar", (data) => {
                     findByRfids(data).then(res=>{
@@ -155,8 +156,12 @@ export default {
             {
                 state?'':this.newData[this.findIndex].copyList[data.$index].rfid!=''?this.newData[this.findIndex].count--:''
                 state?this.newData[this.findIndex].copyList.push({rfid:'',serial:''}):this.newData[this.findIndex].copyList.splice(data.$index, 1)
-                if(this.newData[this.findIndex].copyList.length==1){
+                if(this.newData[this.findIndex].copyList.length==0){
                     this.newData[this.findIndex].copyList=[{rfid:'',serial:''}]
+                }
+                if(!state){
+                   
+                this.list.splice(this.list.findIndex(v=>v.rfid==data.row.rfid),1)
                 }
             },
             changeRow(state,data)
@@ -165,6 +170,11 @@ export default {
                 this.newData.splice(data.$index, 1)
                 if(this.newData.length==0){
                     this.newData=[{location: '',price: 0,count:0,copyList:[{rfid:'',serial:''}],}]
+                }
+                if(!state){
+                    data.row.copyList.forEach(item=>{
+                    this.list.splice(this.list.findIndex(v=>v.rfid==item.rfid),1)
+                }) 
                 }
             },
             init(){

@@ -22,7 +22,7 @@
                                 <entity-input v-model="data.row.equipArg"  :options="{detail:'equipArgsSelect'}" format="{name}({model})" :tableEdit="false" ></entity-input>
                             </define-column>
                             <define-column label="装备位置" v-slot="{ data }">
-                                <entity-input v-model="data.row.location"  format="{frameNumber}架/{surface}面/{section}节/{floor}层" :tableEdit="false" ></entity-input>
+                                <entity-input v-model="data.row.location"  :formatFunc="$formatFuncLoc" ></entity-input>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
                                 <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
@@ -138,7 +138,7 @@ export default {
                 {
                 data.forEach(item=>{this.list.push(item)})
                 let cList=this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}${item.location.id}`)
-                this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length,location:v[0].location}})
+                this.newData=JSON.parse(JSON.stringify(this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length,location:v[0].location}})))
                 }
             },
             cancel(){
@@ -162,7 +162,7 @@ export default {
                 let { columns, data } = param, sums = [];
                 sums=new Array(columns.length).fill('')
                 sums[0]='合计'
-                sums[columns.length-1]=param.data.reduce((v,k)=>v+k.copyList.length,0)
+                sums[columns.length-1]=param.data.reduce((v,k)=>v+k.count,0)
                 return sums;
             },
             changePage(page) {
@@ -184,11 +184,15 @@ export default {
                 if(state)
                 {
                     this.newData[this.findIndex].copyList.push({rfid:'',serial:''})
-                }else if(this.newData[this.findIndex].copyList.length>1){
-                    this.newData[this.findIndex].copyList.splice(data.$index, 1)
                 }else{
+                    if(this.newData[this.findIndex].copyList.length>1){
+                    this.newData[this.findIndex].copyList.splice(data.$index, 1)
+                  }else{
                     this.newData[this.findIndex].copyList=[{rfid:'',serial:''}]
                 }
+                this.newData[this.findIndex].count--
+                this.list.splice(this.list.findIndex(v=>v.rfid==data.row.rfid),1)
+                } 
             },
             changeRow(state,data)
             {
@@ -201,6 +205,9 @@ export default {
                     }else{
                     this.newData=[{name: '',locationId: '',price: 0,productTime: 0,rfids: [],serial: [],copyList:[{rfid:'',serial:''}],}]
                 }
+                   data.row.copyList.forEach(item=>{
+                    this.list.splice(this.list.findIndex(v=>v.rfid==item.rfid),1)
+                })
                 }
             },
             init(){
