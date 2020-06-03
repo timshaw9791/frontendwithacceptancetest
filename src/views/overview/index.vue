@@ -142,29 +142,39 @@
                 })
             },
             syncHandheld() {
-                function handheld(data, filename, cb) {
-                    return new Promise((reslove, reject) => {
-                        writeFile(data, cbData => {
-                            if(cbData.state) {
-                                reslove("导入成功")
-                            } else {
-                                reject(cbData.message)
-                            }
-                        }, filename)
-                    })
-                }
-                Promise.all([findEquipsNeedChange(), findByOneLine()]).then(res => {
-                    Promise.all([handheld(res[0], "statisticsEquip.json"), handheld(res[1], "allEquip.json")]).then(state => {
+                findEquipsNeedChange().then(res => {
+                    return writeFile(res, cbData => {
                         this.loading = false
-                        this.$message.success(typeof state == 'object'?state[0]:state)
-                    }).catch(err => {
-                        console.log(err);
-                        this.loading = false
-                        this.$message.error(err)
-                    })
+                        cbData.state && this.$message.success("导入成功")
+                    }, 'handheldEquip.json')
                 }).catch(err => {
-                    this.loading = false;
+                    console.log(err);
+                    this.loading = false
+                    !err.response && this.$message.error(err)
                 })
+                // function handheld(data, filename, cb) {
+                //     return new Promise((reslove, reject) => {
+                //         writeFile(data, cbData => {
+                //             if(cbData.state) {
+                //                 reslove("导入成功")
+                //             } else {
+                //                 reject(cbData.message)
+                //             }
+                //         }, filename)
+                //     })
+                // }
+                // Promise.all([findEquipsNeedChange()]).then(res => {
+                //     Promise.all([handheld(res[0], "statisticsEquip.json")]).then(state => {
+                //         this.loading = false
+                //         this.$message.success(typeof state == 'object'?state[0]:state)
+                //     }).catch(err => {
+                //         console.log(err);
+                //         this.loading = false
+                //         this.$message.error(err)
+                //     })
+                // }).catch(err => {
+                //     this.loading = false;
+                // })
             },
             toOther(key) {
                 switch (key) {
