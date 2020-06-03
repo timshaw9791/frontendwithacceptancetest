@@ -43,7 +43,7 @@ import myHeader from 'components/base/header/header'
     import baseButton from "@/componentized/buttonBox/baseButton.vue"
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
-    import { start, startOne, killProcess,handheld, modifyFileName } from 'common/js/rfidReader'
+    import { start, startOne, killProcess, modifyFileName } from 'common/js/rfidReader'
     import { getInhouseNumber,inHouse,findByRfids,outHouse} from "api/storage"
     import { inKeepEquips} from "api/operation"
 var _ = require("lodash");

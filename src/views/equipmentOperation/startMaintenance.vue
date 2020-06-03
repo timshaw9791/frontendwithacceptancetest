@@ -63,7 +63,7 @@
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
     import serviceDialog from 'components/base/serviceDialog/index'
-    import { start, startOne, killProcess,handheld, modifyFileName } from 'common/js/rfidReader'
+    import { start, startOne, killProcess, modifyFileName } from 'common/js/rfidReader'
     import divTmp from '@/componentized/divTmp'
     import {needKeepEquips,endKeepEquips} from "api/operation"
     import { getInhouseNumber,inHouse,findByRfids,outHouse} from "api/storage"
