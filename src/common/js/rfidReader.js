@@ -1,4 +1,3 @@
-var cmdPath = 'C:\\Users\\Administrator'; // 读写器路径
 var cmdStr = 'chcp 65001 && adb pull sdcard/inventoryData/inventory.json .';
 var fileName = 'inventory.json';
 var com = 7;
@@ -127,10 +126,10 @@ export function delFile(path, callBack) {
 }
 
 /* 手持机 */
-export function handheld(errCB) {
+export function handheld(errCB, file_name) {
     // 执行命令行，如果命令不需要路径，或就是项目根目录，则不需要cwd参数：
-    inventoryFile = `${newFile_path}/${fileName}`;
-    cmdStr = 'chcp 65001 && adb pull sdcard/inventoryData/'+fileName+' .';
+    inventoryFile = `${newFile_path}/${file_name}`;
+    cmdStr = 'chcp 65001 && adb pull sdcard/inventoryData/'+file_name+' .';
     console.log("newFile_path",newFile_path)
     // 测试环境使用方法
     if(testDevelopment) {
@@ -199,10 +198,10 @@ export function handheld(errCB) {
     return start
 }
 
-/* 导出文件 */
+/* 将文件导入手持机 */
 export function writeFile(content, cb, fileName) {
     let path = `${newFile_path}/${fileName}`,
-        pushCmdStr = `chcp 65001 && adb push ${path} sdcard/inventoryData/`,
+        pushCmdStr = `chcp 65001 && adb push ${path} sdcard/inventoryData/in/`,
         needReport = true;
     try {
         fs.writeFileSync(path, JSON.stringify(content))
