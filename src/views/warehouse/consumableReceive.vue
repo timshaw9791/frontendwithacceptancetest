@@ -16,8 +16,8 @@
         </div>
         <define-table :showSummary="true" :summaryFunc="sumFunc" :havaPage="false" :data="order.consumableItems" height="3.6042rem" >
             <define-column label="操作" width="100" v-slot="{ data }">
-                <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
-                <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
+                <i class="iconfont icontianjia" @click="changeRow(true,data)"></i>
+                <i class="iconfont iconyichu" @click="changeRow(false,data)"></i>
             </define-column>
             <define-column label="耗材名称" v-slot="{ data }">
                 <entity-input v-model="data.row.consumable" format="{name}" :options="{search:'consumableSelect'}"></entity-input>

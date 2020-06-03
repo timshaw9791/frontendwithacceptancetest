@@ -16,8 +16,8 @@
         </div>
         <define-table :showSummary="true" :summaryFunc="sumFunc" ref="table" :havePage="false" :data="order.consumableItems" height="4rem" >
             <define-column label="操作" width="100">
-                <i class="iconfont icontianjialiang"></i>
-                <i class="iconfont iconyichuliang"></i>
+                <i class="iconfont icontianjia"></i>
+                <i class="iconfont iconyichu"></i>
             </define-column>
             <define-column label="耗材名称" field="name"></define-column>
             <define-column label="本次领补" field="count"></define-column>

@@ -21,8 +21,8 @@
                                   :showSummary="true" :summaryFunc="sumCountAndPrice" :highLightCurrent="true"
                                   slot="total" ref="totalTable" :init-select="true">
                         <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
-                            <i class="iconfont icontianjialiang" @click="addRow()" v-if="!isInbound"></i>
-                            <i class="iconfont iconyichuliang" @click="$delRow(equipItems,data.$index)"></i>
+                            <i class="iconfont icontianjia" @click="addRow()" v-if="!isInbound"></i>
+                            <i class="iconfont iconyichu" @click="$delRow(equipItems,data.$index)"></i>
                         </define-column>
                         <define-column label="装备位置" v-slot="{ data }" v-if="isInbound">
                             <entity-input v-model="data.row.locationInfo" :options="{search:'locationSelect'}"
@@ -39,7 +39,7 @@
                     <define-table :havePage="false" :data="equipItems[totalIndex===-1?0:totalIndex].items"
                                   slot="detail" ref="detailTable">
                         <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
-                            <i class="iconfont iconyichuliang"
+                            <i class="iconfont iconyichu"
                                @click="$delRow(equipItems[totalIndex===-1?0:totalIndex].items,data.$index,()=>{!equipItems[totalIndex===-1?0:totalIndex].items.length && equipItems.splice(totalIndex===-1?0:totalIndex,1)})"></i>
                         </define-column>
                         <define-column label="RFID" field="rfid"></define-column>
