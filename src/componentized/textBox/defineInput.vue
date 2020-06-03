@@ -210,6 +210,7 @@ export default {
     min-width: 35px;
     overflow: hidden;
     display: inline-flex;
+    justify-content: flex-end;
     padding: 0 10px;
   }
 }
