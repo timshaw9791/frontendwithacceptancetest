@@ -15,8 +15,8 @@
                         <define-table :data="list" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
                             :highLightCurrent="true"  slot="total" :showSummary="true" :summaryFunc="sumFunc">
                             <define-column label="操作" width="100" v-slot="{ data }">
-                                <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
-                                <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
+                                <i class="iconfont icontianjia" @click="changeRow(true,data)"></i>
+                                <i class="iconfont iconyichu" @click="changeRow(false,data)"></i>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
                                 <entity-input v-model="data.row.equipArgId"  :options="{search:'equipArgsSelect'}" format="{name}({model})" :tableEdit="true" ></entity-input>
@@ -35,7 +35,7 @@
                         <define-table :data="list[findIndex].copyList" height="2.8646rem" :havePage="false" slot="detail">
                             <define-column label="操作" width="100" v-slot="{ data }">
                                <i class="iconfont icontianjia" ></i>
-                               <i class="iconfont iconyichuliang" @click="changeDetailRow(false,data)"></i>
+                               <i class="iconfont iconyichu" @click="changeDetailRow(false,data)"></i>
                             </define-column>
                             <define-column label="RFID" field="rfid"></define-column>
                             <define-column label="装备序号" field="serial"></define-column>

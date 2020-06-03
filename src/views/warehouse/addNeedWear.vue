@@ -6,8 +6,8 @@
             <define-table :data="listData" height="2.8646rem" :havePage="false"
                             :highLightCurrent="true"  >
                              <define-column label="操作" width="100" v-slot="{ data }">
-                                <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
-                                <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
+                                <i class="iconfont icontianjia" @click="changeRow(true,data)"></i>
+                                <i class="iconfont iconyichu" @click="changeRow(false,data)"></i>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
                                 <entity-input v-model="data.row.equipArg" :options="{search:'equipArgsSelect'}" format="{name}({model})" :column="12" :tableEdit="true" ></entity-input>

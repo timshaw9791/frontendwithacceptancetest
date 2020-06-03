@@ -29,8 +29,8 @@
             <define-table :havePage="false" :data="order.equips" height="2.6042rem" @changeCurrent="selRow"
               :showSummary="true" :summaryFunc="sumFunc" :highLightCurrent="true" slot="total">
               <define-column label="操作" width="100" v-slot="{ data }">
-                  <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
-                  <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
+                  <i class="iconfont icontianjia" @click="changeRow(true,data)"></i>
+                  <i class="iconfont iconyichu" @click="changeRow(false,data)"></i>
               </define-column>
               <define-column label="装备参数" v-slot="{ data }">
                   <entity-input v-model="data.row.equipArg" format="{name}({model})" :disabled="true"></entity-input>

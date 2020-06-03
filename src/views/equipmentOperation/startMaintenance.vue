@@ -15,8 +15,8 @@
                         <define-table :data="listData" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
                             :highLightCurrent="true"  slot="total"  :showSummary="true" :summaryFunc="sumFunc">
                              <define-column label="操作" width="100"  v-slot="{ data }">
-                                <i class="iconfont icontianjialiang"></i>
-                                <i class="iconfont iconyichuliang" @click="changeRow(data)"></i>
+                                <i class="iconfont icontianjia"></i>
+                                <i class="iconfont iconyichu" @click="changeRow(data)"></i>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
                                 <entity-input v-model="data.row.equipArg"  :options="{detail:'equipArgsDetails'}" format="{name}({model})" :tableEdit="false" ></entity-input>
@@ -33,8 +33,8 @@
                         </define-table>
                         <define-table :data="listData[findIndex].clist" height="2.8646rem" :havePage="false" slot="detail">
                             <define-column label="操作" width="100" v-slot="{ data }">
-                               <i class="iconfont icontianjialiang" @click="changeDetailRow(true,data)"></i>
-                               <i class="iconfont iconyichuliang" @click="changeDetailRow(false,data)"></i>
+                               <i class="iconfont icontianjia" @click="changeDetailRow(true,data)"></i>
+                               <i class="iconfont iconyichu" @click="changeDetailRow(false,data)"></i>
                             </define-column>
                             <define-column label="RFID" v-slot="{ data }">
                                 <define-input v-model="data.row.rfid" type="String" :tableEdit="false"></define-input>
