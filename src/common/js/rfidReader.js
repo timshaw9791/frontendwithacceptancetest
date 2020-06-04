@@ -198,6 +198,11 @@ export function handheld(errCB, file_name) {
     return start
 }
 
+/** 删除(清空)手持机中对应的文件
+ * 
+ * @param {String} file_name 需要删除(清空)的文件名[在 sdcard/inventoryData/out 目录下]
+ * @param {Function} cb 回调函数
+ */
 export function clearAdbFile(file_name, cb) {
     let cmdCommand = `adb shell rm sdcard/inventoryData/out/${file_name}`,
         success = true;
