@@ -134,7 +134,7 @@ export function handheld(errCB, file_name) {
     // 执行命令行，如果命令不需要路径，或就是项目根目录，则不需要cwd参数：
     let inventoryFile = `${newFile_path}/${file_name}`,
         errTip = true; // 是否需要报错提示
-    cmdStr = 'chcp 65001 && adb pull sdcard/inventoryData/'+file_name+' .';
+    cmdStr = 'chcp 65001 && adb pull sdcard/inventoryData/out/'+file_name+' .';
     console.log("newFile_path",newFile_path)
     // 测试环境使用方法
     if(testDevelopment) {
@@ -196,6 +196,29 @@ export function handheld(errCB, file_name) {
         });
     });
     return start
+}
+
+export function clearAdbFile(file_name, cb) {
+    let cmdCommand = `adb shell rm sdcard/inventoryData/out/${file_name}`,
+        success = true;
+    workerProcess = exec(cmdCommand)
+    workerProcess.stderr.on('data', data => {
+        if(data.includes("device")) { 
+            cb({status: false, message: "未发现设备，请检查设备连接是否正常"});
+        }
+        console.log('stderr: ' + data);
+    });
+    workerProcess.stdout.on('data', data => {
+        success = false;
+        if(data.includes('No such')) {
+            cb({status: false, message: "文件已被删除或者文件路径错误"});
+        }
+        console.log('错误', data);
+    })
+    workerProcess.on('close', code => {
+        success && cb({status: true, message: "文件清空成功"});
+        console.info("退出码", code);
+    })
 }
 
 /** 将文件导入手持机
