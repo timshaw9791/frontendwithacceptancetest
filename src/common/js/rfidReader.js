@@ -131,71 +131,33 @@ export function delFile(path, callBack) {
  * @param {String} file_name 需读取的文件名
  */
 export function handheld(errCB, file_name) {
-    // 执行命令行，如果命令不需要路径，或就是项目根目录，则不需要cwd参数：
-    let inventoryFile = `${newFile_path}/${file_name}`,
-        errTip = true; // 是否需要报错提示
-    cmdStr = 'chcp 65001 && adb pull sdcard/inventoryData/out/'+file_name+' .';
-    console.log("newFile_path",newFile_path)
-    // 测试环境使用方法
-    if(testDevelopment) {
-        let start = new Promise((resolve, reject) => {
-            if (fs.existsSync(inventoryFile)) {
-                let temp = fs.readFileSync(inventoryFile), result = null;
-                try {
-                    result = JSON.parse(temp);
-                } catch (error) {
-                    temp = temp.toString()
-                    if(temp.charCodeAt(0) === 0xFEFF) {
-                        temp = temp.slice(1)
-                    }
-                    result = JSON.parse(temp)
+    return new Promise((reslove, reject) => {
+        exec(`adb shell cat /sdcard/inventoryData/out/${file_name}`, (err, stdout, stderr) => {
+            if(err) {
+                if(err.message.includes('device not found')) {
+                    errCB('未发现手持机设备')
+                } else if(err.message.includes('unauthorized')) {
+                    errCB("请在手持机上授权本机调试")
+                } else if(err.message.includes('adb')) {
+                    errCB('未安装ADB驱动')
+                } else {
+                    errCB('未知错误')
                 }
-                resolve(JSON.stringify(result))
+                console.error(err.message);
+                reject();
+            } else if(stderr) {
+                console.error(stderr);
+               reject()
+            } else if(stdout.includes('No such file')) {
+                console.error("读取失败，请检查手持机上是否存在该文件");
+                console.info("目录", `/sdcard/inventoryData/out/${file_name}`);
+                errCB('读取失败，请检查手持机上是否存在该文件');
+                reject()
             } else {
-                if(errTip) errCB("测试文件不存在");
-                console.log("测试文件不存在");
-                console.log("inventoryFile", inventoryFile)
+                reslove(stdout)
             }
-        });
-        return start
-    }
-
-    fs.existsSync(inventoryFile) && fs.unlinkSync(inventoryFile); // 如果文件存在则删除文件，避免读取旧数据
-    workerProcess = exec(cmdStr, {cwd: newFile_path});
-    // 打印错误的后台可执行程序输出
-    workerProcess.stderr.on('data', data => {
-        if(data.includes("device")) { 
-            errCB("未发现设备，请检查设备连接是否正常");
-            errTip = false;
-        }
-        console.log('stderr: ' + data);
-    });
-    let start = new Promise((resolve, reject) => {
-        // 退出之后的输出
-        workerProcess.on('close', (code) => {
-            if (fs.existsSync(inventoryFile)) {
-                let temp = fs.readFileSync(inventoryFile), result = null;
-                try {
-                    result = JSON.parse(temp);
-                } catch (error) {
-                    if(temp.charCodeAt(0) === 0xFEFF) { // 当数据含有BOM头时，需要去除BOM头
-                        temp = temp.slice(1)
-                    }
-                    result = JSON.parse(temp)
-                }
-                resolve(JSON.stringify(result));
-            } else {
-                if(errTip) errCB("手持机文件导出失败, 所需文件不存在,");
-                console.log("手持机文件导出失败, 所需文件不存在");
-                console.log("尝试命令行运行","chcp 65001 && adb pull sdcard/inventoryData/[文件名.后缀].");
-                console.log("如显示device offline，请插拔手持机重试");
-                console.log("如显示含有 cannot create file...，则需在手持机创建intentoryData文件夹");
-                console.log('-----------------------------------------');
-            }
-            console.log('out code：' + code);
-        });
-    });
-    return start
+        })
+    })
 }
 
 /** 删除(清空)手持机中对应的文件
