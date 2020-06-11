@@ -85,7 +85,7 @@
     import {killProcess, start} from "@/common/js/rfidReader";
 
     export default {
-        name: "transferIn",   // 调拨入库
+        name: "process",   // 流程入库
         components: {
             HardwareSelect,
             bosTabs,

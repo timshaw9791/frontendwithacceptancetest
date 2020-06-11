@@ -12,6 +12,7 @@
                 <entity-input label="入库人员" v-model="order.operator" :disabled="true"></entity-input>
             </div>
             <div class="table-box">
+                <!--详情没有对照表用isInfo判断-->
                 <bos-tabs :option="isInfo?['tabs']:['tabs', 'contrast']" :layoutRatio="isInfo?[1,1]:[2,1]">
                     <template slot="slotHeader" v-if="!isInfo">
                         <hardware-select @readDate="readData"></hardware-select>
@@ -132,6 +133,7 @@
                         this.isInbound = true
                         this.highLightCurrent = false
                         this.outboundEquips = res.outboundEquipsOrder.equips
+                        // 对照列表的数据为出库单的装备
                         this.matchEquips = transEquips(this.outboundEquips).equipItems
                         this.order.organUnit = res.transferApplyOrder.inboundOrganUnit
                         Object.assign(this.order, {operator: this.userInfo}, {
@@ -169,7 +171,6 @@
                             this.$message.error("该装备不在出库装备列表内！")
                             return
                         }
-                        item.locationInfo = tempLocation
                         // 要删价格
                         item.price = '1'
                         item.productTime = '1590721943'
