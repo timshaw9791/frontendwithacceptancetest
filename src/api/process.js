@@ -22,6 +22,28 @@ export function transferStart(processDefinitionKey, data) { // 调拨流程申�
     })
 }
 
+export function allocateStart(processDefinitionKey, data, allocateCategory) { // 调拨申请:包含调拨、直调
+    let tempUrl = allocateCategory === 'TRANSFER' ? '/workflow/transfer/start' : '/workflow/direct/start'
+    return request({
+        url: baseBURL + tempUrl,
+        method: 'POST',
+        params:{
+            processDefinitionKey
+        },
+        data
+    })
+}
+
+export function allocateReapply(taskId,data,allocateCategory) { // 调拨重填:包含调拨、直调
+    let tempUrl = allocateCategory === 'TRANSFER' ? '/workflow/transfer/start' : '/workflow/direct/start'
+    return request({
+        url: baseBURL + tempUrl ,
+        method: 'GET',
+        params:{taskId},
+        data
+    })
+}
+
 export function transferOrders(processInstanceId) { // 调拨相关的单据
     return request({
         url: baseBURL + '/workflow/transfer/orders',
