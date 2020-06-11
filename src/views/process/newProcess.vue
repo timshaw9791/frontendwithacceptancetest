@@ -12,7 +12,7 @@
             </define-table>
         </div>
         <base-select label="测试"></base-select>
-        <base-select-new label="测试" :list="testArr"></base-select-new>
+        <base-select-new label="测试" v-model="test2" :multiple="true" :list="testArr"></base-select-new>
     </div>
 </template>
 
@@ -30,6 +30,8 @@
             return {
                 list: [],
                 paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
+                test: 'sel4',
+                test2: [],
                 testArr: [{
                     value: '选项1',
                     key: 'sel1'
@@ -83,6 +85,7 @@
 <style scoped>
     .new-proess-container {
         font-size: 16px;
+        height: 1300px;
     }
 
     .new-process-body {

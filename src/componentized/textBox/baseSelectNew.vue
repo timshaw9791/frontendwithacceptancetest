@@ -1,16 +1,16 @@
 <template>
-    <div class="base-select-container">
+    <div class="base-select-container" @mouseleave="showOptions=false">
         <aside class="label" v-if="haveLabel">
             <i :class="`iconfont ${iconfont}`" v-if="iconfont"></i>
             <span v-else>{{ label }}</span>
             <span class="required" v-show="required">*</span>
         </aside>
         <article class="main">
-            <input type="text" :placeholder="placeholder" readonly class="input" @click="clkSel">
+            <input type="text" v-model="insideValue" :placeholder="placeholder" readonly class="input" @click="clkSel">
             <i class="iconfont iconxiala1" :class="{'icon-rotate': showOptions}" @click="clkSel"></i>
-            <div class="select-option">
+            <div class="select-option" :class="{'show-options': showOptions}">
                 <ul class="select-ul">
-                    <li v-for="(item, i) in list" :key="item.abc+''+i" class="select-li">{{ item.value }}</li>
+                    <li v-for="(item, i) in list" :key="item.key+''+i" class="select-li" @click="selOption(item, i)">{{ item.value }}</li>
                 </ul>
             </div>
         </article>
@@ -30,6 +30,9 @@
 export default {
     name: 'baseSelect',
     props: {
+        value: { // v-model
+            default: ''
+        },
         label: {
             type: String,
             default: '标签'
@@ -58,20 +61,53 @@ export default {
         disabled: {
             type: Boolean,
             default: false
+        },
+        multiple: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
         return {
-            showOptions: false
+            showOptions: false, // 是否显示下拉项
+            insideValue: '', // 内部绑定值
         }
     },
     methods: {
-        clkSel() {
-            if(this.disabled) {
-                this.showOptions = false
-                return
+        init(val) { // 初始化组件状态
+            let tmp;
+            if(this.multiple) { // 如果是多选
+                if(!('includes' in this.value)) {
+                    console.error("v-model绑定值须为数组");
+                    return
+                }
+                tmp = this.list.filter(item => this.value.includes(item.key))
+            } else {
+                tmp = this.list.filter(item => item.key == val);
+                this.insideValue = tmp[0]?tmp[0].value:''
             }
-            this.showOptions = !this.showOptions
+            console.log(val);
+        },
+        clkSel() {
+            this.showOptions = this.disabled?false:!this.showOptions
+        },
+        selOption(data, index) { // 选中选项后
+            if(this.multiple) { // 如果是多选
+                
+            } else { // 单选
+                this.$emit('input', data.key)
+                this.$emit('selected', data)
+                this.showOptions = false
+            }
+        }
+    },
+    watch: {
+        value: {
+            handler(val) {
+                this.init(val)
+            },
+            deep: true,
+            immediate: true
         }
     }
 }
@@ -124,16 +160,15 @@ export default {
     .select-option {
         position: absolute;
         min-width: 100%;
-        height: 170px;
-        max-height: 170px;
+        height: 0;
         overflow: hidden auto;
         left: 0;
         top: 40px;
-        border: 1px solid #e4e7ed;
+        /* border: 1px solid #e4e7ed; */
         border-radius: 4px;
         background-color: #fff;
-        box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
         box-sizing: border-box;
+        transition: 0.3s all;
     }
     .select-ul {
         margin: 0;
@@ -160,6 +195,11 @@ export default {
     }
     .icon-rotate {
         transform: rotate(-180deg);
+    }
+    .show-options {
+        height: 170px;
+        max-height: 170px;
+        box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
     }
     .select-option::-webkit-scrollbar {
         width: 6px;
