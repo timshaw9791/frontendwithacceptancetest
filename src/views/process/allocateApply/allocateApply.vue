@@ -11,15 +11,16 @@
             ></operation-bar>
             <div class="apply-process-body">
                 <div class="process-info">
-                    <define-input label="单号" v-model="transferApplyOrder.number" :disabled="true"
+                    <define-input label="单号" v-model="allocateApplyOrder.number" :disabled="true"
                                   placeholder="-"></define-input>
-                    <date-select label="申请时间" v-model="transferApplyOrder.createTime" :disabled="true"></date-select>
-                    <entity-input label="申请人员" v-model="transferApplyOrder.applicant"
+                    <date-select label="申请时间" v-model="allocateApplyOrder.createTime" :disabled="true"></date-select>
+                    <entity-input label="申请人员" v-model="allocateApplyOrder.applicant"
                                   :options="{detail:'applicant'}" :disabled="true"
                                   format="{name}({policeSign})">
                     </entity-input>
-                    <entity-input label="入库机构" v-model="transferApplyOrder.inboundOrganUnit" format="{name}"
-                                  :options="{search:'organUnits'}" :disabled="true" placeholder="请选择">
+                    <entity-input label="入库机构" v-model="allocateApplyOrder.inboundOrganUnit" format="{name}"
+                                  :options="{search:'organUnits'}" placeholder="请选择"
+                                  :disabled="allocateCategory==='TRANSFER'||isInfo">
                     </entity-input>
                 </div>
                 <div class="process-info">
@@ -27,8 +28,9 @@
                                   placeholder="-"></define-input>
                     <entity-input label="入库人员" v-model="inboundEquipsOrder.operator" :disabled="true"
                                   placeholder="-" format="{name}({policeSign})"></entity-input>
-                    <entity-input label="出库机构" v-model="transferApplyOrder.outboundOrganUnit" format="{name}"
-                                  :options="{search:'organUnits'}" placeholder="请选择" :disabled="isInfo">
+                    <entity-input label="出库机构" v-model="allocateApplyOrder.outboundOrganUnit" format="{name}"
+                                  :options="{search:'organUnits'}" placeholder="请选择"
+                                  :disabled="allocateCategory==='TRANSFER'||isInfo">
                     </entity-input>
                     <define-input label="出库库房" v-model="outboundEquipsOrder.house.name" :disabled="true"
                                   placeholder="-"></define-input>
@@ -36,15 +38,15 @@
                 <div class="process-info">
                     <entity-input label="出库人员" v-model="outboundEquipsOrder.operator" :disabled="true"
                                   placeholder="-" format="{name}({policeSign})"></entity-input>
-                    <text-input label="申请原因" v-model="transferApplyOrder.note" :column="12" :tips="tips"
+                    <text-input label="申请原因" v-model="allocateApplyOrder.note" :column="12" :tips="tips"
                                 :disabled="isInfo">
                     </text-input>
                 </div>
-                <define-table :havePage="false" :data="transferApplyOrder.equips" height="2.8646rem"
+                <define-table :havePage="false" :data="allocateApplyOrder.equips" height="2.8646rem"
                               :showSummary="true" :summaryFunc="$sumFunc" slot="total">
                     <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
                         <i class="iconfont icontianjialiang" @click="addRow()"></i>
-                        <i class="iconfont iconyichuliang" @click="$delRow(transferApplyOrder.equips,data.$index)"></i>
+                        <i class="iconfont iconyichuliang" @click="$delRow(allocateApplyOrder.equips,data.$index)"></i>
                     </define-column>
                     <define-column label="装备参数" v-slot="{ data }">
                         <entity-input v-model="data.row.equipArg" :options="{search:'equipArgsSelect'}"
@@ -77,7 +79,7 @@
         activeTask,
         transferReapply,
         allocateStart,
-        allocateReapply
+        allocateReapply, allocateOrders
     } from '@/api/process'
     import OperationBar from "@/components/process/operationBar";
     import EquipItems from "@/components/process/equipItems";
@@ -102,8 +104,8 @@
                 title: "",
                 allocateCategory:'', //TRANSFER or DIRECT
                 allocateApplyOrder: {equips: [{equipArg: {}}], applicant: {}},
-                outboundEquipsOrder: {operator: {}, house: {}},
-                inboundEquipsOrder: {operator: {}, house: {}},
+                outboundEquipsOrder: {operator: {}, house: {}}, // 用来获取出库库房和出库人员
+                inboundEquipsOrder: {operator: {}, house: {}},  // 用来获取入库库房和入库人员
                 tips: ['直接报废', '装备拿去维修，无法修补'],
                 taskDefinitionKey: '',
                 processDefinitionKey: '',
@@ -119,15 +121,15 @@
         },
         methods: {
             async init() {
-                Object.assign(this.transferApplyOrder, {
+                Object.assign(this.allocateApplyOrder, {
                     inboundOrganUnit: this.organUnit,
                     applicant: this.userInfo
                 })
             },
             fetchData() {
-                transferOrders(this.processInstanceId).then(
+                allocateOrders(this.processInstanceId,this.allocateCategory).then(
                     res => {
-                        this.transferApplyOrder = res.transferApplyOrder
+                        this.allocateApplyOrder = res.allocateApplyOrder
                         !!res.inboundEquipsOrder && (this.inboundEquipsOrder = res.inboundEquipsOrder) && (this.isShowIn = true)
                         !!res.outboundEquipsOrder && (this.outboundEquipsOrder = res.outboundEquipsOrder) && (this.isShowOut = true)
                     }
@@ -145,15 +147,15 @@
                 })
             },
             addRow() {
-                this.transferApplyOrder.equips.push({equipArg: {}})
+                this.allocateApplyOrder.equips.push({equipArg: {}})
             },
             submit() {
                 if (this.taskDefinitionKey === "reapply") {
-                    allocateStart(this.taskId, this.transferApplyOrder,this.allocateCategory).then(() => {
+                    allocateStart(this.taskId, this.allocateApplyOrder,this.allocateCategory).then(() => {
                         this.$router.push({name: 'myProcess'});
                     })
                 } else {
-                    allocateReapply(this.key, this.transferApplyOrder,this.allocateCategory).then(() => {
+                    allocateReapply(this.key, this.allocateApplyOrder,this.allocateCategory).then(() => {
                         this.$router.push({name: 'myProcess'});
                     })
                 }
@@ -173,9 +175,7 @@
                 })
             },
             invalid() { //作废
-                processesDelete({
-                    processInstanceId: this.$route.query.processInstanceId
-                }, true).then(() => {
+                processesDelete(this.processInstanceId).then(() => {
                     this.$router.back()
                 })
             },
@@ -184,26 +184,41 @@
             },
             outbound() {
                 this.$router.push({
-                    path: 'transferOut',
-                    query: {type: 'out', processInstanceId: this.processInstanceId}
+                    path: 'allocateOut',
+                    query: {
+                        type: 'out',
+                        processInstanceId: this.processInstanceId,
+                        allocateCategory:this.allocateCategory
+                    }
                 })
             },
             showOutOrder() {
                 this.$router.push({
                     path: "transferOut",
-                    query: {type: "showOut", processInstanceId: this.processInstanceId}
+                    query: {
+                        type: "showOut",
+                        processInstanceId: this.processInstanceId,
+                        allocateCategory:this.allocateCategory
+                    }
                 })
             },
             inbound() {
                 this.$router.push({
                     path: 'transferIn',
-                    query: {type: 'in', processInstanceId: this.processInstanceId}
+                    query: {
+                        type: 'in',
+                        processInstanceId: this.processInstanceId,
+                        allocateCategory:this.allocateCategory
+                    }
                 })
             },
             showInOrder() {
                 this.$router.push({
                     path: "transferIn",
-                    query: {type: "showIn", processInstanceId: this.processInstanceId}
+                    query: {
+                        type: "showIn",
+                        processInstanceId: this.processInstanceId
+                    }
                 })
             },
             clean() {
@@ -235,8 +250,8 @@
         }
         ,
         watch: {
-            'transferApplyOrder.equips.length'(newVal) {
-                !newVal && this.transferApplyOrder.equips.push({equipArg: {}})
+            'allocateApplyOrder.equips.length'(newVal) {
+                !newVal && this.allocateApplyOrder.equips.push({equipArg: {}})
             }
         }
     }

@@ -136,7 +136,7 @@
                 })
             },
             invalid() { //作废
-                processesDelete(this.processInstanceId, true).then(() => {
+                processesDelete(this.processInstanceId).then(() => {
                     this.$router.back()
                 })
             },
