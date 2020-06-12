@@ -11,8 +11,6 @@
                 <define-column label="部署时间" :filter="(row)=>$filterTime(row.deploymentTime)"></define-column>
             </define-table>
         </div>
-        <base-select label="测试"></base-select>
-        <base-select-new label="测试" v-model="test2" :multiple="true" :list="testArr"></base-select-new>
     </div>
 </template>
 
@@ -21,7 +19,6 @@
     import {processDefinitions} from 'api/process'
     import bosTabs from '@/componentized/table/bosTabs'
     import {listTableMixin} from "../../field/mixins/listMixin";
-    import baseSelectNew from '@/componentized/textBox/baseSelectNew'
 
     export default {
         name: 'newProcess',
@@ -30,27 +27,6 @@
             return {
                 list: [],
                 paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
-                test: 'sel4',
-                test2: [],
-                testArr: [{
-                    value: '选项1',
-                    key: 'sel1'
-                },{
-                    value: '选项2',
-                    key: 'sel2'
-                },{
-                    value: '选项3',
-                    key: 'sel3'
-                },{
-                    value: '选项4',
-                    key: 'sel4'
-                },{
-                    value: '选项5',
-                    key: 'sel5'
-                },{
-                    value: '选项6',
-                    key: 'sel6'
-                }]
             }
         },
         methods: {
@@ -77,7 +53,6 @@
             myHeader,
             bosTabs,
             listTableMixin,
-            baseSelectNew
         }
     }
 </script>
@@ -85,7 +60,6 @@
 <style scoped>
     .new-proess-container {
         font-size: 16px;
-        height: 1300px;
     }
 
     .new-process-body {

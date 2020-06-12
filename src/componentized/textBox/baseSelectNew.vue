@@ -1,5 +1,6 @@
 <template>
-    <div class="base-select-container" @mouseleave="showOptions=false">
+    <div class="base-select-container" :class="[styleObj]" @mouseleave="showOptions=false"
+        :style="`width:${fixWidth};float:${align};margin:${margin}`" >
         <aside class="label" v-if="haveLabel">
             <i :class="`iconfont ${iconfont}`" v-if="iconfont"></i>
             <span v-else>{{ label }}</span>
@@ -10,19 +11,13 @@
             <i class="iconfont iconxiala1" :class="{'icon-rotate': showOptions}" @click="clkSel"></i>
             <div class="select-option" :class="{'show-options': showOptions}">
                 <ul class="select-ul">
-                    <li v-for="(item, i) in list" :key="item.key+''+i" class="select-li" @click="selOption(item, i)">{{ item.value }}</li>
+                    <li v-for="(item, i) in insideList" :key="item.key+''+i" class="select-li" :class="{selected: item.insideSel}" @click="selOption(item, i)">
+                        {{ item.value }}
+                        <i class="iconfont icongou" v-show="item.insideSel"></i>
+                    </li>
                 </ul>
             </div>
         </article>
-        <!-- <input type="text" :placeholder="placeholder" readonly class="input" @click="clkSel">
-        <i class="iconfont iconxiala1" :class="{'icon-rotate': showOptions}" @click="clkSel"></i>
-        <div class="select-option">
-            <ul>
-                <li>test1</li>
-                <li>test2</li>
-                <li>test3</li>
-            </ul>
-        </div> -->
     </div>
 </template>
 
@@ -65,46 +60,83 @@ export default {
         multiple: {
             type: Boolean,
             default: false
+        },
+        column: {
+            type: Number,
+            default: 3
+        },
+        align: {
+            default: 'none'
+        },
+        margin: {
+            default: '0 0.0521rem'
         }
     },
     data() {
         return {
             showOptions: false, // 是否显示下拉项
             insideValue: '', // 内部绑定值
+            insideList: [], // 内部选项列表
+            styleObj: { // 样式
+                error: false
+            },
+        }
+    },
+    computed: {
+        fixWidth() {
+            return `${8.33*this.column}%`
         }
     },
     methods: {
+        listInit() { // 初始化选项数据
+            let tmpList = JSON.parse(JSON.stringify(this.list));
+            this.insideValue = ""
+            this.insideList = this.multiple?tmpList.map(item => Object.assign(item, {insideSel: this.value.includes(item.key)})):tmpList
+            this.init(this.value)
+        },
         init(val) { // 初始化组件状态
             let tmp;
             if(this.multiple) { // 如果是多选
-                if(!('includes' in this.value)) {
+                if(!(val instanceof Array)) {
                     console.error("v-model绑定值须为数组");
                     return
                 }
-                tmp = this.list.filter(item => this.value.includes(item.key))
+                tmp = this.list.filter(item => val.includes(item.key)).map(item => item.key).join(';')
+                this.insideValue = tmp?tmp:''
             } else {
                 tmp = this.list.filter(item => item.key == val);
                 this.insideValue = tmp[0]?tmp[0].value:''
             }
-            console.log(val);
         },
-        clkSel() {
+        clkSel() { // 是否显示下拉选项框
             this.showOptions = this.disabled?false:!this.showOptions
         },
         selOption(data, index) { // 选中选项后
             if(this.multiple) { // 如果是多选
-                
+                data.insideSel = !data.insideSel
+                let selTmp = this.insideList.filter(item=>item.insideSel).map(item=>item.key)
+                this.$emit('input', selTmp)
+                this.$emit('selected', selTmp)
             } else { // 单选
                 this.$emit('input', data.key)
                 this.$emit('selected', data)
                 this.showOptions = false
             }
+        },
+        reg() { // 验证函数
+            return Boolean(!this.required || this.value.length)
         }
     },
     watch: {
         value: {
             handler(val) {
                 this.init(val)
+            },
+            deep: true
+        },
+        list: {
+            handler() {
+                this.listInit()
             },
             deep: true,
             immediate: true
@@ -117,7 +149,8 @@ export default {
     .base-select-container {
         position: relative;
         box-sizing: border-box;
-        width: 130px;
+        /* 130px */
+        width: 300px;
         font-size: 16px;
         height: 40px;
         max-height: 40px;
@@ -125,7 +158,7 @@ export default {
         justify-content: flex-start;
         align-items: center;
         border-radius: 4px;
-        border: 1px solid black;
+        border: 1px solid #E4E7Ed;
     }
     .label {
         min-width: 30px;
@@ -155,7 +188,6 @@ export default {
         width: 100%;
         height: 100%;
         cursor: pointer;
-        background-color: orange;
     }
     .select-option {
         position: absolute;
@@ -169,6 +201,7 @@ export default {
         background-color: #fff;
         box-sizing: border-box;
         transition: 0.3s all;
+        z-index: 2020;
     }
     .select-ul {
         margin: 0;
@@ -184,6 +217,9 @@ export default {
     }
     .select-li:hover {
         background-color: #f5f7fa;
+    }
+    .selected {
+        color: #409eff;
     }
     .required {
         color: red;
@@ -208,5 +244,13 @@ export default {
     .select-option::-webkit-scrollbar-thumb {
         background: rgba(221, 222, 224, 1);
         border-radius: 20px;
+    }
+    .icongou {
+        position: absolute;
+        right: 6px;
+        color: #409eff;
+    }
+    .error {
+        border: 1px solid red;
     }
 </style>
