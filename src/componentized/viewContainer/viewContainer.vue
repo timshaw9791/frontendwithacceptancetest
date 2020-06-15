@@ -208,11 +208,11 @@ export default {
         width: 50px;
         position: relative;
         text-align: center;
-        z-index: 9999999999;
         .label {
             cursor: pointer;
         }
         .menu {
+            z-index: 9999999999;
             position: absolute;
             line-height: initial;
             width: 100px;
