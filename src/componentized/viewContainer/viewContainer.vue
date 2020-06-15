@@ -5,7 +5,7 @@
                 <bread-crumb :routeList="routeList"></bread-crumb>
             </div>
             <div class="tabs-box">
-                <div v-for="(tab, i) in tabs" :key="tab.key" class="tab" :class="{'tab-select': tabSelect==i}" @click="selectTab(tab, i)">{{ tab.label }}</div>
+                <div v-for="(tab, i) in tabs" :key="tab.key" class="tab" v-show="tab.label" :class="{'tab-select': tabSelect==i}" @click="selectTab(tab, i)">{{ tab.label }}</div>
             </div>
             <div class="tools-box">
                 <define-input :label="baseSearchName" v-model="tabs[tabSelect].baseSearchValue" :column="6" v-show="tabs[tabSelect].baseSearch" class="base-input"></define-input>
@@ -24,7 +24,6 @@
                     </div>
                 </div>
             </div>
-            
         </div>
         <div class="body">
             <div v-for="tab in tabs" :key="'nameSlot'+tab.key" v-show="tabs[tabSelect].key==tab.key" class="name-slot-box">
@@ -33,7 +32,37 @@
             <slot></slot>
         </div>
         <transition name="search">
-            <div class="advanced-search-box" v-show="advancedSearchShow"></div>
+            <div class="advanced-search-box" v-show="advancedSearchShow" @mouseleave="advancedSearchShow =false">
+                <div class="serch-box">
+                    <div class="group">
+                        <span v-show="!selectObj.groupLast">（ </span>
+                        <base-select :selectList="testArr" :haveLabel="false" :column="3.5" margin="0 3px"></base-select>
+                        <base-select :selectList="[{label: '勾选', value: 'True'}, {label: '不选', value: 'False'}]" :haveLabel="false" :column="3.5" margin="0"></base-select>
+                        <define-input :haveLabel="false" :column="3"  margin="0 3px" align="right"></define-input>
+                    </div>
+                    <base-select v-model="selectObj.logicLeft" :selectList="[{label: '并且', value: 'and'}, {label: '或者', value: 'or'}]" :haveLabel="false" :column="12"></base-select>
+                    <div class="group">
+                        <span v-show="selectObj.groupLast">（ </span>
+                        <base-select :selectList="testArr" :haveLabel="false" :column="3.5" margin="0 3px"></base-select>
+                        <base-select :selectList="[{label: '勾选', value: 'True'}, {label: '不选', value: 'False'}]" :haveLabel="false" :column="3.5"  margin="0 3px"></base-select>
+                        <define-input :haveLabel="false" :column="5"></define-input>
+                        <span v-show="!selectObj.groupLast"> ）</span>
+                    </div>
+                    <base-select v-model="selectObj.logicRight" :selectList="[{label: '并且', value: 'and'}, {label: '或者', value: 'or'}]" :haveLabel="false" :column="12" ></base-select>
+                    <div class="group">
+                        <base-select :selectList="testArr" :haveLabel="false" :column="3.5"  margin="0 3px"></base-select>
+                        <base-select :selectList="[{label: '勾选', value: 'True'}, {label: '不选', value: 'False'}]" :haveLabel="false" :column="3.5"  margin="0 3px"></base-select>
+                        <define-input :haveLabel="false" :column="3"  margin="0 3px"></define-input>
+                        <span v-show="selectObj.groupLast"> ）</span>
+                    </div>
+                </div>
+                <div class="control-box">
+                    <checkbox label="组合后两个条件" v-model="selectObj.groupLast" :column="1.5" margin="0 0 0 -1.5625rem"></checkbox>
+                    <base-button label="保存"></base-button>
+                    <base-button label="重置"></base-button>
+                    <base-button label="查询"></base-button>
+                </div>
+            </div>
         </transition>
     </div>
 </template>
@@ -49,6 +78,14 @@ export default {
             tabSelect: 0,
             advancedSearchShow: false,
             showMenu: false, // 控制下拉菜单
+            logicArr: [{label: '并且', key: 'and'}, {label: '或者', key: 'or'}],
+            triggleArr: [{label: '勾选', key: 'True'}, {label: '不选', key: 'False'}],
+            testArr: [{label: '星标1', value: 'xb1'}, {label: '星标2', value: 'xb2'}],
+            selectObj: {
+                logicLeft: 'and',
+                logicRight: 'or',
+                gourpLast: false
+            }
         }
     },
     methods: {
@@ -63,11 +100,8 @@ export default {
             type: Array,
             default() {
                 return [{
-                    label: '标签卡1',
-                    key: 'car1'
-                }, {
-                    label: '标签卡2',
-                    key: 'car2'
+                    label: '',
+                    key: ''
                 }]
             }
         },
@@ -86,11 +120,16 @@ export default {
             immediate: true
         }
     },
-    components: {breadCrumb, dropdown}
+    components: {breadCrumb, dropdown},
 }
 </script>
 
 <style lang="scss" scoped>
+    /deep/ .checkbox-container {
+        .label {
+            color: #2F2F76;
+        }
+    }
     $mainHeight: calc(91vh - 78px);
     .view-container {
         width: 100%;
@@ -106,7 +145,6 @@ export default {
         border-bottom: 1px solid #DCDFE6;
         box-shadow:1px 3px 8px rgba(0,0,0,0.04);
         .breadcrumb-box {
-            background-color: lightcoral;
             height: 60px;
             display: inline-flex;
             align-items: center;
@@ -128,7 +166,6 @@ export default {
             display: inline-flex;
             justify-content: flex-end;
             align-items: center;
-            background-color: lightskyblue;
             height: 60px;
             line-height: 60px;
             .base-input {
@@ -136,10 +173,9 @@ export default {
             }
             .button-box {
                 width: auto;
-                min-width: 230px;
+                // min-width: 230px;
                 flex-grow: 1;
                 height: 60px;
-                background-color: orange;
                 white-space: nowrap;
                 text-align: right;
                 color: #51519A;
@@ -152,7 +188,6 @@ export default {
                 min-width: 50px;
                 flex-grow: 0;
                 flex-shrink: 0;
-                background-color: red;
                 display: inline-flex;
                 justify-content: flex-end;
             }
@@ -173,12 +208,13 @@ export default {
         width: 50px;
         position: relative;
         text-align: center;
-        z-index: 9999999999;
         .label {
             cursor: pointer;
         }
         .menu {
+            z-index: 9999999999;
             position: absolute;
+            line-height: initial;
             width: 100px;
             min-height: 100px;
             background-color: white;
@@ -210,6 +246,26 @@ export default {
         border:1px solid rgba(220,223,230,1);
         box-shadow:1px 3px 8px rgba(0,0,0,0.04);
         background-color: white;
+        .serch-box {
+            width: 100%;
+            height: 70px;
+            display: grid;
+            grid-template-columns: minmax(2.1667rem,28%) 6% minmax(2.1667rem,28%) 6% minmax(2.1667rem,28%);
+            column-gap: 1%;
+            align-items: center;
+        }
+        .group {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            background-color: #F0F2F7;
+        }
+        .control-box {
+            display: inline-block;
+            width: 100%;
+            margin: 30px 0;
+            text-align: center;
+        }
     }
     .body {
          &::-webkit-scrollbar {
