@@ -5,7 +5,7 @@
                 <bread-crumb :routeList="routeList"></bread-crumb>
             </div>
             <div class="tabs-box">
-                <div v-for="(tab, i) in tabs" :key="tab.key" class="tab" :class="{'tab-select': tabSelect==i}" @click="selectTab(tab, i)">{{ tab.label }}</div>
+                <div v-for="(tab, i) in tabs" :key="tab.key" class="tab" v-show="tab.label" :class="{'tab-select': tabSelect==i}" @click="selectTab(tab, i)">{{ tab.label }}</div>
             </div>
             <div class="tools-box">
                 <define-input :label="baseSearchName" v-model="tabs[tabSelect].baseSearchValue" :column="6" v-show="tabs[tabSelect].baseSearch" class="base-input"></define-input>
@@ -24,7 +24,6 @@
                     </div>
                 </div>
             </div>
-            
         </div>
         <div class="body">
             <div v-for="tab in tabs" :key="'nameSlot'+tab.key" v-show="tabs[tabSelect].key==tab.key" class="name-slot-box">
@@ -101,11 +100,8 @@ export default {
             type: Array,
             default() {
                 return [{
-                    label: '标签卡1',
-                    key: 'car1'
-                }, {
-                    label: '标签卡2',
-                    key: 'car2'
+                    label: '',
+                    key: ''
                 }]
             }
         },
@@ -124,7 +120,7 @@ export default {
             immediate: true
         }
     },
-    components: {breadCrumb, dropdown}
+    components: {breadCrumb, dropdown},
 }
 </script>
 
@@ -149,7 +145,6 @@ export default {
         border-bottom: 1px solid #DCDFE6;
         box-shadow:1px 3px 8px rgba(0,0,0,0.04);
         .breadcrumb-box {
-            background-color: lightcoral;
             height: 60px;
             display: inline-flex;
             align-items: center;
@@ -171,7 +166,6 @@ export default {
             display: inline-flex;
             justify-content: flex-end;
             align-items: center;
-            background-color: lightskyblue;
             height: 60px;
             line-height: 60px;
             .base-input {
@@ -182,7 +176,6 @@ export default {
                 // min-width: 230px;
                 flex-grow: 1;
                 height: 60px;
-                background-color: orange;
                 white-space: nowrap;
                 text-align: right;
                 color: #51519A;
@@ -195,7 +188,6 @@ export default {
                 min-width: 50px;
                 flex-grow: 0;
                 flex-shrink: 0;
-                background-color: red;
                 display: inline-flex;
                 justify-content: flex-end;
             }
@@ -263,7 +255,6 @@ export default {
             align-items: center;
         }
         .group {
-            // padding: 3px;
             display: flex;
             justify-content: flex-start;
             align-items: center;
