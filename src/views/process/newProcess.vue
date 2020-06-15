@@ -26,7 +26,7 @@
         data() {
             return {
                 list: [],
-                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0}
+                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
             }
         },
         methods: {
@@ -52,7 +52,7 @@
         components: {
             myHeader,
             bosTabs,
-            listTableMixin
+            listTableMixin,
         }
     }
 </script>
