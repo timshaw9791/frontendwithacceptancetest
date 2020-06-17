@@ -132,37 +132,52 @@ export const asyncRouterMap = [{
             name: 'scrapApply',
             component: _import('process/scrapApply'),
             hidden: true,
-        }, {
-            path: 'transferApply', // 调拨申请页面
-            name: 'transferApply',
-            component: _import('process/transfer/transferApply'),
+        },  {
+            path: 'allocateApply', // 调拨申请页面（调拨、直调）
+            name: 'allocateApply',
+            component: _import('process/allocate/allocateApply'),
+            hidden: true,
+        },  {
+            path: 'allocateOut', // 调拨出库（调拨、直调）
+            name: 'allocateOut',
+            component: _import('process/allocate/allocateOut'),
             hidden: true,
         }, {
-            path: 'transferOut', // 调拨出库
-            name: 'transferOut',
-            component: _import('process/transfer/transferOut'),
-            hidden: true,
-        },{
-            path: 'transferIn', // 调拨入库
-            name: 'transferIn',
-            component: _import('process/transfer/transferIn'),
-            hidden: true,
-        },{
-            path: 'directApply', // 直调申请页面
-            name: 'directApply',
-            component: _import('process/direct/directApply'),
+            path: 'allocateIn', // 调拨入库（调拨、直调）
+            name: 'allocateIn',
+            component: _import('process/allocate/allocateIn'),
             hidden: true,
         }, {
-            path: 'directOut', // 直调出库
-            name: 'directOut',
-            component: _import('process/direct/directOut'),
-            hidden: true,
-        },{
-            path: 'directIn', // 直调入库
-            name: 'directIn',
-            component: _import('process/direct/directIn'),
-            hidden: true,
-        }, {
+        //     path: 'transferApply', // 调拨申请页面
+        //     name: 'transferApply',
+        //     component: _import('process/transfer/transferApply'),
+        //     hidden: true,
+        // },{
+        //     path: 'transferOut', // 调拨出库
+        //     name: 'transferOut',
+        //     component: _import('process/transfer/transferOut'),
+        //     hidden: true,
+        // }, {
+        //     path: 'transferIn', // 调拨入库
+        //     name: 'transferIn',
+        //     component: _import('process/transfer/transferIn'),
+        //     hidden: true,
+        // }, {
+        //     path: 'directApply', // 直调申请页面
+        //     name: 'directApply',
+        //     component: _import('process/direct/directApply'),
+        //     hidden: true,
+        // }, {
+        //     path: 'directOut', // 直调出库
+        //     name: 'directOut',
+        //     component: _import('process/direct/directOut'),
+        //     hidden: true,
+        // }, {
+        //     path: 'directIn', // 直调入库
+        //     name: 'directIn',
+        //     component: _import('process/direct/directIn'),
+        //     hidden: true,
+        // }, {
             path: 'agencyMatters',
             name: 'agencyMatters',
             component: _import('process/agencyMatters'),

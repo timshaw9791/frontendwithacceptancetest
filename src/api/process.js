@@ -3,7 +3,8 @@ import {baseBURL} from "./config";
 
 let scrapUrl = baseBURL + '/workflow/scrap',
     transferUrl = baseBURL + '/workflow/transfer',
-    directUrl = baseBURL + '/workflow/direct'
+    directUrl = baseBURL + '/direct_allot'
+
 // 报废流程
 export function scrapStart(params, data) {
     return request({

@@ -21,7 +21,7 @@
 </template>
 
 <script>
-    import myHeader from '@/components/base/header/header'
+    import myHeader from '@base/header/header'
     import {doneProcess} from '@/api/process'
 
     export default {
@@ -50,7 +50,7 @@
                 })
             },
             toDetail(data) {
-                let applyName = data.type.includes('报废') ? 'scrap' : 'transfer'
+                let applyName = data.type.includes('报废') ? 'scrap' : 'allocate'
                 this.$router.push({
                     path: `/process/${applyName}Apply`,
                     query: {

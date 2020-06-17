@@ -5,7 +5,7 @@
             <define-table :data="list" height="600px" :pageInfo="paginator" @changePage="changePage"
                           :highLightCurrent="true">
                 <define-column label="操作" v-slot="{ data }">
-                    <i class="iconfont iconjiahao" @click="apply(data.row)"></i>
+                    <i class="iconfont iconjiahao" @click="toApply(data.row)"></i>
                 </define-column>
                 <define-column label="工作流名称" field="name"></define-column>
                 <define-column label="部署时间" :filter="(row)=>$filterTime(row.deploymentTime)"></define-column>
@@ -35,10 +35,10 @@
                     this.list = res
                 })
             },
-            apply(data) {
-                let path = data.key.includes('direct') ? 'direct' : data.key
+            toApply(data) {
+                console.log(data)
                 this.$router.push({
-                    path: `${path}` + 'Apply',
+                    path: 'allocateApply',
                     query: {
                         name: `${data.name}`, // 流程的名称
                         key: `${data.key}`, // 该值为 processDefinitionKey

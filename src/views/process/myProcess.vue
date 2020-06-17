@@ -64,7 +64,7 @@
                 this.fetchData();
             },
             toDetail(data) {
-                let applyName = data.type.includes('报废') ? 'scrap' : 'transfer'
+                let applyName = data.type.includes('报废') ? 'scrap' : 'allocate'
                 this.$router.push({
                     path: `/process/${applyName}Apply`,
                     query: {
