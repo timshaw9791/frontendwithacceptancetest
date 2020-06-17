@@ -19,8 +19,8 @@
                 <define-table :data="newData" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
                               :highLightCurrent="true" slot="total" :showSummary="true" :summaryFunc="sumFunc">
                     <define-column label="操作" width="100" v-slot="{ data }">
-                        <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
-                        <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
+                        <i class="iconfont icontianjia" @click="changeRow(true,data)"></i>
+                        <i class="iconfont iconyichu" @click="changeRow(false,data)"></i>
                     </define-column>
                     <define-column label="装备参数" v-slot="{ data }">
                         <entity-input v-model="data.row.equipArg" :options="{detail:'equipArgsSelect'}"
@@ -36,8 +36,8 @@
                 </define-table>
                 <define-table :data="newData[findIndex].copyList" height="2.8646rem" :havePage="false" slot="detail">
                     <define-column label="操作" width="100" v-slot="{ data }">
-                        <i class="iconfont icontianjialiang" @click="changeDetailRow(true,data)"></i>
-                        <i class="iconfont iconyichuliang" @click="changeDetailRow(false,data)"></i>
+                        <i class="iconfont icontianjia" @click="changeDetailRow(true,data)"></i>
+                        <i class="iconfont iconyichu" @click="changeDetailRow(false,data)"></i>
                     </define-column>
                     <define-column label="RFID" v-slot="{ data }">
                         <define-input v-model="data.row.rfid" type="String" :tableEdit="false"></define-input>
@@ -65,7 +65,7 @@
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
     import serviceDialog from 'components/base/serviceDialog/index'
-    import {start, startOne, killProcess, handheld, modifyFileName} from 'common/js/rfidReader'
+    import {start, startOne, killProcess} from 'common/js/rfidReader'
     import {getInhouseNumber, inHouse, findByRfids, outHouse} from "api/storage"
     import divTmp from '@/componentized/divTmp'
     import {findrepairingequips, endKeepEquips, inKeepEquips} from "api/operation"
@@ -133,9 +133,9 @@
                             this.list.push(item)
                         })
                         let cList = this._.groupBy(this.list, item => `${item.equipArg.model}${item.location.id}`)
-                        this.newData = this._.map(cList, (v, k) => {
+                        this.newData =JSON.parse(JSON.stringify( this._.map(cList, (v, k) => {
                             return {equipArg: v[0].equipArg, copyList: v, count: v.length, location: v[0].location}
-                        })
+                        })))
                     }
                 } else {
                     this.$message.error('此装备不在保养状态')
@@ -143,6 +143,7 @@
             },
 
             readData() {
+               
                 killProcess(this.pid)
                 start("java -jar scan.jar", (data) => {
                     findByRfids(data).then(res => {
@@ -165,8 +166,14 @@
                 if (this.newData[this.findIndex].copyList.length == 1) {
                     this.newData[this.findIndex].copyList = [{rfid: '', serial: ''}]
                 }
+                if(!state){
+                    this.list.splice(this.list.findIndex(v=>v.rfid==this.newData[this.findIndex].copyList[data.$index].rfid),1)
+                }
             },
             changeRow(state, data) {
+                data.row.copyList.forEach(item=>{
+                    this.list.splice(this.list.findIndex(v=>v.rfid==item.rfid),1)
+                })
                 state ? this.newData.push({location: '', copyList: [{rfid: '', serial: ''}],}) :
                     this.newData.splice(data.$index, 1)
                 if (this.newData.length == 0) {

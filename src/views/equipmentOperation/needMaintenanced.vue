@@ -12,13 +12,13 @@
                                 <entity-input v-model="data.row.equipArg"  :options="{detail:'equipArgsDetail'}" format="{name}({model})" :tableEdit="false" ></entity-input>
                             </define-column>
                             <define-column label="装备位置"  v-slot="{ data }" >
-                                 <entity-input v-model="data.row.location"   :formatFunc="formatFunc" :tableEdit="false" ></entity-input>
+                                 <entity-input v-model="data.row.location"   :formatFunc="$formatFuncLoc" :tableEdit="false" ></entity-input>
                             </define-column>
                             <define-column label="正在保养数量" v-slot="{ data }">
                                 <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
                             </define-column>
                             <define-column label="保养时长" v-slot="{ data }">
-                                <define-input v-model="data.row.keepTime"  type="Number" :tableEdit="false"></define-input>
+                                <date-input v-model="data.row.keepTime" filter="toDay" :tableEdit="false"></date-input>
                             </define-column>
                         </define-table>
                         <define-table :data="listData[this.findIndex].copyList" height="2.8646rem" :havePage="false" slot="detail">
@@ -43,7 +43,7 @@ import myHeader from 'components/base/header/header'
     import baseButton from "@/componentized/buttonBox/baseButton.vue"
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
-    import { start, startOne, killProcess,handheld, modifyFileName } from 'common/js/rfidReader'
+    import { start, startOne, killProcess } from 'common/js/rfidReader'
     import { getInhouseNumber,inHouse,findByRfids,outHouse} from "api/storage"
     import { inKeepEquips} from "api/operation"
 var _ = require("lodash");
@@ -62,17 +62,7 @@ export default {
             endMain(){
                 this.$router.push({path: '/equipmentOperation/endMaintenance'});
             }, 
-            formatFunc(data){
-            if(data.surface!=null&&data.floor!=null){
-                 return data.frameNumber?
-                `${data.frameNumber}架/${data.surface}面/${data.section}节/${data.floor}层`:
-                `${data.category}(${data.cabinetNumber})`
-               }else{
-                 return data.frameNumber?
-                `${data.frameNumber}架/${data.section}节`:
-                `${data.category}(${data.cabinetNumber})`   
-               }
-           }, 
+
             sumFunc(param) { // 表格合并行计算方法
                 let { columns, data } = param, sums = [];
                 sums=new Array(columns.length).fill('')

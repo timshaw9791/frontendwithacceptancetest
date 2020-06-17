@@ -43,8 +43,8 @@
                 <define-table :havePage="false" :data="transferApplyOrder.equips" height="2.8646rem"
                               :showSummary="true" :summaryFunc="$sumFunc" slot="total">
                     <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
-                        <i class="iconfont icontianjialiang" @click="addRow()"></i>
-                        <i class="iconfont iconyichuliang" @click="$delRow(transferApplyOrder.equips,data.index)"></i>
+                        <i class="iconfont icontianjia" @click="addRow()"></i>
+                        <i class="iconfont iconyichu" @click="$delRow(transferApplyOrder.equips,data.index)"></i>
                     </define-column>
                     <define-column label="装备参数" v-slot="{ data }">
                         <entity-input v-model="data.row.equipArg" :options="{search:'equipArgsSelect'}"

@@ -15,8 +15,8 @@
                         <define-table :data="newData" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
                             :highLightCurrent="true"  slot="total" :showSummary="true" :summaryFunc="sumFunc">
                             <define-column label="操作" width="100" v-slot="{ data }">
-                                <i class="iconfont icontianjialiang" @click="changeRow(true,data)"></i>
-                                <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
+                                <i class="iconfont icontianjia" @click="changeRow(true,data)"></i>
+                                <i class="iconfont iconyichu" @click="changeRow(false,data)"></i>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
                                 <entity-input v-model="data.row.equipArg" format="{name}({model})" :tableEdit="false" ></entity-input>
@@ -30,8 +30,8 @@
                         </define-table>
                         <define-table :data="newData[findIndex].copyList" height="2.8646rem" :havePage="false" slot="detail">
                             <define-column label="操作" width="100" v-slot="{ data }">
-                               <i class="iconfont icontianjialiang" @click="changeDetailRow(true,data)"></i>
-                               <i class="iconfont iconyichuliang" @click="changeDetailRow(false,data)"></i>
+                               <i class="iconfont icontianjia" @click="changeDetailRow(true,data)"></i>
+                               <i class="iconfont iconyichu" @click="changeDetailRow(false,data)"></i>
                             </define-column>
                             <define-column label="RFID" v-slot="{ data }">
                                 <define-input v-model="data.row.rfid" type="String" :tableEdit="false"></define-input>
@@ -60,7 +60,7 @@
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
     import serviceDialog from 'components/base/serviceDialog/index'
-    import { start, startOne, killProcess,handheld, modifyFileName } from 'common/js/rfidReader'
+    import { start, startOne, killProcess } from 'common/js/rfidReader'
     import divTmp from '@/componentized/divTmp'
     import {repairEquipMaintain} from "api/operation"
     import { getInhouseNumber,inHouse,findByRfids,outHouse} from "api/storage"
@@ -131,7 +131,7 @@ export default {
                     if(this._.findIndex(this.list,['rfid',data[0].rfid])==-1){//避免重复
                         data.forEach(item=>{this.list.push(item)})
                         let cList=this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}${item.location.id}`)
-                        this.newData=this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length,location:v[0].location}})
+                        this.newData=JSON.parse(JSON.stringify(this._.map(cList,(v,k)=>{return {equipArg:v[0].equipArg,copyList:v,count:v.length,location:v[0].location}})))
                     }                                                   
                 }else{
                     this.$message.error('此装备不在维修状态')
@@ -141,6 +141,7 @@ export default {
                 this.paginator.page = page;
             },
             readData(){
+
                 killProcess(this.pid)
                 start("java -jar scan.jar", (data) => {
                     findByRfids(data).then(res=>{
@@ -155,8 +156,12 @@ export default {
             {
                 state?'':this.newData[this.findIndex].copyList[data.$index].rfid!=''?this.newData[this.findIndex].count--:''
                 state?this.newData[this.findIndex].copyList.push({rfid:'',serial:''}):this.newData[this.findIndex].copyList.splice(data.$index, 1)
-                if(this.newData[this.findIndex].copyList.length==1){
+                if(this.newData[this.findIndex].copyList.length==0){
                     this.newData[this.findIndex].copyList=[{rfid:'',serial:''}]
+                }
+                if(!state){
+                   
+                this.list.splice(this.list.findIndex(v=>v.rfid==data.row.rfid),1)
                 }
             },
             changeRow(state,data)
@@ -165,6 +170,11 @@ export default {
                 this.newData.splice(data.$index, 1)
                 if(this.newData.length==0){
                     this.newData=[{location: '',price: 0,count:0,copyList:[{rfid:'',serial:''}],}]
+                }
+                if(!state){
+                    data.row.copyList.forEach(item=>{
+                    this.list.splice(this.list.findIndex(v=>v.rfid==item.rfid),1)
+                }) 
                 }
             },
             init(){

@@ -14,8 +14,8 @@
                         </template>
             <define-table :data="list" slot="slot1" height="4rem" @changeCurrent="selRow" :havePage="false"  >
                             <define-column label="操作" width="150px" v-slot="{ data }" v-if="$route.query.title!='位置变更单/位置变更单详情'">
-                                <i class="iconfont icontianjialiang" @click="changeRow(true,data)" ></i>
-                                <i class="iconfont iconyichuliang" @click="changeRow(false,data)"></i>
+                                <i class="iconfont icontianjia" @click="changeRow(true,data)" ></i>
+                                <i class="iconfont iconyichu" @click="changeRow(false,data)"></i>
                             </define-column>
                             <define-column label="位置修改" v-slot="{ data }">
                                  <entity-input v-model="data.row.location" :column="3" :options="{search:'locationSelect'}" :formatFunc="$formatFuncLoc" :tableEdit="edit" ></entity-input>
@@ -63,7 +63,7 @@
     import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
     import { findByRfids,locationChangeOrders} from "api/storage"
-    import { start, startOne, killProcess,handheld, modifyFileName } from 'common/js/rfidReader'
+    import { start, startOne, killProcess,handheld } from 'common/js/rfidReader'
     import {jsqlPage,getBosEntity} from "api/basic"
 export default {
     components:{

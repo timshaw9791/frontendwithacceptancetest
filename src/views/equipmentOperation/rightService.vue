@@ -25,11 +25,11 @@
                                   :disabled="true"></entity-input>
                 </define-column>
                 <define-column label="装备位置" v-slot="{data}">
-                    <entity-input v-model="data.row.location" format="{frameNumber}架/{surface}面/{section}节/{floor}层"
+                    <entity-input v-model="data.row.location" :formatFunc="$formatFuncLoc"
                                   :tableEdit="false"></entity-input>
                 </define-column>
                 <define-column label="维修时长" v-slot="{data}">
-                    <date-input v-model="data.row.createTime" :validate="milliTime" :tableEdit="false"></date-input>
+                    <date-input v-model="data.row.createTime" filter="toDay" :tableEdit="false"></date-input>
                 </define-column>
             </define-table>
         </div>
