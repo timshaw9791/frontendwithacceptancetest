@@ -16,7 +16,7 @@
                 </div>
                 <div class="built-in-box">
                     <span @click="advancedSearchShow = !advancedSearchShow" v-show="tabs[tabSelect].advancedSearch" class="built-in">高级搜索</span>
-                    <div class="dropdown-container" @mouseleave="showMenu=false">
+                    <div class="dropdown-container" @mouseleave="showMenu=false" v-show="showMoreButton">
                         <span class="label" @click="showMenu=!showMenu">更多</span>
                         <div class="menu" v-show="showMenu">
                             <slot :name="'moreButton'+tabs[tabSelect].key"></slot>
@@ -74,10 +74,11 @@ export default {
     name: 'topTools',
     data() {
         return {
-            routeList: [],
-            tabSelect: 0,
-            advancedSearchShow: false,
+            routeList: [], // 路由面包屑
+            tabSelect: 0, // 当前选择的标签卡索引
+            advancedSearchShow: false, // 是否显示高级搜索框
             showMenu: false, // 控制下拉菜单
+            // showMoreButton: false, // 是否显示更多文字(通过判断是否填充了插槽)
             logicArr: [{label: '并且', key: 'and'}, {label: '或者', key: 'or'}],
             triggleArr: [{label: '勾选', key: 'True'}, {label: '不选', key: 'False'}],
             testArr: [{label: '星标1', value: 'xb1'}, {label: '星标2', value: 'xb2'}],
@@ -92,7 +93,7 @@ export default {
         selectTab(tabData, index) { // 切换标签卡
             this.tabSelect = index;
             this.advancedSearchShow = false;
-            this.$emit('changeTab', tabData);
+            this.$emit('changeTab', tabData); // 返回值为选中的tab数据
         }
     },
     props: {
@@ -111,6 +112,11 @@ export default {
         },
         value: {},
     },
+    computed: {
+        showMoreButton() {
+            return Object.keys(this.$slots).some(sortName=>sortName.includes(`moreButton${this.tabs[this.tabSelect].key}`))
+        }
+    },
     watch: {
         $route: {
             handler(val, oldVal) {
@@ -120,7 +126,7 @@ export default {
             immediate: true
         }
     },
-    components: {breadCrumb, dropdown},
+    components: {breadCrumb, dropdown}
 }
 </script>
 
@@ -162,7 +168,7 @@ export default {
             }
         }
         .tools-box {
-            width: 620px;
+            min-width: 620px;
             display: inline-flex;
             justify-content: flex-end;
             align-items: center;
@@ -182,14 +188,16 @@ export default {
                 font-size:18px;
                 overflow: hidden;
                 user-select: none;
+                background-color: pink;
             }
             .built-in-box {
                 max-width: 124px;
-                min-width: 50px;
+                /*min-width: 50px;*/
                 flex-grow: 0;
                 flex-shrink: 0;
                 display: inline-flex;
                 justify-content: flex-end;
+                background-color: orange;
             }
             .built-in {
                 cursor: pointer;
