@@ -11,7 +11,7 @@
       @blur="changeEditState(false)" @keydown.13="changeEditState(false)"/>
       <div class="icon" v-show="insideValue!=''&&clearable&&!disabled&&tableEdit&&edit">
         <i class="iconfont iconxiaoyanjing" :class="{'pwd-tri': insidePattern == 'text'}" @click="trigglePattern" v-if="pattern=='password'"></i>
-        <i class="iconfont iconwenbenkuangshanchu" @click="clear"></i>
+        <i class="iconfont iconwenbenkuangshanchu1" @click="clear"></i>
       </div>
   </div>
 </template>
@@ -176,7 +176,7 @@ export default {
   box-sizing: border-box;
   margin: 0 0.0521rem;
   .iconxiaoyanjing,
-  .iconwenbenkuangshanchu {
+  .iconwenbenkuangshanchu1 {
     display: none;
   }
   .iconxiaoyanjing {
@@ -234,7 +234,7 @@ export default {
 }
 .define-input-container:hover {
   .iconxiaoyanjing,
-  .iconwenbenkuangshanchu {
+  .iconwenbenkuangshanchu1 {
     display: inline-block;
   }
 }
