@@ -1,7 +1,16 @@
 <template>
-    <view-container :tabs="tabs" v-model="search">
+    <view-container :tabs="tabs" v-model="search" >
         <!-- 标签1 -->
-        <div slot="car1" style="height: 100vh">这里是标签 1 内容</div>
+        <div slot="car1" style="height: 100vh">
+            <el-table :border="true">
+                <el-table-column label="哈哈"></el-table-column>
+                <el-table-column label="哈哈"></el-table-column>
+                <el-table-column label="哈哈"></el-table-column>
+                <el-table-column label="哈哈"></el-table-column>
+                <el-table-column label="哈哈"></el-table-column>
+
+            </el-table>
+        </div>
         <!-- 标签2 -->
         <div slot="car2" style="height: 100vh">这里是标签 2 内容</div>
         <!-- 标签1 按钮 -->
@@ -20,7 +29,6 @@
         <div>这里是无标签内容</div>
     </view-container>
 </template>
-
 <script>
 export default {
     name: 'test',

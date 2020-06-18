@@ -201,7 +201,7 @@ export const asyncRouterMap = [{
     children: [{
         path: 'textCharge',
         name: 'textCharge',
-        component: _import('equipmentOperation/textCharge'),
+        component: _import('equipmentOperation/newCharge'),
         meta: {title: '充电'},
     }, {
         path: 'maintenance',
