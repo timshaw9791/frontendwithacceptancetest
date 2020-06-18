@@ -20,11 +20,11 @@ export function getBosEntity(id,data=[], state) {
 }
 
 export function jsqlPage(data, state) { // 根据jsql返回分页数据
-    // return request({
-    //     url: '/bos/jsql/page',
-    //     method: 'POST',
-    //     data
-    // }, state)
+    return request({
+        url: '/bos/jsql/page',
+        method: 'POST',
+        data
+    }, state)
 }
 
 export function bosEnums(params, state) { // 根据枚举分类获取常量值
