@@ -44,6 +44,7 @@ import dateInput from '@/componentized/textBox/dateInput'
 import radio from '@/componentized/radio'
 import checkbox from '@/componentized/checkbox'
 import checkboxGroup from '@/componentized/checkboxGroup'
+import viewContainer from '@/componentized/viewContainer/viewContainer'
 
 let componentsList = {
     'FormContainer': FormContainer,
@@ -78,7 +79,8 @@ let componentsList = {
     dateInput,
     radio,
     checkbox,
-    checkboxGroup
+    checkboxGroup,
+    viewContainer
 };
 
 

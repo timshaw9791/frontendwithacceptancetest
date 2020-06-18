@@ -1,9 +1,6 @@
 <template>
     <div>
         <div v-if="!isCollapse">
-            <div class="topTitle">
-                <img src="@/common/images/警徽.png" @click="windowClose()" />
-            </div>
             <topInfo class="topInfo"></topInfo>
         </div>
         <el-scrollbar wrapClass="scrollbar-wrapper">
@@ -17,9 +14,6 @@
                         text-color="#707070">
                     <sidebar-item :routes="permission_routers"></sidebar-item>
                 </el-menu>
-                <div class="topBottom" v-if="!isCollapse">
-                    服务热线:400-8265186
-                </div>
             </div>
         </el-scrollbar>
     </div>

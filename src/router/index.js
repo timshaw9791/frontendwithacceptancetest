@@ -498,8 +498,18 @@ export const asyncRouterMap = [{
         meta: {title: '个人中心'},
     }],
     hidden: true
-},
-    {path: '*', redirect: '/404', hidden: true}
+}, {
+    path: '/test',
+    component: Layout,
+    children: [{
+        path: 'index',
+        name: 'test',
+        component: _import('test/test'),
+        meta: {title: '开发测试'}
+    }]
+}, {
+    path: '*', redirect: '/404', hidden: true
+}
 ]
 
 // Vue-router在3.1之后把$router.push()改为了Promise,而默认其Promise没有处理错误的回调，所以会交给全局错误处理。

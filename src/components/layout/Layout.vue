@@ -1,21 +1,33 @@
 <template>
   <div class="app-wrapper" :class="classObj">
-    <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside"></div>
+    <navbar></navbar>
+    <sidebar class="sidebar-container"></sidebar>
+    <div class="main-container">
+      <app-main></app-main>
+    </div>
+    <div class="information">
+        <span>&copy; 2019 - 2020 警用装备智能管理系统</span>
+        <span style="margin-left: 10px">技术支持：浙江华安安全设备有限公司</span>
+        <span style="margin-left: 20px">服务热线:400-8265186</span>
+        <span style="margin-left: 20px">V {{ version }}</span>
+      </div>
+    <!-- <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside"></div>
     <sidebar class="sidebar-container"></sidebar>
     <div class="main-container">
       <navbar></navbar>
       <app-main></app-main>
       <div class="main-bottom">
-        ◎ 2019 - 2020 警用装备智能管理系统
+        &copy; 2019 - 2020 警用装备智能管理系统
         <span style="margin-left: 10px">技术支持：浙江华安安全设备有限公司</span>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
 import { Navbar, Sidebar, AppMain } from "./components";
 import ResizeMixin from "./mixin/ResizeHandler";
+var version = require('@/../package.json').version
 
 export default {
   name: "layout",
@@ -23,6 +35,11 @@ export default {
     Navbar,
     Sidebar,
     AppMain
+  },
+  data() {
+    return {
+      version
+    }
   },
   mixins: [ResizeMixin],
   computed: {
@@ -52,22 +69,22 @@ export default {
 @import "~common/css/mixin.scss";
 
 .app-wrapper {
-  @include clearfix;
+  // @include clearfix;
   position: relative;
   height: 100%;
   width: 100%;
   overflow: hidden;
-  .main-container {
-    position: relative;
-    .main-bottom {
+  font-size: 16px;
+  .information {
+      font-size: 12px;
       text-align: center;
-      font-size: .06rem;
-      color: #707070;
       position: absolute;
+      bottom: 0;
       left: 0;
       right: 0;
-      bottom: .04rem;
     }
+  .main-container {
+    
   }
 }
 
