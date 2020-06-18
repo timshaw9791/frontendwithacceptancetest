@@ -22,7 +22,7 @@
                                   :highLightCurrent="true"
                                   slot="total" ref="totalTable" :init-select="true">
                         <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
-                            <i class="iconfont iconyichuliang" @click="$delRow(equipItems,data.$index)"></i>
+                            <i class="iconfont iconyichu" @click="$delRow(equipItems,data.$index)"></i>
                         </define-column>
                         <define-column label="装备参数" v-slot="{ data }">
                             <entity-input v-model="data.row.equipArg" format="{name}({model})"
@@ -40,7 +40,7 @@
                     <define-table :havePage="false" :data="equipItems[totalIndex].items"
                                   slot="detail" ref="detailTable">
                         <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
-                            <i class="iconfont iconyichuliang"
+                            <i class="iconfont iconyichu"
                                @click="$delRow(equipItems[totalIndex].items,data.$index,()=>{!equipItems[totalIndex].items.length && equipItems.splice(totalIndex,1)})"></i>
                         </define-column>
                         <define-column label="RFID" field="rfid"></define-column>

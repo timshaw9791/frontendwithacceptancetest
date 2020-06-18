@@ -13,7 +13,7 @@
                               :disabled="true"></entity-input>
             </div>
             <a-equips-table :is-info="isInfo" :equip-items="equipItems"
-                            :match-equips="matchEquips" @getReadData="getReadData"
+                            :match-equips="matchEquips" @getFinishEquip="getFinishEquip"
                             type="in"
             >
             </a-equips-table>
@@ -51,13 +51,7 @@
                 taskId: '',
                 isInfo: false,
                 isInbound: false,
-                order: {
-                    operator: {},
-                    house: {
-                        name: '',
-                        organUnit: {}
-                    }
-                },
+                order: {operator: {}, house: {name: '', organUnit: {}}},
                 equipItems: [{items: [], locationInfo: {}}],
                 matchEquips: [], //出库是为申请装备  入库时为出库装备
                 outboundEquips: [],
@@ -101,9 +95,10 @@
                     }
                 }
             },
-            getReadData(equipItems) {
-                equipItems.forEach((item) => {
-                    !!item && (this.order.inHouseItems = this.order.inHouseItems.concat(item.items))
+            getFinishEquip(equipItems){
+                _.map(equipItems, (item) => {
+                    this.order.equips = this.order.equips.concat(item.items)
+                    this.order.equips.equipId = this.order.equips.id
                 })
             },
             clean() {
@@ -111,7 +106,7 @@
                 this.equipItems = [{items: [], locationInfo: {}}]
             },
             submit() {
-                this.order.processCategory = this.allocateCategory === 'TRANSFER' ? '1' : '0' // 1为调拨流程 0为直调
+                this.order.processCategory = this.allocateCategory // 1为调拨流程 0为直调
                 this.order.processInstanceId = this.processInstanceId
                 this.order.inboundOrganUnitId = this.order.organUnit.id
                 this.order.inboundOrganUnitName = this.order.organUnit.name

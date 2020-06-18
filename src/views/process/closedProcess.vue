@@ -21,7 +21,7 @@
 </template>
 
 <script>
-    import myHeader from '@base/header/header'
+    import myHeader from '@/components/base/header/header'
     import {doneProcess} from '@/api/process'
 
     export default {

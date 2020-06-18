@@ -53,7 +53,7 @@ export function killProcessSync() {
 
 /* 通过pid删除对应进程 */
 export function killProcess(pid) {
-    spawn("taskkill", ["/PID", pid, "/T", "/F"]);
+    !!pid && spawn("taskkill", ["/PID", pid, "/T", "/F"]);
 }
 
 /** 读写器-连续

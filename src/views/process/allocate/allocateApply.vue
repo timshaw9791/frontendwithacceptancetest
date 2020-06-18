@@ -45,7 +45,7 @@
                               :showSummary="true" :summaryFunc="$sumFunc" slot="total">
                     <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
                         <i class="iconfont icontianjialiang" @click="addRow()"></i>
-                        <i class="iconfont iconyichuliang" @click="$delRow(applyOrder.equips,data.$index)"></i>
+                        <i class="iconfont iconyichu" @click="$delRow(applyOrder.equips,data.$index)"></i>
                     </define-column>
                     <define-column label="装备参数" v-slot="{ data }">
                         <entity-input v-model="data.row.equipArg" :options="{search:'equipArgsSelect'}"
@@ -207,6 +207,7 @@
             /*
             *    name  流程的名称
             *    key 该值为 processDefinitionKey
+            *    type to do
             */
             Object.assign(this, this.$route.query)
             this.allocateCategory = this.name.includes('调拨') ? 'TRANSFER' : 'DIRECT'

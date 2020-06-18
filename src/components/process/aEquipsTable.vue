@@ -9,15 +9,16 @@
                       :highLightCurrent="true"
                       slot="total" ref="totalTable" :init-select="true">
             <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
-                <i class="iconfont iconyichuliang" @click="$delRow(aEquipItems,data.$index)"></i>
-            </define-column>
-            <define-column label="装备位置" v-slot="{ data }">
-                <entity-input v-model="data.row.locationInfo" :options="{search:'locationSelect'}"
-                              :formatFunc="$formatFuncLoc" :tableEdit="true"></entity-input>
+                <i class="iconfont iconyichu" @click="$delRow(aEquipItems,data.$index)"></i>&nbsp
+                <i class="iconfont icontianjia" @click="addRow()"></i>
             </define-column>
             <define-column label="装备参数" v-slot="{ data }">
                 <entity-input v-model="data.row.equipArg" format="{name}({model})"
                               :disabled="true"></entity-input>
+            </define-column>
+            <define-column label="装备位置" v-slot="{ data }" v-if="this.type!=='out'">
+                <entity-input v-model="data.row.locationInfo" :options="{search:'locationSelect'}"
+                              :formatFunc="$formatFuncLoc" :disabled="true"></entity-input>
             </define-column>
             <define-column label="装备数量" v-slot="{ data }">
                 <define-input v-model="data.row.items.length" type="Number"
@@ -33,7 +34,7 @@
                       :data="totalIndex===-1?aEquipItems[0].items:aEquipItems[totalIndex].items"
                       slot="detail" ref="detailTable">
             <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
-                <i class="iconfont iconyichuliang"
+                <i class="iconfont iconyichu"
                    @click="$delRow(aEquipItems[totalIndex].items,data.$index,()=>{!aEquipItems[totalIndex].items.length && aEquipItems.splice(totalIndex,1)})"></i>
             </define-column>
             <define-column label="RFID" field="rfid"></define-column>
@@ -58,6 +59,7 @@
     import hardwareSelect from "@/components/hardwareSelect"
     import {killProcess, start} from "@/common/js/rfidReader";
     import {findByRfids} from "@/api/storage";
+    import {transEquips} from "@/common/js/transEquips";
 
     export default {
         name: "aEquipsTable", // allocateEquipsTable
@@ -71,7 +73,7 @@
                 pid: '',
                 highLightCurrent: false,
                 readRfids: [],
-                aEquipItems:this.equipItems
+                aEquipItems: this.equipItems
             }
         },
         props: {
@@ -93,7 +95,7 @@
             },
             isInfo: {
                 type: Boolean,
-                default:false
+                default: false
             }
         },
         methods: {
@@ -101,53 +103,56 @@
                 console.log(selected)
                 // 1.判断是否选中当前行
                 // 2.判断当前行是否有位置信息
-                if (this.totalIndex === -1) {
-                    this.$message.error("先选择需要扫描的位置")
-                    return
-                }
                 !!this.pid && killProcess(this.pid)
-                start("java -jar scan.jar", (data) => {
-                    switch (this.type) {
-                        case 'out': {
-                            _.findIndex(this.readRfids, data) === -1 && this.readRfids.push(data)
-                            findByRfids(this.readRfids, true).then(res => {
-                                this.fixEquipItems(res)
-                            })
-                            break
+                let data = "9988"
+                //start("java -jar scan.jar", (data) => {
+                switch (this.type) {
+                    case 'out': {
+                        _.findIndex(this.readRfids, data) === -1 && this.readRfids.push(data)
+                        findByRfids(this.readRfids, true).then(res => {
+                            this.equipItems = transEquips(res).equipItems
+                            this.$emit('getFinishEquip', this.equipItems)
+                        })
+                        break
+                    }
+                    case 'in' : {
+                        if (this.totalIndex === -1) {
+                            this.$message.error("先选择需要扫描的位置")
+                            return
                         }
-                        case 'in' : {
-                            let temp = this.equipItems[this.totalIndex]
-                            this.matchEquips.forEach(item => {
-                                if (item.rfid !== data) {
-                                    this.$message.error("该装备不在出库装备列表内！")
+                        let temp = this.equipItems[this.totalIndex]
+                        this.matchEquips.forEach(item => {
+                            if (item.rfid !== data) {
+                                this.$message.error("该装备不在出库装备列表内！")
+                                return
+                            }
+                            // 要删价格
+                            item.price = '1'
+                            item.productTime = '1590721943'
+                            item.locationInfo = item.location
+                            if (temp.hasOwnProperty("equipArg")) {
+                                if (item.equipName + "(" + item.equipModel + ")" !== temp.equipArg) {
+                                    this.$message.error("该装备与当前选中的装备参数不匹配！")
                                     return
                                 }
-                                // 要删价格
-                                item.price = '1'
-                                item.productTime = '1590721943'
-                                item.locationInfo = item.location
-                                if (temp.hasOwnProperty("equipArg")) {
-                                    if (item.equipName + "(" + item.equipModel + ")" !== temp.equipArg) {
-                                        this.$message.error("该装备与当前选中的装备参数不匹配！")
-                                        return
-                                    }
-                                } else {
-                                    temp.equipArg = item.equipName + "(" + item.equipModel + ")"
-                                }
-                                temp.items.push(item)
-                            })
-                            break
-                        }
-
+                            } else {
+                                temp.equipArg = item.equipName + "(" + item.equipModel + ")"
+                            }
+                            temp.items.push(item)
+                        })
+                        this.addRow()
+                        this.$emit('getFinishEquip', this.equipItems)
+                        break
                     }
-                }, (fail) => {
-                    this.index = 1;
-                    this.$message.error(fail);
-                }, (pid, err) => {
-                    pid ? this.pid = pid : this.$message.error(err)
-                })
-                this.addRow()
-                this.$emit('getReadData', this.equipItems)
+                }
+                // }, (fail) => {
+                //     this.index = 1;
+                //     this.$message.error(fail);
+                // }, (pid, err) => {
+                //     pid ? this.pid = pid : this.$message.error(err)
+                // })
+                //将最终的装备数量给父组件
+
             },
             selRow(data) {
                 this.totalIndex = data.index
@@ -177,10 +182,10 @@
                 return sums;
             }
         },
-        watch:{
-            equipItems(newVal){
-                this.aEquipItems =  newVal
-            }
+        watch: {
+            equipItems(newVal) {
+                newVal.length === 0 ? this.aEquipItems.push({items: [], locationInfo: {}}) : this.aEquipItems = newVal
+            },
         },
         destroyed() {
             !!this.pid && killProcess(this.pid)

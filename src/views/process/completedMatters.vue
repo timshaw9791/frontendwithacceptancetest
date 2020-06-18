@@ -44,12 +44,14 @@
                 })
             },
             toDetail(data) {
-                let applyName = data.type.includes('报废') ? 'scrap' : 'allocate'
+                console.log(data)
+                let applyName = data.processInstanceName.includes('报废') ? 'scrap' : 'allocate'
                 this.$router.push({
                     path: `/process/${applyName}Apply`,
                     query: {
                         name: data.processInstanceName,
                         processInstanceId: data.processInstanceId,
+                        type: 'done',
                     }
                 })
             },

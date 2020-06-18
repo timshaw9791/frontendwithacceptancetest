@@ -12,8 +12,9 @@
                 <entity-input label="出库人员" v-model="order.operator" format="{name}({policeSign})" :disabled="true"></entity-input>
             </div>
             <div class="table-box">
+                <!--统一处理装备表组件-->
                 <a-equips-table :is-info="isInfo" :equip-items="equipItems"
-                                :match-equips="matchEquips" @getReadData="getReadData">
+                                :match-equips="matchEquips" @getFinishEquip="getFinishEquip" type="out">
                 </a-equips-table>
             </div>
             <div class="button" v-if="!isInfo">
@@ -33,34 +34,33 @@
     import {transEquips} from "@/common/js/transEquips";
     import {mapGetters} from "vuex";
     import {activeTask, processOutbound, transferOrders} from "@/api/process";
-    import AEquipsTable from "@/components/process/aEquipsTable";
+    import aEquipsTable from "@/components/process/aEquipsTable";
 
     export default {
         name: "allocateOut",   // 流程出库
         components: {
-            AEquipsTable,
+            aEquipsTable,
             HardwareSelect,
             bosTabs,
             myHeader
         },
         data() {
             return {
+                title: '',
+                isInfo: true,
+                processInstanceId: '',
+                taskId: '',
                 order: {
                     operator: {},
                     house: {
                         name: '',
                         organUnit: {}
                     },
+                    equips:[]
                 },
-                equipItems: [{items: [], locationInfo: {}}],
-                isInfo: true,
-                processInstanceId: '',
-                readRfids: [], //读到的RFID
-                matchEquips: [],
-                taskId: '',
-                title: '',
-                highLightCurrent: false,
                 isOutbound:'',
+                equipItems: [{items: [], locationInfo: {}}],
+                matchEquips: [],
             }
         },
         methods: {
@@ -90,20 +90,18 @@
                         break
                     }
                     case "true": {
-                        console.log('----')
                         this.title = tempTitle + '出库单详情'
                         this.isOutbound = true
                         this.order = res.outboundEquipsOrder
                         this.equipItems = transEquips(this.order.equips).equipItems
-                        console.log('++++++++++++')
-                        console.log(this.equipItems)
                         break
                     }
                 }
             },
-            getReadData(equipItems){
-                equipItems.forEach((item)=>{
-                    !!item && (this.order.outHouseItems = this.order.outHouseItems.concat(item.items))
+            getFinishEquip(equipItems){
+                _.map(equipItems, (item) => {
+                    this.order.equips = this.order.equips.concat(item.items)
+                    this.order.equips.equipId = this.order.equips.id
                 })
             },
             clean() {
@@ -116,7 +114,7 @@
                     outOrder.equips = this.order.equips.concat(item.items)
                     outOrder.equips.equipId = this.order.equips.id
                 })
-                outOrder.processCategory = this.allocateCategory === 'TRANSFER' ? '1' : '0' // 1为调拨流程 0为直调
+                outOrder.processCategory = this.allocateCategory  // 1为调拨流程 0为直调
                 outOrder.processInstanceId = this.processInstanceId
                 processOutbound(this.taskId, this.order).then(
                     this.$router.push({path:'agencyMatters'})
@@ -136,11 +134,7 @@
                 'warehouse'
             ])
         },
-        watch: {
-            'equipItems.length'(newVal) {
-                !newVal && this.equipItems.push({items: [], locationInfo: {}})
-            }
-        },
+
     }
 </script>
 
