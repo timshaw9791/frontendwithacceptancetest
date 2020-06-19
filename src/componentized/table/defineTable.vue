@@ -1,5 +1,5 @@
 <template>
-    <div class="define-table-container" :style="`height:${height}`">
+    <div class="define-table-container">
         <el-table :data="data" :height="fixHeight" :border="border" ref="table" fit
                 :highlight-current-row="highLightCurrent" @current-change="changeCurrent"
                 :show-summary="showSummary" :summary-method="summaryFunc">
