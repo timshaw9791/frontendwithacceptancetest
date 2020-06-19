@@ -52,6 +52,10 @@ export default {
         border: {
             type: Boolean,
             default: false
+        },
+        autoWidth: {
+            type: Boolean,
+            default: false
         }
     },
     methods: {
@@ -66,7 +70,7 @@ export default {
     },
     computed: {
         fixWidth() {
-            return this.isCheckboxGroup?0:`calc(${8.33*this.column}% - 0.1042rem)`;
+            return this.isCheckboxGroup?0:this.autoWidth?'auto':`calc(${8.33*this.column}% - 0.1042rem)`;
         },
         isSelect() {
             return this.insideSel || this.value;
