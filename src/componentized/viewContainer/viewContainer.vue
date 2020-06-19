@@ -26,8 +26,8 @@
             </div>
         </div>
         <div class="body">
-            <div v-for="tab in tabs" :key="'nameSlot'+tab.key" v-show="tabs[tabSelect].key==tab.key" class="name-slot-box">
-                <slot :name="tab.key"></slot>
+            <div v-for="tab in tabs" :key="'nameSlot'+tab.key" v-show="tabs[tabSelect].key==tab.key" class="name-slot-box" style="height: 100%">
+                <slot :name="tab.key" style="height: 100%"></slot>
             </div>
             <slot></slot>
         </div>
@@ -289,7 +289,7 @@ export default {
         max-height: $mainHeight;
         overflow-x: hidden;
         overflow-y: auto;
-    }    
+    }
     .search-enter-active, .search-leave-active {
         transition: opacity .5s;
     }
