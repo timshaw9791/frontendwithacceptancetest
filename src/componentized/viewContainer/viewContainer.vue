@@ -136,7 +136,7 @@ export default {
             color: #2F2F76;
         }
     }
-    $mainHeight: calc(91vh - 78px);
+    $mainHeight: 937px;
     .view-container {
         width: 100%;
         font-size: 16px;
@@ -188,7 +188,6 @@ export default {
                 font-size:18px;
                 overflow: hidden;
                 user-select: none;
-                background-color: pink;
             }
             .built-in-box {
                 max-width: 124px;
@@ -197,7 +196,6 @@ export default {
                 flex-shrink: 0;
                 display: inline-flex;
                 justify-content: flex-end;
-                background-color: orange;
             }
             .built-in {
                 cursor: pointer;
@@ -291,7 +289,6 @@ export default {
         max-height: $mainHeight;
         overflow-x: hidden;
         overflow-y: auto;
-        margin-top: 18px;
     }    
     .search-enter-active, .search-leave-active {
         transition: opacity .5s;
