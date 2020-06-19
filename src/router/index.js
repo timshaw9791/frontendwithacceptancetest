@@ -206,26 +206,9 @@ export const asyncRouterMap = [{
     }, {
         path: 'maintenance',
         name: 'maintenance',
-        component: _import('equipmentOperation/maintenanceNew'),
-        meta: {title: '需要保养'},
-    }, {
-        path: 'endMaintenance',
-        name: 'endMaintenance',
-        component: _import('equipmentOperation/endMaintenance'),
-        meta: {title: '正在保养/结束保养'},
-        hidden: true,
-    }, {
-        path: 'startMaintenance',
-        name: 'startMaintenance',
-        component: _import('equipmentOperation/startMaintenance'),
-        meta: {title: '开始保养'},
-        hidden: true,
-    }, {
-        path: 'needMaintenanced',
-        name: 'needMaintenanced',
-        component: _import('equipmentOperation/needMaintenanced'),
-        meta: {title: '正在保养'},
-    }, {
+        component: _import('equipmentOperation/newMaintenance'),
+        meta: {title: '保养'},
+    },  {
         path: 'serviceapplication',
         name: 'serviceapplication',
         component: _import('equipmentOperation/serviceApplicationInfo'),

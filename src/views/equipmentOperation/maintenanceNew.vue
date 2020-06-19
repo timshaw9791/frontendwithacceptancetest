@@ -1,9 +1,5 @@
 <template>
   <div class="maintenance-form-container">
-    <my-header :title="$route.meta.title" :haveBlack="false"></my-header>
-    <div class="maintenance-form-top" >
-      <base-button size="default" align="right" label="开始保养" @click="startMain"></base-button>
-    </div>
     <div class="maintenance-form-body" >
         <bos-tabs :option="['tabs']" :layoutRatio="[2, 1]">
           <define-table :havePage="false" :data="listData" height="2.6042rem"
