@@ -1,7 +1,15 @@
 <template>
     <view-container :tabs="tabs" v-model="search" >
+<!--            <el-table slot="car1" :data="[]" height="100%">-->
+<!--                <el-table-column label="测试列1"></el-table-column>-->
+<!--                <el-table-column label="测试列2"></el-table-column>-->
+<!--            </el-table>-->
+        <define-table :data="[]" height="100%">
+            <define-column label="测试列" field="a"></define-column>
+            <define-column label="测试列2" field=""b></define-column>
+        </define-table>
         <!-- 标签1 -->
-        <div slot="car1" style="height: 100vh">
+        <div slot="car2" style="height: 100vh">
         </div>
         <!-- 标签2 -->
         <div slot="car2" style="height: 100vh">这里是标签 2 内容</div>
