@@ -1,9 +1,8 @@
 <template>
-
-        <view-container :tabs="tabs"  @changeTab="changeTab">
+        <view-container class="container" :tabs="tabs"  @changeTab="changeTab" style="height:100%">
             <!-- 标签1 -->
-            <div slot="car1" style="height: 100vh">
-                <define-table :havePage="false" :data="order" height="3.6042rem" slot="detail">
+            <div slot="car1">
+                <define-table :havePage="false" :data="order" height="100%" slot="detail">
                     <define-column label="RFID" field="rfid"></define-column>
                     <define-column label="装备序号" field="serial"></define-column>
                     <define-column label="装备参数" v-slot="{ data }">
@@ -19,8 +18,8 @@
                 </define-table>
             </div>
             <!-- 标签2 -->
-            <div slot="car2" style="height: 100vh">
-                <define-table :havePage="false" :data="order" height="3.6042rem" slot="total">
+            <div slot="car2">
+                <define-table :havePage="false" :data="order" height="100%" slot="total">
                     <define-column label="RFID" field="rfid"></define-column>
                     <define-column label="装备序号" field="serial"></define-column>
                     <define-column label="装备参数" v-slot="{ data }">
@@ -52,8 +51,8 @@
                 tabs:[{
                     label: '需要充电',
                     key: 'car1',
-                    baseSearch: true,
-                    advancedSearch: true,
+                    baseSearch: false,
+                    advancedSearch: false,
                     baseSearchValue: ''
                 }, {
                     label: '正在充电',
