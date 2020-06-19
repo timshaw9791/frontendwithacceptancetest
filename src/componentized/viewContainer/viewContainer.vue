@@ -26,9 +26,10 @@
             </div>
         </div>
         <div class="body">
-            <div v-for="tab in tabs" :key="'nameSlot'+tab.key" v-show="tabs[tabSelect].key==tab.key" class="name-slot-box">
-                <slot :name="tab.key"></slot>
-            </div>
+<!--            <div v-for="tab in tabs" :key="'nameSlot'+tab.key" v-show="tabs[tabSelect].key==tab.key" class="name-slot-box">-->
+<!--                <slot :name="tab.key"></slot>-->
+<!--            </div>-->
+            <slot v-for="tab in tabs" v-show="tabs[tabSelect].key==tab.key" :name="tab.key"></slot>
             <slot></slot>
         </div>
         <transition name="search">
@@ -289,6 +290,9 @@ export default {
         max-height: $mainHeight;
         overflow-x: hidden;
         overflow-y: auto;
+        /*.name-slot-box {*/
+        /*    height: 100%;*/
+        /*}*/
     }    
     .search-enter-active, .search-leave-active {
         transition: opacity .5s;
