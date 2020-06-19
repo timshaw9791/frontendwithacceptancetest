@@ -1,8 +1,8 @@
 <template>
         <view-container class="container" :tabs="tabs"  @changeTab="changeTab" style="height:100%">
             <!-- 标签1 -->
-            <template slot="car1" >
-                <define-table :havePage="false" :data="order" style="height: 100%" slot="detail">
+            <div slot="car1">
+                <define-table :havePage="false" :data="order" height="100%" slot="detail">
                     <define-column label="RFID" field="rfid"></define-column>
                     <define-column label="装备序号" field="serial"></define-column>
                     <define-column label="装备参数" v-slot="{ data }">
@@ -16,9 +16,9 @@
                         <date-input v-model="data.row.chargeingTime" :tableEdit="false" filter="toDay"></date-input>
                     </define-column>
                 </define-table>
-            </template>
+            </div>
             <!-- 标签2 -->
-            <template slot="car2" >
+            <div slot="car2">
                 <define-table :havePage="false" :data="order" height="100%" slot="total">
                     <define-column label="RFID" field="rfid"></define-column>
                     <define-column label="装备序号" field="serial"></define-column>
@@ -32,7 +32,7 @@
                         <date-input v-model="data.row.chargeCountdown" :tableEdit="false" filter="toDay"></date-input>
                     </define-column>
                 </define-table>
-            </template>
+            </div>
         </view-container>
 </template>
 
@@ -89,14 +89,13 @@
     };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
     .charge-container {
         font-size: 16px;
     }
 
     .charge-body {
         padding: 0 7px;
-        widows: 100%;
     }
 
     .charge-header {
