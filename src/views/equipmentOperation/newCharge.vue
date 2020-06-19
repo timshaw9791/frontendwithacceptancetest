@@ -96,7 +96,6 @@
 
     .charge-body {
         padding: 0 7px;
-        widows: 100%;
     }
 
     .charge-header {
