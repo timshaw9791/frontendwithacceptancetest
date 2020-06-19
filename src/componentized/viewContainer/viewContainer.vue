@@ -8,7 +8,7 @@
                 <div v-for="(tab, i) in tabs" :key="tab.key" class="tab" v-show="tab.label" :class="{'tab-select': tabSelect==i}" @click="selectTab(tab, i)">{{ tab.label }}</div>
             </div>
             <div class="tools-box">
-                <define-input :label="baseSearchName" v-model="tabs[tabSelect].baseSearchValue" :column="6" v-show="tabs[tabSelect].baseSearch" class="base-input"></define-input>
+                <define-input :label="tabs[tabSelect].baseSearchName" v-model="tabs[tabSelect].baseSearchValue" :column="6" v-show="tabs[tabSelect].baseSearch" class="base-input"></define-input>
                 <div class="button-box">
                     <div v-for="tab in tabs" :key="'buttonslot'+tab.key" v-show="tabs[tabSelect].key==tab.key" class="button">
                         <slot :name="'button'+tab.key"></slot>
@@ -26,10 +26,10 @@
             </div>
         </div>
         <div class="body">
-<!--            <div v-for="tab in tabs" :key="'nameSlot'+tab.key" v-show="tabs[tabSelect].key==tab.key" class="name-slot-box">-->
-<!--                <slot :name="tab.key"></slot>-->
-<!--            </div>-->
-            <slot v-for="tab in tabs" v-if="tabs[tabSelect].key==tab.key" :name="tab.key"></slot>
+            <div v-for="tab in tabs" :key="'nameSlot'+tab.key" v-show="tabs[tabSelect].key==tab.key&&tab.label" class="name-slot-box">
+                <slot :name="tab.key"></slot>
+            </div>
+<!--            <slot v-for="tab in tabs" v-if="tabs[tabSelect].key==tab.key" :name="tab.key"></slot>-->
             <slot></slot>
         </div>
         <transition name="search">
@@ -103,13 +103,10 @@ export default {
             default() {
                 return [{
                     label: '',
-                    key: ''
+                    key: '',
+                    baseSearchName: '搜索'
                 }]
             }
-        },
-        baseSearchName: {
-            type: String,
-            default: '搜索'
         },
         value: {},
     },
@@ -121,6 +118,7 @@ export default {
     watch: {
         $route: {
             handler(val, oldVal) {
+                console.log(val)
                 this.routeList = this._.drop(val.matched);
             },
             deep: true,
@@ -292,9 +290,9 @@ export default {
         overflow-x: hidden;
         overflow-y: auto;
         margin-top: 8px;
-        /*.name-slot-box {*/
-        /*    height: 100%;*/
-        /*}*/
+        .name-slot-box {
+            height: 100%;
+        }
     }    
     .search-enter-active, .search-leave-active {
         transition: opacity .5s;
