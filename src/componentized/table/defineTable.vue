@@ -1,6 +1,6 @@
 <template>
-    <div class="define-table-container">
-        <el-table :data="data" :height="height" :border="border" ref="table" fit
+    <div class="define-table-container" :style="`height:${height}`">
+        <el-table :data="data" :height="fixHeight" :border="border" ref="table" fit
                 :highlight-current-row="highLightCurrent" @current-change="changeCurrent"
                 :show-summary="showSummary" :summary-method="summaryFunc">
                 <el-table-column label="序号" width="65" align="center" v-if="haveIndex" :fixed="indexFixed">
@@ -83,6 +83,11 @@ import defineColumn from './defineColumn'
                 default: false
             }
         },
+        computed: {
+            fixHeight() { // 减去底部分页的高度
+                return `calc(${this.height} - 45px)`
+            }
+        },
         methods: {
             changePage(page) {
                 this.selectIndex = 0
@@ -115,6 +120,9 @@ import defineColumn from './defineColumn'
 </script>
 
 <style lang="scss" scoped>
+    .define-table-container {
+        height: 100%;
+    }
     .actionButton{
         width:70px;
         height:32px;
