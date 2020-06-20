@@ -152,7 +152,7 @@
                 }).catch(err => {
                     console.log(err);
                     this.loading = false
-                    !err.response && this.$message.error(err)
+                    !err.response && this.$message.error(err.toString())
                 })
                 // function handheld(data, filename, cb) {
                 //     return new Promise((reslove, reject) => {
