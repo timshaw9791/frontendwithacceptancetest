@@ -27,7 +27,7 @@
         </div>
         <div class="body">
             <div v-for="tab in tabs" :key="'nameSlot'+tab.key" v-show="tabs[tabSelect].key==tab.key&&tab.label" class="name-slot-box">
-                <slot :name="tab.key"></slot>
+                <slot :name="tab.key" v-if="tabs[tabSelect].key==tab.key"></slot>
             </div>
 <!--            <slot v-for="tab in tabs" v-if="tabs[tabSelect].key==tab.key" :name="tab.key"></slot>-->
             <slot></slot>
@@ -118,7 +118,6 @@ export default {
     watch: {
         $route: {
             handler(val, oldVal) {
-                console.log(val)
                 this.routeList = this._.drop(val.matched);
             },
             deep: true,

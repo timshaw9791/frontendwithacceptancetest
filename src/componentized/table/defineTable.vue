@@ -85,7 +85,7 @@ import defineColumn from './defineColumn'
         },
         computed: {
             fixHeight() { // 减去底部分页的高度
-                return `calc(${this.height} - 45px)`
+                return this.havePage?`calc(${this.height} - 45px)`:this.height
             }
         },
         methods: {
