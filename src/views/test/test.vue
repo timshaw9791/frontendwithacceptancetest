@@ -13,7 +13,7 @@
         <base-button label="按钮1" slot="buttoncar1">按钮1</base-button>
         <base-button label="按钮1" slot="buttoncar1">按钮1</base-button>
         <base-button label="按钮1" slot="buttoncar1">按钮1</base-button>
-        
+
         <!-- 标签2 按钮 -->
         <span slot="buttoncar2">按钮2</span>
         <span slot="buttoncar2">按钮2</span>
