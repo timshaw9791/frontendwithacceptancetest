@@ -24,9 +24,11 @@
         <span slot="buttoncar2">按钮2</span>
 
         <!-- 无标签 -->
-        <base-button label="按钮1" slot="moreButtoncar1">按钮1</base-button>
-        <base-button label="按钮1" slot="moreButtoncar1">按钮1</base-button>
-        <base-button label="按钮1" slot="moreButtoncar1">按钮1</base-button>
+        <base-button label="按钮1" slot="car1morebutton">按钮1</base-button>
+        <base-button label="按钮1" slot="car1morebutton">按钮1</base-button>
+        <base-button label="按钮1" slot="car1morebutton">按钮1</base-button>
+
+        <base-button label="测试按钮" slot="publicbutton" type="text"></base-button>
         <div class="test-css-header"></div>
     </view-container>
 </template>

@@ -1,6 +1,6 @@
 <template>
     <div class="view-container">
-        <div class="top-tools-contaienr">
+        <div class="top-tools-container">
             <div class="breadcrumb-box">
                 <bread-crumb :routeList="routeList"></bread-crumb>
             </div>
@@ -11,15 +11,17 @@
                 <define-input :label="tabs[tabSelect].baseSearchName" v-model="tabs[tabSelect].baseSearchValue" :column="6" v-show="tabs[tabSelect].baseSearch" class="base-input"></define-input>
                 <div class="button-box">
                     <div v-for="tab in tabs" :key="'buttonslot'+tab.key" v-show="tabs[tabSelect].key==tab.key" class="button">
-                        <slot :name="'button'+tab.key"></slot>
+                        <slot :name="tab.key+'button'"></slot>
                     </div>
+                    <slot name="publicbutton"></slot>
                 </div>
                 <div class="built-in-box">
                     <span @click="advancedSearchShow = !advancedSearchShow" v-show="tabs[tabSelect].advancedSearch" class="built-in">高级搜索</span>
                     <div class="dropdown-container" @mouseleave="showMenu=false" v-show="showMoreButton">
                         <span class="label" @click="showMenu=!showMenu">更多</span>
                         <div class="menu" v-show="showMenu">
-                            <slot :name="'moreButton'+tabs[tabSelect].key"></slot>
+                            <slot :name="tabs[tabSelect].key+'morebutton'"></slot>
+                            <slot name="publicmorebutton"></slot>
                         </div>
                     </div>
                 </div>
@@ -34,7 +36,7 @@
         </div>
         <transition name="search">
             <div class="advanced-search-box" v-show="advancedSearchShow" @mouseleave="advancedSearchShow =false">
-                <div class="serch-box">
+                <div class="search-box">
                     <div class="group">
                         <span v-show="!selectObj.groupLast">（ </span>
                         <base-select :selectList="testArr" :haveLabel="false" :column="3.5" margin="0 3px"></base-select>
@@ -112,7 +114,8 @@ export default {
     },
     computed: {
         showMoreButton() {
-            return Object.keys(this.$slots).some(sortName=>sortName.includes(`moreButton${this.tabs[this.tabSelect].key}`))
+            return Object.keys(this.$slots)
+                .some(sortName=>sortName.includes(`${this.tabs[this.tabSelect].key}morebutton`)||sortName.includes('publicmorebutton'))
         }
     },
     watch: {
@@ -139,7 +142,7 @@ export default {
         width: 100%;
         font-size: 16px;
     }
-    .top-tools-contaienr {
+    .top-tools-container {
         width: 100%;
         height: 60px;
         padding: 0 6px;
@@ -250,7 +253,7 @@ export default {
         border:1px solid rgba(220,223,230,1);
         box-shadow:1px 3px 8px rgba(0,0,0,0.04);
         background-color: white;
-        .serch-box {
+        .search-box {
             width: 100%;
             height: 70px;
             display: grid;
