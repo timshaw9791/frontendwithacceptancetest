@@ -1,9 +1,5 @@
 <template>
     <view-container :tabs="tabs" v-model="search" >
-<!--            <el-table slot="car1" :data="[]" height="100%">-->
-<!--                <el-table-column label="测试列1"></el-table-column>-->
-<!--                <el-table-column label="测试列2"></el-table-column>-->
-<!--            </el-table>-->
         <define-table :data="[]" height="100%">
             <define-column label="测试列" field="a"></define-column>
             <define-column label="测试列2" field=""b></define-column>
@@ -29,7 +25,6 @@
         <base-button label="按钮1" slot="car1morebutton">按钮1</base-button>
 
         <base-button label="测试按钮" slot="publicbutton" type="text"></base-button>
-        <div class="test-css-header"></div>
     </view-container>
 </template>
 <script>
@@ -52,7 +47,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-
-</style>
