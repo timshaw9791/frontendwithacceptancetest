@@ -2,15 +2,19 @@
   // 主体区域
   .main-container {
     min-height: 100%;
-    transition: margin-left .28s;
-    margin-left: 1.1719rem;
+    float: right;
+    width: 88%;
+    transition: 0.28s width;
+    //transition: margin-left .28s;
+    //margin-left: 1.1719rem;
   }
 
   // 侧边栏
   .sidebar-container {
     float: left;
     transition: width 0.28s;
-    width: 1.1719rem !important;
+    //width: 1.1719rem !important;
+    width: 12% !important;
     height: 100%;
     font-size: 0px;
     z-index: 1001;
@@ -121,8 +125,8 @@
     }
 
     .main-container {
-      margin-left: 0.1875rem;
-
+      //margin-left: 0.1875rem;
+      width: 98%;
     }
 
 
