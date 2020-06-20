@@ -27,6 +27,7 @@
         <base-button label="按钮1" slot="moreButtoncar1">按钮1</base-button>
         <base-button label="按钮1" slot="moreButtoncar1">按钮1</base-button>
         <base-button label="按钮1" slot="moreButtoncar1">按钮1</base-button>
+        <div class="test-css-header"></div>
     </view-container>
 </template>
 <script>
@@ -49,3 +50,7 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+
+</style>

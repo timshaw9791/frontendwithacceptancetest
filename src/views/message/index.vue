@@ -15,7 +15,7 @@
 				<define-column label="通知时间" :filter="row => this.$filterTime(row.createTime)" width="200"></define-column>
 				<define-column label="消息标题" :filter="row=>fixTitle(row.title)"></define-column>
 			</define-table>
-			<define-table :data="list[selectIndex]?list[selectIndex].messageItems:[]" :havePage="false" height="965px" slot="content">
+			<define-table :data="list[selectIndex]?list[selectIndex].messageItems:[]" :havePage="false" height="100%" slot="content">
 				<define-column label="消息内容" field="content"></define-column>
 			</define-table>
 		</bos-tabs>
