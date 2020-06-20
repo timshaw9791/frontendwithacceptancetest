@@ -1,116 +1,116 @@
 <template>
-    <div class="maintenance_body">
-        <div class="maintenance_body_table_box">
-            <el-table class="maintenance_table" :data="list" fit
-                      :row-class-name="tableRowClassName">
-                <bos-table-column lable="装备名称" field="equipArg.name" :align="'left'"></bos-table-column>
-                <bos-table-column lable="装备型号" field="equipArg.model" :align="'left'"></bos-table-column>
-                <bos-table-column lable="供应商" field="equipArg.supplier.name" :align="'left'"></bos-table-column>
-                <bos-table-column lable="联系人" field="equipArg.supplier.person" :align="'left'"></bos-table-column>
-                <bos-table-column lable="联系方式" field="equipArg.supplier.phone" :align="'left'"></bos-table-column>
-                <bos-table-column lable="保养周期" :filter="(row)=>milliToDay(row.equipArg.upkeepCycle)" :align="'left'"></bos-table-column>
-                <bos-table-column lable="可用/领用"
-                :filter="(row)=>row.inHouseCount+'/'+row.receiveHouseCount"
-                :align="'left'"></bos-table-column>
-                <bos-table-column lable="正在保养" field="keepingCount" :align="'left'"></bos-table-column>
-                <bos-table-column lable="保养时长" :filter="(row)=>milliToDay(row.keepingTime)" :align="'left'"></bos-table-column>
-                <el-table-column type="expand">
-                    <template slot-scope="props">
-                        <div class="fold_box">
-                            <div class="fold_title">
-                                <div class="fold_title_item">装备位置</div>
-                                <div class="fold_title_item">数量</div>
-                            </div>
-                            <div class="fold_body">
-                                <div class="fold_item" v-for="(item,index) in props.row.equipCountByLocations" :style="index==0?'padding-left: 0.038rem;':''">
-                                    <div class="fold_body_item" v-text="surface(item)"></div>
-                                    <div class="fold_body_item"> {{item.count}}</div>
+        <div class="maintenance_body">
+            <div class="maintenance_body_table_box">
+                <el-table class="maintenance_table" :data="list" fit
+                          :row-class-name="tableRowClassName">
+                    <bos-table-column lable="装备名称" field="equipArg.name" :align="'left'"></bos-table-column>
+                    <bos-table-column lable="装备型号" field="equipArg.model" :align="'left'"></bos-table-column>
+                    <bos-table-column lable="供应商" field="equipArg.supplier.name" :align="'left'"></bos-table-column>
+                    <bos-table-column lable="联系人" field="equipArg.supplier.person" :align="'left'"></bos-table-column>
+                    <bos-table-column lable="联系方式" field="equipArg.supplier.phone" :align="'left'"></bos-table-column>
+                    <bos-table-column lable="保养周期" :filter="(row)=>milliToDay(row.equipArg.upkeepCycle)" :align="'left'"></bos-table-column>
+                    <bos-table-column lable="可用/领用"
+                                      :filter="(row)=>row.inHouseCount+'/'+row.receiveHouseCount"
+                                      :align="'left'"></bos-table-column>
+                    <bos-table-column lable="正在保养" field="keepingCount" :align="'left'"></bos-table-column>
+                    <bos-table-column lable="保养时长" :filter="(row)=>milliToDay(row.keepingTime)" :align="'left'"></bos-table-column>
+                    <el-table-column type="expand">
+                        <template slot-scope="props">
+                            <div class="fold_box">
+                                <div class="fold_title">
+                                    <div class="fold_title_item">装备位置</div>
+                                    <div class="fold_title_item">数量</div>
                                 </div>
+                                <div class="fold_body">
+                                    <div class="fold_item" v-for="(item,index) in props.row.equipCountByLocations" :style="index==0?'padding-left: 0.038rem;':''">
+                                        <div class="fold_body_item" v-text="surface(item)"></div>
+                                        <div class="fold_body_item"> {{item.count}}</div>
+                                    </div>
 
+                                </div>
+                                <!--<div class="fold">-->
+                                <!--<div class="fold_title">-->
+                                <!--装备位置-->
+                                <!--</div>-->
+                                <!--<div class="fold_body">-->
+                                <!--<div class="fold_item" v-for="item in props.row.location">-->
+                                <!--{{item.locations}}-->
+                                <!--</div>-->
+                                <!--</div>-->
+                                <!--</div>-->
+                                <div class="fold-line"></div>
+                                <!--<div class="fold">-->
+                                <!--<div class="fold_title">-->
+                                <!--数量-->
+                                <!--</div>-->
+                                <!--<div class="fold_body">-->
+                                <!--<div class="fold_item" v-for="item in props.row.location">-->
+                                <!--{{item.number}}-->
+                                <!--</div>-->
+                                <!--</div>-->
+                                <!--</div>-->
                             </div>
-                            <!--<div class="fold">-->
-                            <!--<div class="fold_title">-->
-                            <!--装备位置-->
-                            <!--</div>-->
-                            <!--<div class="fold_body">-->
-                            <!--<div class="fold_item" v-for="item in props.row.location">-->
-                            <!--{{item.locations}}-->
-                            <!--</div>-->
-                            <!--</div>-->
-                            <!--</div>-->
-                            <div class="fold-line"></div>
-                            <!--<div class="fold">-->
-                            <!--<div class="fold_title">-->
-                            <!--数量-->
-                            <!--</div>-->
-                            <!--<div class="fold_body">-->
-                            <!--<div class="fold_item" v-for="item in props.row.location">-->
-                            <!--{{item.number}}-->
-                            <!--</div>-->
-                            <!--</div>-->
-                            <!--</div>-->
-                        </div>
-                    </template>
-                </el-table-column>
-                <!--<bos-table-column -->
-                <!--lable="架体AB面" -->
-                <!--:filter="(row)=>surface(row.equip.location?row.equip.location.surface:'暂无')"-->
-                <!--&gt;</bos-table-column>-->
-                <!--<bos-table-column lable="保养周期/天" :filter="(row)=>milliToDay(row.upkeepCycle)"></bos-table-column>-->
-                <!--<bos-table-column lable="上次保养时间" :filter="(row)=>$filterTime(row.lastUpkeepTime)"></bos-table-column>-->
-                <!--<bos-table-column-->
-                <!--lable="保养倒计时"-->
-                <!--:filter="(row)=>countdown(row.lastUpkeepTime,row.upkeepCycle)"-->
-                <!--&gt;</bos-table-column>-->
-            </el-table>
-        </div>
-        <!--<el-table :data="list" v-loading.body="loading" element-loading-text="Loading"-->
-                  <!--fit highlight-current-row-->
-                  <!--@selection-change="handleSelectionChange" height="3.55rem">-->
+                        </template>
+                    </el-table-column>
+                    <!--<bos-table-column -->
+                    <!--lable="架体AB面" -->
+                    <!--:filter="(row)=>surface(row.equip.location?row.equip.location.surface:'暂无')"-->
+                    <!--&gt;</bos-table-column>-->
+                    <!--<bos-table-column lable="保养周期/天" :filter="(row)=>milliToDay(row.upkeepCycle)"></bos-table-column>-->
+                    <!--<bos-table-column lable="上次保养时间" :filter="(row)=>$filterTime(row.lastUpkeepTime)"></bos-table-column>-->
+                    <!--<bos-table-column-->
+                    <!--lable="保养倒计时"-->
+                    <!--:filter="(row)=>countdown(row.lastUpkeepTime,row.upkeepCycle)"-->
+                    <!--&gt;</bos-table-column>-->
+                </el-table>
+            </div>
+            <!--<el-table :data="list" v-loading.body="loading" element-loading-text="Loading"-->
+            <!--fit highlight-current-row-->
+            <!--@selection-change="handleSelectionChange" height="3.55rem">-->
             <!--<el-table-column-->
-                    <!--type="selection"-->
-                    <!--v-if="batch"-->
-                    <!--width="55">-->
+            <!--type="selection"-->
+            <!--v-if="batch"-->
+            <!--width="55">-->
             <!--</el-table-column>-->
             <!--<bos-table-column lable="rfid" field="rfid"></bos-table-column>-->
             <!--<bos-table-column lable="装备名称" field="name"></bos-table-column>-->
             <!--<bos-table-column lable="装备序号" field="serial"></bos-table-column>-->
             <!--<bos-table-column lable="架体编号" field="location.number"></bos-table-column>-->
             <!--<bos-table-column lable="架体AB面"-->
-                              <!--:filter="(row)=>surface(row.location?row.location.surface:'暂无')"></bos-table-column>-->
+            <!--:filter="(row)=>surface(row.location?row.location.surface:'暂无')"></bos-table-column>-->
 
             <!--&lt;!&ndash;<bos-table-column lable="保养周期/天" field="equipArg.upkeepCycle"></bos-table-column>&ndash;&gt;-->
 
             <!--<bos-table-column lable="保养周期/天" :filter="(row)=>milliToDay(row.equipArg.upkeepCycle)"></bos-table-column>-->
 
 
-        <!--</el-table>-->
-        <div class="_contentBt" v-if="batch">
-            <el-button @click="$emit('cancel',false)">取 消</el-button>
-            <el-button type="primary" @click="submit">提 交</el-button>
-        </div>
-        <!--<bos-paginator v-if="this.list!=''" :pageInfo="paginator" @bosCurrentPageChanged="changePage" />-->
-      
-       
-      
-
-        <!--<serviceDialog title="请确认入库装备清单" ref="StorageDialog" @confirm="submit" @cancel="cancelbatch" width="1040px">-->
-            <!--<el-table :data="moreList" height="500" fit >-->
-              <!--<el-table-column label="序号" width="60" align="center">-->
-                <!--<template scope="scope">{{ scope.$index + 1 }}</template>-->
-              <!--</el-table-column>-->
-              <!--<bos-table-column lable="RFID" field="rfid"></bos-table-column>-->
-              <!--<bos-table-column lable="装备名称" field="name"></bos-table-column>-->
-              <!--<bos-table-column lable="装备序号" field="serial"></bos-table-column>-->
-              <!--<bos-table-column lable="架体编号" field="location.number"></bos-table-column>-->
-              <!--<bos-table-column-->
-                <!--lable="架体AB面"-->
-                <!--:filter="(row)=>surface(row.location?row.location.surface:'暂无')"-->
-              <!--&gt;</bos-table-column>-->
             <!--</el-table>-->
-        <!--</serviceDialog>-->
+            <div class="_contentBt" v-if="batch">
+                <el-button @click="$emit('cancel',false)">取 消</el-button>
+                <el-button type="primary" @click="submit">提 交</el-button>
+            </div>
+            <!--<bos-paginator v-if="this.list!=''" :pageInfo="paginator" @bosCurrentPageChanged="changePage" />-->
 
-    </div>
+
+
+
+            <!--<serviceDialog title="请确认入库装备清单" ref="StorageDialog" @confirm="submit" @cancel="cancelbatch" width="1040px">-->
+            <!--<el-table :data="moreList" height="500" fit >-->
+            <!--<el-table-column label="序号" width="60" align="center">-->
+            <!--<template scope="scope">{{ scope.$index + 1 }}</template>-->
+            <!--</el-table-column>-->
+            <!--<bos-table-column lable="RFID" field="rfid"></bos-table-column>-->
+            <!--<bos-table-column lable="装备名称" field="name"></bos-table-column>-->
+            <!--<bos-table-column lable="装备序号" field="serial"></bos-table-column>-->
+            <!--<bos-table-column lable="架体编号" field="location.number"></bos-table-column>-->
+            <!--<bos-table-column-->
+            <!--lable="架体AB面"-->
+            <!--:filter="(row)=>surface(row.location?row.location.surface:'暂无')"-->
+            <!--&gt;</bos-table-column>-->
+            <!--</el-table>-->
+            <!--</serviceDialog>-->
+
+        </div>
 </template>
 
 <script>

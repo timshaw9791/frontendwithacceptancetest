@@ -3,26 +3,28 @@
         <!-- 需要保养 -->
         <template slot="car1">
             <need-maintenance></need-maintenance>
-            <base-button size="default" align="right" label="开始保养" @click="startMain"></base-button>
         </template>
+        <base-button slot="car1button" type="text" label="开始保养" @click="startMain"></base-button>
+
         <!-- 正在保养 -->
         <template slot="car2">
-            <maintenance-new></maintenance-new>
+            <under-maintenance></under-maintenance>
         </template>
+        <base-button slot="car2button" type="text" label="结束保养" @click="endMain"></base-button>
     </view-container>
 </template>
 
 <script>
     import bosTabs from "@/componentized/table/bosTabs";
-    import needMaintenance from "@/views/equipmentOperation/needMaintenance";
-    import maintenanceNew from "@/views/equipmentOperation/maintenanceNew";
+    import needMaintenance from "@/views/equipmentOperation/maintenance/needMaintenance";
+    import underMaintenance from "@/views/equipmentOperation/maintenance/underMaintenance";
 
     export default {
         name: "newMaintenance",
         components: {
             bosTabs,
             needMaintenance,
-            maintenanceNew
+            underMaintenance
         },
         data() {
             return {
@@ -40,11 +42,12 @@
         },
         methods: {
             startMain(){
-                return "哈哈哈"
+                this.$router.push({path: '/equipmentOperation/startMaintenance'});
+            },
+            endMain() {
+                this.$router.push({path: '/equipmentOperation/endMaintenance'});
             }
         }
-
-
     }
 </script>
 
