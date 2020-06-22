@@ -34,6 +34,10 @@ import { judgeRules } from "../rules"
                 type: String,
                 default: "流程管理"
             },
+            haveLabel: {
+                type: Boolean,
+                default: true
+            },
             value: {},// 父组件绑定值/选中值
             selectList: {
                 type: Array,

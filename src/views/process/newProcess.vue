@@ -5,7 +5,7 @@
             <define-table :data="list" height="600px" :pageInfo="paginator" @changePage="changePage"
                           :highLightCurrent="true">
                 <define-column label="操作" v-slot="{ data }">
-                    <i class="iconfont iconjiahao" @click="apply(data.row)"></i>
+                    <i class="iconfont iconjiahao" @click="toApply(data.row)"></i>
                 </define-column>
                 <define-column label="工作流名称" field="name"></define-column>
                 <define-column label="部署时间" :filter="(row)=>$filterTime(row.deploymentTime)"></define-column>
@@ -15,10 +15,10 @@
 </template>
 
 <script>
-    import myHeader from 'components/base/header/header'
-    import {processDefinitions} from 'api/process'
+    import myHeader from '@/components/base/header/header'
+    import {processDefinitions} from '@/api/process'
     import bosTabs from '@/componentized/table/bosTabs'
-    import {listTableMixin} from "../../field/mixins/listMixin";
+    import {listTableMixin} from "@/field/mixins/listMixin";
 
     export default {
         name: 'newProcess',
@@ -26,7 +26,7 @@
         data() {
             return {
                 list: [],
-                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0}
+                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
             }
         },
         methods: {
@@ -35,12 +35,13 @@
                     this.list = res
                 })
             },
-            apply(data) {
+            toApply(data) {
+                console.log(data)
                 this.$router.push({
-                    path: `${data.key}` + 'Apply',
+                    path: 'allocateApply',
                     query: {
-                        name: `${data.name}`,
-                        key: `${data.key}`,
+                        name: `${data.name}`, // 流程的名称
+                        key: `${data.key}`, // 该值为 processDefinitionKey
                     }
                 })
             },
@@ -48,11 +49,10 @@
                 this.paginator.page = page;
             }
         },
-
         components: {
             myHeader,
             bosTabs,
-            listTableMixin
+            listTableMixin,
         }
     }
 </script>

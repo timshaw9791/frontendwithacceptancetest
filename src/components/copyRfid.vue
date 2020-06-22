@@ -8,7 +8,7 @@
 
 <script>
     import serviceDialog from './base/serviceDialog/index'
-    import {startOne} from "../common/js/rfidReader";
+    import {startOne} from "@/common/js/rfidReader";
 
     export default {
         name: "copyRfid",

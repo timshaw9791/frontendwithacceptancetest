@@ -21,7 +21,7 @@
                               :highLightCurrent="true" slot="total" :showSummary="true" :summaryFunc="sumFunc">
                     <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
                         <i class="iconfont iconyichu"
-                           @click="delRow(equipItems,data.$index)"></i>
+                           @click="$delRow(equipItems,data.$index)"></i>
                     </define-column>
                     <define-column label="装备参数" field="equipArg"></define-column>
                     <define-column label="装备数量" :filter="(row)=>row.items.length"></define-column>
@@ -29,7 +29,7 @@
                 <define-table :data="equipItems[totalIndex].items" height="2.8646rem" :havePage="false" slot="detail">
                     <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
                         <i class="iconfont iconyichu"
-                           @click="delRow(equipItems[totalIndex].items,data.$index,()=>{!equipItems[totalIndex].items.length && equipItems.splice(totalIndex,1)})"></i>
+                           @click="$delRow(equipItems[totalIndex].items,data.$index,()=>{!equipItems[totalIndex].items.length && equipItems.splice(totalIndex,1)})"></i>
                     </define-column>
                     <define-column label="RFID" field="rfid"></define-column>
                     <define-column label="装备序号" field="equipSerial"></define-column>
@@ -134,10 +134,6 @@
             selectedRow(current) {
                 this.totalIndex = current.index
             },
-            delRow(data, index, callback) {
-                data.splice(index, 1);
-                callback && callback();
-            },
             // 表格合并行计算方法
             sumFunc(param) {
                 let {columns} = param, sums = [];
@@ -152,8 +148,14 @@
                 return sums;
             },
             confirm() {
-                if (this.rfids.length === 0) return this.$message.error('装备列表不能为空')
-                equipScrap(this.order.category, this.order.remark, this.rfids).then(() => {
+                let crapEquips = []
+                this.equipItems.forEach(item=>{
+                    item.items.forEach(item=>
+                        !!item.rfid && (crapEquips.push = item.rfid)
+                    )
+                })
+                if (crapEquips.length === 0) return this.$message.error('装备列表不能为空')
+                equipScrap(this.order.category, this.order.remark, crapEquips).then(() => {
                     this.$router.push({path: 'scrapList'})
                 })
             },
@@ -192,7 +194,7 @@
             this.fixData()
         },
         beforeDestroy() {
-            killProcess(this.pid)
+           !!this.pid && killProcess(this.pid)
         },
         components: {
             myHeader,

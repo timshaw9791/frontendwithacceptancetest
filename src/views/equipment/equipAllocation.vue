@@ -63,7 +63,7 @@
     import entityInput from '@/componentized/entity/entityInput'
     import divTmp from '@/componentized/divTmp'
     import { findByRfids,locationChangeOrders} from "api/storage"
-    import { start, startOne, killProcess,handheld, modifyFileName } from 'common/js/rfidReader'
+    import { start, startOne, killProcess,handheld } from 'common/js/rfidReader'
     import {jsqlPage,getBosEntity} from "api/basic"
 export default {
     components:{

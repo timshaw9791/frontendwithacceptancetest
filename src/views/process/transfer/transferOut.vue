@@ -4,12 +4,13 @@
         <div class="process-form-body">
             <div class="process-info">
                 <define-input label="单号" v-model="order.number" :disabled="true"></define-input>
-                <entity-input :label="isInbound?'入库机构':'出库机构'" v-model="order.house.organUnit" :disabled="true"
+                <entity-input label="出库机构" v-model="order.house.organUnit" :disabled="true"
                               format="{name}"
                               :options="{search:'organUnits'}"></entity-input>
-                <define-input :label="isInbound?'入库库房':'出库库房'" v-model="order.house.name"
+                <define-input label="出库库房" v-model="order.house.name"
                               :disabled="true"></define-input>
-                <entity-input :label="isInbound?'入库人员':'出库人员'" v-model="order.operator" :disabled="true"></entity-input>
+                <entity-input label="出库人员" v-model="order.operator" format="{name}({policeSign})"
+                              :disabled="true"></entity-input>
             </div>
             <div class="table-box">
                 <bos-tabs :option="isInfo?['tabs']:['tabs', 'contrast']" :layoutRatio="isInfo?[1,1]:[2,1]">
@@ -18,29 +19,31 @@
                     </template>
                     <!--装备总清单-->
                     <define-table :havePage="false" :data="equipItems" @changeCurrent="selRow"
-                                  :showSummary="true" :summaryFunc="sumCountAndPrice" :highLightCurrent="true"
+                                  :showSummary="true" :summaryFunc="isInfo?$sumFunc:sumCountAndPrice"
+                                  :highLightCurrent="true"
                                   slot="total" ref="totalTable" :init-select="true">
                         <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
-                            <i class="iconfont icontianjia" @click="addRow()" v-if="!isInbound"></i>
                             <i class="iconfont iconyichu" @click="$delRow(equipItems,data.$index)"></i>
-                        </define-column>
-                        <define-column label="装备位置" v-slot="{ data }" v-if="isInbound">
-                            <entity-input v-model="data.row.locationInfo" :options="{search:'locationSelect'}"
-                                          :formatFunc="$formatFuncLoc" :tableEdit="true"></entity-input>
                         </define-column>
                         <define-column label="装备参数" v-slot="{ data }">
                             <entity-input v-model="data.row.equipArg" format="{name}({model})"
                                           :disabled="true"></entity-input>
                         </define-column>
-                        <define-column label="装备数量" field="count"></define-column>
-                        <define-column label="金额" field="price" v-if="!isInfo"></define-column>
+                        <define-column label="装备数量" v-slot="{ data }">
+                            <define-input v-model="data.row.items.length" type="Number"
+                                          :tableEdit="false"></define-input>
+                        </define-column>
+                        <!--比较特殊的计算方法-->
+                        <define-column label="金额" v-if="!isInfo"
+                                       :filter="(row)=>row.items.reduce((iniVal,cutVal)=>{return !!cutVal.price && iniVal+cutVal.price},0)">
+                        </define-column>
                     </define-table>
                     <!--装备明细-->
-                    <define-table :havePage="false" :data="equipItems[totalIndex===-1?0:totalIndex].items"
+                    <define-table :havePage="false" :data="equipItems[totalIndex].items"
                                   slot="detail" ref="detailTable">
                         <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
                             <i class="iconfont iconyichu"
-                               @click="$delRow(equipItems[totalIndex===-1?0:totalIndex].items,data.$index,()=>{!equipItems[totalIndex===-1?0:totalIndex].items.length && equipItems.splice(totalIndex===-1?0:totalIndex,1)})"></i>
+                               @click="$delRow(equipItems[totalIndex].items,data.$index,()=>{!equipItems[totalIndex].items.length && equipItems.splice(totalIndex,1)})"></i>
                         </define-column>
                         <define-column label="RFID" field="rfid"></define-column>
                         <define-column label="序号" field="serial"></define-column>
@@ -60,9 +63,9 @@
             </div>
             <div class="button" v-if="!isInfo">
                 <base-button label="提交" align="right" :width="128" :height="72" :fontSize="20"
-                             @click="submit"></base-button>
+                             @click="submit()"></base-button>
                 <base-button label="清空" align="right" :width="128" :height="72" :fontSize="20" type="danger"
-                             @click="clean"></base-button>
+                             @click="clean()"></base-button>
             </div>
         </div>
     </div>
@@ -76,10 +79,10 @@
     import {transEquips} from "@/common/js/transEquips";
     import {mapGetters} from "vuex";
     import {activeTask, processInbound, processOutbound, transferOrders} from "@/api/process";
-    import {killProcess,start} from "@/common/js/rfidReader";
+    import {killProcess, start} from "@/common/js/rfidReader";
 
     export default {
-        name: "transferOutOrIn",   // 调拨出入库
+        name: "transferOut",   // 调拨出库
         components: {
             HardwareSelect,
             bosTabs,
@@ -87,66 +90,38 @@
         },
         data() {
             return {
-                order: {
-                    operator: {},
-                    house: {
-                        name: '',
-                        organUnit: {}
-                    },
-                    equips: []
-                },
+                order: {operator: {}, house: {organUnit: {}}, equips: []},
                 equipItems: [{items: [], locationInfo: {}}],
-                totalIndex: -1,
+                totalIndex: 0,
                 isInfo: false,
-                isInbound: false,
                 processInstanceId: '',
-                readEquips: [], //读到的RFID
+                readRfids: [], //读到的RFID
                 matchEquips: [],
                 taskId: '',
                 title: '',
                 highLightCurrent: false,
-                outboundEquips: [],
-                pid:''
+                pid: ''
             }
         },
         methods: {
             fetchData() {
                 transferOrders(this.processInstanceId).then(
-                    res => {
-                        this.fixData(res)
-                    },
-                    activeTask(this.processInstanceId).then(res => {
-                        this.taskId = res.taskId
-                    })
+                    res => this.fixData(res)
                 )
+                activeTask(this.processInstanceId).then(res => {
+                    this.taskId = res.taskId
+                })
             },
             fixData(res) {
                 switch (this.type) {
                     case "out": {
-                        this.isInbound = false
                         this.matchEquips = transEquips(res.transferApplyOrder.equips).equipItems
                         this.order.organUnit = res.transferApplyOrder.outboundOrganUnit
                         console.log(this.transferApplyOrder)
                         this.title = "调拨出库"
                         break
                     }
-                    case "in": {
-                        this.isInbound = true
-                        this.highLightCurrent = false
-                        this.outboundEquips = res.outboundEquipsOrder.equips
-                        this.matchEquips = transEquips(this.outboundEquips).equipItems
-                        this.order.organUnit = res.transferApplyOrder.inboundOrganUnit
-                        this.title = "调拨入库"
-                        break
-                    }
-                    case "showIn": {
-                        this.isInbound = true
-                        this.order = res.inboundEquipsOrder
-                        this.title = "调拨入库单详情"
-                        break
-                    }
                     case "showOut": {
-                        this.isInbound = false
                         this.order = res.outboundEquipsOrder
                         this.title = "调拨出库单详情"
                         break
@@ -162,69 +137,23 @@
                     })
                     return
                 }
-                if (!this.isInbound) {
-                    this.fixEquipItems(this.order.equips)
-                }
+                this.fixEquipItems(this.order.equips)
             },
             readData() {
-                if (!this.isInbound) {
-                    killProcess(this.pid)
-                    start("java -jar scan.jar", (data) => {
-                        findByRfids(data, true).then(
-                            res => {
-                                this.readEquips = this.readEquips.concat(res)
-                                this.fixEquipItems(this.readEquips)
-                            }
-                        )
-                    }, (fail) => {
-                        this.index = 1;
-                        this.$message.error(fail);
-                    }, (pid, err) => {
-                        pid ? this.pid = pid : this.$message.error(err)
-                    })
-                } else {
-                    // 1.判断是否选中当前行
-                    // 2.判断当前行是否有位置信息
-                    if (this.totalIndex === -1) {
-                        this.$message.error("先选择需要扫描的位置")
-                        return
-                    }
-                    killProcess(this.pid)
-                    start("java -jar scan.jar", (data) => {
-                        let tempLocation = this.equipItems[this.totalIndex].locationInfo
-                        this.outboundEquips.forEach(item => {
-                            let temp = this.equipItems[this.totalIndex]
-                            if (item.rfid !== data) {
-                                this.$message.error("该装备不在出库装备列表内！")
-                                return
-                            }
-                            item.locationInfo = tempLocation
-                            // 要删价格
-                            item.price = '1'
-                            item.productTime = '1590721943'
-                            if (temp.hasOwnProperty("equipArg")) {
-                                if (item.equipName + "(" + item.equipModel + ")" !== temp.equipArg) {
-                                    this.$message.error("该装备与当前选中的装备参数不匹配！")
-                                    return
-                                }
-                                temp.items.push(item)
-                                temp.count = temp.items.length
-                                this.$forceUpdate()
-                            } else {
-                                temp.equipArg = item.equipName + "(" + item.equipModel + ")"
-                                temp.items.push(item)
-                                temp.count = temp.items.length
-                                this.equipItems[this.totalIndex] = temp
-                            }
-                        })
-                    }, (fail) => {
-                        this.index = 1;
-                        this.$message.error(fail);
-                    }, (pid, err) => {
-                        pid ? this.pid = pid : this.$message.error(err)
-                    })
-                  this.addRow()
-                }
+                !!this.pid && killProcess(this.pid)
+                start("java -jar scan.jar", (data) => {
+                    _.findIndex(this.readRfids, data) === -1 && this.readRfids.push(data)
+                    findByRfids(this.readRfids, true).then(
+                        res => {
+                            this.fixEquipItems(res)
+                        }
+                    )
+                }, (fail) => {
+                    this.index = 1;
+                    this.$message.error(fail);
+                }, (pid, err) => {
+                    pid ? this.pid = pid : this.$message.error(err)
+                })
             },
             fixEquipItems(data) {
                 this.equipItems = transEquips(data).equipItems
@@ -244,9 +173,14 @@
                 sums = new Array(columns.length).fill('')
                 sums[0] = '合计'
                 sums[columns.length - 2] = data.reduce((accumulator, currentValue) =>
-                    !!currentValue.count ? accumulator + parseInt(currentValue.count) : accumulator, 0)
-                sums[columns.length - 1] = data.reduce((accumulator, currentValue) =>
-                    !!currentValue.price ? accumulator + parseInt(currentValue.price) : accumulator, 0)
+                    !!currentValue.count ? accumulator + parseInt(currentValue.items.length) : accumulator, 0)
+                let price = 0
+                data.forEach((item) => {
+                    price += item.items.reduce((iniVal, curVal) => {
+                        return !!curVal && iniVal + curVal.price
+                    }, 0)
+                })
+                sums[columns.length - 1] = price
                 return sums;
             },
             selRow(data) {
@@ -256,34 +190,24 @@
                 this.equipItems.push({items: [], locationInfo: {}})
             },
             clean() {
-
+                this.fetchData()
+                this.equipItems = [{items: [], locationInfo: {}}]
             },
             submit() {
-                this.equipItems.pop()
                 _.map(this.equipItems, (item) => {
                     this.order.equips = this.order.equips.concat(item.items)
                     this.order.equips.equipId = this.order.equips.id
                 })
                 this.order.processCategory = 1 // 1为调拨流程
                 this.order.processInstanceId = this.processInstanceId
-                if (!this.isInbound) {
-                    processOutbound(this.taskId, this.order)
-                } else {
-                    this.order.inOutHouseItems = this.order.equips
-                    this.order.inboundOrganUnitId = this.order.organUnit.id
-                    this.order.inboundOrganUnitName = this.order.organUnit.name
-                    this.order.operator = {
-                        operatorId : this.order.operator.id,
-                        operator : this.order.operator.name
-                    }
-                    processInbound(this.taskId, this.order)
-                }
-            }
+                processOutbound(this.taskId, this.order).then(
+                    this.$router.push({path: 'agencyMatters'})
+                )
+            },
         },
         created() {
             Object.assign(this, this.$route.query)
-            this.isInfo = this.type === "showIn" || this.type === "showOut"
-            console.log(this.isInfo)
+            this.isInfo = this.type === "showOut"
             this.fetchData()
         },
         computed: {
@@ -298,6 +222,9 @@
                 !newVal && this.equipItems.push({items: [], locationInfo: {}})
             }
         },
+        destroyed() {
+            !!this.pid && killProcess(this.pid)
+        }
     }
 </script>
 

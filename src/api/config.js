@@ -20,7 +20,7 @@ var localTitle = "上海静安分局";
 
 
 getHandheldPath('/adm')
-getDevelopment('/adm')
+getDevelopment(false)
 if (process.env.NODE_ENV == "production") {
     let fs = window.require('fs'), result, path = 'C:\\config.json';
     result = fs.readFileSync(path).toString();

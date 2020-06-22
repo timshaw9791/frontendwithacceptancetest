@@ -1,13 +1,11 @@
 <template>
-    <div class="maintenance-form-container">
-        <my-header :title="$route.meta.title"></my-header>
+    <view-container>
         <div class="maintenance-form-top" data-test="maintenance-form-top">
             <define-input label="单号" placeholder="--" :disabled="true" class="odd-number"></define-input>
             <date-select label="保养结束时间" placeholder="--" :disabled="true"></date-select>
             <entity-input label="操作人员" v-model="people" :options="{search:'locationSelect'}" format="{name}"
                           :disabled="true"></entity-input>
         </div>
-
         <div class="maintenance-form-body">
             <bos-tabs @changeTab="changeTab">
                 <template slot="slotHeader">
@@ -16,7 +14,7 @@
                     <base-select label="硬件选择" v-model="select.selected" align="right"
                                  :selectList="select.handWareList"></base-select>
                 </template>
-                <define-table :data="newData" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
+                <define-table :data="newData" height="100%" @changeCurrent="selRow" :havePage="false"
                               :highLightCurrent="true" slot="total" :showSummary="true" :summaryFunc="sumFunc">
                     <define-column label="操作" width="100" v-slot="{ data }">
                         <i class="iconfont icontianjia" @click="changeRow(true,data)"></i>
@@ -34,7 +32,7 @@
                         <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input>
                     </define-column>
                 </define-table>
-                <define-table :data="newData[findIndex].copyList" height="2.8646rem" :havePage="false" slot="detail">
+                <define-table :data="newData[findIndex].copyList" height="100%" :havePage="false" slot="detail">
                     <define-column label="操作" width="100" v-slot="{ data }">
                         <i class="iconfont icontianjia" @click="changeDetailRow(true,data)"></i>
                         <i class="iconfont iconyichu" @click="changeDetailRow(false,data)"></i>
@@ -47,12 +45,10 @@
                     </define-column>
                 </define-table>
             </bos-tabs>
-            <div class="btn-box">
-                <base-button label="取消" align="right" @click="cancel"></base-button>
-                <base-button label="提交" align="right" @click="confirm"></base-button>
-            </div>
         </div>
-    </div>
+        <base-button slot="button" type="text" label="取消" @click="cancel"></base-button>
+        <base-button slot="button" type="text" label="提交" @click="confirm"></base-button>
+    </view-container>
 </template>
 
 <script>
@@ -65,7 +61,7 @@
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
     import serviceDialog from 'components/base/serviceDialog/index'
-    import {start, startOne, killProcess, handheld, modifyFileName} from 'common/js/rfidReader'
+    import {start, startOne, killProcess} from 'common/js/rfidReader'
     import {getInhouseNumber, inHouse, findByRfids, outHouse} from "api/storage"
     import divTmp from '@/componentized/divTmp'
     import {findrepairingequips, endKeepEquips, inKeepEquips} from "api/operation"
@@ -104,6 +100,9 @@
                 data.key == "total" ? killProcess(this.pid) : ''
             },
             sumFunc(param) { // 表格合并行计算方法
+                this.$nextTick(() => {
+                    this.$refs.total.refreshLayout()
+                })
                 let {columns, data} = param, sums = [];
                 sums = new Array(columns.length).fill('')
                 sums[0] = '合计'
@@ -133,7 +132,7 @@
                             this.list.push(item)
                         })
                         let cList = this._.groupBy(this.list, item => `${item.equipArg.model}${item.location.id}`)
-                        this.newData =JSON.parse(JSON.stringify( this._.map(cList, (v, k) => {
+                        this.newData = JSON.parse(JSON.stringify(this._.map(cList, (v, k) => {
                             return {equipArg: v[0].equipArg, copyList: v, count: v.length, location: v[0].location}
                         })))
                     }
@@ -143,7 +142,6 @@
             },
 
             readData() {
-               
                 killProcess(this.pid)
                 start("java -jar scan.jar", (data) => {
                     findByRfids(data).then(res => {
@@ -166,13 +164,13 @@
                 if (this.newData[this.findIndex].copyList.length == 1) {
                     this.newData[this.findIndex].copyList = [{rfid: '', serial: ''}]
                 }
-                if(!state){
-                    this.list.splice(this.list.findIndex(v=>v.rfid==this.newData[this.findIndex].copyList[data.$index].rfid),1)
+                if (!state) {
+                    this.list.splice(this.list.findIndex(v => v.rfid == this.newData[this.findIndex].copyList[data.$index].rfid), 1)
                 }
             },
             changeRow(state, data) {
-                data.row.copyList.forEach(item=>{
-                    this.list.splice(this.list.findIndex(v=>v.rfid==item.rfid),1)
+                data.row.copyList.forEach(item => {
+                    this.list.splice(this.list.findIndex(v => v.rfid == item.rfid), 1)
                 })
                 state ? this.newData.push({location: '', copyList: [{rfid: '', serial: ''}],}) :
                     this.newData.splice(data.$index, 1)

@@ -1,34 +1,33 @@
 <template>
-	<div class="message-container">
-		<my-header title="消息中心" height="45px"></my-header>
-		<div class="top">
-			<define-input label="消息标题"></define-input>
-			<checkbox label="只显示星标" v-model="onlyShowStar" @change="fetchData(false, true)"></checkbox>
-			<base-button label="一键已读" align="right" margin="0 30px 0 0" @click="allMessageRead"></base-button>
-			<base-button label="刷新" type="simple" align="right" @click="fetchData(true)"></base-button>
-		</div>
-		<div class="body">
-			<bos-tabs :option="['contrast']" :contrastKey="['main', 'content']" :layoutRatio="['45%', '55%']" :header="false">
-				<define-table :data="list" :pageInfo="fetchParams.pageInfo" @changePage="changePage" height="4.0104rem" 
-					:highLightCurrent="true" @changeCurrent="changeCurrent" slot="main" ref="leftTable">
-					<define-column label="操作" field="opeare" width="60" v-slot="{ data }">
-						<i class="iconfont iconxingbiaotianchong star" @click="messageStar(data.row,false)" v-if="data.row.newStar"></i>
-						<i class="iconfont iconxingbiaoxianxing" @click="messageStar(data.row, true)" v-else></i>
-					</define-column>
-					<define-column label="消息状态" width="100" v-slot="{ data }">
-						<span :class="['sign',{unread: !data.row.status}]">
-							{{ data.row.status?'已读':'未读' }}
-						</span>
-					</define-column>
-					<define-column label="通知时间" :filter="row => this.$filterTime(row.createTime)" width="200"></define-column>
-					<define-column label="消息标题" :filter="row=>fixTitle(row.title)"></define-column>
-				</define-table>
-				<define-table :data="list[selectIndex]?list[selectIndex].messageItems:[]" :havePage="false" height="4.2448rem" slot="content">
-					<define-column label="消息内容" field="content"></define-column>
-				</define-table>
-			</bos-tabs>
-		</div>
-	</div>
+	<view-container :tabs="tabs">
+		<bos-tabs :option="['contrast']" :contrastKey="['main', 'content']" :layoutRatio="['45%', '55%']" :header="false">
+			<define-table :data="list" :pageInfo="fetchParams.pageInfo" @changePage="changePage" height="920px"
+				:highLightCurrent="true" @changeCurrent="changeCurrent" slot="main" ref="leftTable">
+				<define-column label="操作" field="opeare" width="60" v-slot="{ data }">
+					<i class="iconfont iconxingbiaotianchong star" @click="messageStar(data.row,false)" v-if="data.row.newStar"></i>
+					<i class="iconfont iconxingbiaoxianxing" @click="messageStar(data.row, true)" v-else></i>
+				</define-column>
+				<define-column label="消息状态" width="100" v-slot="{ data }">
+					<span :class="['sign',{unread: !data.row.status}]">
+						{{ data.row.status?'已读':'未读' }}
+					</span>
+				</define-column>
+				<define-column label="通知时间" :filter="row => this.$filterTime(row.createTime)" width="200"></define-column>
+				<define-column label="消息标题" :filter="row=>fixTitle(row.title)"></define-column>
+			</define-table>
+			<define-table :data="list[selectIndex]?list[selectIndex].messageItems:[]" :havePage="false" height="100%" slot="content">
+				<define-column label="消息内容" field="content"></define-column>
+			</define-table>
+		</bos-tabs>
+		<tool-bar>
+			<checkbox label="只显示星标" v-model="onlyShowStar" @change="fetchData(false, true)" slot="button"></checkbox>
+			<base-button label="刷新" type="text" @click="fetchData(true)" slot="button"></base-button>
+			<base-button label="一键已读" type="text" @click="allMessageRead" slot="button"></base-button>
+		</tool-bar>
+<!--		<checkbox label="只显示星标" v-model="onlyShowStar" @change="fetchData(false, true)" :column="6" slot="button"></checkbox>-->
+<!--		<base-button label="刷新" type="text" @click="fetchData(true)" slot="button"></base-button>-->
+<!--		<base-button label="一键已读" type="text" @click="allMessageRead" slot="button"></base-button>-->
+	</view-container>
 </template>
 
 <script>
@@ -43,6 +42,13 @@ export default {
 	mixins: [bosMixin],
 	data() {
 		return {
+			tabs: [{
+				label: '',
+				key: '',
+				baseSearch: true,
+				baseSearchName: '消息标题',
+				baseSearchValue: ''
+			}],
 			list: [{messageItems:[]}],
 			onlyShowStar: false,
 			selectIndex: -1,
@@ -126,12 +132,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.message-container {
-	font-size: 16px;
-	.top {
-		padding: 10px 0;
-		border-bottom: 1px solid #ececec;
-	}
 	.sign {
 		cursor: pointer;
 		user-select: none;
@@ -145,5 +145,4 @@ export default {
 	.iconfont {
 		font-size: 14px;
 	}
-}
 </style>

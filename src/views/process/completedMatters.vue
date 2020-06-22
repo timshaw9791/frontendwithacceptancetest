@@ -14,7 +14,7 @@
                     <define-column label="请求标题" field="processInstanceName"></define-column>
                     <define-column label="任务名称" field="name"></define-column>
                     <define-column label="办理时间" :filter="(row)=>$filterTime(row.endTime)"></define-column>
-                    <define-column label="处理时间" :filter="(row)=>minuteFormate(row.endTime)"></define-column>
+                    <define-column label="处理时间" :filter="(row)=>minuteFormate(row.endTime-row.createTime)"></define-column>
                 </define-table>
             </div>
         </div>
@@ -23,7 +23,7 @@
 
 <script>
     import myHeader from 'components/base/header/header'
-    import {doneTask} from 'api/process'
+    import {doneTask} from '@/api/process'
     export default {
         name: "myProcess",
         components:{
@@ -44,12 +44,14 @@
                 })
             },
             toDetail(data) {
-                let applyName = data.processInstanceName.includes('报废') ? 'scrap' : 'transfer'
+                console.log(data)
+                let applyName = data.processInstanceName.includes('报废') ? 'scrap' : 'allocate'
                 this.$router.push({
                     path: `/process/${applyName}Apply`,
                     query: {
                         name: data.processInstanceName,
                         processInstanceId: data.processInstanceId,
+                        type: 'done',
                     }
                 })
             },

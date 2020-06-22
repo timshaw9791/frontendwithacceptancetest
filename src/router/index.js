@@ -132,15 +132,20 @@ export const asyncRouterMap = [{
             name: 'scrapApply',
             component: _import('process/scrapApply'),
             hidden: true,
-        }, {
-            path: 'transferApply', // 调拨申请页面
-            name: 'transferApply',
-            component: _import('process/transferApply'),
+        },  {
+            path: 'allocateApply', // 调拨申请页面（调拨、直调）
+            name: 'allocateApply',
+            component: _import('process/allocate/allocateApply'),
+            hidden: true,
+        },  {
+            path: 'allocateOut', // 调拨出库（调拨、直调）
+            name: 'allocateOut',
+            component: _import('process/allocate/allocateOut'),
             hidden: true,
         }, {
-            path: 'transferOutOrIn', // 调拨出入库
-            name: 'transferOutOrIn',
-            component: _import('process/transferOutOrIn'),
+            path: 'allocateIn', // 调拨入库（调拨、直调）
+            name: 'allocateIn',
+            component: _import('process/allocate/allocateIn'),
             hidden: true,
         }, {
             path: 'agencyMatters',
@@ -166,30 +171,25 @@ export const asyncRouterMap = [{
     children: [{
         path: 'textCharge',
         name: 'textCharge',
-        component: _import('equipmentOperation/textCharge'),
+        component: _import('equipmentOperation/newCharge'),
         meta: {title: '充电'},
     }, {
         path: 'maintenance',
         name: 'maintenance',
-        component: _import('equipmentOperation/maintenanceNew'),
-        meta: {title: '需要保养'},
-    }, {
-        path: 'endMaintenance',
-        name: 'endMaintenance',
-        component: _import('equipmentOperation/endMaintenance'),
-        meta: {title: '正在保养/结束保养'},
-        hidden: true,
-    }, {
+        component: _import('equipmentOperation/maintenance/index'),
+        meta: {title: '保养'},
+    },  {
         path: 'startMaintenance',
         name: 'startMaintenance',
-        component: _import('equipmentOperation/startMaintenance'),
+        component: _import('equipmentOperation/maintenance/startMaintenance'),
         meta: {title: '开始保养'},
         hidden: true,
     }, {
-        path: 'needMaintenanced',
-        name: 'needMaintenanced',
-        component: _import('equipmentOperation/needMaintenanced'),
-        meta: {title: '正在保养'},
+        path: 'endMaintenance',
+        name: 'endMaintenance',
+        component: _import('equipmentOperation/maintenance/endMaintenance'),
+        meta: {title: '结束保养'},
+        hidden: true,
     }, {
         path: 'serviceapplication',
         name: 'serviceapplication',
@@ -463,8 +463,18 @@ export const asyncRouterMap = [{
         meta: {title: '个人中心'},
     }],
     hidden: true
-},
-    {path: '*', redirect: '/404', hidden: true}
+}, {
+    path: '/test',
+    component: Layout,
+    children: [{
+        path: 'index',
+        name: 'test',
+        component: _import('test/test'),
+        meta: {title: '开发测试'}
+    }]
+}, {
+    path: '*', redirect: '/404', hidden: true
+}
 ]
 
 // Vue-router在3.1之后把$router.push()改为了Promise,而默认其Promise没有处理错误的回调，所以会交给全局错误处理。

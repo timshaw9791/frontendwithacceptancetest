@@ -6,25 +6,270 @@
   "description": "",
   "glyphs": [
     {
-      "icon_id": "15055595",
+      "icon_id": "8183583",
+      "name": "调度管理",
+      "font_class": "tiaoduguanli",
+      "unicode": "e65f",
+      "unicode_decimal": 58975
+    },
+    {
+      "icon_id": "15359988",
+      "name": "问号",
+      "font_class": "wenhao1",
+      "unicode": "e69a",
+      "unicode_decimal": 59034
+    },
+    {
+      "icon_id": "15359986",
+      "name": "文本框删除",
+      "font_class": "wenbenkuangshanchu1",
+      "unicode": "e699",
+      "unicode_decimal": 59033
+    },
+    {
+      "icon_id": "15359981",
+      "name": "星号",
+      "font_class": "xinghao",
+      "unicode": "e698",
+      "unicode_decimal": 59032
+    },
+    {
+      "icon_id": "15358651",
+      "name": "关闭",
+      "font_class": "guanbi",
+      "unicode": "e697",
+      "unicode_decimal": 59031
+    },
+    {
+      "icon_id": "15358650",
+      "name": "附件",
+      "font_class": "fujian",
+      "unicode": "e696",
+      "unicode_decimal": 59030
+    },
+    {
+      "icon_id": "15357661",
+      "name": "详",
+      "font_class": "xiang",
+      "unicode": "e693",
+      "unicode_decimal": 59027
+    },
+    {
+      "icon_id": "15357653",
+      "name": "下拉",
+      "font_class": "xiala",
+      "unicode": "e691",
+      "unicode_decimal": 59025
+    },
+    {
+      "icon_id": "15357654",
+      "name": "勾",
+      "font_class": "gou",
+      "unicode": "e692",
+      "unicode_decimal": 59026
+    },
+    {
+      "icon_id": "15357644",
+      "name": "加号",
+      "font_class": "jiahao1",
+      "unicode": "e690",
+      "unicode_decimal": 59024
+    },
+    {
+      "icon_id": "15357503",
+      "name": "选择",
+      "font_class": "xuanze",
+      "unicode": "e68e",
+      "unicode_decimal": 59022
+    },
+    {
+      "icon_id": "15357504",
+      "name": "日期",
+      "font_class": "riqi1",
+      "unicode": "e68f",
+      "unicode_decimal": 59023
+    },
+    {
+      "icon_id": "15328831",
       "name": "小眼睛",
       "font_class": "xiaoyanjing",
-      "unicode": "e62b",
-      "unicode_decimal": 58923
+      "unicode": "e689",
+      "unicode_decimal": 59017
     },
     {
-      "icon_id": "15055586",
+      "icon_id": "15328826",
       "name": "密码",
       "font_class": "mima",
-      "unicode": "e62a",
-      "unicode_decimal": 58922
+      "unicode": "e688",
+      "unicode_decimal": 59016
     },
     {
-      "icon_id": "15055582",
+      "icon_id": "15328739",
       "name": "账号",
       "font_class": "zhanghao",
-      "unicode": "e629",
-      "unicode_decimal": 58921
+      "unicode": "e687",
+      "unicode_decimal": 59015
+    },
+    {
+      "icon_id": "15326359",
+      "name": "首页",
+      "font_class": "shouye",
+      "unicode": "e683",
+      "unicode_decimal": 59011
+    },
+    {
+      "icon_id": "15326360",
+      "name": "消息",
+      "font_class": "xiaoxi",
+      "unicode": "e685",
+      "unicode_decimal": 59013
+    },
+    {
+      "icon_id": "15326361",
+      "name": "设置",
+      "font_class": "shezhi",
+      "unicode": "e686",
+      "unicode_decimal": 59014
+    },
+    {
+      "icon_id": "15326200",
+      "name": "位置",
+      "font_class": "weizhi",
+      "unicode": "e684",
+      "unicode_decimal": 59012
+    },
+    {
+      "icon_id": "15129319",
+      "name": "星标线性",
+      "font_class": "xingbiaoxianxing",
+      "unicode": "e67f",
+      "unicode_decimal": 59007
+    },
+    {
+      "icon_id": "15129320",
+      "name": "星标填充",
+      "font_class": "xingbiaotianchong",
+      "unicode": "e680",
+      "unicode_decimal": 59008
+    },
+    {
+      "icon_id": "15129298",
+      "name": "分类",
+      "font_class": "fenlei",
+      "unicode": "e67e",
+      "unicode_decimal": 59006
+    },
+    {
+      "icon_id": "15129261",
+      "name": "监控",
+      "font_class": "jiankong",
+      "unicode": "e67c",
+      "unicode_decimal": 59004
+    },
+    {
+      "icon_id": "15129265",
+      "name": "开柜",
+      "font_class": "kaigui",
+      "unicode": "e67d",
+      "unicode_decimal": 59005
+    },
+    {
+      "icon_id": "15122581",
+      "name": "文档",
+      "font_class": "wendang",
+      "unicode": "e67a",
+      "unicode_decimal": 59002
+    },
+    {
+      "icon_id": "15122582",
+      "name": "视频",
+      "font_class": "shipin",
+      "unicode": "e67b",
+      "unicode_decimal": 59003
+    },
+    {
+      "icon_id": "15120080",
+      "name": "发起",
+      "font_class": "faqi",
+      "unicode": "e677",
+      "unicode_decimal": 58999
+    },
+    {
+      "icon_id": "15120081",
+      "name": "分配",
+      "font_class": "fenpei",
+      "unicode": "e678",
+      "unicode_decimal": 59000
+    },
+    {
+      "icon_id": "15120082",
+      "name": "报废",
+      "font_class": "baofei",
+      "unicode": "e679",
+      "unicode_decimal": 59001
+    },
+    {
+      "icon_id": "15117119",
+      "name": "导出",
+      "font_class": "daochu",
+      "unicode": "e676",
+      "unicode_decimal": 58998
+    },
+    {
+      "icon_id": "15117079",
+      "name": "编辑",
+      "font_class": "bianji",
+      "unicode": "e675",
+      "unicode_decimal": 58997
+    },
+    {
+      "icon_id": "15114282",
+      "name": "复制RFID",
+      "font_class": "fuzhiRFID",
+      "unicode": "e673",
+      "unicode_decimal": 58995
+    },
+    {
+      "icon_id": "15113022",
+      "name": "删除",
+      "font_class": "shanchu",
+      "unicode": "e671",
+      "unicode_decimal": 58993
+    },
+    {
+      "icon_id": "15112640",
+      "name": "添加大小类",
+      "font_class": "tianjiadaxiaolei",
+      "unicode": "e66e",
+      "unicode_decimal": 58990
+    },
+    {
+      "icon_id": "15112636",
+      "name": "修改大小类",
+      "font_class": "xiugaidaxiaolei",
+      "unicode": "e66d",
+      "unicode_decimal": 58989
+    },
+    {
+      "icon_id": "15107678",
+      "name": "详情",
+      "font_class": "xiangqing",
+      "unicode": "e669",
+      "unicode_decimal": 58985
+    },
+    {
+      "icon_id": "15107500",
+      "name": "移除",
+      "font_class": "yichu",
+      "unicode": "e668",
+      "unicode_decimal": 58984
+    },
+    {
+      "icon_id": "15107485",
+      "name": "添加",
+      "font_class": "tianjia",
+      "unicode": "e667",
+      "unicode_decimal": 58983
     },
     {
       "icon_id": "14888707",
@@ -53,223 +298,6 @@
       "font_class": "zanwutupian",
       "unicode": "e625",
       "unicode_decimal": 58917
-    },
-    {
-      "icon_id": "14886941",
-      "name": "导出",
-      "font_class": "daochu",
-      "unicode": "e624",
-      "unicode_decimal": 58916
-    },
-    {
-      "icon_id": "14874357",
-      "name": "复制RFID",
-      "font_class": "fuzhiRFID",
-      "unicode": "e623",
-      "unicode_decimal": 58915
-    },
-    {
-      "icon_id": "14874189",
-      "name": "修改大小类",
-      "font_class": "xiugaidaxiaolei",
-      "unicode": "e622",
-      "unicode_decimal": 58914
-    },
-    {
-      "icon_id": "14874108",
-      "name": "新增大小类",
-      "font_class": "xinzengdaxiaolei",
-      "unicode": "e621",
-      "unicode_decimal": 58913
-    },
-    {
-      "icon_id": "14874104",
-      "name": "详情",
-      "font_class": "xiangqing",
-      "unicode": "e620",
-      "unicode_decimal": 58912
-    },
-    {
-      "icon_id": "14874098",
-      "name": "移除",
-      "font_class": "yichu",
-      "unicode": "e61f",
-      "unicode_decimal": 58911
-    },
-    {
-      "icon_id": "14874093",
-      "name": "添加",
-      "font_class": "tianjia",
-      "unicode": "e61e",
-      "unicode_decimal": 58910
-    },
-    {
-      "icon_id": "14874090",
-      "name": "位置",
-      "font_class": "weizhi1",
-      "unicode": "e61d",
-      "unicode_decimal": 58909
-    },
-    {
-      "icon_id": "14874072",
-      "name": "文档",
-      "font_class": "wendang",
-      "unicode": "e61c",
-      "unicode_decimal": 58908
-    },
-    {
-      "icon_id": "14874067",
-      "name": "视频",
-      "font_class": "shipin",
-      "unicode": "e61b",
-      "unicode_decimal": 58907
-    },
-    {
-      "icon_id": "14874048",
-      "name": "消息",
-      "font_class": "xiaoxi",
-      "unicode": "e61a",
-      "unicode_decimal": 58906
-    },
-    {
-      "icon_id": "14874045",
-      "name": "首页",
-      "font_class": "shouye",
-      "unicode": "e619",
-      "unicode_decimal": 58905
-    },
-    {
-      "icon_id": "14874039",
-      "name": "设置",
-      "font_class": "shezhi",
-      "unicode": "e618",
-      "unicode_decimal": 58904
-    },
-    {
-      "icon_id": "14874035",
-      "name": "删除",
-      "font_class": "shanchu",
-      "unicode": "e617",
-      "unicode_decimal": 58903
-    },
-    {
-      "icon_id": "14874028",
-      "name": "开柜",
-      "font_class": "kaigui",
-      "unicode": "e616",
-      "unicode_decimal": 58902
-    },
-    {
-      "icon_id": "14874004",
-      "name": "监控",
-      "font_class": "jiankong",
-      "unicode": "e615",
-      "unicode_decimal": 58901
-    },
-    {
-      "icon_id": "14870126",
-      "name": "分配",
-      "font_class": "fenpei",
-      "unicode": "e614",
-      "unicode_decimal": 58900
-    },
-    {
-      "icon_id": "14870116",
-      "name": "分类",
-      "font_class": "fenlei",
-      "unicode": "e611",
-      "unicode_decimal": 58897
-    },
-    {
-      "icon_id": "14870113",
-      "name": "发起",
-      "font_class": "faqi",
-      "unicode": "e610",
-      "unicode_decimal": 58896
-    },
-    {
-      "icon_id": "14870111",
-      "name": "编辑",
-      "font_class": "bianji",
-      "unicode": "e60d",
-      "unicode_decimal": 58893
-    },
-    {
-      "icon_id": "14870065",
-      "name": "报废",
-      "font_class": "baofei",
-      "unicode": "e60c",
-      "unicode_decimal": 58892
-    },
-    {
-      "icon_id": "14796155",
-      "name": "星标线性",
-      "font_class": "xingbiaoxianxing",
-      "unicode": "e613",
-      "unicode_decimal": 58899
-    },
-    {
-      "icon_id": "14796151",
-      "name": "星标填充",
-      "font_class": "xingbiaotianchong",
-      "unicode": "e612",
-      "unicode_decimal": 58898
-    },
-    {
-      "icon_id": "14226837",
-      "name": "下  拉 ",
-      "font_class": "xiala1",
-      "unicode": "e60f",
-      "unicode_decimal": 58895
-    },
-    {
-      "icon_id": "13835381",
-      "name": "详",
-      "font_class": "xiang",
-      "unicode": "e60a",
-      "unicode_decimal": 58890
-    },
-    {
-      "icon_id": "13626998",
-      "name": "文本框删除",
-      "font_class": "wenbenkuangshanchu",
-      "unicode": "e602",
-      "unicode_decimal": 58882
-    },
-    {
-      "icon_id": "13626999",
-      "name": "问号",
-      "font_class": "wenhao",
-      "unicode": "e603",
-      "unicode_decimal": 58883
-    },
-    {
-      "icon_id": "13627002",
-      "name": "加号",
-      "font_class": "jiahao",
-      "unicode": "e605",
-      "unicode_decimal": 58885
-    },
-    {
-      "icon_id": "13627003",
-      "name": "日期",
-      "font_class": "riqi",
-      "unicode": "e606",
-      "unicode_decimal": 58886
-    },
-    {
-      "icon_id": "13627004",
-      "name": "搜索",
-      "font_class": "sousuo",
-      "unicode": "e607",
-      "unicode_decimal": 58887
-    },
-    {
-      "icon_id": "13627006",
-      "name": "附件",
-      "font_class": "fujian",
-      "unicode": "e609",
-      "unicode_decimal": 58889
     }
   ]
 }

@@ -1,51 +1,33 @@
 <template>
-    <el-menu class="navbar" mode="horizontal">
-        <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
-
-        <div class="logo">{{ title }}</div>
-
-        <div class="icons">
-            <div @click="$router.push('/overview/index')">
-                <el-tooltip class="item" effect="dark" content="主页" placement="bottom">
-                    <el-badge :is-dot="false">
-                        <svg-icon icon-class="主页" class="svg"/>
-                    </el-badge>
-                </el-tooltip>
-            </div>
-            <div @click="$router.push('/message/index')">
-                <el-tooltip class="item" effect="dark" content="消息中心" placement="bottom">
-                    <el-badge :value="unreadCount">
-                        <svg-icon icon-class="通知" class="svg"/>
-                    </el-badge>
-                </el-tooltip>
-            </div>
+    <div class="titalbar-container">
+        <div class="system-box">
+            <img src="@/common/images/警徽2.png" class="logo" @click="windowClose">
+            <label class="system-title">{{ title }}</label>
         </div>
-        <el-dropdown class="avatar-container" trigger="click">
-            <div class="avatar-wrapper">
-                <svg-icon icon-class="设置" class="svg" style="font-size: 0.1146rem;"/>
+        <!-- <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger> -->
+        <div class="icon-box">
+            <div class="icon" @click="$router.push('/overview/index')">
+                <svg-icon icon-class="主页" class="svg"/>
             </div>
-            <el-dropdown-menu class="user-dropdown" slot="dropdown">
-                <router-link class="inlineBlock" to="/private/index">
-                    <el-dropdown-item>
-                        个人中心
-                    </el-dropdown-item>
-                </router-link>
-
-                <div @click="logout">
-                    <el-dropdown-item>
-                        <span>注 销</span>
-                    </el-dropdown-item>
-                </div>
-
-                <div @click="windowClose" style="display:block;">
-                    <el-dropdown-item divided>
-                        <span>退 出</span>
-                    </el-dropdown-item>
-                </div>
-
-            </el-dropdown-menu>
-        </el-dropdown>
-    </el-menu>
+            <div class="icon" @click="$router.push('/message/index')">
+                <el-badge :value="unreadCount">
+                    <svg-icon icon-class="通知" class="svg" title="主页"/>
+                </el-badge>
+            </div>
+            <el-dropdown trigger="click" placement="bottom-start">
+                <div><svg-icon icon-class="设置" class="svg"/></div>
+                <el-dropdown-menu>
+                    <router-link to="/private/index">
+                        <el-dropdown-item>个人中心</el-dropdown-item>
+                    </router-link>
+                    <div @click="logout">
+                        <el-dropdown-item>注 销</el-dropdown-item>
+                    </div>
+                    <el-dropdown-item @click.native="windowClose" divided>退 出</el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -102,86 +84,54 @@
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
     .el-badge {
-        /deep/.el-badge__content
-    {
-        margin-top:0.06rem;
-    } 
+        /deep/.el-badge__content{
+            margin-top: 20px;
+            user-select: none;
+        } 
     }
     
-    
-    .navbar {
-        font-size: .083rem;
-        height: 0.3125rem;
-        line-height: 0.3125rem;
-        border-radius: 0px !important;
+    .titalbar-container {
+        font-size: 16px;
+        height: 59px;
+        line-height: 59px;
         position: relative;
-
-        .logo {
-            font-size: 0.0938rem;
-            color: #707070;
-        }
-
-        .icons {
-            display: flex;
-            position: absolute;
-            right: 0.5208rem;
-            top: 0.026rem;
-            font-size: .083rem;
-            
-            .item {
-                margin-left: 0.1042rem;
-                
-
-                .svg {
-                    cursor: pointer;
-                    font-size: 0.1146rem;
-                    color: rgba(47, 47, 118, 0.9);
-                }
+        background-color: #2F2F76;
+        .system-box {
+            display: inline-flex;
+            justify-content: flex-start;
+            align-items: center;
+            font-size:18px;
+            color:rgba(255,255,255,1);
+            margin-left: 10px;
+            .logo {
+                cursor: pointer;
             }
-
+            .system-title {
+                margin-left: 10px;
+            }
+        }
+        .system-title {
+            font-size:18px;
+            color:rgba(255,255,255,1);
+            vertical-align: middle;
+        }
+        .icon-box {
+            width: 163px;
+            height: 59px;
+            display: flex;
+            justify-content: space-between;
+            float: right;
+            margin-right: 26px;
+            .svg {
+                cursor: pointer;
+                font-size: 0.1302rem;
+                vertical-align: middle;
+            }
         }
         .hamburger-container {
             height: 0.2604rem;
             float: left;
             padding: 0 0.0521rem;
-        }
-
-        .screenfull {
-            position: absolute;
-            right: 0.4688rem;
-            top: 0.0833rem;
-            color: red;
-        }
-
-        .avatar-container {
-            height: 0.2604rem;
-            display: inline-block;
-            position: absolute;
-            right: 0.1823rem;
-            top: 0.026rem;
-
-            .menu-item {
-                font-size: .083rem;
-            }
-
-            .avatar-wrapper {
-                cursor: pointer;
-                margin-top: 0.026rem;
-                position: relative;
-
-                .user-avatar {
-                    width: 40px;
-                    height: 40px;
-                    border-radius: 50%;
-                }
-
-                .el-icon-caret-bottom {
-                    position: absolute;
-                    right: -20px;
-                    top: 25px;
-                    font-size: 12px;
-                }
-            }
         }
     }
 </style>

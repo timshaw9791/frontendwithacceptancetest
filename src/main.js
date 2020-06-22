@@ -68,6 +68,7 @@ Vue.prototype.$filterFrame = filterFrame
 Vue.prototype._ = _
 Vue.prototype.$sumFunc = sumFunc
 Vue.prototype.$delRow = delRow
+Vue.prototype.$eventBus = new Vue()
 
 new Vue({
     router,

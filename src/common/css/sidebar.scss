@@ -2,23 +2,24 @@
   // 主体区域
   .main-container {
     min-height: 100%;
-    transition: margin-left .28s;
-    margin-left: 1.1719rem;
+    float: right;
+    width: 88%;
+    transition: 0.28s width;
+    //transition: margin-left .28s;
+    //margin-left: 1.1719rem;
   }
 
   // 侧边栏
   .sidebar-container {
+    float: left;
     transition: width 0.28s;
-    width: 1.1719rem !important;
+    //width: 1.1719rem !important;
+    width: 12% !important;
     height: 100%;
-    position: fixed;
     font-size: 0px;
-    top: 0;
-    bottom: 0;
-    left: 0;
     z-index: 1001;
     overflow: hidden;
-    background: #f9f9f9;
+    border: 1px solid rgba(112,112,112,0.24);
     //reset element-ui css
     .horizontal-collapse-transition {
       transition: 0s width ease-in-out, 0s padding-left ease-in-out, 0s padding-right ease-in-out;
@@ -35,6 +36,7 @@
         
         .collapse {
           .el-submenu__title {
+            background-color: white !important;
             padding-left: 0.1042rem !important;
           }
         }
@@ -66,16 +68,11 @@
       color: rgb(47, 47, 118);
     }
 
-    .el-menu {
+    .el-menu { // 左侧导航栏
       border: none;
-      max-height: 60vh;
+      max-height: 72vh;
       width: 100% !important;
     }
-
-    //@media screen and () {
-    //
-    //}
-
 
     .topTitle {
       height: 92px;
@@ -115,26 +112,10 @@
 
     }
 
-    .topBottom {
-      transition: all 0.28s;
-      width: 1.0417rem;
-      text-align: center;
-      color: #707070;
-      position: fixed;
-      bottom: 0;
-      background: #f9f9f9;
-      font-size: 0.0625rem;
-      padding-bottom: 0.1042rem;
-      line-height: 0.2083rem;
-      //height: 0.2292rem;
-    }
+
   }
 
-  // @media only screen and (max-height: 900px) {
-  //   .sidebar-container .topBottom {
-  //     display: none;
-  //   }
-  // }
+
 
 
   .hideSidebar {
@@ -144,8 +125,8 @@
     }
 
     .main-container {
-      margin-left: 0.1875rem;
-
+      //margin-left: 0.1875rem;
+      width: 98%;
     }
 
 

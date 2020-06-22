@@ -55,14 +55,13 @@
             },
             toDetail(data) {
                 console.log(data)
-                let applyName = data.processInstanceName.includes('报废') ? 'scrap' : 'transfer'
+                let applyName = data.processInstanceName.includes('报废') ? 'scrap' : 'allocate'
                 this.$router.push({
                     path: `/process/${applyName}Apply`,
                     query: {
                         name: data.processInstanceName,
                         processInstanceId: data.processInstanceId,
                         type: 'todo',
-                        category: data.category
                     }
                 })
             }

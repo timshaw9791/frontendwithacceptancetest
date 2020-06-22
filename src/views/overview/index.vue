@@ -1,73 +1,75 @@
 <template>
-    <div class="overview" v-loading="loading" element-loading-text="正在导入中...">
-        <el-card shadow="never" :body-style="{ padding:'0.156rem'}">
-            <div class="topRemind">
-                <div class="remind-box" v-for="(item, i) in topRemindList" :key="i" @click="toOther(item.key)">
-                    <div class="count">{{ item.count }}</div>
-                    <div :class="{'tag': true, 'only-tag': item.count == undefined}">{{ item.tag }}</div>
-                </div>
-            </div>
-        </el-card>
-        
-        <el-card  shadow="never" :body-style="{ padding:'0.156rem'}">
-            <div class="to-do">
-                <div class="title">待办事宜</div>
-                <div class="event-list">
-                    <div class="event-box" v-for="(event, i) in toDoList" :key="i">
-                        <div>{{ event.processInstanceName }}</div>
-                        <div>{{ event.name }}</div>
-                        <div>{{ event.time }}</div>
+    <view-container>
+        <div class="overview" v-loading="loading" element-loading-text="正在导入中...">
+            <el-card shadow="never" :body-style="{ padding:'0.156rem'}">
+                <div class="topRemind">
+                    <div class="remind-box" v-for="(item, i) in topRemindList" :key="i" @click="toOther(item.key)">
+                        <div class="count">{{ item.count }}</div>
+                        <div :class="{'tag': true, 'only-tag': item.count == undefined}">{{ item.tag }}</div>
                     </div>
                 </div>
-            </div>
-        </el-card>
+            </el-card>
 
-        <el-card shadow="never" :body-style="{ padding:'0.156rem'}">
-            <div class="inventory-statistics">
-                <div class="header">库存统计</div>
-                <bos-tabs :label="[{label:'公共装备',key:'public'},{label:'单警装备',key:'police'}]" 
-                    @changeTab="changeTab" margin="10px 0 0 -10px">
-                    <div class="sum-info" slot="slotHeader">
-                        <div>领用总数</div>
-                        <div class="num">{{ selectTab=='public'?inventory.totalIsUse:policeCabinet.totalIsUse }}</div>
-                        <div class="temp"></div>
-                        <div>可用总数</div>
-                        <div class="num">{{ selectTab=='public'?inventory.totalCanUse:policeCabinet.totalCanUse }}</div>
-                    </div>
-                    <!-- 表格类 -->
-                    <div class="body" slot="public">
-                        <div class="body-left">
-                            <div class="header-type">装备大类</div>
-                            <div class="header-num">领用数量</div>
-                            <div class="header-num">可用数量</div>
+            <el-card  shadow="never" :body-style="{ padding:'0.156rem'}">
+                <div class="to-do">
+                    <div class="title">待办事宜</div>
+                    <div class="event-list">
+                        <div class="event-box" v-for="(event, i) in toDoList" :key="i">
+                            <div>{{ event.processInstanceName }}</div>
+                            <div>{{ event.name }}</div>
+                            <div>{{ event.time }}</div>
                         </div>
-                        <div class="body-right">
-                            <div class="item" v-for="(item, i) in inventory.list" :key="'public'+i">
-                                <div class="header-type">{{ item.name }}</div>
-                                <div class="header-num">{{ item.isUse }}</div>
-                                <div class="header-num">{{ item.canUse }}</div>
+                    </div>
+                </div>
+            </el-card>
+
+            <el-card shadow="never" :body-style="{ padding:'0.156rem'}">
+                <div class="inventory-statistics">
+                    <div class="header">库存统计</div>
+                    <bos-tabs :label="[{label:'公共装备',key:'public'},{label:'单警装备',key:'police'}]"
+                              @changeTab="changeTab" margin="10px 0 0 -10px">
+                        <div class="sum-info" slot="slotHeader">
+                            <div>领用总数</div>
+                            <div class="num">{{ selectTab=='public'?inventory.totalIsUse:policeCabinet.totalIsUse }}</div>
+                            <div class="temp"></div>
+                            <div>可用总数</div>
+                            <div class="num">{{ selectTab=='public'?inventory.totalCanUse:policeCabinet.totalCanUse }}</div>
+                        </div>
+                        <!-- 表格类 -->
+                        <div class="body" slot="public">
+                            <div class="body-left">
+                                <div class="header-type">装备大类</div>
+                                <div class="header-num">领用数量</div>
+                                <div class="header-num">可用数量</div>
+                            </div>
+                            <div class="body-right">
+                                <div class="item" v-for="(item, i) in inventory.list" :key="'public'+i">
+                                    <div class="header-type">{{ item.name }}</div>
+                                    <div class="header-num">{{ item.isUse }}</div>
+                                    <div class="header-num">{{ item.canUse }}</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="body" slot="police">
-                        <div class="body-left">
-                            <div class="header-type">装备大类</div>
-                            <div class="header-num">领用数量</div>
-                            <div class="header-num">可用数量</div>
-                        </div>
-                        <div class="body-right">
-                            <div class="item" v-for="(item, i) in policeCabinet.list" :key="'police'+i">
-                                <div class="header-type">{{ item.name }}</div>
-                                <div class="header-num">{{ item.isUse }}</div>
-                                <div class="header-num">{{ item.canUse }}</div>
+                        <div class="body" slot="police">
+                            <div class="body-left">
+                                <div class="header-type">装备大类</div>
+                                <div class="header-num">领用数量</div>
+                                <div class="header-num">可用数量</div>
+                            </div>
+                            <div class="body-right">
+                                <div class="item" v-for="(item, i) in policeCabinet.list" :key="'police'+i">
+                                    <div class="header-type">{{ item.name }}</div>
+                                    <div class="header-num">{{ item.isUse }}</div>
+                                    <div class="header-num">{{ item.canUse }}</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </bos-tabs>
-                
-            </div>
-        </el-card>
-    </div>
+                    </bos-tabs>
+
+                </div>
+            </el-card>
+        </div>
+    </view-container>
 </template>
 
 <script>
@@ -142,29 +144,39 @@
                 })
             },
             syncHandheld() {
-                function handheld(data, filename, cb) {
-                    return new Promise((reslove, reject) => {
-                        writeFile(data, cbData => {
-                            if(cbData.state) {
-                                reslove("导入成功")
-                            } else {
-                                reject(cbData.message)
-                            }
-                        }, filename)
-                    })
-                }
-                Promise.all([findEquipsNeedChange(), findByOneLine()]).then(res => {
-                    Promise.all([handheld(res[0], "statisticsEquip.json"), handheld(res[1], "allEquip.json")]).then(state => {
+                findEquipsNeedChange().then(res => {
+                    return writeFile(res, cbData => {
                         this.loading = false
-                        this.$message.success(typeof state == 'object'?state[0]:state)
-                    }).catch(err => {
-                        console.log(err);
-                        this.loading = false
-                        this.$message.error(err)
-                    })
+                        cbData.state && this.$message.success("导入成功")
+                    }, 'handheldEquip.json')
                 }).catch(err => {
-                    this.loading = false;
+                    console.log(err);
+                    this.loading = false
+                    !err.response && this.$message.error(err.toString())
                 })
+                // function handheld(data, filename, cb) {
+                //     return new Promise((reslove, reject) => {
+                //         writeFile(data, cbData => {
+                //             if(cbData.state) {
+                //                 reslove("导入成功")
+                //             } else {
+                //                 reject(cbData.message)
+                //             }
+                //         }, filename)
+                //     })
+                // }
+                // Promise.all([findEquipsNeedChange()]).then(res => {
+                //     Promise.all([handheld(res[0], "statisticsEquip.json")]).then(state => {
+                //         this.loading = false
+                //         this.$message.success(typeof state == 'object'?state[0]:state)
+                //     }).catch(err => {
+                //         console.log(err);
+                //         this.loading = false
+                //         this.$message.error(err)
+                //     })
+                // }).catch(err => {
+                //     this.loading = false;
+                // })
             },
             toOther(key) {
                 switch (key) {
