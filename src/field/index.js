@@ -45,6 +45,7 @@ import radio from '@/componentized/radio'
 import checkbox from '@/componentized/checkbox'
 import checkboxGroup from '@/componentized/checkboxGroup'
 import viewContainer from '@/componentized/viewContainer/viewContainer'
+import toolBar from "../componentized/viewContainer/toolBar";
 
 let componentsList = {
     'FormContainer': FormContainer,
@@ -80,7 +81,8 @@ let componentsList = {
     radio,
     checkbox,
     checkboxGroup,
-    viewContainer
+    viewContainer,
+    toolBar
 };
 
 
