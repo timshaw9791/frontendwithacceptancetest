@@ -1,27 +1,24 @@
 <template>
-    <div class="inventory--list-container">
-        <my-header title="装备盘点列表"></my-header>
-        <div class="header">
-            <base-button @click="goto()" label="开始盘点"></base-button>
-        </div>
-        <div class="body">
-            <define-table :data="list" :pageInfo="paginator" @changePage="changePage">
-                <define-column label="操作" v-slot="{data}">
-                    <span @click="goto(data.row.id)">详情</span>
-                </define-column>
-                <define-column label="单号" field="number"></define-column>
-                <define-column label="应盘点总数" field="inventoryCount"></define-column>
-                <define-column label="已盘点总数" field="count"></define-column>
-                <define-column label="未知装备数" field="notCount"></define-column>
-                <define-column label="盘点人员" field="operatorInfo.operator"></define-column>
-                <define-column label="盘点时间" field="startTime"></define-column>
-            </define-table>
-        </div>
+    <view-container>
+        <tool-bar>
+            <base-button slot="button" type="text" @click="goto()" label="开始盘点"></base-button>
+        </tool-bar>
+        <define-table :data="list" :pageInfo="paginator" @changePage="changePage">
+            <define-column label="操作" v-slot="{data}">
+                <span @click="goto(data.row.id)">详情</span>
+            </define-column>
+            <define-column label="单号" field="number"></define-column>
+            <define-column label="应盘点总数" field="inventoryCount"></define-column>
+            <define-column label="已盘点总数" field="count"></define-column>
+            <define-column label="未知装备数" field="notCount"></define-column>
+            <define-column label="盘点人员" field="operatorInfo.operator"></define-column>
+            <define-column label="盘点时间" field="startTime"></define-column>
+        </define-table>
         <service-dialog ref="scrapDialog" title="提示" width="3.3021rem" @confirm="dialogSub" :secondary="false"
                         :is-show="isScrapDialog">
             <div>是否需要盘点报废</div>
         </service-dialog>
-    </div>
+    </view-container>
 </template>
 
 <script>

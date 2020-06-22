@@ -1,35 +1,37 @@
 <template>
     <div class="maintenance-form-container">
-        <div class="maintenance-form-body">
-            <bos-tabs :header="false" >
-                <define-table ref="total" :data="listData"  @changeCurrent="selRow" :havePage="false"
-                              :highLightCurrent="true" slot="total" :showSummary="true" :summaryFunc="sumFunc" key="3">
-                    <define-column label="装备参数" v-slot="{ data }">
-                        <entity-input v-model="data.row.equipArg" :options="{detail:'equipArgsDetail'}"
-                                      format="{name}({model})" :tableEdit="false"></entity-input>
-                    </define-column>
-                    <define-column label="装备位置" v-slot="{ data }">
-                        <entity-input v-model="data.row.location" :formatFunc="$formatFuncLoc"
-                                      :tableEdit="false"></entity-input>
-                    </define-column>
-                    <define-column label="正在保养数量" v-slot="{ data }">
-                        <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input>
-                    </define-column>
-                    <define-column label="保养时长" v-slot="{ data }">
-                        <date-input v-model="data.row.keepTime" filter="toDay" :tableEdit="false"></date-input>
-                    </define-column>
-                </define-table>
-                <define-table :data="listData[this.findIndex].copyList"  :havePage="false"
-                              slot="detail" key="4">
-                    <define-column label="RFID" v-slot="{ data }">
-                        <define-input v-model="data.row.rfid" type="String" :tableEdit="false"></define-input>
-                    </define-column>
-                    <define-column label="装备序号" v-slot="{ data }">
-                        <define-input v-model="data.row.serial" type="Number" :tableEdit="false"></define-input>
-                    </define-column>
-                </define-table>
-            </bos-tabs>
-        </div>
+        <bos-tabs :header="false"  >
+            <define-table ref="total" :data="listData" @changeCurrent="selRow"  height="928px"  :havePage="false"
+                          :highLightCurrent="true" slot="total" :showSummary="true" :summaryFunc="sumFunc" key="3">
+                <define-column label="装备参数" v-slot="{ data }">
+                    <entity-input v-model="data.row.equipArg" :options="{detail:'equipArgsDetail'}"
+                                  format="{name}({model})" :tableEdit="false"></entity-input>
+                </define-column>
+                <define-column label="装备位置" v-slot="{ data }">
+                    <entity-input v-model="data.row.location" :formatFunc="$formatFuncLoc"
+                                  :tableEdit="false"></entity-input>
+                </define-column>
+                <define-column label="正在保养数量" v-slot="{ data }">
+                    <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input>
+                </define-column>
+                <define-column label="保养时长" v-slot="{ data }">
+                    <date-input v-model="data.row.keepTime" filter="toDay" :tableEdit="false"></date-input>
+                </define-column>
+            </define-table>
+            <define-table :data="listData[this.findIndex].copyList" :havePage="false" height="928px"
+                          slot="detail" key="4">
+                <define-column label="RFID" v-slot="{ data }">
+                    <define-input v-model="data.row.rfid" type="String" :tableEdit="false"></define-input>
+                </define-column>
+                <define-column label="装备序号" v-slot="{ data }">
+                    <define-input v-model="data.row.serial" type="Number" :tableEdit="false"></define-input>
+                </define-column>
+            </define-table>
+        </bos-tabs>
+
+        <tool-bar>
+            <base-button slot="button" type="text" label="开始保养" @click="startMain"></base-button>
+        </tool-bar>
     </div>
 </template>
 
@@ -60,7 +62,7 @@
                 let {columns, data} = param, sums = [];
                 sums = new Array(columns.length).fill('')
                 sums[0] = '合计'
-                sums[columns.length - 1] =0
+                sums[columns.length - 1] = 0
                 this.$nextTick(() => {
                     this.$refs.total.doLayout()
                 })
@@ -104,6 +106,9 @@
                     serial: [],
                     copyList: [{rfid: '', serial: ''}]
                 }]
+            },
+            startMain() {
+                this.$router.push({path: '/equipmentOperation/startMaintenance'});
             }
         },
         created() {
@@ -112,8 +117,8 @@
                 this.init()
             }
         },
-        beforeDestroy(){
-          console.log('哈哈')
+        beforeDestroy() {
+            console.log('哈哈')
         },
         components: {
             myHeader,
@@ -128,17 +133,5 @@
 </script>
 
 <style lang="scss" scoped>
-    .maintenance-form-container {
-        font-size: 16px;
-    }
 
-    .maintenance-form-top {
-        padding: 18px 7px;
-        border-bottom: 1px solid #ebeef5;
-        overflow: hidden;
-    }
-
-    .maintenance-form-body {
-        padding: 0 7px;
-    }
 </style>

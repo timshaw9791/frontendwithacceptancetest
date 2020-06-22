@@ -1,26 +1,16 @@
 <template>
-    <div class="my-process-container">
-        <my-header title="我的流程" :haveBlack="false"></my-header>
-        <div class="my-process" data-test="action_box">
-            <div class="my-process-info">
-                <define-input label="请求标题" v-model="requestTitle" placeholder="请输入标题"></define-input>
-                <base-select label="流程类型" v-model="select.selected" :selectList="select.processList"></base-select>
-                <base-button label="查询" @click="fetchData()"></base-button>
-            </div>
-            <div class="my-process-body">
-                <define-table :data="myProcessList" height="3.6458rem" :pageInfo="paginator" @changePage="changePage">
-                    <define-column label="操作" width="100" v-slot="{ data }">
-                        <i class="iconfont iconxiangqing" @click="toDetail(data.row)"></i>
-                    </define-column>
-                    <define-column label="请求标题" field="name"></define-column>
-                    <define-column label="工作流" field="type"></define-column>
-                    <define-column label="创建时间" :filter="(row)=>$filterTime(row.createTime)"></define-column>
-                    <define-column label="当前节点" field="taskName"></define-column>
-                    <define-column label="未操作者" field="userName"></define-column>
-                </define-table>
-            </div>
-        </div>
-    </div>
+    <view-container>
+        <define-table :data="myProcessList" height="928px" :pageInfo="paginator" @changePage="changePage">
+            <define-column label="操作" width="100" v-slot="{ data }">
+                <i class="iconfont iconxiangqing" @click="toDetail(data.row)"></i>
+            </define-column>
+            <define-column label="请求标题" field="name"></define-column>
+            <define-column label="工作流" field="type"></define-column>
+            <define-column label="创建时间" :filter="(row)=>$filterTime(row.createTime)"></define-column>
+            <define-column label="当前节点" field="taskName"></define-column>
+            <define-column label="未操作者" field="userName"></define-column>
+        </define-table>
+    </view-container>
 </template>
 
 <script>
@@ -88,16 +78,5 @@
 </script>
 
 <style lang="scss" scoped>
-    .my-process-container {
-        color: #707070FF;
-        font-size: 16px;
 
-        .my-process-info {
-            padding: 16px 7px;
-        }
-
-        .my-process-body {
-            padding: 0 17px;
-        }
-    }
 </style>
