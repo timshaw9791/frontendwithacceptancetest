@@ -29,21 +29,15 @@ service.interceptors.request.use(config => {
 
 // respone拦截器
 service.interceptors.response.use(response => {
-        // if(!['get','GET'].includes(response.config.method)) {
-        //     Message.success({
-        //         message: '操作成功'
-        //     })
-        // }
         let token = response.headers[tokenName];
         if (token) {
             setToken(token);
-            store.commit('SET_TOKEN', token)
+            store.commit('setToken', token)
         }
         const res = response.data;
         return res;
     },
     error => {
-        // console.log('err' + error) // for debug
         let errcode = String(error);
         if (errcode.includes('401')) {
             if (location.href === loginUrl) {    /*登陆页面401错误，提示用户名或者密码错误*/
@@ -54,8 +48,9 @@ service.interceptors.response.use(response => {
                 Message.error({
                     message: '权限或已失效'
                 });
-                removeToken();
-                location.href = loginUrl;
+                store.dispatch('LogOut').then(() => {
+                    setTimeout(() => location.reload(), 1000)
+                })
             }
         } else if (errcode.includes('Network')) {
             Message.error({

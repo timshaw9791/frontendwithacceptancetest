@@ -5,8 +5,14 @@ import Layout from 'components/layout/Layout'
 
 const _import = require('./_import_' + process.env.NODE_ENV);
 
+// Vue-router在3.1之后把$router.push()改为了Promise,而默认其Promise没有处理错误的回调，所以会交给全局错误处理。
+// 这里改写push，给push添加错误处理
+const originalPush = Router.prototype.push
+Router.prototype.push = function push(location, onResolve, onReject) {
+    if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
+    return originalPush.call(this, location).catch(err => err)
+}
 Vue.use(Router);
-
 /**
  * hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
  * alwaysShow: true               if set true, will always show the root menu, whatever its child routes length
@@ -19,7 +25,7 @@ Vue.use(Router);
     icon: 'svg-name'             the icon show in the sidebar,
   }
  **/
-export const constantRouterMap = [
+const constantRouterMap = [
     {path: '/login', component: _import('login/index'), hidden: true},
     {path: '/404', component: _import('errorPage/404'), hidden: true},
     {
@@ -28,13 +34,14 @@ export const constantRouterMap = [
     },
 ];
 
-export default new Router({
+const router =  new Router({
     // mode: 'history', //后端支持可开
     scrollBehavior: () => ({y: 0}),
     routes: constantRouterMap
 })
 
-export const asyncRouterMap = [{
+
+const asyncRouterMap = [{
     path: '/overview',
     component: Layout,
     name: 'overview',
@@ -477,10 +484,5 @@ export const asyncRouterMap = [{
 }
 ]
 
-// Vue-router在3.1之后把$router.push()改为了Promise,而默认其Promise没有处理错误的回调，所以会交给全局错误处理。
-// 这里改写push，给push添加错误处理
-const originalPush = Router.prototype.push
-Router.prototype.push = function push(location, onResolve, onReject) {
-    if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
-    return originalPush.call(this, location).catch(err => err)
-}
+export default router
+export { constantRouterMap, asyncRouterMap }
