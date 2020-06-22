@@ -148,36 +148,6 @@ export const asyncRouterMap = [{
             component: _import('process/allocate/allocateIn'),
             hidden: true,
         }, {
-        //     path: 'transferApply', // 调拨申请页面
-        //     name: 'transferApply',
-        //     component: _import('process/transfer/transferApply'),
-        //     hidden: true,
-        // },{
-        //     path: 'transferOut', // 调拨出库
-        //     name: 'transferOut',
-        //     component: _import('process/transfer/transferOut'),
-        //     hidden: true,
-        // }, {
-        //     path: 'transferIn', // 调拨入库
-        //     name: 'transferIn',
-        //     component: _import('process/transfer/transferIn'),
-        //     hidden: true,
-        // }, {
-        //     path: 'directApply', // 直调申请页面
-        //     name: 'directApply',
-        //     component: _import('process/direct/directApply'),
-        //     hidden: true,
-        // }, {
-        //     path: 'directOut', // 直调出库
-        //     name: 'directOut',
-        //     component: _import('process/direct/directOut'),
-        //     hidden: true,
-        // }, {
-        //     path: 'directIn', // 直调入库
-        //     name: 'directIn',
-        //     component: _import('process/direct/directIn'),
-        //     hidden: true,
-        // }, {
             path: 'agencyMatters',
             name: 'agencyMatters',
             component: _import('process/agencyMatters'),
@@ -206,9 +176,21 @@ export const asyncRouterMap = [{
     }, {
         path: 'maintenance',
         name: 'maintenance',
-        component: _import('equipmentOperation/newMaintenance'),
+        component: _import('equipmentOperation/maintenance/index'),
         meta: {title: '保养'},
     },  {
+        path: 'startMaintenance',
+        name: 'startMaintenance',
+        component: _import('equipmentOperation/maintenance/startMaintenance'),
+        meta: {title: '开始保养'},
+        hidden: true,
+    }, {
+        path: 'endMaintenance',
+        name: 'endMaintenance',
+        component: _import('equipmentOperation/maintenance/endMaintenance'),
+        meta: {title: '结束保养'},
+        hidden: true,
+    }, {
         path: 'serviceapplication',
         name: 'serviceapplication',
         component: _import('equipmentOperation/serviceApplicationInfo'),

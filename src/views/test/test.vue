@@ -23,7 +23,7 @@
         <base-button label="按钮1" slot="car1morebutton">按钮1</base-button>
         <base-button label="按钮1" slot="car1morebutton">按钮1</base-button>
         <base-button label="按钮1" slot="car1morebutton">按钮1</base-button>
-
+<!--测试-->
         <base-button label="测试按钮" slot="publicbutton" type="text"></base-button>
     </view-container>
 </template>

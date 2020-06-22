@@ -1,12 +1,9 @@
 <template>
     <div class="maintenance-form-container">
-        <div class="maintenance-form-top">
-            <base-button :width="100" size="default" align="right" @click="endMain()" label="结束保养"></base-button>
-        </div>
         <div class="maintenance-form-body">
             <bos-tabs :header="false" >
-                <define-table :data="listData" ref="table1" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
-                              :highLightCurrent="true" slot="total" :showSummary="true" :summaryFunc="sumFunc">
+                <define-table ref="total" :data="listData"  @changeCurrent="selRow" :havePage="false"
+                              :highLightCurrent="true" slot="total" :showSummary="true" :summaryFunc="sumFunc" key="3">
                     <define-column label="装备参数" v-slot="{ data }">
                         <entity-input v-model="data.row.equipArg" :options="{detail:'equipArgsDetail'}"
                                       format="{name}({model})" :tableEdit="false"></entity-input>
@@ -22,8 +19,8 @@
                         <date-input v-model="data.row.keepTime" filter="toDay" :tableEdit="false"></date-input>
                     </define-column>
                 </define-table>
-                <define-table :data="listData[this.findIndex].copyList" height="2.8646rem" :havePage="false"
-                              slot="detail">
+                <define-table :data="listData[this.findIndex].copyList"  :havePage="false"
+                              slot="detail" key="4">
                     <define-column label="RFID" v-slot="{ data }">
                         <define-input v-model="data.row.rfid" type="String" :tableEdit="false"></define-input>
                     </define-column>
@@ -37,15 +34,13 @@
 </template>
 
 <script>
-    import myHeader from 'components/base/header/header'
+    import myHeader from '@/components/base/header/header'
     import textInput from '@/componentized/textBox/textInput.vue'
     import defineInput from '@/componentized/textBox/defineInput.vue'
     import bosTabs from '@/componentized/table/bosTabs.vue'
     import baseButton from "@/componentized/buttonBox/baseButton.vue"
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
-    import {start, startOne, killProcess} from 'common/js/rfidReader'
-    import {getInhouseNumber, inHouse, findByRfids, outHouse} from "api/storage"
     import {inKeepEquips} from "api/operation"
 
     var _ = require("lodash");
@@ -61,15 +56,14 @@
             selRow(current) {
                 this.findIndex = current.index
             },
-            endMain() {
-                this.$router.push({path: '/equipmentOperation/endMaintenance'});
-            },
-
             sumFunc(param) { // 表格合并行计算方法
                 let {columns, data} = param, sums = [];
                 sums = new Array(columns.length).fill('')
                 sums[0] = '合计'
-                sums[columns.length - 1] = param.data.reduce((v, k) => v + k.copyList.length, 0)
+                sums[columns.length - 1] =0
+                this.$nextTick(() => {
+                    this.$refs.total.doLayout()
+                })
                 return sums;
             },
             fixData(data)//界面数据处理
@@ -117,6 +111,9 @@
             if (this.listData.length == 0) {
                 this.init()
             }
+        },
+        beforeDestroy(){
+          console.log('哈哈')
         },
         components: {
             myHeader,
