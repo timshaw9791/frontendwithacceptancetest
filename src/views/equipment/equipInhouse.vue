@@ -1,7 +1,7 @@
 <template>
     <div class="opening-box">
         <my-header title="入库单列表/入库装备"></my-header>
-         <div class="action_box" data-test="action_box">
+        <div class="action_box" data-test="action_box">
                 <define-input label="单号" placeholder="--" :disabled="true" ></define-input>
                 <date-select label="入库时间" placeholder="--" :disabled="true"></date-select>
                 <entity-input label="入库人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :disabled="true" ></entity-input>
@@ -22,7 +22,7 @@
                                 <entity-input v-model="data.row.equipArgId"  :options="{search:'equipArgsSelect'}" format="{name}({model})" :tableEdit="true" ></entity-input>
                             </define-column>
                             <define-column label="装备位置"  v-slot="{ data }" >
-                                 <entity-input v-model="data.row.locationId"  :options="{search:'locationSelect'}" :formatFunc="$formatFuncLoc" :tableEdit="true" ></entity-input>
+                                <entity-input v-model="data.row.locationId"  :options="{search:'locationSelect'}" :formatFunc="$formatFuncLoc" :tableEdit="true" ></entity-input>
                             </define-column>
                             <define-column label="单价" v-slot="{ data }">
                                 <define-input v-model="data.row.price" type="Number" ></define-input>
@@ -34,16 +34,16 @@
                         </define-table>
                         <define-table :data="list[findIndex].copyList" height="2.8646rem" :havePage="false" slot="detail">
                             <define-column label="操作" width="100" v-slot="{ data }">
-                               <i class="iconfont icontianjia" ></i>
-                               <i class="iconfont iconyichu" @click="changeDetailRow(false,data)"></i>
+                                <i class="iconfont icontianjia" ></i>
+                                <i class="iconfont iconyichu" @click="changeDetailRow(false,data)"></i>
                             </define-column>
                             <define-column label="RFID" field="rfid"></define-column>
                             <define-column label="装备序号" field="serial"></define-column>
                         </define-table>
                     </bos-tabs>
         <div class="btn-box">
-                  <base-button label="取消" align="right" :width="128" :height="25" :fontSize="20" @click="cancel"></base-button>
-                  <base-button label="提交" align="right" :width="128" :height="25" :fontSize="20" @click="confirm"></base-button>
+                <base-button label="取消" align="right" :width="128" :height="25" :fontSize="20" @click="cancel"></base-button>
+                <base-button label="提交" align="right" :width="128" :height="25" :fontSize="20" @click="confirm"></base-button>
               </div>
         
         </div>

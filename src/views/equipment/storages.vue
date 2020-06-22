@@ -1,15 +1,12 @@
 <template>
+<view-container>
     <div class="opening-box">
-        <my-header :title="$route.meta.title"></my-header>
-        <div class="btn_box">
-             <base-button label="入库装备 " align="right" :width="128" :height="25" :fontSize="20" @click="toInHouse"></base-button>
-        </div>
         <div class="data-list">
             <define-table :data="list" height="3.64rem" @changePage="changePage" :pageInfo="paginator" >
                             <define-column label="操作" width="130" v-slot="{ data }">
                                 <div class="span-box">
-                                     <base-button label="详情" size="mini" @click="toDetail(data.row)" type="primary"></base-button>
-                                     <base-button label="删除" size="mini" type="danger" @click="deleteNumber(data.row)"></base-button>
+                                    <base-button label="详情" size="mini" @click="toDetail(data.row)" type="primary"></base-button>
+                                    <base-button label="删除" size="mini" type="danger" @click="deleteNumber(data.row)"></base-button>
                                 </div>
                             </define-column>
                             <define-column label="单号" v-slot="{ data }">
@@ -27,7 +24,11 @@
                             <define-column label="入库时间" :filter="(row)=>$filterTime(row.createTime)"/>
                         </define-table>
         </div>
+        <tool-bar>
+            <base-button label="入库装备 " align="right" :width="128" :height="25" :fontSize="20" @click="toInHouse" slot="button"></base-button>
+        </tool-bar>
     </div>
+</view-container>
 </template>
 
 <script>
