@@ -1,23 +1,14 @@
 <template>
-    <div class="handling-matters">
-        <my-header :title="'办结事宜'" :searchFlag="false"></my-header>
-        <div class="handling-matters-top" data-test="action_box">
-            <define-input label="请求标题" v-model="paginator.search" placeholder="请输入标题"></define-input>
-            <base-button label="查询" @click="getList()"></base-button>
-        </div>
-        <div class="handling-matters-body" data-test="main_box">
-            <div class="table_box" data-test="table_box">
-                <define-table :data="list" height="3.6458rem" :pageInfo="paginator" @changePage="changePage">
-                    <define-column label="操作" width="100" v-slot="{ data }">
-                        <i class="iconfont iconxiangqing" @click="toDetail(data.row)"></i>
-                    </define-column>
-                    <define-column label="请求标题" field="name"></define-column>
-                    <define-column label="工作流" field="type"></define-column>
-                    <define-column label="申请时间" :filter="(row)=>$filterTime(row.createTime)"></define-column>
-                </define-table>
-            </div>
-        </div>
-    </div>
+    <view-container>
+        <define-table :data="list" height="928px" :pageInfo="paginator" @changePage="changePage">
+            <define-column label="操作" width="100" v-slot="{ data }">
+                <i class="iconfont iconxiangqing" @click="toDetail(data.row)"></i>
+            </define-column>
+            <define-column label="请求标题" field="name"></define-column>
+            <define-column label="工作流" field="type"></define-column>
+            <define-column label="申请时间" :filter="(row)=>$filterTime(row.createTime)"></define-column>
+        </define-table>
+    </view-container>
 </template>
 
 <script>
@@ -25,7 +16,7 @@
     import {doneProcess} from '@/api/process'
 
     export default {
-        name: "closedProcess",
+        name: "closedProcess", //办结事宜
         components: {
             myHeader
         },

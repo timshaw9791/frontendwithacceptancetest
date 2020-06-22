@@ -143,6 +143,7 @@ const asyncRouterMap = [{
             path: 'allocateApply', // 调拨申请页面（调拨、直调）
             name: 'allocateApply',
             component: _import('process/allocate/allocateApply'),
+            meta: {title: '我的流程'},
             hidden: true,
         },  {
             path: 'allocateOut', // 调拨出库（调拨、直调）

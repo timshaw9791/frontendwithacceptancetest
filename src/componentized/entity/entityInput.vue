@@ -9,7 +9,7 @@
       readonly :placeholder="placeholder" @keydown.13="changeEditState(false)"/>
     <div class="icon">
       <i class="iconfont iconwenbenkuangshanchu" @click="clear" v-show="insideValue&&!disabled&&tableEdit&&edit"></i>
-      <i class="iconfont iconsousuo" @click="showSearch" v-show="search&&!disabled&&tableEdit&&edit"></i>
+      <i class="iconfont iconxuanze" @click="showSearch" v-show="search&&!disabled&&tableEdit&&edit"></i>
       <i class="iconfont iconxiang" @click="showDetail" v-show="detail&&(disabled||!tableEdit)&&insideValue"></i>
     </div>
     <service-dialog title="申请人员选择" ref="applicant" :button="false" :secondary="false">

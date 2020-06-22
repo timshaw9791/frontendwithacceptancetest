@@ -7,8 +7,8 @@
             <i class="iconfont iconPDF" v-show="type=='pdf'&&fileName"></i>
             <i class="iconfont icondianshi-shipinsuolve" v-show="type=='video'&&fileName"></i>
             <i class="iconfont iconwenbenkuangshanchu" v-show="fileName&&!disabled" @click.stop="remove"></i>
-            <img :src="imgSrc" class="img" v-if="fileName&&type=='img'" alt="图片加载失败">
-            <img src="@/assets/noThumbnails.png" class="img" v-if="disabled&&!fileName">
+            <img :src="imgSrc" class="img" v-if="fileName&&type=='img'" alt="图片加载失败"  :onerror="noImgUrl">
+            <img src="@/assets/noThumbnails.png" class="img" v-if="disabled&&!fileName" >
         </div>
         <span class="label" v-show="['pdf','video'].includes(type)">{{ fileName }}</span>
         <div class="progress-box" v-if="loading">
@@ -39,7 +39,8 @@ export default {
                 onUploadProgress: event => {
                     this.percentage = Number((event.loaded/event.total*100).toFixed(1));
                 }
-            }
+            },
+            noImgUrl: "'this.src='"+ require('@/assets/noImg.png')+"'"
         }
     },
     props: {
