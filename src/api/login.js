@@ -1,13 +1,10 @@
 import request from 'common/js/request';
 
-export function login(username, password) {
+export function login(params) {
   return request({
     url: '/login',
     method: 'post',
-    params: {
-      username,
-      password
-    }
+    params
   })
 }
 
