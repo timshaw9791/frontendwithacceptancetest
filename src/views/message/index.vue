@@ -19,9 +19,14 @@
 				<define-column label="消息内容" field="content"></define-column>
 			</define-table>
 		</bos-tabs>
-		<checkbox label="只显示星标" v-model="onlyShowStar" @change="fetchData(false, true)" :column="6" slot="button"></checkbox>
-		<base-button label="刷新" type="text" @click="fetchData(true)" slot="button"></base-button>
-		<base-button label="一键已读" type="text" @click="allMessageRead" slot="button"></base-button>
+		<tool-bar>
+			<checkbox label="只显示星标" v-model="onlyShowStar" @change="fetchData(false, true)" slot="button"></checkbox>
+			<base-button label="刷新" type="text" @click="fetchData(true)" slot="button"></base-button>
+			<base-button label="一键已读" type="text" @click="allMessageRead" slot="button"></base-button>
+		</tool-bar>
+<!--		<checkbox label="只显示星标" v-model="onlyShowStar" @change="fetchData(false, true)" :column="6" slot="button"></checkbox>-->
+<!--		<base-button label="刷新" type="text" @click="fetchData(true)" slot="button"></base-button>-->
+<!--		<base-button label="一键已读" type="text" @click="allMessageRead" slot="button"></base-button>-->
 	</view-container>
 </template>
 
