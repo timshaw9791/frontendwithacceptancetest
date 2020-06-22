@@ -1,5 +1,5 @@
 <template>
-    <view-container :tabs="tabs" v-model="search" >
+    <view-container :tabs="tabs" v-model="search">
         <define-table :data="[]" height="100%">
             <define-column label="测试列" field="a"></define-column>
             <define-column label="测试列2" field=""b></define-column>
@@ -25,6 +25,15 @@
         <base-button label="按钮1" slot="car1morebutton">按钮1</base-button>
 <!--测试-->
         <base-button label="测试按钮" slot="publicbutton" type="text"></base-button>
+        <tool-bar>
+            <define-input label="测试输入框" slot="input" :column="6"></define-input>
+            <base-button label="测试按钮" type="text" slot="button"></base-button>
+            <base-button label="测试按钮" type="text" slot="button"></base-button>
+            <base-button label="测试按钮" type="text" slot="button"></base-button>
+            <base-button label="测试按钮" type="text" slot="button"></base-button>
+            <base-button label="测试按钮" type="text" slot="button"></base-button>
+            <base-button label="更多按钮" type="text" slot="morebutton"></base-button>
+        </tool-bar>
     </view-container>
 </template>
 <script>

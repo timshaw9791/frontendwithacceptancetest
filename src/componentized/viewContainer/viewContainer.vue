@@ -7,7 +7,7 @@
             <div class="tabs-box">
                 <div v-for="(tab, i) in tabs" :key="tab.key" class="tab" v-show="tab.label" :class="{'tab-select': tabSelect==i}" @click="selectTab(tab, i)">{{ tab.label }}</div>
             </div>
-            <div class="tools-box">
+            <div class="tools-box" v-if="false">
                 <define-input :label="tabs[tabSelect].baseSearchName" v-model="tabs[tabSelect].baseSearchValue" :column="6" v-show="tabs[tabSelect].baseSearch" class="base-input"></define-input>
                 <div class="button-box">
                     <div v-for="tab in tabs" :key="'buttonslot'+tab.key" v-show="tabs[tabSelect].key==tab.key" class="button">
@@ -113,10 +113,10 @@ export default {
         value: {},
     },
     computed: {
-        showMoreButton() {
-            return Object.keys(this.$slots)
-                .some(sortName=>sortName.includes(`${this.tabs[this.tabSelect].key}morebutton`)||sortName.includes('publicmorebutton'))
-        }
+        // showMoreButton() {
+        //     return Object.keys(this.$slots)
+        //         .some(sortName=>sortName.includes(`${this.tabs[this.tabSelect].key}morebutton`)||sortName.includes('publicmorebutton'))
+        // }
     },
     watch: {
         $route: {
