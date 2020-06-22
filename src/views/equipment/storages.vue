@@ -25,7 +25,7 @@
                         </define-table>
         </div>
         <tool-bar>
-            <base-button label="入库装备 " align="right" :width="128" :height="25" :fontSize="20" @click="toInHouse" slot="button"></base-button>
+            <base-button label="入库装备 " size="mini" @click="toInHouse" slot="button"></base-button>
         </tool-bar>
     </div>
 </view-container>

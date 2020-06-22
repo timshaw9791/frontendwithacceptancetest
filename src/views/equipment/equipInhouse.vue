@@ -1,6 +1,6 @@
 <template>
+<view-container>
     <div class="opening-box">
-        <my-header title="入库单列表/入库装备"></my-header>
         <div class="action_box" data-test="action_box">
                 <define-input label="单号" placeholder="--" :disabled="true" ></define-input>
                 <date-select label="入库时间" placeholder="--" :disabled="true"></date-select>
@@ -41,13 +41,14 @@
                             <define-column label="装备序号" field="serial"></define-column>
                         </define-table>
                     </bos-tabs>
-        <div class="btn-box">
-                <base-button label="取消" align="right" :width="128" :height="25" :fontSize="20" @click="cancel"></base-button>
-                <base-button label="提交" align="right" :width="128" :height="25" :fontSize="20" @click="confirm"></base-button>
-              </div>
+       <tool-bar>
+                <base-button label="取消" :width="128" :height="25" :fontSize="20" @click="cancel" slot="button"></base-button>
+                <base-button label="提交" :width="128" :height="25" :fontSize="20" @click="confirm" slot="button"></base-button>
+              </tool-bar>
         
         </div>
     </div>
+</view-container>
 </template>
 
 <script>
