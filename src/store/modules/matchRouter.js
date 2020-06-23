@@ -65,11 +65,14 @@ export default {
         }
     },
     actions: {
-        matchRouter({commit}, roles) {
+        matchRouter({state, commit, getters}, roles) {
             getHouseInfo().then(res => { // 获取所在库房信息
                 commit('setOrganUnit', {id: res.organUnitId, name: res.organUnitName});
                 commit('setWarehouse', {id: res.houseId, name: res.houseName})
+                localStorage.setItem('houseInfo', JSON.stringify(res))
             })
+            // 页面刷新后重新将user信息添加到VueX
+            !getters.userInfo && commit('setUserInfo', JSON.parse(localStorage.getItem('user')))
             // 获取枚举数据
             return new Promise(function(reslove) {
                 let tmpRouter = filterAsyncRouter(asyncRouterMap, false)
