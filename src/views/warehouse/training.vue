@@ -1,15 +1,11 @@
 <template>
-  <div class="training-container">
-    <div class="training-header">
-        <span style="font-size: 20px;">{{$route.meta.title}}</span>
-    </div>
-    <div class="training-top">
-        <base-button size="default" align="right" label="新增教学培训" @click="dialogShow('add')"></base-button>
-    </div>
-    <div class="training-body" >
+    <view-container>
+        <tool-bar>
+            <base-button type="text" slot="button" label="新增教学培训" @click="dialogShow('add')"></base-button>
+        </tool-bar>
         <define-table :pageInfo="paginator" @changePage="changePage"
-                        :data="order" height="3.6042rem">
-            <define-column  label="操作"  v-slot="{ data }">
+                      :data="order" height="3.6042rem">
+            <define-column label="操作" v-slot="{ data }">
                 <base-button label="编辑" size="mini" @click="dialogShow('edit',data.row)" type="primary"></base-button>
                 <base-button label="删除" size="mini" @click="deleteplan(data.row)" type="danger"></base-button>
             </define-column>
@@ -17,7 +13,7 @@
                 <entity-input v-model="data.row.equipArg" format="{name}({model})" :options="{}"></entity-input>
             </define-column>
             <define-column label="教学视频" field="describes" v-slot="{data}">
-                <div  style="cursor:pointer;" v-for="(item, i) in data.row.video.fileName" :key="i">
+                <div style="cursor:pointer;" v-for="(item, i) in data.row.video.fileName" :key="i">
                     <span @click="show('MP4',item)">{{item}}</span>
                 </div>
             </define-column>
@@ -27,14 +23,14 @@
                 </div>
             </define-column>
         </define-table>
-    </div>
-  </div>
+    </view-container>
 </template>
 
 <script>
     import baseButton from "@/componentized/buttonBox/baseButton";
     import entityInput from "@/componentized/entity/entityInput";
-    import { getTraining, addTraining, editTraining, deleteTraining } from "api/training";
+    import {getTraining, addTraining, editTraining, deleteTraining} from "api/training";
+
     var _ = require("lodash");
     export default {
         name: "training",
@@ -45,24 +41,24 @@
             };
         },
         methods: {
-            fetchData(){
+            fetchData() {
                 this.order = []
-                getTraining(this.paginator).then(res=>{
+                getTraining(this.paginator).then(res => {
                     this.paginator.totalPages = res.totalPages;
                     this.paginator.totalElements = res.totalElements;
-                    let temp = _.values(_.groupBy(_.flatten(res.content),item=>`${item.equipArg.model}`))
-                    temp.forEach(item=>{
+                    let temp = _.values(_.groupBy(_.flatten(res.content), item => `${item.equipArg.model}`))
+                    temp.forEach(item => {
                         let a = {
-                            equipArg:{},
-                            pdf:{fileName:[],id:[]},
-                            video:{fileName:[],id:[]},
+                            equipArg: {},
+                            pdf: {fileName: [], id: []},
+                            video: {fileName: [], id: []},
                         }
-                        item.forEach(i=>{
+                        item.forEach(i => {
                             a.equipArg = i.equipArg
-                            if(i.type == "pdf"){
+                            if (i.type == "pdf") {
                                 a.pdf.fileName.push(i.fileName)
                                 a.pdf.id.push(i.id)
-                            }else if(i.type == "MP4"){
+                            } else if (i.type == "MP4") {
                                 a.video.fileName.push(i.fileName)
                                 a.video.id.push(i.id)
                             }
@@ -71,17 +67,17 @@
                     })
                 })
             },
-            deleteplan(data){
-                Promise.all([this.deleteTrainingOne(data)]).then(response=>{
+            deleteplan(data) {
+                Promise.all([this.deleteTrainingOne(data)]).then(response => {
                     this.fetchData()
                 })
             },
-            async deleteTrainingOne(data){
-                let id =data.pdf.id
-                data.video.id.forEach(item=>{
+            async deleteTrainingOne(data) {
+                let id = data.pdf.id
+                data.video.id.forEach(item => {
                     id.push(item)
                 })
-                for(let i in id){
+                for (let i in id) {
                     await deleteTraining(id[i])
                 }
             },
@@ -89,29 +85,29 @@
                 this.paginator.page = page
                 this.fetchData()
             },
-            dialogShow(data,item){
+            dialogShow(data, item) {
                 let dialogData = {}
                 let editflag = false
-                if(data=="add"){
+                if (data == "add") {
                     dialogData = {
-                        equipArg:{},
-                        pdf:{fileName:[],id:[]},
-                        video:{fileName:[],id:[]},
+                        equipArg: {},
+                        pdf: {fileName: [], id: []},
+                        video: {fileName: [], id: []},
                     }
                     editflag = false
-                }else if(data == "edit"){
+                } else if (data == "edit") {
                     editflag = true
                     dialogData = item
                 }
                 this.$router.push({
                     name: 'editTraining',
-                    params: {type:'editTraining', info: {data:dialogData,edit:editflag}}
+                    params: {type: 'editTraining', info: {data: dialogData, edit: editflag}}
                 })
             },
-            show(data,item){
+            show(data, item) {
                 this.$router.push({
                     name: 'trainingShow',
-                    query: {type:'trainingShow', info: {data:data,item:item}}
+                    query: {type: 'trainingShow', info: {data: data, item: item}}
                 })
             }
         },
@@ -126,33 +122,5 @@
 </script>
 
 <style lang="scss" scoped>
-    .training-container {
-        font-size: 16px;
-    }
-    .training-top {
-        padding: 18px 7px;
-        border-bottom: 1px solid #ebeef5;
-        overflow: hidden;
-    }
-    .training-body {
-        padding: 0 7px;
-        widows: 100%;
-    }
-    .training-header {
-        width: 100%;
-        padding-left: 18px;
-        padding-right: 35px;
-        height: 57px;
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-align: center;
-        -ms-flex-align: center;
-        align-items: center;
-        -webkit-box-pack: justify;
-        -ms-flex-pack: justify;
-        justify-content: space-between;
-        color: rgba(112,112,112,1);
-        border-bottom: 1px solid rgba(112,112,112, 0.13);
-    }
+
 </style>

@@ -1,6 +1,6 @@
 <template>
+    <view-container>
     <div class="right-service-container">
-        <my-header :title="$route.meta.title"></my-header>
         <div class="maintenance-form-body">
             <define-table :data="list" height="3.64rem" @changePage="changePage" :pageInfo="paginator">
                 <define-column label="人员姓名" field="policeName" ></define-column>
@@ -16,6 +16,7 @@
 
         </div>
     </div>
+    </view-container>
 </template>
 
 <script>

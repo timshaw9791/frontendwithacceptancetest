@@ -1,26 +1,23 @@
 <template>
-  <div class="chargingRecord-form-container">
-    <div class="chargingRecord-header">
-        <span style="font-size: 20px;">{{$route.meta.title}}</span>
-    </div>
-    <div class="chargingRecord-form-body" >
-        <define-table  :pageInfo="paginator" @changePage="changePage" :data="order" height="3.6042rem" >
-            <define-column label="RFID" field="rfid"></define-column>
-            <define-column label="装备序号" field="serial"></define-column>
-            <define-column label="装备参数" field="equipName(equipModel)" :filter="(row)=>equip(row)"></define-column>
-            <define-column label="装备位置" field="location" :filter="(row)=>locations(row)"></define-column>
-            <define-column label="充电周期" field="chargeCycle"  v-slot="{data}">
-                <date-input :tableEdit="false" v-model="data.row.chargeCycle" filter="toDay"></date-input>
-            </define-column>
-            <define-column label="充电时长" field="serial" v-slot="{data}">
-                <date-input :tableEdit="false" v-model="data.row.startTime" :validate="(row) => time(row, data.row.createTime)"></date-input>
-            </define-column>
-            <define-column label="充电开始时间" field="serial"  v-slot="{data}">
-                <date-select v-model="data.row.startTime" :disabled="true"></date-select>
-            </define-column>
-        </define-table>
-    </div>
-  </div>
+  <view-container>
+      <div class="chargingRecord-form-body" >
+          <define-table  :pageInfo="paginator" @changePage="changePage" :data="order" height="3.6042rem" >
+              <define-column label="RFID" field="rfid"></define-column>
+              <define-column label="装备序号" field="serial"></define-column>
+              <define-column label="装备参数" field="equipName(equipModel)" :filter="(row)=>equip(row)"></define-column>
+              <define-column label="装备位置" field="location" :filter="(row)=>locations(row)"></define-column>
+              <define-column label="充电周期" field="chargeCycle"  v-slot="{data}">
+                  <date-input :tableEdit="false" v-model="data.row.chargeCycle" filter="toDay"></date-input>
+              </define-column>
+              <define-column label="充电时长" field="serial" v-slot="{data}">
+                  <date-input :tableEdit="false" v-model="data.row.startTime" :validate="(row) => time(row, data.row.createTime)"></date-input>
+              </define-column>
+              <define-column label="充电开始时间" field="serial"  v-slot="{data}">
+                  <date-select v-model="data.row.startTime" :disabled="true"></date-select>
+              </define-column>
+          </define-table>
+      </div>
+  </view-container>
 </template>
 
 <script>
@@ -86,7 +83,7 @@
     }
     .chargingRecord-form-body {
         padding: 0 7px;
-        widows: 100%;
+        width: 100%;
     }
     .chargingRecord-header{
         width: 100%;

@@ -1,20 +1,16 @@
 <template>
-    <div class="un-return-container">
-        <my-header title="未归还"></my-header>
-        <div class="header">
-            <entity-input label="装备名称"></entity-input>
-        </div>
-        <div class="body">
-            <define-table :data="list">
-                <define-column label="装备参数" field="equipArgs"></define-column>
-                <define-column label="RFID" field="rfid"></define-column>
-                <define-column label="装备序号" field="serial"></define-column>
-                <define-column label="领取人员" field="operator"></define-column>
-                <define-column label="领取时间" field="receiveTime"></define-column>
-                <define-column label="逾期(天)" field="overDueTime"></define-column>
-            </define-table>
-        </div>
-    </div>
+   <view-container>
+       <div class="body">
+           <define-table :data="list">
+               <define-column label="装备参数" field="equipArgs"></define-column>
+               <define-column label="RFID" field="rfid"></define-column>
+               <define-column label="装备序号" field="serial"></define-column>
+               <define-column label="领取人员" field="operator"></define-column>
+               <define-column label="领取时间" field="receiveTime"></define-column>
+               <define-column label="逾期(天)" field="overDueTime"></define-column>
+           </define-table>
+       </div>
+   </view-container>
 </template>
 
 <script>

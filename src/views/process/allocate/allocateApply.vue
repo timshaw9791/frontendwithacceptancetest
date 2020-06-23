@@ -2,7 +2,7 @@
     <view-container>
         <operation-bar :task-definition-key="taskDefinitionKey"
                        :is-show-out="isShowOut" :is-show-in="isShowIn"
-                       @refused="refused" @agree="agree"
+                       @refused="showRfDialog" @agree="agree"
                        @invalid="invalid" @edit="edit"
                        @outbound="outbound" @inbound="inbound"
         ></operation-bar>
@@ -110,7 +110,9 @@
         },
         methods: {
             async init() {
+                this.applyOrder={equips: [{equipArg: {}}], applicant: {}},
                 this.applyOrder.applicant = this.userInfo
+                console.log(this.userInfo)
                 if (this.allocateCategory === 'TRANSFER') {
                     // 不经过深拷贝会出现为空现象
                     this.applyOrder.inboundOrganUnit = JSON.parse(JSON.stringify(this.organUnit))
@@ -122,7 +124,7 @@
                 allocateOrders(this.processInstanceId, this.allocateCategory).then(
                     res => {
                         console.log(res)
-                        this.applyOrder = this.allocateCategory === 'TRANSFER' ? res.transferApplyOrder : res.directApplyOrder
+                        this.applyOrder = this.allocateCategory === 'TRANSFER' ? res.transferApplyOrder : res.directAllotOrder
                         !!res.inboundEquipsOrder && (this.inboundEquipsOrder = res.inboundEquipsOrder) && (this.isShowIn = true)
                         !!res.outboundEquipsOrder && (this.outboundEquipsOrder = res.outboundEquipsOrder) && (this.isShowOut = true)
                     }
@@ -220,7 +222,6 @@
         computed: {
             ...mapGetters([
                 'userInfo',
-                'warehouse',
                 'organUnit'
             ]),
         },

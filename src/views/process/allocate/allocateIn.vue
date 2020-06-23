@@ -1,27 +1,25 @@
 <template>
-   <view-container>
-       <div class="process-form-body">
-           <div class="process-info">
-               <define-input label="单号" v-model="order.number" :disabled="true"></define-input>
-               <entity-input label="入库机构" v-model="order.house.organUnit" :disabled="true"
-                             format="{name}"
-                             :options="{search:'organUnits'}"></entity-input>
-               <define-input label="入库库房" v-model="order.house.name"
-                             :disabled="true"></define-input>
-               <entity-input label="入库人员" v-model="order.operator" format="{name}({policeSign})"
-                             :disabled="true"></entity-input>
-           </div>
-           <a-equips-table :is-info="isInfo" :equip-items="equipItems"
-                           :match-equips="matchEquips" @getFinishEquip="getFinishEquip"
-                           type="in"
-           >
-           </a-equips-table>
-           <tool-bar v-if="!isInfo">
-               <base-button label="提交" slot="button" type="text" @click="submit()"></base-button>
-               <base-button label="清空" slot="button" type="text" @click="clean()"></base-button>
-           </tool-bar>
-       </div>
-   </view-container>
+    <view-container>
+        <div class="process-info">
+            <define-input label="单号" v-model="order.number" :disabled="true"></define-input>
+            <entity-input label="入库机构" v-model="order.house.organUnit" :disabled="true"
+                          format="{name}"
+                          :options="{search:'organUnits'}"></entity-input>
+            <define-input label="入库库房" v-model="order.house.name"
+                          :disabled="true"></define-input>
+            <entity-input label="入库人员" v-model="order.operator" format="{name}({policeSign})"
+                          :disabled="true"></entity-input>
+        </div>
+        <a-equips-table :is-info="isInfo" :equip-items="equipItems"
+                        :match-equips="matchEquips" @getFinishEquip="getFinishEquip"
+                        type="in"
+        >
+        </a-equips-table>
+        <tool-bar v-if="!isInfo">
+            <base-button label="提交" slot="button" type="text" @click="submit()"></base-button>
+            <base-button label="清空" slot="button" type="text" @click="clean()"></base-button>
+        </tool-bar>
+    </view-container>
 </template>
 
 <script>
@@ -92,7 +90,7 @@
                     }
                 }
             },
-            getFinishEquip(equipItems){
+            getFinishEquip(equipItems) {
                 _.map(equipItems, (item) => {
                     this.order.equips = this.order.equips.concat(item.items)
                     this.order.equips.equipId = this.order.equips.id

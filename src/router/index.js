@@ -65,7 +65,7 @@ const asyncRouterMap = [{
         path: 'equipinhouse',
         name: 'equipinhouse',
         component: _import('equipment/equipInhouse'),
-        meta: {title: '装备入库'},
+        meta: {title: '入库单列表/装备入库'},
         hidden: true
     }, {
         path: 'equipinhouseorder',

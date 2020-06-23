@@ -1,26 +1,23 @@
 <template>
-  <div class="editPlan-container">
-    <div class="editPlan-header">
-        <span style="font-size: 20px;">{{this.$route.query.info.edit?"预案编辑":"新增预案"}}</span>
-    </div>
-    <div class="editPlan-body" >
-        <define-input label="预案名称" v-model="order.name" margin="15px"></define-input>
-        <define-input label="预案描述" v-model="order.remark" margin="15px"></define-input>
-        <define-table :havePage="false" :data="order.equipArgItems" height="3.6042rem" >
-            <define-column label="操作" width="100" v-slot="{ data }">
-                <i class="iconfont icontianjia" @click="changeRow(true,data)"></i>
-                <i class="iconfont iconyichu" @click="changeRow(false,data)"></i>
-            </define-column>
-            <define-column label="装备参数" field="equipArg" v-slot="{data}">
-                <entity-input v-model="data.row.equipArg" format="{name}({model})" :options="{search:'equipArgsSelect'}"></entity-input>
-            </define-column>
-        </define-table>
-        <div class="buttom">
-            <base-button label="提交" align="right" @click="submit"></base-button>
-            <base-button label="取消" align="right" type="danger" @click="cansle"></base-button>
-        </div>
-    </div>
-  </div>
+  <view-container>
+      <div class="editPlan-body" >
+          <define-input label="预案名称" v-model="order.name" margin="15px"></define-input>
+          <define-input label="预案描述" v-model="order.remark" margin="15px"></define-input>
+          <define-table :havePage="false" :data="order.equipArgItems" height="3.6042rem" >
+              <define-column label="操作" width="100" v-slot="{ data }">
+                  <i class="iconfont icontianjia" @click="changeRow(true,data)"></i>
+                  <i class="iconfont iconyichu" @click="changeRow(false,data)"></i>
+              </define-column>
+              <define-column label="装备参数" field="equipArg" v-slot="{data}">
+                  <entity-input v-model="data.row.equipArg" format="{name}({model})" :options="{search:'equipArgsSelect'}"></entity-input>
+              </define-column>
+          </define-table>
+          <div class="buttom">
+              <base-button label="提交" align="right" @click="submit"></base-button>
+              <base-button label="取消" align="right" type="danger" @click="cansle"></base-button>
+          </div>
+      </div>
+  </view-container>
 </template>
 
 <script>

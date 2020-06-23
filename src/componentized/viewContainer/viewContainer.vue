@@ -168,6 +168,7 @@ export default {
             display: inline-flex;
             justify-content: flex-end;
             align-items: center;
+            position: relative;
             height: 60px;
             line-height: 60px;
             .base-input {

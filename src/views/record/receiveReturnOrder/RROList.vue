@@ -1,10 +1,5 @@
 <template>
-    <div class="receive-order-list-container">
-        <my-header title="领取归还单列表"></my-header>
-        <div class="header">
-            <text-input label="领取单号" placeholder="请输入单号"></text-input>
-            <base-button label="查询"></base-button>
-        </div>
+    <view-container>
         <define-table :data="list" @changePage="changePage" :pageInfo="paginator">
             <define-column label="操作" v-slot="{data}">
                 <span @click="goto(data.row.id)" style="margin:8px">详情</span>
@@ -16,7 +11,7 @@
             <define-column label="操作时间" field="createTime"></define-column>
             <define-column label="类型" field="category"></define-column>
         </define-table>
-    </div>
+    </view-container>
 </template>
 
 <script>
@@ -62,7 +57,7 @@
                     equipNameList = this._.union(equipNameList)
                     console.log(equipNameList)
                     // 显示参数名称
-                    item.allEquipArgs = equipNameList.length > 1 ? equipNameList[0]+"..." : equipNameList[0]
+                    item.allEquipArgs = equipNameList.length > 1 ? equipNameList[0] + "..." : equipNameList[0]
                     //计算装备数量
                     item.equipCount = item.receiveReturnItems.length
                     //时间戳转日期
@@ -82,11 +77,4 @@
 </script>
 
 <style scoped>
-    .receive-order-list-container {
-        font-size: 16px;
-    }
-
-    .header {
-        padding: 16px 7px;
-    }
 </style>
