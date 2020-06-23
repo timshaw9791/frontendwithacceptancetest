@@ -1,20 +1,25 @@
 <template>
-    <div class="operator">
-        <div>
+    <tool-bar>
+        <!--出库或者入库显示-->
             <base-button v-if="taskDefinitionKey.includes('outbound')||isShowOut"
-                         :label="isShowOut?'查看出库单':'出库'" @click="outbound"></base-button>
+                         :label="isShowOut?'查看出库单':'出库'" @click="outbound"
+                         slot="button" type="text"></base-button>
             <base-button v-if="taskDefinitionKey.includes('inbound')||isShowIn"
-                         :label="isShowIn?'查看入库单':'入库'" @click="inbound"></base-button>
-        </div>
-        <div v-if="taskDefinitionKey.includes('audit')">
-            <base-button label="驳回" @click="refused"></base-button>
-            <base-button label="审核" @click="agree"></base-button>
-        </div>
-        <div v-if="taskDefinitionKey.includes('reapply')">
-            <base-button label="重填" @click="edit"></base-button>
-            <base-button label="作废" @click="invalid"></base-button>
-        </div>
-    </div>
+                         :label="isShowIn?'查看入库单':'入库'" @click="inbound"
+                         slot="button" type="text"></base-button>
+        <!--审核的时候显示-->
+            <base-button v-if="taskDefinitionKey.includes('audit')"
+                         label="驳回" @click="refused"
+                         slot="button" type="text"></base-button>
+            <base-button v-if="taskDefinitionKey.includes('audit')"
+                         label="审核" @click="agree"
+                         slot="button" type="text"></base-button>
+        <!--只有重填的时候会显示-->
+            <base-button v-if="taskDefinitionKey.includes('reapply')"
+                         label="重填" @click="edit"  slot="button" type="text"></base-button>
+            <base-button v-if="taskDefinitionKey.includes('reapply')"
+                         label="作废" @click="invalid"  slot="button" type="text"></base-button>
+    </tool-bar>
 </template>
 
 <script>

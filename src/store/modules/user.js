@@ -24,9 +24,8 @@ const user = {
         deploy: '',
         userInfo: ''
     },
-
     mutations: {
-        SET_TOKEN: (state, token) => {
+        setToken(state, token) {
             state.token = token
         },
         SET_NAME: (state, name) => {
@@ -35,7 +34,7 @@ const user = {
         SET_AVATAR: (state, avatar) => {
             state.avatar = avatar
         },
-        SET_ROLES: (state, roles) => {
+        setRoles(state, roles) {
             state.roles = roles
         },
         SET_USERID: (state, userId) => {
@@ -44,11 +43,10 @@ const user = {
         SET_DEPLOY: (state, deploy) => {
             state.deploy = deploy
         },
-        SET_USERINFO: (state, data) => {
+        setUserInfo(state, data) {
             state.userInfo = data
         }
     },
-
     actions: {
         // 登录
         Login({commit}, userInfo) {
@@ -76,8 +74,8 @@ const user = {
                 if (localStorage.getItem('user')) {
                     let data = JSON.parse(localStorage.getItem('user')),
                         roleData = data.role || 'look';
-                    commit('SET_USERINFO', data)
-                    commit('SET_ROLES', roleData)
+                    commit('setUserInfo', data)
+                    commit('setRoles', roleData)
                     resolve(roleData)
                 } else {
                     reject(error)
@@ -87,14 +85,14 @@ const user = {
 
 
         // 登出
-        LogOut({commit, state}) {
+        LogOut({commit}, status) {
             return new Promise((resolve, reject) => {
-                    commit('SET_TOKEN', '');
-                    commit('SET_ROLES', '');
-                    commit('SET_USERINFO', {});
+                    commit('setToken', '');
+                    commit('setRoles', '');
+                    commit('setUserInfo', {});
                     removeToken();
                     localStorage.clear();
-                    Message.success({
+                    status && Message.success({
                         message: '退出成功!'
                     });
                     resolve();
@@ -104,9 +102,9 @@ const user = {
         // 前端 登出
         FedLogOut({commit}) {
             return new Promise(resolve => {
-                commit('SET_TOKEN', '')
-                commit('SET_ROLES', '');
-                commit('SET_USERINFO', {});
+                commit('setToken', '')
+                commit('setRoles', '');
+                commit('setUserInfo', {});
                 removeToken()
                 resolve()
             })

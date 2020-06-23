@@ -147,7 +147,10 @@ import defineColumn from './defineColumn'
             overflow-x: overlay !important;
         }
         .el-table__fixed {
-            pointer-events: none;
+            pointer-events: none; // 解决固定列一侧横向滚动条无法移动的问题
+        }
+        .el-table__fixed-body-wrapper {
+            pointer-events: all; // 解决添加上一样式后，固定列内容无法选中问题
         }
     }
     .define-table-container:hover {

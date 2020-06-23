@@ -1,10 +1,9 @@
 <template>
-    <div class="maintenance-form-container">
         <div class="maintenance-form-body">
             <bos-tabs :option="['tabs']" :layoutRatio="[2, 1]" :header="false" >
                 <define-table ref="total" :havePage="false" :data="listData"
-                              @changeCurrent="selRow"
-                              :highLightCurrent="true" slot="total" key="1">
+                              @changeCurrent="selRow" :highLightCurrent="true"
+                              slot="total" key="1" height="928px" >
                     <define-column label="装备参数" v-slot="{ data }">
                         <entity-input v-model="data.row.equipArg" :detailParam="data.row.equipArg"
                                       :options="{ detail: 'equipArgsDetail' }" format="{name}({model})"
@@ -16,13 +15,15 @@
                     </define-column>
                     <define-column label="可保养数量" field="count"></define-column>
                 </define-table>
-                <define-table :havePage="false" :data="listData[findIndex].copyList"  slot="detail" >
+                <define-table :havePage="false" :data="listData[findIndex].copyList"  slot="detail" height="928px" >
                     <define-column label="RFID" field="rfid"></define-column>
                     <define-column label="装备序号" field="serial"></define-column>
                 </define-table>
             </bos-tabs>
+            <tool-bar>
+                <base-button slot="button" type="text" label="结束保养" @click="endMain"></base-button>
+            </tool-bar>
         </div>
-    </div>
 </template>
 
 <script>
@@ -68,6 +69,9 @@
                     this.classDataify(res.content)
                 })
             },
+            endMain() {
+                this.$router.push({path: '/equipmentOperation/endMaintenance'});
+            }
         },
         created() {
             this.getList()
@@ -85,19 +89,10 @@
 </script>
 
 <style lang="scss" scoped>
-    .maintenance-form-container {
-        font-size: 16px;
-    }
-
-    .maintenance-form-top {
-        padding: 18px 7px;
-        border-bottom: 1px solid #ebeef5;
-        overflow: hidden;
-    }
 
     .maintenance-form-body {
         padding: 0 7px;
-        widows: 100%;
+        width: 100%;
     }
 
     .process-info {
