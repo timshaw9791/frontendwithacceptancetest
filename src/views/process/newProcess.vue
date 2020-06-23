@@ -1,6 +1,6 @@
 <template>
     <view-container>
-        <define-table :data="list" height="928px" :pageInfo="paginator" @changePage="changePage"
+        <define-table :data="list" height="300px" :pageInfo="paginator" @changePage="changePage"
                       :highLightCurrent="true">
             <define-column label="操作" v-slot="{ data }">
                 <i class="iconfont iconjiahao1" @click="toApply(data.row)"></i>
@@ -8,6 +8,7 @@
             <define-column label="工作流名称" field="name"></define-column>
             <define-column label="部署时间" :filter="(row)=>$filterTime(row.deploymentTime)"></define-column>
         </define-table>
+        <base-select-new :list="platformEnums('Role')" v-model="test"></base-select-new>
     </view-container>
 </template>
 
@@ -16,6 +17,8 @@
     import {processDefinitions} from '@/api/process'
     import bosTabs from '@/componentized/table/bosTabs'
     import {listTableMixin} from "@/field/mixins/listMixin";
+    import baseSelectNew from "../../componentized/textBox/baseSelectNew";
+    import { mapGetters } from 'vuex'
 
     export default {
         name: 'newProcess',
@@ -24,7 +27,11 @@
             return {
                 list: [],
                 paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
+                test: 'LEADER'
             }
+        },
+        computed: {
+          ...mapGetters(['platformEnums'])
         },
         methods: {
             fetchData() {
@@ -50,6 +57,7 @@
             myHeader,
             bosTabs,
             listTableMixin,
+            baseSelectNew
         }
     }
 </script>

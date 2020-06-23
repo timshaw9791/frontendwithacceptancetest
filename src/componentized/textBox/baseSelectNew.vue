@@ -11,7 +11,8 @@
             <i class="iconfont iconxiala1" :class="{'icon-rotate': showOptions}" @click="clkSel"></i>
             <div class="select-option" :class="{'show-options': showOptions}">
                 <ul class="select-ul">
-                    <li v-for="(item, i) in insideList" :key="item.key+''+i" class="select-li" :class="{selected: item.insideSel}" @click="selOption(item, i)">
+                    <li v-for="(item, i) in insideList" :key="item.key+''+i" class="select-li"
+                        :class="{selected:item.insideSel||!multiple&&value===item.key}" @click="selOption(item, i)">
                         {{ item.value }}
                         <i class="iconfont icongou" v-show="item.insideSel"></i>
                     </li>
@@ -101,7 +102,7 @@ export default {
                     console.error("v-model绑定值须为数组");
                     return
                 }
-                tmp = this.list.filter(item => val.includes(item.key)).map(item => item.key).join(';')
+                tmp = this.list.filter(item => val.includes(item.key)).map(item => item.value).join(';')
                 this.insideValue = tmp?tmp:''
             } else {
                 tmp = this.list.filter(item => item.key == val);
@@ -186,16 +187,18 @@ export default {
         border: none;
         outline-style: none;
         width: 100%;
-        height: 100%;
+        /*height: 100%;*/
         cursor: pointer;
     }
     .select-option {
         position: absolute;
         min-width: 100%;
-        height: 0;
+        /*height: 0;*/
+        min-height: 0px;
+        max-height: 0px;
         overflow: hidden auto;
         left: 0;
-        top: 40px;
+        top: 100%;
         /* border: 1px solid #e4e7ed; */
         border-radius: 4px;
         background-color: #fff;
@@ -233,7 +236,8 @@ export default {
         transform: rotate(-180deg);
     }
     .show-options {
-        height: 170px;
+        min-height: 36px;
+        /*height: 36px;*/
         max-height: 170px;
         box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
     }
