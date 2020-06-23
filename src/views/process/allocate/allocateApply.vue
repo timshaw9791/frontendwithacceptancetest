@@ -110,19 +110,23 @@
         },
         methods: {
             async init() {
+                this.applyOrder={equips: [{equipArg: {}}], applicant: {}},
                 this.applyOrder.applicant = this.userInfo
+                console.log(this.userInfo)
                 if (this.allocateCategory === 'TRANSFER') {
                     // 不经过深拷贝会出现为空现象
                     this.applyOrder.inboundOrganUnit = JSON.parse(JSON.stringify(this.organUnit))
+                    console.log( this.applyOrder.inboundOrganUnit)
                     return
                 }
                 this.applyOrder.outboundOrganUnit = JSON.parse(JSON.stringify(this.organUnit))
+                console.log( this.applyOrder.outboundOrganUnit)
             },
             fetchData() {
                 allocateOrders(this.processInstanceId, this.allocateCategory).then(
                     res => {
                         console.log(res)
-                        this.applyOrder = this.allocateCategory === 'TRANSFER' ? res.transferApplyOrder : res.directApplyOrder
+                        this.applyOrder = this.allocateCategory === 'TRANSFER' ? res.transferApplyOrder : res.directAllotOrder
                         !!res.inboundEquipsOrder && (this.inboundEquipsOrder = res.inboundEquipsOrder) && (this.isShowIn = true)
                         !!res.outboundEquipsOrder && (this.outboundEquipsOrder = res.outboundEquipsOrder) && (this.isShowOut = true)
                     }
@@ -220,7 +224,6 @@
         computed: {
             ...mapGetters([
                 'userInfo',
-                'warehouse',
                 'organUnit'
             ]),
         },
