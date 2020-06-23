@@ -1,6 +1,6 @@
 <template>
     <div class="base-select-container" :class="[styleObj]" @mouseleave="showOptions=false"
-        :style="`width:${fixWidth};float:${align};margin:${margin}`" >
+         :style="`width:${fixWidth};float:${align};margin:${margin}`" >
         <aside class="label" v-if="haveLabel">
             <i :class="`iconfont ${iconfont}`" v-if="iconfont"></i>
             <span v-else>{{ label }}</span>
@@ -9,8 +9,8 @@
         <article class="main">
             <input type="text" v-model="insideValue" :placeholder="placeholder" readonly class="input" @click="clkSel">
             <i class="iconfont iconxiala1" :class="{'icon-rotate': showOptions}" @click="clkSel"></i>
-            <div class="select-option" :class="{'show-options': showOptions}">
-                <ul class="select-ul">
+            <div class="select-option" :class="{'extend-options': showOptions}">
+                <ul class="select-ul" :class="{'show-options': showOptions}">
                     <li v-for="(item, i) in insideList" :key="item.key+''+i" class="select-li"
                         :class="{selected:item.insideSel||!multiple&&value===item.key}" @click="selOption(item, i)">
                         {{ item.value }}
@@ -23,127 +23,127 @@
 </template>
 
 <script>
-export default {
-    name: 'baseSelect',
-    props: {
-        value: { // v-model
-            default: ''
-        },
-        label: {
-            type: String,
-            default: '标签'
-        },
-        iconfont: {
-            type: String,
-            default: ''
-        },
-        haveLabel: {
-            type: Boolean,
-            default: true
-        },
-        list: { // 选项数据
-            type: Array,
-            default() {
-                return []
-            }
-        },
-        required: { // 是否必须
-            type: Boolean,
-            default: false
-        },
-        placeholder: {
-            default: '请选择'
-        },
-        disabled: {
-            type: Boolean,
-            default: false
-        },
-        multiple: {
-            type: Boolean,
-            default: false
-        },
-        column: {
-            type: Number,
-            default: 3
-        },
-        align: {
-            default: 'none'
-        },
-        margin: {
-            default: '0 0.0521rem'
-        }
-    },
-    data() {
-        return {
-            showOptions: false, // 是否显示下拉项
-            insideValue: '', // 内部绑定值
-            insideList: [], // 内部选项列表
-            styleObj: { // 样式
-                error: false
+    export default {
+        name: 'baseSelect',
+        props: {
+            value: { // v-model
+                default: ''
             },
-        }
-    },
-    computed: {
-        fixWidth() {
-            return `${8.33*this.column}%`
-        }
-    },
-    methods: {
-        listInit() { // 初始化选项数据
-            let tmpList = JSON.parse(JSON.stringify(this.list));
-            this.insideValue = ""
-            this.insideList = this.multiple?tmpList.map(item => Object.assign(item, {insideSel: this.value.includes(item.key)})):tmpList
-            this.init(this.value)
-        },
-        init(val) { // 初始化组件状态
-            let tmp;
-            if(this.multiple) { // 如果是多选
-                if(!(val instanceof Array)) {
-                    console.error("v-model绑定值须为数组");
-                    return
+            label: {
+                type: String,
+                default: '标签'
+            },
+            iconfont: {
+                type: String,
+                default: ''
+            },
+            haveLabel: {
+                type: Boolean,
+                default: true
+            },
+            list: { // 选项数据
+                type: Array,
+                default() {
+                    return []
                 }
-                tmp = this.list.filter(item => val.includes(item.key)).map(item => item.value).join(';')
-                this.insideValue = tmp?tmp:''
-            } else {
-                tmp = this.list.filter(item => item.key == val);
-                this.insideValue = tmp[0]?tmp[0].value:''
+            },
+            required: { // 是否必须
+                type: Boolean,
+                default: false
+            },
+            placeholder: {
+                default: '请选择'
+            },
+            disabled: {
+                type: Boolean,
+                default: false
+            },
+            multiple: {
+                type: Boolean,
+                default: false
+            },
+            column: {
+                type: Number,
+                default: 3
+            },
+            align: {
+                default: 'none'
+            },
+            margin: {
+                default: '0 0.0521rem'
             }
         },
-        clkSel() { // 是否显示下拉选项框
-            this.showOptions = this.disabled?false:!this.showOptions
-        },
-        selOption(data, index) { // 选中选项后
-            if(this.multiple) { // 如果是多选
-                data.insideSel = !data.insideSel
-                let selTmp = this.insideList.filter(item=>item.insideSel).map(item=>item.key)
-                this.$emit('input', selTmp)
-                this.$emit('selected', selTmp)
-            } else { // 单选
-                this.$emit('input', data.key)
-                this.$emit('selected', data)
-                this.showOptions = false
+        data() {
+            return {
+                showOptions: false, // 是否显示下拉项
+                insideValue: '', // 内部绑定值
+                insideList: [], // 内部选项列表
+                styleObj: { // 样式
+                    error: false
+                },
             }
         },
-        reg() { // 验证函数
-            return Boolean(!this.required || this.value.length)
-        }
-    },
-    watch: {
-        value: {
-            handler(val) {
-                this.init(val)
-            },
-            deep: true
+        computed: {
+            fixWidth() {
+                return `${8.33*this.column}%`
+            }
         },
-        list: {
-            handler() {
-                this.listInit()
+        methods: {
+            listInit() { // 初始化选项数据
+                let tmpList = JSON.parse(JSON.stringify(this.list));
+                this.insideValue = ""
+                this.insideList = this.multiple?tmpList.map(item => Object.assign(item, {insideSel: this.value.includes(item.key)})):tmpList
+                this.init(this.value)
             },
-            deep: true,
-            immediate: true
+            init(val) { // 初始化组件状态
+                let tmp;
+                if(this.multiple) { // 如果是多选
+                    if(!(val instanceof Array)) {
+                        console.error("v-model绑定值须为数组");
+                        return
+                    }
+                    tmp = this.list.filter(item => val.includes(item.key)).map(item => item.value).join(';')
+                    this.insideValue = tmp?tmp:''
+                } else {
+                    tmp = this.list.filter(item => item.key == val);
+                    this.insideValue = tmp[0]?tmp[0].value:''
+                }
+            },
+            clkSel() { // 是否显示下拉选项框
+                this.showOptions = this.disabled?false:!this.showOptions
+            },
+            selOption(data, index) { // 选中选项后
+                if(this.multiple) { // 如果是多选
+                    data.insideSel = !data.insideSel
+                    let selTmp = this.insideList.filter(item=>item.insideSel).map(item=>item.key)
+                    this.$emit('input', selTmp)
+                    this.$emit('selected', selTmp)
+                } else { // 单选
+                    this.$emit('input', data.key)
+                    this.$emit('selected', data)
+                    this.showOptions = false
+                }
+            },
+            reg() { // 验证函数
+                return Boolean(!this.required || this.value.length)
+            }
+        },
+        watch: {
+            value: {
+                handler(val) {
+                    this.init(val)
+                },
+                deep: true
+            },
+            list: {
+                handler() {
+                    this.listInit()
+                },
+                deep: true,
+                immediate: true
+            }
         }
     }
-}
 </script>
 
 <style scoped>
@@ -193,23 +193,26 @@ export default {
     .select-option {
         position: absolute;
         min-width: 100%;
-        /*height: 0;*/
         min-height: 0px;
         max-height: 0px;
-        overflow: hidden auto;
         left: 0;
         top: 100%;
-        /* border: 1px solid #e4e7ed; */
+    }
+    .select-ul {
+        position: relative;
+        min-width: 100%;
+        min-height: 0px;
+        max-height: 0px;
+        margin: 8px 0 0 0;
+        padding: 0;
+        list-style-type: none;
+        overflow: hidden auto;
         border-radius: 4px;
         background-color: #fff;
         box-sizing: border-box;
+        box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
         transition: 0.3s all;
         z-index: 2020;
-    }
-    .select-ul {
-        margin: 0;
-        padding: 6px 0;
-        list-style-type: none;
     }
     .select-li {
         height: 34px;
@@ -235,17 +238,23 @@ export default {
     .icon-rotate {
         transform: rotate(-180deg);
     }
+    .extend-options {
+        min-height: 50px;
+        max-height: 180px;
+    }
     .show-options {
         min-height: 36px;
-        /*height: 36px;*/
         max-height: 170px;
-        box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
     }
-    .select-option::-webkit-scrollbar {
+    .extend-options:hover .select-ul::-webkit-scrollbar {
+        display: block;
+    }
+    .select-ul::-webkit-scrollbar {
         width: 6px;
         height: 8px;
+        display: none;
     }
-    .select-option::-webkit-scrollbar-thumb {
+    .select-ul::-webkit-scrollbar-thumb {
         background: rgba(221, 222, 224, 1);
         border-radius: 20px;
     }

@@ -8,7 +8,6 @@
             <define-column label="工作流名称" field="name"></define-column>
             <define-column label="部署时间" :filter="(row)=>$filterTime(row.deploymentTime)"></define-column>
         </define-table>
-        <base-select-new :list="platformEnums('Role')" v-model="test"></base-select-new>
     </view-container>
 </template>
 
@@ -17,8 +16,6 @@
     import {processDefinitions} from '@/api/process'
     import bosTabs from '@/componentized/table/bosTabs'
     import {listTableMixin} from "@/field/mixins/listMixin";
-    import baseSelectNew from "../../componentized/textBox/baseSelectNew";
-    import { mapGetters } from 'vuex'
 
     export default {
         name: 'newProcess',
@@ -26,12 +23,8 @@
         data() {
             return {
                 list: [],
-                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
-                test: 'LEADER'
+                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0}
             }
-        },
-        computed: {
-          ...mapGetters(['platformEnums'])
         },
         methods: {
             fetchData() {
@@ -56,8 +49,7 @@
         components: {
             myHeader,
             bosTabs,
-            listTableMixin,
-            baseSelectNew
+            listTableMixin
         }
     }
 </script>
