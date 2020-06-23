@@ -1,6 +1,6 @@
 <template>
+  <view-container>
   <div class="frequency-container">
-    <my-header :title="$route.meta.title" :haveBlack="false"></my-header>
     <div class="frequency-body">
       <div class="frequency-body-left">
         <div class="frequency-body-left-top">
@@ -100,6 +100,7 @@
       </div>
     </div>
   </div>
+  </view-container>
 </template>
 
 <script>

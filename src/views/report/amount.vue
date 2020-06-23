@@ -1,6 +1,6 @@
 <template>
+  <view-container>
   <div class="amount-container">
-    <my-header title="装备金额统计" :haveBlack="false"></my-header>
     <div class="amount-body">
       <div class="amount-body-left">
         <div class="amount-body-left-top">
@@ -91,6 +91,7 @@
       </div>
     </div>
   </div>
+  </view-container>
 </template>
 
 <script>
