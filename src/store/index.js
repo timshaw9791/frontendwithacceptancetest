@@ -9,6 +9,7 @@ import message from './modules/message'
 import warehouse from './modules/warehouse'
 import device from './modules/device'
 import matchRouter from "./modules/matchRouter";
+import enums from "./modules/enums"
 
 
 Vue.use(Vuex);
@@ -23,7 +24,8 @@ const store = new Vuex.Store({
         message,
         warehouse,
         device,
-        matchRouter
+        matchRouter,
+        enums
     },
     getters,
     // strict:debug,
