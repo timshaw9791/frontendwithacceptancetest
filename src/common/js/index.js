@@ -1,6 +1,4 @@
-/**
- * Created by jiachenpan on 16/11/18.
- */
+/* 各封装函数 */
 
 export function timeZero(val) {
     return val < 10 ? `0${val}` : val;
