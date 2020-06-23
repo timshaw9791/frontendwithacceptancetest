@@ -13,6 +13,8 @@ const getters = {
     warehouse: state => state.warehouse.warehouse,
     organUnit: state => state.warehouse.organUnit,
     platformEnums: state => type => state.enums.platformEnums.find(enumItem => enumItem.name === type).values,
-    enums: state => state.enums.enums
+    platformEnumsObj: state => type => state.enums.platformEnumsObj.find(enumItem => enumItem.name === type),
+    enums: state => type => state.enums.enums.find(enumItem => enumItem.name === type).values,
+    enumsObj: state => type => state.enums.enumsObj.find(enumItem => enumItem.name === type)
 }
 export default getters
