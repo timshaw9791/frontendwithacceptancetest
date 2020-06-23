@@ -42,8 +42,8 @@
                         </define-table>
                     </bos-tabs>
        <tool-bar>
-                <base-button label="取消" :width="128" :height="25" :fontSize="20" @click="cancel" slot="button"></base-button>
-                <base-button label="提交" :width="128" :height="25" :fontSize="20" @click="confirm" slot="button"></base-button>
+                <base-button label="取消" type="text" @click="cancel" slot="button"></base-button>
+                <base-button label="提交" type="text" @click="confirm" slot="button"></base-button>
               </tool-bar>
         
         </div>

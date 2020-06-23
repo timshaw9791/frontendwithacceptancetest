@@ -1,6 +1,6 @@
 <template>
+    <view-container>
     <div class="opening-box">
-        <my-header :title="$route.meta.title" :haveBlack="true" @h_black="cancel" ></my-header>
           <div class="action_box" data-test="action_box">
                 <define-input label="单号" v-model="listData.number" placeholder="--" :disabled="true" class="odd-number"></define-input>
                 <date-select label="出库时间" v-model="listData.createTime" placeholder="--" :disabled="true"></date-select>
@@ -37,13 +37,14 @@
                             <define-column label="装备序号" field="equipSerial" :tableEdit="false"/>
                         </define-table>
                     </bos-tabs>
-        <div class="btn-box" v-if="!this.$route.query.id">
-                  <base-button label="取消" align="right"   @click="cancel"></base-button>
-                  <base-button label="提交" align="right"   @click="confirm"></base-button>
-              </div>
-        
+        <tool-bar  v-if="!this.$route.query.id">
+                  <base-button label="返回" slot="button" type="text"  @click="cancel"></base-button>
+                  <base-button label="提交" slot="button" type="text"  @click="confirm"></base-button>
+              </tool-bar>
+
         </div>
     </div>
+    </view-container>
 </template>
 
 <script>

@@ -1,9 +1,9 @@
 <template>
+    <view-container>
     <div class="opening-box">
-        <my-header :title="$route.meta.title"></my-header>
-        <div class="btn_box">
-             <base-button label="出库装备 " align="right" :width="128" :height="25" :fontSize="20" @click="toInHouse"></base-button>
-        </div>
+        <tool-bar >
+            <base-button label="出库装备 "  type="text" @click="toInHouse" slot="button"></base-button>
+        </tool-bar>
         <div class="data-list">
             <define-table :data="list" height="3.64rem" @changePage="changePage" :pageInfo="paginator">
                             <define-column label="操作" width="120" v-slot="{ data }">
@@ -26,6 +26,7 @@
                         </define-table>
         </div>
     </div>
+    </view-container>
 </template>
 
 <script>
