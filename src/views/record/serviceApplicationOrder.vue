@@ -1,28 +1,25 @@
 <template>
-    <div class="opening-box">
-        <my-header title="维修申请记录"></my-header>
-        <div class="data-list">
-            <define-table :data="list" height="3.64rem" @changeCurrent="selRow" @changePage="changePage" :pageInfo="paginator" >
-                            <define-column label="RFID" v-slot="{ data }">
-                                <define-input v-model="data.row.equipRfid" type="Number" :tableEdit="false"></define-input>
-                            </define-column>
-                            <define-column label="装备序号" v-slot="{ data }">
-                                <define-input v-model="data.row.equipSerial" type="Number" :tableEdit="false"></define-input>
-                            </define-column>
-                            <define-column label="装备参数" v-slot="{ data }">
-                                <define-input v-model="data.row.equipArgs"  :tableEdit="false"></define-input>
-                            </define-column>
-                            <define-column label="装备位置" v-slot="{ data }">
-                                <entity-input v-model="data.row.equipLocation" format="{frameNumber}架/{surface}面/{section}节/{surface}层" :tableEdit="false"></entity-input>
-                            </define-column>
-                            <define-column label="申请人" v-slot="{ data }">
-                                <define-input v-model="data.row.applyUser" type="String" :tableEdit="false"></define-input>
-                            </define-column>
-                            <define-column label="申请时间" :filter="(row)=>$filterTime(row.createTime)"/>
-                            <define-column label="申请原因" field="reason"/>
-                        </define-table>
-        </div>
-    </div>
+    <view-container>
+        <define-table :data="list" height="3.64rem" @changeCurrent="selRow" @changePage="changePage" :pageInfo="paginator" >
+            <define-column label="RFID" v-slot="{ data }">
+                <define-input v-model="data.row.equipRfid" type="Number" :tableEdit="false"></define-input>
+            </define-column>
+            <define-column label="装备序号" v-slot="{ data }">
+                <define-input v-model="data.row.equipSerial" type="Number" :tableEdit="false"></define-input>
+            </define-column>
+            <define-column label="装备参数" v-slot="{ data }">
+                <define-input v-model="data.row.equipArgs"  :tableEdit="false"></define-input>
+            </define-column>
+            <define-column label="装备位置" v-slot="{ data }">
+                <entity-input v-model="data.row.equipLocation" format="{frameNumber}架/{surface}面/{section}节/{surface}层" :tableEdit="false"></entity-input>
+            </define-column>
+            <define-column label="申请人" v-slot="{ data }">
+                <define-input v-model="data.row.applyUser" type="String" :tableEdit="false"></define-input>
+            </define-column>
+            <define-column label="申请时间" :filter="(row)=>$filterTime(row.createTime)"/>
+            <define-column label="申请原因" field="reason"/>
+        </define-table>
+    </view-container>
 </template>
 
 <script>
@@ -91,25 +88,6 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.opening-box{
-    font-size: 16px;
-    width: 100%;
-    min-height: 4.4323rem;
-    .btn_box{
-    padding: 16px 7px;
 
-    }
-    .data-list
-    {
-        padding: 0 10px;
-        margin-top:30px;
-        height:"2.8648rem";
-        // border:1px solid rgba(112, 112, 112, 0.13)
-    }
-    .span-box{
-        display:flex;
-        justify-content: space-between;
-    }
-}
 
 </style>

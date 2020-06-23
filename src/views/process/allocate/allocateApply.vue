@@ -2,7 +2,7 @@
     <view-container>
         <operation-bar :task-definition-key="taskDefinitionKey"
                        :is-show-out="isShowOut" :is-show-in="isShowIn"
-                       @refused="refused" @agree="agree"
+                       @refused="showRfDialog" @agree="agree"
                        @invalid="invalid" @edit="edit"
                        @outbound="outbound" @inbound="inbound"
         ></operation-bar>
@@ -116,11 +116,9 @@
                 if (this.allocateCategory === 'TRANSFER') {
                     // 不经过深拷贝会出现为空现象
                     this.applyOrder.inboundOrganUnit = JSON.parse(JSON.stringify(this.organUnit))
-                    console.log( this.applyOrder.inboundOrganUnit)
                     return
                 }
                 this.applyOrder.outboundOrganUnit = JSON.parse(JSON.stringify(this.organUnit))
-                console.log( this.applyOrder.outboundOrganUnit)
             },
             fetchData() {
                 allocateOrders(this.processInstanceId, this.allocateCategory).then(

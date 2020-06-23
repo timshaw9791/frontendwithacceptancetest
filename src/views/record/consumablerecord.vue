@@ -1,10 +1,6 @@
 <template>
-  <div class="consumablerecord-form-container">
-    <div class="consumablerecord-header">
-        <span style="font-size: 20px;">{{$route.meta.title}}</span>
-    </div>
-    <div class="consumablerecord-form-body" >
-        <define-table  :pageInfo="paginator" @changePage="changePage" :data="order" height="4rem" >
+    <view-container>
+        <define-table :pageInfo="paginator" @changePage="changePage" :data="order" height="4rem">
             <define-column label="操作" v-slot="{data}">
                 <base-button label="详情" @click="click(data.row)"></base-button>
             </define-column>
@@ -17,14 +13,14 @@
                 <date-select v-model="data.row.createTime" :disabled="true"></date-select>
             </define-column>
         </define-table>
-    </div>
-  </div>
+    </view-container>
 </template>
 
 <script>
     import baseButton from "@/componentized/buttonBox/baseButton";
-    import { consumableRecordList } from "api/consumable";
+    import {consumableRecordList} from "api/consumable";
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
+
     var _ = require("lodash");
     export default {
         name: "consumablerecord",
@@ -35,21 +31,21 @@
             };
         },
         methods: {
-            fetchData(){
-                consumableRecordList(this.paginator).then(res=>{
+            fetchData() {
+                consumableRecordList(this.paginator).then(res => {
                     this.order = res.content
                     this.paginator.totalPages = res.totalPages;
                     this.paginator.totalElements = res.totalElements;
-                    this.order.forEach(item=>{
-                        if(item.category==0){
-                            item.category="领取单"
-                        }else if(item.category==1){
-                            item.category="补充单"
+                    this.order.forEach(item => {
+                        if (item.category == 0) {
+                            item.category = "领取单"
+                        } else if (item.category == 1) {
+                            item.category = "补充单"
                         }
-                        item.name = item.consumableItems.length==1?item.consumableItems[0].name:item.consumableItems[0].name+'...'
+                        item.name = item.consumableItems.length == 1 ? item.consumableItems[0].name : item.consumableItems[0].name + '...'
                         item.count = 0
-                        item.consumableItems.forEach(it=>{
-                            item.count+=it.count
+                        item.consumableItems.forEach(it => {
+                            item.count += it.count
                         })
                     })
                 })
@@ -58,7 +54,7 @@
                 this.paginator.page = page
                 this.fetchData()
             },
-            click(data){
+            click(data) {
                 this.$router.push({
                     name: "consumablerecordInfo",
                     query: {info: data.id}
@@ -76,33 +72,5 @@
 </script>
 
 <style lang="scss" scoped>
-    .consumablerecord-form-container {
-        font-size: 16px;
-    }
-    .consumablerecord-form-top {
-        padding: 18px 7px;
-        border-bottom: 1px solid #ebeef5;
-        overflow: hidden;
-    }
-    .consumablerecord-form-body {
-        padding: 0 7px;
-        widows: 100%;
-    }
-    .consumablerecord-header{
-        width: 100%;
-        padding-left: 18px;
-        padding-right: 35px;
-        height: 57px;
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-align: center;
-        -ms-flex-align: center;
-        align-items: center;
-        -webkit-box-pack: justify;
-        -ms-flex-pack: justify;
-        justify-content: space-between;
-        color: rgba(112,112,112,1);
-        border-bottom: 1px solid rgba(112,112,112, 0.13);
-    }
+
 </style>

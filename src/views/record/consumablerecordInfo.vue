@@ -98,7 +98,7 @@
     }
     .consumableReceiveInfo-form-body {
         padding: 0 7px;
-        widows: 100%;
+        width: 100%;
     }
     .process-info {
         // padding: 18px 0;
