@@ -1,17 +1,14 @@
 <template>
-    <div class="new-proess-container">
-        <my-header title="新建流程" :haveBlack="false"></my-header>
-        <div class="new-process-body">
-            <define-table :data="list" height="600px" :pageInfo="paginator" @changePage="changePage"
-                          :highLightCurrent="true">
-                <define-column label="操作" v-slot="{ data }">
-                    <i class="iconfont iconjiahao" @click="toApply(data.row)"></i>
-                </define-column>
-                <define-column label="工作流名称" field="name"></define-column>
-                <define-column label="部署时间" :filter="(row)=>$filterTime(row.deploymentTime)"></define-column>
-            </define-table>
-        </div>
-    </div>
+    <view-container>
+        <define-table :data="list" height="928px" :pageInfo="paginator" @changePage="changePage"
+                      :highLightCurrent="true">
+            <define-column label="操作" v-slot="{ data }">
+                <i class="iconfont iconjiahao1" @click="toApply(data.row)"></i>
+            </define-column>
+            <define-column label="工作流名称" field="name"></define-column>
+            <define-column label="部署时间" :filter="(row)=>$filterTime(row.deploymentTime)"></define-column>
+        </define-table>
+    </view-container>
 </template>
 
 <script>
@@ -58,11 +55,5 @@
 </script>
 
 <style scoped>
-    .new-proess-container {
-        font-size: 16px;
-    }
 
-    .new-process-body {
-        padding: 0 17px;
-    }
 </style>

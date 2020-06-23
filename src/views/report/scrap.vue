@@ -1,6 +1,6 @@
 <template>
+  <view-container>
   <div class="lossStatistics-container">
-    <my-header :title="$route.meta.title" :haveBlack="false"></my-header>
     <div class="lossStatistics-body">
       <div class="lossStatistics-body-left">
         <div class="lossStatistics-body-left-top">
@@ -99,6 +99,7 @@
       </div>
     </div>
   </div>
+  </view-container>
 </template>
 
 <script>

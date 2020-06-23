@@ -1,10 +1,10 @@
 <template>
+    <view-container>
     <div class="opening-box">
-        <my-header title="装备实体"></my-header>
-        <div class="btn_box">
-            <base-button label="位置变更" align="right" :width="128" :height="25" :fontSize="20"
+        <tool-bar >
+            <base-button label="位置变更" type="text" slot="button"
                          @click="toAllocation"></base-button>
-        </div>
+        </tool-bar>
         <div class="data-list">
             <define-table :data="list" height="3.64rem"  :pageInfo="this.paginator"
                           :highLightCurrent="true"
@@ -41,6 +41,7 @@
             <copy-rfid :rfid="rfid" :isShow="isShowDialog" @cancel="copyCancel"></copy-rfid>
         </div>
     </div>
+    </view-container>
 </template>
 
 <script>

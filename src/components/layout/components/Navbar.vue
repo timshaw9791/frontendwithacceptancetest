@@ -64,7 +64,7 @@
             },
             logout() {
                 this.$store.dispatch('LogOut').then(() => {
-                    location.reload() 
+                    location.reload()
                 })
             },
             windowClose() {

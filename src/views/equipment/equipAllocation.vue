@@ -1,6 +1,6 @@
 <template>
+    <view-container>
     <div class="equip-allocation-container">
-          <my-header :title="$route.query.title" :haveBlack="true" @h_black="cancel"></my-header>
           <div class="action_box" data-test="action_box">
                 <define-input label="单号" v-model="listData.number" placeholder="--" :disabled="true" ></define-input>
                 <date-select label="操作时间" v-model="listData.createTime" placeholder="--" :disabled="true"></date-select>
@@ -44,12 +44,13 @@
                 </define-column>
              </define-table>
             </bos-tabs>
-            <div class="btn-box" v-if="edit">
-                  <base-button label="取消" align="right" :width="128" :height="25" :fontSize="20" @click="cancel"></base-button>
-                  <base-button label="提交" align="right" :width="128" :height="25" :fontSize="20" @click="confirm"></base-button>
-              </div>
+            <tool-bar  v-if="edit">
+                  <base-button label="取消" type="text" slot="button" @click="cancel"></base-button>
+                  <base-button label="提交" type="text" slot="button" @click="confirm"></base-button>
+              </tool-bar>
         </div>
     </div>
+    </view-container>
 </template>
 
 <script>

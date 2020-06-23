@@ -24,6 +24,8 @@
 
 <script>
     import { localTitle } from 'api/config';
+    import { login } from 'api/login'
+
     export default {
         name: 'login',
         data() {
@@ -42,9 +44,19 @@
             handleLogin() {
                 this.$refs.form.validate(valid => {
                     if(valid) {
-                        this.$store.dispatch('Login', this.loginForm).then(() => {
-                            this.$message.success('登录成功');
-                            this.$router.push({path: 'overview/index'})
+                        login(this.loginForm).then(res => {
+                            if(res.role === 'POLICE') {
+                                this.$message.error('权限不足')
+                                return false
+                            } else {
+                                localStorage.setItem('user', JSON.stringify(res));
+                                this.$store.commit('setUserInfo', res)
+                                this.$store.commit('setRoles', res.role || 'look')
+                                this.$store.dispatch('matchRouter', res.role || 'look').then(res => {
+                                    this.$message.success('登录成功')
+                                    this.$router.push({path: 'overview/index'})
+                                })
+                            }
                         })
                     } else {
                         console.log("填写错误");

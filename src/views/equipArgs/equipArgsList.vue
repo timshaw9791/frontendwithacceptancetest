@@ -12,7 +12,7 @@
                     <span @click="goto(data.row.id)" style="margin:8px">编辑</span>
                 </define-column>
                 <define-column label="图片" v-slot="{ data }" style="width: 30px">
-                    <img class="img" :src="data.row.image" alt="暂无图片"/>
+                    <img class="img" :src="data.row.image"  :onerror=noImgUrl />
                 </define-column>
                 <define-column label="装备名称" field="name" ></define-column>
                 <define-column label="装备型号" field="model"></define-column>
@@ -50,6 +50,7 @@
                 list: [],
                 imgBaseUrl: imgBaseUrl,
                 paginator: {page: 1, size: 10, totalPages: 1, totalElements: 0, search: ''},
+                noImgUrl: 'this.src="' + require('../../assets/noImg.png') + '"'
             }
         },
 

@@ -12,7 +12,7 @@
                         :collapse="isCollapse"
                         background-color="#f9f9f9"
                         text-color="#707070">
-                    <sidebar-item :routes="permission_routers"></sidebar-item>
+                    <sidebar-item :routes="matchRouters"></sidebar-item>
                 </el-menu>
             </div>
         </el-scrollbar>
@@ -36,7 +36,7 @@
         },
         computed: {
             ...mapGetters([
-                'permission_routers',
+                'matchRouters',
                 'sidebar'
             ]),
             routes() {

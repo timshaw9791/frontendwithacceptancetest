@@ -5,10 +5,10 @@ import app from './modules/app'
 import user from './modules/user'
 import customer from './modules/customer'
 import getters from './getters'
-import permission from './modules/permission'
 import message from './modules/message'
 import warehouse from './modules/warehouse'
 import device from './modules/device'
+import matchRouter from "./modules/matchRouter";
 
 
 Vue.use(Vuex);
@@ -20,10 +20,10 @@ const store = new Vuex.Store({
         app,
         user,
         customer,
-        permission,
         message,
         warehouse,
-        device
+        device,
+        matchRouter
     },
     getters,
     // strict:debug,
