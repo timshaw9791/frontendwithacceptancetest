@@ -12,8 +12,7 @@
         </div>
         <a-equips-table :is-info="isInfo" :equip-items="order.equips"
                         :match-equips="matchEquips" @getFinishEquip="getFinishEquip"
-                        type="in"
-        >
+                        type="in">
         </a-equips-table>
         <tool-bar v-if="!isInfo">
             <base-button label="提交" slot="button" type="text" @click="submit()"></base-button>

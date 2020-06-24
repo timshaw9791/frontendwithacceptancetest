@@ -42,13 +42,14 @@
 </template>
 
 <script>
-    import BosTabs from "../../../componentized/table/bosTabs";
-    import myHeader from "../../../components/base/header/header"
-    import {findByRfids} from "../../../api/storage"
-    import {inventoryOrder} from "../../../api/inventory"
-    import {getBosEntity} from "../../../api/basic"
-    import {transEquips} from "../../../common/js/transEquips";
-    import copyRfid from "../../../components/copyRfid";
+    import BosTabs from "@/componentized/table/bosTabs";
+    import myHeader from "@/components/base/header/header"
+    import {findByRfids} from "@/api/storage"
+    import {inventoryOrder} from "@/api/inventory"
+    import {getBosEntity} from "@/api/basic"
+    import {transEquips} from "@/common/js/transEquips";
+    import copyRfid from "@/components/copyRfid";
+    import {handheld} from "@/common/js/rfidReader";
 
     export default {
         name: "inventoryInfo",
@@ -105,7 +106,6 @@
                 })
                 // 假数据处理
                 if (!this.isInfo) {
-                    let count = 10 - this.rfids.length
                     this.order = {
                         startTime: (new Date()).valueOf(),
                         operatorInfo: {
@@ -114,7 +114,7 @@
                         },
                         inventoryCount: 10,
                         notCount: this.rfids.length,
-                        count: count
+                        count: 10 - this.rfids.length
                     }
                 }
             },
