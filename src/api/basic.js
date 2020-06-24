@@ -35,6 +35,13 @@ export function bosEnums(params, state) { // 根据枚举分类获取常量值
     }, state)
 }
 
+export function bosEnumsPlatform() { // 获取平台端的枚举数据
+    return request({
+        url: baseBURL + '/bos/bos-enums',
+        method: 'GET'
+    })
+}
+
 export function getAllUnit() {
     return  request({
         url:baseBURL+'/organ-units/tree',

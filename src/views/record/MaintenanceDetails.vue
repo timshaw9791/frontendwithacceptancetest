@@ -1,36 +1,35 @@
 <template>
-    <div class="maintenance-details-container">
-          <my-header :title="$route.query.title" :haveBlack="true" @h_black="cancel"></my-header>
-         <div class="maintenance-details-top" >
-                <define-input label="单号" v-model="listData.number" :disabled="true"></define-input>
-                <date-select label="保养开始时间" v-model="listData.createTime" :disabled="true"></date-select>
-                <entity-input label="操作人员" v-model="listData.operatorInfo.operator" format="{name}" :disabled="true" ></entity-input>
-            </div>
+    <view-container>
+        <div class="maintenance-details-top" >
+            <define-input label="单号" v-model="listData.number" :disabled="true"></define-input>
+            <date-select label="保养开始时间" v-model="listData.createTime" :disabled="true"></date-select>
+            <entity-input label="操作人员" v-model="listData.operatorInfo.operator" format="{name}" :disabled="true" ></entity-input>
+        </div>
         <div class="maintenance-details-body">
             <bos-tabs >
-                        <define-table :data="newData" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
-                            :highLightCurrent="true"  slot="total" :showSummary="true" :summaryFunc="sumFunc">
-                            <define-column label="装备参数" v-slot="{ data }">
-                                <entity-input v-model="data.row.equipArg"  :options="{search:'equipArgsSelect'}" format="{equipName}({equipModel})" :tableEdit="false" ></entity-input>
-                            </define-column>
-                            <define-column label="装备位置"  v-slot="{ data }" >
-                                 <entity-input v-model="data.row.location"  :formatFunc="$formatFuncLoc" :tableEdit="false" ></entity-input>
-                            </define-column>
-                            <define-column label="装备数量" v-slot="{ data }">
-                                <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
-                            </define-column>
-                        </define-table>
-                        <define-table :data="newData[findIndex].copyList" height="2.8646rem" :havePage="false" slot="detail">
-                            <define-column label="RFID" v-slot="{ data }">
-                                <define-input v-model="data.row.rfid" type="String" :tableEdit="false"></define-input>
-                            </define-column>
-                            <define-column label="装备序号" v-slot="{ data }">
-                                <define-input v-model="data.row.equipSerial" type="Number" :tableEdit="false" ></define-input>
-                            </define-column>
-                        </define-table>
-                    </bos-tabs>
+                <define-table :data="newData" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
+                              :highLightCurrent="true"  slot="total" :showSummary="true" :summaryFunc="sumFunc">
+                    <define-column label="装备参数" v-slot="{ data }">
+                        <entity-input v-model="data.row.equipArg"  :options="{search:'equipArgsSelect'}" format="{equipName}({equipModel})" :tableEdit="false" ></entity-input>
+                    </define-column>
+                    <define-column label="装备位置"  v-slot="{ data }" >
+                        <entity-input v-model="data.row.location"  :formatFunc="$formatFuncLoc" :tableEdit="false" ></entity-input>
+                    </define-column>
+                    <define-column label="装备数量" v-slot="{ data }">
+                        <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
+                    </define-column>
+                </define-table>
+                <define-table :data="newData[findIndex].copyList" height="2.8646rem" :havePage="false" slot="detail">
+                    <define-column label="RFID" v-slot="{ data }">
+                        <define-input v-model="data.row.rfid" type="String" :tableEdit="false"></define-input>
+                    </define-column>
+                    <define-column label="装备序号" v-slot="{ data }">
+                        <define-input v-model="data.row.equipSerial" type="Number" :tableEdit="false" ></define-input>
+                    </define-column>
+                </define-table>
+            </bos-tabs>
         </div>
-    </div>
+    </view-container>
 </template>
 
 <script>
@@ -43,9 +42,7 @@
     import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
     import serviceDialog from 'components/base/serviceDialog/index'
-    import { start, startOne, killProcess } from 'common/js/rfidReader'
     import divTmp from '@/componentized/divTmp'
-    import { getInhouseNumber,inHouse} from "api/storage"
     import {getBosEntity} from "api/basic"
 export default {
     components:{
@@ -115,7 +112,7 @@ export default {
     {
         padding: 0 10px;
         margin-top:15px;
-        height:"2.8648rem";
+        height:2.8648rem;
         // border:1px solid rgba(112, 112, 112, 0.13)
     }
 

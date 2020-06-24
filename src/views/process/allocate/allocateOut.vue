@@ -33,7 +33,7 @@
     import HardwareSelect from "@/components/hardwareSelect";
     import {transEquips} from "@/common/js/transEquips";
     import {mapGetters} from "vuex";
-    import {activeTask, processOutbound, transferOrders} from "@/api/process";
+    import {activeTask, allocateOrders, processOutbound, transferOrders} from "@/api/process";
     import aEquipsTable from "@/components/process/aEquipsTable";
 
     export default {
@@ -65,10 +65,9 @@
         },
         methods: {
             fetchData() {
-                transferOrders(this.processInstanceId).then(
-                    res => this.fixData(res)
-                )
-                // 查询当前任务ID
+                allocateOrders(this.processInstanceId, this.allocateCategory).then(res => {
+                    this.fixData(res)
+                })
                 activeTask(this.processInstanceId).then(res => {
                     this.taskId = res.taskId
                 })

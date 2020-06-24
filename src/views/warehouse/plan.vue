@@ -1,28 +1,26 @@
 <template>
-  <div class="consumable-form-container">
-    <my-header :title="$route.meta.title" :haveBlack="false"></my-header>
-    <div class="consumable-form-top">
-        <base-button size="default" align="right" label="新增预案" @click="dialogShow('add','')"></base-button>
-    </div>
-    <div class="consumable-form-body" >
-         <bos-tabs  :option="['contrast']" :layoutRatio="[3,1]" :contrastKey="['slot1', 'slot2']" >
-             <define-table  slot="slot1" :pageInfo="paginator" @changePage="changePage" :data="order" height="3.6042rem" 
-                            @changeCurrent="changeCurrent">
-                <define-column  label="操作"  v-slot="{ data }">
+    <view-container>
+        <tool-bar>
+            <base-button size="default" align="right" label="新增预案" @click="dialogShow('add','')"></base-button>
+        </tool-bar>
+        <bos-tabs  :option="['contrast']" :layoutRatio="[3,1]" :contrastKey="['slot1', 'slot2']">
+            <define-table  slot="slot1" :pageInfo="paginator" @changePage="changePage" :data="order" height="3.6042rem"
+                          @changeCurrent="changeCurrent">
+                <define-column label="操作" v-slot="{ data }">
                     <base-button label="编辑" size="mini" @click="dialogShow('edit',data.row)"></base-button>
                     <base-button label="删除" size="mini" @click="deleteplan(data.row)" type="danger"></base-button>
                 </define-column>
                 <define-column label="预案名称" field="name"></define-column>
                 <define-column label="预案描述" field="remark"></define-column>
-             </define-table>
-             <define-table :haveIndex="false"  slot="slot2" :havePage="false" :data="equipArg" height="3.6042rem" >
+            </define-table>
+            <define-table :haveIndex="false"  slot="slot2" :havePage="false" :data="equipArg" height="3.6042rem">
                 <define-column label="装备参数" field="equipArg" v-slot="{data}">
-                    <entity-input v-model="data.row.equipArg" format="{name}({model})" :tableEdit="false" :options="{}"></entity-input>
+                    <entity-input v-model="data.row.equipArg" format="{name}({model})" :tableEdit="false"
+                                  :options="{}"></entity-input>
                 </define-column>
-             </define-table>
-         </bos-tabs>
-    </div>
-  </div>
+            </define-table>
+        </bos-tabs>
+    </view-container>
 </template>
 
 <script>
@@ -32,7 +30,8 @@
     import defineInput from '@/componentized/textBox/defineInput'
     import bosTabs from "@/componentized/table/bosTabs";
     import serviceDialog from "components/base/serviceDialog"
-    import { getPlan ,addPlan ,updatePlan ,delectPlan } from "api/plan";
+    import {getPlan, addPlan, updatePlan, delectPlan} from "api/plan";
+
     var _ = require("lodash");
     export default {
         name: "consumable",
@@ -40,33 +39,33 @@
             return {
                 paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
                 order: [],
-                equipArg:[],
-                plan:{
-                    name:"",
-                    remark:"",
-                    equipArgItems:[],
+                equipArg: [],
+                plan: {
+                    name: "",
+                    remark: "",
+                    equipArgItems: [],
                 },
-                editflag:false,
+                editflag: false,
             };
         },
         methods: {
-            fetchData(){
-                getPlan(this.paginator).then(res=>{
+            fetchData() {
+                getPlan(this.paginator).then(res => {
                     this.order = res.content
                     this.paginator.totalPages = res.totalPages;
                     this.paginator.totalElements = res.totalElements;
-                    if(this.order.length!=0){
+                    if (this.order.length != 0) {
                         this.equipArg = this.order[0].equipArgItems
-                    }else{
-                        this.equipArg=[]
+                    } else {
+                        this.equipArg = []
                     }
                 })
             },
-            deleteplan(data){
-                delectPlan(data.id).then(res=>{
+            deleteplan(data) {
+                delectPlan(data.id).then(res => {
                     this.$message.success("删除成功")
                     this.fetchData()
-                }).catch(err=>{
+                }).catch(err => {
                     this.$message.errow(err.message)
                 })
             },
@@ -74,18 +73,18 @@
                 this.paginator.page = page
                 this.fetchData()
             },
-            changeCurrent(current){
+            changeCurrent(current) {
                 this.equipArg = current.current.equipArgItems
             },
-            dialogShow(data,item){
-                if(data=="add"){
-                    this.editflag=false
-                }else if(data == "edit"){
-                    this.editflag=true
+            dialogShow(data, item) {
+                if (data == "add") {
+                    this.editflag = false
+                } else if (data == "edit") {
+                    this.editflag = true
                 }
                 this.$router.push({
                     name: 'editplan',
-                    query: {type: 'editplan', info: {data:item.id,edit:this.editflag}}
+                    query: {type: 'editplan', info: {data: item.id, edit: this.editflag}}
                 })
             },
         },
@@ -104,16 +103,5 @@
 </script>
 
 <style lang="scss" scoped>
-  .consumable-form-container {
-    font-size: 16px;
-  }
-  .consumable-form-top {
-    padding: 18px 7px;
-    border-bottom: 1px solid #ebeef5;
-    overflow: hidden;
-  }
-  .consumable-form-body {
-    padding: 0 7px;
-    widows: 100%;
-  }
+
 </style>

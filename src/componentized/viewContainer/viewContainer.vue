@@ -74,7 +74,7 @@
 import breadCrumb from './breadCrumb'
 import dropdown from './dropdown'
 export default {
-    name: 'topTools',
+    name: 'viewContainer',
     data() {
         return {
             routeList: [], // 路由面包屑
@@ -118,16 +118,11 @@ export default {
         //         .some(sortName=>sortName.includes(`${this.tabs[this.tabSelect].key}morebutton`)||sortName.includes('publicmorebutton'))
         // }
     },
-    watch: {
-        $route: {
-            handler(val, oldVal) {
-                this.routeList = this._.drop(val.matched);
-            },
-            deep: true,
-            immediate: true
-        }
-    },
-    components: {breadCrumb, dropdown}
+    components: {breadCrumb, dropdown},
+    created() {
+        console.log(this.$route)
+        this.routeList = this._.drop(this.$route.matched)
+    }
 }
 </script>
 
@@ -293,6 +288,7 @@ export default {
         overflow-x: hidden;
         overflow-y: auto;
         margin-top: 8px;
+        padding: 0 8px;
         .name-slot-box {
             height: 100%;
         }

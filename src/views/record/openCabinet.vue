@@ -1,22 +1,16 @@
 <template>
-    <div class="open-cabinet-record-container">
-        <my-header title="开柜记录"></my-header>
-        <div class="header">
-            <entity-input label="警柜"></entity-input>
-        </div>
-        <div class="body">
-            <define-table :data="list" @changePage="changePage" :pageInfo="paginator">
-                <define-column label="图片" v-slot="{ data }" >
-                    <img class="img" :src="data.row.openImg" alt="暂无图片"/>
-                </define-column>
-                <define-column label="操作人员" field="operatorInfo.operator"></define-column>
-                <define-column label="开柜时间" field="createTime"></define-column>
-                <define-column label="警柜类型" field="policeCabinet.category"></define-column>
-                <define-column label="警柜编号" field="policeCabinet.cabinetNumber"></define-column>
-                <define-column label="所属人员" field="policeCabinet.policeCabinetUserItems" ></define-column>
-            </define-table>
-        </div>
-    </div>
+    <view-container>
+        <define-table :data="list" @changePage="changePage" :pageInfo="paginator">
+            <define-column label="图片" v-slot="{ data }" >
+                <img class="img" :src="data.row.openImg" alt="暂无图片"/>
+            </define-column>
+            <define-column label="操作人员" field="operatorInfo.operator"></define-column>
+            <define-column label="开柜时间" field="createTime"></define-column>
+            <define-column label="警柜类型" field="policeCabinet.category"></define-column>
+            <define-column label="警柜编号" field="policeCabinet.cabinetNumber"></define-column>
+            <define-column label="所属人员" field="policeCabinet.policeCabinetUserItems" ></define-column>
+        </define-table>
+    </view-container>
 </template>
 
 <script>

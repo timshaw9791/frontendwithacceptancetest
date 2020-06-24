@@ -33,7 +33,7 @@ import defineColumn from './defineColumn'
             },
             height: {
                 type: String,
-                default: '600px'
+                default: '928px'
             },
             border: {
                 type: Boolean,
@@ -120,9 +120,6 @@ import defineColumn from './defineColumn'
 </script>
 
 <style lang="scss" scoped>
-    .define-table-container {
-        height: 100%;
-    }
     .actionButton{
         width:70px;
         height:32px;

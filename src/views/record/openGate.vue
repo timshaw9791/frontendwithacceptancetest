@@ -1,19 +1,13 @@
 <template>
-    <div class="open-gate-record-container">
-        <my-header title="开门记录"></my-header>
-        <div class="header">
-            <entity-input label="姓名"></entity-input>
-        </div>
-        <div class="body">
-            <define-table :data="list" @changePage="changePage" :pageInfo="paginator">
-                <define-column label="操作" v-slot>
-                    <span @click="showMonitor">监控</span>
-                </define-column>
-                <define-column label="操作人员" field="operatorInfo.operator"></define-column>
-                <define-column label="开柜时间" field="createTime"></define-column>
-            </define-table>
-        </div>
-    </div>
+    <view-container>
+        <define-table :data="list" @changePage="changePage" :pageInfo="paginator">
+            <define-column label="操作" v-slot>
+                <span @click="showMonitor">监控</span>
+            </define-column>
+            <define-column label="操作人员" field="operatorInfo.operator"></define-column>
+            <define-column label="开柜时间" field="createTime"></define-column>
+        </define-table>
+    </view-container>
 </template>
 
 <script>

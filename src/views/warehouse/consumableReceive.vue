@@ -1,38 +1,34 @@
 <template>
-  <div class="consumableReceive-form-container">
-      <div class="consumableReceive-header">
-        <span style="font-size: 20px;">{{title}}</span>
-        <base-button label="<-返回" align="right" type="none" @click="returnBack"></base-button>
-      </div>
-    <div class="consumableReceive-form-body" >
-        <div class="process-info">
-            <define-input label="单号" :disabled="true"  placeholder="-"></define-input>
-            <base-select label="类型" v-model="category" :disabled="this.title=='耗材新增'" :selectList="selectData"></base-select>
-            <date-select label="操作时间"  :disabled="true"  placeholder="-"></date-select>
-            <entity-input label="操作人员" v-model="operatorInfo" format="{name}" :disabled="true" ></entity-input>
-        </div>
-        <div class="process-info" style="z-index:-1">
-            <define-input label="备注" v-model="order.remark" :column="12"></define-input>
-        </div>
-        <define-table :showSummary="true" :summaryFunc="sumFunc" :havaPage="false" :data="order.consumableItems" height="3.6042rem" >
-            <define-column label="操作" width="100" v-slot="{ data }">
-                <i class="iconfont icontianjia" @click="changeRow(true,data)"></i>
-                <i class="iconfont iconyichu" @click="changeRow(false,data)"></i>
-            </define-column>
-            <define-column label="耗材名称" v-slot="{ data }">
-                <entity-input v-model="data.row.consumable" format="{name}" :options="{search:'consumableSelect'}"></entity-input>
-            </define-column>
-            <define-column label="库存数量" field="consumable.count" align="left"></define-column>
-            <define-column label="本次领补" v-slot="{ data }">
-                <define-input v-model="data.row.count"></define-input>
-            </define-column>
-        </define-table>
-        <div class="buttom">
-            <base-button label="提交" align="right" @click="submit"></base-button>
-            <base-button label="返回" align="right" @click="returnBack"></base-button>
-        </div>
-    </div>
-  </div>
+ <view-container>
+     <div class="consumableReceive-form-body" >
+         <div class="process-info">
+             <define-input label="单号" :disabled="true"  placeholder="-"></define-input>
+             <base-select label="类型" v-model="category" :disabled="this.title=='耗材新增'" :selectList="selectData"></base-select>
+             <date-select label="操作时间"  :disabled="true"  placeholder="-"></date-select>
+             <entity-input label="操作人员" v-model="operatorInfo" format="{name}" :disabled="true" ></entity-input>
+         </div>
+         <div class="process-info" style="z-index:-1">
+             <define-input label="备注" v-model="order.remark" :column="12"></define-input>
+         </div>
+         <define-table :showSummary="true" :summaryFunc="sumFunc" :havaPage="false" :data="order.consumableItems" height="3.6042rem" >
+             <define-column label="操作" width="100" v-slot="{ data }">
+                 <i class="iconfont icontianjia" @click="changeRow(true,data)"></i>
+                 <i class="iconfont iconyichu" @click="changeRow(false,data)"></i>
+             </define-column>
+             <define-column label="耗材名称" v-slot="{ data }">
+                 <entity-input v-model="data.row.consumable" format="{name}" :options="{search:'consumableSelect'}"></entity-input>
+             </define-column>
+             <define-column label="库存数量" field="consumable.count" align="left"></define-column>
+             <define-column label="本次领补" v-slot="{ data }">
+                 <define-input v-model="data.row.count"></define-input>
+             </define-column>
+         </define-table>
+         <div class="buttom">
+             <base-button label="提交" align="right" @click="submit"></base-button>
+             <base-button label="返回" align="right" @click="returnBack"></base-button>
+         </div>
+     </div>
+ </view-container>
 </template>
 
 <script>

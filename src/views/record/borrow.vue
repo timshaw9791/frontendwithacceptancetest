@@ -1,67 +1,44 @@
 <template>
-    <div class="borrow">
-        <my-header :title="'出入记录'" :searchFlag="false"></my-header>
-        <div class="action-bar">
-            <div style="width:400px" data-test="time_search">
-                <el-date-picker
-                    v-model="time"
-                    type="daterange"
-                    value-format="yyyy-MM-dd"
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期">
-                </el-date-picker>
-            </div>
-            <div class="_buttons" style="margin-right: 0.09375rem">
-                <BosInput
-                        placeholder="出入人员"
-                        suffix="el-icon-search"
-                        v-model="params.search"
-                        style="width:285px;">
-
-                </BosInput>
-            </div>
-        </div>
+    <view-container>
         <field-table :list="list" :labelList="table.labelList" :pageInfo="params" @tableCurrentPageChanged="changePage"
-                      :tableAction="table.tableAction"  @clickTableCloum="clickTableCloum" style="width: 100%">
+                     :tableAction="table.tableAction"  @clickTableCloum="clickTableCloum" style="width: 100%">
         </field-table>
         <r_video ref="recordVideo" :src="address"></r_video>
         <service-dialog title="携带装备" ref="dialogLinghuan" width="766px" :button="false">
             <field-table :list="infolist" :labelList="infotable.labelList" @rowclick="clickTableCloum2" :havePage="false"
                          style="width: 100%">
             </field-table>
-            <service-dialog 
-                :title="moretitle" 
-                ref="more" 
-                width="388px" 
-                top="14vh"
-                :button="false"
-                :modal="false">
+            <service-dialog
+                    :title="moretitle"
+                    ref="more"
+                    width="388px"
+                    top="14vh"
+                    :button="false"
+                    :modal="false">
                 <div style="height:480px">
                     <el-table
-                        :data="rfidlist"
-                        border
-                        style="width: 90%;margin:20px auto"
-                        align="center"
-                        height="450px"
+                            :data="rfidlist"
+                            border
+                            style="width: 90%;margin:20px auto"
+                            align="center"
+                            height="450px"
                     >
                         <el-table-column
-                            label="序号"
-                            type="index"
-                            :index="indexMethod" width="90" align="center">
+                                label="序号"
+                                type="index"
+                                :index="indexMethod" width="90" align="center">
                         </el-table-column>
                         <el-table-column
-                            prop="equipInfo.rfid"
-                            label="rfid"
-                            align="center"
+                                prop="equipInfo.rfid"
+                                label="rfid"
+                                align="center"
                         >
                         </el-table-column>
                     </el-table>
                 </div>
-                
             </service-dialog>
         </service-dialog>
-    </div>
+    </view-container>
 </template>
 
 <script>

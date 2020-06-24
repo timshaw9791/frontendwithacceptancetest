@@ -115,7 +115,7 @@ export default {
 .bos-card-container {
   font-size: 16px;
   min-height: 50px;
-  padding: 0 10px;
+  /*padding: 0 10px;*/
 }
 .bos-card-body {
   width: 100%;
