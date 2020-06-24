@@ -70,7 +70,7 @@
                 default: 'none'
             },
             margin: {
-                default: '0 0.0521rem'
+                default: '3px 0.0521rem'
             }
         },
         data() {
