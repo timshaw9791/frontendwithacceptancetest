@@ -1,7 +1,7 @@
 <template>
 	<view-container :tabs="tabs">
 		<bos-tabs :option="['contrast']" :contrastKey="['main', 'content']" :layoutRatio="['45%', '55%']" :header="false">
-			<define-table :data="list" :pageInfo="fetchParams.pageInfo" @changePage="changePage" height="920px"
+			<define-table :data="list" :pageInfo="fetchParams.pageInfo" @changePage="changePage"
 				:highLightCurrent="true" @changeCurrent="changeCurrent" slot="main" ref="leftTable">
 				<define-column label="操作" field="opeare" width="60" v-slot="{ data }">
 					<i class="iconfont iconxingbiaotianchong star" @click="messageStar(data.row,false)" v-if="data.row.newStar"></i>
@@ -15,7 +15,7 @@
 				<define-column label="通知时间" :filter="row => this.$filterTime(row.createTime)" width="200"></define-column>
 				<define-column label="消息标题" :filter="row=>fixTitle(row.title)"></define-column>
 			</define-table>
-			<define-table :data="list[selectIndex]?list[selectIndex].messageItems:[]" :havePage="false" height="100%" slot="content">
+			<define-table :data="list[selectIndex]?list[selectIndex].messageItems:[]" :havePage="false" slot="content">
 				<define-column label="消息内容" field="content"></define-column>
 			</define-table>
 		</bos-tabs>

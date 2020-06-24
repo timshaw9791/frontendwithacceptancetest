@@ -57,8 +57,6 @@ Vue.config.errorHandler = function(err, vm, info) {
 
 
 
-
-
 Vue.config.productionTip = false;
 Vue.prototype.$ajax = axios;
 Vue.prototype.$formatFuncLoc = formatFunc

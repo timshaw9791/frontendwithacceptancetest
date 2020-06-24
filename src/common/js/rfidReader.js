@@ -1,3 +1,4 @@
+/* 硬件设备(读写器、手持机)方法文件 */
 var cmdStr = 'chcp 65001 && adb pull sdcard/inventoryData/inventory.json .', // 从手持机获取文件的命令
     com = 7, // 设备串口号
     newFile_path = "C:/Users/Administrator", // 和手持机相关的文件路径
