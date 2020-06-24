@@ -288,6 +288,7 @@ export default {
         overflow-x: hidden;
         overflow-y: auto;
         margin-top: 8px;
+        padding: 0 8px;
         .name-slot-box {
             height: 100%;
         }
