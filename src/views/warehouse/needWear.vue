@@ -3,8 +3,8 @@
         <tool-bar>
             <base-button type="text" slot="button" label="新增必戴装备" @click="dialogShow('add')"></base-button>
         </tool-bar>
-        <bos-tabs  :option="['contrast']" :layoutRatio="[3,1]" :contrastKey="['slot1', 'slot2']">
-            <define-table  slot="slot1" :pageInfo="paginator" @changePage="changePage" :data="order" height="2.6042rem"
+        <bos-tabs  :option="['contrast']" :layoutRatio="[3,1]" :contrastKey="['slot1', 'slot2']" :header="false">
+            <define-table  slot="slot1" :pageInfo="paginator" @changePage="changePage" :data="order"
                           @changeCurrent="changeCurrent">
                 <define-column label="操作" v-slot="{ data }">
                     <base-button label="编辑" size="mini" @click="dialogShow('edit',data.row)" type="primary"></base-button>
@@ -12,7 +12,7 @@
                 </define-column>
                 <define-column label="必戴装备名称" field="name"></define-column>
             </define-table>
-            <define-table :haveIndex="false"  slot="slot2" :havePage="false" :data="equipArg" height="2.6042rem">
+            <define-table :haveIndex="false"  slot="slot2" :havePage="false" :data="equipArg" >
                 <define-column label="装备参数" field="describes" v-slot="{data}">
                     <entity-input v-model="data.row" format="{name}({model})" :tableEdit="false"
                                   :options="{}"></entity-input>
@@ -100,18 +100,4 @@
 </script>
 
 <style lang="scss" scoped>
-    .need-wear-container {
-        font-size: 16px;
-    }
-
-    .need-wear-top {
-        padding: 18px 7px;
-        border-bottom: 1px solid #ebeef5;
-        overflow: hidden;
-    }
-
-    .need-wear-body {
-        padding: 0 7px;
-        widows: 100%;
-    }
 </style>
