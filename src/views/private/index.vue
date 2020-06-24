@@ -37,13 +37,13 @@ export default({
             userInfo: JSON.parse(localStorage.getItem('user')),
             disabled: true,
             genderList: [
-                {label: '男', key: '男'},
-                {label: '女', key: '女'}
+                {value: '男', key: '男'},
+                {value: '女', key: '女'}
             ],
             roleList: [
-                {label: '管理员', key: 1}, 
-                {label: '领导', key: 2}, 
-                {label: '警员', key: 3}
+                {value: '管理员', key: 1},
+                {value: '领导', key: 2},
+                {value: '警员', key: 3}
             ]
         }
     },
