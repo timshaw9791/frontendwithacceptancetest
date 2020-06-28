@@ -1,31 +1,27 @@
 <template>
     <view-container>
-    <div class="opening-box">
         <tool-bar >
             <base-button label="出库装备 "  type="text" @click="toInHouse" slot="button"></base-button>
         </tool-bar>
-        <div class="data-list">
-            <define-table :data="list" height="3.64rem" @changePage="changePage" :pageInfo="paginator">
-                            <define-column label="操作" width="120" v-slot="{ data }">
-                                    <base-button label="详情" size="mini" @click="toDetail(data.row)" type="primary"></base-button>
-                                    <!-- <base-button label="删除" size="mini" type="danger" @click="deleteNumber(data.row)"></base-button> -->
-                            </define-column>
-                            <define-column label="单号" v-slot="{ data }">
-                                <define-input v-model="data.row.number" type="Number" :tableEdit="false"></define-input>
-                            </define-column>
-                            <define-column label="装备参数" v-slot="{ data }">
-                                <define-input v-model="data.row.equipArgs" type="Number" :tableEdit="false"></define-input>
-                            </define-column>
-                            <define-column label="装备数量" :filter="(row)=>filterNumber(row)">
-                                
-                            </define-column>
-                            <define-column label="出库人员" v-slot="{ data }">
-                                <define-input v-model="data.row.operator.operator" type="String" :tableEdit="false"></define-input>
-                            </define-column>
-                            <define-column label="出库时间" :filter="(row)=>$filterTime(row.createTime)"/>
-                        </define-table>
-        </div>
-    </div>
+    <define-table :data="list" height="3.64rem" @changePage="changePage" :pageInfo="paginator">
+        <define-column label="操作" width="120" v-slot="{ data }">
+            <i class=" iconfont iconxiangqing" @click="toDetail(data.row)" style="margin:8px"></i>
+                <!-- <base-button label="删除" size="mini" type="danger" @click="deleteNumber(data.row)"></base-button> -->
+        </define-column>
+        <define-column label="单号" v-slot="{ data }">
+            <define-input v-model="data.row.number" type="Number" :tableEdit="false"></define-input>
+        </define-column>
+        <define-column label="装备参数" v-slot="{ data }">
+            <define-input v-model="data.row.equipArgs" type="Number" :tableEdit="false"></define-input>
+        </define-column>
+        <define-column label="装备数量" :filter="(row)=>filterNumber(row)">
+            
+        </define-column>
+        <define-column label="出库人员" v-slot="{ data }">
+            <define-input v-model="data.row.operator.operator" type="String" :tableEdit="false"></define-input>
+        </define-column>
+        <define-column label="出库时间" :filter="(row)=>$filterTime(row.createTime)"/>
+    </define-table>
     </view-container>
 </template>
 
@@ -125,26 +121,5 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.opening-box{
-    font-size: 16px;
-    width: 100%;
-    min-height: 4.4323rem;
-    .btn_box{
-    padding: 16px 7px;
-    // border-top:1px solid rgba(112, 112, 112, 0.13);
-    // border-bottom:1px solid rgba(112, 112, 112, 0.13);
-    }
-    .data-list
-    {
-        padding: 0 10px;
-        margin-top:30px;
-        height:"2.8648rem";
-        // border:1px solid rgba(112, 112, 112, 0.13)
-    }
-    .span-box{
-        display:flex;
-        justify-content: space-between;
-    }
-}
 
 </style>
