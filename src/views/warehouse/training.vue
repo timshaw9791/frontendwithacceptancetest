@@ -6,8 +6,8 @@
         <define-table :pageInfo="paginator" @changePage="changePage"
                       :data="order" height="3.6042rem">
             <define-column label="操作" v-slot="{ data }">
-                <base-button label="编辑" size="mini" @click="dialogShow('edit',data.row)" type="primary"></base-button>
-                <base-button label="删除" size="mini" @click="deleteplan(data.row)" type="danger"></base-button>
+                <i class=" iconfont iconbianji" @click="dialogShow('edit',data.row)" style="margin:8px"></i>
+                <i class=" iconfont iconshanchu" @click="deleteplan(data.row)" style="margin:8px"></i>
             </define-column>
             <define-column label="装备参数" field="describes" v-slot="{data}">
                 <entity-input v-model="data.row.equipArg" format="{name}({model})" :options="{}"></entity-input>

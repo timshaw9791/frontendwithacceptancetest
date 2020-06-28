@@ -3,8 +3,8 @@
         <define-table :data="list" height="3.64rem" @changePage="changePage" :pageInfo="paginator" >
             <define-column label="操作" width="130" v-slot="{ data }">
                 <div class="span-box">
-                    <base-button label="详情" size="mini" @click="toDetail(data.row)" type="primary"></base-button>
-                    <base-button label="删除" size="mini" type="danger" @click="deleteNumber(data.row)"></base-button>
+                    <i class=" iconfont iconxiangqing" @click="toDetail(data.row)" style="margin:8px"></i>
+                    <i class=" iconfont iconshanchu" @click="deleteNumber(data.row)" style="margin:8px"></i>
                 </div>
             </define-column>
             <define-column label="单号" v-slot="{ data }">
@@ -79,10 +79,9 @@ export default {
             },
             getList(){
                 inOutHouseOrder(this.params).then(res=>{
-                    this.list=res.content
-                    this.list.forEach(item=>{
-                       let cList = this._.groupBy(item.inOutHouseItems, item => `${item.equipArgId}`)//当单据中为同一种装备时 不管件数多少 都不显示省略号
-                        this.newData = this._.map(cList, (v, k) => {
+                    res.content.forEach(item=>{
+                       // let cList = this._.groupBy(item.inOutHouseItems, item => `${item.equipArgId}`)//当单据中为同一种装备时 不管件数多少 都不显示省略号
+                        this.newData = this._.map(this._.groupBy(item.inOutHouseItems, item => `${item.equipArgId}`), (v, k) => {
                             return {equipArg: v[0].equipArg}
                         })
                         if(this.newData.length==1)

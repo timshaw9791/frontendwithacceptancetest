@@ -15,8 +15,8 @@
         >
           <define-column label="操作" width="150" v-slot="{ data }">
             <div class="span-box">
-              <base-button label="分配" @click="toAssign(data.row)" size="small"></base-button>
-              <base-button label="开柜" type="danger" @click="opCabniet(data.row)" size="small"></base-button>
+              <i class=" iconfont iconfenpei" @click="toAssign(data.row)" style="margin:8px"></i>
+              <i class=" iconfont iconkaigui" @click="opCabniet(data.row)" style="margin:8px"></i>
             </div>
           </define-column>
           <define-column label="警柜类型" v-slot="{ data }">

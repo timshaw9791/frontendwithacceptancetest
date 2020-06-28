@@ -18,7 +18,7 @@
                           :highLightCurrent="true" slot="total" :showSummary="true" :summaryFunc="sumFunc">
                 <define-column label="操作" width="100" v-slot="{ data }">
                     <!-- <i class="iconfont icontianjia" @click="changeRow(true,data)"></i> -->
-                    <i class="iconfont iconyichu" @click="changeRow(false,data)"></i>
+                    <i class=" iconfont iconyichu" @click="changeRow(false,data)" style="margin:8px"></i>
                 </define-column>
                 <define-column label="装备参数" v-slot="{ data }" v-if="!this.$route.query.id">
                     <entity-input v-model="data.row.equipArg" :options="{detail:'equipArgsSelect'}"

@@ -7,8 +7,8 @@
             <define-table  slot="slot1" :pageInfo="paginator" @changePage="changePage" :data="order"
                           @changeCurrent="changeCurrent">
                 <define-column label="操作" v-slot="{ data }">
-                    <base-button label="编辑" size="mini" @click="dialogShow('edit',data.row)" type="primary"></base-button>
-                    <base-button label="删除" size="mini" @click="deleteplan(data.row)" type="primary"></base-button>
+                    <i class=" iconfont iconbianji" @click="dialogShow('edit',data.row)" style="margin:8px"></i>
+                    <i class=" iconfont iconshanchu" @click="deleteplan(data.row)" style="margin:8px"></i>
                 </define-column>
                 <define-column label="必戴装备名称" field="name"></define-column>
             </define-table>
