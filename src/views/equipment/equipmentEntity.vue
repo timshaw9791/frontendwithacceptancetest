@@ -4,7 +4,7 @@
             <base-button label="位置变更" type="text" slot="button" v-if="!isEdit"
                          @click="toAllocation"></base-button>
         </tool-bar>
-            <define-table :data="list" height="3.64rem"  :pageInfo="this.paginator"
+            <define-table :data="list" height="928px"  :pageInfo="this.paginator"
                           :highLightCurrent="true"
                           @changePage="changePage" :haveIndex="false" v-if="inList">
                 <define-column label="序号" fixed columnType="index" width="65"></define-column>
@@ -14,7 +14,7 @@
                     <i class=" iconfont iconfuzhiRFID" @click="copyRfid(data.row.rfid)" style="margin:8px"></i>
                 </define-column>
                 <define-column label="图片" width="120" v-slot="{ data }" fixed>
-                    <img :src="imgsrc(data.row.equipArg.image)" style="height:100px;width:100px" alt="暂无图片">
+                    <img class="img" :src="imgsrc(data.row.equipArg.image)" :onerror="noImgUrl" style="height:30px;width:30px;"/>
                 </define-column>
                 <define-column label="RFID" fixed width="200" v-slot="{ data }">
                     <define-input v-model="data.row.rfid" type="Number" :tableEdit="false"></define-input>
@@ -75,6 +75,7 @@
                 inList: true,
                 params: {size: 10, page: 1},
                 paginator: {size: 10, page: 1, totalPages: 1, totalElements: 5},
+                noImgUrl: 'this.src="' + require('../../assets/noImg.png') + '"'
             }
         },
         methods: {

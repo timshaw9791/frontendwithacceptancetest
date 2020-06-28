@@ -7,7 +7,7 @@
         </div>
         <div class="maintenance-details-body">
             <bos-tabs >
-                <define-table :data="newData" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
+                <define-table :data="newData"  @changeCurrent="selRow" :havePage="false"
                               :highLightCurrent="true"  slot="total" :showSummary="true" :summaryFunc="sumFunc">
                     <define-column label="装备参数" v-slot="{ data }">
                         <entity-input v-model="data.row.equipArg"  :options="{search:'equipArgsSelect'}" format="{equipName}({equipModel})" :tableEdit="false" ></entity-input>
@@ -19,7 +19,7 @@
                         <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
                     </define-column>
                 </define-table>
-                <define-table :data="newData[findIndex].copyList" height="2.8646rem" :havePage="false" slot="detail">
+                <define-table :data="newData[findIndex].copyList"  :havePage="false" slot="detail">
                     <define-column label="RFID" v-slot="{ data }">
                         <define-input v-model="data.row.rfid" type="String" :tableEdit="false"></define-input>
                     </define-column>

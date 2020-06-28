@@ -3,7 +3,7 @@
         <tool-bar >
             <base-button label="出库装备 "  type="text" @click="toInHouse" slot="button"></base-button>
         </tool-bar>
-    <define-table :data="list" height="3.64rem" @changePage="changePage" :pageInfo="paginator">
+    <define-table :data="list"  @changePage="changePage" :pageInfo="paginator">
         <define-column label="操作" width="120" v-slot="{ data }">
             <i class=" iconfont iconxiangqing" @click="toDetail(data.row)" style="margin:8px"></i>
                 <!-- <base-button label="删除" size="mini" type="danger" @click="deleteNumber(data.row)"></base-button> -->

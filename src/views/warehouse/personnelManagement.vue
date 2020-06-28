@@ -3,7 +3,7 @@
         <tool-bar>
             <base-button type="text" slot="button" label="新增人员" @click="addperson"></base-button>
         </tool-bar>
-        <define-table :data="list" height="550.0032px" :pageInfo="paginator"
+        <define-table :data="list"  :pageInfo="paginator"
                       :highLightCurrent="true" @changePage="changePage" :haveIndex="true">
             <define-column label="操作" width="180" fixed v-slot="{ data }">
                 <i class=" iconfont iconbianji" @click="editperson(data.row)" style="margin:8px"></i>

@@ -1,7 +1,7 @@
 <template>
   <view-container>
       <div class="chargingRecord-form-body" >
-          <define-table  :pageInfo="paginator" @changePage="changePage" :data="order" height="3.6042rem" >
+          <define-table  :pageInfo="paginator" @changePage="changePage" :data="order" >
               <define-column label="RFID" field="rfid"></define-column>
               <define-column label="装备序号" field="serial"></define-column>
               <define-column label="装备参数" field="equipName(equipModel)" :filter="(row)=>equip(row)"></define-column>

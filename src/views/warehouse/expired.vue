@@ -3,7 +3,7 @@
         <tool-bar>
             <base-button label="报废装备" type="text" slot="button" @click="toScrap"></base-button>
         </tool-bar>
-        <define-table :data="list" height="3.64rem" @changePage="changePage" :pageInfo="paginator">
+        <define-table :data="list"  @changePage="changePage" :pageInfo="paginator">
             <define-column label="RFID" v-slot="{ data }">
                 <define-input v-model="data.row.rfid" :tableEdit="false"></define-input>
             </define-column>
