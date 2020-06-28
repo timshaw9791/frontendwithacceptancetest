@@ -1,18 +1,16 @@
 <template>
     <view-container>
-    <div class="equip-allocation-container">
           <div class="action_box" data-test="action_box">
-                <define-input label="单号" v-model="listData.number" placeholder="--" :disabled="true" ></define-input>
+                <define-input label="单号" v-model="listData.number" margin="0 0" placeholder="--" :disabled="true" ></define-input>
                 <date-select label="操作时间" v-model="listData.createTime" placeholder="--" :disabled="true"></date-select>
                 <entity-input label="操作人员" v-model="listData.operatorInfo.operator"  :disabled="true" ></entity-input>
             </div>
-        <div class="equip-allocation-body">
            <bos-tabs :option="['contrast']" :layoutRatio="[2,3]" :contrastKey="['slot1', 'slot2']">
                <template slot="slotHeader" v-if="edit">
                             <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96" @click="readData"></base-button>
                             <base-select label="硬件选择" v-model="select.selected" align="right" :selectList="select.handWareList"></base-select>
                         </template>
-            <define-table :data="list" slot="slot1" height="4rem" @changeCurrent="selRow" :havePage="false"  >
+            <define-table :data="list" slot="slot1" height="828px" @changeCurrent="selRow" :havePage="false"  >
                             <define-column label="操作" width="150px" v-slot="{ data }" v-if="$route.query.title!='位置变更单/位置变更单详情'">
                                 <i class="iconfont icontianjia" @click="changeRow(true,data)" ></i>
                                 <i class="iconfont iconyichu" @click="changeRow(false,data)"></i>
@@ -24,7 +22,7 @@
                                 <define-input v-model="data.row.count" type="Number" :tableEdit="edit"></define-input>
                             </define-column>
                         </define-table>
-            <define-table :haveIndex="false"  slot="slot2" :havePage="edit" :data="list[findIndex].locationChangeItems" height="4rem" >
+            <define-table :haveIndex="false"  slot="slot2" height="828px" :havePage="edit" :data="list[findIndex].locationChangeItems"  >
                 <define-column label="RFID"  v-slot="{data}">
                     <define-input v-model="data.row.rfid"  :tableEdit="edit" ></define-input>
                 </define-column>
@@ -48,8 +46,6 @@
                   <base-button label="取消" type="text" slot="button" @click="cancel"></base-button>
                   <base-button label="提交" type="text" slot="button" @click="confirm"></base-button>
               </tool-bar>
-        </div>
-    </div>
     </view-container>
 </template>
 
@@ -140,7 +136,6 @@ export default {
                         })
                     })
                 })
-                console.log(req);
                 locationChangeOrders(req).then(res=>{
                     this.cancel()
                 })
@@ -192,32 +187,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.equip-allocation-container{
-    font-size: 16px;
-    width: 100%;
-    min-height: 4.4323rem;
-    .btn_box{
-    height:30px;
-    border-top:1px solid rgba(112, 112, 112, 0.13);
-    border-bottom:1px solid rgba(112, 112, 112, 0.13);
-    }
-    .action_box{
-        margin-top:15px;
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-    }
-    .equip-allocation-body
-    {
-        padding: 0 10px;
-        margin-top:15px;
-        height:"2.8648rem";
-        // border:1px solid rgba(112, 112, 112, 0.13)
-    }
-    .span-box{
-        display:flex;
-        justify-content: space-between;
-    }
+.action_box{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
 }
-
 </style>

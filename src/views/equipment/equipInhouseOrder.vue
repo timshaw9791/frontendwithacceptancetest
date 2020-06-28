@@ -1,14 +1,15 @@
 <template>
     <view-container>
-    <div class="opening-box">
+        <tool-bar>
+            <base-button type="text" label="返回" slot="button" @click="cancel()"></base-button>
+        </tool-bar>
         <div class="action_box" data-test="action_box">
-            <define-input label="单号" v-model="listData.number" :disabled="true" class="odd-number"></define-input>
+            <define-input label="单号" v-model="listData.number" margin="0 0":disabled="true"></define-input>
             <date-select label="入库时间" v-model="listData.createTime" :disabled="true"></date-select>
             <entity-input label="入库人员" v-model="listData.operator.operator" format="{name}" :disabled="true"></entity-input>
         </div>
-        <div class="data-list">
             <bos-tabs>
-                <define-table :data="newData" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
+                <define-table :data="newData"  @changeCurrent="selRow" :havePage="false"
                               :highLightCurrent="true" slot="total" :showSummary="true" :summaryFunc="sumFunc">
                     <define-column label="装备参数" v-slot="{ data }">
                         <entity-input v-model="data.row.equipArg" :options="{search:'equipArgsSelect'}"
@@ -38,8 +39,6 @@
                     </define-column>
                 </define-table>
             </bos-tabs>
-        </div>
-    </div>
     </view-container>
 </template>
 
@@ -129,25 +128,9 @@
     }
 </script>
 <style lang="scss" scoped>
-    .opening-box {
-        font-size: 16px;
-        width: 100%;
-        min-height: 4.4323rem;
-
         .action_box {
-            margin-top: 15px;
             display: flex;
             justify-content: flex-start;
             align-items: center;
         }
-
-        .data-list {
-            padding: 0 10px;
-            margin-top: 15px;
-            height: "2.8648rem";
-            // border:1px solid rgba(112, 112, 112, 0.13)
-        }
-
-    }
-
 </style>

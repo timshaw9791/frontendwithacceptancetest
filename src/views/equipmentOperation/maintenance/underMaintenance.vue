@@ -1,112 +1,109 @@
 <template>
-        <div class="maintenance-form-body">
-            <bos-tabs :option="['tabs']" :layoutRatio="[2, 1]" :header="false" >
-                <define-table ref="total" :havePage="false" :data="listData"
-                              @changeCurrent="selRow" :highLightCurrent="true"
-                              slot="total" key="1" height="928px" >
-                    <define-column label="装备参数" v-slot="{ data }">
-                        <entity-input v-model="data.row.equipArg" :detailParam="data.row.equipArg"
-                                      :options="{ detail: 'equipArgsDetail' }" format="{name}({model})"
-                                      :disabled="true"></entity-input>
-                    </define-column>
-                    <define-column label="装备位置" v-slot="{ data }">
-                        <entity-input v-model="data.row.location" :formatFunc="$formatFuncLoc"
-                                      :tableEdit="false"></entity-input>
-                    </define-column>
-                    <define-column label="可保养数量" field="count"></define-column>
-                </define-table>
-                <define-table :havePage="false" :data="listData[findIndex].copyList"  slot="detail" height="928px" >
-                    <define-column label="RFID" field="rfid"></define-column>
-                    <define-column label="装备序号" field="serial"></define-column>
-                </define-table>
-            </bos-tabs>
-            <tool-bar>
-                <base-button slot="button" type="text" label="结束保养" @click="endMain"></base-button>
-            </tool-bar>
-        </div>
+    <div class="maintenance-form-container">
+        <bos-tabs :header="false" :option="['contrast']" :layoutRatio="[2,1]" :contrastKey="['total', 'contrast']">
+            <define-table slot="total" ref="total" :data="listData"
+                          height="928px" :havePage="false"
+                          @changeCurrent="selRow" :highLightCurrent="true">
+                <define-column label="装备参数" v-slot="{ data }">
+                    <entity-input v-model="data.row.equipArg" :options="{detail:'equipArgsDetail'}"
+                                  format="{name}({model})" :tableEdit="false"></entity-input>
+                </define-column>
+                <define-column label="装备位置" v-slot="{ data }">
+                    <entity-input v-model="data.row.location" :formatFunc="$formatFuncLoc"
+                                  :tableEdit="false"></entity-input>
+                </define-column>
+                <define-column label="正在保养数量" v-slot="{ data }">
+                    <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input>
+                </define-column>
+                <define-column label="保养时长" v-slot="{ data }">
+                    <date-input v-model="data.row.keepTime" filter="toDay" :tableEdit="false"></date-input>
+                </define-column>
+            </define-table>
+            <define-table slot="contrast" :data="listData.length!==0?listData[this.findIndex].copyList:[]" height="928px"
+                          :havePage="false">
+                <define-column label="RFID" v-slot="{ data }">
+                    <define-input v-model="data.row.rfid" type="String" :tableEdit="false"></define-input>
+                </define-column>
+                <define-column label="装备序号" v-slot="{ data }">
+                    <define-input v-model="data.row.serial" type="Number" :tableEdit="false"></define-input>
+                </define-column>
+            </define-table>
+        </bos-tabs>
+        <tool-bar>
+            <base-button slot="button" type="text" label="开始保养" @click="startMain"></base-button>
+        </tool-bar>
+    </div>
 </template>
 
 <script>
-    import myHeader from "components/base/header/header";
-    import baseButton from "@/componentized/buttonBox/baseButton";
-    import bosTabs from "@/componentized/table/bosTabs";
+    import myHeader from '@/components/base/header/header'
+    import textInput from '@/componentized/textBox/textInput.vue'
+    import defineInput from '@/componentized/textBox/defineInput.vue'
+    import bosTabs from '@/componentized/table/bosTabs.vue'
+    import baseButton from "@/componentized/buttonBox/baseButton.vue"
+    import dateSelect from '@/componentized/textBox/dateSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
-    import {needKeepEquips} from "@/api/operation"
+    import {inKeepEquips} from "api/operation"
 
     var _ = require("lodash");
     export default {
-        name: "maintenance",
+        name: "underMaintenance",
         data() {
             return {
                 findIndex: 0,
-                listData: [],
-                list: [],
+                listData: [{copyList: []}],
             }
         },
         methods: {
-            selRow(data) { // 单选表格行
-                this.findIndex = data.index
+            selRow(current) {
+                this.findIndex = current.index
             },
-            classDataify(data)
-            {
-                data.forEach(item => {
-                    this.list.push(item)
-                })
-                let cList = this._.groupBy(this.list, item => `${item.equipArg.model}${item.equipArg.name}${item.location.id}`)
+            fixData(data) { //界面数据处理
+                let cList = this._.groupBy(data, item => `${item.equipArg.name}${item.equipArg.model}${item.location.id}`)
                 this.listData = this._.map(cList, (v, k) => {
-                    return {equipArg: v[0].equipArg, copyList: v, count: v.length, location: v[0].location}
+                    return {
+                        equipArg: v[0].equipArg,
+                        copyList: v,
+                        count: v.length,
+                        location: v[0].location,
+                        keepTime: this.milliTime(v[0].equipArg.updateTime)
+                    }
                 })
             },
-            sumFunc(param) { // 表格合并行计算方法
-                let {columns, data} = param, sums = [];
-                sums = new Array(columns.length).fill('')
-                sums[0] = '合计'
-                sums[columns.length - 1] = 0
-                return sums;
+            milliTime(data) {
+                let time = (new Date() - data) / (1000 * 60 * 60 * 24) > 1 ? (new Date() - data) / (1000 * 60 * 60 * 24) : 1
+                return time;
             },
-            getList() {
-                needKeepEquips().then(res => {
-                    this.classDataify(res.content)
+            fetchData() {
+                inKeepEquips().then(res => {
+                    this.fixData(res.content)
                 })
             },
-            endMain() {
-                this.$router.push({path: '/equipmentOperation/endMaintenance'});
+            changePage(page) {
+                this.paginator.page = page;
+            },
+            startMain() {
+                this.$router.push({path: '/equipmentOperation/startMaintenance'});
             }
         },
         created() {
-            this.getList()
+            this.fetchData()
             this.$nextTick(() => {
                 this.$refs.total.refreshLayout()
             })
         },
         components: {
             myHeader,
+            textInput,
+            defineInput,
             baseButton,
+            dateSelect,
             bosTabs,
-            entityInput
+            entityInput,
         },
     };
 </script>
 
 <style lang="scss" scoped>
-
-    .maintenance-form-body {
-        padding: 0 7px;
-        width: 100%;
-    }
-
-    .process-info {
-        padding: 18px 0;
-        display: flex;
-        justify-content: flex-start;
-        overflow: hidden;
-    }
-
-    .buttom {
-        height: 72px;
-        width: 100%;
-        margin-top: 25px;
-        // box-shadow:0px 0px 12px rgba(235,238,245,1);
-    }
 
 </style>

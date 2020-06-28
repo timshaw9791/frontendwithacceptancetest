@@ -1,19 +1,17 @@
 <template>
 <view-container>
-    <div class="opening-box">
-        <div class="action_box" data-test="action_box">
-                <define-input label="单号" placeholder="--" :disabled="true" ></define-input>
+        <div class="action_box">
+                <define-input label="单号" placeholder="--" margin="0 0" :disabled="true" ></define-input>
                 <date-select label="入库时间" placeholder="--" :disabled="true"></date-select>
                 <entity-input label="入库人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :disabled="true" ></entity-input>
             </div>
-        <div class="data-list">
             <bos-tabs @changeTab="changeTab">
                         <template slot="slotHeader">
                             <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96" @click="readData"></base-button>
                             <base-select label="硬件选择" v-model="select.selected" align="right" :selectList="select.handWareList"></base-select>
                         </template>
-                        <define-table :data="list" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
-                            :highLightCurrent="true"  slot="total" :showSummary="true" :summaryFunc="sumFunc">
+                        <define-table :data="list"  @changeCurrent="selRow" :havePage="false"
+                            :highLightCurrent="true" height="828px" slot="total" :showSummary="true" :summaryFunc="sumFunc">
                             <define-column label="操作" width="100" v-slot="{ data }">
                                 <i class="iconfont icontianjia" @click="changeRow(true,data)"></i>
                                 <i class="iconfont iconyichu" @click="changeRow(false,data)"></i>
@@ -32,7 +30,7 @@
                             </define-column>
                             <define-column label="装备数量" :filter="(row)=>row.copyList.length"/>
                         </define-table>
-                        <define-table :data="list[findIndex].copyList" height="2.8646rem" :havePage="false" slot="detail">
+                        <define-table :data="list[findIndex].copyList" height="828px" :havePage="false" slot="detail">
                             <define-column label="操作" width="100" v-slot="{ data }">
                                 <i class="iconfont icontianjia" ></i>
                                 <i class="iconfont iconyichu" @click="changeDetailRow(false,data)"></i>
@@ -46,8 +44,6 @@
                 <base-button label="提交" type="text" @click="confirm" slot="button"></base-button>
               </tool-bar>
         
-        </div>
-    </div>
 </view-container>
 </template>
 
@@ -95,7 +91,7 @@ export default {
                     rfids: [],
                     serial: [],
                     count:0,
-                    copyList:[],
+                    copyList:[ ],
                 }],
                people:'',
                checkList:[],
@@ -254,41 +250,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.opening-box{
-    font-size: 16px;
-    width: 100%;
-    min-height: 4.4323rem;
-    .btn_box{
-    height:30px;
-    border-top:1px solid rgba(112, 112, 112, 0.13);
-    border-bottom:1px solid rgba(112, 112, 112, 0.13);
-    }
     .action_box{
-        margin-top:15px;
         display: flex;
         justify-content: flex-start;
         align-items: center;
-    }
-    .data-list
-    {
-        padding: 0 10px;
-        margin-top:15px;
-        height:"2.8648rem";
-        // border:1px solid rgba(112, 112, 112, 0.13)
-    }
-    .span-box{
-        display:flex;
-        justify-content: space-between;
-    }
-}
-
-.btn-box{
-        width: 4rem;
-        height: 50px;
-        margin-left:20px;
-        margin-top: 15px;
-        display: flex;
-        justify-content: flex-end;
-        align-items : center; 
     }
 </style>

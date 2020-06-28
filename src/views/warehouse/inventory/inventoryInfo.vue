@@ -8,6 +8,11 @@
         <define-input label="已盘点总数" v-model="order.count" :disabled="true"></define-input>
         <define-input label="未知装备数" v-model="order.notCount" :disabled="true"></define-input>
         <bos-tabs :label="[{label: '未知装备数清单', key: 'total'}, {label: '明细', key: 'detail'}]">
+            <template slot="slotHeader" v-if="!isInfo">
+                <base-select v-model="hardwareSelect.select" label="硬件选择" :selectList="hardwareSelect.list"
+                             :disabled="true"></base-select>
+                <base-button label="读取数据" @click="readData()"></base-button>
+            </template>
             <template slot="total">
                 <define-table :data="equipItems" @changeCurrent="changeRow"
                               :highLightCurrent="true"
@@ -27,28 +32,24 @@
                     <define-column label="序号" field="equipSerial"></define-column>
                 </define-table>
             </template>
-            <template slot="slotHeader" v-if="!isInfo">
-                <base-select v-model="hardwareSelect.select" label="硬件选择" :selectList="hardwareSelect.list"
-                             :disabled="true"></base-select>
-                <base-button label="读取数据" @click="getArgsInfo()"></base-button>
-            </template>
         </bos-tabs>
-        <div class="box-bottom" v-if="!isInfo">
-            <base-button label="取消" @click="cancel"></base-button>
-            <base-button label="提交" @click="submit"></base-button>
-        </div>
         <copy-rfid :rfid="copyRFID" :isShow="isShowDialog" @cancel="copyCancel"></copy-rfid>
+        <tool-bar v-if="!isInfo">
+            <base-button slot="button" type="text" label="取消" @click="cancel"></base-button>
+            <base-button slot="button" type="text" label="提交" @click="submit"></base-button>
+        </tool-bar>
     </view-container>
 </template>
 
 <script>
-    import BosTabs from "../../../componentized/table/bosTabs";
-    import myHeader from "../../../components/base/header/header"
-    import {findByRfids} from "../../../api/storage"
-    import {inventoryOrder} from "../../../api/inventory"
-    import {getBosEntity} from "../../../api/basic"
-    import {transEquips} from "../../../common/js/transEquips";
-    import copyRfid from "../../../components/copyRfid";
+    import BosTabs from "@/componentized/table/bosTabs";
+    import myHeader from "@/components/base/header/header"
+    import {findByRfids} from "@/api/storage"
+    import {inventoryOrder} from "@/api/inventory"
+    import {getBosEntity} from "@/api/basic"
+    import {transEquips} from "@/common/js/transEquips";
+    import copyRfid from "@/components/copyRfid";
+    import {handheld} from "@/common/js/rfidReader";
 
     export default {
         name: "inventoryInfo",
@@ -72,8 +73,8 @@
                 // 明细表渲染的数据
                 totalIndex: 0,
                 isShowDialog: false,
-                // 假列表
-                noInventoryList: ['19080010', '110000030000000000000000', '110000010000000000000000', '19090907', '87654321'],
+                // // 假列表
+                // noInventoryList: ['19080010', '110000030000000000000000', '110000010000000000000000', '19090907', '87654321'],
             }
         },
         methods: {
@@ -86,8 +87,9 @@
                     })
                 }
             },
-            getArgsInfo() {
-                findByRfids(this.noInventoryList).then(res => {
+            readData() {
+                let {rfidList} = handheld(this.$message.error, inventory.json)
+                findByRfids(rfidList).then(res => {
                     this.equipItems = res
                     this.fixData()
                 })
@@ -104,7 +106,6 @@
                 })
                 // 假数据处理
                 if (!this.isInfo) {
-                    let count = 10 - this.rfids.length
                     this.order = {
                         startTime: (new Date()).valueOf(),
                         operatorInfo: {
@@ -113,7 +114,7 @@
                         },
                         inventoryCount: 10,
                         notCount: this.rfids.length,
-                        count: count
+                        count: 10 - this.rfids.length
                     }
                 }
             },

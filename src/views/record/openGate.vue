@@ -2,7 +2,7 @@
     <view-container>
         <define-table :data="list" @changePage="changePage" :pageInfo="paginator">
             <define-column label="操作" v-slot>
-                <span @click="showMonitor">监控</span>
+                <i class=" iconfont iconjiankon" @click="showMonitor" style="margin:8px"></i>
             </define-column>
             <define-column label="操作人员" field="operatorInfo.operator"></define-column>
             <define-column label="开柜时间" field="createTime"></define-column>

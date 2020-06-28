@@ -1,16 +1,16 @@
 <template>
-    <div class="opening-box">
-          <my-header :title="$route.meta.title" :haveBlack="true" @h_black="cancel"></my-header>
-        <div class="data-list">
-                        <define-table :data="listData" height="2.8646rem"  :havePage="false"
-                            :highLightCurrent="true"  slot="total" >
-                            <define-column label="操作类别" field="category"/>
-                            <define-column label="操作时间" :filter="(row)=>$filterTime(row.createTime)" />
-                            <define-column label="操作人员" field="operatorInfo.operator"/>
-                            <define-column label="备注" field="remark"/>
-                        </define-table>
-        </div>
-    </div>
+    <view-container>
+        <define-table :data="listData"   :havePage="false"
+            :highLightCurrent="true">
+            <define-column label="操作类别" field="category"/>
+            <define-column label="操作时间" :filter="(row)=>$filterTime(row.createTime)" />
+            <define-column label="操作人员" field="operatorInfo.operator"/>
+            <define-column label="备注" field="remark"/>
+        </define-table>
+        <tool-bar>
+            <base-button label="返回" type="text" slot="button" @click="cancel"></base-button>
+        </tool-bar>
+    </view-container>
 </template>
 
 <script>
@@ -84,40 +84,11 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.opening-box{
-    font-size: 16px;
-    width: 100%;
-    min-height: 4.4323rem;
-    .data-list
-    {
-        padding: 0 10px;
-        margin-top:15px;
-        height:"2.8648rem";
-        // border:1px solid rgba(112, 112, 112, 0.13)
-    }
-    .span-box{
-        display:flex;
-        justify-content: space-between;
-    }
+.data-list
+{
+    padding: 0 10px;
+    margin-top:15px;
+    height:"2.8648rem";
+    // border:1px solid rgba(112, 112, 112, 0.13)
 }
-.location-select{
-    height: 500px;
-    width: 4.625rem;
-    z-index: 1200;
-    .select-location{
-        width:3.5rem;
-        height: 440px;
-        float: left;
-        margin-left: auto;
-}
-}
-.btn-box{
-        width: 4rem;
-        height: 50px;
-        margin-left:20px;
-        margin-top: 15px;
-        display: flex;
-        justify-content: flex-end;
-        align-items : center; 
-    }
 </style>

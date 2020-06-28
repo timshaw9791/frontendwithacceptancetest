@@ -1,10 +1,9 @@
 <template>
     <view-container :tabs="tabs">
         <!-- 需要保养 -->
-        <need-maintenance slot="car1"></need-maintenance>
+        <need-maintenance slot="needMaintenance"></need-maintenance>
         <!-- 正在保养 -->
-        <under-maintenance slot="car2"></under-maintenance>
-        <need-maintenance slot="car3"></need-maintenance>
+        <under-maintenance slot="underMaintenance"></under-maintenance>
 
     </view-container>
 </template>
@@ -25,14 +24,11 @@
             return {
                 tabs: [{
                     label: '需要保养',
-                    key: 'car1',
+                    key: 'needMaintenance',
                 }, {
                     label: '正在保养',
-                    key: 'car2'
-                },{
-                    label: 'test',
-                    key: 'car3'
-                }],
+                    key: 'underMaintenance'
+                }]
             }
         }
     }

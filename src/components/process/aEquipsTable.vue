@@ -12,13 +12,13 @@
                 <i class="iconfont iconyichu" @click="$delRow(aEquipItems,data.$index)"></i>&nbsp
                 <i class="iconfont icontianjia" @click="addRow()"></i>
             </define-column>
+            <define-column label="装备位置" v-slot="{ data }" v-if="this.type!=='out'">
+                <entity-input v-model="data.row.locationInfo" :options="{search:'locationSelect'}"
+                              :formatFunc="$formatFuncLoc" :disabled="isInfo"></entity-input>
+            </define-column>
             <define-column label="装备参数" v-slot="{ data }">
                 <entity-input v-model="data.row.equipArg" format="{name}({model})"
                               :disabled="true"></entity-input>
-            </define-column>
-            <define-column label="装备位置" v-slot="{ data }" v-if="this.type!=='out'">
-                <entity-input v-model="data.row.locationInfo" :options="{search:'locationSelect'}"
-                              :formatFunc="$formatFuncLoc" :disabled="true"></entity-input>
             </define-column>
             <define-column label="装备数量" v-slot="{ data }">
                 <define-input v-model="data.row.items.length" type="Number"
@@ -41,7 +41,7 @@
             <define-column label="序号" field="serial"></define-column>
         </define-table>
         <!--对照的装备-->
-        <define-table :havePage="false" :data="matchEquips"
+        <define-table :havePage="false" :data="aMatchEquips"
                       slot="contrast" v-if="!isInfo" ref="matchTable">
             <define-column label="装备参数" v-slot="{ data }">
                 <entity-input v-model="data.row.equipArg" format="{name}({model})"
@@ -62,7 +62,7 @@
     import {transEquips} from "@/common/js/transEquips";
 
     export default {
-        name: "aEquipsTable", // allocateEquipsTable
+        name: "aEquipsTable", // allocateEquipsTable 调拨、直调的出入库都是这一个表
         components: {
             bosTabs,
             hardwareSelect
@@ -73,14 +73,15 @@
                 pid: '',
                 highLightCurrent: false,
                 readRfids: [],
-                aEquipItems: this.equipItems
+                aEquipItems: [{items: [], locationInfo: {}}],
+                aMatchEquips: [{items: [], locationInfo: {}}]
             }
         },
         props: {
             equipItems: {  //详情时装备需要外面传入
                 type: Array,
                 default: () => {
-                    return [{items: [], locationInfo: {}}]
+                    return []
                 }
             },
             matchEquips: {
@@ -104,55 +105,55 @@
                 // 1.判断是否选中当前行
                 // 2.判断当前行是否有位置信息
                 !!this.pid && killProcess(this.pid)
-                let data = "9988"
-                //start("java -jar scan.jar", (data) => {
+                let data = "5687"
+                start("java -jar scan.jar", (data) => {
                 switch (this.type) {
                     case 'out': {
                         _.findIndex(this.readRfids, data) === -1 && this.readRfids.push(data)
                         findByRfids(this.readRfids, true).then(res => {
-                            this.equipItems = transEquips(res).equipItems
-                            this.$emit('getFinishEquip', this.equipItems)
+                            this.aEquipItems = transEquips(res).equipItems
+                            this.$emit('getFinishEquip', this.aEquipItems)
                         })
                         break
                     }
                     case 'in' : {
-                        if (this.totalIndex === -1) {
-                            this.$message.error("先选择需要扫描的位置")
-                            return
+                        let temp = this.aEquipItems[this.totalIndex]
+                        if (this.totalIndex === -1 || !temp.locationInfo.id) {
+                            this.$message.error("请先选择位置信息")
+                            break
                         }
-                        let temp = this.equipItems[this.totalIndex]
+                        // 匹配未分组前原来的数据
                         this.matchEquips.forEach(item => {
                             if (item.rfid !== data) {
                                 this.$message.error("该装备不在出库装备列表内！")
                                 return
                             }
-                            // 要删价格
-                            item.price = '1'
+                            item.price = 1
                             item.productTime = '1590721943'
                             item.locationInfo = item.location
-                            if (temp.hasOwnProperty("equipArg")) {
-                                if (item.equipName + "(" + item.equipModel + ")" !== temp.equipArg) {
-                                    this.$message.error("该装备与当前选中的装备参数不匹配！")
-                                    return
-                                }
-                            } else {
-                                temp.equipArg = item.equipName + "(" + item.equipModel + ")"
+                            if (temp.equipArg && item.equipName + "(" + item.equipModel + ")" !== temp.equipArg) {
+                               return  this.$message.error("该装备与当前选中的装备参数不匹配！")
                             }
-                            temp.items.push(item)
+                            temp.equipArg = item.equipName + "(" + item.equipModel + ")"
+                            // 字符串查找不能使用_.findIndex
+                            if( _.findIndex(temp.items, item) === -1 && this.readRfids.findIndex(item=>item===data)){
+                                temp.items.push(item)
+                                this.readRfids.push(data)
+                                this.addRow()
+                                console.log(this)
+                            }
                         })
-                        this.addRow()
-                        this.$emit('getFinishEquip', this.equipItems)
+                        // 总的RFID列表
+                        this.$emit('getFinishEquip', this.aEquipItems)
                         break
                     }
                 }
-                // }, (fail) => {
-                //     this.index = 1;
-                //     this.$message.error(fail);
-                // }, (pid, err) => {
-                //     pid ? this.pid = pid : this.$message.error(err)
-                // })
-                //将最终的装备数量给父组件
-
+                }, (fail) => {
+                    this.index = 1;
+                    this.$message.error(fail);
+                }, (pid, err) => {
+                    pid ? this.pid = pid : this.$message.error(err)
+                })
             },
             selRow(data) {
                 this.totalIndex = data.index
@@ -184,8 +185,25 @@
         },
         watch: {
             equipItems(newVal) {
-                newVal.length === 0 ? this.aEquipItems.push({items: [], locationInfo: {}}) : this.aEquipItems = newVal
+                if (this.isInfo) {
+                    if (this.type === "out") {
+                        // 出库单装备
+                        this.aEquipItems = transEquips(newVal).equipItems
+                        return
+                    }
+                    // 入库单装备
+                    this.aEquipItems = transEquips(newVal, "locationInfo").equipItems
+                }
             },
+            matchEquips(newVal) {
+                newVal.length === 0 ? this.aMatchEquips.push({
+                    items: [],
+                    locationInfo: {}
+                }) : this.aMatchEquips = transEquips(newVal).equipItems
+            },
+            'aEquipItems.length'(newVal) {
+                !newVal && this.aEquipItems.push({items: [], locationInfo: {}})
+            }
         },
         destroyed() {
             !!this.pid && killProcess(this.pid)

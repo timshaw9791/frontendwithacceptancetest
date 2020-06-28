@@ -1,21 +1,16 @@
 <template>
-    <div class="supplier">
-        <div class="supplier-container">
-            <my-header title="供应商" :haveBlack="false"></my-header>
-            <div class="supplier-body">
-                <div class="supplier-info">
-                    <base-button label="新增供应商" with="20px" @click="addChanger('新增供应商')"></base-button>
-                </div>
-                <define-table :data="list" height="3.6458rem" :pageInfo="paginator">
-                    <define-column label="操作" v-slot="{data}">
-                        <span @click="addChanger('编辑',data.row)">编辑</span>
-                    </define-column>
-                    <define-column label="供应商名称" field="name"></define-column>
-                    <define-column label="联系人" field="person"></define-column>
-                    <define-column label="联系方式" field="phone"></define-column>
-                </define-table>
-            </div>
-        </div>
+    <view-container>
+        <tool-bar>
+            <base-button slot="button" type="text" label="新增供应商" @click="addChanger('新增供应商')"></base-button>
+        </tool-bar>
+        <define-table :data="list" :pageInfo="paginator">
+            <define-column label="操作" v-slot="{data}">
+                <i class="iconfont iconbianji" @click="addChanger(data.row)"></i>
+            </define-column>
+            <define-column label="供应商名称" field="name"></define-column>
+            <define-column label="联系人" field="person"></define-column>
+            <define-column label="联系方式" field="phone"></define-column>
+        </define-table>
         <service-dialog :title="title" ref="dialog" @firstCancel="cancel" @cancel="cancel" @confirm="dialogConfirm"
                         :secondary="scondary">
             <form-container ref="inlineForm" :model="inlineForm">
@@ -32,7 +27,7 @@
                 ></field-input>
             </form-container>
         </service-dialog>
-    </div>
+    </view-container>
 </template>
 
 <script>
@@ -84,9 +79,8 @@
                 this.getSupplierList()
             },
             dialogConfirm() {
-                let obj = JSON.parse(JSON.stringify(this.inlineForm))
                 let requestApi = this.title.includes('编辑') ? updateSupplier : addSupplier
-                requestApi(this.inlineForm).then(()=>{
+                requestApi(this.inlineForm).then(() => {
                     this.$refs.dialog.hide()
                     this.paginator.page = 1
                     this.editInlineForm = false
@@ -94,12 +88,9 @@
                     this.getSupplierList()
                 })
             },
-            addChanger(title, row) {
-                this.title = title;
-
+            addChanger(row) {
                 this.inlineForm = this.isEdit ? JSON.parse(JSON.stringify(row)) : {};
-
-                if (title.includes('编辑')) {
+                if (this.title.includes('编辑')) {
                     this.inlineForm = JSON.parse(JSON.stringify(row));
                 } else {
                     this.inlineForm = {};

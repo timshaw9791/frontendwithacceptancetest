@@ -1,6 +1,6 @@
 <template>
     <view-container>
-        <define-table :data="list" height="3.64rem" @changeCurrent="selRow" @changePage="changePage" :pageInfo="paginator" >
+        <define-table :data="list"  @changeCurrent="selRow" @changePage="changePage" :pageInfo="paginator" >
             <define-column label="RFID" v-slot="{ data }">
                 <define-input v-model="data.row.equipRfid" type="Number" :tableEdit="false"></define-input>
             </define-column>

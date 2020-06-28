@@ -1,23 +1,21 @@
 <template>
-  <div class="opening-box">
-    <my-header :title="edit?'警柜分配':'警柜管理'" :haveBlack="edit" @h_black="black"></my-header>
-    <div class="btn_box" v-if="!edit">
-      <base-button label="一键开柜" align="right" :width="128" :height="25" :fontSize="20"></base-button>
-    </div>
+  <view-container>
+    <tool-bar v-if="!edit">
+      <base-button label="一键开柜" type="text" slot="button"></base-button>
+    </tool-bar>
     <div class="data-list" v-if="!edit">
-      <bos-tabs :option="['contrast']" :layoutRatio="[3,4]" :contrastKey="['slot1', 'slot2']">
+      <bos-tabs :option="['contrast']" :layoutRatio="[3,4]" :contrastKey="['slot1', 'slot2']" :header="false">
         <define-table
           :data="list"
           slot="slot1"
-          height="4rem"
           @changeCurrent="selRow"
           :highLightCurrent="true"
           :havePage="false"
         >
           <define-column label="操作" width="150" v-slot="{ data }">
             <div class="span-box">
-              <base-button label="分配" @click="toAssign(data.row)" size="small"></base-button>
-              <base-button label="开柜" type="danger" @click="opCabniet(data.row)" size="small"></base-button>
+              <i class=" iconfont iconfenpei" @click="toAssign(data.row)" style="margin:8px"></i>
+              <i class=" iconfont iconkaigui" @click="opCabniet(data.row)" style="margin:8px"></i>
             </div>
           </define-column>
           <define-column label="警柜类型" v-slot="{ data }">
@@ -35,7 +33,6 @@
           slot="slot2"
           :havePage="false"
           :data="equipArg"
-          height="4rem"
         >
           <define-column label="RFID" v-slot="{data}">
             <define-input v-model="data.row.rfid" :tableEdit="false"></define-input>
@@ -85,7 +82,7 @@
         ></base-button>
       </div>
     </div>
-  </div>
+  </view-container>
 </template>
 
 <script>
