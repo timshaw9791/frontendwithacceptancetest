@@ -3,8 +3,8 @@
         <tool-bar>
             <base-button size="default" align="right" label="新增预案" @click="dialogShow('add','')"></base-button>
         </tool-bar>
-        <bos-tabs  :option="['contrast']" :layoutRatio="[3,1]" :contrastKey="['slot1', 'slot2']">
-            <define-table  slot="slot1" :pageInfo="paginator" @changePage="changePage" :data="order" height="3.6042rem"
+        <bos-tabs  :option="['contrast']" :layoutRatio="[3,1]" :contrastKey="['slot1', 'slot2']" :header="false">
+            <define-table  slot="slot1" :pageInfo="paginator" @changePage="changePage" :data="order"
                           @changeCurrent="changeCurrent">
                 <define-column label="操作" v-slot="{ data }">
                     <i class=" iconfont iconbianji" @click="dialogShow('edit',data.row)" style="margin:8px"></i>
@@ -13,7 +13,7 @@
                 <define-column label="预案名称" field="name"></define-column>
                 <define-column label="预案描述" field="remark"></define-column>
             </define-table>
-            <define-table :haveIndex="false"  slot="slot2" :havePage="false" :data="equipArg" height="3.6042rem">
+            <define-table :haveIndex="false"  slot="slot2" :havePage="false" :data="equipArg" height="878px">
                 <define-column label="装备参数" field="equipArg" v-slot="{data}">
                     <entity-input v-model="data.row.equipArg" format="{name}({model})" :tableEdit="false"
                                   :options="{}"></entity-input>

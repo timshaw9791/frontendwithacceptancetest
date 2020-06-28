@@ -14,25 +14,25 @@
                 <base-select label="硬件选择" v-model="select.selected" align="right"
                              :selectList="select.handWareList"></base-select>
             </template>
-            <define-table :data="newData" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
+            <define-table :data="newData" height="828px" @changeCurrent="selRow" :havePage="false"
                           :highLightCurrent="true" slot="total" :showSummary="true" :summaryFunc="sumFunc">
-                <define-column label="操作" width="100" v-slot="{ data }">
+                <define-column label="操作" width="100" v-slot="{ data }" v-if="!this.$route.query.id">
                     <!-- <i class="iconfont icontianjia" @click="changeRow(true,data)"></i> -->
                     <i class=" iconfont iconyichu" @click="changeRow(false,data)" style="margin:8px"></i>
                 </define-column>
                 <define-column label="装备参数" v-slot="{ data }" v-if="!this.$route.query.id">
-                    <entity-input v-model="data.row.equipArg" :options="{detail:'equipArgsSelect'}"
+                    <entity-input v-model="data.row.equipArg" :detailParam="data.row.equipArg" :options="{detail:'equipArgsDetail'}"
                                   format="{name}({model})" :tableEdit="false"></entity-input>
                 </define-column>
                 <define-column label="装备参数" v-slot="{ data }" v-if="this.$route.query.id">
-                    <entity-input v-model="data.row.equipArg" :options="{detail:'equipArgsSelect'}"
+                    <entity-input v-model="data.row.equipArg" :detailParam="data.row.equipArg" :options="{detail:'equipArgsDetail'}"
                                   format="{equipName}({equipModel})" :tableEdit="false"></entity-input>
                 </define-column>
                 <define-column label="装备数量" v-slot="{ data }">
                     <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input>
                 </define-column>
             </define-table>
-            <define-table :data="newData[findIndex].copyList" height="2.8646rem" :havePage="false" slot="detail">
+            <define-table :data="newData[findIndex].copyList" v-if="newData[findIndex]!=undefined" height="828px" :havePage="false" slot="detail">
                 <define-column label="操作" width="100" v-slot="{ data }">
                     <i class="iconfont icontianjia" @click="changeDetailRow(true,data)"></i>
                     <i class="iconfont iconyichu" @click="changeDetailRow(false,data)"></i>
@@ -145,7 +145,6 @@
                 }
                 outHouse(rfidList).then(res => {
                     this.$message.success('装备出库成功')
-                    this.init()
                     this.cancel()
                 })
             },
@@ -242,7 +241,6 @@
             this.$route.query.id ? this.fetchData(this.$route.query.id) : this.people = JSON.parse(localStorage.getItem('user')).name
             if (!this.$route.query.id) {
                 this.listData.operator.operator = JSON.parse(localStorage.getItem('user')).name
-                this.init()
 
             }
         }

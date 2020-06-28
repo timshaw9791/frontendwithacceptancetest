@@ -4,11 +4,10 @@
       <base-button label="一键开柜" type="text" slot="button"></base-button>
     </tool-bar>
     <div class="data-list" v-if="!edit">
-      <bos-tabs :option="['contrast']" :layoutRatio="[3,4]" :contrastKey="['slot1', 'slot2']">
+      <bos-tabs :option="['contrast']" :layoutRatio="[3,4]" :contrastKey="['slot1', 'slot2']" :header="false">
         <define-table
           :data="list"
           slot="slot1"
-          height="4rem"
           @changeCurrent="selRow"
           :highLightCurrent="true"
           :havePage="false"
@@ -34,7 +33,6 @@
           slot="slot2"
           :havePage="false"
           :data="equipArg"
-          height="4rem"
         >
           <define-column label="RFID" v-slot="{data}">
             <define-input v-model="data.row.rfid" :tableEdit="false"></define-input>

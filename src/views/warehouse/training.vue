@@ -4,7 +4,7 @@
             <base-button type="text" slot="button" label="新增教学培训" @click="dialogShow('add')"></base-button>
         </tool-bar>
         <define-table :pageInfo="paginator" @changePage="changePage"
-                      :data="order" height="3.6042rem">
+                      :data="order" >
             <define-column label="操作" v-slot="{ data }">
                 <i class=" iconfont iconbianji" @click="dialogShow('edit',data.row)" style="margin:8px"></i>
                 <i class=" iconfont iconshanchu" @click="deleteplan(data.row)" style="margin:8px"></i>
