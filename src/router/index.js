@@ -112,6 +112,12 @@ const asyncRouterMap = [{
         component: _import('equipment/equipAllocation'),
         meta: {title: '装备实体/位置分配'},
         hidden: true
+    },{
+        path: 'equipedit',
+        name: 'equipedit',
+        component: _import('equipment/equipmentEdit'),
+        meta: {title: '装备实体/装备编辑'},
+        hidden: true
     }, {
         path: 'supplier',
         name: 'equipment/supplier',

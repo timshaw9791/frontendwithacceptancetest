@@ -1,9 +1,8 @@
 <template>
-  <div class="opening-box">
-    <my-header :title="edit?'警柜分配':'警柜管理'" :haveBlack="edit" @h_black="black"></my-header>
-    <div class="btn_box" v-if="!edit">
-      <base-button label="一键开柜" align="right" :width="128" :height="25" :fontSize="20"></base-button>
-    </div>
+  <view-container>
+    <tool-bar v-if="!edit">
+      <base-button label="一键开柜" type="text" slot="button"></base-button>
+    </tool-bar>
     <div class="data-list" v-if="!edit">
       <bos-tabs :option="['contrast']" :layoutRatio="[3,4]" :contrastKey="['slot1', 'slot2']">
         <define-table
@@ -85,7 +84,7 @@
         ></base-button>
       </div>
     </div>
-  </div>
+  </view-container>
 </template>
 
 <script>
