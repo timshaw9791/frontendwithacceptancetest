@@ -106,7 +106,7 @@
                 // 2.判断当前行是否有位置信息
                 !!this.pid && killProcess(this.pid)
                 let data = "5687"
-                //start("java -jar scan.jar", (data) => {
+                start("java -jar scan.jar", (data) => {
                 switch (this.type) {
                     case 'out': {
                         _.findIndex(this.readRfids, data) === -1 && this.readRfids.push(data)
@@ -148,12 +148,12 @@
                         break
                     }
                 }
-                // }, (fail) => {
-                //     this.index = 1;
-                //     this.$message.error(fail);
-                // }, (pid, err) => {
-                //     pid ? this.pid = pid : this.$message.error(err)
-                // })
+                }, (fail) => {
+                    this.index = 1;
+                    this.$message.error(fail);
+                }, (pid, err) => {
+                    pid ? this.pid = pid : this.$message.error(err)
+                })
             },
             selRow(data) {
                 this.totalIndex = data.index
