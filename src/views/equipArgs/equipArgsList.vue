@@ -1,12 +1,11 @@
 <template>
     <view-container>
         <tool-bar>
-            <base-button label="查询"></base-button>
-            <base-button label="新增装备参数" @click="goto()"></base-button>
+            <base-button  slot="button" type="text" label="新增装备参数" @click="goto()"></base-button>
         </tool-bar>
         <define-table :data="list" @changePage="changePage" :pageInfo="paginator">
             <define-column label="操作" v-slot="{data}">
-                <span @click="goto(data.row.id)" style="margin:8px">编辑</span>
+                <i class=" iconfont iconbianji" @click="goto(data.row.id)" style="margin:8px"></i>
             </define-column>
             <define-column label="图片" v-slot="{ data }" >
                 <img class="img" :src="data.row.image" :onerror="noImgUrl" style="height:30px;width:30px;"/>
