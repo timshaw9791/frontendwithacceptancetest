@@ -79,7 +79,6 @@
                 this.getSupplierList()
             },
             dialogConfirm() {
-                let obj = JSON.parse(JSON.stringify(this.inlineForm))
                 let requestApi = this.title.includes('编辑') ? updateSupplier : addSupplier
                 requestApi(this.inlineForm).then(() => {
                     this.$refs.dialog.hide()
@@ -91,8 +90,7 @@
             },
             addChanger(row) {
                 this.inlineForm = this.isEdit ? JSON.parse(JSON.stringify(row)) : {};
-
-                if (title.includes('编辑')) {
+                if (this.title.includes('编辑')) {
                     this.inlineForm = JSON.parse(JSON.stringify(row));
                 } else {
                     this.inlineForm = {};

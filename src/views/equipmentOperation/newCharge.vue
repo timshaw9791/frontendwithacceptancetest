@@ -2,7 +2,7 @@
         <view-container class="container" :tabs="tabs"  @changeTab="changeTab" style="height:100%">
             <!-- 标签1 -->
             <template slot="car1" >
-                <define-table :havePage="false" :data="order" height="100%" slot="detail">
+                <define-table :havePage="false" :data="order" height="928px" slot="detail">
                     <define-column label="RFID" field="rfid"></define-column>
                     <define-column label="装备序号" field="serial"></define-column>
                     <define-column label="装备参数" v-slot="{ data }">
@@ -19,7 +19,7 @@
             </template>
             <!-- 标签2 -->
             <template slot="car2" >
-                <define-table :havePage="false" :data="order" height="100%" slot="total">
+                <define-table :havePage="false" :data="order" height="928px" slot="total">
                     <define-column label="RFID" field="rfid"></define-column>
                     <define-column label="装备序号" field="serial"></define-column>
                     <define-column label="装备参数" v-slot="{ data }">

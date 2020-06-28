@@ -25,7 +25,6 @@
     import bosTabs from "@/componentized/table/bosTabs"
     import myHeader from '@/components/base/header/header'
     import hardwareSelect from "@/components/hardwareSelect"
-    import {transEquips} from "@/common/js/transEquips"
     import {mapGetters} from "vuex"
     import {activeTask, allocateOrders, processInbound} from "@/api/process"
     import aEquipsTable from "@/components/process/aEquipsTable";
