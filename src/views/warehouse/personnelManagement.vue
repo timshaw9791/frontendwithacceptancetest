@@ -6,8 +6,8 @@
         <define-table :data="list" height="550.0032px" :pageInfo="paginator"
                       :highLightCurrent="true" @changePage="changePage" :haveIndex="true">
             <define-column label="操作" width="180" fixed v-slot="{ data }">
-                <base-button label="编辑" size="mini" @click="editperson(data.row)" type="primary"></base-button>
-                <base-button label="删除" size="mini" type="danger" @click="deleteperson(data.row)"></base-button>
+                <i class=" iconfont iconbianji" @click="editperson(data.row)" style="margin:8px"></i>
+                <i class=" iconfont iconshanchu" @click="deleteperson(data.row)" style="margin:8px"></i>
             </define-column>
             <define-column label="图片" v-slot="{ data }" fixed>
                 <upload-file type="img" size="mini" :disabled="true" v-model="data.row.faceInformation"

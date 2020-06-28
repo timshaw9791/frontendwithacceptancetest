@@ -9,9 +9,9 @@
                           @changePage="changePage" :haveIndex="false" v-if="inList">
                 <define-column label="序号" fixed columnType="index" width="65"></define-column>
                 <define-column label="操作" width="180" v-slot="{ data }" fixed>
-                    <base-button label="编辑" size="mini" @click="edit(data.row)"></base-button>
-                    <base-button label="历史" size="mini" @click="show(data.row.id)"></base-button>
-                    <base-button label="复制" size="mini" @click="copyRfid(data.row.rfid)"></base-button>
+                    <i class=" iconfont iconbianji" @click="edit(data.row)" style="margin:8px"></i>
+                    <i class=" iconfont iconlishi" @click="show(data.row.id)" style="margin:8px"></i>
+                    <i class=" iconfont iconfuzhiRFID" @click="copyRfid(data.row.rfid)" style="margin:8px"></i>
                 </define-column>
                 <define-column label="图片" width="120" v-slot="{ data }" fixed>
                     <img :src="imgsrc(data.row.equipArg.image)" style="height:100px;width:100px" alt="暂无图片">

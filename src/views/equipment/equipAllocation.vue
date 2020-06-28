@@ -1,7 +1,7 @@
 <template>
     <view-container>
           <div class="action_box" data-test="action_box">
-                <define-input label="单号" v-model="listData.number" placeholder="--" :disabled="true" ></define-input>
+                <define-input label="单号" v-model="listData.number" margin="0 0" placeholder="--" :disabled="true" ></define-input>
                 <date-select label="操作时间" v-model="listData.createTime" placeholder="--" :disabled="true"></date-select>
                 <entity-input label="操作人员" v-model="listData.operatorInfo.operator"  :disabled="true" ></entity-input>
             </div>
@@ -136,7 +136,6 @@ export default {
                         })
                     })
                 })
-                console.log(req);
                 locationChangeOrders(req).then(res=>{
                     this.cancel()
                 })
