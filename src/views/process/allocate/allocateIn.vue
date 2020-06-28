@@ -10,10 +10,9 @@
             <entity-input label="入库人员" v-model="order.operator" format="{name}({policeSign})"
                           :disabled="true"></entity-input>
         </div>
-        <a-equips-table :is-info="isInfo" :equip-items="equipItems"
+        <a-equips-table :is-info="isInfo" :equip-items="order.equips"
                         :match-equips="matchEquips" @getFinishEquip="getFinishEquip"
-                        type="in"
-        >
+                        type="in">
         </a-equips-table>
         <tool-bar v-if="!isInfo">
             <base-button label="提交" slot="button" type="text" @click="submit()"></base-button>
@@ -45,9 +44,7 @@
                 processInstanceId: '',
                 taskId: '',
                 isInfo: false,
-                isInbound: false,
-                order: {operator: {}, house: {name: '', organUnit: {}}},
-                equipItems: [{items: [], locationInfo: {}}],
+                order: {operator: {}, house: {name: '', organUnit: {}},equips:[]},
                 matchEquips: [], //出库是为申请装备  入库时为出库装备
                 outboundEquips: [],
             }
@@ -63,14 +60,21 @@
             },
             fixData(res) {
                 console.log(res)
-                let tempTitle = this.allocateCategory === 'TRANSFER' ? '调拨' : '直调'  //TRANSFER or DIRECT
+                let tempTitle ,  order
+                if (this.allocateCategory === 'TRANSFER'){
+                    tempTitle = "调拨"
+                    order = res.transferApplyOrder
+                }else {
+                    tempTitle = "直调"
+                    order = res.directAllotOrder
+                }
                 switch (this.type) {
-                    case "in": {
+                    case "false": {
                         this.title = tempTitle + '入库'
-                        this.isInbound = true
                         this.highLightCurrent = false
-                        this.matchEquips = transEquips(res.outboundEquipsOrder.equips).equipItems
-                        this.order.organUnit = res.transferApplyOrder.inboundOrganUnit
+                        this.matchEquips = res.outboundEquipsOrder.equips
+                        console.log(this.matchEquips)
+                        this.order.organUnit = order.inboundOrganUnit
                         Object.assign(this.order, {operator: this.userInfo}, {
                             house: {
                                 name: this.warehouse.name,
@@ -80,17 +84,16 @@
                         })
                         break
                     }
-                    case "showIn": {
+                    case "true": {
                         this.title = tempTitle + '入库单详情'
-                        this.isInbound = true
-                        this.isInfo = true
                         this.order = res.inboundEquipsOrder
-                        this.fixEquipItems()
                         break
                     }
                 }
             },
             getFinishEquip(equipItems) {
+                this.order.equips = [];
+                console.log(equipItems)
                 _.map(equipItems, (item) => {
                     this.order.equips = this.order.equips.concat(item.items)
                     this.order.equips.equipId = this.order.equips.id
@@ -98,7 +101,6 @@
             },
             clean() {
                 this.fetchData()
-                this.equipItems = [{items: [], locationInfo: {}}]
             },
             submit() {
                 this.order.processCategory = this.allocateCategory // 1为调拨流程 0为直调
@@ -116,6 +118,7 @@
         },
         created() {
             Object.assign(this, this.$route.query)
+            this.isInfo = this.type === "true"
             this.fetchData()
         },
         computed: {
@@ -124,12 +127,7 @@
                 'userInfo',
                 'warehouse'
             ])
-        },
-        watch: {
-            'equipItems.length'(newVal) {
-                !newVal && this.equipItems.push({items: [], locationInfo: {}})
-            }
-        },
+        }
     }
 </script>
 

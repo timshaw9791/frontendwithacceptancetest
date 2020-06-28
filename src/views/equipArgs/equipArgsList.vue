@@ -1,42 +1,37 @@
 <template>
-    <div class="equip-args-list-container">
-        <my-header title="装备参数列表"></my-header>
-        <div class="header">
-            <text-input label="装备名称" placeholder="请输入装备名称"></text-input>
-            <base-button label="查询"></base-button>
-            <base-button label="新增装备参数" @click="goto()"></base-button>
-        </div>
-        <div class="body">
-            <define-table :data="list" @changePage="changePage" :pageInfo="paginator">
-                <define-column label="操作" v-slot="{data}">
-                    <span @click="goto(data.row.id)" style="margin:8px">编辑</span>
-                </define-column>
-                <define-column label="图片" v-slot="{ data }" style="width: 30px">
-                    <img class="img" :src="data.row.image"  :onerror=noImgUrl />
-                </define-column>
-                <define-column label="装备名称" field="name" ></define-column>
-                <define-column label="装备型号" field="model"></define-column>
-                <define-column label="供应商" field="supplier.name"></define-column>
-                <define-column label="保质期(天)" v-slot="{data}">
-                    <date-input v-model="data.row.shelfLife" :disabled="true" placeholder="-" ></date-input>
-                </define-column>
-                <define-column label="充电周期(天)" v-slot="{data}">
-                    <date-input v-model="data.row.chargeCycle" :disabled="true"  placeholder="-" ></date-input>
-                </define-column>
-                <define-column label="保养周期(天)" v-slot="{data}">
-                    <date-input v-model="data.row.upkeepCycle" :disabled="true" placeholder="-"  ></date-input>
-                </define-column>
-            </define-table>
-        </div>
-    </div>
+    <view-container>
+        <tool-bar>
+            <base-button  slot="button" type="text" label="新增装备参数" @click="goto()"></base-button>
+        </tool-bar>
+        <define-table :data="list" @changePage="changePage" :pageInfo="paginator">
+            <define-column label="操作" v-slot="{data}">
+                <i class=" iconfont iconbianji" @click="goto(data.row.id)" style="margin:8px"></i>
+            </define-column>
+            <define-column label="图片" v-slot="{ data }" >
+                <img class="img" :src="data.row.image" :onerror="noImgUrl" style="height:30px;width:30px;"/>
+            </define-column>
+            <define-column label="装备名称" field="name"></define-column>
+            <define-column label="装备型号" field="model"></define-column>
+            <define-column label="供应商" field="supplier.name"></define-column>
+            <define-column label="保质期(天)" v-slot="{data}">
+                <date-input v-model="data.row.shelfLife" :disabled="true" placeholder="-"></date-input>
+            </define-column>
+            <define-column label="充电周期(天)" v-slot="{data}">
+                <date-input v-model="data.row.chargeCycle" :disabled="true" placeholder="-"></date-input>
+            </define-column>
+            <define-column label="保养周期(天)" v-slot="{data}">
+                <date-input v-model="data.row.upkeepCycle" :disabled="true" placeholder="-"></date-input>
+            </define-column>
+        </define-table>
+    </view-container>
 </template>
 
 <script>
     import {getEpArgsList} from "@/api/equipArgs";
     import textInput from "../../componentized/textBox/textInput";
     import myHeader from "../../components/base/header/header"
-    import {imgBaseUrl} from "../../api/config"
-    import {listTableMixin} from "../../field/mixins/listMixin"
+    import {imgBaseUrl} from "@/api/config"
+    import {listTableMixin} from "@/field/mixins/listMixin"
 
     export default {
         name: "equipArgsList",
@@ -96,17 +91,5 @@
 </script>
 
 <style lang="scss" scoped>
-    .header {
-        padding: 16px 7px;
-    }
 
-    .img {
-        height: 30px;
-        width: 30px;
-    }
-
-    .equip-args-list-container {
-        color: #707070FF;
-        font-size: 16px;
-    }
 </style>
