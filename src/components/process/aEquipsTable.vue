@@ -62,7 +62,7 @@
     import {transEquips} from "@/common/js/transEquips";
 
     export default {
-        name: "aEquipsTable", // allocateEquipsTable
+        name: "aEquipsTable", // allocateEquipsTable 调拨、直调的出入库都是这一个表
         components: {
             bosTabs,
             hardwareSelect

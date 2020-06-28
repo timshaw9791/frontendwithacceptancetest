@@ -1,9 +1,9 @@
 <template>
     <view-container>
-        <define-table :data="list" height="300px" :pageInfo="paginator" @changePage="changePage"
+        <define-table :data="list" height="928px" :pageInfo="paginator" @changePage="changePage"
                       :highLightCurrent="true">
             <define-column label="操作" v-slot="{ data }">
-                <i class="iconfont iconjiahao1" @click="toApply(data.row)"></i>
+                <i class="iconfont iconfaqi" @click="toApply(data.row)"></i>
             </define-column>
             <define-column label="工作流名称" field="name"></define-column>
             <define-column label="部署时间" :filter="(row)=>$filterTime(row.deploymentTime)"></define-column>
