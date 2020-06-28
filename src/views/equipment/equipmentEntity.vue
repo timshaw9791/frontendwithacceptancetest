@@ -14,7 +14,16 @@
                     <i class=" iconfont iconfuzhiRFID" @click="copyRfid(data.row.rfid)" style="margin:8px"></i>
                 </define-column>
                 <define-column label="图片" width="120" v-slot="{ data }" fixed>
-                    <img class="img" :src="imgsrc(data.row.equipArg.image)" :onerror="noImgUrl" style="height:30px;width:30px;"/>
+                    <el-popover
+                            placement="right"
+                            title=""
+                            trigger="hover"
+                            transition="fade-in-linear"
+
+                            >
+                        <img class="img" slot="reference" :src="imgsrc(data.row.equipArg.image)" :onerror="noImgUrl" style="height:30px;width:30px;"/>
+                        <img class="img"  :src="imgsrc(data.row.equipArg.image)" :onerror="noImgUrl" style="height:100px;width:100px;"/>
+                    </el-popover>
                 </define-column>
                 <define-column label="RFID" fixed width="200" v-slot="{ data }">
                     <define-input v-model="data.row.rfid" type="Number" :tableEdit="false"></define-input>
