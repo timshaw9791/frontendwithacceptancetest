@@ -1,23 +1,18 @@
 <template>
-    <div class="scrap-list-container">
-        <my-header title="装备报废" :haveBlack="true" @h_black="cancel"></my-header>
-        <div class="action_box" data-test="action_box">
-            <define-input label="单号" v-model="order.number" placeholder="--" :disabled="true"></define-input>
-            <define-input label="报废类型" v-model="order.categoryContent" :disabled="true"></define-input>
-            <date-select label="报废时间" v-model="order.createTime" :disabled="true"></date-select>
-            <entity-input label="操作人员" v-model="order.operatorInfo.operator" :disabled="true"></entity-input>
-        </div>
-        <div>
-            <define-input label="备注" v-model="order.remark" :disabled="isInfo"></define-input>
-        </div>
-        <div class="scrap-list-body">
+    <view-container>
+        <define-input label="单号" v-model="order.number" placeholder="--" :disabled="true"></define-input>
+        <define-input label="报废类型" v-model="order.categoryContent" :disabled="true"></define-input>
+        <date-select label="报废时间" v-model="order.createTime" :disabled="true"></date-select>
+        <entity-input label="操作人员" v-model="order.operatorInfo.operator" :disabled="true"></entity-input>
+        <define-input label="备注" v-model="order.remark" :disabled="isInfo"></define-input>
+        <div class="table">
             <bos-tabs>
                 <template slot="slotHeader" v-if="!isInfo&&isHardwareSelect">
                     <base-select v-model="hardwareSelect.select" label="硬件选择"
                                  :selectList="hardwareSelect.list"></base-select>
                     <base-button label="读取数据" @click="readData" :disabled="!hardwareSelect.select"></base-button>
                 </template>
-                <define-table :data="equipItems" height="2.8646rem" @changeCurrent="selectedRow" :havePage="false"
+                <define-table :data="equipItems" height="766px" @changeCurrent="selectedRow" :havePage="false"
                               :highLightCurrent="true" slot="total" :showSummary="true" :summaryFunc="sumFunc">
                     <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
                         <i class="iconfont iconyichu"
@@ -26,7 +21,7 @@
                     <define-column label="装备参数" field="equipArg"></define-column>
                     <define-column label="装备数量" :filter="(row)=>row.items.length"></define-column>
                 </define-table>
-                <define-table :data="equipItems[totalIndex].items" height="2.8646rem" :havePage="false" slot="detail">
+                <define-table :data="equipItems[totalIndex].items" height="766px" :havePage="false" slot="detail">
                     <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
                         <i class="iconfont iconyichu"
                            @click="$delRow(equipItems[totalIndex].items,data.$index,()=>{!equipItems[totalIndex].items.length && equipItems.splice(totalIndex,1)})"></i>
@@ -35,12 +30,13 @@
                     <define-column label="装备序号" field="equipSerial"></define-column>
                 </define-table>
             </bos-tabs>
-            <div class="btn-box" v-if="!isInfo">
-                <base-button label="取消" @click="cancel"></base-button>
-                <base-button label="提交" @click="confirm"></base-button>
-            </div>
         </div>
-    </div>
+
+        <tool-bar class="btn-box" v-if="!isInfo">
+            <base-button label="取消" @click="cancel"></base-button>
+            <base-button label="提交" @click="confirm"></base-button>
+        </tool-bar>
+    </view-container>
 </template>
 
 <script>
@@ -149,8 +145,8 @@
             },
             confirm() {
                 let crapEquips = []
-                this.equipItems.forEach(item=>{
-                    item.items.forEach(item=>
+                this.equipItems.forEach(item => {
+                    item.items.forEach(item =>
                         !!item.rfid && (crapEquips.push = item.rfid)
                     )
                 })
@@ -194,7 +190,7 @@
             this.fixData()
         },
         beforeDestroy() {
-           !!this.pid && killProcess(this.pid)
+            !!this.pid && killProcess(this.pid)
         },
         components: {
             myHeader,
@@ -207,35 +203,8 @@
 </script>
 
 <style lang="scss" scoped>
-    .scrap-list-container {
-        font-size: 16px;
+    .table {
+        margin:10px 0 10px 10px;
 
-        .action_box {
-            margin-top: 15px;
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-        }
-    }
-
-    .maintenance-form-top {
-        padding: 18px 7px;
-        border-bottom: 1px solid #ebeef5;
-        overflow: hidden;
-    }
-
-    .scrap-list-body {
-        margin-top: 15px;
-        padding: 0 7px;
-    }
-
-    .btn-box {
-        width: 4rem;
-        height: 50px;
-        margin-left: 20px;
-        margin-top: 15px;
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
     }
 </style>

@@ -1,11 +1,11 @@
 <template>
     <view-container>
         <tool-bar>
-            <base-button slot="button" type="text" label="新增供应商" @click="addChanger('新增供应商')"></base-button>
+            <base-button slot="button" type="text" label="新增供应商" @click="edit()"></base-button>
         </tool-bar>
         <define-table :data="list" :pageInfo="paginator">
             <define-column label="操作" v-slot="{data}">
-                <i class="iconfont iconbianji" @click="addChanger(data.row)"></i>
+                <i class="iconfont iconbianji" @click="edit(data.row)"></i>
             </define-column>
             <define-column label="供应商名称" field="name"></define-column>
             <define-column label="联系人" field="person"></define-column>
@@ -31,23 +31,22 @@
 </template>
 
 <script>
-    import {formRulesMixin} from '../../field/common/mixinTableRest';
-    import serviceDialog from '../../components/base/serviceDialog/index'
+    import {formRulesMixin} from '@/field/common/mixinTableRest';
+    import serviceDialog from '@/components/base/serviceDialog/index'
     import {getSuppliers, addSupplier, updateSupplier} from "@/api/supplier"
-    import myHeader from "../../components/base/header/header"
-    import textInput from "../../componentized/textBox/textInput";
+    import myHeader from "@/components/base/header/header"
+    import textInput from "@/componentized/textBox/textInput";
 
     export default {
         data() {
             return {
-                title: '',
+                title: '新增供应商',
                 inlineForm: {},
                 scondary: false,
                 editInlineForm: false,
                 list: [],
                 inquire: '',
                 paginator: {size: 10, page: 1, totalPages: 5, totalElements: 5},
-                isEdit: false
             }
         },
         mixins: [formRulesMixin],
@@ -70,8 +69,6 @@
                     this.list = res.content
                     this.paginator.totalPages = res.totalPages
                     this.paginator.totalElements = res.totalElements
-                }).catch(e => {
-
                 })
             },
             changePage(page) {
@@ -88,31 +85,20 @@
                     this.getSupplierList()
                 })
             },
-            addChanger(row) {
-                this.inlineForm = this.isEdit ? JSON.parse(JSON.stringify(row)) : {};
-                if (this.title.includes('编辑')) {
+            edit(row) {
+                if (row) {
+                    this.title = '编辑供应商'
                     this.inlineForm = JSON.parse(JSON.stringify(row));
-                } else {
-                    this.inlineForm = {};
                 }
                 this.$refs.dialog.show();
             },
             cancel() {
                 this.editInlineForm = false
                 this.scondary = false
+                this.inlineForm = {}
             }
         },
         watch: {
-            inlineForm: {
-                handler(bal) {
-                    if (this.editInlineForm) {
-                        this.scondary = true
-                    } else {
-                        this.editInlineForm = true
-                    }
-                },
-                deep: true
-            },
             inquire(newVal, oldVal) {
                 this.getSupplierList()
             }

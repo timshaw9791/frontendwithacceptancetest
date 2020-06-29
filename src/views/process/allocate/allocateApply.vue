@@ -1,48 +1,41 @@
 <template>
     <view-container>
-        <operation-bar :task-definition-key="taskDefinitionKey"
-                       :is-show-out="isShowOut" :is-show-in="isShowIn"
+        <operation-bar v-if="!isInfo" :task-definition-key="taskDefinitionKey"
+                       :is-show-out="isShowOut" :is-show-in="isShowIn" :order-id="applyOrder.id"
                        @refused="showRfDialog" @agree="agree"
                        @invalid="invalid" @edit="edit"
                        @outbound="outbound" @inbound="inbound"
+                       @submit="submit" @cancel="cancel"
         ></operation-bar>
-        <tool-bar v-if="!isInfo">
-            <base-button slot="button" type="text" label="提交" @click="submit()"></base-button>
-            <base-button slot="button" type="text" label="清空"  @click="clean()"></base-button>
-        </tool-bar>
+
         <div class="apply-process-body">
-            <div class="process-info">
-                <define-input label="单号" v-model="applyOrder.number" :disabled="true"
-                              placeholder="-"></define-input>
-                <date-select label="申请时间" v-model="applyOrder.createTime" :disabled="true"></date-select>
-                <entity-input label="申请人员" v-model="applyOrder.applicant"
-                              :options="{detail:'applicant'}" :disabled="true"
-                              format="{name}({policeSign})">
-                </entity-input>
-                <entity-input label="入库机构" v-model="applyOrder.inboundOrganUnit" format="{name}"
-                              :options="{search:'organUnits'}" placeholder="请选择"
-                              :disabled="allocateCategory==='TRANSFER'||isInfo">
-                </entity-input>
-            </div>
-            <div class="process-info">
-                <define-input label="入库库房" v-model="inboundEquipsOrder.house.name" :disabled="true"
-                              placeholder="-"></define-input>
-                <entity-input label="入库人员" v-model="inboundEquipsOrder.operator" :disabled="true"
-                              placeholder="-" format="{name}({policeSign})"></entity-input>
-                <entity-input label="出库机构" v-model="applyOrder.outboundOrganUnit" format="{name}"
-                              :options="{search:'organUnits'}" placeholder="请选择"
-                              :disabled="!(allocateCategory==='TRANSFER')||isInfo">
-                </entity-input>
-                <define-input label="出库库房" v-model="outboundEquipsOrder.house.name" :disabled="true"
-                              placeholder="-"></define-input>
-            </div>
-            <div class="process-info">
-                <entity-input label="出库人员" v-model="outboundEquipsOrder.operator" :disabled="true"
-                              placeholder="-" format="{name}({policeSign})"></entity-input>
-                <text-input label="申请原因" v-model="applyOrder.remark" :column="12" :tips="tips"
-                            :disabled="isInfo">
-                </text-input>
-            </div>
+
+            <define-input label="单号" v-model="applyOrder.number" :disabled="true"
+                          placeholder="-"></define-input>
+            <date-select label="申请时间" v-model="applyOrder.createTime" :disabled="true"></date-select>
+            <entity-input label="申请人员" v-model="applyOrder.applicant"
+                          :options="{detail:'applicant'}" :disabled="true"
+                          format="{name}({policeSign})">
+            </entity-input>
+            <entity-input label="入库机构" v-model="applyOrder.inboundOrganUnit" format="{name}"
+                          :options="{search:'organUnits'}" placeholder="请选择"
+                          :disabled="allocateCategory==='TRANSFER'||isInfo">
+            </entity-input>
+            <define-input label="入库库房" v-model="inboundEquipsOrder.house.name" :disabled="true"
+                          placeholder="-"></define-input>
+            <entity-input label="入库人员" v-model="inboundEquipsOrder.operator" :disabled="true"
+                          placeholder="-" format="{name}({policeSign})"></entity-input>
+            <entity-input label="出库机构" v-model="applyOrder.outboundOrganUnit" format="{name}"
+                          :options="{search:'organUnits'}" placeholder="请选择"
+                          :disabled="!(allocateCategory==='TRANSFER')||isInfo">
+            </entity-input>
+            <define-input label="出库库房" v-model="outboundEquipsOrder.house.name" :disabled="true"
+                          placeholder="-"></define-input>
+            <entity-input label="出库人员" v-model="outboundEquipsOrder.operator" :disabled="true"
+                          placeholder="-" format="{name}({policeSign})"></entity-input>
+            <text-input label="申请原因" v-model="applyOrder.remark" :column="12" :tips="tips"
+                        :disabled="isInfo">
+            </text-input>
             <define-table :havePage="false" :data="applyOrder.equips" height="2.8646rem"
                           :showSummary="true" :summaryFunc="$sumFunc" slot="total">
                 <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
@@ -110,8 +103,8 @@
         },
         methods: {
             async init() {
-                this.applyOrder={equips: [{equipArg: {}}], applicant: {}},
-                this.applyOrder.applicant = this.userInfo
+                this.applyOrder = {equips: [{equipArg: {}}], applicant: {}},
+                    this.applyOrder.applicant = this.userInfo
                 console.log(this.userInfo)
                 if (this.allocateCategory === 'TRANSFER') {
                     // 不经过深拷贝会出现为空现象

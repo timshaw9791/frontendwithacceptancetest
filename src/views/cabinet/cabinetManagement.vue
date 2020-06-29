@@ -4,7 +4,7 @@
       <base-button label="一键开柜" type="text" slot="button"></base-button>
     </tool-bar>
     <div class="data-list" v-if="!edit">
-      <bos-tabs :option="['contrast']" :layoutRatio="[3,4]" :contrastKey="['slot1', 'slot2']" :header="false">
+      <bos-tabs :option="['contrast']" :layoutRatio="[45,65]" :contrastKey="['slot1', 'slot2']" :header="false">
         <define-table
           :data="list"
           slot="slot1"

@@ -1,6 +1,6 @@
 <template>
     <div class="maintenance-form-container">
-        <bos-tabs :header="false" :option="['contrast']" :layoutRatio="[2,1]" :contrastKey="['total', 'contrast']">
+        <bos-tabs :header="false" :option="['contrast']" :layoutRatio="[70,30]" :contrastKey="['total', 'contrast']">
             <define-table slot="total" ref="total" :data="listData"
                           height="928px" :havePage="false"
                           @changeCurrent="selRow" :highLightCurrent="true">
@@ -30,7 +30,7 @@
             </define-table>
         </bos-tabs>
         <tool-bar>
-            <base-button slot="button" type="text" label="开始保养" @click="startMain"></base-button>
+            <base-button slot="button" type="text" label="结束保养" @click="startMain"></base-button>
         </tool-bar>
     </div>
 </template>
