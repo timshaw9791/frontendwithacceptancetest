@@ -1,11 +1,10 @@
 <template>
-    <div class="opening-box">
-        <my-header title="维修申请"></my-header>
-        <div class="btn_box">
-             <base-button label="开始维修" align="right" :width="128" :height="25" :fontSize="20" @click="toInHouse"></base-button>
-        </div>
+    <view-container>
+        <tool-bar >
+             <base-button label="开始维修" type="text" slot="button" @click="toInHouse"></base-button>
+        </tool-bar>
         <div class="data-list">
-            <define-table :data="list" height="3.64rem" @changeCurrent="selRow" @changePage="changePage" :pageInfo="paginator">
+            <define-table :data="list"  @changePage="changePage" :pageInfo="paginator">
                             <define-column label="操作" width="100" v-slot="{ data }">
                                 <div class="span-box">
                                      <span >开柜</span>
@@ -28,7 +27,7 @@
                             <define-column label="申请原因" field="reason" :tableEdit="false"/>
                         </define-table>
         </div>
-    </div>
+    </view-container>
 </template>
 
 <script>
@@ -67,12 +66,6 @@ export default {
             }
         },
         methods:{
-            selRow(){
-
-            },
-            sumFunc(){
-
-            },
             toDetail(data){
                 this.equipData=data
                 this.inorder=true

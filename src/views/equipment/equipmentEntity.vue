@@ -31,6 +31,7 @@
                 <define-column label="装备序号" field="serial" width="100" fixed/>
                 <define-column label="装备名称" width="200" field="equipArg.name" fixed/>
                 <define-column label="装备型号" field="equipArg.model" fixed/>
+                <define-column label="装备状态" field="state" :filter="row=>enumsObj('EquipState').values[row.state]" fixed/>
                 <define-column label="质保期(天)" :filter="(row)=>milliToDay(row.equipArg.shelfLife)"/>
                 <define-column label="充电周期(天)" :filter="(row)=>milliToDay(row.equipArg.chargeCycle)"/>
                 <define-column label="保养周期(天)" :filter="(row)=>milliToDay(row.equipArg.upkeepCycle)"/>
@@ -59,7 +60,7 @@
     import serviceDialog from 'components/base/serviceDialog/index'
     import {equipsAll} from 'api/storage'
     import CopyRfid from "../../components/copyRfid";
-
+    import {mapGetters} from 'vuex'
     export default {
         components: {
             CopyRfid,
@@ -86,6 +87,9 @@
                 paginator: {size: 10, page: 1, totalPages: 1, totalElements: 5},
                 noImgUrl: 'this.src="' + require('../../assets/noImg.png') + '"'
             }
+        },
+        computed:{
+            ...mapGetters(['enumsObj'])
         },
         methods: {
             getList() {
