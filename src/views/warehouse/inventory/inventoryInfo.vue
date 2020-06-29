@@ -14,9 +14,8 @@
                 <base-button label="读取数据" @click="readData()"></base-button>
             </template>
             <template slot="total">
-                <define-table :data="equipItems" @changeCurrent="changeRow"
-                              :highLightCurrent="true"
-                              :havePage="false">
+                <define-table :data="equipItems" @changeCurrent="changeRow" height="782px"
+                              :highLightCurrent="true" :havePage="false">
                     <define-column label="装备参数" field="equipArg"></define-column>
                     <define-column label="位置" field="locationInfo"></define-column>
                     <define-column label="数量" field="count"></define-column>
@@ -74,7 +73,7 @@
                 totalIndex: 0,
                 isShowDialog: false,
                 // // 假列表
-                // noInventoryList: ['19080010', '110000030000000000000000', '110000010000000000000000', '19090907', '87654321'],
+                noInventoryList: ['19080010', '110000030000000000000000', '110000010000000000000000', '19090907', '87654321'],
             }
         },
         methods: {
@@ -88,7 +87,7 @@
                 }
             },
             readData() {
-                let {rfidList} = handheld(this.$message.error, inventory.json)
+               let {rfidList} = handheld(this.$message.error, 'inventory.json')
                 findByRfids(rfidList).then(res => {
                     this.equipItems = res
                     this.fixData()
