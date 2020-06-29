@@ -1,11 +1,10 @@
 <template>
-    <div class="scrap-order-container">
-        <my-header title="报废单"></my-header>
-        <div class="header">
-            <base-button label="常规报废" type="primary" @click="toScrap"></base-button>
-        </div>
+    <view-container>
+        <tool-bar>
+            <base-button slot="button" label="常规报废" type="text" @click="toScrap" ></base-button>
+        </tool-bar>
         <div class="data-list">
-            <define-table :data="list" height="3.64rem" @changePage="changePage" :pageInfo="paginator">
+            <define-table :data="list" height="928px" @changePage="changePage" :pageInfo="paginator">
                 <define-column label="操作" width="130" v-slot="{ data }">
                     <div class="span-box">
                         <base-button label="详情" size="mini" @click="toDetail(data.row)" type="primary"></base-button>
@@ -19,7 +18,7 @@
                 <define-column label="报废时间" :filter="(row)=>$filterTime(row.createTime)"/>
             </define-table>
         </div>
-    </div>
+    </view-container>
 </template>
 
 <script>
@@ -28,8 +27,8 @@
     import bosTabs from '@/componentized/table/bosTabs.vue'
     import divTmp from '@/componentized/divTmp'
     import {scarpsOrders} from "api/operation"
-    import {transScrapCategory} from '../../../common/js'
-    import {listTableMixin} from "../../../field/mixins/listMixin";
+    import {transScrapCategory} from '@/common/js'
+    import {listTableMixin} from "@/field/mixins/listMixin";
 
     export default {
         name: 'scrapList',

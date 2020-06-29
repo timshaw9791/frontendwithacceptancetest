@@ -30,7 +30,7 @@
             </define-table>
         </bos-tabs>
         <tool-bar>
-            <base-button slot="button" type="text" label="开始保养" @click="startMain"></base-button>
+            <base-button slot="button" type="text" label="结束保养" @click="startMain"></base-button>
         </tool-bar>
     </div>
 </template>
