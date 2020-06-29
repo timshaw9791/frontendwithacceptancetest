@@ -26,7 +26,7 @@ if (process.env.NODE_ENV == "production") {
     result = fs.readFileSync(path).toString();
     result = eval(`(${result})`);
     baseURL = `http://${result.HOUSE_SERVER}`;
-    baseBURL = `http://${result.B_SERVER}`;
+    baseBURL = `http://${result.PLATFORM_URL}`;
     localTitle = `${result.A_CLIENT_TITLE}`;
     setCom(result.UHF_READ_COM);
     getHandheldPath(result.INVENTORY_PATH);
