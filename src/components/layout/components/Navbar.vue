@@ -1,10 +1,9 @@
 <template>
-    <div class="titalbar-container">
+    <div class="totalbar-container">
         <div class="system-box">
             <img src="@/common/images/警徽2.png" class="logo" @click="windowClose">
             <label class="system-title">{{ title }}</label>
         </div>
-        <!-- <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger> -->
         <div class="icon-box">
             <div class="icon" @click="$router.push('/overview/index')">
                 <svg-icon icon-class="主页" class="svg"/>
@@ -54,14 +53,10 @@
         },
         computed: {
             ...mapGetters([
-                'sidebar',
                 'unreadCount'
             ])
         },
         methods: {
-            toggleSideBar() {
-                this.$store.dispatch('ToggleSideBar')
-            },
             logout() {
                 this.$store.dispatch('LogOut').then(() => {
                     location.reload()
@@ -90,7 +85,7 @@
         } 
     }
     
-    .titalbar-container {
+    .totalbar-container {
         font-size: 16px;
         height: 59px;
         line-height: 59px;
@@ -108,6 +103,7 @@
             }
             .system-title {
                 margin-left: 10px;
+                user-select: none;
             }
         }
         .system-title {
@@ -127,11 +123,6 @@
                 font-size: 0.1302rem;
                 vertical-align: middle;
             }
-        }
-        .hamburger-container {
-            height: 0.2604rem;
-            float: left;
-            padding: 0 0.0521rem;
         }
     }
 </style>
