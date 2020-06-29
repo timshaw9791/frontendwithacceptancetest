@@ -27,12 +27,11 @@ export function jsqlPage(data, state) { // 根据jsql返回分页数据
     }, state)
 }
 
-export function bosEnums(params, state) { // 根据枚举分类获取常量值
+export function bosEnums() { // 获取库房端的枚举数据
     return request({
-        url: '/bos/bos-enums/by-category',
+        url: '/bos/bos-enums',
         method: 'GET',
-        params
-    }, state)
+    })
 }
 
 export function bosEnumsPlatform() { // 获取平台端的枚举数据

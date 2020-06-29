@@ -120,7 +120,6 @@ export default {
     },
     components: {breadCrumb, dropdown},
     created() {
-        console.log(this.$route)
         this.routeList = this._.drop(this.$route.matched)
     }
 }
