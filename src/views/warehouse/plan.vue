@@ -3,7 +3,7 @@
         <tool-bar>
             <base-button size="default" align="right" label="新增预案" @click="dialogShow('add','')"></base-button>
         </tool-bar>
-        <bos-tabs  :option="['contrast']" :layoutRatio="[3,1]" :contrastKey="['slot1', 'slot2']" :header="false">
+        <bos-tabs  :option="['contrast']" :layoutRatio="[75,25]" :contrastKey="['slot1', 'slot2']" :header="false">
             <define-table  slot="slot1" :pageInfo="paginator" @changePage="changePage" :data="order"
                           @changeCurrent="changeCurrent">
                 <define-column label="操作" v-slot="{ data }">

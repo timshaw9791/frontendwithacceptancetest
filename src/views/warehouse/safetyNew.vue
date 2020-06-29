@@ -1,6 +1,6 @@
 <template>
     <view-container>
-        <bos-tabs  :option="['contrast']" :layoutRatio="[1,3]" :contrastKey="['slot1', 'slot2']">
+        <bos-tabs  :option="['contrast']" :layoutRatio="[25,75]" :contrastKey="['slot1', 'slot2']">
             <div  slot="slot1" class="safety-body-top">
                 <define-input label="小类" v-model="search"></define-input>
                 <div style="height:85%">

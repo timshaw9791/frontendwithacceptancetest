@@ -5,7 +5,7 @@
                 <date-select label="操作时间" v-model="listData.createTime" placeholder="--" :disabled="true"></date-select>
                 <entity-input label="操作人员" v-model="listData.operatorInfo.operator"  :disabled="true" ></entity-input>
             </div>
-           <bos-tabs :option="['contrast']" :layoutRatio="[2,3]" :contrastKey="['slot1', 'slot2']">
+           <bos-tabs :option="['contrast']" :layoutRatio="[40,60]" :contrastKey="['slot1', 'slot2']">
                <template slot="slotHeader" v-if="edit">
                             <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96" @click="readData"></base-button>
                             <base-select label="硬件选择" v-model="select.selected" align="right" :selectList="select.handWareList"></base-select>
