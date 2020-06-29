@@ -2,7 +2,7 @@
     <div class="view-container">
         <div class="top-tools-container">
             <div class="breadcrumb-box">
-                <bread-crumb :routeList="routeList"></bread-crumb>
+                <bread-crumb></bread-crumb>
             </div>
             <div class="tabs-box">
                 <div v-for="(tab, i) in tabs" :key="tab.key" class="tab" v-show="tab.label" :class="{'tab-select': tabSelect==i}" @click="selectTab(tab, i)">{{ tab.label }}</div>
@@ -77,7 +77,6 @@ export default {
     name: 'viewContainer',
     data() {
         return {
-            routeList: [], // 路由面包屑
             tabSelect: 0, // 当前选择的标签卡索引
             advancedSearchShow: false, // 是否显示高级搜索框
             showMenu: false, // 控制下拉菜单
@@ -118,10 +117,7 @@ export default {
         //         .some(sortName=>sortName.includes(`${this.tabs[this.tabSelect].key}morebutton`)||sortName.includes('publicmorebutton'))
         // }
     },
-    components: {breadCrumb, dropdown},
-    created() {
-        this.routeList = this._.drop(this.$route.matched)
-    }
+    components: {breadCrumb, dropdown}
 }
 </script>
 
