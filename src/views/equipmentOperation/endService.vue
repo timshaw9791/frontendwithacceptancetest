@@ -1,6 +1,5 @@
 <template>
-    <div class="opening-box">
-         <my-header :title="$route.meta.title" :haveBlack="false"></my-header>
+    <view-container>
          <div class="apply-process-top" data-test="action_box">
                 <define-input label="单号" placeholder="--" :disabled="true" ></define-input>
                 <define-input label="维修时间" placeholder="--" :disabled="true" ></define-input>
@@ -12,8 +11,8 @@
                             <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96" @click="readData"></base-button>
                             <base-select label="硬件选择" v-model="select.selected" align="right" :selectList="select.handWareList"></base-select>
                         </template>
-                        <define-table :data="newData" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
-                            :highLightCurrent="true"  slot="total" :showSummary="true" :summaryFunc="sumFunc">
+                        <define-table :data="newData"  @changeCurrent="selRow" :havePage="false"
+                            :highLightCurrent="true" height="828px" slot="total" :showSummary="true" :summaryFunc="sumFunc">
                             <define-column label="操作" width="100" v-slot="{ data }">
                                 <i class="iconfont icontianjia" @click="changeRow(true,data)"></i>
                                 <i class="iconfont iconyichu" @click="changeRow(false,data)"></i>
@@ -28,7 +27,7 @@
                                 <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>
                             </define-column>
                         </define-table>
-                        <define-table :data="newData[findIndex].copyList" height="2.8646rem" :havePage="false" slot="detail">
+                        <define-table :data="newData[findIndex].copyList" height="828px" :havePage="false" slot="detail">
                             <define-column label="操作" width="100" v-slot="{ data }">
                                <i class="iconfont icontianjia" @click="changeDetailRow(true,data)"></i>
                                <i class="iconfont iconyichu" @click="changeDetailRow(false,data)"></i>
@@ -41,13 +40,13 @@
                             </define-column>
                         </define-table>
                     </bos-tabs>
-        <div class="btn-box">
-                  <base-button label="取消" align="right" :width="128" :height="25" :fontSize="20" @click="cancel"></base-button>
-                  <base-button label="提交" align="right" :width="128" :height="25" :fontSize="20" @click="confirm"></base-button>
-              </div>
-        
+        <tool-bar >
+                  <base-button label="取消" type="text" slot="button" @click="cancel"></base-button>
+                  <base-button label="提交" type="text" slot="button" @click="confirm"></base-button>
+              </tool-bar>
+
         </div>
-    </div>
+    </view-container>
 </template>
 
 <script>
