@@ -14,7 +14,7 @@
                 <base-select label="硬件选择" v-model="select.selected" align="right"
                              :selectList="select.handWareList"></base-select>
             </template>
-            <define-table :data="newData" height="828px" @changeCurrent="selRow" :havePage="false"
+            <define-table :data="newData" height="828px" @changeCurrent="selRow" :havePage="false" ref="table"
                           :highLightCurrent="true" slot="total" :showSummary="true" :summaryFunc="sumFunc">
                 <define-column label="操作" width="100" v-slot="{ data }" v-if="!this.$route.query.id">
                     <!-- <i class="iconfont icontianjia" @click="changeRow(true,data)"></i> -->
@@ -114,6 +114,9 @@
                 data.key == "total" ? killProcess(this.pid) : ''
             },
             sumFunc(param) { // 表格合并行计算方法
+                this.$nextTick(() => {
+                    this.$refs.table.refreshLayout();
+                });
                 let {columns, data} = param, sums = [];
                 sums = new Array(columns.length).fill('')
                 sums[0] = '合计'

@@ -17,13 +17,13 @@
             <define-column fixed label="姓名" field="name" width="100"></define-column>
             <define-column label="性别" field="gender" width="100"></define-column>
             <define-column label="机构单位" field="organUnitName" width="180"></define-column>
-            <define-column label="角色" field="role" width="180"></define-column>
+            <define-column label="角色" field="role" :filter="row=>platformEnumsObj('Role').values[row.role]" width="180"></define-column>
             <define-column label="职位" field="position" width="180"></define-column>
             <define-column label="联系方式" field="phone"></define-column>
             <define-column label="身份证号" field="idNumber"></define-column>
             <define-column label="指纹信息"
-                           :filter="(row)=>{return fingerprintInformation==''||fingerprintInformation==null?'无':'有'}"></define-column>
-            <define-column label="开门库房权限" :filter="(row)=>{return enterHouse?'有':'无'}"></define-column>
+                           :filter="(row)=>{return row.fingerprintInformation==''||row.fingerprintInformation==null?'无':'有'}"></define-column>
+            <define-column label="开门库房权限" :filter="(row)=>{return row.enterHouse?'有':'无'}"></define-column>
         </define-table>
     </view-container>
 </template>
@@ -34,7 +34,7 @@
     import uploadFile from '@/componentized/uploadFile'
     import {baseURL} from 'api/config'
     import {getUser, deleteUser} from 'api/user'
-
+    import {mapGetters} from 'vuex'
     export default {
         name: "personnelManagement",
         components: {
@@ -51,6 +51,9 @@
         },
         created() {
             this.getUserList()
+        },
+        computed:{
+            ...mapGetters(['platformEnumsObj'])
         },
         methods: {
             addperson() {
