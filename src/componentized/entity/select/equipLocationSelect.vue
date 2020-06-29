@@ -87,7 +87,7 @@ export default {
             getList(){
                 getLocation().then(res=>{
                     res.content.forEach(item=>{
-                        if(item.category==0)
+                        if(item.category=='COMMON_SHELF')
                         this.surfaceList.push(item)
                     })
                     console.log(this.surfaceList);

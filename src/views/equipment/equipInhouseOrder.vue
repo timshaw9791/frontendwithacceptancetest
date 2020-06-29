@@ -9,7 +9,7 @@
             <entity-input label="入库人员" v-model="listData.operator.operator" format="{name}" :disabled="true"></entity-input>
         </div>
             <bos-tabs>
-                <define-table :data="newData" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
+                <define-table :data="newData"  @changeCurrent="selRow" :havePage="false"
                               :highLightCurrent="true" slot="total" :showSummary="true" :summaryFunc="sumFunc">
                     <define-column label="装备参数" v-slot="{ data }">
                         <entity-input v-model="data.row.equipArg" :options="{search:'equipArgsSelect'}"

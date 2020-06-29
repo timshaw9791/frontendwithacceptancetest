@@ -1,12 +1,10 @@
 <template>
     <view-container :tabs="tabs" v-model="search">
-        <define-table :data="[]" height="100%">
+        <!-- 标签1 -->
+        <define-table :data="[]" height="100%" slot="car1">
             <define-column label="测试列" field="a"></define-column>
             <define-column label="测试列2" field=""b></define-column>
         </define-table>
-        <!-- 标签1 -->
-        <div slot="car2" style="height: 100vh">
-        </div>
         <!-- 标签2 -->
         <div slot="car2" style="height: 100vh">这里是标签 2 内容</div>
         <!-- 标签1 按钮 -->

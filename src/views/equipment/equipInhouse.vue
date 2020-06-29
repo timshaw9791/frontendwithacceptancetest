@@ -10,8 +10,8 @@
                             <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96" @click="readData"></base-button>
                             <base-select label="硬件选择" v-model="select.selected" align="right" :selectList="select.handWareList"></base-select>
                         </template>
-                        <define-table :data="list" height="2.8646rem" @changeCurrent="selRow" :havePage="false"
-                            :highLightCurrent="true"  slot="total" :showSummary="true" :summaryFunc="sumFunc">
+                        <define-table :data="list"  @changeCurrent="selRow" :havePage="false"
+                            :highLightCurrent="true" height="828px" slot="total" :showSummary="true" :summaryFunc="sumFunc">
                             <define-column label="操作" width="100" v-slot="{ data }">
                                 <i class="iconfont icontianjia" @click="changeRow(true,data)"></i>
                                 <i class="iconfont iconyichu" @click="changeRow(false,data)"></i>
@@ -30,7 +30,7 @@
                             </define-column>
                             <define-column label="装备数量" :filter="(row)=>row.copyList.length"/>
                         </define-table>
-                        <define-table :data="list[findIndex].copyList" height="2.8646rem" :havePage="false" slot="detail">
+                        <define-table :data="list[findIndex].copyList" height="828px" :havePage="false" slot="detail">
                             <define-column label="操作" width="100" v-slot="{ data }">
                                 <i class="iconfont icontianjia" ></i>
                                 <i class="iconfont iconyichu" @click="changeDetailRow(false,data)"></i>
@@ -91,7 +91,7 @@ export default {
                     rfids: [],
                     serial: [],
                     count:0,
-                    copyList:[],
+                    copyList:[ ],
                 }],
                people:'',
                checkList:[],

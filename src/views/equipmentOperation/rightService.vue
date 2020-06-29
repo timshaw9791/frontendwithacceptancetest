@@ -1,12 +1,11 @@
 <template>
-    <div class="right-service-container">
-        <my-header title="正在维修"></my-header>
-        <div class="btn_box">
-            <base-button label="结束维修" align="right" :width="128" :height="25" :fontSize="20"
+    <view-container>
+        <tool-bar>
+            <base-button label="结束维修" type="text" slot="button"
                          @click="toInHouse"></base-button>
-        </div>
+        </tool-bar>
         <div class="data-list">
-            <define-table :data="list" height="3.64rem" @changeCurrent="selRow" @changePage="changePage"
+            <define-table :data="list"  @changePage="changePage"
                           :pageInfo="paginator">
                 <define-column label="操作" width="100" v-slot="{ data }">
                     <div class="span-box">
@@ -33,7 +32,7 @@
                 </define-column>
             </define-table>
         </div>
-    </div>
+    </view-container>
 </template>
 
 <script>

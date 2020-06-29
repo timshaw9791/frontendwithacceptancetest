@@ -1,6 +1,6 @@
 <template>
     <view-container>
-        <define-table :data="listData" height="2.8646rem"  :havePage="false"
+        <define-table :data="listData"   :havePage="false"
             :highLightCurrent="true">
             <define-column label="操作类别" field="category"/>
             <define-column label="操作时间" :filter="(row)=>$filterTime(row.createTime)" />

@@ -10,7 +10,7 @@
                             <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96" @click="readData"></base-button>
                             <base-select label="硬件选择" v-model="select.selected" align="right" :selectList="select.handWareList"></base-select>
                         </template>
-            <define-table :data="list" slot="slot1" height="4rem" @changeCurrent="selRow" :havePage="false"  >
+            <define-table :data="list" slot="slot1" height="828px" @changeCurrent="selRow" :havePage="false"  >
                             <define-column label="操作" width="150px" v-slot="{ data }" v-if="$route.query.title!='位置变更单/位置变更单详情'">
                                 <i class="iconfont icontianjia" @click="changeRow(true,data)" ></i>
                                 <i class="iconfont iconyichu" @click="changeRow(false,data)"></i>
@@ -22,7 +22,7 @@
                                 <define-input v-model="data.row.count" type="Number" :tableEdit="edit"></define-input>
                             </define-column>
                         </define-table>
-            <define-table :haveIndex="false"  slot="slot2" :havePage="edit" :data="list[findIndex].locationChangeItems" height="4rem" >
+            <define-table :haveIndex="false"  slot="slot2" height="828px" :havePage="edit" :data="list[findIndex].locationChangeItems"  >
                 <define-column label="RFID"  v-slot="{data}">
                     <define-input v-model="data.row.rfid"  :tableEdit="edit" ></define-input>
                 </define-column>

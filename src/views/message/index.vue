@@ -1,6 +1,6 @@
 <template>
 	<view-container :tabs="tabs">
-		<bos-tabs :option="['contrast']" :contrastKey="['main', 'content']" :layoutRatio="['45%', '55%']" :header="false">
+		<bos-tabs :option="['contrast']" :contrastKey="['main', 'content']" :layoutRatio="['50%', '50%']" :header="false">
 			<define-table :data="list" :pageInfo="fetchParams.pageInfo" @changePage="changePage"
 				:highLightCurrent="true" @changeCurrent="changeCurrent" slot="main" ref="leftTable">
 				<define-column label="操作" field="opeare" width="60" v-slot="{ data }">
@@ -34,7 +34,7 @@
 import myHeader from 'components/base/header/header';
 import { readMsg, markStar, allRead } from 'api/message'
 import { bosMixin } from 'field/mixins/listMixin'
-import { jsqlPage, bosEnums } from 'api/basic'
+import { jsqlPage } from 'api/basic'
 import bosTabs from '@/componentized/table/bosTabs'
 export default {
 	name: 'message',
@@ -94,9 +94,9 @@ export default {
 			})
 		},
 		fetchEnumerator() {
-			bosEnums({category: 'MessageTitleEnum'}).then(res => {
-				this.enumerator = res;
-			})
+			// bosEnums({category: 'MessageTitleEnum'}).then(res => {
+			// 	this.enumerator = res;
+			// })
 		},
 		changeCurrent(data) {
 			data.current && data.current.id && !data.current.status && readMsg({ids: [data.current.id]}).then(res => {

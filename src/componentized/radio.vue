@@ -8,7 +8,7 @@
                 <div class="select-box" @click="select(i, item)">
                     <div class="tick" v-show="selectIndex==i"></div>
                 </div>
-                <span class="radio-label">{{ item.label }}</span>
+                <span class="radio-label">{{ item.value }}</span>
             </div>
         </div>
     </div>
