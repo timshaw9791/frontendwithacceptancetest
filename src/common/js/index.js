@@ -110,7 +110,6 @@ export function formatFuncOrder(data) {
         } 
     }else {
         let surface = 'A'
-        console.log(data.location);
         if(data.location.surface!=undefined){
             if (data.location.surface == 1) surface = 'B'
             else {

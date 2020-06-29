@@ -1,21 +1,11 @@
 <template>
     <view-container>
-    <div class="right-service-container">
-        <div class="maintenance-form-body">
-            <define-table :data="list" height="3.64rem" @changePage="changePage" :pageInfo="paginator">
-                <define-column label="人员姓名" field="policeName" ></define-column>
-                   
-                <define-column label="佩戴次数" field="totalCount"></define-column>
-                  
-                <define-column label="标准次数" field='standCount' width="400"></define-column>
-                 
-                
-                <define-column label="佩戴率(%)" :filter="(row)=>{return (row.standCount/row.totalCount*100).toFixed(2)}"></define-column>
-                  
-            </define-table>
-
-        </div>
-    </div>
+        <define-table :data="list"  @changePage="changePage" :pageInfo="paginator">
+            <define-column label="人员姓名" field="policeName" ></define-column>
+            <define-column label="佩戴次数" field="totalCount"></define-column>
+            <define-column label="标准次数" field='standCount' width="400"></define-column>
+            <define-column label="佩戴率(%)" :filter="(row)=>{return (row.standCount/row.totalCount*100).toFixed(2)}"></define-column>
+        </define-table>
     </view-container>
 </template>
 

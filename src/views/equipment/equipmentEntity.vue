@@ -19,10 +19,9 @@
                             title=""
                             trigger="hover"
                             transition="fade-in-linear"
-
                             >
                         <img class="img" slot="reference" :src="imgsrc(data.row.equipArg.image)" :onerror="noImgUrl" style="height:30px;width:30px;"/>
-                        <img class="img"  :src="imgsrc(data.row.equipArg.image)" :onerror="noImgUrl" style="height:100px;width:100px;"/>
+                        <img class="img"  :src="imgsrc(data.row.equipArg.image)" :onerror="noImgUrl" style="height:150px;width:150px;margin-left: auto;"/>
                     </el-popover>
                 </define-column>
                 <define-column label="RFID" fixed width="200" v-slot="{ data }">
