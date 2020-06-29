@@ -72,8 +72,6 @@
                 // 明细表渲染的数据
                 totalIndex: 0,
                 isShowDialog: false,
-                // // 假列表
-                noInventoryList: ['19080010', '110000030000000000000000', '110000010000000000000000', '19090907', '87654321'],
             }
         },
         methods: {
@@ -87,11 +85,13 @@
                 }
             },
             readData() {
-               let {rfidList} = handheld(this.$message.error, 'inventory.json')
-                findByRfids(rfidList).then(res => {
-                    this.equipItems = res
-                    this.fixData()
+                handheld(this.$message.error, 'inventory.json').then((res) => {
+                    findByRfids(JSON.parse(res).rfidList).then(res => {
+                        this.equipItems = res
+                        this.fixData()
+                    })
                 })
+
             },
             fixData() {
                 let {simplifyItems, equipItems} = transEquips(this.equipItems, 'state-locationInfo')
@@ -152,17 +152,5 @@
 </script>
 
 <style scoped>
-    .inventory-info-container {
-        font-size: 16px;
-    }
 
-    .inputs {
-        margin: 16px 8px;
-    }
-
-    .box-bottom {
-        padding-top: 10px;
-        padding-right: 20px;
-        float: right;
-    }
 </style>

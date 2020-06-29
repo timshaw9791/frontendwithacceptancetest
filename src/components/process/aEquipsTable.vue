@@ -1,5 +1,5 @@
 <template>
-    <bos-tabs :option="isInfo?['tabs']:['tabs', 'contrast']" :layoutRatio="isInfo?[1,1]:[2,1]">
+    <bos-tabs :option="isInfo?['tabs']:['tabs', 'contrast']" :layoutRatio="isInfo?[50,50]:[70,30]">
         <template slot="slotHeader" v-if="!isInfo">
             <hardware-select @readData="readData"></hardware-select>
         </template>

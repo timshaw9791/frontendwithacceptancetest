@@ -1,6 +1,6 @@
 <template>
     <div class="maintenance-form-container">
-        <bos-tabs :header="false" :option="['contrast']" :layoutRatio="[2,1]" :contrastKey="['total', 'contrast']">
+        <bos-tabs :header="false" :option="['contrast']" :layoutRatio="[70,30]" :contrastKey="['total', 'contrast']">
             <define-table slot="total" ref="total" :data="listData"
                           height="928px" :havePage="false"
                           @changeCurrent="selRow" :highLightCurrent="true">
