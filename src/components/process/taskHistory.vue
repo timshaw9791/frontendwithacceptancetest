@@ -5,7 +5,7 @@
             <div>{{item.name}}</div>
             <div>{{ item.assigneeName }}</div>
             <div>
-                <div>{{ item.state }}</div>
+                <div style="float: left">{{ item.state }}</div>
                 <div class="checkReason" v-show="item.state==='驳回'" @click="handleReason(item.note)">[查看驳回原因]</div>
             </div>
             <div>操作时间{{item.time}}</div>
@@ -88,10 +88,13 @@
     .info {
         display: grid;
         grid-template-columns: 20% 20% 40% 20%;
+        font-size: 17px;
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: rgba(112, 112, 112, 0.13) solid 1px;
     }
 
     .checkReason {
-        float: right;
         color: #3F5FE0;
         cursor: pointer;
     }
