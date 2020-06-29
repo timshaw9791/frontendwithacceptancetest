@@ -3,6 +3,7 @@
         <slot name="input"></slot>
         <div class="button-box">
             <slot name="button"></slot>
+            <base-button label="返回" type="text" @click="back" v-show="showBack"></base-button>
         </div>
         <div class="dropdown-container" @mouseleave="showMenu=false" v-show="showMoreButtonBox">
             <span class="label" @click="showMenu=!showMenu">更多</span>
@@ -20,6 +21,17 @@
             return {
                 showMenu: false,
                 showMoreButtonBox: false
+            }
+        },
+        props: {
+            showBack: {
+                type: Boolean,
+                default: false
+            }
+        },
+        methods: {
+            back() {
+                this.$router.back()
             }
         },
         mounted() {
