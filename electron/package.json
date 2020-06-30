@@ -91,9 +91,9 @@
     "testURL": "http://localhost/"
   },
   "build": {
-    "appId": "库房管理系统A端",
+    "appId": "库房管理系统A端-V3",
     "copyright": "华安安全",
-    "productName": "库房管理系统A端",
+    "productName": "库房管理系统A端-V3",
     "directories": {
       "output": "build"
     },

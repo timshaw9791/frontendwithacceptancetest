@@ -204,12 +204,12 @@
             Object.assign(this, this.$route.query)
             this.allocateCategory = this.name.includes('调拨') ? 'TRANSFER' : 'DIRECT'
             if (this.processInstanceId) {
-                this.fetchData()
                 this.isInfo = true
-                this.title = this.name + '详情'
+                this.$route.meta.crumb = this.name + '详情'
+                this.fetchData()
             } else {
+                this.$route.meta.crumb = this.name + '申请'
                 this.init()
-                this.title = '申请流程'
             }
         },
         computed: {
