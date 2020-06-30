@@ -104,18 +104,18 @@
                     item.state = item.state === 0 ? '可用' : '充电中'
                 })
                 // 假数据处理
-                if (!this.isInfo) {
-                    this.order = {
-                        startTime: (new Date()).valueOf(),
-                        operatorInfo: {
-                            operator: JSON.parse(window.localStorage.getItem("user")).name,
-                            operatorId: JSON.parse(window.localStorage.getItem("user")).id
-                        },
-                        inventoryCount: 10,
-                        notCount: this.rfids.length,
-                        count: 10 - this.rfids.length
-                    }
-                }
+                // if (!this.isInfo) {
+                //     this.order = {
+                //         startTime: (new Date()).valueOf(),
+                //         operatorInfo: {
+                //             operator: JSON.parse(window.localStorage.getItem("user")).name,
+                //             operatorId: JSON.parse(window.localStorage.getItem("user")).id
+                //         },
+                //         inventoryCount: 10,
+                //         notCount: this.rfids.length,
+                //         count: 10 - this.rfids.length
+                //     }
+                // }
             },
             changeRow(current) {
                 this.totalIndex = current.index

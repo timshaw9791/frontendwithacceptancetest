@@ -130,6 +130,7 @@ const asyncRouterMap = [{
     path: '/process',
     component: Layout,
     name: 'process',
+    redirect: '/process/newProcess',
     meta: {title: '流程管理', icon: '流程管理', crumb: '流程管理'},
     children: [
         {
@@ -186,6 +187,7 @@ const asyncRouterMap = [{
     path: '/equipmentOperation',
     component: Layout,
     name: 'equipmentOperation',
+    redirect: '/equipmentOperation/textCharge',
     meta: {title: '维保充电', icon: '维保充电', crumb: '维保充电'},
     children: [{
         path: 'textCharge',
@@ -236,6 +238,7 @@ const asyncRouterMap = [{
     path: '/warehouse',
     component: Layout,
     name: 'warehouse',
+    redirect: '/warehouse/safetyNew',
     meta: {title: '库房管理', icon: '库房管理', crumb: '库房管理'},
     children: [{
         path: 'safetyNew',
@@ -256,13 +259,13 @@ const asyncRouterMap = [{
         path: 'inventoryInfo',
         name: 'inventoryInfo',
         component: _import('warehouse/inventory/inventoryInfo'),
-        meta: {crumb: ''},
+        meta: {crumb: '盘点单'},
         hidden: true,
     }, {
         path: 'addPersonal',
         name: 'addPersonal',
         component: _import('warehouse/addPersonal'),
-        meta: {crumb: ''},
+        meta: {crumb: '人员新增'},
         hidden: true,
     }, {
         path: 'personnelManagement',
@@ -294,7 +297,7 @@ const asyncRouterMap = [{
         path: 'editplan',
         name: 'editplan',
         component: _import('warehouse/editPlan'),
-        meta: {crumb: ''},
+        meta: {crumb: '编辑应急预案'},
         hidden: true,
     }, {
         path: 'consumables',
@@ -321,7 +324,7 @@ const asyncRouterMap = [{
         path: 'scrapInfo',
         name: 'scrapInfo',
         component: _import('warehouse/scrap/scrapInfo'),
-        meta: {crumb: ''},
+        meta: {crumb: '装备报废详情'},
         hidden: true
     }, {
         path: 'training',
@@ -332,13 +335,13 @@ const asyncRouterMap = [{
         path: 'editTraining',
         name: 'editTraining',
         component: _import('warehouse/editTraining'),
-        meta: {crumb: ''},
+        meta: {crumb: '编辑教学培训'},
         hidden: true
     }, {
         path: 'trainingShow',
         name: 'trainingShow',
         component: _import('warehouse/trainingshow'),
-        meta: {crumb: ''},
+        meta: {crumb: '教学培训'},
         hidden: true
     }, {
         path: 'unReturn',
@@ -350,6 +353,7 @@ const asyncRouterMap = [{
     path: '/report',
     component: Layout,
     name: 'report',
+    redirect: '/report/amount',
     meta: {title: '统计报表', icon: '统计报表'},
     children: [{
         path: 'amount',
@@ -386,84 +390,86 @@ const asyncRouterMap = [{
     path: '/record',
     component: Layout,
     name: 'record',
-    meta: {title: '记录管理', icon: '记录管理'},
+    redirect: '/record/openGate',
+    meta: {title: '记录管理', icon: '记录管理',crumb: '记录管理'},
     children: [{
         path: 'openGate',
         name: 'openGate',
         component: _import('record/openGate'),
-        meta: {title: '开门记录'},
+        meta: {title: '开门记录',crumb: '开门记录'},
     }, {
         path: 'openCabinet',
         name: 'openCabinet',
         component: _import('record/openCabinet'),
-        meta: {title: '开柜记录'},
+        meta: {title: '开柜记录',crumb: '开柜记录'},
     }, {
         path: 'RROList',
         name: 'RROList',
         component: _import('record/receiveReturnOrder/RROList'),
-        meta: {title: '领取归还记录'},
+        meta: {title: '领取归还记录',crumb: '领取归还记录'},
     }, {
         path: 'RROInfo',
         name: 'RROInfo',
         component: _import('record/receiveReturnOrder/RROInfo'),
-        hidden: true
+        hidden: true,
+        meta: {title: '领取归还单详情',crumb:'领取归还单详情'}
     }, {
         path: 'chargingRecord',
         name: 'chargingRecord',
         component: _import('record/chargingRecord'),
-        meta: {title: '充电记录'},
+        meta: {title: '充电记录',crumb: '充电记录'},
     }, {
         path: 'maintenanceRecord',
         name: 'maintenanceRecord',
         component: _import('record/maintenanceOrder'),
-        meta: {title: '保养单'},
+        meta: {title: '保养单',crumb: '保养单'},
     }, {
         path: 'maintenanceReturn',
         name: 'maintenanceReturn',
         component: _import('record/maintenanceReturn'),
-        meta: {title: '保养归还单'},
+        meta: {title: '保养归还单',crumb: '保养归还单'},
     }, {
         path: 'maintenanceOrderDetails',
         name: 'maintenanceOrderDetails',
         component: _import('record/MaintenanceDetails'),
         hidden: true,
-        meta: {title: '保养单/保养单详情'},
+        meta: {title: '保养单详情',crumb: '保养单详情'},
     }, {
         path: 'equipAllocationOrder',
         name: 'equipAllocationOrder',
         component: _import('record/equipAllocationOrder'),
-        meta: {title: '位置变更单'},
+        meta: {title: '位置变更单',title:'位置变更单'},
     }, {
         path: 'serviceOrder',
         name: 'serviceOrder',
         component: _import('record/serviceOrder'),
-        meta: {title: '维修单'},
+        meta: {title: '维修单',crumb: '维修单'},
     }, {
         path: 'serviceDetails',
         name: 'serviceDetails',
         component: _import('record/serviceDetails'),
         hidden: true,
-        meta: {title: '维修单/维修单详情'},
+        meta: {title: '维修单详情',crumb:'维修单详情'},
     }, {
         path: 'serviceReturn',
         name: 'serviceReturn',
         component: _import('record/serviceReturn'),
-        meta: {title: '维修归还单'},
+        meta: {title: '维修归还单',crumb: '维修归还单'},
     }, {
         path: 'serviceApplicationOrder',
         name: 'serviceApplicationOrder',
         component: _import('record/serviceApplicationOrder'),
-        meta: {title: '维修申请记录'},
+        meta: {title: '维修申请记录',crumb: '维修申请记录'},
     }, {
         path: 'consumablerecord',
         name: 'consumablerecord',
         component: _import('record/consumablerecord'),
-        meta: {title: '耗材记录'}
+        meta: {title: '耗材记录',crumb:'耗材记录'}
     }, {
         path: 'consumablerecordInfo',
         name: 'consumablerecordInfo',
         component: _import('record/consumablerecordInfo'),
-        meta: {title: '耗材记录/耗材详情单'},
+        meta: {title: '耗材详情单',crumb: '耗材详情单'},
         hidden: true,
     }]
 }, {
