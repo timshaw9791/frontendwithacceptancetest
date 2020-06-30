@@ -1,5 +1,5 @@
 <template>
-    <tool-bar>
+    <tool-bar :show-back="showBack">
         <!--出库或者入库显示-->
         <base-button v-if="taskDefinitionKey.includes('outbound')||isShowOut"
                      :label="isShowOut?'查看出库单':'出库'" @click="outbound"
@@ -45,6 +45,10 @@
                 type: Boolean,
                 default: false
             },
+            showBack:{
+                type: Boolean,
+                default: true
+            }
         },
         methods: {
             outbound() {

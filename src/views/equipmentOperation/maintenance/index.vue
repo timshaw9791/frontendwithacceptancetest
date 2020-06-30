@@ -9,14 +9,12 @@
 </template>
 
 <script>
-    import bosTabs from "@/componentized/table/bosTabs";
     import needMaintenance from "@/views/equipmentOperation/maintenance/needMaintenance";
     import underMaintenance from "@/views/equipmentOperation/maintenance/underMaintenance";
 
     export default {
         name: "newMaintenance",
         components: {
-            bosTabs,
             needMaintenance,
             underMaintenance
         },

@@ -5,11 +5,9 @@
                        @refused="showRfDialog" @agree="agree"
                        @invalid="invalid" @edit="edit"
                        @outbound="outbound" @inbound="inbound"
-                       @submit="submit" @cancel="cancel"
+                       @submit="submit" @clean="clean"
         ></operation-bar>
-
         <div class="apply-process-body">
-
             <define-input label="单号" v-model="applyOrder.number" :disabled="true"
                           placeholder="-"></define-input>
             <date-select label="申请时间" v-model="applyOrder.createTime" :disabled="true"></date-select>
@@ -215,7 +213,8 @@
         computed: {
             ...mapGetters([
                 'userInfo',
-                'organUnit'
+                'organUnit',
+                'enums'
             ]),
         },
         watch: {

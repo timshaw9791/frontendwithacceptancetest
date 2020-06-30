@@ -1,5 +1,5 @@
 <template>
-    <view-container>
+    <div>
         <tool-bar>
             <base-button label="结束维修" type="text" slot="button"
                          @click="toInHouse"></base-button>
@@ -32,7 +32,7 @@
                 </define-column>
             </define-table>
         </div>
-    </view-container>
+    </div>
 </template>
 
 <script>

@@ -11,7 +11,7 @@
             <define-column label="联系人" field="person"></define-column>
             <define-column label="联系方式" field="phone"></define-column>
         </define-table>
-        <service-dialog :title="title" ref="dialog" @firstCancel="cancel" @cancel="cancel" @confirm="dialogConfirm"
+        <service-dialog :title="dialogTitle" ref="dialog" @firstCancel="cancel" @cancel="cancel" @confirm="dialogConfirm"
                         :secondary="scondary">
             <form-container ref="inlineForm" :model="inlineForm">
                 <field-input v-model="inlineForm.name" label="供应商" width="8"
@@ -40,7 +40,7 @@
     export default {
         data() {
             return {
-                title: '新增供应商',
+                dialogTitle: '新增供应商',
                 inlineForm: {},
                 scondary: false,
                 editInlineForm: false,
@@ -76,7 +76,7 @@
                 this.getSupplierList()
             },
             dialogConfirm() {
-                let requestApi = this.title.includes('编辑') ? updateSupplier : addSupplier
+                let requestApi = this.dialogTitle.includes('编辑') ? updateSupplier : addSupplier
                 requestApi(this.inlineForm).then(() => {
                     this.$refs.dialog.hide()
                     this.paginator.page = 1
@@ -86,9 +86,9 @@
                 })
             },
             edit(row) {
-                if (row) {
-                    this.title = '编辑供应商'
+                if (!!row) {
                     this.inlineForm = JSON.parse(JSON.stringify(row));
+                    this.dialogTitle = '编辑供应商'
                 }
                 this.$refs.dialog.show();
             },
@@ -96,6 +96,7 @@
                 this.editInlineForm = false
                 this.scondary = false
                 this.inlineForm = {}
+                this.dialogTitle = '新增供应商'
             }
         },
         watch: {
