@@ -1,7 +1,7 @@
 <template>
 <view-container>
         <div class="action_box">
-                <define-input label="单号" placeholder="--" margin="0 0" :disabled="true" ></define-input>
+                <define-input label="单号" placeholder="--" margin="0 15px 0 0" :disabled="true" ></define-input>
                 <date-select label="入库时间" placeholder="--" :disabled="true"></date-select>
                 <entity-input label="入库人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :disabled="true" ></entity-input>
             </div>
@@ -122,7 +122,6 @@ export default {
                 let { columns, data } = param, sums = [];
                 sums=new Array(columns.length).fill('')
                 sums[0]='合计'
-                console.log(data);
                 sums[columns.length-1]=param.data.reduce((v,k)=>v+k.copyList.length,0)
                 return sums;
             },

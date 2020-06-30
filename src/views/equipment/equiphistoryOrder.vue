@@ -2,7 +2,7 @@
     <view-container>
         <define-table :data="listData"   :havePage="false"
             :highLightCurrent="true">
-            <define-column label="操作类别" field="category"/>
+            <define-column label="操作类别" field="category" :filter="row=>enumsObj('EquipOperate').values[row.category]"/>
             <define-column label="操作时间" :filter="(row)=>$filterTime(row.createTime)" />
             <define-column label="操作人员" field="operatorInfo.operator"/>
             <define-column label="备注" field="remark"/>
@@ -25,6 +25,7 @@
     import serviceDialog from 'components/base/serviceDialog/index'
     import divTmp from '@/componentized/divTmp'
     import {jsqlPage} from "api/basic"
+    import {mapGetters} from 'vuex'
 export default {
     components:{
             myHeader,
@@ -53,6 +54,9 @@ export default {
                listData:[]
             }
         },
+    computed:{
+        ...mapGetters(['enumsObj'])
+    },
         methods:{
             fetchData(id){
                 this.params.params=[]
