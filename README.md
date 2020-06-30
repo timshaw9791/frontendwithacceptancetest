@@ -44,3 +44,16 @@ npm run test:unit
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
+### 打包问题
+出现 .git/config： 在electron文件夹下的package.json文件夹中添加
+在第一层
+"repository": { 
+    "type": "git",
+    "url": "https://github.com/timshaw9791/policeEquipmentSystem.git"
+ },
+ 或者
+ "build": {
+     "win": {
+       "publish":null 加上这句话
+     }
+   }
