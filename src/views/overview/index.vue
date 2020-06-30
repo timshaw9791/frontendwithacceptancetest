@@ -65,7 +65,6 @@
                             </div>
                         </div>
                     </bos-tabs>
-
                 </div>
             </el-card>
         </div>
@@ -115,14 +114,6 @@
                         canUse += item.canUse
                         list.push(item)
                     })
-                    //当个数超过7个，需要换行显示。添加 i 标签，解决flex:justify-content: space-around;最后一行不能左对齐问题
-                    // length = list.length
-                    // if(length > 7) {
-                    //     this.showCircular = false; // 不显示进度图形
-                    //     for(let i = 1; i< 8; i++) {
-                    //         this.$refs.inventory.appendChild(document.createElement('i'))
-                    //     }
-                    // }
                     this.inventory.list = list
                     this.inventory.totalIsUse = isUse
                     this.inventory.totalCanUse = canUse
@@ -154,29 +145,6 @@
                     this.loading = false
                     !err.response && this.$message.error(err.toString())
                 })
-                // function handheld(data, filename, cb) {
-                //     return new Promise((reslove, reject) => {
-                //         writeFile(data, cbData => {
-                //             if(cbData.state) {
-                //                 reslove("导入成功")
-                //             } else {
-                //                 reject(cbData.message)
-                //             }
-                //         }, filename)
-                //     })
-                // }
-                // Promise.all([findEquipsNeedChange()]).then(res => {
-                //     Promise.all([handheld(res[0], "statisticsEquip.json")]).then(state => {
-                //         this.loading = false
-                //         this.$message.success(typeof state == 'object'?state[0]:state)
-                //     }).catch(err => {
-                //         console.log(err);
-                //         this.loading = false
-                //         this.$message.error(err)
-                //     })
-                // }).catch(err => {
-                //     this.loading = false;
-                // })
             },
             toOther(key) {
                 switch (key) {
