@@ -14,7 +14,9 @@
                 </el-badge>
             </div>
             <el-dropdown trigger="click" placement="bottom-start">
-                <div><svg-icon icon-class="设置" class="svg"/></div>
+                <div>
+                    <svg-icon icon-class="设置" class="svg"/>
+                </div>
                 <el-dropdown-menu>
                     <router-link to="/private/index">
                         <el-dropdown-item>个人中心</el-dropdown-item>
@@ -32,9 +34,10 @@
 <script>
     import {mapGetters} from 'vuex'
     import Hamburger from 'components/base/Hamburger'
-    import { localTitle } from 'api/config'
-    import { getMsgList } from "api/message";
-    import { jsqlPage } from 'api/basic'
+    import {localTitle} from 'api/config'
+    import {getMsgList} from "api/message";
+    import {jsqlPage} from 'api/basic'
+
     export default {
         data() {
             return {
@@ -67,23 +70,17 @@
             },
             fetchData() {
                 jsqlPage(this.fetchParams).then(res => {
-                   this.$store.commit('setUnreadCount', this._.flatten(res.content).filter(item => !item.status).length);
+                    this.$store.commit('setUnreadCount', this._.flatten(res.content).filter(item => !item.status).length);
                 })
             }
         },
-        created(){
+        created() {
             this.fetchData();
             setInterval(this.fetchData, 2000)
         },
     }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
-    .el-badge {
-        /deep/.el-badge__content{
-            margin-top: 20px;
-            user-select: none;
-        }
-    }
 
     .total-bar-container {
         font-size: 16px;
@@ -91,33 +88,39 @@
         line-height: 60px;
         position: relative;
         background-color: #2F2F76;
+
         .system-box {
             display: inline-flex;
             justify-content: flex-start;
             align-items: center;
-            font-size:18px;
-            color:rgba(255,255,255,1);
+            font-size: 18px;
+            color: rgba(255, 255, 255, 1);
             margin-left: 10px;
+
             .logo {
                 cursor: pointer;
             }
+
             .system-title {
                 margin-left: 10px;
                 user-select: none;
             }
         }
+
         .system-title {
-            font-size:18px;
-            color:rgba(255,255,255,1);
+            font-size: 18px;
+            color: rgba(255, 255, 255, 1);
             vertical-align: middle;
         }
+
         .icon-box {
             width: 163px;
-            height: 59px;
+            height: 60px;
             display: flex;
             justify-content: space-between;
             float: right;
             margin-right: 26px;
+
             .svg {
                 cursor: pointer;
                 font-size: 0.1302rem;

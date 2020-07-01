@@ -41,6 +41,7 @@ export default {
 <style scoped>
     .breadcrumb-container {
         font-size: 20px;
+        color: #707070;
     }
     .hamburger-container {
         display: inline-block;

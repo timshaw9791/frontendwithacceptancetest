@@ -2,11 +2,15 @@
     <view-container :tabs="tabs" v-model="search">
         <!-- 标签1 -->
         <div slot="car1">
-            <define-table :data="[]" height="100%" >
+            <define-table :data="[]" height="100%">
                 <define-column label="测试列" field="a"></define-column>
                 <define-column label="测试列2" field="" b></define-column>
             </define-table>
-            <div>{{enumsObj.Process.DIRECT}}</div>
+            <div style="width: 100px; position: relative;">
+                <div style="background: red; width: 60px;height: 50px; border-radius: 25px; float: right;position: absolute;line-height: 50px;text-align:center;top:-20px;left: 70px">100</div>
+                <div style="background: #409EFF; width: 100px;height: 100px"></div>
+            </div>
+
         </div>
         <!-- 标签2 -->
         <div slot="car2" style="height: 100vh">这里是标签 2 内容</div>

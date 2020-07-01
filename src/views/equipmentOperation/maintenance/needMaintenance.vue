@@ -1,5 +1,5 @@
 <template>
-    <div class="maintenance-form-body">
+    <div style="margin: 0 10px ">
         <bos-tabs :option="['contrast']" :layoutRatio="[70,30]" :contrastKey="['total', 'contrast']" :header="false">
             <define-table ref="total" :havePage="false" :data="listData"
                           @changeCurrent="selRow" :highLightCurrent="true"
@@ -40,7 +40,7 @@
         data() {
             return {
                 findIndex: 0,
-                listData: [{copyList:[]}],
+                listData: [{copyList: []}],
             }
         },
         methods: {
@@ -78,11 +78,6 @@
 </script>
 
 <style lang="scss" scoped>
-
-    .maintenance-form-body {
-        padding: 0 7px;
-        width: 100%;
-    }
 
     .process-info {
         padding: 18px 0;

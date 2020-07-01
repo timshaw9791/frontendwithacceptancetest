@@ -126,6 +126,7 @@ export default {
         padding: 0;
         background: transparent;
         border: none;
+        color: #51519A;
     }
     .disabled {
         opacity: 0.6;

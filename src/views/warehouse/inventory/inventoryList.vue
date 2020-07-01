@@ -82,12 +82,5 @@
 </script>
 
 <style scoped>
-    .inventory--list-container {
-        font-size: 16px;
-    }
-
-    .header {
-        padding: 16px 8px;
-    }
 
 </style>

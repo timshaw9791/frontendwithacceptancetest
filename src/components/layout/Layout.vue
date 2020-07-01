@@ -1,17 +1,17 @@
 <template>
-  <div class="app-wrapper" :class="classObj">
-    <navbar></navbar>
-    <sidebar class="sidebar-container"></sidebar>
-    <div class="main-container">
-      <app-main></app-main>
+    <div class="app-wrapper" :class="classObj">
+        <navbar></navbar>
+        <sidebar class="sidebar-container"></sidebar>
+        <div class="main-container">
+            <app-main></app-main>
+            <div class="information">
+                <span>&copy; 2019 - 2020 警用装备智能管理系统</span>
+                <span style="margin-left: 10px">技术支持：浙江华安安全设备有限公司</span>
+                <span style="margin-left: 20px">服务热线:400-8265186</span>
+                <span style="margin-left: 20px">V {{ version }}</span>
+            </div>
+        </div>
     </div>
-    <div class="information">
-        <span>&copy; 2019 - 2020 警用装备智能管理系统</span>
-        <span style="margin-left: 10px">技术支持：浙江华安安全设备有限公司</span>
-        <span style="margin-left: 20px">服务热线:400-8265186</span>
-        <span style="margin-left: 20px">V {{ version }}</span>
-      </div>
-  </div>
 </template>
 
 <script>
@@ -75,7 +75,7 @@
             right: 0;
             color: #707070;
             height: 32px;
-            line-height:28px;
+            line-height:26px;
         }
     }
 </style>
