@@ -143,13 +143,13 @@ export default {
         }
     },
     watch: {
-        value() {
-            this.fileName = this.value;
+        value: {
+            handler(val) {
+                this.fileName = val
+                this.init()
+            },
+            immediate: true
         }
-    },
-    created() {
-        this.fileName = this.value;
-        this.init();
     }
 }
 </script>
