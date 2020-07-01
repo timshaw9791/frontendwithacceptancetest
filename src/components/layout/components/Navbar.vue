@@ -1,7 +1,7 @@
 <template>
     <div class="total-bar-container">
         <div class="system-box">
-            <img src="@/common/images/警徽2.png" class="logo" @click="windowClose">
+            <img src="@/components/icons/svg/警徽.png" class="logo" @click="windowClose" style="width: 50px;height: 56px">
             <label class="system-title">{{ title }}</label>
         </div>
         <div class="icon-box">
@@ -9,11 +9,12 @@
                 <svg-icon icon-class="主页" class="svg"/>
             </div>
             <div class="icon" @click="$router.push('/message/index')">
-                <el-badge :value="unreadCount">
-                    <svg-icon icon-class="通知" class="svg" title="主页"/>
+                <el-badge v-if="unreadCount" :value="unreadCount">
+                    <svg-icon icon-class="通知"  class="svg" title="主页"/>
                 </el-badge>
+                <svg-icon v-else icon-class="通知"  class="svg" title="主页"/>
             </div>
-            <el-dropdown trigger="click" placement="bottom-start">
+            <el-dropdown  class="icon" trigger="click" placement="bottom-start">
                 <div>
                     <svg-icon icon-class="设置" class="svg"/>
                 </div>
@@ -85,10 +86,10 @@
     .total-bar-container {
         font-size: 16px;
         height: 60px;
-        line-height: 60px;
         position: relative;
         background-color: #2F2F76;
-
+        align-items: center;
+        margin: 0 auto;
         .system-box {
             display: inline-flex;
             justify-content: flex-start;
@@ -110,21 +111,21 @@
         .system-title {
             font-size: 18px;
             color: rgba(255, 255, 255, 1);
-            vertical-align: middle;
         }
 
         .icon-box {
-            width: 163px;
+            width: 150px;
             height: 60px;
             display: flex;
             justify-content: space-between;
             float: right;
-            margin-right: 26px;
+            margin-right: 24px;
+            align-items:center;
 
             .svg {
                 cursor: pointer;
-                font-size: 0.1302rem;
-                vertical-align: middle;
+                width: 25px;
+                height: 25px;
             }
         }
     }
