@@ -4,7 +4,6 @@
         <div class="info">
             <span>{{form.name}}</span>
             <span>{{form.position}}</span>
-            <span>{{form.organUnitName}}</span>
         </div>
     </div>
 </template>
@@ -18,5 +17,6 @@
                 form: JSON.parse(localStorage.getItem('user'))
             }
         }
+        // todo 下面显示角色权限
     }
 </script>

@@ -14,15 +14,6 @@
                     <i class=" iconfont iconfuzhiRFID" @click="copyRfid(data.row.rfid)" style="margin:8px"></i>
                 </define-column>
                 <define-column label="图片" width="120" v-slot="{ data }" fixed>
-<!--                    <el-popover-->
-<!--                            placement="right"-->
-<!--                            title=""-->
-<!--                            trigger="hover"-->
-<!--                            transition="fade-in-linear"-->
-<!--                            >-->
-<!--                        <img class="img" slot="reference" :src="imgsrc(data.row.equipArg.image)" :onerror="noImgUrl" style="height:30px;width:30px;"/>-->
-<!--                        <img class="img"  :src="imgsrc(data.row.equipArg.image)" :onerror="noImgUrl" style="height:150px;width:150px;margin-left: auto;"/>-->
-<!--                    </el-popover>-->
                     <hover-chart :imageUrl="data.row.equipArg.image"></hover-chart>
                 </define-column>
                 <define-column label="RFID" fixed width="200" v-slot="{ data }">
@@ -31,7 +22,7 @@
                 <define-column label="装备序号" field="serial" width="100" fixed/>
                 <define-column label="装备名称" width="200" field="equipArg.name" fixed/>
                 <define-column label="装备型号" field="equipArg.model" fixed/>
-                <define-column label="装备状态" field="state" :filter="row=>enumsObj('EquipState').values[row.state]" fixed/>
+                <define-column label="装备状态" field="state" :filter="row=>enumsObj.EquipState[row.state]" fixed/>
                 <define-column label="质保期(天)" :filter="(row)=>milliToDay(row.equipArg.shelfLife)"/>
                 <define-column label="充电周期(天)" :filter="(row)=>milliToDay(row.equipArg.chargeCycle)"/>
                 <define-column label="保养周期(天)" :filter="(row)=>milliToDay(row.equipArg.upkeepCycle)"/>
@@ -45,7 +36,6 @@
                 </define-column>
                 <define-column label="单价" field="price"/>
             </define-table>
-<!--            <equipment-edit v-if="isEdit" @cancel="cancel" :editList="editList"></equipment-edit>-->
             <copy-rfid :rfid="rfid" :isShow="isShowDialog" @cancel="copyCancel"></copy-rfid>
     </view-container>
 </template>

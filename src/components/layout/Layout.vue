@@ -15,73 +15,67 @@
 </template>
 
 <script>
-import { Navbar, Sidebar, AppMain } from "./components";
-import ResizeMixin from "./mixin/ResizeHandler";
-var version = require('@/../package.json').version
+    import {Navbar, Sidebar, AppMain} from "./components";
+    import ResizeMixin from "./mixin/ResizeHandler";
 
-export default {
-  name: "layout",
-  components: {
-    Navbar,
-    Sidebar,
-    AppMain
-  },
-  data() {
-    return {
-      version
-    }
-  },
-  mixins: [ResizeMixin],
-  computed: {
-    sidebar() {
-      return this.$store.state.app.sidebar;
-    },
-    device() {
-      return this.$store.state.app.device;
-    },
-    classObj() {
-      return {
-        hideSidebar: !this.sidebar.opened,
-        withoutAnimation: this.sidebar.withoutAnimation,
-        mobile: this.device === "mobile"
-      };
-    }
-  },
-  methods: {
-    handleClickOutside() {
-      this.$store.dispatch("CloseSideBar", { withoutAnimation: false });
-    }
-  }
-};
+    var version = require('@/../package.json').version
+
+    export default {
+        name: "layout",
+        components: {
+            Navbar,
+            Sidebar,
+            AppMain
+        },
+        data() {
+            return {
+                version
+            }
+        },
+        mixins: [ResizeMixin],
+        computed: {
+            sidebar() {
+                return this.$store.state.app.sidebar;
+            },
+            device() {
+                return this.$store.state.app.device;
+            },
+            classObj() {
+                return {
+                    hideSidebar: !this.sidebar.opened,
+                    withoutAnimation: this.sidebar.withoutAnimation,
+                    mobile: this.device === "mobile"
+                };
+            }
+        },
+        methods: {
+            handleClickOutside() {
+                this.$store.dispatch("CloseSideBar", {withoutAnimation: false});
+            }
+        }
+    };
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-@import "~common/css/mixin.scss";
+    @import "~common/css/mixin.scss";
 
-.app-wrapper {
-  // @include clearfix;
-  position: relative;
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
-  font-size: 16px;
-  .information {
-      font-size: 12px;
-      text-align: center;
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
+    .app-wrapper {
+        // @include clearfix;
+        position: relative;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        font-size: 16px;
+
+        .information {
+            font-size: 0.0625rem  /* 12/192 */;
+            text-align: center;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            color: #707070;
+            height: 32px;
+            line-height:28px;
+        }
     }
-}
-
-.drawer-bg {
-  background: #000;
-  opacity: 0.3;
-  width: 100%;
-  top: 0;
-  height: 100%;
-  position: absolute;
-  z-index: 999;
-}
 </style>

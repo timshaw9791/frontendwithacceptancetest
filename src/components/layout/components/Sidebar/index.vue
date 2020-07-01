@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div v-if="!isCollapse">
-            <topInfo class="topInfo"></topInfo>
+        <div >
+            <topInfo v-if="!isCollapse" class="topInfo"></topInfo>
         </div>
         <el-scrollbar wrapClass="scrollbar-wrapper">
             <div :class="{'menu': true, 'collapse': !isCollapse}">

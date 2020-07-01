@@ -1,5 +1,5 @@
 <template>
-    <div class="totalbar-container">
+    <div class="total-bar-container">
         <div class="system-box">
             <img src="@/common/images/警徽2.png" class="logo" @click="windowClose">
             <label class="system-title">{{ title }}</label>
@@ -82,13 +82,13 @@
         /deep/.el-badge__content{
             margin-top: 20px;
             user-select: none;
-        } 
+        }
     }
-    
-    .totalbar-container {
+
+    .total-bar-container {
         font-size: 16px;
-        height: 59px;
-        line-height: 59px;
+        height: 60px;
+        line-height: 60px;
         position: relative;
         background-color: #2F2F76;
         .system-box {

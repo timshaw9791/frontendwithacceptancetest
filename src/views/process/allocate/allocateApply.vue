@@ -5,7 +5,7 @@
                        @refused="showRfDialog" @agree="agree"
                        @invalid="invalid" @edit="edit"
                        @outbound="outbound" @inbound="inbound"
-                       @submit="submit" @clean="clean"
+                       @submit="submit" @cancel="clean"
         ></operation-bar>
         <div class="apply-process-body">
             <define-input label="单号" v-model="applyOrder.number" :disabled="true"

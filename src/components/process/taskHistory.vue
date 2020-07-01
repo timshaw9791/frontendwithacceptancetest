@@ -1,7 +1,7 @@
 <template>
     <div class="task-history-container">
-        <div class="title">审批流程</div>
-        <div class="info">
+        <b style="color: #3F5FE0; font-size:19px;">审批流程</b>
+        <div style="height: 150px; font-size: 17px;overflow: auto;margin: 0 20px">
             <div class="task-list" v-for="(item, i) in processList" :key="i">
                 <div>{{item.name}}</div>
                 <div>{{ item.assigneeName }}</div>
@@ -9,7 +9,7 @@
                     <div style="float: left">{{ item.state }}</div>
                     <div class="checkReason" v-show="item.state==='驳回'" @click="handleReason(item.note)">[查看驳回原因]</div>
                 </div>
-                <div>操作时间{{item.time}}</div>
+                <div v-if="item.time">操作时间&#8195;{{item.time}}</div>
             </div>
         </div>
         <service-dialog title="驳回" ref="ratify" :button="false" width="300px"
@@ -81,15 +81,6 @@
 
     .task-history-container {
         margin-top: 10px;
-    }
-
-    .title {
-        color: #3F5FE0;
-        font-size: 19px;
-    }
-
-    .info {
-        height: 194px;
     }
 
     .task-list {
