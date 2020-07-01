@@ -433,7 +433,7 @@ const asyncRouterMap = [{
         path: 'equipAllocationOrder',
         name: 'equipAllocationOrder',
         component: _import('record/equipAllocationOrder'),
-        meta: {title: '位置变更单',title:'位置变更单'},
+        meta: {title: '位置变更单',crumb:'位置变更单'},
     }, {
         path: 'serviceOrder',
         name: 'serviceOrder',

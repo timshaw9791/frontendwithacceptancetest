@@ -6,7 +6,7 @@
             <i class="iconfont iconjiahao" v-show="!disabled&&!fileName"></i>
             <i class="iconfont iconPDF" v-show="type=='pdf'&&fileName"></i>
             <i class="iconfont icondianshi-shipinsuolve" v-show="type=='video'&&fileName"></i>
-            <i class="iconfont iconwenbenkuangshanchu" v-show="fileName&&!disabled" @click.stop="remove"></i>
+            <i class="iconfont iconwenbenkuangshanchu1" v-show="fileName&&!disabled" @click.stop="remove"></i>
             <img :src="imgSrc" class="img" v-if="fileName&&type=='img'" alt="图片加载失败"  :onerror="noImgUrl">
             <img src="@/assets/noThumbnails.png" class="img" v-if="disabled&&!fileName" >
         </div>
@@ -143,13 +143,13 @@ export default {
         }
     },
     watch: {
-        value() {
-            this.fileName = this.value;
+        value: {
+            handler(val) {
+                this.fileName = val
+                this.init()
+            },
+            immediate: true
         }
-    },
-    created() {
-        this.fileName = this.value;
-        this.init();
     }
 }
 </script>
@@ -171,6 +171,7 @@ export default {
     .img {
         width: 100%;
         height: 100%;
+        object-fit: contain;
     }
     .label {
         white-space: nowrap;
@@ -204,7 +205,7 @@ export default {
     }
 }
 .upload-file-container:hover {
-    .iconwenbenkuangshanchu {
+    .iconwenbenkuangshanchu1 {
         display: block;
     }
     .cancel {
@@ -246,7 +247,7 @@ export default {
 .icondianshi-shipinsuolve {
     font-size: 60px;
 }
-.iconwenbenkuangshanchu {
+.iconwenbenkuangshanchu1 {
     display: none;
     position: absolute;
     top: 2px;
