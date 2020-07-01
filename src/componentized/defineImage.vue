@@ -2,7 +2,7 @@
     <div class="define-image-container" :class="[size]"
          :style="`margin:${margin};float:${align}`"
          @mouseenter="showEnlarge=true"
-         @mouseleave="showEnlarge=true"
+         @mouseleave="showEnlarge=false"
          ref="image">
         <img :src="imgUrl"
              @error="errImg=true"
@@ -11,7 +11,7 @@
             <aside class="enlarge-background"
                    :class="[position]"
                    :style="positionClass"
-                   v-show="showEnlarge">
+                   v-show="showEnlarge&&!disabled&&url&&!errImg">
                 <div class="enlarge-box" :class="[previewSize]">
                     <img :src="imgUrl" class="img">
                 </div>
@@ -30,7 +30,7 @@
             },
             size: {
                 type: String,
-                default: 'medium'
+                default: 'tiny'
             },
             margin: {
                 type: String,
@@ -47,6 +47,10 @@
             position: { // 浮动层显示的位置，并且控制下级伪元素的朝向
                 type: String,
                 default: 'right'
+            },
+            disabled: {
+                type: Boolean,
+                defalut: false
             }
         },
         data() {
@@ -94,10 +98,12 @@
         position: relative;
         text-align: center;
         vertical-align: top;
+        background-color: transparent;
     }
     .img {
         width: 100%;
         height: 100%;
+        object-fit: contain;
         vertical-align: middle;
     }
     .border {
@@ -196,25 +202,10 @@
         transform: translateX(-50%);
         left: 50%;
     }
-    .arrow {
-        width: 10px;
-        height: 0;
-        border-style: solid;
-        border-width: 7px;
-        /*border-color: white white transparent transparent;*/
-        border-color: orange;
-        border-top-color: transparent;
-        border-right-color: transparent;
-        position: absolute;
-        transform: rotate(45deg);
-        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-        top: 50%;
-        left: -7px;
-    }
     /*drop-shadow(0 2px 12px rgba(0, 0, 0, 0.03))*/
     .enlarge-enter-active,
     .enlarge-leave-active {
-        transition: opacity 0.3s;
+        transition: opacity 1s;
     }
     .enlarge-enter,
     .enlarge-leave-to {
