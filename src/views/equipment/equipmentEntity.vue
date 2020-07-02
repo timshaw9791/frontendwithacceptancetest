@@ -4,7 +4,7 @@
             <base-button label="位置变更" type="text" slot="button" v-if="!isEdit"
                          @click="toAllocation"></base-button>
         </tool-bar>
-            <define-table :data="list" height="928px"  :pageInfo="this.paginator"
+            <define-table :data="list"   :pageInfo="this.paginator"
                           :highLightCurrent="true"
                           @changePage="changePage" :haveIndex="false" v-if="inList">
                 <define-column label="序号" fixed columnType="index" width="65"></define-column>

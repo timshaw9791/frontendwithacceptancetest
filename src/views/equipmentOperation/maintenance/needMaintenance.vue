@@ -3,7 +3,7 @@
         <bos-tabs :option="['contrast']" :layoutRatio="[70,30]" :contrastKey="['total', 'contrast']" :header="false">
             <define-table ref="total" :havePage="false" :data="listData"
                           @changeCurrent="selRow" :highLightCurrent="true"
-                          slot="total" key="1" height="928px">
+                          slot="total" key="1" ">
                 <define-column label="装备参数" v-slot="{ data }">
                     <entity-input v-model="data.row.equipArg" :detailParam="data.row.equipArg"
                                   :options="{ detail: 'equipArgsDetail' }" format="{name}({model})"
@@ -15,8 +15,7 @@
                 </define-column>
                 <define-column label="可保养数量" field="count"></define-column>
             </define-table>
-            <define-table slot="contrast" :data="listData.length!==0?listData[this.findIndex].copyList:[]"
-                          height="928px" :havePage="false">
+            <define-table slot="contrast" :data="listData.length!==0?listData[this.findIndex].copyList:[]" :havePage="false">
                 <define-column label="RFID" field="rfid"></define-column>
                 <define-column label="装备序号" field="serial"></define-column>
             </define-table>

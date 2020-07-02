@@ -1,6 +1,6 @@
 <template>
     <view-container>
-        <define-table :data="list" height="928px" :pageInfo="paginator" @changePage="changePage"
+        <define-table :data="list"  :pageInfo="paginator" @changePage="changePage"
                       :highLightCurrent="true">
             <define-column label="操作" v-slot="{ data }">
                 <i class="iconfont iconfaqi" @click="toApply(data.row)"></i>

@@ -91,6 +91,7 @@
         align-items: center;
         margin: 0 auto;
         .system-box {
+            height: 60px;
             display: inline-flex;
             justify-content: flex-start;
             align-items: center;
@@ -119,7 +120,7 @@
             display: flex;
             justify-content: space-between;
             float: right;
-            margin-right: 24px;
+            margin-right: 10px;
             align-items:center;
 
             .svg {

@@ -4,7 +4,7 @@
             <base-button slot="button" label="常规报废" type="text" @click="toScrap" ></base-button>
         </tool-bar>
         <div class="data-list">
-            <define-table :data="list" height="928px" @changePage="changePage" :pageInfo="paginator">
+            <define-table :data="list"  @changePage="changePage" :pageInfo="paginator">
                 <define-column label="操作" width="130" v-slot="{ data }">
                     <div class="span-box">
                         <base-button label="详情" size="mini" @click="toDetail(data.row)" type="primary"></base-button>

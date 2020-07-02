@@ -1,8 +1,7 @@
 <template>
     <div class="maintenance-form-container">
         <bos-tabs :header="false" :option="['contrast']" :layoutRatio="[70,30]" :contrastKey="['total', 'contrast']">
-            <define-table slot="total" ref="total" :data="listData"
-                          height="928px" :havePage="false"
+            <define-table slot="total" ref="total" :data="listData" :havePage="false"
                           @changeCurrent="selRow" :highLightCurrent="true">
                 <define-column label="装备参数" v-slot="{ data }">
                     <entity-input v-model="data.row.equipArg" :options="{detail:'equipArgsDetail'}"
@@ -19,7 +18,7 @@
                     <date-input v-model="data.row.keepTime" filter="toDay" :tableEdit="false"></date-input>
                 </define-column>
             </define-table>
-            <define-table slot="contrast" :data="listData.length!==0?listData[this.findIndex].copyList:[]" height="928px"
+            <define-table slot="contrast" :data="listData.length!==0?listData[this.findIndex].copyList:[]"
                           :havePage="false">
                 <define-column label="RFID" v-slot="{ data }">
                     <define-input v-model="data.row.rfid" type="String" :tableEdit="false"></define-input>

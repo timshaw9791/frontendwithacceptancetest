@@ -1,9 +1,9 @@
 <template>
     <div>
-        <img :src="imgUrl" :onerror="noPersonImgUrl" alt=""/>
+        <img class="personImg" :src="imgUrl" :onerror="noPersonImgUrl" alt=""/>
         <div class="info">
             <span>{{form.name}}</span>
-            <span>{{form.position}}</span>
+            <span>[{{$store.getters.enumsObj.Role[form.role]}}]</span>
         </div>
     </div>
 </template>
@@ -30,12 +30,11 @@
                 }
             }
         }
-        // todo 下面显示角色权限
     }
 </script>
 
 <style lang="scss">
-    img {
+    .personImg {
         width: 50px;
         height: 70px;
     }

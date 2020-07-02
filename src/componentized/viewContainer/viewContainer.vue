@@ -127,7 +127,7 @@ export default {
             color: #2F2F76;
         }
     }
-    $mainHeight: 928px;
+    $mainHeight: 920px;
     .view-container {
         width: 100%;
         font-size: 16px;
@@ -151,6 +151,7 @@ export default {
             justify-content: center;
             align-items: flex-end;
             height: 60px;
+            color: #707070;
             .tab {
                 padding: 0 17px;
                 height: 42px;
@@ -199,6 +200,7 @@ export default {
         .tab-select {
             border: 2px solid #DCDFE6;
             border-bottom: 1px solid white;
+            color:#3F5FE0;
         }
     }
     .dropdown-container {

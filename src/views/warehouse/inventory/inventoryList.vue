@@ -24,7 +24,7 @@
 <script>
     import myHeader from 'components/base/header/header'
     import {listTableMixin} from '@/field/mixins/listMixin.js'
-    import {inventoryOrder} from "@/api/inventory"
+    import {getInventoryOrderList} from "@/api/inventory"
     import serviceDialog from '../../../components/base/serviceDialog'
 
     export default {
@@ -48,7 +48,7 @@
 
         methods: {
             fetchData() {
-                inventoryOrder('get', this.paginator).then(res => {
+                getInventoryOrderList('get', this.paginator).then(res => {
                     this.list = res.content
                     this.paginator.totalPages = res.totalPages
                     this.paginator.totalElements = res.totalElements
@@ -71,10 +71,10 @@
                 this.$router.push({path: 'scrapInfo', query: {category: '2', rfids: this.rfids}})
             }
         },
-        mounted() {
-            let rfids = this.$route.params.rfids
-            if (rfids) {
-                this.rfids = rfids
+        created() {
+            // 是否有rfid需要报废
+            this.rfids = this.$route.params.rfids
+            if (this.rfids) {
                 this.isScrapDialog = true
             }
         }

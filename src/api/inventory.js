@@ -1,23 +1,27 @@
 /*盘点接口*/
 import request from 'common/js/request'
-// data 里面需要 inventoryOrder 和 rfids 列表
-function inventoryOrder(method, data) {
-    let requestObj = {
+
+function getInventoryOrderList(pagination) {
+    return request({
         url: '/inventory-orders',
-        method: method
-    }
-    switch (method) {
-        case 'get':{
-            requestObj.params = data
-            break
-        }
-        case 'post':{
-            requestObj.data = data.inventoryOrder
-            requestObj.url = `/inventory-orders?rfids=${data.rfids}`
-            break
-        }
-    }
-    return request(requestObj)
+        method: 'GET',
+        params: data
+    })
 }
 
-export { inventoryOrder }
+function addInventoryOrder(inventoryOrder) {
+    return request({
+        url: `/inventory-orders`,
+        method: 'POST',
+        data: inventoryOrder
+    })
+}
+
+function currentInventory(rfids) {
+    return request({
+        url:`/inventory-orders/current?rfids=${rfids}`,
+        method: 'POST'
+    })
+}
+
+export {getInventoryOrderList, addInventoryOrder, currentInventory}

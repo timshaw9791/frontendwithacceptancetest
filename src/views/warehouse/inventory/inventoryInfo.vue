@@ -19,7 +19,8 @@
                     <define-column label="装备参数" field="equipArg"></define-column>
                     <define-column label="位置" field="locationInfo"></define-column>
                     <define-column label="数量" field="count"></define-column>
-                    <define-column label="状态" field="state"></define-column>
+                    <define-column label="状态" field="state"
+                                   :field="$store.getters.enumsObj.EquipState[state]"></define-column>
                 </define-table>
             </template>
             <template slot="detail">
@@ -43,8 +44,7 @@
 <script>
     import BosTabs from "@/componentized/table/bosTabs";
     import myHeader from "@/components/base/header/header"
-    import {findByRfids} from "@/api/storage"
-    import {inventoryOrder} from "@/api/inventory"
+    import {addInventoryOrder, currentInventory} from "@/api/inventory"
     import {getBosEntity} from "@/api/basic"
     import {transEquips} from "@/common/js/transEquips";
     import copyRfid from "@/components/copyRfid";
@@ -86,51 +86,26 @@
             },
             readData() {
                 handheld(this.$message.error, 'inventory.json').then((res) => {
-                    findByRfids(JSON.parse(res).rfidList).then(res => {
-                        this.equipItems = res
-                        this.fixData()
+                    currentInventory(JSON.parse(res).rfidList).then(res => {
+                        this.equipItems = transEquips(res.equipItems, 'state-locationInfo')
                     })
                 })
-
-            },
-            fixData() {
-                let {simplifyItems, equipItems} = transEquips(this.equipItems, 'state-locationInfo')
-                if (equipItems.length > 0) {
-                    this.rfids = simplifyItems
-                    this.equipItems = equipItems
-                }
-                // 若未知装备的装备改变，那么需要修改
-                this.equipItems.forEach(item => {
-                    item.state = item.state === 0 ? '可用' : '充电中'
-                })
-                // 假数据处理
-                // if (!this.isInfo) {
-                //     this.order = {
-                //         startTime: (new Date()).valueOf(),
-                //         operatorInfo: {
-                //             operator: JSON.parse(window.localStorage.getItem("user")).name,
-                //             operatorId: JSON.parse(window.localStorage.getItem("user")).id
-                //         },
-                //         inventoryCount: 10,
-                //         notCount: this.rfids.length,
-                //         count: 10 - this.rfids.length
-                //     }
-                // }
             },
             changeRow(current) {
                 this.totalIndex = current.index
             },
             submit() {
-                let data = {
-                    inventoryOrder: this.order,
-                    rfids: this.rfids
-                }
-                inventoryOrder("post", data)
-                this.$router.push({
-                    name: 'inventoryList',
-                    params: {
-                        rfids: this.rfids
-                    }
+                let  rfids = []
+                this.order.equipItems.forEach(item=>{
+                    rfids.push(item.rfid)
+                })
+                addInventoryOrder(this.order).then((res) => {
+                    !!res && this.$router.push({
+                        name: 'inventoryList',
+                        params:{
+                            rfids:rfids
+                        }
+                    })
                 })
             },
             cancel() {

@@ -39,14 +39,14 @@
         .collapse {
           .el-submenu__title {
             font-size: 18px;
-            background-color: white !important;
+            background-color: white !important; // 修改一级导航栏背景颜色
             padding-left: 0.1042rem !important;
           }
         }
 
 
         .el-menu .el-menu--inline {
-          background-color: white !important;
+          background-color: white !important; // 修改二级导航栏背景颜色
           .el-menu-item {
             font-size: 16px;
             padding-left: 0.2083rem !important;

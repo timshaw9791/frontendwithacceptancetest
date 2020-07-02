@@ -33,7 +33,7 @@ import defineColumn from './defineColumn'
             },
             height: {
                 type: String,
-                default: '928px'
+                default: '920px'
             },
             border: {
                 type: Boolean,
