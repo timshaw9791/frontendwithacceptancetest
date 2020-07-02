@@ -1,8 +1,6 @@
 <template>
     <div>
-        <div >
-            <topInfo v-if="!isCollapse" class="topInfo"></topInfo>
-        </div>
+        <topInfo v-if="!isCollapse" class="topInfo"></topInfo>
         <el-scrollbar wrapClass="scrollbar-wrapper">
             <div :class="{'menu': true, 'collapse': !isCollapse}">
                 <el-menu
@@ -25,7 +23,8 @@
     import {mapGetters} from 'vuex'
     import SidebarItem from './SidebarItem'
     import topInfo from './personal'
-    import { killProcessSync } from "common/js/rfidReader"
+    import {killProcessSync} from "common/js/rfidReader"
+
     export default {
         components: {SidebarItem, topInfo},
         methods: {

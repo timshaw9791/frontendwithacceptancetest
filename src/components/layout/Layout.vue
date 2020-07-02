@@ -68,14 +68,15 @@
         font-size: 16px;
 
         .information {
+            width: 100%;
+            position: absolute;
             font-size: 0.0625rem  /* 12/192 */;
             text-align: center;
             bottom: 0;
-            left: 0;
             right: 0;
             color: #707070;
             height: 32px;
-            line-height:26px;
+            line-height:32px;
         }
     }
 </style>
