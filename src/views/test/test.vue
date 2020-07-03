@@ -11,22 +11,6 @@
             <define-image :url="imgSrc" margin="500px 30px"></define-image>
             <upload-file v-model="imgSrc"></upload-file>
         </div>
-        <!-- 标签1 按钮 -->
-        <base-button label="按钮1" slot="buttoncar1">按钮1</base-button>
-        <base-button label="按钮1" slot="buttoncar1">按钮1</base-button>
-        <base-button label="按钮1" slot="buttoncar1">按钮1</base-button>
-
-        <!-- 标签2 按钮 -->
-        <span slot="buttoncar2">按钮2</span>
-        <span slot="buttoncar2">按钮2</span>
-        <span slot="buttoncar2">按钮2</span>
-
-        <!-- 无标签 -->
-        <base-button label="按钮1" slot="car1morebutton">按钮1</base-button>
-        <base-button label="按钮1" slot="car1morebutton">按钮1</base-button>
-        <base-button label="按钮1" slot="car1morebutton">按钮1</base-button>
-<!--测试-->
-        <base-button label="测试按钮" slot="publicbutton" type="text"></base-button>
         <tool-bar :show-back="true">
             <define-input label="测试输入框" slot="input" :column="6"></define-input>
             <base-button label="测试按钮" type="text" slot="button"></base-button>
