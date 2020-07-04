@@ -1,8 +1,8 @@
 <template>
     <el-popover placement="right" trigger="hover" transition="fade-in-linear">
-        <img class="img" slot="reference" :src="imageUrl!=''?imgsrc(imageUrl):noImgUrl" :onerror="splitUrl"
+        <img class="img" slot="reference" :src="imageUrl===null||imageUrl===''?noImgUrl:imgsrc(imageUrl)" :onerror="splitUrl"
              style="height:30px;width:30px;"/>
-        <img class="img" :src="imageUrl!=''?imgsrc(imageUrl):noImgUrl" :onerror="splitUrl"
+        <img class="img" :src="imageUrl===null||imageUrl===''?noImgUrl:imgsrc(imageUrl)" :onerror="splitUrl"
              style="height:150px;width:150px;margin-left: auto;"/>
     </el-popover>
 </template>
@@ -11,7 +11,7 @@
     import {baseURL} from 'api/config'
 
     export default {
-        name: "hoverChart",
+        name: "hoverImg",
         data() {
             return {
                 splitUrl: 'this.src="' + require('@/assets/splitImg.png') + '"',
@@ -29,7 +29,6 @@
                 return baseURL + '/images/' + data
             },
         }
-
     }
 </script>
 

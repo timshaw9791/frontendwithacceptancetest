@@ -14,7 +14,7 @@
                     <i class=" iconfont iconfuzhiRFID" @click="copyRfid(data.row.rfid)" style="margin:8px"></i>
                 </define-column>
                 <define-column label="图片" width="120" v-slot="{ data }" fixed>
-                    <hover-chart :imageUrl="data.row.equipArg.image"></hover-chart>
+                    <hover-img :image-url="data.row.equipArg.image" ></hover-img>
                 </define-column>
                 <define-column label="RFID" fixed width="200" v-slot="{ data }">
                     <define-input v-model="data.row.rfid" type="Number" :tableEdit="false"></define-input>
@@ -51,8 +51,10 @@
     import {equipsAll} from 'api/storage'
     import CopyRfid from "../../components/copyRfid";
     import {mapGetters} from 'vuex'
+    import DefineImage from "@/componentized/defineImage";
     export default {
         components: {
+            DefineImage,
             CopyRfid,
             myHeader,
             entityInput,

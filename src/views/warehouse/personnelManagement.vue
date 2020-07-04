@@ -10,7 +10,7 @@
                 <i class=" iconfont iconshanchu" @click="deleteperson(data.row)" style="margin:8px"></i>
             </define-column>
             <define-column label="图片" v-slot="{ data }" fixed>
-                <hover-chart :imageUrl="data.row.faceInformation"></hover-chart>
+                <hover-img :imageUrl="data.row.faceInformation"></hover-img>
             </define-column>
             <define-column fixed label="警号" field="policeSign" width="180"></define-column>
             <define-column fixed label="姓名" field="name" width="100"></define-column>

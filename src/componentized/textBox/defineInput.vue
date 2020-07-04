@@ -232,6 +232,19 @@
         border: 1px solid #DCDFE6;
     }
 
+    .disabled {
+        background: rgba(248, 249, 251, 1);
+        border: 1px solid rgba(220, 223, 230, 1);
+
+        .input {
+            color: rgba(192, 196, 204, 1);
+        }
+    }
+
+    .table-edit{
+
+    }
+
     .error {
         border: 1px solid red;
     }
@@ -242,14 +255,7 @@
         }
     }
 
-    .disabled {
-        background: rgba(248, 249, 251, 1);
-        border: 1px solid rgba(220, 223, 230, 1);
 
-        .input {
-            color: rgba(192, 196, 204, 1);
-        }
-    }
 
     .define-input-container:hover {
         .iconxiaoyanjing,

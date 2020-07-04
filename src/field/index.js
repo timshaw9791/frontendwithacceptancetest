@@ -31,7 +31,7 @@ import FieldEntity from './components/field-entity.vue';
 
 import defineTable from '@/componentized/table/defineTable.vue'
 import defineColumn from '@/componentized/table/defineColumn.vue'
-import hoverChart from '@/componentized/hoverChart.vue'
+import hoverImg from '@/componentized/hoverImg.vue'
 import defineInput from '@/componentized/textBox/defineInput.vue'
 import baseButton from '@/componentized/buttonBox/baseButton.vue'
 import baseSelect from '@/componentized/textBox/baseSelect.vue'
@@ -69,7 +69,7 @@ let componentsList = {
     'TeachTableColumn':TeachTableColumn,
     defineTable,
     defineColumn,
-    hoverChart,
+    hoverImg,
     defineInput,
     baseButton,
     baseSelect,

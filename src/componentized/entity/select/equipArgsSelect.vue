@@ -4,7 +4,7 @@
         <div class="table">
             <define-table :data="list" height="560px" @changeCurrent="select" :pageInfo="paginator" @changePage="changePage" :highLightCurrent="true">
                 <define-column label="装备图片" v-slot="{ data }">
-                    <img class="img" :src="imgBaseUrl+data.row.image" alt="暂无图片">
+                    <hover-img  image-url="data.row.image" alt="暂无图片"/>
                 </define-column>
                 <define-column label="装备名称" field="name"></define-column>
                 <define-column label="装备型号" field="model"></define-column>

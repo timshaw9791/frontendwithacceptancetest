@@ -122,25 +122,25 @@
                             this.$message.error("请先选择位置信息")
                             break
                         }
-                        // 匹配未分组前原来的数据
+                        // 匹配出库的数据
                         this.matchEquips.forEach(item => {
                             if (item.rfid !== data) {
-                                this.$message.error("该装备不在出库装备列表内！")
-                                return
+                                return  this.$message.error("该装备不在出库装备列表内！")
                             }
-                            item.price = 1
-                            item.productTime = '1590721943'
-                            item.locationInfo = item.location
                             if (temp.equipArg && item.equipName + "(" + item.equipModel + ")" !== temp.equipArg) {
                                 return this.$message.error("该装备与当前选中的装备参数不匹配！")
                             }
+                            item.price = 1
+                            item.productTime = '1590721943'
+                            // 给装备添加位置信息
+                            item.locationInfo = temp.locationInfo
                             temp.equipArg = item.equipName + "(" + item.equipModel + ")"
                             // 字符串查找不能使用_.findIndex
                             if (_.findIndex(temp.items, item) === -1 && this.readRfids.findIndex(item => item === data)) {
                                 temp.items.push(item)
                                 this.readRfids.push(data)
                                 this.addRow()
-                                console.log(this)
+                                console.log(this.aEquipItems)
                             }
                         })
                         // 总的RFID列表
