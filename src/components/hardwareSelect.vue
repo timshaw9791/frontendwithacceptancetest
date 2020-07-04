@@ -2,7 +2,7 @@
     <div>
         <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96"
                      @click="readData"></base-button>
-        <base-select label="硬件选择" v-model="select.selected" align="right"
+        <base-select label="硬件选择" v-model="select.selected"
                      :selectList="select.handWareList"></base-select>
     </div>
 </template>

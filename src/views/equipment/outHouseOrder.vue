@@ -94,19 +94,15 @@ export default {
                         })
                         if(this.newData.length==1)
                         {
-                            item.equipArgs=item.inOutHouseItems[0].equipName+'('+item.inOutHouseItems[0].equipModel+')'
+                            item.equipArgs=item.equipItems[0].equipName+'('+item.equipItems[0].equipModel+')'
                         }else{
-                            item.equipArgs=item.inOutHouseItems[0].equipName+'('+item.inOutHouseItems[0].equipModel+')'+'...'
+                            item.equipArgs=item.equipItems[0].equipName+'('+item.equipItems[0].equipModel+')'+'...'
                         }
-                     
                     })
-                    
-                }).catch(err => {
-                        this.$message.error(err.response.data.message);
-                    })
+                })
             },
             filterNumber(data){
-                return data.inOutHouseItems.length
+                return data.equipItems.length
             },
             changePage(page) {
             this.paginator.page = page;ss

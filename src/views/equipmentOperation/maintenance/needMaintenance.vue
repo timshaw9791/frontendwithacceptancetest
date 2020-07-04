@@ -1,9 +1,8 @@
 <template>
-    <div style="margin: 0 10px ">
+    <div>
         <bos-tabs :option="['contrast']" :layoutRatio="[70,30]" :contrastKey="['total', 'contrast']" :header="false">
             <define-table ref="total" :havePage="false" :data="listData"
-                          @changeCurrent="selRow" :highLightCurrent="true"
-                          slot="total" key="1" ">
+                          @changeCurrent="selRow" :highLightCurrent="true" slot="total" key="1" >
                 <define-column label="装备参数" v-slot="{ data }">
                     <entity-input v-model="data.row.equipArg" :detailParam="data.row.equipArg"
                                   :options="{ detail: 'equipArgsDetail' }" format="{name}({model})"
@@ -39,7 +38,7 @@
         data() {
             return {
                 findIndex: 0,
-                listData: [{copyList: []}],
+                listData: [],
             }
         },
         methods: {

@@ -3,7 +3,7 @@ import {formatFunc} from './index'
 /*
 * 
 * equip 需要分组的装备列表
-* groupRules 分组的规则数组类型 'state-locationInfo','state','locationInfo','args'
+* groupRules 分组的规则数组类型 'state-locationInfo','state','locationInfo','args'[默认为args]
 * returnFormat 'args','rfids'
 * 返回 equipItems
 */

@@ -1,8 +1,8 @@
 <template>
-    <div class="define-table-container">
+    <div class="define-table-container" :style="`margin:${margin}`" ref="tableContainer">
         <el-table :data="data" :height="fixHeight" :border="border" ref="table" fit
                 :highlight-current-row="highLightCurrent" @current-change="changeCurrent"
-                :show-summary="showSummary" :summary-method="summaryFunc">
+                :show-summary="showSummary" :summary-method="summaryFunc" >
                 <el-table-column label="序号" width="65" align="center" v-if="haveIndex" :fixed="indexFixed">
                     <template slot-scope="scope">{{(pageInfo.page-1)*pageInfo.size+scope.$index+1}}</template>
                 </el-table-column>
@@ -34,6 +34,10 @@ import defineColumn from './defineColumn'
             height: {
                 type: String,
                 default: '920px'
+            },
+            margin:{
+                type: String,
+                default: '0 10px'
             },
             border: {
                 type: Boolean,

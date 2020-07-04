@@ -47,7 +47,7 @@
     import consumableSelect from "./select/consumableSelect";
     import equipArgsDetail from './read/equipArgsDetail'
     export default {
-        name: 'textInput',
+        name: 'entityInput',
         data() {
             return {
                 inputPrePt: null,
@@ -90,7 +90,7 @@
             },
             placeholder: {
                 type: [Number, String],
-                default: ""
+                default: "--"
             },
             options: {
                 type: Object,

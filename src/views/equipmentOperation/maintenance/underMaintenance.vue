@@ -2,7 +2,7 @@
     <div class="maintenance-form-container">
         <bos-tabs :header="false" :option="['contrast']" :layoutRatio="[70,30]" :contrastKey="['total', 'contrast']">
             <define-table slot="total" ref="total" :data="listData" :havePage="false"
-                          @changeCurrent="selRow" :highLightCurrent="true">
+                          @changeCurrent="selRow" :highLightCurrent="true" key="2">
                 <define-column label="装备参数" v-slot="{ data }">
                     <entity-input v-model="data.row.equipArg" :options="{detail:'equipArgsDetail'}"
                                   format="{name}({model})" :tableEdit="false"></entity-input>
@@ -50,7 +50,7 @@
         data() {
             return {
                 findIndex: 0,
-                listData: [{copyList: []}],
+                listData: [],
             }
         },
         methods: {

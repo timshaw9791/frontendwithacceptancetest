@@ -55,11 +55,15 @@
         methods: {
             fixList() {
                 this.processList = this.list.map((obj) => {
-                    if (!obj.taskVariables.pass) {
-                        obj.state = "驳回";
-                        obj.note = obj.taskVariables.note;
+                    if (obj.endTime !== null) {
+                        if (obj.taskVariables.pass === undefined || obj.taskVariables.pass) {
+                            obj.state = "通过";
+                        } else {
+                            obj.state = "驳回";
+                            obj.note = obj.taskVariables.note;
+                        }
                     } else {
-                        obj.state = "通过";
+                        obj.state = ''
                     }
                     obj.time = this.$filterTime(obj.endTime)
                     return obj
@@ -85,7 +89,7 @@
 
     .task-list {
         display: grid;
-        grid-template-columns: 20% 20% 40% 20%;
+        grid-template-columns: 25% 25% 25% 25%;
         font-size: 17px;
         margin-top: 8px;
         padding-top: 8px;

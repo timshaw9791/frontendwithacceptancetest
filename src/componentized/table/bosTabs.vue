@@ -1,23 +1,26 @@
 <template>
-    <div class="bos-card-container" :style="`width:${width};margin:${margin}`">
-        <div class="top-tabs" v-if="tabs&&header">
-            <div v-for="(item, i) in label" :key="i"
-                 :class="{'tabs':true,'selected':selectedIndex==i}"
-                 @click="changeTab(i, item)">{{ item.label }}</div>
-        </div>
-        <div class="slot-component" v-if="header">
-            <slot name="slotHeader"></slot>
-        </div>
-        <div class="bos-card-body" :style="'grid-template-columns:'+gridColumn">
-            <div v-for="(item, i) in label" :key="'slot'+i"  v-show="label[selectedIndex].key == item.key&&tabs" class="slot">
-                <slot :name="item.key"></slot>
+    <div :style="`margin:${margin}`">
+        <div class="bos-card-container" :style="`width:${width}`">
+            <div class="top-tabs" v-if="tabs&&header" >
+                <div v-for="(item, i) in label" :key="i"
+                     :class="{'tabs':true,'selected':selectedIndex==i}"
+                     @click="changeTab(i, item)">{{ item.label }}</div>
             </div>
-            <div class="contrast-component" v-for="(slotName, j) in contrastKey" :key="j" v-show="contrast">
-                <slot :name="slotName"></slot>
-                <div class="mask" v-show="contrastMask" :style="`background-color:${contrastColor[j]}`"></div>
+            <div class="slot-component" v-if="header" >
+                <slot name="slotHeader"></slot>
+            </div>
+            <div class="bos-card-body" :style="'grid-template-columns:'+gridColumn">
+                <div v-for="(item, i) in label" :key="'slot'+i"  v-show="label[selectedIndex].key == item.key&&tabs" class="slot">
+                    <slot :name="item.key"></slot>
+                </div>
+                <div class="contrast-component" v-for="(slotName, j) in contrastKey" :key="j" v-show="contrast">
+                    <slot :name="slotName"></slot>
+                    <div class="mask" v-show="contrastMask" :style="`background-color:${contrastColor[j]}`"></div>
+                </div>
             </div>
         </div>
     </div>
+
 </template>
 
 <script>
@@ -48,7 +51,7 @@
                 default: '100%'
             },
             margin: {
-                default: '0'
+                default: '0 10px'
             },
             option: {
                 type: Array,
@@ -120,6 +123,10 @@
     .bos-card-body {
         width: 100%;
         display: grid;
+        /*避免表格显示异常*/
+        .define-table-container{
+            margin: 0 !important;
+        }
     }
     .top-tabs {
         width: 50%;

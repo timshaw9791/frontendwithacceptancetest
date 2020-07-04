@@ -10,20 +10,19 @@
                 <i class=" iconfont iconshanchu" @click="deleteperson(data.row)" style="margin:8px"></i>
             </define-column>
             <define-column label="图片" v-slot="{ data }" fixed>
-                <upload-file type="img" size="mini" :disabled="true" v-model="data.row.faceInformation"
-                             margin="15px"></upload-file>
+                <hover-chart :imageUrl="data.row.faceInformation"></hover-chart>
             </define-column>
             <define-column fixed label="警号" field="policeSign" width="180"></define-column>
             <define-column fixed label="姓名" field="name" width="100"></define-column>
             <define-column label="性别" field="gender" width="100"></define-column>
             <define-column label="机构单位" field="organUnitName" width="180"></define-column>
-            <define-column label="角色" field="role" :filter="row=>platformEnumsObj('Role').values[row.role]" width="180"></define-column>
+            <define-column label="角色" field="role" :filter="row=>enumsObj.Role[row.role]" width="180"></define-column>
             <define-column label="职位" field="position" width="180"></define-column>
             <define-column label="联系方式" field="phone"></define-column>
             <define-column label="身份证号" field="idNumber"></define-column>
             <define-column label="指纹信息"
                            :filter="(row)=>{return row.fingerprintInformation==''||row.fingerprintInformation==null?'无':'有'}"></define-column>
-            <define-column label="开门库房权限" :filter="(row)=>{return row.enterHouse?'有':'无'}"></define-column>
+            <define-column label="开门权限" :filter="(row)=>{return row.enterHouse?'有':'无'}"></define-column>
         </define-table>
     </view-container>
 </template>
@@ -35,9 +34,11 @@
     import {baseURL} from 'api/config'
     import {getUser, deleteUser} from 'api/user'
     import {mapGetters} from 'vuex'
+    import DefineImage from "@/componentized/defineImage";
     export default {
         name: "personnelManagement",
         components: {
+            DefineImage,
             myHeader,
             textInput,
             uploadFile,
@@ -53,7 +54,7 @@
             this.getUserList()
         },
         computed:{
-            ...mapGetters(['platformEnumsObj'])
+            ...mapGetters(['enumsObj'])
         },
         methods: {
             addperson() {
@@ -83,21 +84,6 @@
                     this.list = res.content;
                     this.paginator.totalPages = res.totalPages;
                     this.paginator.totalElements = res.totalElements;
-                    for (let i in this.list) {
-                        switch (this.list[i].role) {
-                            case 1:
-                                this.list[i].role = "管理员"
-                                break;
-                            case 2:
-                                this.list[i].role = "领导"
-                                break;
-                            case 0:
-                                this.list[i].role = "警员"
-                                break;
-                            default:
-                                break;
-                        }
-                    }
                 })
             },
             imgsrc(data) {

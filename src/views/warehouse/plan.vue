@@ -1,7 +1,7 @@
 <template>
     <view-container>
         <tool-bar>
-            <base-button size="default" align="right" label="新增预案" @click="dialogShow('add','')"></base-button>
+            <base-button type="text" slot="button" label="新增预案" @click="dialogShow('add','')"></base-button>
         </tool-bar>
         <bos-tabs  :option="['contrast']" :layoutRatio="[75,25]" :contrastKey="['slot1', 'slot2']" :header="false">
             <define-table  slot="slot1" :pageInfo="paginator" @changePage="changePage" :data="order"

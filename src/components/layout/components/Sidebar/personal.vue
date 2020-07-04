@@ -25,7 +25,6 @@
                 if (this.form.faceInformation){
                     return  `${imgBaseUrl}${this.form.faceInformation}`
                 }else {
-                    console.log('c')
                     return require('@/assets/noPersonImg.png')
                 }
             }

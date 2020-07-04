@@ -1,6 +1,6 @@
 <template>
     <view-container>
-        <operation-bar v-if="!isInfo" :task-definition-key="taskDefinitionKey"
+        <operation-bar v-if="!isInfo||type==='todo'" :task-definition-key="taskDefinitionKey"
                        :is-show-out="isShowOut" :is-show-in="isShowIn" :order-id="applyOrder.id"
                        @refused="showRfDialog" @agree="agree"
                        @invalid="invalid" @edit="edit"
@@ -20,35 +20,37 @@
                           :disabled="allocateCategory==='TRANSFER'||isInfo">
             </entity-input>
             <define-input label="入库库房" v-model="inboundEquipsOrder.house.name" :disabled="true"
-                          placeholder="-"></define-input>
+                          ></define-input>
             <entity-input label="入库人员" v-model="inboundEquipsOrder.operator" :disabled="true"
-                          placeholder="-" format="{name}({policeSign})"></entity-input>
+                          format="{name}({policeSign})"></entity-input>
             <entity-input label="出库机构" v-model="applyOrder.outboundOrganUnit" format="{name}"
                           :options="{search:'organUnits'}" placeholder="请选择"
                           :disabled="!(allocateCategory==='TRANSFER')||isInfo">
             </entity-input>
-            <define-input label="出库库房" v-model="outboundEquipsOrder.house.name" :disabled="true"
-                          placeholder="-"></define-input>
+            <define-input label="出库库房" v-model="outboundEquipsOrder.house.name" :disabled="true"></define-input>
             <entity-input label="出库人员" v-model="outboundEquipsOrder.operator" :disabled="true"
-                          placeholder="-" format="{name}({policeSign})"></entity-input>
+                          format="{name}({policeSign})">
+            </entity-input>
             <text-input label="申请原因" v-model="applyOrder.remark" :column="12" :tips="tips"
                         :disabled="isInfo">
             </text-input>
-            <define-table :havePage="false" :data="applyOrder.equips" height="2.8646rem"
-                          :showSummary="true" :summaryFunc="$sumFunc" slot="total">
-                <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
-                    <i class="iconfont icontianjialiang" @click="addRow()"></i>
-                    <i class="iconfont iconyichu" @click="$delRow(applyOrder.equips,data.$index)"></i>
-                </define-column>
-                <define-column label="装备参数" v-slot="{ data }">
-                    <entity-input v-model="data.row.equipArg" :options="{search:'equipArgsSelect'}"
-                                  format="{name}({model})" :tableEdit="!isInfo">
-                    </entity-input>
-                </define-column>
-                <define-column label="装备数量" v-slot="{ data }">
-                    <define-input v-model="data.row.count" type="number" :tableEdit="!isInfo"></define-input>
-                </define-column>
-            </define-table>
+            <div class="table" style="margin-top: 3px; height: 100%">
+                <define-table :havePage="false" :data="applyOrder.equipItems" height="733px"
+                              :showSummary="true" :summaryFunc="$sumFunc">
+                    <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
+                        <i class="iconfont icontianjialiang" @click="addRow()"></i>
+                        <i class="iconfont iconyichu" @click="$delRow(applyOrder.equips,data.$index)"></i>
+                    </define-column>
+                    <define-column label="装备参数" v-slot="{ data }">
+                        <entity-input v-model="data.row.equipArg" :options="{search:'equipArgsSelect'}"
+                                      format="{name}({model})" :tableEdit="!isInfo">
+                        </entity-input>
+                    </define-column>
+                    <define-column label="装备数量" v-slot="{ data }">
+                        <define-input v-model="data.row.count" type="number" :tableEdit="!isInfo"></define-input>
+                    </define-column>
+                </define-table>
+            </div>
         </div>
         <task-history :list="taskHistory" v-if="isInfo"></task-history>
         <serviceDialog title="提示" ref="RfDialog" @confirm="refused">
@@ -83,7 +85,7 @@
             return {
                 title: "",
                 allocateCategory: '', //TRANSFER or DIRECT
-                applyOrder: {equips: [{equipArg: {}}], applicant: {}},
+                applyOrder: {equipItems: [{equipArg: {}}], applicant: {}},
                 outboundEquipsOrder: {operator: {}, house: {}}, // 用来获取出库库房和出库人员
                 inboundEquipsOrder: {operator: {}, house: {}},  // 用来获取入库库房和入库人员
                 tips: ['直接报废', '装备拿去维修，无法修补'],
@@ -96,20 +98,14 @@
                 isLeaderEdit: false,
                 isShowIn: false,
                 isShowOut: false,
-                remark: '',
+                remark: '',//驳回时备注
             }
         },
         methods: {
             async init() {
-                this.applyOrder = {equips: [{equipArg: {}}], applicant: {}},
-                    this.applyOrder.applicant = this.userInfo
-                console.log(this.userInfo)
-                if (this.allocateCategory === 'TRANSFER') {
-                    // 不经过深拷贝会出现为空现象
-                    this.applyOrder.inboundOrganUnit = JSON.parse(JSON.stringify(this.organUnit))
-                    return
-                }
-                this.applyOrder.outboundOrganUnit = JSON.parse(JSON.stringify(this.organUnit))
+                this.applyOrder.applicant = this.userInfo
+                let tempOrganUnit = this.allocateCategory === 'TRANSFER' ? 'inboundOrganUnit' : 'outboundOrganUnit'
+                this.applyOrder[tempOrganUnit] = this.organUnit
             },
             fetchData() {
                 allocateOrders(this.processInstanceId, this.allocateCategory).then(
@@ -130,6 +126,7 @@
                     // 如果是任务处理人是我，且为申请任务，那么就显示是否重填
                     this.taskDefinitionKey = res.assignee === this.userInfo.id && res.taskDefinitionKey.includes('apply')
                         ? 'reapply' : res.taskDefinitionKey
+                    console.log(res.taskDefinitionKey)
                 })
             },
             addRow() {
@@ -197,7 +194,7 @@
             /*
             *    name  流程的名称
             *    key 该值为 processDefinitionKey
-            *    type to do
+            *    type 是待办值为todo
             */
             Object.assign(this, this.$route.query)
             this.allocateCategory = this.name.includes('调拨') ? 'TRANSFER' : 'DIRECT'

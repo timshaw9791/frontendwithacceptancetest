@@ -13,10 +13,10 @@
                                   format="{name}({model})" :column="12" :tableEdit="true"></entity-input>
                 </define-column>
             </define-table>
-            <div class="btn-box">
-                <base-button label="取消" align="right" size="default" @click="cancel"></base-button>
-                <base-button label="提交" align="right" size="default" @click="confirm"></base-button>
-            </div>
+            <tool-bar>
+                <base-button label="取消" type="text" slot="button" @click="cancel"></base-button>
+                <base-button label="提交" type="text" slot="button" @click="confirm"></base-button>
+            </tool-bar>
         </div>
     </view-container>
 </template>
@@ -36,7 +36,7 @@
         data() {
             return {
                 listData: [{equipArg: ''}, {equipArg: ''}],
-                title: ''
+                title: '' //必带装备名称
             };
         },
         methods: {
@@ -80,48 +80,24 @@
             },
         },
         components: {
-            myHeader,
-            baseButton,
-            entityInput,
             bosTabs,
-            defineInput,
             serviceDialog,
         },
         created() {
-            if (this.$route.params.info.data.name != '') {
+            if (this.$route.params.info.data.name !== '') {
+                this.$route.meta.crumb = '编辑必戴装备'
                 this.title = this.$route.params.info.data.name
                 this.listData = []
                 this.$route.params.info.data.equipArgs.forEach(item => {
                     this.listData.push({equipArg: item})
                 })
+            }else {
+                this.$route.meta.crumb = '新增必戴装备'
             }
         }
     };
 </script>
 
 <style lang="scss" scoped>
-    .need-wear-container {
-        font-size: 16px;
-    }
 
-    .need-wear-top {
-        padding: 18px 7px;
-        border-bottom: 1px solid #ebeef5;
-        overflow: hidden;
-    }
-
-    .need-wear-body {
-        padding: 0 7px;
-        widows: 100%;
-    }
-
-    .btn-box {
-        width: 4rem;
-        height: 50px;
-        margin-left: 20px;
-        margin-top: 15px;
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-    }
 </style>

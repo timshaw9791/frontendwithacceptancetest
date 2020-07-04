@@ -9,7 +9,6 @@
             </define-column>
             <define-column label="图片" v-slot="{ data }" >
                 <hover-chart :imageUrl="data.row.image"></hover-chart>
-<!--                <img class="img" :src="data.row.image" :onerror="noImgUrl" style="height:30px;width:30px;"/>-->
             </define-column>
             <define-column label="装备名称" field="name"></define-column>
             <define-column label="装备型号" field="model"></define-column>

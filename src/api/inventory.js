@@ -5,7 +5,7 @@ function getInventoryOrderList(pagination) {
     return request({
         url: '/inventory-orders',
         method: 'GET',
-        params: data
+        params: pagination
     })
 }
 
@@ -17,9 +17,9 @@ function addInventoryOrder(inventoryOrder) {
     })
 }
 
-function currentInventory(rfids) {
+function currentInventory(rfids,startTime) {
     return request({
-        url:`/inventory-orders/current?rfids=${rfids}`,
+        url:`/inventory-orders/current?rfids=${rfids}&startTime=${startTime}`,
         method: 'POST'
     })
 }

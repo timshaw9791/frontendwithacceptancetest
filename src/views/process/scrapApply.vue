@@ -1,36 +1,29 @@
 <template>
-    <div class="apply-process-container">
-        <my-header :title="title" :haveBlack="false"></my-header>
+    <view-container>
         <div class="apply-process">
             <operation-bar :task-definition-key="taskDefinitionKey"
                            @refused="refused" @agree="agree"
                            @invalid="invalid" @edit="edit"
             ></operation-bar>
             <div class="apply-process-body">
-                <div>
-                    <define-input label="单号" v-model="order.number" :disabled="true" class="odd-number"></define-input>
-                    <define-input label="所在库房" v-model="order.warehouse.name" :disabled="true"></define-input>
-                    <date-select label="申请日期" v-model="order.createTime" :disabled="true"></date-select>
-                    <entity-input label="申请人员" v-model="order.applicant"
-                                  :options="{detail:'applicant'}" :disabled="true"
-                                  format="{name}({policeSign})">
-                    </entity-input>
-                </div>
-                <div>
-                    <text-input label="申请原因" v-model="order.note" :tips="tips"
-                                :title="order.note"
-                                :disabled="isInfo"></text-input>
-                </div>
-                <equipItems :equip-items="equipItems" :is-info="isInfo"
-                            @handleReadData="handleReadData"></equipItems>
-                <div class="buttom" v-if="!isInfo">
-                    <base-button label="提交" align="right" size="large" @click="submit()"></base-button>
-                    <base-button label="清空" align="right" size="large" type="danger" @click="clean()"></base-button>
+                <define-input label="单号" v-model="order.number" :disabled="true"></define-input>
+                <define-input label="所在库房" v-model="order.warehouse.name" :disabled="true"></define-input>
+                <date-select label="申请日期" v-model="order.createTime" :disabled="true"></date-select>
+                <entity-input label="申请人员" v-model="order.applicant"
+                              :options="{detail:'applicant'}" :disabled="true"
+                              format="{name}({policeSign})">
+                </entity-input>
+                <text-input label="申请原因" v-model="order.note" :tips="tips"
+                            :title="order.note"
+                            :disabled="isInfo"></text-input>
+                <div >
+                    <equipItems :equip-items="equipItems" :is-info="isInfo"
+                                @handleReadData="handleReadData"></equipItems>
                 </div>
                 <task-history :list="taskHistory" v-if="isInfo"></task-history>
             </div>
         </div>
-    </div>
+    </view-container>
 </template>
 
 <script>
@@ -106,7 +99,7 @@
             handleReadData(data) { // 读取数据
                 findByRfids(data).then(res => {
                     this.order.equips = transEquips(res, 'args', 'args').simplifyItems
-                    console.log(this.order.equips)
+                    console.log(this.order.equipItems)
                     this.equipItems = transEquips(res).equipItems
                 })
             },
@@ -143,7 +136,7 @@
             edit() { // 重填
                 this.isInfo = true
             },
-            clean(){
+            clean() {
                 this.init()
                 this.equipItems = [{items: []}]
             }

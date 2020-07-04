@@ -1,6 +1,6 @@
 <template>
     <view-container>
-        <define-table :data="list"  :pageInfo="paginator" @changePage="changePage"
+        <define-table :data="list" :pageInfo="paginator" @changePage="changePage"
                       :highLightCurrent="true">
             <define-column label="操作" v-slot="{ data }">
                 <i class="iconfont iconfaqi" @click="toApply(data.row)"></i>
@@ -33,9 +33,8 @@
                 })
             },
             toApply(data) {
-                console.log(data)
                 this.$router.push({
-                    path: 'allocateApply',
+                    path: data.name.includes('报废') ? 'scrapApply' : 'allocateApply',
                     query: {
                         name: `${data.name}`, // 流程的名称
                         key: `${data.key}`, // 该值为 processDefinitionKey

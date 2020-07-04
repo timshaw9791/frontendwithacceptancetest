@@ -349,37 +349,37 @@ const asyncRouterMap = [{
     component: Layout,
     name: 'report',
     redirect: '/report/amount',
-    meta: {title: '统计报表', icon: '统计报表'},
+    meta: {title: '统计报表', icon: '统计报表',crumb: '统计报表'},
     children: [{
         path: 'amount',
         name: 'amount',
         component: _import('report/amount'),
-        meta: {title: '装备金额统计'},
+        meta: {title: '装备金额统计',crumb: '装备金额统计'},
     }, {
         path: 'lossStatistics',
         name: 'lossStatistics',
         component: _import('report/lossStatistics'),
-        meta: {title: '装备损耗率'},
+        meta: {title: '装备损耗率',crumb: '装备损耗率'},
     }, {
         path: 'repair',
         name: 'repair',
         component: _import('report/repair'),
-        meta: {title: '装备维修率'},
+        meta: {title: '装备维修率',crumb: '装备维修率'},
     }, {
         path: 'frequency',
         name: 'frequency',
         component: _import('report/frequency'),
-        meta: {title: '装备使用频次'},
+        meta: {title: '装备使用频次',crumb: '装备使用频次'},
     }, {
         path: 'scrap',
         name: 'scrap',
         component: _import('report/scrap'),
-        meta: {title: '装备报废件数'},
+        meta: {title: '装备报废件数',crumb: '装备报废件数'},
     }, {
         path: 'wate',
         name: 'wate',
         component: _import('report/wareRateAmount'),
-        meta: {title: '装备佩戴率'}
+        meta: {title: '装备佩戴率',crumb: '装备佩戴率'}
     }]
 }, {
     path: '/record',

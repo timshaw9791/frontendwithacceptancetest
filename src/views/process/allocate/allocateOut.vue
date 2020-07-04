@@ -1,21 +1,16 @@
 <template>
     <view-container>
-        <div class="process-info">
-            <define-input label="单号" v-model="order.number" :disabled="true"></define-input>
-            <entity-input label="出库机构" v-model="order.house.organUnit" :disabled="true"
-                          format="{name}"
-                          :options="{search:'organUnits'}"></entity-input>
-            <define-input label="出库库房" v-model="order.house.name"
-                          :disabled="true"></define-input>
-            <entity-input label="出库人员" v-model="order.operator" format="{name}({policeSign})"
-                          :disabled="true"></entity-input>
-        </div>
-        <div class="table-box">
-            <!--统一处理装备表组件-->
-            <a-equips-table :is-info="isInfo" :equip-items="order.equips"
-                            :match-equips="matchEquips" @getFinishEquip="getFinishEquip" type="out">
-            </a-equips-table>
-        </div>
+        <define-input label="单号" v-model="order.number" :disabled="true"></define-input>
+        <entity-input label="出库机构" v-model="order.house.organUnit" :disabled="true"
+                      format="{name}" :options="{search:'organUnits'}"></entity-input>
+        <define-input label="出库库房" v-model="order.house.name"
+                      :disabled="true"></define-input>
+        <entity-input label="出库人员" v-model="order.operator" format="{name}({policeSign})"
+                      :disabled="true"></entity-input>
+        <!--统一处理装备表组件-->
+        <a-equips-table :is-info="isInfo" :equip-items="equipItems"
+                        :match-equips="matchEquips" @getFinishEquip="getFinishEquip" type="out">
+        </a-equips-table>
         <tool-bar v-if="!isInfo">
             <base-button label="提交" type="text" slot="button" @click="submit()"></base-button>
             <base-button label="清空" type="text" slot="button" @click="clean()"></base-button>
@@ -52,10 +47,11 @@
                         name: '',
                         organUnit: {}
                     },
-                    equips: []
+                    equipItems: []
                 },
                 isOutbound: '',
-                matchEquips: [],
+                matchEquips: [], // 对照的装备列表
+                equipItems:[]// 详情传入装备列表
             }
         },
         methods: {
@@ -68,19 +64,19 @@
                 })
             },
             fixData(res) {
-                let tempTitle, order
+                let tempTitle, tempOrder
                 if (this.allocateCategory === 'TRANSFER') {
                     tempTitle = "调拨"
-                    order = res.transferApplyOrder
+                    tempOrder = res.transferApplyOrder
                 } else {
                     tempTitle = "直调"
-                    order = res.directAllotOrder
+                    tempOrder = res.directAllotOrder
                 }
                 switch (this.type) {
                     case "false": {
                         this.title = tempTitle + '出库'
-                        this.matchEquips = order.equips
-                        this.order.organUnit = order.outboundOrganUnit
+                        this.matchEquips = tempOrder.equipItems
+                        this.order.organUnit = tempOrder.outboundOrganUnit
                         Object.assign(this.order, {operator: this.userInfo}, {
                             house: {
                                 name: this.warehouse.name,
@@ -94,29 +90,30 @@
                         this.title = tempTitle + '出库单详情'
                         this.isOutbound = true
                         this.order = res.outboundEquipsOrder
-                        this.equipItems = transEquips(this.order.equips).equipItems
+                        this.equipItems = this.order.equipItems
                         break
                     }
                 }
             },
+            // 获取装备列表的装备
             getFinishEquip(equipItems) {
                 _.map(equipItems, (item) => {
-                    this.order.equips = this.order.equips.concat(item.items)
-                    this.order.equips.equipId = this.order.equips.id
+                    this.order.equipItems = this.order.equipItems.concat(item.items)
+                    this.order.equipItems.equipId = this.order.equipItems.id
                 })
-            },
+             },
             clean() {
                 this.fetchData()
             },
             submit() {
                 let outOrder = JSON.parse(JSON.stringify(this.order))
-                _.map(this.equipItems, (item) => {
-                    outOrder.equips = this.order.equips.concat(item.items)
-                    outOrder.equips.equipId = this.order.equips.id
-                })
-                outOrder.processCategory = this.allocateCategory  // 1为调拨流程 0为直调
                 outOrder.processInstanceId = this.processInstanceId
-                processOutbound(this.taskId, this.order).then(
+                outOrder.processCategory = this.allocateCategory  // 1为调拨流程 0为直调
+                // todo 后端修改后可以删除operator的转换
+                outOrder.category = "OUT_HOUSE"  // 1为调拨流程 0为直调
+                outOrder.operator.operatorId = outOrder.operator.id
+                outOrder.operator.operator = outOrder.operator.name
+                processOutbound(this.taskId, outOrder).then(
                     this.$router.push({path: 'agencyMatters'})
                 )
             },
@@ -142,16 +139,4 @@
 </script>
 
 <style scoped>
-    .transfer-out-or-in-container {
-        width: 100%;
-        color: #707070FF;
-        font-size: 16px;
-    }
-
-    .process-info {
-        padding: 18px 0;
-        display: flex;
-        justify-content: space-between;
-        overflow: hidden;
-    }
 </style>

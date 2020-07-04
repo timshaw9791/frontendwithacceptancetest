@@ -1,6 +1,6 @@
 <template>
     <div class="table-box">
-        <bos-tabs>
+        <bos-tabs margin="">
             <template slot="slotHeader" v-if="!isInfo">
                 <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96"
                              @click="readData()"></base-button>
@@ -8,7 +8,7 @@
                              :selectList="select.handWareList"></base-select>
             </template>
             <define-table ref="totalTable" :data="equipItems" @changeCurrent="selRow" :havePage="false"
-                          :highLightCurrent="true" :showSummary="true" :summaryFunc="$sumFunc" slot="total">
+                          :highLightCurrent="true" :showSummary="true" :summaryFunc="$sumFunc" slot="total" margin="0">
                 <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
                     <i class="iconfont iconyichu"
                        @click="$delRow(equipItems,data.$index)"></i>
@@ -21,7 +21,7 @@
                     <define-input v-model="data.row.items.length" type="Number" :tableEdit="false"></define-input>
                 </define-column>
             </define-table>
-            <define-table ref="detailTable" :data="equipItems[totalIndex].items" :havePage="false" slot="detail">
+            <define-table ref="detailTable" :data="equipItems[totalIndex].items" :havePage="false" slot="detail" margin="0">
                 <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
                     <i class="iconfont iconyichu"
                        @click="$delRow(equipItems[totalIndex].items,data.$index,()=>{!equipItems[totalIndex].items.length && equipItems.splice(totalIndex,1)})"></i>

@@ -20,8 +20,8 @@
         <base-button v-if="taskDefinitionKey.includes('reapply')"
                      label="作废" @click="invalid" slot="button" type="text"></base-button>
         <!--创建新的流程时显示-->
-        <base-button v-if="!orderId" slot="button" type="text" label="提交" @click="submit()"></base-button>
         <base-button v-if="!orderId" slot="button" type="text" label="清空" @click="clean()"></base-button>
+        <base-button v-if="!orderId" slot="button" type="text" label="提交" @click="submit()"></base-button>
     </tool-bar>
 </template>
 

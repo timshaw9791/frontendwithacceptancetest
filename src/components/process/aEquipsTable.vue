@@ -45,7 +45,7 @@
                       slot="contrast" v-if="!isInfo" ref="matchTable">
             <define-column label="装备参数" v-slot="{ data }">
                 <entity-input v-model="data.row.equipArg" format="{name}({model})"
-                              :disabled="true"></entity-input>
+                              :table-edit="false"></entity-input>
             </define-column>
             <define-column label="装备数量" v-slot="{ data }">
                 <define-input v-model="data.row.count" :disabled="true"></define-input>
@@ -105,8 +105,8 @@
                 // 1.判断是否选中当前行
                 // 2.判断当前行是否有位置信息
                 !!this.pid && killProcess(this.pid)
-                let data = "5687"
-                start("java -jar scan.jar", (data) => {
+                let data = "20147963"
+                // start("java -jar scan.jar", (data) => {
                 switch (this.type) {
                     case 'out': {
                         _.findIndex(this.readRfids, data) === -1 && this.readRfids.push(data)
@@ -132,11 +132,11 @@
                             item.productTime = '1590721943'
                             item.locationInfo = item.location
                             if (temp.equipArg && item.equipName + "(" + item.equipModel + ")" !== temp.equipArg) {
-                               return  this.$message.error("该装备与当前选中的装备参数不匹配！")
+                                return this.$message.error("该装备与当前选中的装备参数不匹配！")
                             }
                             temp.equipArg = item.equipName + "(" + item.equipModel + ")"
                             // 字符串查找不能使用_.findIndex
-                            if( _.findIndex(temp.items, item) === -1 && this.readRfids.findIndex(item=>item===data)){
+                            if (_.findIndex(temp.items, item) === -1 && this.readRfids.findIndex(item => item === data)) {
                                 temp.items.push(item)
                                 this.readRfids.push(data)
                                 this.addRow()
@@ -148,12 +148,12 @@
                         break
                     }
                 }
-                }, (fail) => {
-                    this.index = 1;
-                    this.$message.error(fail);
-                }, (pid, err) => {
-                    pid ? this.pid = pid : this.$message.error(err)
-                })
+                // }, (fail) => {
+                //     this.index = 1;
+                //     this.$message.error(fail);
+                // }, (pid, err) => {
+                //     pid ? this.pid = pid : this.$message.error(err)
+                // })
             },
             selRow(data) {
                 this.totalIndex = data.index
@@ -185,21 +185,16 @@
         },
         watch: {
             equipItems(newVal) {
-                if (this.isInfo) {
-                    if (this.type === "out") {
-                        // 出库单装备
-                        this.aEquipItems = transEquips(newVal).equipItems
-                        return
-                    }
-                    // 入库单装备
-                    this.aEquipItems = transEquips(newVal, "locationInfo").equipItems
+                if (newVal.length === 0) {
+                    this.aEquipItems = [{items: [], locationInfo: {}}]
+                }else {
+                    const groupRules = this.type === "out" ? 'args' : 'locationInfo'
+                    this.aEquipItems = transEquips(newVal, groupRules).equipItems
                 }
             },
             matchEquips(newVal) {
-                newVal.length === 0 ? this.aMatchEquips.push({
-                    items: [],
-                    locationInfo: {}
-                }) : this.aMatchEquips = transEquips(newVal).equipItems
+                newVal.length === 0 ? this.aMatchEquips = {items: [], locationInfo: {}}
+                    : this.aMatchEquips = transEquips(newVal).equipItems
             },
             'aEquipItems.length'(newVal) {
                 !newVal && this.aEquipItems.push({items: [], locationInfo: {}})

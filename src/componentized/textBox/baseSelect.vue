@@ -158,6 +158,8 @@ import { judgeRules } from "../rules"
         position: relative;
         user-select: none;
         cursor: pointer;
+        text-align: left;
+        color: #707070;
     }
     .context {
         margin-left: 10px;

@@ -49,10 +49,12 @@
         methods: {
             fetchData() {
                 getInventoryOrderList('get', this.paginator).then(res => {
-                    this.list = res.content
-                    this.paginator.totalPages = res.totalPages
-                    this.paginator.totalElements = res.totalElements
-                    this.fixData()
+                    if (res.content){
+                        this.list = res.content
+                        this.paginator.totalPages = res.totalPages
+                        this.paginator.totalElements = res.totalElements
+                        this.fixData()
+                    }
                 })
             },
             fixData() {

@@ -21,7 +21,6 @@
 
 <script>
     import {judgeRules} from "../rules"
-
     export default {
         name: "defineInput",
         data() {
@@ -60,7 +59,7 @@
             },
             margin: {
                 type: String,
-                default: '3px 0.0521rem'
+                default: '3px 0.0521rem' //默认input总高度为40+3+3
             },
             disabled: {
                 type: Boolean,
@@ -104,7 +103,7 @@
             },
             placeholder: {
                 type: [Number, String],
-                default: ""
+                default: "--"
             },
             haveLabel: {
                 type: Boolean,

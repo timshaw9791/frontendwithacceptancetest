@@ -1,16 +1,14 @@
 <template>
     <view-container>
-        <div class="process-info">
-            <define-input label="单号" v-model="order.number" :disabled="true"></define-input>
-            <entity-input label="入库机构" v-model="order.house.organUnit" :disabled="true"
-                          format="{name}"
-                          :options="{search:'organUnits'}"></entity-input>
-            <define-input label="入库库房" v-model="order.house.name"
-                          :disabled="true"></define-input>
-            <entity-input label="入库人员" v-model="order.operator" format="{name}({policeSign})"
-                          :disabled="true"></entity-input>
-        </div>
-        <a-equips-table :is-info="isInfo" :equip-items="order.equips"
+        <define-input label="单号" v-model="order.number" :disabled="true"></define-input>
+        <entity-input label="入库机构" v-model="order.house.organUnit" :disabled="true"
+                      format="{name}"
+                      :options="{search:'organUnits'}"></entity-input>
+        <define-input label="入库库房" v-model="order.house.name"
+                      :disabled="true"></define-input>
+        <entity-input label="入库人员" v-model="order.operator" format="{name}({policeSign})"
+                      :disabled="true"></entity-input>
+        <a-equips-table :is-info="isInfo" :equip-items="equipItems"
                         :match-equips="matchEquips" @getFinishEquip="getFinishEquip"
                         type="in">
         </a-equips-table>
@@ -43,9 +41,10 @@
                 processInstanceId: '',
                 taskId: '',
                 isInfo: false,
-                order: {operator: {}, house: {name: '', organUnit: {}},equips:[]},
+                order: {operator: {}, house: {name: '', organUnit: {}}, equipItems: []},
                 matchEquips: [], //出库是为申请装备  入库时为出库装备
                 outboundEquips: [],
+                equipItems:[]
             }
         },
         methods: {
@@ -59,11 +58,11 @@
             },
             fixData(res) {
                 console.log(res)
-                let tempTitle ,  order
-                if (this.allocateCategory === 'TRANSFER'){
+                let tempTitle, order
+                if (this.allocateCategory === 'TRANSFER') {
                     tempTitle = "调拨"
                     order = res.transferApplyOrder
-                }else {
+                } else {
                     tempTitle = "直调"
                     order = res.directAllotOrder
                 }
@@ -71,7 +70,7 @@
                     case "false": {
                         this.title = tempTitle + '入库'
                         this.highLightCurrent = false
-                        this.matchEquips = res.outboundEquipsOrder.equips
+                        this.matchEquips = res.outboundEquipsOrder.equipItems
                         console.log(this.matchEquips)
                         this.order.organUnit = order.inboundOrganUnit
                         Object.assign(this.order, {operator: this.userInfo}, {
@@ -83,26 +82,27 @@
                         })
                         break
                     }
-                    case "true": {
+                    case "true": { //显示入库单
                         this.title = tempTitle + '入库单详情'
                         this.order = res.inboundEquipsOrder
                         break
                     }
                 }
             },
+            //获取扫描后的装备
             getFinishEquip(equipItems) {
-                this.order.equips = [];
-                console.log(equipItems)
+                this.order.equipItems = [];
                 _.map(equipItems, (item) => {
-                    this.order.equips = this.order.equips.concat(item.items)
-                    this.order.equips.equipId = this.order.equips.id
+                    this.order.equipItems = this.order.equipItems.concat(item.items)
+                    this.order.equipItems.equipId = this.order.equipItems.id
                 })
             },
             clean() {
-                this.fetchData()
+               this.equipItems = []
             },
             submit() {
                 this.order.processCategory = this.allocateCategory // 1为调拨流程 0为直调
+                this.order.category = 'IN_HOUSE'
                 this.order.processInstanceId = this.processInstanceId
                 this.order.inboundOrganUnitId = this.order.organUnit.id
                 this.order.inboundOrganUnitName = this.order.organUnit.name

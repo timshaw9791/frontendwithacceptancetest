@@ -8,7 +8,7 @@
                           @changeCurrent="changeCurrent">
                 <define-column label="操作" v-slot="{ data }">
                     <i class=" iconfont iconbianji" @click="dialogShow('edit',data.row)" style="margin:8px"></i>
-                    <i class=" iconfont iconshanchu" @click="deleteplan(data.row)" style="margin:8px"></i>
+                    <i class=" iconfont iconshanchu" @click="deletePlan(data.row)" style="margin:8px"></i>
                 </define-column>
                 <define-column label="必戴装备名称" field="name"></define-column>
             </define-table>
@@ -23,7 +23,6 @@
 </template>
 
 <script>
-    import myHeader from "components/base/header/header";
     import baseButton from "@/componentized/buttonBox/baseButton";
     import entityInput from "@/componentized/entity/entityInput";
     import defineInput from '@/componentized/textBox/defineInput'
@@ -60,7 +59,7 @@
                     }
                 })
             },
-            deleteplan(data) {
+            deletePlan(data) {
                 deleteWearRates(data.id).then(res => {
                     this.$message.success("删除成功")
                     this.equipArg = []
@@ -75,7 +74,7 @@
                 this.equipArg = current.current.equipArgs
             },
             dialogShow(data, item) {
-                if (data == "edit") {
+                if (data === "edit") {
                     this.editflag = true
                     this.plan = item
                 }
@@ -89,7 +88,6 @@
             this.fetchData()
         },
         components: {
-            myHeader,
             baseButton,
             entityInput,
             bosTabs,
