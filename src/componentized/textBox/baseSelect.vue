@@ -1,210 +1,270 @@
 <template>
-    <div class="base-select-container" :class="[styleObj]" :style="'width:'+fixWidth+';float:'+align+';margin:'+margin">
-        <div class="slot-label" v-if="haveLabel">{{ label }}
-            <span class="required" v-if="required">*</span>
-        </div>
-        <div class="select" @click="clickSel">
-            <span class="context" v-if="selectValue">{{ selectValue }}</span>
-            <span class="placeholder" v-else>{{ placeholder }}</span>
-            <i class="iconfont iconxiala1" :class="{'icon-rotate': showOptions}" v-show="!disabled"></i>
-            <div class="options-box" v-show="showOptions">
-                <div class="option" v-for="option in selectList" :key="'sel'+option.value" @click.stop="clickOpt(option)">
-                    <span class="label">{{ option.label }}</span>
-                </div>
+    <div class="base-select-container" :class="[styleObj]" @mouseleave="showOptions=false"
+         :style="`width:${fixWidth};float:${align};margin:${margin}`" >
+        <aside class="label" v-if="haveLabel">
+            <i :class="`iconfont ${iconfont}`" v-if="iconfont"></i>
+            <span v-else>{{ label }}</span>
+            <span class="required" v-show="required">*</span>
+        </aside>
+        <article class="main">
+            <input type="text" v-model="insideValue" :placeholder="placeholder" readonly class="input" @click="clkSel">
+            <i class="iconfont iconxiala1" :class="{'icon-rotate': showOptions}" @click="clkSel"></i>
+            <div class="select-option" :class="{'extend-options': showOptions}">
+                <ul class="select-ul" :class="{'show-options': showOptions}">
+                    <li v-for="(item, i) in insideList" :key="item.key+''+i" class="select-li"
+                        :class="{selected:item.insideSel||!multiple&&value===item.key}" @click="selOption(item, i)">
+                        {{ item.value }}
+                        <i class="iconfont icongou" v-show="item.insideSel"></i>
+                    </li>
+                </ul>
             </div>
-        </div>
+        </article>
     </div>
 </template>
 
 <script>
-import { judgeRules } from "../rules"
     export default {
         name: 'baseSelect',
-        data() {
-            return {
-                selectValue: "", // 内部绑定值/选中值
-                showOptions: false, // 是否显示option的值
-                styleObj: {
-                    error: false
-                }
-            }
-        },
         props: {
-            label: { // 标题名
+            value: { // v-model
+                default: ''
+            },
+            label: {
                 type: String,
-                default: "流程管理"
+                default: '标签'
+            },
+            iconfont: {
+                type: String,
+                default: ''
             },
             haveLabel: {
                 type: Boolean,
                 default: true
             },
-            value: {},// 父组件绑定值/选中值
-            selectList: {
+            list: { // 选项数据
                 type: Array,
                 default() {
-                    return [{label: '默认', value: 'init'}]
+                    return []
                 }
             },
-            column: {
-                type: Number,
-                default: 3
-            },
-            align: {
-                type: String,
-                default: 'none'
-            },
-            margin: {
-                type: String,
-                default: '0 0.0521rem'
+            required: { // 是否必须
+                type: Boolean,
+                default: false
             },
             placeholder: {
-                type: String,
                 default: '请选择'
             },
             disabled: {
                 type: Boolean,
                 default: false
             },
-            required: {
+            multiple: {
                 type: Boolean,
                 default: false
             },
-            type: {
-                type: String,
-                default: "String"
+            column: {
+                type: Number,
+                default: 3
             },
-            validate: {
-                // 验证函数
-                type: Function,
-                default() {
-                    return () => true;
-                }
+            align: {
+                default: 'none'
             },
-            haveLabel: {
-                type: Boolean,
-                default: true
+            margin: {
+                default: '3px 0.0521rem'
+            }
+        },
+        data() {
+            return {
+                showOptions: false, // 是否显示下拉项
+                insideValue: '', // 内部绑定值
+                insideList: [], // 内部选项列表
+                styleObj: { // 样式
+                    error: false
+                },
             }
         },
         computed: {
             fixWidth() {
-              return `calc(${8.33*this.column}% - 0.1042rem)`;
-          }  
+                return `${8.33*this.column}%`
+            }
         },
         methods: {
-            reg() {
-                if(judgeRules(this.required, this.type, this.value, this.validate)) {
-                    this.styleObj.error=false;
-                    return true;
-                } 
-                this.styleObj.error=true;
-                return false;   
+            listInit() { // 初始化选项数据
+                let tmpList = JSON.parse(JSON.stringify(this.list));
+                this.insideValue = ""
+                this.insideList = this.multiple?tmpList.map(item => Object.assign(item, {insideSel: this.value.includes(item.key)})):tmpList
+                this.init(this.value)
             },
-            clickSel() {
-                if(this.disabled) {
-                    this.showOptions = false;
-                    return;
+            init(val) { // 初始化组件状态
+                let tmp;
+                if(this.multiple) { // 如果是多选
+                    if(!(val instanceof Array)) {
+                        console.error("v-model绑定值须为数组");
+                        return
+                    }
+                    tmp = this.list.filter(item => val.includes(item.key)).map(item => item.value).join(';')
+                    this.insideValue = tmp?tmp:''
+                } else {
+                    tmp = this.list.filter(item => item.key == val);
+                    this.insideValue = tmp[0]?tmp[0].value:''
                 }
-                this.showOptions = !this.showOptions;
             },
-            clickOpt(data) {
-                this.selectValue = data.label;
-                this.showOptions = false;
-                this.$emit('input', data.value);
+            clkSel() { // 是否显示下拉选项框
+                this.showOptions = this.disabled?false:!this.showOptions
+            },
+            selOption(data, index) { // 选中选项后
+                if(this.multiple) { // 如果是多选
+                    data.insideSel = !data.insideSel
+                    let selTmp = this.insideList.filter(item=>item.insideSel).map(item=>item.key)
+                    this.$emit('input', selTmp)
+                    this.$emit('selected', selTmp)
+                } else { // 单选
+                    this.$emit('input', data.key)
+                    this.$emit('selected', data)
+                    this.showOptions = false
+                }
+            },
+            reg() { // 验证函数
+                return Boolean(!this.required || this.value.length)
             }
         },
         watch: {
             value: {
-                handler(newVal) {
-                    let result = this.selectList.filter(item => item.value == newVal);
-                    this.selectValue = result[0]?result[0].label:''
+                handler(val) {
+                    this.init(val)
                 },
+                deep: true
+            },
+            list: {
+                handler() {
+                    this.listInit()
+                },
+                deep: true,
                 immediate: true
             }
         }
     }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
     .base-select-container {
-        font-size: 16px;
-        margin: 0 0.0521rem;
-        display: inline-flex;
+        position: relative;
         box-sizing: border-box;
-        justify-content: center;
-        align-items: center;
-        border-radius: 4px;
+        /* 130px */
+        width: 300px;
+        font-size: 16px;
         height: 40px;
         max-height: 40px;
-        border: 1px solid #E4E7ED;
+        display: inline-flex;
+        justify-content: flex-start;
+        align-items: center;
+        border-radius: 4px;
+        border: 1px solid #E4E7Ed;
     }
-    .title-name {
-        line-height: 40px;
-        font-size:16px;
-        color:rgba(112,112,112,1);
-        margin-left: 6px;
-    }
-    .slot-label {
-        min-width: 55px;
-        padding-left: 10px;
+    .label {
+        min-width: 30px;
+        padding: 0 10px 0 5px;
         color: #909399;
         overflow: hidden;
         flex-shrink: 0;
-    }
-    .select {
-        width: 80%;
-        height: 40px;
-        line-height: 40px;
-        flex-grow: 1;
-        position: relative;
+        display: inline-block;
+        text-align: center;
         user-select: none;
+    }
+    .main {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: inline-flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+    input::-webkit-input-placeholder {
+        color: #c0c4cc;
+    }
+    .input {
+        box-sizing: border-box;
+        border: none;
+        outline-style: none;
+        width: 100%;
+        /*height: 100%;*/
+        cursor: pointer;
+    }
+    .select-option {
+        position: absolute;
+        min-width: 100%;
+        min-height: 0px;
+        max-height: 0px;
+        left: 0;
+        top: 100%;
+    }
+    .select-ul {
+        position: relative;
+        min-width: 100%;
+        min-height: 0px;
+        max-height: 0px;
+        margin: 8px 0 0 0;
+        padding: 0;
+        list-style-type: none;
+        overflow: hidden auto;
+        border-radius: 4px;
+        background-color: #fff;
+        box-sizing: border-box;
+        box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+        transition: 0.3s all;
+        z-index: 2020;
+    }
+    .select-li {
+        height: 34px;
+        line-height: 34px;
+        padding: 0 10px;
+        white-space: nowrap;
         cursor: pointer;
         text-align: left;
         color: #707070;
     }
-    .context {
-        margin-left: 10px;
+    .select-li:hover {
+        background-color: #f5f7fa;
+    }
+    .selected {
+        color: #409eff;
     }
     .required {
         color: red;
     }
-    .placeholder {
-        color: #c0c4cc;
-        margin-left: 10px;
-    }
     .iconxiala1 {
-        font-size: 30px;
-        color: #c0c4cc;
-        float: right;
+        font-size: 16px;
+        color: #d7d2df;
         transition: 0.5s all;
     }
     .icon-rotate {
-        transform: rotateX(180deg);
+        transform: rotate(-180deg);
     }
-    .options-box {
+    .extend-options {
+        min-height: 50px;
+        max-height: 180px;
+    }
+    .show-options {
+        min-height: 36px;
+        max-height: 170px;
+    }
+    .extend-options:hover .select-ul::-webkit-scrollbar {
+        display: block;
+    }
+    .select-ul::-webkit-scrollbar {
+        width: 6px;
+        height: 8px;
+        display: none;
+    }
+    .select-ul::-webkit-scrollbar-thumb {
+        background: rgba(221, 222, 224, 1);
+        border-radius: 20px;
+    }
+    .icongou {
         position: absolute;
-        width: 100%;
-        max-height: 160px;
-        overflow-x: hidden;
-        overflow-y: scroll;
-        text-align: left;
-        background-color: #fff;
-        box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
-        z-index: 99999;
-        .label {
-            margin-left: 10px;
-        }
-        .option:hover {
-            background-color: #f5f7fa;
-        }
+        right: 6px;
+        color: #409eff;
     }
-    .options-box::-webkit-scrollbar {
-            width: 6px;
-            height: 8px;
-        }
-    .options-box::-webkit-scrollbar-thumb {
-            background:rgba(178,178,204,1);
-            border-radius: 20px;
-        }
     .error {
         border: 1px solid red;
     }
