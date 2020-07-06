@@ -1,6 +1,6 @@
 <template>
     <div class="entity-input-container" ref="entityInput" :style="`width:${fixWidth};margin:${fixMargin}`"
-         :class="{'disabled':disabled&&inTableStateContrl,'border':(tableEdit&&edit)}"
+         :class="{'disabled':disabled&&inTableStateContrl,'border':tableEdit||edit}"
          @click="changeEditState(true)" @mouseleave="changeEditState(false)">
         <div class="label" v-if="!inTable">{{ label }}
             <span class="required" v-if="required">*</span>
@@ -9,8 +9,8 @@
                :style="`text-align:${fixInputTextAlign}`"
                readonly :placeholder="fixPlaceholder" @keydown.13="changeEditState(false)"/>
         <div class="icon">
-            <i class="iconfont iconwenbenkuangshanchu" @click="clear" v-show="insideValue&&!disabled&&tableEdit&&edit"></i>
-            <i class="iconfont iconxuanze" @click="showSearch" v-show="search&&!disabled&&tableEdit&&edit"></i>
+            <i class="iconfont iconwenbenkuangshanchu" @click="clear" v-show="insideValue&&!disabled&&(tableEdit||edit)"></i>
+            <i class="iconfont iconxuanze" @click="showSearch" v-show="search&&!disabled&&(tableEdit||edit)"></i>
             <i class="iconfont iconxiang" @click="showDetail" v-show="detail&&(disabled||!tableEdit)&&insideValue"></i>
         </div>
         <service-dialog title="申请人员选择" ref="applicant" :button="false" :secondary="false">
@@ -234,7 +234,7 @@
         box-sizing: border-box;
         margin: 0 0.0521rem;
         .iconwenbenkuangshanchu {
-            display: none;
+            display: inline-block;
         }
         .label {
             min-width: 55px;
@@ -289,11 +289,6 @@
         border:1px solid rgba(220,223,230,1);
         .input {
             color:rgba(192,196,204,1);
-        }
-    }
-    .entity-input-container:hover {
-        .iconwenbenkuangshanchu {
-            display: inline-block;
         }
     }
 </style>

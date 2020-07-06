@@ -13,12 +13,15 @@
             <el-card  shadow="never" :body-style="{ padding:'0.156rem'}">
                 <div class="to-do">
                     <div class="title">待办事宜</div>
-                    <div class="event-list">
+                    <div class="event-list" v-if="toDoList">
                         <div class="event-box" v-for="(event, i) in toDoList" :key="i">
-                            <div>{{ event.processInstanceName }}</div>
-                            <div>{{ event.name }}</div>
-                            <div>{{ event.time }}</div>
+                            <div>{{ event.processInstanceName}}</div>
+                            <div>{{ event.name}}</div>
+                            <div>{{ event.time}}</div>
                         </div>
+                    </div>
+                    <div class="event-list" v-else style="text-align: center;align-items: center">
+                        暂无任务
                     </div>
                 </div>
             </el-card>
@@ -196,7 +199,7 @@
     }
     .overview {
         font-size: 16px;
-        font-family:PingFang SC;
+        font-family: "Source Han Sans CN";
 
         .el-card {
             border: none !important;
@@ -239,13 +242,6 @@
                 border-bottom: 2px solid #F0F0F0;
                 padding-bottom: 0.0625rem;
             }
-            .event-list::-webkit-scrollbar {
-                width: 6px;
-            }
-            .event-list::-webkit-scrollbar-thumb {
-                background: rgba(47,47,118,0.37);
-                border-radius: 20px;
-             }
             .event-list {
                 margin-top: 0.0781rem;
                 width: 100%;
@@ -259,9 +255,8 @@
                     height: 30px;
                     font-size: 18px;
                     color: #707070;
-                    padding-right: 16px;
                     margin-bottom: 10px;
-                }
+                };
             }
         }
         .inventory-statistics {
