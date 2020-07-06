@@ -17,6 +17,7 @@ Vue.prototype.$video = Video;
 import { parseTime, filterFrame,formatFunc,formatFuncOrder } from 'common/js/index'
 import VideoPlayer from 'vue-video-player'
 import {sumFunc,delRow} from "@/common/js/tableFunc";
+import {interval} from "@/common/js";
 
 Vue.use(VideoPlayer);
 
@@ -62,6 +63,7 @@ Vue.prototype.$ajax = axios;
 Vue.prototype.$formatFuncLoc = formatFunc
 Vue.prototype.$formatFuncOrderLoc = formatFuncOrder
 Vue.prototype.$filterTime = parseTime
+Vue.prototype.$interval = interval
 Vue.prototype.$filterFrame = filterFrame
 Vue.prototype._ = _
 Vue.prototype.$sumFunc = sumFunc

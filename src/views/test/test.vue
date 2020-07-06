@@ -1,12 +1,22 @@
 <template>
     <view-container :tabs="tabs" v-model="search">
         <!-- 标签1 -->
-        <define-table :data="[]" height="100%" slot="car2">
-            <define-column label="测试列" field="a"></define-column>
-            <define-column label="测试列2" field=""b></define-column>
-        </define-table>
+        <div slot="car1">
+            <define-table :data=list height="200px">
+                <define-column label="测试列" v-slot="{data}" >
+                  <define-input v-model="data.row.operator"/>
+                </define-column>
+                <define-column label="测试列2" field=""b></define-column>
+            </define-table>
+            <label>
+                哈哈哈
+                <input v-model="list[0].operator">
+            </label>
+
+        </div>
+
         <!-- 标签2 -->
-        <div slot="car1" style="height: 100vh">
+        <div slot="car2" style="height: 100vh">
             <upload-file v-model="imgSrc"></upload-file>
             <define-image :url="imgSrc" margin="500px 30px"></define-image>
             <upload-file v-model="imgSrc"></upload-file>
@@ -37,7 +47,8 @@ export default {
                     key: 'car2'
                 }],
             search: '',
-            imgSrc: '73424a3d1c3e41f98e28ac5da5c3284c.png'
+            imgSrc: '73424a3d1c3e41f98e28ac5da5c3284c.png',
+            list: [{operator:'chen'}]
         }
     }
 }

@@ -2,22 +2,22 @@
     <div class="equip-params-container">
         <define-input label="搜索" v-model="paginator.search" placeholder="装备名称/装备型号"></define-input>
         <div class="table">
-            <define-table :data="list" height="560px" @changeCurrent="select" :pageInfo="paginator" @changePage="changePage" :highLightCurrent="true">
-                <define-column label="装备图片" v-slot="{ data }">
+            <define-table :data="list" height="560px" @changeCurrent="select" :have-page="false" :highLightCurrent="true">
+                <define-column label="装备图片" width="100px" v-slot="{ data }">
                     <hover-img  image-url="data.row.image" alt="暂无图片"/>
                 </define-column>
                 <define-column label="装备名称" field="name"></define-column>
                 <define-column label="装备型号" field="model"></define-column>
                 <define-column label="保质期(天)" v-slot="{data}">
-                    <date-input v-model="data.row.shelfLife" placeholder="--" :disabled="true"></date-input>
+                    <date-input v-model="data.row.shelfLife" placeholder="--" :table-edit="false"></date-input>
                 </define-column>
                 <define-column label="充电周期(天)" v-slot="{data}">
-                    <date-input v-model="data.row.chargeCycle" placeholder="--" :disabled="true"> </date-input>
+                    <date-input v-model="data.row.chargeCycle" placeholder="--" :table-edit="false"> </date-input>
                 </define-column>
                 <define-column label="保养周期(天) " v-slot="{data}">
-                    <date-input v-model="data.row.upkeepCycle" placeholder="--" :disabled="true"></date-input>
+                    <date-input v-model="data.row.upkeepCycle" placeholder="--" :table-edit="false"></date-input>
                 </define-column>
-                <define-column label="供应商" field="supplier.name"></define-column>
+                <define-column label="供应商" width="250px" field="supplier.name"></define-column>
             </define-table>
         </div>
         <div class="footer">
@@ -36,7 +36,7 @@
             return {
                 currentSel: '', // 当前选中行数据
                 list: [],
-                paginator: {page: 1, size: 10, totalPages: 1, totalElements: 0, search: ''},
+                paginator: { search: ''},
                 imgBaseUrl:imgBaseUrl
             }
         },

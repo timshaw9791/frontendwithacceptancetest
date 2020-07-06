@@ -9,6 +9,7 @@
             <span class="required" v-if="required">*</span>
         </div>
         <input :type="insidePattern" class="input" :disabled="disabled" v-model="insideValue"
+               :style="`text-align:${fixInputTextAlign}`"
                :maxlength="maxlength" @change="reg" :readonly="!(tableEdit&&edit)" :placeholder="placeholder"
                @blur="changeEditState(false)" @keydown.13="changeEditState(false)"/>
         <div class="icon" v-show="insideValue!=''&&clearable&&!disabled&&tableEdit&&edit">
@@ -116,6 +117,9 @@
             },
             fixMargin() {
                 return this.inTable ? '0' : this.margin
+            },
+            fixInputTextAlign(){
+                return this.inTable ? 'center' : 'left'
             }
         },
         methods: {
@@ -181,10 +185,13 @@
         border-radius: 4px;
         box-sizing: border-box;
         margin: 0 0.0521rem;
+        position: relative;
 
         .iconxiaoyanjing,
         .iconwenbenkuangshanchu1 {
             display: none;
+            position: relative;
+            right: 0;
         }
 
         .iconxiaoyanjing {
@@ -193,7 +200,7 @@
 
         .label {
             min-width: 55px;
-            padding: 0 10px;
+            padding: 0 0 0 10px;
             color: #909399;
             overflow: hidden;
             flex-shrink: 0;
@@ -205,14 +212,15 @@
 
         .input {
             width: 100%;
-            padding: 0 5px 1px 0;
+            padding: 0 10px;
             // flex-grow: 1;
             height: 100%;
             font-size: 16px;
             outline-style: none;
-            border-radius: 4px;
-            border: 0px;
+            border:0;
             background-color: transparent;
+           // font-family: SourceHanSansCN, Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+            color: #707070 ;
         }
 
         input::-webkit-input-placeholder {
@@ -225,6 +233,8 @@
             display: inline-flex;
             justify-content: flex-end;
             padding: 0 10px;
+            position: absolute;
+            right: 0;
         }
     }
 

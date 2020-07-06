@@ -6,7 +6,8 @@
             <span class="required" v-if="required">*</span>
         </div>
         <input type="text" class="input" :disabled="disabled" v-model="insideValue"
-               readonly :placeholder="placeholder" @keydown.13="changeEditState(false)"/>
+               :style="`text-align:${fixInputTextAlign}`"
+               readonly :placeholder="fixPlaceholder" @keydown.13="changeEditState(false)"/>
         <div class="icon">
             <i class="iconfont iconwenbenkuangshanchu" @click="clear" v-show="insideValue&&!disabled&&tableEdit&&edit"></i>
             <i class="iconfont iconxuanze" @click="showSearch" v-show="search&&!disabled&&tableEdit&&edit"></i>
@@ -157,6 +158,12 @@
             }  ,
             fixMargin() {
                 return this.inTable?'0':this.margin
+            },
+            fixInputTextAlign() {
+                return this.inTable ? 'center' : 'left'
+            },
+            fixPlaceholder(){
+                return this.disabled?'--':this.placeholder
             }
         },
         watch: {
@@ -215,6 +222,7 @@
 
 <style lang="scss" scoped>
     .entity-input-container {
+        position: relative;
         display: inline-flex;
         justify-content: flex-start;
         align-items: center;
@@ -230,7 +238,7 @@
         }
         .label {
             min-width: 55px;
-            padding: 0 10px;
+            padding: 0 0 0 10px;
             color: #909399;
             overflow: hidden;
             flex-shrink: 0;
@@ -240,7 +248,7 @@
         }
         .input {
             width: auto;
-            padding: 0 5px 1px 0;
+            padding: 0 5px 0 10px;
             flex-grow: 1;
             height: 100%;
             font-size: 16px;
@@ -251,6 +259,7 @@
             overflow: hidden;
             text-overflow:ellipsis;
             white-space: nowrap;
+            color: #707070;
         }
         input::-webkit-input-placeholder {
             color: #C0C4CC;
@@ -260,6 +269,8 @@
             flex-grow: 1;
             min-width: 32px;
             padding: 0 3px 0 0;
+            position: absolute;
+            right: 0;
         }
     }
     .border {

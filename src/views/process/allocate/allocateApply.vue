@@ -38,12 +38,12 @@
                 <define-table :havePage="false" :data="applyOrder.equipItems" height="733px"
                               :showSummary="true" :summaryFunc="$sumFunc">
                     <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
-                        <i class="iconfont icontianjialiang" @click="addRow()"></i>
-                        <i class="iconfont iconyichu" @click="$delRow(applyOrder.equips,data.$index)"></i>
+                        <i class="iconfont icontianjia" @click="addRow()"></i>
+                        <i class="iconfont iconyichu" @click="$delRow(applyOrder.equipItems,data.$index)"></i>
                     </define-column>
                     <define-column label="装备参数" v-slot="{ data }">
                         <entity-input v-model="data.row.equipArg" :options="{search:'equipArgsSelect'}"
-                                      format="{name}({model})" :tableEdit="!isInfo">
+                                      format="{name}({model})" :tableEdit="!isInfo" placeholder="请选择">
                         </entity-input>
                     </define-column>
                     <define-column label="装备数量" v-slot="{ data }">
@@ -130,7 +130,7 @@
                 })
             },
             addRow() {
-                this.applyOrder.equips.push({equipArg: {}})
+                this.applyOrder.equipItems.push({equipArg: {}})
             },
             showRfDialog() {
                 this.$refs.RfDialog.show()
@@ -215,8 +215,8 @@
             ]),
         },
         watch: {
-            'applyOrder.equips.length'(newVal) {
-                !newVal && this.applyOrder.equips.push({equipArg: {}})
+            'applyOrder.equipItems.length'(newVal) {
+                !newVal && this.applyOrder.equipItems.push({equipArg: {}})
             }
         }
     }

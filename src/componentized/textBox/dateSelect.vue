@@ -6,11 +6,12 @@
             <span class="required" v-if="required">*</span>
         </div>
         <el-date-picker
+                style="font-size: 16px"
                 v-model="selectValue"
                 :type="type"
                 :value-format="valueFormat"
                 :format="format"
-                placeholder="选择日期"
+                :placeholder="fixPlaceholder"
                 :start-placeholder="startPlaceholder"
                 :end-placeholder="endPlaceholder"
                 :readonly="disabled"
@@ -103,6 +104,9 @@
             },
             fixMargin() {
                 return this.inTable ? '0' : this.margin
+            },
+            fixPlaceholder() {
+                return this.disabled?'--':'选择日期';
             }
         },
         methods: {
@@ -175,7 +179,7 @@
 
     .label {
         min-width: 55px;
-        padding: 0 10px;
+        padding: 0  0 0 10px;
         color: #909399;
         overflow: hidden;
         flex-shrink: 0; // 在父元素宽度不够的情况下不自动收缩

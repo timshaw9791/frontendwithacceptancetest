@@ -146,6 +146,7 @@ import defineColumn from './defineColumn'
         }
         .el-table__body-wrapper { // 使滚动条显示在文档内部，避免对文档内容造成位置影响
             overflow-x: overlay !important;
+            overflow-y: overlay !important;
         }
         .el-table__fixed {
             pointer-events: none; // 解决固定列一侧横向滚动条无法移动的问题
