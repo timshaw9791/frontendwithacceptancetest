@@ -104,8 +104,8 @@ const asyncRouterMap = [{
         meta: {title: '装备参数编辑', crumb: '装备参数编辑'},
         hidden: true
     }, {
-        path: 'equipmententity',
-        name: 'equipment/equipmententity',
+        path: 'equipmentEntity',
+        name: 'equipment/equipmentEntity',
         component: _import('equipment/equipmentEntity'),
         meta: {title: '装备实体', crumb: '装备实体'},
     }, {

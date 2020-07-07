@@ -14,7 +14,7 @@
             </define-table>
             <define-table :haveIndex="false"  slot="slot2" :havePage="false" :data="equipArg" >
                 <define-column label="装备参数" field="describes" v-slot="{data}">
-                    <entity-input v-model="data.row" format="{name}({model})" :tableEdit="false"
+                    <entity-input v-model="data.row" format="{name}({model})" :disabled="false"
                                   :options="{}"></entity-input>
                 </define-column>
             </define-table>

@@ -13,11 +13,11 @@
                     <define-column label="装备参数" v-slot="{ data }">
                         <entity-input v-model="data.row.equipArg" :detailParam="data.row.equipArg"
                                       :options="{detail:'equipArgsDetail'}" format="{equipName}({equipModel})"
-                                      :tableEdit="false"></entity-input>
+                                      :disabled="false"></entity-input>
                     </define-column>
                     <define-column label="装备位置" v-slot="{ data }">
                         <entity-input v-model="data.row.location" :formatFunc="$formatFuncLoc"
-                                      :tableEdit="false"></entity-input>
+                                      :disabled="false"></entity-input>
                     </define-column>
                     <define-column label="装备数量" v-slot="{ data }">
                         <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input>

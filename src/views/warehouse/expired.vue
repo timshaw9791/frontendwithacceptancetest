@@ -16,7 +16,7 @@
                               :disabled="true"></entity-input>
             </define-column>
             <define-column label="装备位置" v-slot="{data}">
-                <entity-input v-model="data.row" :formatFunc="$formatFuncLoc" :tableEdit="false"></entity-input>
+                <entity-input v-model="data.row" :formatFunc="$formatFuncLoc" :disabled="false"></entity-input>
             </define-column>
             <define-column label="到期时间" field="scarTime" :filter="(row)=>$filterTime(row.scarTime)"/>
             <define-column label="到期倒计时/天" v-slot="{ data }">

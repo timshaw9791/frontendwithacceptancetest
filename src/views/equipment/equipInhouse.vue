@@ -1,8 +1,8 @@
 <template>
 <view-container>
         <div class="action_box">
-                <define-input label="单号" placeholder="--" margin="0 15px 0 0" :disabled="true" ></define-input>
-                <date-select label="入库时间" placeholder="--" :disabled="true"></date-select>
+                <define-input label="单号" margin="0 15px 0 0" :disabled="true" ></define-input>
+                <date-select label="入库时间"  :disabled="true"></date-select>
                 <entity-input label="入库人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :disabled="true" ></entity-input>
             </div>
             <bos-tabs @changeTab="changeTab">
@@ -17,10 +17,10 @@
                                 <i class="iconfont iconyichu" @click="changeRow(false,data)"></i>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
-                                <entity-input v-model="data.row.equipArgId"  :options="{search:'equipArgsSelect'}" format="{name}({model})" :tableEdit="true" ></entity-input>
+                                <entity-input v-model="data.row.equipArgId"  :options="{search:'equipArgsSelect'}" format="{name}({model})" :disabled="true" ></entity-input>
                             </define-column>
                             <define-column label="装备位置"  v-slot="{ data }" >
-                                <entity-input v-model="data.row.locationId"  :options="{search:'locationSelect'}" :formatFunc="$formatFuncLoc" :tableEdit="true" ></entity-input>
+                                <entity-input v-model="data.row.locationId"  :options="{search:'locationSelect'}" :formatFunc="$formatFuncLoc" :disabled="true" ></entity-input>
                             </define-column>
                             <define-column label="单价" v-slot="{ data }">
                                 <define-input v-model="data.row.price" type="Number" ></define-input>

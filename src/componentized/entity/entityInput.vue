@@ -1,17 +1,19 @@
 <template>
     <div class="entity-input-container" ref="entityInput" :style="`width:${fixWidth};margin:${fixMargin}`"
-         :class="{'disabled':disabled&&inTableStateContrl,'border':tableEdit||edit}"
-         @click="changeEditState(true)" @mouseleave="changeEditState(false)">
-        <div class="label" v-if="!inTable">{{ label }}
+         :class="{'disabled':disabled&&!inTable,'border':!disabled||!inTable}">
+        <!--在表格里就不显示label和*-->
+        <div class="label" v-if="!inTable">
+            {{ label }}
             <span class="required" v-if="required">*</span>
         </div>
         <input type="text" class="input" :disabled="disabled" v-model="insideValue"
                :style="`text-align:${fixInputTextAlign}`"
-               readonly :placeholder="fixPlaceholder" @keydown.13="changeEditState(false)"/>
+               readonly :placeholder="fixPlaceholder"/>
         <div class="icon">
-            <i class="iconfont iconwenbenkuangshanchu" @click="clear" v-show="insideValue&&!disabled&&(tableEdit||edit)"></i>
-            <i class="iconfont iconxuanze" @click="showSearch" v-show="search&&!disabled&&(tableEdit||edit)"></i>
-            <i class="iconfont iconxiang" @click="showDetail" v-show="detail&&(disabled||!tableEdit)&&insideValue"></i>
+            <i class="iconfont iconwenbenkuangshanchu" @click="clear"
+               v-show="insideValue&&!disabled"></i>
+            <i class="iconfont iconxuanze" @click="showSearch" v-show="search&&!disabled"></i>
+            <i class="iconfont iconxiang" @click="showDetail" v-show="detail&&(inTable||disabled)"></i>
         </div>
         <service-dialog title="申请人员选择" ref="applicant" :button="false" :secondary="false">
             <applicant-select @select="selected" @cancel="$refs.applicant.hide()"></applicant-select>
@@ -47,17 +49,15 @@
     import supplierSelect from "./select/supplierSelect";
     import consumableSelect from "./select/consumableSelect";
     import equipArgsDetail from './read/equipArgsDetail'
+
     export default {
         name: 'entityInput',
         data() {
             return {
-                inputPrePt: null,
-                insideValue: "",
+                insideValue: "",// 显示的内容
                 inTable: false, // 是否为表格内联
-                inTableStateContrl: true,
-                edit: true, // 内部是否可编辑
-                search: false, // 是否显示搜索图标
-                detail: false, // 是否显示详情图标
+                search: false,  // 是否显示搜索图标
+                detail: false,  // 是否显示详情图标
             }
         },
         props: {
@@ -80,10 +80,6 @@
             disabled: {
                 type: Boolean,
                 default: false
-            },
-            tableEdit: { // 是否为表格编辑状态
-                type: Boolean,
-                default: true
             },
             required: { // 是否必填
                 type: Boolean,
@@ -113,13 +109,13 @@
                 type: String,
                 default: '3px 0.0521rem'
             },
-            detailParam: {}
+            detailParam: {},
+            tableEdit:{ // 暂时只用于转换成disabled
+                type:Boolean,
+                default:false
+            }
         },
         methods: {
-            changePreStyle(state=true) {
-                // this.inputPrePt.style.background = state?'#f5f7fa':'white';
-                // this.inputPrePt.style.cursor = state?'not-allowed':'auto';
-            },
             showSearch() {
                 this.$refs[this.options.search].show();
             },
@@ -131,11 +127,11 @@
                 this.$refs[data.ref].hide();
             },
             fixValue(data) { // 整理显示的值 可接收函数(未)
-                if(JSON.stringify(data) == '{}' || data.id == '') {
+                if (JSON.stringify(data) == '{}' || data.id == '') {
                     this.insideValue = "";
                     return;
                 }
-                if(this.formatFunc) {
+                if (this.formatFunc) {
                     this.insideValue = this.formatFunc(data);
                 } else {
                     this.insideValue = this.format.replace(/{([a-zA-Z]+)}/g, (r, k) => data[k]);
@@ -147,23 +143,19 @@
                 this.$emit('input', "");
                 this.$emit('clear');
             },
-            changeEditState(state) {
-                if(!this.inTable) return;
-                this.edit = state
-            }
         },
         computed: {
             fixWidth() {
-                return this.inTable?`calc(100% - 0.1042rem)`:`calc(${8.33*this.column}% - 0.1042rem)`;
-            }  ,
+                return this.inTable ? `calc(100% - 0.1042rem)` : `calc(${8.33 * this.column}% - 0.1042rem)`;
+            },
             fixMargin() {
-                return this.inTable?'0':this.margin
+                return this.inTable ? '0' : this.margin
             },
             fixInputTextAlign() {
                 return this.inTable ? 'center' : 'left'
             },
-            fixPlaceholder(){
-                return this.disabled?'--':this.placeholder
+            fixPlaceholder() {
+                return this.disabled ? '--' : this.placeholder
             }
         },
         watch: {
@@ -174,13 +166,16 @@
             },
             value: {
                 handler(val) {
-                    if(typeof this.value == 'object') {
-                        this.fixValue(this.value);
+                    if (typeof val == 'object') {
+                        this.fixValue(val);
                     } else {
-                        this.insideValue = this.value
+                        this.insideValue = val
                     }
                 },
                 deep: true
+            },
+            tableEdit(val){
+                this.disabled = val
             }
         },
         components: {
@@ -194,24 +189,19 @@
             consumableSelect
         },
         created() {
-            if(typeof this.value == 'object') {
+            if (typeof this.value == 'object') {
                 this.fixValue(this.value);
             } else {
                 this.insideValue = this.value
             }
         },
         mounted() {
-            this.inputPrePt = document.querySelector('.el-input-group__prepend');
             Object.keys(this.options).forEach(item => {
                 this[item] = true
             })
             try {
-                if(this.$refs.entityInput.parentNode.parentNode.nodeName == 'TD') {
+                if (this.$refs.entityInput.parentNode.parentNode.nodeName === 'TD') {
                     this.inTable = true;
-                    this.edit = false;
-                    if(this.disabled) {
-                        this.inTableStateContrl = false;
-                    }
                 }
             } catch (error) {
 
@@ -233,9 +223,11 @@
         border-radius: 4px;
         box-sizing: border-box;
         margin: 0 0.0521rem;
+
         .iconwenbenkuangshanchu {
             display: inline-block;
         }
+
         .label {
             min-width: 55px;
             padding: 0 0 0 10px;
@@ -243,9 +235,11 @@
             overflow: hidden;
             flex-shrink: 0;
         }
+
         .required {
             color: red;
         }
+
         .input {
             width: auto;
             padding: 0 5px 0 10px;
@@ -257,13 +251,15 @@
             border: 0px;
             background-color: transparent;
             overflow: hidden;
-            text-overflow:ellipsis;
+            text-overflow: ellipsis;
             white-space: nowrap;
             color: #707070;
         }
+
         input::-webkit-input-placeholder {
             color: #C0C4CC;
         }
+
         .icon {
             text-align: right;
             flex-grow: 1;
@@ -273,22 +269,27 @@
             right: 0;
         }
     }
+
     .border {
         border: 1px solid #DCDFE6;
     }
+
     .error {
         border: 1px solid red;
     }
+
     .table-error {
         .input {
             color: red;
         }
     }
+
     .disabled {
-        background:rgba(248,249,251,1);
-        border:1px solid rgba(220,223,230,1);
+        background: rgba(248, 249, 251, 1);
+        border: 1px solid #DCDFE6;
+
         .input {
-            color:rgba(192,196,204,1);
+            color: rgba(192, 196, 204, 1);
         }
     }
 </style>

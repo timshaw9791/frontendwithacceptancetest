@@ -19,7 +19,7 @@
                     <define-input label="装备序号" v-model="editList.serial" :disabled="true" margin="15px 0" :column="6"
                                   align="right"></define-input>
                     <entity-input label="装备位置" v-model="editList.location" :column="6" margin="0 0"
-                                  :options="{search:'locationSelect'}" :formatFunc="$formatFuncLoc" :tableEdit="true"
+                                  :options="{search:'locationSelect'}" :formatFunc="$formatFuncLoc" :disabled="true"
                                   align="left"></entity-input>
                     <define-input label="装备单价" v-model="editList.price" type="Number" :disabled="false" margin="15px 0"
                                   :column="6" align="right"></define-input>

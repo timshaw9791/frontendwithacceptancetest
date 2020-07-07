@@ -9,7 +9,7 @@
         ></operation-bar>
         <div class="apply-process-body">
             <define-input label="单号" v-model="applyOrder.number" :disabled="true"
-                          placeholder="-"></define-input>
+            ></define-input>
             <date-select label="申请时间" v-model="applyOrder.createTime" :disabled="true"></date-select>
             <entity-input label="申请人员" v-model="applyOrder.applicant"
                           :options="{detail:'applicant'}" :disabled="true"
@@ -20,7 +20,7 @@
                           :disabled="allocateCategory==='TRANSFER'||isInfo">
             </entity-input>
             <define-input label="入库库房" v-model="inboundEquipsOrder.house.name" :disabled="true"
-                          ></define-input>
+            ></define-input>
             <entity-input label="入库人员" v-model="inboundEquipsOrder.operator" :disabled="true"
                           format="{name}({policeSign})"></entity-input>
             <entity-input label="出库机构" v-model="applyOrder.outboundOrganUnit" format="{name}"
@@ -42,8 +42,8 @@
                         <i class="iconfont iconyichu" @click="$delRow(applyOrder.equipItems,data.$index)"></i>
                     </define-column>
                     <define-column label="装备参数" v-slot="{ data }">
-                        <entity-input v-model="data.row.equipArg" :options="{search:'equipArgsSelect'}"
-                                      format="{name}({model})" :tableEdit="!isInfo" placeholder="请选择">
+                        <entity-input v-model="data.row.equipArg" :options="equipArgOption"
+                                      format="{name}({model})" :disabled="isInfo" placeholder="请选择">
                         </entity-input>
                     </define-column>
                     <define-column label="装备数量" v-slot="{ data }">
@@ -99,6 +99,7 @@
                 isShowIn: false,
                 isShowOut: false,
                 remark: '',//驳回时备注
+                type: ''// 默认为空
             }
         },
         methods: {
@@ -213,6 +214,13 @@
                 'organUnit',
                 'enums'
             ]),
+            equipArgOption() {
+                if (this.isInfo) {
+                    return {detail: 'equipArgsDetail'}
+                } else {
+                    return {search: 'equipArgsSelect'}
+                }
+            }
         },
         watch: {
             'applyOrder.equipItems.length'(newVal) {

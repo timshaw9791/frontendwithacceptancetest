@@ -1,7 +1,7 @@
 <template>
     <div class="define-input-container" ref="defineInput"
          :style="`width:${fixWidth};float:${align};margin:${fixMargin}`"
-         :class="[styleObj,{'disabled':disabled&&inTableStateContrl,'border':(tableEdit||edit)}]"
+         :class="[styleObj,{'disabled':disabled&&inTableStateContrl,'border':(tableEdit&&edit)}]"
          @click="changeEditState(true)">
         <div class="label" v-if="!inTable&&haveLabel">
             <i :class="`iconfont ${iconfont}`" v-if="iconfont"></i>

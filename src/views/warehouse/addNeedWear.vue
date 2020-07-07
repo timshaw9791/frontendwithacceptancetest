@@ -10,7 +10,7 @@
                 </define-column>
                 <define-column label="装备参数" v-slot="{ data }">
                     <entity-input v-model="data.row.equipArg" :options="{search:'equipArgsSelect'}"
-                                  format="{name}({model})" :column="12" :tableEdit="true"></entity-input>
+                                  format="{name}({model})" :column="12" :disabled="true"></entity-input>
                 </define-column>
             </define-table>
             <tool-bar>

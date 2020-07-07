@@ -32,7 +32,7 @@
                 <define-column label="生产日期" width="200" :filter="(row)=>$filterTime(row.productDate)"/>
                 <define-column label="装备位置" width="300" v-slot="{data}">
                     <entity-input v-model="data.row" :formatFunc="$formatFuncOrderLoc"
-                                  :tableEdit="false"></entity-input>
+                                  :disabled="false"></entity-input>
                 </define-column>
                 <define-column label="单价" field="price"/>
             </define-table>
@@ -53,6 +53,7 @@
     import {mapGetters} from 'vuex'
     import DefineImage from "@/componentized/defineImage";
     export default {
+        name:'equipmentEntity',
         components: {
             DefineImage,
             CopyRfid,
