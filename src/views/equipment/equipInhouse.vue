@@ -1,7 +1,7 @@
 <template>
 <view-container>
         <div class="action_box">
-                <define-input label="单号" margin="0 15px 0 0" :disabled="true" ></define-input>
+                <define-input label="单号"  :disabled="true" ></define-input>
                 <date-select label="入库时间"  :disabled="true"></date-select>
                 <entity-input label="入库人员" v-model="people"  :options="{search:'locationSelect'}" format="{name}" :disabled="true" ></entity-input>
             </div>
@@ -11,16 +11,16 @@
                             <base-select label="硬件选择" v-model="select.selected" align="right" :selectList="select.handWareList"></base-select>
                         </template>
                         <define-table :data="list"  @changeCurrent="selRow" :havePage="false"
-                            :highLightCurrent="true" height="828px" slot="total" :showSummary="true" :summaryFunc="sumFunc">
+                            :highLightCurrent="true" height="823px" slot="total" :showSummary="true" :summaryFunc="sumFunc">
                             <define-column label="操作" width="100" v-slot="{ data }">
                                 <i class="iconfont icontianjia" @click="changeRow(true,data)"></i>
                                 <i class="iconfont iconyichu" @click="changeRow(false,data)"></i>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
-                                <entity-input v-model="data.row.equipArgId"  :options="{search:'equipArgsSelect'}" format="{name}({model})" :disabled="true" ></entity-input>
+                                <entity-input v-model="data.row.equipArgId"  :options="{search:'equipArgsSelect'}" format="{name}({model})" ></entity-input>
                             </define-column>
                             <define-column label="装备位置"  v-slot="{ data }" >
-                                <entity-input v-model="data.row.locationId"  :options="{search:'locationSelect'}" :formatFunc="$formatFuncLoc" :disabled="true" ></entity-input>
+                                <entity-input v-model="data.row.locationId"  :options="{search:'locationSelect'}" :formatFunc="$formatFuncLoc" ></entity-input>
                             </define-column>
                             <define-column label="单价" v-slot="{ data }">
                                 <define-input v-model="data.row.price" type="Number" ></define-input>
@@ -30,7 +30,7 @@
                             </define-column>
                             <define-column label="装备数量" :filter="(row)=>row.copyList.length"/>
                         </define-table>
-                        <define-table :data="list[findIndex].copyList" height="828px" :havePage="false" slot="detail">
+                        <define-table :data="list[findIndex].copyList" height="823px" :havePage="false" slot="detail">
                             <define-column label="操作" width="100" v-slot="{ data }">
                                 <i class="iconfont icontianjia" ></i>
                                 <i class="iconfont iconyichu" @click="changeDetailRow(false,data)"></i>

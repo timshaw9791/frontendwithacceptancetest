@@ -1,19 +1,21 @@
 <template>
     <div class="define-table-container" :style="`margin:${margin}`" ref="tableContainer">
         <el-table :data="data" :height="fixHeight" :border="border" ref="table" fit
-                :highlight-current-row="highLightCurrent" @current-change="changeCurrent"
-                :show-summary="showSummary" :summary-method="summaryFunc" >
-                <el-table-column label="序号" width="65" align="center" v-if="haveIndex" :fixed="indexFixed">
-                    <template slot-scope="scope">{{(pageInfo.page-1)*pageInfo.size+scope.$index+1}}</template>
-                </el-table-column>
+                  :highlight-current-row="highLightCurrent" @current-change="changeCurrent"
+                  :show-summary="showSummary" :summary-method="summaryFunc">
+            <el-table-column label="序号" width="65" align="center" v-if="haveIndex" :fixed="indexFixed">
+                <template slot-scope="scope">{{(pageInfo.page-1)*pageInfo.size+scope.$index+1}}</template>
+            </el-table-column>
             <slot></slot>
         </el-table>
-        <bos-paginator :pageInfo="pageInfo" @bosCurrentPageChanged="changePage" :border="true" v-if="havePage"></bos-paginator>
+        <bos-paginator :pageInfo="pageInfo" @bosCurrentPageChanged="changePage" :border="true"
+                       v-if="havePage"></bos-paginator>
     </div>
 </template>
 
 <script>
-import defineColumn from './defineColumn'
+    import defineColumn from './defineColumn'
+
     export default {
         name: "definTable",
         data() {
@@ -35,7 +37,7 @@ import defineColumn from './defineColumn'
                 type: String,
                 default: '920px'
             },
-            margin:{
+            margin: {
                 type: String,
                 default: '0 10px'
             },
@@ -53,11 +55,12 @@ import defineColumn from './defineColumn'
             },
             summaryText: {
                 type: String,
-                default: '合计'  
+                default: '合计'
             },
             summaryFunc: { // 底部合计行计算方法
                 type: Function,
-                default: () => {}
+                default: () => {
+                }
             },
             pageInfo: { // 分页信息
                 type: Object,
@@ -89,7 +92,7 @@ import defineColumn from './defineColumn'
         },
         computed: {
             fixHeight() { // 减去底部分页的高度
-                return this.havePage?`calc(${this.height} - 45px)`:this.height
+                return this.havePage ? `calc(${this.height} - 45px)` : this.height
             }
         },
         methods: {
@@ -112,7 +115,7 @@ import defineColumn from './defineColumn'
             }
         },
         mounted() {
-            if(this.highLightCurrent && this.initSelect) {
+            if (this.highLightCurrent && this.initSelect) {
                 this.$watch('data', newVal => {
                     this.$refs.table.setCurrentRow(this.data[0])
                 }, {
@@ -124,37 +127,44 @@ import defineColumn from './defineColumn'
 </script>
 
 <style lang="scss" scoped>
-    .actionButton{
-        width:70px;
-        height:32px;
-        opacity:1;
+    .actionButton {
+        width: 70px;
+        height: 32px;
+        opacity: 1;
         color: white;
-        border-radius:4px;
+        border-radius: 4px;
     }
+
     /deep/ .el-table {
         ::-webkit-scrollbar {
             display: none;
             width: 9px;
             height: 15px;
         }
+
         ::-webkit-scrollbar-thumb {
-            background:rgba(178,178,204,1);
+            background: rgba(178, 178, 204, 1);
             border-radius: 20px;
         }
+
         ::-webkit-scrollbar-track {
             position: absolute !important;
         }
+
         .el-table__body-wrapper { // 使滚动条显示在文档内部，避免对文档内容造成位置影响
             overflow-x: overlay !important;
             overflow-y: overlay !important;
         }
+
         .el-table__fixed {
             pointer-events: none; // 解决固定列一侧横向滚动条无法移动的问题
         }
+
         .el-table__fixed-body-wrapper {
             pointer-events: all; // 解决添加上一样式后，固定列内容无法选中问题
         }
     }
+
     .define-table-container:hover {
         /deep/ .el-table {
             ::-webkit-scrollbar {

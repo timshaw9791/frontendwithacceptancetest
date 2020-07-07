@@ -175,7 +175,7 @@
                 deep: true
             },
             tableEdit(val){
-                this.disabled = val
+                this.disabled = !val
             }
         },
         components: {
