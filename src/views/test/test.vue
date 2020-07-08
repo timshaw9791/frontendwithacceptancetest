@@ -15,6 +15,9 @@
             <el-table height="100%" :border="true" :data="list">
                 <el-table-column label="hh" prop="operator"></el-table-column>
             </el-table>
+            <base-select :list="$store.getters.enums.device" v-model="selected">
+
+            </base-select>
         </div>
 
         <!-- 标签2 -->
@@ -51,7 +54,8 @@ export default {
                 }],
             search: '',
             imgSrc: '73424a3d1c3e41f98e28ac5da5c3284c.png',
-            list: [{operator:'chen'}]
+            list: [{operator:'chen'}],
+            selected:''
         }
     }
 }

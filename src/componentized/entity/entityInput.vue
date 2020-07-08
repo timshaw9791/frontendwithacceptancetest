@@ -13,7 +13,7 @@
             <i class="iconfont iconwenbenkuangshanchu" @click="clear"
                v-show="insideValue&&!disabled"></i>
             <i class="iconfont iconxuanze" @click="showSearch" v-show="search&&!disabled"></i>
-            <i class="iconfont iconxiang" @click="showDetail" v-show="detail&&(inTable||disabled)"></i>
+            <i class="iconfont iconxiang" @click="showDetail" v-show="detail&&(inTable||disabled)&&!!insideValue"></i>
         </div>
         <service-dialog title="申请人员选择" ref="applicant" :button="false" :secondary="false">
             <applicant-select @select="selected" @cancel="$refs.applicant.hide()"></applicant-select>

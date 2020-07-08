@@ -18,10 +18,10 @@
                                 <i class="iconfont iconyichu" @click="changeRow(false,data)"></i>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
-                                <entity-input v-model="data.row.equipArg" format="{name}({model})" :tableEdit="false" ></entity-input>
+                                <entity-input v-model="data.row.equipArg" format="{name}({model})" :disabled="true" ></entity-input>
                             </define-column>
                             <define-column label="装备位置" v-slot="{ data }">
-                                <entity-input v-model="data.row.location" :formatFunc="$formatFuncLoc" :tableEdit="false"></entity-input>
+                                <entity-input v-model="data.row.location" :formatFunc="$formatFuncLoc" :disabled="true"></entity-input>
                             </define-column>
                             <define-column label="装备数量" v-slot="{ data }">
                                 <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>

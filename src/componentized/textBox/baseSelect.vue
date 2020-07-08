@@ -137,6 +137,7 @@
             },
             list: {
                 handler() {
+                    console.log(this.list)
                     this.listInit()
                 },
                 deep: true,
@@ -189,6 +190,7 @@
         width: 100%;
         /*height: 100%;*/
         cursor: pointer;
+        color: #707070;
     }
     .select-option {
         position: absolute;

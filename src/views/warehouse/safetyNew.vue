@@ -42,7 +42,7 @@
                                  columnType="selection"></define-column>
                         <define-column label="装备参数" field="describes" v-slot="{data}">
                             <entity-input v-model="data.row.equipArg" format="{name}({model})"
-                                          :detailParam="data.row.equipArg" :disabled="false"
+                                          :detailParam="data.row.equipArg" :disabled="true"
                                           :options="{detail: 'equipArgDetail'}"></entity-input>
                         </define-column>
                         <define-column label="装备数量" field="count"></define-column>
@@ -66,7 +66,7 @@
                         </define-column>
                         <define-column label="装备参数" field="describes" v-slot="{data}">
                             <entity-input v-model="data.row.equipArg" :detailParam="data.row.equipArg"
-                                          format="{name}({model})" :disabled="false"
+                                          format="{name}({model})" :disabled="true"
                                           :options="{detail: 'equipArgDetail'}"></entity-input>
                         </define-column>
                         <define-column label="装备数量" field="count"></define-column>

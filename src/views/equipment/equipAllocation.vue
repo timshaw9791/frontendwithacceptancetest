@@ -16,7 +16,7 @@
                                 <i class="iconfont iconyichu" @click="changeRow(false,data)"></i>
                             </define-column>
                             <define-column label="位置修改" v-slot="{ data }">
-                                 <entity-input v-model="data.row.location" :column="3" :options="{search:'locationSelect'}" :formatFunc="$formatFuncLoc" :tableEdit="edit" ></entity-input>
+                                 <entity-input v-model="data.row.location" :column="3" :options="{search:'locationSelect'}" :formatFunc="$formatFuncLoc"  ></entity-input>
                             </define-column>
                             <define-column label="装备数量" width="100px"  v-slot="{ data }">
                                 <define-input v-model="data.row.count" type="Number" :tableEdit="edit"></define-input>
@@ -29,13 +29,13 @@
                 <define-column label="装备序号" field="serial" :tableEdit="edit" v-if="$route.query.id==undefined"/>
                 <define-column label="装备序号" field="equipSerial" :tableEdit="edit" v-if="$route.query.id!=undefined"/>    
                 <define-column label="装备参数" v-slot="{data}" v-if="$route.query.id==undefined">
-                    <entity-input v-model="data.row.equipArg" format="{name}({model})" :tableEdit="edit" :options="{}"></entity-input>
+                    <entity-input v-model="data.row.equipArg" format="{name}({model})"  :options="{}"></entity-input>
                 </define-column>
                 <define-column label="装备参数" v-slot="{data}" v-if="$route.query.id!=undefined">
-                    <entity-input v-model="data.row" format="{equipName}({equipModel})" :tableEdit="edit" :options="{}"></entity-input>
+                    <entity-input v-model="data.row" format="{equipName}({equipModel})"  :options="{}"></entity-input>
                 </define-column>
                 <define-column label="原位置" v-slot="{data}">
-                    <entity-input v-model="data.row.location" :formatFunc="$formatFuncLoc" :tableEdit="edit" :options="{}"></entity-input>
+                    <entity-input v-model="data.row.location" :formatFunc="$formatFuncLoc"  :options="{}"></entity-input>
                 </define-column>
                 <define-column label="操作" width="100" v-slot="{data}" v-if="edit">
                     <base-button label="删除" size="mini" @click="deleteColumn(data)"></base-button>

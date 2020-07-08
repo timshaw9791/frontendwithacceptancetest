@@ -4,6 +4,7 @@
             <operation-bar :task-definition-key="taskDefinitionKey"
                            @refused="refused" @agree="agree"
                            @invalid="invalid" @edit="edit"
+                           @submit="submit"
             ></operation-bar>
             <div class="apply-process-body">
                 <define-input label="单号" v-model="order.number" :disabled="true"></define-input>
@@ -16,10 +17,12 @@
                 <text-input label="申请原因" v-model="order.note" :tips="tips"
                             :title="order.note"
                             :disabled="isInfo"></text-input>
-                <div >
-                    <equipItems :equip-items="equipItems" :is-info="isInfo"
-                                @handleReadData="handleReadData"></equipItems>
-                </div>
+                <equipItems :equip-items="equipItems"
+                            :is-info="isInfo"
+                            @handleReadData="handleReadData"
+                            :need-add="false"
+                            height="828px">
+                </equipItems>
                 <task-history :list="taskHistory" v-if="isInfo"></task-history>
             </div>
         </div>
@@ -31,7 +34,7 @@
     import bosTabs from '@/componentized/table/bosTabs.vue'
     import {scrapStart, getHistoryTasks, scrapOrders, activeTask, scrapReapply} from '@/api/process'
     import {findByRfids} from "@/api/storage";
-    import {transEquips} from "@/common/js/transEquips";
+    import {transEquipItems, transEquips} from "@/common/js/transEquips";
     import TaskHistory from "@/components/process/taskHistory";
     import equipItems from "@/components/process/equipItems";
     import {processAudit, processesDelete} from "@/api/process";
@@ -98,12 +101,13 @@
             },
             handleReadData(data) { // 读取数据
                 findByRfids(data).then(res => {
-                    this.order.equips = transEquips(res, 'args', 'args').simplifyItems
-                    console.log(this.order.equipItems)
                     this.equipItems = transEquips(res).equipItems
+
                 })
             },
             submit() {
+                this.order.equips = transEquipItems(this.equipItems)
+                if (this.order.equips===0) return this.$message.error('装备列表不能为空')
                 if (this.taskDefinitionKey !== "reapply") {
                     scrapStart({
                         processDefinitionKey: this.key,
@@ -163,49 +167,5 @@
 </script>
 
 <style lang="scss" scoped>
-    .apply-process-container {
-        width: 100%;
-        color: #707070FF;
-        font-size: 16px;
-    }
 
-    .apply-process {
-        width: 100%;
-
-        .apply-process-top {
-            padding: 18px 7px;
-            border-bottom: 1px solid #EBEEF5;
-            overflow: hidden;
-        }
-
-        .apply-process-body {
-            padding: 0 7px;
-            overflow: auto;
-
-            .process-info {
-                padding: 18px 0;
-                display: flex;
-                justify-content: space-between;
-                overflow: hidden;
-            }
-
-            .remark {
-                margin-top: 18px;
-            }
-
-            .buttom {
-                height: 72px;
-                margin-top: 25px;
-                box-shadow: 0 0 12px rgba(235, 238, 245, 1);
-
-                .sum-equip {
-                    float: right;
-                    font-size: 20px;
-                    color: #3F5FE0;
-                    line-height: 72px;
-                    margin-right: 72px;
-                }
-            }
-        }
-    }
 </style>

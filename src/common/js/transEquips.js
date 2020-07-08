@@ -1,5 +1,7 @@
 import {formatFunc} from './index'
 
+let _ = require('lodash')
+
 /*
 * 
 * equip 需要分组的装备列表
@@ -8,12 +10,16 @@ import {formatFunc} from './index'
 * 返回 equipItems
 */
 export function transEquips(equips, groupRules = 'args', simplifyRules = 'rfids') {
-    let simplifyItems = [], tempEquipItems, equipItems
-
-    equips.forEach(item => {
+    let tempEquips = [], simplifyItems = [], tempEquipItems, equipItems
+    equips.forEach((item) => {
+        if (Object.keys(item).length !== 0) {
+            tempEquips.push(item)
+        }
+    })
+    tempEquips.forEach(item => {
         // 添加equipName、equipModel、locationInfo 以便统一
         if (item.equipArg) {
-           // todo 使用 Object.assign()
+            // todo 使用 Object.assign()
             item.equipName = item.equipArg.name
             item.equipModel = item.equipArg.model
             item.equipArgId = item.equipArg.id
@@ -26,20 +32,20 @@ export function transEquips(equips, groupRules = 'args', simplifyRules = 'rfids'
             simplifyItems.push(item.rfid)
         } else {
             simplifyItems.push({
-                equipArg:{
-                    id:item.equipArg.id
+                equipArg: {
+                    id: item.equipArg.id
                 },
-                equipName:item.equipName,
-                equipModel:item.equipModel,
-                equipSerial:item.equipSerial,
-                rfid:item.rfid,
-                equipId:item.equipId
+                equipName: item.equipName,
+                equipModel: item.equipModel,
+                equipSerial: item.equipSerial,
+                rfid: item.rfid,
+                equipId: item.equipId
             })
         }
     })
     //  todo 优化
     if (groupRules === 'args') {
-        tempEquipItems = _.groupBy(equips, item =>
+        tempEquipItems = _.groupBy(tempEquips, item =>
             // Arg使用唯一标识符
             `${item.equipName}${item.equipModel}`
         )
@@ -51,7 +57,7 @@ export function transEquips(equips, groupRules = 'args', simplifyRules = 'rfids'
             }
         })
     } else if (groupRules === 'state') {
-        tempEquipItems = _.groupBy(equips, item =>
+        tempEquipItems = _.groupBy(tempEquips, item =>
             `${item.equipName}${item.equipModel}${item.state}`
         )
         equipItems = _.map(tempEquipItems, item => {
@@ -63,7 +69,7 @@ export function transEquips(equips, groupRules = 'args', simplifyRules = 'rfids'
             }
         })
     } else if (groupRules === 'locationInfo') {
-        tempEquipItems = _.groupBy(equips, item =>
+        tempEquipItems = _.groupBy(tempEquips, item =>
             `${item.equipName}${item.equipModel}${item.locationInfo.frameNumber}${item.locationInfo.surface}${item.locationInfo.section}${item.locationInfo.floor}`
         )
         equipItems = _.map(tempEquipItems, item => {
@@ -75,22 +81,33 @@ export function transEquips(equips, groupRules = 'args', simplifyRules = 'rfids'
             }
         })
     } else if (groupRules === 'state-locationInfo') {
-        tempEquipItems = _.groupBy(equips, item =>
+        tempEquipItems = _.groupBy(tempEquips, item =>
             `${item.equipName}${item.equipModel}${item.state}${item.locationInfo.frameNumber}${item.locationInfo.surface}${item.locationInfo.section}${item.locationInfo.floor}`
         )
         equipItems = _.map(tempEquipItems, item => {
-                let tempLocation = formatFunc(item[0].locationInfo)
-                return {
-                    equipArg: item[0].equipName + "(" + item[0].equipModel + ")",
-                    state: item[0].state,
-                    locationInfo: tempLocation,
-                    items: item,
-                    count: item.length,
-                }
-            })
+            let tempLocation = formatFunc(item[0].locationInfo)
+            return {
+                equipArg: item[0].equipName + "(" + item[0].equipModel + ")",
+                state: item[0].state,
+                locationInfo: tempLocation,
+                items: item,
+                count: item.length,
+            }
+        })
     }
     return {
         equipItems: equipItems,
         simplifyItems: simplifyItems,
     }
+}
+
+
+export function transEquipItems(equipItems) {
+    let temp = []
+    _.map(equipItems, (item) => {
+        if (item.items.length!==0){
+            temp = this.order.equipItems.concat(item.items)
+        }
+    })
+    return temp
 }

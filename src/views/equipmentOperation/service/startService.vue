@@ -19,7 +19,7 @@
                                 <i class="iconfont iconyichu" @click="changeRow(false,data)"></i>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
-                                <entity-input v-model="data.row.equipArg"  :options="{detail:'equipArgsSelect'}" format="{name}({model})" :tableEdit="false" ></entity-input>
+                                <entity-input v-model="data.row.equipArg"  :options="{detail:'equipArgsSelect'}" format="{name}({model})" :disabled="true" ></entity-input>
                             </define-column>
                             <define-column label="装备位置" v-slot="{ data }">
                                 <entity-input v-model="data.row.location"  :formatFunc="$formatFuncLoc" ></entity-input>
