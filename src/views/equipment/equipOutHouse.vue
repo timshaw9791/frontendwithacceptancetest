@@ -21,12 +21,12 @@
                     <i class=" iconfont iconyichu" @click="changeRow(false,data)" style="margin:8px"></i>
                 </define-column>
                 <define-column label="装备参数" v-slot="{ data }" v-if="!this.$route.query.id">
-                    <entity-input v-model="data.row.equipArg" :detailParam="data.row.equipArg" :options="{detail:'equipArgsDetail'}"
+                    <entity-input v-model="data.row.equipArg" :detailParam="data.row.equipArg" :options="{detail:'equipArgDetail'}"
                                   format="{name}({model})" :tableEdit="false"></entity-input>
                 </define-column>
                 <define-column label="装备参数" v-slot="{ data }" v-if="this.$route.query.id">
-                    <entity-input v-model="data.row.equipArg" :detailParam="data.row.equipArg" :options="{detail:'equipArgsDetail'}"
-                                  format="{equipName}({equipModel})" :tableEdit="false"></entity-input>
+                    <entity-input v-model="data.row.equipArg" :detailParam="data.row.equipArg" :options="{detail:'equipArgDetail'}"
+                                  format="{equipName}({equipModel})" :disabled="true"></entity-input>
                 </define-column>
                 <define-column label="装备数量" v-slot="{ data }">
                     <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input>

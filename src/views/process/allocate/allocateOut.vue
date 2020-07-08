@@ -9,7 +9,8 @@
                       :disabled="true"></entity-input>
         <!--统一处理装备表组件-->
         <a-equips-table :is-info="isInfo" :equip-items="equipItems"
-                        :match-equips="matchEquips" @getFinishEquip="getFinishEquip" type="out">
+                        :match-equips="matchEquips" @getFinishEquip="getFinishEquip"
+                        type="out" height="874px">
         </a-equips-table>
         <tool-bar v-if="!isInfo">
             <base-button label="提交" type="text" slot="button" @click="submit()"></base-button>

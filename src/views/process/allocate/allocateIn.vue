@@ -10,7 +10,7 @@
                       :disabled="true"></entity-input>
         <a-equips-table :is-info="isInfo" :equip-items="equipItems"
                         :match-equips="matchEquips" @getFinishEquip="getFinishEquip"
-                        type="in">
+                        type="in" height="874px">
         </a-equips-table>
         <tool-bar v-if="!isInfo">
             <base-button label="提交" slot="button" type="text" @click="submit()"></base-button>
@@ -125,7 +125,8 @@
                 'organUnit',
                 'userInfo',
                 'warehouse'
-            ])
+            ]),
+
         }
     }
 </script>

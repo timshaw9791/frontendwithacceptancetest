@@ -9,7 +9,7 @@
             <div class="slot-component" v-if="header" >
                 <slot name="slotHeader"></slot>
             </div>
-            <div class="bos-card-body" :style="'grid-template-columns:'+gridColumn">
+            <div class="bos-card-body" :style="`grid-template-columns:${gridColumn};height:${fixHeight}`">
                 <div v-for="(item, i) in label" :key="'slot'+i"  v-show="label[selectedIndex].key == item.key&&tabs" class="slot">
                     <slot :name="item.key"></slot>
                 </div>
@@ -84,6 +84,10 @@
             header: { // 是否启用顶部栏
                 type: Boolean,
                 default: true
+            },
+            height:{
+                type:[String,Number],
+                default:'100%'
             }
         },
         computed: {
@@ -96,6 +100,9 @@
                     pre += isNaN(cur)?cur+' ':cur+'% ';
                     return pre;
                 }, "");
+            },
+            fixHeight(){
+                return  this.header ? `calc(${this.height} - 50px)` : this.height;
             }
         },
         methods: {

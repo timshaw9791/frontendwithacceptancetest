@@ -1,6 +1,6 @@
 <template>
     <div class="define-input-container" ref="defineInput"
-         :style="`width:${fixWidth};float:${align};margin:${fixMargin}`"
+         :style="`width:${fixWidth};float:${align};margin:${fixMargin};min-width:${fixMinWidth};`"
          :class="[styleObj,{'disabled':disabled&&inTableStateContrl,'border':tableEdit}]"
          @click="changeEditState(true)">
         <div class="label" v-if="!inTable&&haveLabel">
@@ -35,6 +35,7 @@
                     'table-error': false
                 },
                 insidePattern: 'text', // 内部pattern状态
+                fixMinWidth:'200px'// 组件最小宽度。
             };
         },
         props: {
@@ -162,6 +163,7 @@
                 if (this.$refs.defineInput.parentNode.parentNode.nodeName == 'TD') {
                     this.inTable = true;
                     this.edit = false;
+                    this.fixMinWidth = 0
                     if (this.disabled) {
                         this.inTableStateContrl = false;
                     }
@@ -179,7 +181,6 @@
         justify-content: flex-start;
         align-items: center;
         font-size: 16px;
-        min-width: 200px;
         height: 40px;
         max-height: 40px;
         border-radius: 4px;

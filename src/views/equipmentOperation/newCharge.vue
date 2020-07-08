@@ -7,7 +7,7 @@
                     <define-column label="装备序号" field="serial"></define-column>
                     <define-column label="装备参数" v-slot="{ data }">
                         <entity-input :column="2" v-model="data.row.equipArg" :options="{ detail: 'equipArgsSelect' }"
-                                      format="{name}({model})" :tableEdit="false"></entity-input>
+                                      format="{name}({model})" :disabled="true"></entity-input>
                     </define-column>
                     <define-column label="装备位置" field="location"
                                    :filter="(row)=>locations(row.location)"></define-column>
@@ -24,7 +24,7 @@
                     <define-column label="装备序号" field="serial"></define-column>
                     <define-column label="装备参数" v-slot="{ data }">
                         <entity-input :column="2" v-model="data.row.equipArg" :options="{ detail: 'equipArgsSelect' }"
-                                      format="{name}({model})" :tableEdit="false"></entity-input>
+                                      format="{name}({model})" :disabled="true"></entity-input>
                     </define-column>
                     <define-column label="装备位置" field="location"
                                    :filter="(row)=>locations(row.location)"></define-column>

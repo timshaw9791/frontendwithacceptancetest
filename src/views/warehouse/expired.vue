@@ -12,7 +12,7 @@
             </define-column>
             <define-column label="装备参数" v-slot="{ data }" width="400">
                 <entity-input v-model="data.row" :detailParam="data.row.equipArg"
-                              :options="{ detail: 'equipArgsDetail' }" format="{equipName}({model})"
+                              :options="{ detail: 'equipArgDetail' }" format="{equipName}({model})"
                               :disabled="true"></entity-input>
             </define-column>
             <define-column label="装备位置" v-slot="{data}">

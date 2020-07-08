@@ -34,8 +34,8 @@
             <consumable-select @select="selected" @cancel="$refs.consumableSelect.hide()"></consumable-select>
         </service-dialog>
         <!-- 只读区 -->
-        <service-dialog title="装备参数详情" ref="equipArgsDetail" width="600px" :button="false" :secondary="false">
-            <equip-args-detail :detailParam="detailParam"></equip-args-detail>
+        <service-dialog title="装备参数详情" ref="equipArgDetail" width="600px" :button="false" :secondary="false">
+            <equip-arg-detail :detailParam="detailParam"></equip-arg-detail>
         </service-dialog>
     </div>
 </template>
@@ -48,7 +48,7 @@
     import organUnits from './select/organUnits'
     import supplierSelect from "./select/supplierSelect";
     import consumableSelect from "./select/consumableSelect";
-    import equipArgsDetail from './read/equipArgsDetail'
+    import equipArgDetail from './read/equipArgDetail'
 
     export default {
         name: 'entityInput',
@@ -110,10 +110,6 @@
                 default: '3px 0.0521rem'
             },
             detailParam: {},
-            tableEdit:{ // 暂时只用于转换成disabled
-                type:Boolean,
-                default:false
-            }
         },
         methods: {
             showSearch() {
@@ -159,11 +155,6 @@
             }
         },
         watch: {
-            disabled: {
-                handler(val) {
-                    this.changePreStyle(val);
-                },
-            },
             value: {
                 handler(val) {
                     if (typeof val == 'object') {
@@ -173,9 +164,6 @@
                     }
                 },
                 deep: true
-            },
-            tableEdit(val){
-                this.disabled = !val
             }
         },
         components: {
@@ -185,7 +173,7 @@
             organUnits,
             equipLocationSelect,
             supplierSelect,
-            equipArgsDetail,
+            equipArgDetail,
             consumableSelect
         },
         created() {

@@ -17,8 +17,8 @@
                     <define-input v-model="data.row.equipSerial" type="Number" :tableEdit="false"></define-input>
                 </define-column>
                 <define-column label="装备参数" v-slot="{ data }">
-                    <entity-input v-model="data.row" :options="{detail:'equipArgsDetail'}" format="{name}({model})"
-                                  :tableEdit="false"></entity-input>
+                    <entity-input v-model="data.row" :options="{detail:'equipArgDetail'}" format="{name}({model})"
+                                  :disabled="true"></entity-input>
                 </define-column>
                 <define-column label="装备位置" v-slot="{ data }">
                     <define-input v-model="data.row.equipLocation" type="String" :tableEdit="false"></define-input>

@@ -127,7 +127,6 @@ export default {
             color: #2F2F76;
         }
     }
-    $mainHeight: 920px;
     .view-container {
         width: 100%;
         font-size: 16px;
@@ -279,9 +278,7 @@ export default {
             border-radius: 20px;
         }
         width: 100%;
-        min-height: $mainHeight;
-        height: $mainHeight;
-        max-height: $mainHeight;
+        height: calc(100vh - 160px);
         overflow-x: hidden;
         overflow-y: auto;
         margin-top: 8px;

@@ -1,13 +1,19 @@
 <template>
-    <bos-tabs :option="isInfo?['tabs']:['tabs', 'contrast']" :layoutRatio="isInfo?[50,50]:[70,30]">
+    <bos-tabs :option="isInfo?['tabs']:['tabs', 'contrast']" :layoutRatio="isInfo?[50,50]:[60,40]">
         <template slot="slotHeader" v-if="!isInfo">
             <hardware-select @readData="readData"></hardware-select>
         </template>
         <!--装备总清单-->
-        <define-table :havePage="false" :data="aEquipItems" @changeCurrent="selRow"
-                      :showSummary="true" :summaryFunc="isInfo?$sumFunc:sumCountAndPrice"
+        <define-table slot="total"
+                      ref="totalTable"
+                      :data="aEquipItems"
+                      @changeCurrent="selRow"
                       :highLightCurrent="true"
-                      slot="total" ref="totalTable" :init-select="true">
+                      :init-select="true"
+                      :havePage="false"
+                      :showSummary="true"
+                      :summaryFunc="isInfo?$sumFunc:sumCountAndPrice"
+                      :height="fixHeight">
             <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
                 <i class="iconfont iconyichu" @click="$delRow(aEquipItems,data.$index)"></i>&nbsp
                 <i class="iconfont icontianjia" @click="addRow()"></i>
@@ -17,11 +23,14 @@
                               :formatFunc="$formatFuncLoc" :disabled="isInfo"></entity-input>
             </define-column>
             <define-column label="装备参数" v-slot="{ data }">
-                <entity-input v-model="data.row.equipArg" format="{name}({model})"
+                <entity-input v-model="data.row.equipArg"
+                              format="{name}({model})"
+                              :options="isInfo?{detail:'equipArgDetail'}:{search:'equipArgSelect'}"
+                              :detail-param="data.row.equipArg"
                               :disabled="true"></entity-input>
             </define-column>
-            <define-column label="装备数量" v-slot="{ data }">
-                <define-input v-model="data.row.items.length" type="Number"
+            <define-column label="装备数量" v-slot="{ data }" >
+                <define-input v-model="data.row.items.length"
                               :tableEdit="false"></define-input>
             </define-column>
             <!--比较特殊的计算方法-->
@@ -30,9 +39,11 @@
             </define-column>
         </define-table>
         <!--装备明细-->
-        <define-table :havePage="false"
+        <define-table slot="detail"
+                      ref="detailTable"
                       :data="totalIndex===-1?aEquipItems[0].items:aEquipItems[totalIndex].items"
-                      slot="detail" ref="detailTable">
+                      :havePage="false"
+                      :height="fixHeight">
             <define-column label="操作" width="100" v-slot="{ data }" v-if="!isInfo">
                 <i class="iconfont iconyichu"
                    @click="$delRow(aEquipItems[totalIndex].items,data.$index,()=>{!aEquipItems[totalIndex].items.length && aEquipItems.splice(totalIndex,1)})"></i>
@@ -41,15 +52,17 @@
             <define-column label="序号" field="serial"></define-column>
         </define-table>
         <!--对照的装备-->
-        <define-table :havePage="false" :data="aMatchEquips"
-                      slot="contrast" v-if="!isInfo" ref="matchTable">
-            <define-column label="装备参数" v-slot="{ data }">
+        <define-table v-if="!isInfo"
+                      slot="contrast"
+                      ref="matchTable"
+                      :data="aMatchEquips"
+                      :havePage="false"
+                      :height="fixHeight">
+            <define-column label="装备参数" v-slot="{ data }" >
                 <entity-input v-model="data.row.equipArg" format="{name}({model})"
-                              :table-edit="false"></entity-input>
+                              :disabled="true" :options="{detail:'equipArgDetail'}"></entity-input>
             </define-column>
-            <define-column label="装备数量" v-slot="{ data }">
-                <define-input v-model="data.row.count" :disabled="true"></define-input>
-            </define-column>
+            <define-column label="装备数量"  width="100px" field="count"></define-column>
         </define-table>
     </bos-tabs>
 </template>
@@ -97,6 +110,11 @@
             isInfo: {
                 type: Boolean,
                 default: false
+            },
+            height: {
+                type:[String,Number],
+                default:'100%',
+                required:true
             }
         },
         methods: {
@@ -125,7 +143,7 @@
                         // 匹配出库的数据
                         this.matchEquips.forEach(item => {
                             if (item.rfid !== data) {
-                                return  this.$message.error("该装备不在出库装备列表内！")
+                                return this.$message.error("该装备不在出库装备列表内！")
                             }
                             if (temp.equipArg && item.equipName + "(" + item.equipModel + ")" !== temp.equipArg) {
                                 return this.$message.error("该装备与当前选中的装备参数不匹配！")
@@ -187,7 +205,7 @@
             equipItems(newVal) {
                 if (newVal.length === 0) {
                     this.aEquipItems = [{items: [], locationInfo: {}}]
-                }else {
+                } else {
                     const groupRules = this.type === "out" ? 'args' : 'locationInfo'
                     this.aEquipItems = transEquips(newVal, groupRules).equipItems
                 }
@@ -203,6 +221,12 @@
         destroyed() {
             !!this.pid && killProcess(this.pid)
         },
+        computed:{
+            // 处理高度 bosTabs标题栏默认高度50px
+            fixHeight(){
+                return  `calc(${this.height} - 50px)`
+            }
+        }
     }
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-    <div class="date-input-container" ref="dateInput" :style="`width:${fixWidth};float:${align};margin:${fixMargin}`"
+    <div class="date-input-container" ref="dateInput" :style="`width:${fixWidth};float:${align};margin:${fixMargin};min-width:${fixMinWidth}`"
          :class="[styleObj,{'disabled':disabled&&inTableStateContrl,'border':(tableEdit&&edit)}]"
          @click="changeEditState(true)">
         <div class="label" v-if="!inTable">{{ label }}
@@ -29,7 +29,8 @@
                 styleObj: {
                     error: false,
                     'table-error': false
-                }
+                },
+                fixMinWidth:'200px'
             }
         },
         props: {
@@ -75,7 +76,7 @@
             },
             placeholder: {
                 type: [Number, String],
-                default: ""
+                default: "--"
             },
             validate: { // 验证函数
                 type: [Function, Boolean],

@@ -9,13 +9,13 @@
                 <define-column label="装备名称" field="name"></define-column>
                 <define-column label="装备型号" field="model"></define-column>
                 <define-column label="保质期(天)" v-slot="{data}">
-                    <date-input v-model="data.row.shelfLife" placeholder="--" :table-edit="false"></date-input>
+                    <date-input v-model="data.row.shelfLife" placeholder="--" :disabled="true"></date-input>
                 </define-column>
                 <define-column label="充电周期(天)" v-slot="{data}">
-                    <date-input v-model="data.row.chargeCycle" placeholder="--" :table-edit="false"> </date-input>
+                    <date-input v-model="data.row.chargeCycle" placeholder="--" :disabled="false"> </date-input>
                 </define-column>
                 <define-column label="保养周期(天) " v-slot="{data}">
-                    <date-input v-model="data.row.upkeepCycle" placeholder="--" :table-edit="false"></date-input>
+                    <date-input v-model="data.row.upkeepCycle" placeholder="--" :disabled="false"></date-input>
                 </define-column>
                 <define-column label="供应商" width="250px" field="supplier.name"></define-column>
             </define-table>

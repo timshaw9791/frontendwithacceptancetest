@@ -14,10 +14,10 @@
             return {
                 select: { // 选择列表
                     handWareList: [{
-                        label: '手持机',
+                        key: '手持机',
                         value: 'handheld'
                     }, {
-                        label: '读写器',
+                        key: '读写器',
                         value: 'reader'
                     }],
                     selected: this.selected

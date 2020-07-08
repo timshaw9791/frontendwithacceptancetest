@@ -10,10 +10,10 @@
                 <define-table :data="newData"  @changeCurrent="selRow" :havePage="false"
                               :highLightCurrent="true"  slot="total" :showSummary="true" :summaryFunc="sumFunc">
                     <define-column label="装备参数" v-slot="{ data }">
-                        <entity-input v-model="data.row.equipArg"  :options="{search:'equipArgsSelect'}" format="{equipName}({equipModel})" :tableEdit="false" ></entity-input>
+                        <entity-input v-model="data.row.equipArg"  :options="{search:'equipArgsSelect'}" format="{equipName}({equipModel})" :disabled="true" ></entity-input>
                     </define-column>
                     <define-column label="装备位置"  v-slot="{ data }" >
-                        <entity-input v-model="data.row.location"  :formatFunc="$formatFuncLoc" :tableEdit="false" ></entity-input>
+                        <entity-input v-model="data.row.location"  :formatFunc="$formatFuncLoc" :disabled="true" ></entity-input>
                     </define-column>
                     <define-column label="装备数量" v-slot="{ data }">
                         <define-input v-model="data.row.count"  type="Number" :tableEdit="false"></define-input>

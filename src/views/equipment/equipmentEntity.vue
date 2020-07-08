@@ -4,39 +4,38 @@
             <base-button label="位置变更" type="text" slot="button" v-if="!isEdit"
                          @click="toAllocation"></base-button>
         </tool-bar>
-            <define-table :data="list"   :pageInfo="this.paginator"
-                          :highLightCurrent="true"
-                          @changePage="changePage" :haveIndex="false" v-if="inList">
-                <define-column label="序号" fixed columnType="index" width="65"></define-column>
-                <define-column label="操作" width="180" v-slot="{ data }" fixed>
-                    <i class=" iconfont iconbianji" @click="edit(data.row)" style="margin:8px"></i>
-                    <i class=" iconfont iconlishi" @click="show(data.row.id)" style="margin:8px"></i>
-                    <i class=" iconfont iconfuzhiRFID" @click="copyRfid(data.row.rfid)" style="margin:8px"></i>
-                </define-column>
-                <define-column label="图片" width="120" v-slot="{ data }" fixed>
-                    <hover-img :image-url="data.row.equipArg.image" ></hover-img>
-                </define-column>
-                <define-column label="RFID" fixed width="200" v-slot="{ data }">
-                    <define-input v-model="data.row.rfid" type="Number" :tableEdit="false"></define-input>
-                </define-column>
-                <define-column label="装备序号" field="serial" width="100" fixed/>
-                <define-column label="装备名称" width="200" field="equipArg.name" fixed/>
-                <define-column label="装备型号" field="equipArg.model" fixed/>
-                <define-column label="装备状态" field="state" :filter="row=>enumsObj.EquipState[row.state]" fixed/>
-                <define-column label="质保期(天)" :filter="(row)=>milliToDay(row.equipArg.shelfLife)"/>
-                <define-column label="充电周期(天)" :filter="(row)=>milliToDay(row.equipArg.chargeCycle)"/>
-                <define-column label="保养周期(天)" :filter="(row)=>milliToDay(row.equipArg.upkeepCycle)"/>
-                <define-column label="供应商" field="equipArg.supplier.name" width="200"/>
-                <define-column label="联系人" width="100" field="equipArg.supplier.person"/>
-                <define-column label="联系方式" width="150" field="equipArg.supplier.phone"/>
-                <define-column label="生产日期" width="200" :filter="(row)=>$filterTime(row.productDate)"/>
-                <define-column label="装备位置" width="300" v-slot="{data}">
-                    <entity-input v-model="data.row" :formatFunc="$formatFuncOrderLoc"
-                                  :disabled="false"></entity-input>
-                </define-column>
-                <define-column label="单价" field="price"/>
-            </define-table>
-            <copy-rfid :rfid="rfid" :isShow="isShowDialog" @cancel="copyCancel"></copy-rfid>
+        <define-table :data="list" :pageInfo="this.paginator"
+                      :highLightCurrent="true"
+                      @changePage="changePage" :haveIndex="false" v-if="inList">
+            <define-column label="序号" fixed columnType="index" width="65"></define-column>
+            <define-column label="操作" width="180" v-slot="{ data }" fixed>
+                <i class=" iconfont iconbianji" @click="edit(data.row)" style="margin:8px"></i>
+                <i class=" iconfont iconlishi" @click="show(data.row.id)" style="margin:8px"></i>
+                <i class=" iconfont iconfuzhiRFID" @click="copyRfid(data.row.rfid)" style="margin:8px"></i>
+            </define-column>
+            <define-column label="图片" width="80" v-slot="{ data }" fixed>
+                <hover-img :image-url="data.row.equipArg.image"></hover-img>
+            </define-column>
+            <define-column label="RFID" fixed width="200" v-slot="{ data }">
+                <define-input v-model="data.row.rfid" type="Number" :tableEdit="false"></define-input>
+            </define-column>
+            <define-column label="装备序号" field="serial" width="100" fixed/>
+            <define-column label="装备名称" width="150" field="equipArg.name" fixed/>
+            <define-column label="装备型号" width="150" field="equipArg.model" fixed/>
+            <define-column label="装备状态" field="state" :filter="row=>enumsObj.EquipState[row.state]" fixed/>
+            <define-column label="质保期(天)" :filter="(row)=>milliToDay(row.equipArg.shelfLife)"/>
+            <define-column label="充电周期(天)" :filter="(row)=>milliToDay(row.equipArg.chargeCycle)"/>
+            <define-column label="保养周期(天)" :filter="(row)=>milliToDay(row.equipArg.upkeepCycle)"/>
+            <define-column label="供应商" field="equipArg.supplier.name" width="200"/>
+            <define-column label="联系人" width="100" field="equipArg.supplier.person"/>
+            <define-column label="联系方式" width="150" field="equipArg.supplier.phone"/>
+            <define-column label="生产日期" width="200" :filter="(row)=>$filterTime(row.productDate)"/>
+            <define-column label="装备位置" width="300" v-slot="{data}">
+                <entity-input v-model="data.row" :formatFunc="$formatFuncOrderLoc" :disabled="true"></entity-input>
+            </define-column>
+            <define-column label="单价" field="price"/>
+        </define-table>
+        <copy-rfid :rfid="rfid" :isShow="isShowDialog" @cancel="copyCancel"></copy-rfid>
     </view-container>
 </template>
 
@@ -52,8 +51,9 @@
     import CopyRfid from "../../components/copyRfid";
     import {mapGetters} from 'vuex'
     import DefineImage from "@/componentized/defineImage";
+
     export default {
-        name:'equipmentEntity',
+        name: 'equipmentEntity',
         components: {
             DefineImage,
             CopyRfid,
@@ -67,7 +67,7 @@
         data() {
             return {
                 rfid: '',
-                isShowDialog:false,
+                isShowDialog: false,
                 list: [],
                 newLocation: '',
                 editList: {},
@@ -81,7 +81,7 @@
                 noImgUrl: 'this.src="' + require('../../assets/noImg.png') + '"'
             }
         },
-        computed:{
+        computed: {
             ...mapGetters(['enumsObj'])
         },
         methods: {
@@ -106,7 +106,7 @@
             edit(data) {
                 this.copyList = data
                 data.equipArg.shelfLife = this.milliToDay(data.equipArg.shelfLife)
-                this.$router.push({name:'equipedit',query:{data:JSON.parse(JSON.stringify(data))}})
+                this.$router.push({name: 'equipedit', query: {data: JSON.parse(JSON.stringify(data))}})
                 // this.editList = JSON.parse(JSON.stringify(data))
                 this.isEdit = true
                 this.inList = false
@@ -137,7 +137,7 @@
                 this.newLocation = data.name
             },
             toAllocation() {
-                this.$router.push({name: 'equipAllocation',query:{title:'装备实体/位置变更'}})
+                this.$router.push({name: 'equipAllocation', query: {title: '装备实体/位置变更'}})
             },
             milliToDay(data) {
                 let date = JSON.parse(JSON.stringify(data));
@@ -152,7 +152,7 @@
                 this.rfid = data
                 this.isShowDialog = true
             },
-            copyCancel(){
+            copyCancel() {
                 this.isShowDialog = false
             }
         },

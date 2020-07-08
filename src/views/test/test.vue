@@ -2,17 +2,19 @@
     <view-container :tabs="tabs" v-model="search">
         <!-- 标签1 -->
         <div slot="car1">
-            <define-table :data=list height="200px">
+            <define-table :data=list height="100%">
                 <define-column label="测试列" v-slot="{data}" >
                   <define-input v-model="data.row.operator"/>
                 </define-column>
-                <define-column label="测试列2" field=""b></define-column>
+                <define-column label="测试列2" field=""></define-column>
             </define-table>
             <label>
                 哈哈哈
                 <input v-model="list[0].operator">
             </label>
-
+            <el-table height="100%" :border="true" :data="list">
+                <el-table-column label="hh" prop="operator"></el-table-column>
+            </el-table>
         </div>
 
         <!-- 标签2 -->
@@ -26,6 +28,7 @@
             <base-button label="测试按钮" type="text" slot="button"></base-button>
             <base-button label="测试按钮" type="text" slot="button"></base-button>
         </tool-bar>
+
     </view-container>
 </template>
 <script>

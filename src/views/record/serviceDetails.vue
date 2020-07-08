@@ -12,7 +12,7 @@
                               :highLightCurrent="true" slot="total" :showSummary="true" :summaryFunc="sumFunc">
                     <define-column label="装备参数" v-slot="{ data }">
                         <entity-input v-model="data.row.equipArg" :detailParam="data.row.equipArg"
-                                      :options="{detail:'equipArgsDetail'}" format="{equipName}({equipModel})"
+                                      :options="{detail:'equipArgDetail'}" format="{equipName}({equipModel})"
                                       :disabled="false"></entity-input>
                     </define-column>
                     <define-column label="装备位置" v-slot="{ data }">

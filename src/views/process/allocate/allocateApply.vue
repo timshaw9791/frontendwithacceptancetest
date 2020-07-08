@@ -216,7 +216,7 @@
             ]),
             equipArgOption() {
                 if (this.isInfo) {
-                    return {detail: 'equipArgsDetail'}
+                    return {detail: 'equipArgDetail'}
                 } else {
                     return {search: 'equipArgsSelect'}
                 }

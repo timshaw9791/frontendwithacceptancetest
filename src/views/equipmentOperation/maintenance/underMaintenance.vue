@@ -4,12 +4,12 @@
             <define-table slot="total" ref="total" :data="listData" :havePage="false"
                           @changeCurrent="selRow" :highLightCurrent="true" key="2">
                 <define-column label="装备参数" v-slot="{ data }">
-                    <entity-input v-model="data.row.equipArg" :options="{detail:'equipArgsDetail'}"
-                                  format="{name}({model})" :tableEdit="false"></entity-input>
+                    <entity-input v-model="data.row.equipArg" :options="{detail:'equipArgDetail'}"
+                                  format="{name}({model})" :disabled="true"></entity-input>
                 </define-column>
                 <define-column label="装备位置" v-slot="{ data }">
                     <entity-input v-model="data.row.location" :formatFunc="$formatFuncLoc"
-                                  :tableEdit="false"></entity-input>
+                                  :disabled="true"></entity-input>
                 </define-column>
                 <define-column label="正在保养数量" v-slot="{ data }">
                     <define-input v-model="data.row.count" type="Number" :tableEdit="false"></define-input>

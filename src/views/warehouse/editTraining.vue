@@ -4,7 +4,7 @@
             <entity-input v-if="!this.$route.params.info.edit" v-model="order.equipArg" format="{name}({model})"
                           :options="{search:'equipArgsSelect'}"></entity-input>
             <entity-input v-else v-model="order.equipArg" format="{name}({model})" :disabled="true"
-                          :options="{detail:'equipArgsDetail'}"></entity-input>
+                          :options="{detail:'equipArgDetail'}"></entity-input>
         </div>
         <div>
             <upload-file label="文档" type="pdf" v-model="order.pdf.fileName[0]" margin="15px"></upload-file>
