@@ -43,11 +43,11 @@ service.interceptors.response.use(response => {
         if (errcode.includes('401')) {
             if (location.href === loginUrl) {    /*登陆页面401错误，提示用户名或者密码错误*/
                 Message.error({
-                    message: '账号或密码错误'
+                    message: '账号或密码错误！'
                 });
             } else {
                 Message.error({
-                    message: '权限或已失效'
+                    message: '权限不足或已失效！'
                 });
                 store.dispatch('LogOut').then(() => {
                     setTimeout(() => location.reload(), 1000)
@@ -55,7 +55,7 @@ service.interceptors.response.use(response => {
             }
         } else if (errcode.includes('Network')) {
             Message.error({
-                message: `请求超时请重试!`
+                message: `请求超时请重试！`
             });
         } else {
             if(error.response) {
