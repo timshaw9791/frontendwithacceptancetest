@@ -1,10 +1,14 @@
 <template>
-    <el-popover placement="right" trigger="hover" transition="fade-in-linear">
-        <img class="img" slot="reference" :src="imageUrl===null||imageUrl===''?noImgUrl:imgsrc(imageUrl)" :onerror="splitUrl"
-             style="height:30px;width:30px;"/>
-        <img class="img" :src="imageUrl===null||imageUrl===''?noImgUrl:imgsrc(imageUrl)" :onerror="splitUrl"
-             style="height:150px;width:150px;margin-left: auto;"/>
-    </el-popover>
+    <div class="hover-img" >
+        <el-popover placement="right" trigger="hover" transition="fade-in-linear">
+            <img class="img" slot="reference" :src="imageUrl===null||imageUrl===''?noImgUrl:imgsrc(imageUrl)"
+                 :onerror="splitUrl"
+                 style="height:30px;width:30px;"/>
+            <img class="img" :src="imageUrl===null||imageUrl===''?noImgUrl:imgsrc(imageUrl)" :onerror="splitUrl"
+                 style="height:150px;width:150px;margin-left: auto;"/>
+        </el-popover>
+    </div>
+
 </template>
 
 <script>
@@ -33,5 +37,7 @@
 </script>
 
 <style scoped>
-
+    .hover-img {
+        height: 30px;
+    }
 </style>

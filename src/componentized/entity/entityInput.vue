@@ -1,6 +1,6 @@
 <template>
     <div class="entity-input-container" ref="entityInput" :style="`width:${fixWidth};margin:${fixMargin}`"
-         :class="{'disabled':disabled&&!inTable,'border':!disabled||!inTable}">
+         :class="{'disabled':disabled&&!inTable,'border':!disabled||!inTable,'inTable':inTable}">
         <!--在表格里就不显示label和*-->
         <div class="label" v-if="!inTable">
             {{ label }}
@@ -279,5 +279,8 @@
         .input {
             color: rgba(192, 196, 204, 1);
         }
+    }
+    .inTable {
+        height: 30px;
     }
 </style>

@@ -136,6 +136,12 @@
     }
 
     /deep/ .el-table {
+        font-family: 'Source Han Sans CN'; // 统一表格内的字体
+
+        input::placeholder { // placeholder颜色显示和表格一致
+            color: #707070 !important;
+        }
+
         ::-webkit-scrollbar {
             display: none;
             width: 9px;

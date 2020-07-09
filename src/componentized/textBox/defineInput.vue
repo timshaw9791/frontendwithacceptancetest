@@ -1,7 +1,7 @@
 <template>
     <div class="define-input-container" ref="defineInput"
          :style="`width:${fixWidth};float:${align};margin:${fixMargin};min-width:${fixMinWidth};`"
-         :class="[styleObj,{'disabled':disabled&&inTableStateContrl,'border':tableEdit}]"
+         :class="[styleObj,{'disabled':disabled&&inTableStateContrl,'border':tableEdit,'inTable':inTable}]"
          @click="changeEditState(true)">
         <div class="label" v-if="!inTable&&haveLabel">
             <i :class="`iconfont ${iconfont}`" v-if="iconfont"></i>
@@ -266,7 +266,9 @@
         }
     }
 
-
+    .inTable{
+        height: 30px;
+    }
 
     .define-input-container:hover {
         .iconxiaoyanjing,

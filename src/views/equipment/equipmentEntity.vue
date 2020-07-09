@@ -23,9 +23,9 @@
             <define-column label="装备名称" width="150" field="equipArg.name" fixed/>
             <define-column label="装备型号" width="150" field="equipArg.model" fixed/>
             <define-column label="装备状态" field="state" :filter="row=>enumsObj.EquipState[row.state]" fixed/>
-            <define-column label="质保期(天)" :filter="(row)=>milliToDay(row.equipArg.shelfLife)"/>
-            <define-column label="充电周期(天)" :filter="(row)=>milliToDay(row.equipArg.chargeCycle)"/>
-            <define-column label="保养周期(天)" :filter="(row)=>milliToDay(row.equipArg.upkeepCycle)"/>
+            <define-column label="质保期(天)" width="90px" :filter="(row)=>milliToDay(row.equipArg.shelfLife)"/>
+            <define-column label="充电周期(天)"  width="110px" :filter="(row)=>milliToDay(row.equipArg.chargeCycle)"/>
+            <define-column label="保养周期(天)"  width="110px" :filter="(row)=>milliToDay(row.equipArg.upkeepCycle)"/>
             <define-column label="供应商" field="equipArg.supplier.name" width="200"/>
             <define-column label="联系人" width="100" field="equipArg.supplier.person"/>
             <define-column label="联系方式" width="150" field="equipArg.supplier.phone"/>

@@ -1,12 +1,12 @@
 <template>
-    <div class="date-input-container" ref="dateInput" :style="`width:${fixWidth};float:${align};margin:${fixMargin};min-width:${fixMinWidth}`"
-         :class="[styleObj,{'disabled':disabled&&inTableStateContrl,'border':(tableEdit&&edit)}]"
+    <div class="date-input-container" ref="dateInput" :style="`width:${fixWidth};float:${align};margin:${fixMargin};}`"
+         :class="[styleObj,{'disabled':disabled&&inTableStateContrl,'border':(tableEdit&&edit),'inTable':inTable}]"
          @click="changeEditState(true)">
         <div class="label" v-if="!inTable">{{ label }}
             <span class="required" v-if="required">*</span>
         </div>
         <input type="text" class="input" :disabled="disabled" v-model="insideValue"
-               :style="`text-align: ${fixInputTextAlign}`"
+               :style="`text-align: ${fixInputTextAlign}`" :class="{inTable:inTable}"
                @change="reg" :readonly="!(tableEdit&&edit)" :placeholder="placeholder"
                @blur="changeEditState(false)" @keydown.13="changeEditState(false)"/>
         <div class="icon">
@@ -30,7 +30,6 @@
                     error: false,
                     'table-error': false
                 },
-                fixMinWidth:'200px'
             }
         },
         props: {
@@ -188,6 +187,7 @@
         border-radius: 4px;
         box-sizing: border-box;
         margin: 0 0.0521rem;
+        min-width: 50px;
 
         .icon {
             width: 35px;
@@ -211,9 +211,9 @@
             color: red;
         }
 
+
         .input {
             width: 100%;
-            padding: 0 5px 1px 0;
             // flex-grow: 1;
             height: 100%;
             font-size: 16px;
@@ -252,6 +252,10 @@
         .input {
             color: rgba(192, 196, 204, 1);
         }
+    }
+
+    .inTable{
+        height: 30px;
     }
 
     .date-input-container:hover {

@@ -5,7 +5,7 @@
         </tool-bar>
         <define-table :data="list" @changePage="changePage" :pageInfo="paginator">
             <define-column label="操作" v-slot="{data}">
-                <i class=" iconfont iconbianji" @click="goto(data.row.id)" style="margin:8px"></i>
+                <i class=" iconfont iconbianji" @click="goto(data.row.id)"></i>
             </define-column>
             <define-column label="图片" v-slot="{ data }" >
                 <hover-img :imageUrl="data.row.image"></hover-img>

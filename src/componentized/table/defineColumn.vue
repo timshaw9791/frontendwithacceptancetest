@@ -47,6 +47,10 @@
       resizable: {
         type: Boolean,
         default: false
+      },
+      placeholder:{
+        type:String,
+        default:'--'
       }
     },
     computed:{
@@ -63,7 +67,7 @@
         let val=row;
         for(let i=0;i<field.length;i++){
           val=val[field[i]];
-          if(!val)return val;
+          if(!val)return this.placeholder;
         }
         return val;
       }
