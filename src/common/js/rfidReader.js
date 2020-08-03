@@ -1,5 +1,5 @@
 /* 硬件设备(读写器、手持机)方法文件 */
-import { baseURL } from "../../api/config";
+import { Message } from 'element-ui'
 var cmdStr = 'chcp 65001 && adb pull sdcard/inventoryData/inventory.json .', // 从手持机获取文件的命令
     com = 7, // 设备串口号
     newFile_path = "C:/Users/Administrator", // 和手持机相关的文件路径
@@ -13,6 +13,8 @@ if (process.env.NODE_ENV == "production") {
          spawn = window.require('child_process').spawn,
          cwd = "C:\\Users\\Administrator", // 执行目录
          fs = window.require('fs');
+} else {
+    createWS()
 }
 
 // 配置读取
@@ -27,6 +29,7 @@ function getHandheldPath(path) {
 /* 获取读写器的ws地址 */
 function getWebSocket(wsURL) {
     hardwareWS = wsURL
+    createWS()
 }
 /* 是否是测试环境 */
 function getDevelopment(state) {
@@ -104,16 +107,6 @@ function start(cmd, success, failure, callBack) {
 function startOne(cmd, callBack, rfid = null) {
     rfid && exec(`${cmd} ${com} ${rfid}`, {cwd: cwd}, (err, data) => callBack(data))
         || exec(`${cmd} ${com}`, {cwd: cwd}, (err, data) => callBack(data))
-    // if (rfid) exec(`${cmd} ${com} ${rfid}`, {
-    //     cwd: cwd
-    // }, (err, data) => {
-    //     callBack(data)
-    // });
-    // else exec(`${cmd} ${com}`, {
-    //     cwd: cwd
-    // }, (err, data) => {
-    //     callBack(data)
-    // })
 }
 
 /** 删除文件
@@ -251,10 +244,19 @@ function createWS() {
     }
 }
 
-function wsReadInfo(command='scan-start', callBack=null) {
-    console.log(command)
+function wsReadInfo(command='scan-start', callBack=null, backFirst=false) {
     ws.send(command)
-    ws.onmessage = callBack
+    ws.onmessage = function(data) {
+        if(data.data === 'Success') {
+            console.log(`${command}执行成功`)
+            backFirst && callBack && callBack(data.data)
+        } else if(data.data.includes('Failed')) {
+            console.error("执行失败", data.data)
+            Message.error('执行失败:'+data.data.replace(/Failed/, ""))
+        } else {
+            callBack(data.data)
+        }
+    }
 }
 
 export {
@@ -270,5 +272,6 @@ export {
     clearAdbFile,
     writeFile,
     wsReadInfo,
-    getWebSocket
+    getWebSocket,
+    createWS
 }

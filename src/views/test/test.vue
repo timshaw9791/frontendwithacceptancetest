@@ -20,6 +20,9 @@
             </base-select>
             <div class="button" @click="start">开始</div>
             <div class="button" @click="close">关闭</div>
+            <div class="button" @click="startOne">读一次</div>
+            <div class="button" @click="write">写</div>
+            <div>{{ rfidInfo }}</div>
         </div>
 
         <!-- 标签2 -->
@@ -59,18 +62,31 @@
             search: '',
             imgSrc: '73424a3d1c3e41f98e28ac5da5c3284c.png',
             list: [{operator:'chen'}],
-            selected:''
+            selected:'',
+            rfidInfo: ''
         }
     },
     methods: {
         start() {
             wsReadInfo('scan-start', data => {
-                console.log('返回的数据', data)
+                this.rfidInfo += "---" + data
             })
         },
         close() {
-            wsReadInfo('scan-stop')
+            wsReadInfo('scan-stop', () => {
+                this.rfidInfo = ""
+            })
         },
+        startOne() {
+            wsReadInfo('read', data => {
+                this.rfidInfo = "读一次" + data
+            })
+        },
+        write() {
+            wsReadInfo('write-19090917', data => {
+                this.$message.success('写入成功')
+            }, true)
+        }
     }
 }
 </script>
