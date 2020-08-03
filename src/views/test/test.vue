@@ -18,6 +18,8 @@
             <base-select :list="$store.getters.enums.device" v-model="selected">
 
             </base-select>
+            <div class="button" @click="start">开始</div>
+            <div class="button" @click="close">关闭</div>
         </div>
 
         <!-- 标签2 -->
@@ -37,7 +39,9 @@
 <script>
     import uploadFile from "../../componentized/uploadFile";
     import defineImage from "../../componentized/defineImage";
-export default {
+    import { wsReadInfo } from "../../common/js/rfidReader";
+
+    export default {
     name: 'test',
     components: {uploadFile, defineImage},
     data() {
@@ -57,6 +61,16 @@ export default {
             list: [{operator:'chen'}],
             selected:''
         }
+    },
+    methods: {
+        start() {
+            wsReadInfo('scan-start', data => {
+                console.log('返回的数据', data)
+            })
+        },
+        close() {
+            wsReadInfo('scan-stop')
+        },
     }
 }
 </script>

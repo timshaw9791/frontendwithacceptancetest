@@ -11,7 +11,6 @@ import device from './modules/device'
 import matchRouter from "./modules/matchRouter";
 import enums from "./modules/enums"
 
-
 Vue.use(Vuex);
 
 const debug = process.env.NODE_ENV !== 'production';

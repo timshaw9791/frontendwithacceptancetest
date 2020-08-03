@@ -1,37 +1,40 @@
 /* 硬件设备(读写器、手持机)方法文件 */
+import { baseURL } from "../../api/config";
 var cmdStr = 'chcp 65001 && adb pull sdcard/inventoryData/inventory.json .', // 从手持机获取文件的命令
     com = 7, // 设备串口号
     newFile_path = "C:/Users/Administrator", // 和手持机相关的文件路径
     testDevelopment = false, // 是否为测试环境
-    workerProcess = null; // 子进程实例
+    workerProcess = null, // 子进程实例
+    hardwareWS = "ws://localhost:26789/websocket/4", // 读写器websocket地址
+    ws = null; // 读写器websocket实例
 
 if (process.env.NODE_ENV == "production") {
-    var exec = window.require('child_process').exec;
-    var spawn = window.require('child_process').spawn;
-    var cwd = "C:\\Users\\Administrator"; // 执行目录
-    var fs = window.require('fs');
+    var exec = window.require('child_process').exec,
+         spawn = window.require('child_process').spawn,
+         cwd = "C:\\Users\\Administrator", // 执行目录
+         fs = window.require('fs');
 }
 
 // 配置读取
 /* 设置设备串口号 */
-export function setCom(data) {
+function setCom(data) {
     com = data
 }
 /* 获取手持机路径 */
-export function getHandheldPath(path) {
+function getHandheldPath(path) {
     newFile_path = path
 }
-
+/* 获取读写器的ws地址 */
+function getWebSocket(wsURL) {
+    hardwareWS = wsURL
+}
 /* 是否是测试环境 */
-export function getDevelopment(state) {
+function getDevelopment(state) {
     testDevelopment = state
 }
 
-
-
-
 /* 结束所有jps进程 */
-export function killProcessSync() {
+function killProcessSync() {
     return new Promise((resolve, reject) => {
         let newData = [];
         exec("jps", ["/L"], (err, data) => {
@@ -49,11 +52,10 @@ export function killProcessSync() {
             resolve('true')
         })
     })
-
 }
 
 /* 通过pid删除对应进程 */
-export function killProcess(pid) {
+function killProcess(pid) {
     !!pid && spawn("taskkill", ["/PID", pid, "/T", "/F"]);
 }
 
@@ -64,7 +66,7 @@ export function killProcess(pid) {
  * @param {Function} failure 失败的回调(参数 错误信息)
  * @param {Function} callBack 一定执行的回调(参数 进程启动成功的pid，进程启动失败的信息)
  */
-export function start(cmd, success, failure, callBack) {
+function start(cmd, success, failure, callBack) {
     var index = 0; // 是否扫描过rfid
     // 用作调试，最终需删除
     console.log("cmd",cmd);
@@ -99,7 +101,7 @@ export function start(cmd, success, failure, callBack) {
  * @param {Function} callBack 一定执行的回调
  * @param {RFID} rfid RFID
  */
-export function startOne(cmd, callBack, rfid = null) {
+function startOne(cmd, callBack, rfid = null) {
     rfid && exec(`${cmd} ${com} ${rfid}`, {cwd: cwd}, (err, data) => callBack(data))
         || exec(`${cmd} ${com}`, {cwd: cwd}, (err, data) => callBack(data))
     // if (rfid) exec(`${cmd} ${com} ${rfid}`, {
@@ -119,7 +121,7 @@ export function startOne(cmd, callBack, rfid = null) {
  * @param {Path} path 需删除文件的完整路径
  * @param {Function} callBack 删除成功的回调
  */
-export function delFile(path, callBack) {
+function delFile(path, callBack) {
     fs.unlink(path, err => {
         if (err) return false;
         else callBack()
@@ -131,7 +133,7 @@ export function delFile(path, callBack) {
  * @param {Function} errCB 失败的回调
  * @param {String} file_name 需读取的文件名
  */
-export function handheld(errCB, file_name) {
+function handheld(errCB, file_name) {
     return new Promise((reslove, reject) => {
         exec(`adb shell cat /sdcard/inventoryData/out/${file_name}`, (err, stdout, stderr) => {
             if(err) {
@@ -166,7 +168,7 @@ export function handheld(errCB, file_name) {
  * @param {String} file_name 需要删除(清空)的文件名[在 sdcard/inventoryData/out 目录下]
  * @param {Function} cb 回调函数
  */
-export function clearAdbFile(file_name, cb) {
+function clearAdbFile(file_name, cb) {
     let cmdCommand = `adb shell rm sdcard/inventoryData/out/${file_name}`,
         success = true;
     workerProcess = exec(cmdCommand)
@@ -195,7 +197,7 @@ export function clearAdbFile(file_name, cb) {
  * @param {Function} cb 回调函数
  * @param {String} fileName 写入数据的文件名
  */
-export function writeFile(content, cb, fileName) {
+function writeFile(content, cb, fileName) {
     let path = `${newFile_path}/${fileName}`,
         pushCmdStr = `chcp 65001 && adb push ${path} sdcard/inventoryData/in/`,
         needReport = true;
@@ -234,4 +236,39 @@ export function writeFile(content, cb, fileName) {
         }
         console.log('out code: ' + code);
     })
+}
+
+function createWS() {
+    ws = new WebSocket(hardwareWS)
+    ws.onopen = function() {
+        console.log("读写器硬件连接")
+    }
+    ws.onclose = function() {
+        console.log("连接关闭")
+    }
+    ws.onerror = function (error) {
+        console.error(error)
+    }
+}
+
+function wsReadInfo(command='scan-start', callBack=null) {
+    console.log(command)
+    ws.send(command)
+    ws.onmessage = callBack
+}
+
+export {
+    setCom,
+    getHandheldPath,
+    getDevelopment,
+    killProcessSync,
+    killProcess,
+    start,
+    startOne,
+    delFile,
+    handheld,
+    clearAdbFile,
+    writeFile,
+    wsReadInfo,
+    getWebSocket
 }
