@@ -76,8 +76,8 @@
             }
         },
         created() {
-            this.fetchData();
-            setInterval(this.fetchData, 2000)
+            // this.fetchData();
+            // setInterval(this.fetchData, 2000)
         },
     }
 </script>

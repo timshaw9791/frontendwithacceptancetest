@@ -8,7 +8,7 @@
             <bos-tabs @changeTab="changeTab">
                         <template slot="slotHeader">
                             <base-button label="读取数据" align="right" :disabled="!select.selected" :width="96" @click="readData"></base-button>
-                            <base-select label="硬件选择" v-model="select.selected" align="right" :selectList="select.handWareList"></base-select>
+                            <base-select label="硬件选择" v-model="select.selected" align="right" :list="select.handWareList"></base-select>
                         </template>
                         <define-table :data="list"  @changeCurrent="selRow" :havePage="false"
                             :highLightCurrent="true" height="823px" slot="total" :showSummary="true" :summaryFunc="sumFunc">
@@ -39,39 +39,39 @@
                             <define-column label="装备序号" field="serial"></define-column>
                         </define-table>
                     </bos-tabs>
-       <tool-bar>
+        <tool-bar>
                 <base-button label="取消" type="text" @click="cancel" slot="button"></base-button>
                 <base-button label="提交" type="text" @click="confirm" slot="button"></base-button>
-              </tool-bar>
+        </tool-bar>
         
 </view-container>
 </template>
 
 <script>
     import myHeader from 'components/base/header/header'
-    import textInput from '@/componentized/textBox/textInput.vue'
-    import defineInput from '@/componentized/textBox/defineInput.vue'
-    import bosTabs from '@/componentized/table/bosTabs.vue'
-    import baseButton from "@/componentized/buttonBox/baseButton.vue"
-    import baseSelect from '@/componentized/textBox/baseSelect.vue'
-    import dateSelect from '@/componentized/textBox/dateSelect.vue'
-    import entityInput from '@/componentized/entity/entityInput'
-    import serviceDialog from 'components/base/serviceDialog/index'
+    // import textInput from '@/componentized/textBox/textInput.vue'
+    // import defineInput from '@/componentized/textBox/defineInput.vue'
+    // import bosTabs from '@/componentized/table/bosTabs.vue'
+    // import baseButton from "@/componentized/buttonBox/baseButton.vue"
+    // import baseSelect from '@/componentized/textBox/baseSelect.vue'
+    // import dateSelect from '@/componentized/textBox/dateSelect.vue'
+    // import entityInput from '@/componentized/entity/entityInput'
+    // import serviceDialog from 'components/base/serviceDialog/index'
     import { start, startOne, killProcess,handheld } from 'common/js/rfidReader'
     import divTmp from '@/componentized/divTmp'
     import { getInhouseNumber,inHouse} from "api/storage"
 export default {
     components:{
             myHeader,
-            textInput,
-            defineInput,
-            baseButton,
-            baseSelect,
-            dateSelect,
-            entityInput,
+            // textInput,
+            // defineInput,
+            // baseButton,
+            // baseSelect,
+            // dateSelect,
+            // entityInput,
             divTmp,
-            bosTabs,
-            serviceDialog
+            // bosTabs,
+            // serviceDialog
         },
         props:{
             equipData: {
@@ -99,11 +99,11 @@ export default {
                paginator: {size: 10, page: 1, totalElements: 0, totalPages: 0},
                select: {
                     handWareList: [{
-                        label: "手持机",
-                        value: 'handheld'
+                        value: "手持机",
+                        key: 'handheld'
                     }, {
-                        label: "读写器",
-                        value: "reader"
+                        value: "读写器",
+                        key: "reader"
                     }],
                     selected: ""
                 },
@@ -170,20 +170,19 @@ export default {
             readData(){
                 killProcess(this.pid)
                 start("java -jar scan.jar", (data) => {
-                   this.checkList=[]
-                   this.list.map((v,k)=>{v.copyList.filter(it=>{it.rfid==data?this.checkList.push(it.rfid):''})})
+                    this.checkList=[]
+                    this.list.map((v,k)=>{v.copyList.filter(it=>{it.rfid==data?this.checkList.push(it.rfid):''})})
                     if(this.checkList.length==0){
-                         if(this.list[this.findIndex].copyList.length==1&&this.list[this.findIndex].copyList[0].rfid=='')
-                    {
-                        this.list[this.findIndex].copyList[0].rfid=data
-                    }else{
-                        this.list[this.findIndex].copyList.push({rfid:data,serial:''})
+                        if(this.list[this.findIndex].copyList.length==1&&this.list[this.findIndex].copyList[0].rfid==''){
+                            this.list[this.findIndex].copyList[0].rfid=data
+                        }else{
+                            this.list[this.findIndex].copyList.push({rfid:data,serial:''})
+                        }
                     }
-                    }
-                    }, (fail) => {
-                        this.index = 1;
-                        this.$message.error(fail);
-                    }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
+                }, (fail) => {
+                    this.index = 1;
+                    this.$message.error(fail);
+                }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
             },
             changeDetailRow(state,data)
             {
@@ -204,7 +203,7 @@ export default {
             changeRow(state,data)
             {
                 state?this.list.push({equipArgId: '',locationId: '',price: 0,productTime:'',rfids: [],serial: [],copyList:[]}):this.list.splice(data.$index, 1)
-                 if(this.list.length==0){
+                if(this.list.length==0){
                     this.list=[{equipArgId: '',locationId: '',price: 0,productTime: '',rfids: [],serial: [],copyList:[],}]
                 }
                 // if(state)

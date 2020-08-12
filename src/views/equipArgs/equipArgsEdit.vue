@@ -31,14 +31,14 @@
 
 
 <script>
-    import serviceDialog from "../../components/base/serviceDialog/index"
-    import entityInput from "../../componentized/entity/entityInput";
+    // import serviceDialog from "../../components/base/serviceDialog/index"
+    // import entityInput from "../../componentized/entity/entityInput";
     import textInput from "../../componentized/textBox/textInput";
-    import defineInput from "../../componentized/textBox/defineInput";
+    // import defineInput from "../../componentized/textBox/defineInput";
     import {editEquipArgs, saveEquipArgs} from "@/api/equipArgs"
     import {getBosEntity} from "@/api/basic";
     import myHeader from "../../components/base/header/header"
-    import uploadFile from "../../componentized/uploadFile";
+    // import uploadFile from "../../componentized/uploadFile";
 
     export default {
         name: "editEquipArgs",
@@ -50,11 +50,11 @@
         },
         components: {
             textInput,
-            serviceDialog,
-            entityInput,
-            defineInput,
+            // serviceDialog,
+            // entityInput,
+            // defineInput,
             myHeader,
-            uploadFile
+            // uploadFile
         },
         methods: {
             back() {

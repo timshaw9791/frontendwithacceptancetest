@@ -9,12 +9,12 @@
                 <define-input label="姓名" margin="15px 0 0 0" :required="true" v-model="order.name"
                               :column="12"></define-input>
                 <base-select label="性别" margin="15px 0 0 0" :required="true" v-model="order.gender" :column="12"
-                             :selectList="genderList"></base-select>
-                <base-select label="角色" margin="15px 0 0 0" :required="true" v-model="order.role" :selectList="roleList"
+                             :list="genderList"></base-select>
+                <base-select label="角色" margin="15px 0 0 0" :required="true" v-model="order.role" :list="roleList"
                              :column="12"></base-select>
                 <define-input label="职位" margin="15px 0 0 0" :required="true" v-model="order.position"
                               :column="12"></define-input>
-                <base-select label="开门库房权限" margin="15px 0 0 0" v-model="order.enterHouse" :selectList="enterhouseList"
+                <base-select label="开门库房权限" margin="15px 0 0 0" v-model="order.enterHouse" :list="enterhouseList"
                              :column="12"></base-select>
                 <define-input label="联系方式" margin="15px 0 0 0" :required="true" type="Phone" v-model="order.phone"
                               :column="12"></define-input>
@@ -39,22 +39,22 @@
     </view-container>
 </template>
 <script>
-    import defineInput from '@/componentized/textBox/defineInput.vue'
+    // import defineInput from '@/componentized/textBox/defineInput.vue'
     import myHeader from 'components/base/header/header'
-    import baseSelect from '@/componentized/textBox/baseSelect.vue'
+    // import baseSelect from '@/componentized/textBox/baseSelect.vue'
     import entityInput from '@/componentized/entity/entityInput'
     import {editUser, addUser} from 'api/user'
     import serviceDialog from "components/base/serviceDialog"
     import {baseURL} from 'api/config'
-    import uploadFile from '@/componentized/uploadFile'
+    // import uploadFile from '@/componentized/uploadFile'
 
     export default {
         name: "addPersonal",
         components: {
-            defineInput,
+            // defineInput,
             myHeader,
-            uploadFile,
-            baseSelect,
+            // uploadFile,
+            // baseSelect,
             entityInput,
             serviceDialog
         },
@@ -88,7 +88,6 @@
             } else {
                 this.title = "新增人员"
                 let user = JSON.parse(localStorage.getItem('user'))
-                console.log("user", user);
                 this.organUnit = {
                     name: user.organUnitName,
                     id: user.organUnitId
@@ -102,9 +101,9 @@
         },
         data() {
             return {
-                genderList: [{label: "男", value: "男"}, {label: "女", value: "女"}],
-                roleList: [{label: "管理员", value: 1}, {label: "警员", value: 0}, {label: "领导", value: 2}],
-                enterhouseList: [{label: "不允许", value: "不允许"}, {label: "允许", value: "允许"}],
+                genderList: [{ value: "男", key: "男" },{value: "女", key: "女"}],
+                roleList: [{value: "警员", key: '0'}, {value: "管理员", key: '1'}, {value: "领导", key: '2'}],
+                enterhouseList: [{value: "不允许", key: "不允许"}, {value: "允许", key: "允许"}],
                 order: {},
                 title: "",
                 organUnit: {},
@@ -121,6 +120,8 @@
         },
         methods: {
             submit() {
+                this.order.organUnitId = '1'
+                this.order.organUnitName = '11'
                 if (this.order.enterHouse == "允许") {
                     this.order.enterHouse = true
                 } else if (this.order.enterHouse == "不允许") {
@@ -129,7 +130,7 @@
                 _.forIn(this.order, function (val, key) {
                     if (key == "name" || key == "policeSign" || key == "role" || key == "phone" || key == "organUnitName" || key == "position" || key == "idNumber") {
                         if (val === "" || val == null) {
-                            this.$message.error("请填写完整")
+                            alert('请填写完整')
                             return false
                         }
                     }

@@ -11,9 +11,9 @@
             <define-column label="联系人" field="person"></define-column>
             <define-column label="联系方式" field="phone"></define-column>
         </define-table>
-        <service-dialog :title="dialogTitle" ref="dialog" @firstCancel="cancel" @cancel="cancel" @confirm="dialogConfirm"
+        <service-dialog :title="dialogTitle" ref="dialog" @cancel="cancel" @confirm="dialogConfirm"
                         :secondary="scondary">
-            <form-container ref="inlineForm" :model="inlineForm">
+            <!-- <form-container ref="inlineForm" :model="inlineForm">
                 <field-input v-model="inlineForm.name" label="供应商" width="8"
                              :rules="r(true).all(R.require)" prop="name"
                 ></field-input>
@@ -25,7 +25,12 @@
                 <field-input v-model="inlineForm.phone" label="联系方式" width="8"
                              :rules="r(true).all(R.mobile)" prop="phone"
                 ></field-input>
-            </form-container>
+            </form-container> -->
+            <define-form ref="form" class="form">
+                <define-input label="供应商" valid :required="true"  v-model="inlineForm.name" style="width:500px"></define-input><br/>
+                <define-input label="联系人" valid :required="true" v-model="inlineForm.person" style="width:500px;margin:10px 0 10px 0"></define-input><br/>
+                <define-input label="联系方式" valid :required="true" v-model="inlineForm.phone" style="width:500px"></define-input>
+            </define-form>
         </service-dialog>
     </view-container>
 </template>
@@ -76,14 +81,26 @@
                 this.getSupplierList()
             },
             dialogConfirm() {
-                let requestApi = this.dialogTitle.includes('编辑') ? updateSupplier : addSupplier
-                requestApi(this.inlineForm).then(() => {
-                    this.$refs.dialog.hide()
-                    this.paginator.page = 1
-                    this.editInlineForm = false
-                    this.scondary = false
-                    this.getSupplierList()
+                this.$refs.form.validate((valid) => {
+                    if(valid){
+                        let requestApi = this.dialogTitle.includes('编辑') ? updateSupplier : addSupplier
+                        requestApi(this.inlineForm).then(() => {
+                            this.$refs.dialog.hide()
+                            this.paginator.page = 1
+                            this.editInlineForm = false
+                            this.scondary = false
+                            this.getSupplierList()
+                        })
+                    }
                 })
+                // let requestApi = this.dialogTitle.includes('编辑') ? updateSupplier : addSupplier
+                // requestApi(this.inlineForm).then(() => {
+                //     this.$refs.dialog.hide()
+                //     this.paginator.page = 1
+                //     this.editInlineForm = false
+                //     this.scondary = false
+                //     this.getSupplierList()
+                // })
             },
             edit(row) {
                 if (!!row) {
@@ -111,7 +128,9 @@
 </script>
 
 <style lang="scss" scoped>
-
+    .form {
+        text-align: center;
+    }
     .supplier-container {
         color: #707070FF;
         font-size: 16px;

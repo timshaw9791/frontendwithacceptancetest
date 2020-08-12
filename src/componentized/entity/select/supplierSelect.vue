@@ -50,6 +50,9 @@
             getSuppliers().then((res)=>{
                this.supplierList = res.content
             })
+        },
+        created(){
+            console.log('aaa');
         }
 
     }

@@ -32,13 +32,13 @@ import FieldEntity from './components/field-entity.vue';
 import defineTable from '@/componentized/table/defineTable.vue'
 import defineColumn from '@/componentized/table/defineColumn.vue'
 import hoverImg from '@/componentized/hoverImg.vue'
-import defineInput from '@/componentized/textBox/defineInput.vue'
-import baseButton from '@/componentized/buttonBox/baseButton.vue'
-import baseSelect from '@/componentized/textBox/baseSelect.vue'
+// import defineInput from '@/componentized/textBox/defineInput.vue'
+// import baseButton from '@/componentized/buttonBox/baseButton.vue'
+// import baseSelect from '@/componentized/textBox/baseSelect.vue'
 import divTmp from '@/componentized/divTmp'
 import defineForm from '@/componentized/form/defineForm'
 import textInput from '@/componentized/textBox/textInput'
-import dateSelect from '@/componentized/textBox/dateSelect'
+// import dateSelect from '@/componentized/textBox/dateSelect'
 import numberInput from '@/componentized/textBox/numberInput'
 import entityInput from '@/componentized/entity/entityInput'
 import dateInput from '@/componentized/textBox/dateInput'
@@ -70,13 +70,13 @@ let componentsList = {
     defineTable,
     defineColumn,
     hoverImg,
-    defineInput,
-    baseButton,
-    baseSelect,
+    // defineInput,
+    // baseButton,
+    // baseSelect,
     divTmp,
     defineForm,
     textInput,
-    dateSelect,
+    // dateSelect,
     numberInput,
     entityInput,
     dateInput,

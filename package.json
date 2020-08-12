@@ -28,6 +28,7 @@
     "qs": "^6.9.3",
     "regenerator-runtime": "^0.13.2",
     "shortid": "^2.2.8",
+    "testpro-project": "^1.0.61",
     "video.js": "^7.6.6",
     "vue": "^2.6.11",
     "vue-apollo": "^3.0.0-beta.11",
