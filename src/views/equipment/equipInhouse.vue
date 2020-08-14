@@ -57,9 +57,13 @@
     // import dateSelect from '@/componentized/textBox/dateSelect.vue'
     // import entityInput from '@/componentized/entity/entityInput'
     // import serviceDialog from 'components/base/serviceDialog/index'
-    import { start, startOne, killProcess,handheld } from 'common/js/rfidReader'
+    //import {  killProcess } from 'common/js/rfidReader'
+    import {rfidReader } from '@/externalProcess-rfid'
     import divTmp from '@/componentized/divTmp'
     import { getInhouseNumber,inHouse} from "api/storage"
+
+    const rfidReaderInstance=rfidReader();
+
 export default {
     components:{
             myHeader,
@@ -107,7 +111,6 @@ export default {
                     }],
                     selected: ""
                 },
-               pid:'',
                findIndex:0
             }
         },
@@ -116,7 +119,7 @@ export default {
                this.findIndex=data.index
             },
             changeTab(data){
-                data.key=="total"?killProcess(this.pid):''
+                (data.key=="total") &&  rfidReaderInstance.close();
             },
             sumFunc(param) { // 表格合并行计算方法
                 let { columns, data } = param, sums = [];
@@ -167,9 +170,9 @@ export default {
             changelocation(){
                 this.$refs.historyDialog.show()
             },
-            readData(){
-                killProcess(this.pid)
-                start("java -jar scan.jar", (data) => {
+            readData(){  
+                debugger;
+                rfidReaderInstance.startRead((data) => {
                     this.checkList=[]
                     this.list.map((v,k)=>{v.copyList.filter(it=>{it.rfid==data?this.checkList.push(it.rfid):''})})
                     if(this.checkList.length==0){
@@ -179,10 +182,11 @@ export default {
                             this.list[this.findIndex].copyList.push({rfid:data,serial:''})
                         }
                     }
-                }, (fail) => {
+                },(fail) => {
                     this.index = 1;
                     this.$message.error(fail);
-                }, (pid, err) => { pid? this.pid = pid: this.$message.error(err)})
+                }, (err) => {  this.$message.error(err)}
+                ,this)
             },
             changeDetailRow(state,data)
             {
@@ -239,7 +243,7 @@ export default {
             }
         },
         beforeDestroy(){
-            killProcess(this.pid)
+            rfidReaderInstance.close();
         },
         created(){
                 this.people=JSON.parse(localStorage.getItem('user')).name
