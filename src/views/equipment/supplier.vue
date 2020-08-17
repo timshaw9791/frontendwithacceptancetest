@@ -37,7 +37,7 @@
 
 <script>
     import {formRulesMixin} from '@/field/common/mixinTableRest';
-    import serviceDialog from '@/components/base/serviceDialog/index'
+    // import serviceDialog from '@/components/base/serviceDialog/index'
     import {getSuppliers, addSupplier, updateSupplier} from "@/api/supplier"
     import myHeader from "@/components/base/header/header"
     import textInput from "@/componentized/textBox/textInput";
@@ -56,7 +56,7 @@
         },
         mixins: [formRulesMixin],
         components: {
-            serviceDialog,
+            // serviceDialog,
             myHeader,
             textInput
         },

@@ -80,8 +80,10 @@
                 })
             },
             getUserList() {
-                getUser(this.paginator).then(res => {
+                getUser(this.paginator).then(res => {          
                     this.list = res.content;
+                    console.log("getUserList -> this.list", this.list)
+                    
                     this.paginator.totalPages = res.totalPages;
                     this.paginator.totalElements = res.totalElements;
                 })

@@ -1,5 +1,6 @@
 <template>
-    <div class="entity-input-container" ref="entityInput" :style="`width:${fixWidth};margin:${fixMargin}`"
+    <div data-input-container="entity-input-container" :data-label="label"
+         class="entity-input-container" ref="entityInput" :style="`width:${fixWidth};margin:${fixMargin}`"
          :class="{'disabled':disabled&&!inTable,'border':!disabled||!inTable,'inTable':inTable}">
         <!--在表格里就不显示label和*-->
         <div class="label" v-if="!inTable">

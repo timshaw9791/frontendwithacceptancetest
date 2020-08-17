@@ -17,13 +17,13 @@
                                 <i class="iconfont iconyichu" @click="changeRow(false,data)"></i>
                             </define-column>
                             <define-column label="装备参数" v-slot="{ data }">
-                                <entity-input v-model="data.row.equipArgId"  :options="{search:'equipArgsSelect'}" format="{name}({model})" ></entity-input>
+                                <entity-input label="装备参数" v-model="data.row.equipArgId"  :options="{search:'equipArgsSelect'}" format="{name}({model})" ></entity-input>
                             </define-column>
                             <define-column label="装备位置"  v-slot="{ data }" >
-                                <entity-input v-model="data.row.locationId"  :options="{search:'locationSelect'}" :formatFunc="$formatFuncLoc" ></entity-input>
+                                <entity-input label="装备位置" v-model="data.row.locationId"  :options="{search:'locationSelect'}" :formatFunc="$formatFuncLoc" ></entity-input>
                             </define-column>
                             <define-column label="单价" v-slot="{ data }">
-                                <define-input v-model="data.row.price" type="Number" ></define-input>
+                                <define-input label="单价" v-model="data.row.price" type="Number" ></define-input>
                             </define-column>
                             <define-column label="生产日期" v-slot="{ data }">
                                 <date-select label="生产日期" v-model="data.row.productTime" :column="12" ></date-select>
@@ -55,7 +55,7 @@
     // import baseButton from "@/componentized/buttonBox/baseButton.vue"
     // import baseSelect from '@/componentized/textBox/baseSelect.vue'
     // import dateSelect from '@/componentized/textBox/dateSelect.vue'
-    // import entityInput from '@/componentized/entity/entityInput'
+    import entityInput from '@/componentized/entity/entityInput'    
     // import serviceDialog from 'components/base/serviceDialog/index'
     //import {  killProcess } from 'common/js/rfidReader'
     import {rfidReader } from '@/externalProcess-rfid'
@@ -72,7 +72,7 @@ export default {
             // baseButton,
             // baseSelect,
             // dateSelect,
-            // entityInput,
+            entityInput,
             divTmp,
             // bosTabs,
             // serviceDialog

@@ -32,7 +32,7 @@
 
 <script>
     // import serviceDialog from "../../components/base/serviceDialog/index"
-    // import entityInput from "../../componentized/entity/entityInput";
+    import entityInput from "../../componentized/entity/entityInput";
     import textInput from "../../componentized/textBox/textInput";
     // import defineInput from "../../componentized/textBox/defineInput";
     import {editEquipArgs, saveEquipArgs} from "@/api/equipArgs"
@@ -51,7 +51,7 @@
         components: {
             textInput,
             // serviceDialog,
-            // entityInput,
+            entityInput,
             // defineInput,
             myHeader,
             // uploadFile

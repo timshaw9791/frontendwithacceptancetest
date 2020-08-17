@@ -41,7 +41,7 @@ import textInput from '@/componentized/textBox/textInput'
 // import dateSelect from '@/componentized/textBox/dateSelect'
 import numberInput from '@/componentized/textBox/numberInput'
 // import entityInput from '@/componentized/entity/entityInput'
-import dateInput from '@/componentized/textBox/dateInput'
+// import dateInput from '@/componentized/textBox/dateInput'
 import radio from '@/componentized/radio'
 import checkbox from '@/componentized/checkbox'
 import checkboxGroup from '@/componentized/checkboxGroup'
@@ -79,7 +79,7 @@ let componentsList = {
     // dateSelect,
     numberInput,
     // entityInput,
-    dateInput,
+    // dateInput,
     radio,
     checkbox,
     checkboxGroup,
