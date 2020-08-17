@@ -43,7 +43,7 @@ export default {
             state.enumsObj = enums
         }
     },
-    /*actions: {
+    actions: {
         getAllEnums({commit}) {
             bosEnumsPlatform().then(res => {
                 let tmp = fixEnums(res)
@@ -63,5 +63,5 @@ export default {
                 tmp = null
             })
         }
-    }*/
+    }
 }
