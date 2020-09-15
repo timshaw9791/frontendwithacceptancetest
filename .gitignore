@@ -1,6 +1,14 @@
 .DS_Store
 ~*
 
+/tests/acceptance/node_modules
+*.swap
+
+/tests/acceptance/package-lock.json
+/tests/acceptance/userstory_test.js
+/tests/acceptance/output/*
+
+
 node_modules
 /dist
 /build
